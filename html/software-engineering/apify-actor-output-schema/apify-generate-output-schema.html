@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>apify-generate-output-schema</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">apify-actor-output-schema</a> / apify-generate-output-schema</p><h1>apify-generate-output-schema</h1><p class="meta">combined</p><p>The two copies are not a clean original-and-copy pair. The apify/agent-skills copy is a deprecation stub that explicitly forbids generating schemas from memory and redirects to apify-actor-development. The sickn33/agentic-awesome-skills copy is a full procedural skill for generating dataset_schema.json, output_schema.json, and key_value_store_schema.json, and it claims to be sourced from apify/agent-skills. They overlap in topic but disagree on whether the agent should perform the generation at all, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/apify/agent-skills">apify/agent-skills</a></td><td><code>skills/apify-generate-output-schema/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/apify-generate-output-schema/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/apify/agent-skills">apify/agent-skills</a></td><td><code>skills/apify-generate-output-schema/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/apify-generate-output-schema/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/apify-generate-output-schema/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/apify-generate-output-schema/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: apify-generate-output-schema
+description: Generate or route Apify Actor output schemas (dataset_schema.json, output_schema.json, key_value_store_schema.json).
+---
+
+# Apify Actor output schema
+
+This skill covers generating Apify Actor output schemas. The upstream apify/agent-skills repository marks this skill as deprecated and moves the procedure into apify-actor-development. A mirrored copy in sickn33/agentic-awesome-skills still contains the full generation procedure. Follow the routing rule first, then the generation procedure only if the upstream skill is unavailable and the user explicitly wants to proceed.
+
+## Routing
+
+1. If the apify-actor-development skill is available, load it and follow its references/output-schemas.md. Do not generate schemas from this skill.
+2. If apify-actor-development is not available, tell the user this skill is deprecated and help them install apify-actor-development using the method that fits their agent:
+   - Claude Code plugin: /plugin install apify-actor-development@apify-agent-skills
+   - Skills CLI: npx skills add https://github.com/apify/agent-skills --skill apify-actor-development
+   - Cloned repo: pull the latest changes; the skill is at skills/apify-actor-development/SKILL.md
+3. If the user still wants to proceed without apify-actor-development, use the generation procedure below.
+
+## Generation procedure
+
+### Phase 1: Discover Actor structure
+
+1. Create a todo list with all phases.
+2. Find the .actor/ directory containing actor.json.
+3. Read actor.json to understand the Actor&#x27;s configuration.
+4. Check if dataset_schema.json, output_schema.json, and key_value_store_schema.json already exist.
+5. Search for existing schemas in the repository (e.g., **/dataset_schema.json, **/output_schema.json, **/key_value_store_schema.json) to learn the repo&#x27;s conventions: description style, field naming, example formatting, view structure, and JSON formatting.
+6. Find all places where data is pushed to the dataset:
+   - JavaScript/TypeScript: Actor.pushData(, dataset.pushData(, Dataset.pushData(
+   - Python: Actor.push_data(, dataset.push_data(, Dataset.push_data(
+7. Find all places where data is stored in the key-value store:
+   - JavaScript/TypeScript: Actor.setValue(, keyValueStore.setValue(, KeyValueStore.setValue(
+   - Python: Actor.set_value(, key_value_store.set_value(, KeyValueStore.set_value(
+8. Find output type definitions and reuse them directly:
+   - TypeScript: look for output type interfaces/types (e.g., in src/types/). Derive schema fields from the existing type definition.
+   - Python: look for TypedDict, dataclass, or Pydantic model definitions. Use existing field names, types, and docstrings as the source of truth.
+9. Check for existing shared schema utilities or helper functions in the codebase and reuse them.
+10. If inline storages.dataset or storages.keyValueStore config exists in actor.json, note it for migration.
+
+Present findings to the user: list all discovered dataset output fields, key-value store keys, their types, and where they come from.
+
+### Phase 2: Generate dataset_schema.json
+
+Create a complete dataset schema with field definitions and display views.
+
+File structure:
+
+{
+    &quot;actorSpecification&quot;: 1,
+    &quot;fields&quot;: {
+        &quot;$schema&quot;: &quot;http://json-schema.org/draft-07/schema#&quot;,
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {
+            // ALL output fields here
+        },
+        &quot;required&quot;: [],
+        &quot;additionalProperties&quot;: true
+    },
+    &quot;views&quot;: {
+        &quot;overview&quot;: {
+            &quot;title&quot;: &quot;Overview&quot;,
+            &quot;description&quot;: &quot;Most important fields at a glance&quot;,
+            &quot;transformation&quot;: {
+                &quot;fields&quot;: [
+                    // 8-12 most important field names
+                ]
+            },
+            &quot;display&quot;: {
+                &quot;component&quot;: &quot;table&quot;,
+                &quot;properties&quot;: {
+                    // Display config for each overview field
+                }
+            }
+        }
+    }
+}
+
+Consistency with existing schemas:
+- Match the description writing style.
+- Match the field naming convention (camelCase vs. snake_case) to the actual keys produced by the Actor code.
+- Match the example value style.
+- Match the view structure.
+- Match the JSON formatting (indentation, property ordering, spacing).
+
+When the Actor code has well-defined TypeScript interfaces or Python type classes, derive fields directly from those types.
+
+Hard rules:
+- All fields the Actor can produce must appear in fields.properties.
+- Every field is nullable: set &quot;nullable&quot;: true.
+- Anonymize examples: never use real user IDs, usernames, or personal data.
+- Verify against code: if TypeScript types exist, cross-check the schema against both the type definition and the code that produces the values.
+- Reuse existing patterns: match structure, naming conventions, description style, and formatting of other Actors in the same repository.
+- Do not reinvent the wheel: reuse existing type definitions, interfaces, and utilities from the codebase.
+
+### Phase 3: Generate output_schema.json and key_value_store_schema.json
+
+Generate output_schema.json and key_value_store_schema.json (if the Actor uses key-value store) using the same principles: analyze code first, make every field nullable, anonymize examples, verify against code, and reuse existing patterns and type definitions.
+
+### Phase 4: Update actor.json
+
+Update actor.json to reference the generated schema files if required by the Actor&#x27;s configuration.
+
+## Conflicts
+
+- apify/agent-skills: The skill is deprecated. The agent must not write schemas from memory and must redirect to apify-actor-development or help the user install it.
+- sickn33/agentic-awesome-skills: The skill provides a full generation procedure and does not mention the deprecation or the redirect to apify-actor-development.</pre>
+</body>
+</html>

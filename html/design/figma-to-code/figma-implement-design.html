@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>figma-implement-design</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">figma-to-code</a> / figma-implement-design</p><h1>figma-implement-design</h1><p class="meta">combined</p><p>The two copies share the same core Figma-to-code workflow (parse node ID, fetch design context, capture screenshot, download assets, translate to project conventions, achieve parity, validate). They diverge on material setup and boundary steps: the openai/skills copy defines explicit skill boundaries and routing to sibling Figma skills, while the Vibe-Skills copy adds a concrete Step 0 for configuring the Figma MCP server in Codex (add MCP, enable rmcp_client, OAuth login, restart). Neither copy is a strict superset of the other, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/figma-implement-design/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/figma-implement-design/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/figma-implement-design/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/figma-implement-design/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: figma-implement-design
+description: Translate Figma designs into production-ready code with 1:1 visual fidelity using the Figma MCP workflow. Use when the user provides Figma URLs or node IDs, or asks to implement designs or components that must match Figma specs.
+---
+
+# Implement Design
+
+## Overview
+
+This skill provides a structured workflow for translating Figma designs into production-ready code with pixel-perfect accuracy. It ensures consistent integration with the Figma MCP server, proper use of design tokens, and 1:1 visual parity with designs.
+
+## Skill Boundaries
+
+- Use this skill when the deliverable is code in the user&#x27;s repository.
+- If the user asks to create/edit/delete nodes inside Figma itself, switch to the Figma canvas-write skill.
+- If the user asks to build or update a full-page screen in Figma from code or a description, switch to the Figma generate-design skill.
+- If the user asks only for Code Connect mappings, switch to the Figma code-connect skill.
+- If the user asks to author reusable agent rules, switch to the Figma design-system-rules skill.
+
+## Prerequisites
+
+- Figma MCP server must be connected and accessible
+- User must provide a Figma URL in the format: `https://figma.com/design/:fileKey/:fileName?node-id=1-2`
+  - `:fileKey` is the file key
+  - `1-2` is the node ID (the specific component or frame to implement)
+- **OR** when using `figma-desktop` MCP: User can select a node directly in the Figma desktop app (no URL required)
+- Project should have an established design system or component library (preferred)
+
+## Required Workflow
+
+**Follow these steps in order. Do not skip steps.**
+
+### Step 0: Set up Figma MCP (if not already configured)
+
+If any MCP call fails because Figma MCP is not connected, pause and set it up:
+
+1. Add the Figma MCP:
+   - `codex mcp add figma --url https://mcp.figma.com/mcp`
+2. Enable remote MCP client:
+   - Set `[features].rmcp_client = true` in `config.toml` **or** run `codex --enable rmcp_client`
+3. Log in with OAuth:
+   - `codex mcp login figma`
+
+After successful login, the user will have to restart codex. You should finish your answer and tell them so when they try again they can continue with Step 1.
+
+### Step 1: Get Node ID
+
+#### Option A: Parse from Figma URL
+
+When the user provides a Figma URL, extract the file key and node ID to pass as arguments to MCP tools.
+
+**URL format:** `https://figma.com/design/:fileKey/:fileName?node-id=1-2`
+
+**Extract:**
+
+- **File key:** `:fileKey` (the segment after `/design/`)
+- **Node ID:** `1-2` (the value of the `node-id` query parameter)
+
+**Note:** When using the local desktop MCP (`figma-desktop`), `fileKey` is not passed as a parameter to tool calls. The server automatically uses the currently open file, so only `nodeId` is needed.
+
+**Example:**
+
+- URL: `https://figma.com/design/kL9xQn2VwM8pYrTb4ZcHjF/DesignSystem?node-id=42-15`
+- File key: `kL9xQn2VwM8pYrTb4ZcHjF`
+- Node ID: `42-15`
+
+#### Option B: Use Current Selection from Figma Desktop App (figma-desktop MCP only)
+
+When using the `figma-desktop` MCP and the user has NOT provided a URL, the tools automatically use the currently selected node from the open Figma file in the desktop app.
+
+**Note:** Selection-based prompting only works with the `figma-desktop` MCP server. The remote server requires a link to a frame or layer to extract context. The user must have the Figma desktop app open with a node selected.
+
+### Step 2: Fetch Design Context
+
+Run `get_design_context` with the extracted file key and node ID.
+
+```
+get_design_context(fileKey=&quot;:fileKey&quot;, nodeId=&quot;1-2&quot;)
+```
+
+This provides the structured data including:
+
+- Layout properties (Auto Layout, constraints, sizing)
+- Typography specifications
+- Color values and design tokens
+- Component structure and variants
+- Spacing and padding values
+
+**If the response is too large or truncated:**
+
+1. Run `get_metadata(fileKey=&quot;:fileKey&quot;, nodeId=&quot;1-2&quot;)` to get the high-level node map
+2. Identify the specific child nodes needed from the metadata
+3. Fetch individual child nodes with `get_design_context(fileKey=&quot;:fileKey&quot;, nodeId=&quot;:childNodeId&quot;)`
+
+### Step 3: Capture Visual Reference
+
+Run `get_screenshot` with the same file key and node ID for a visual reference.
+
+```
+get_screenshot(fileKey=&quot;:fileKey&quot;, nodeId=&quot;1-2&quot;)
+```
+
+This screenshot serves as the source of truth for visual validation. Keep it accessible throughout implementation.
+
+### Step 4: Download Required Assets
+
+Download any assets (images, icons, SVGs) returned by the Figma MCP server.
+
+**IMPORTANT:** Follow these asset rules:
+
+- If the Figma MCP server returns a `localhost` source for an image or SVG, use that source directly
+- DO NOT import or add new icon packages - all assets should come from the Figma payload
+- DO NOT use or create placeholders if a `localhost` source is provided
+- Assets are served through the Figma MCP server&#x27;s built-in assets endpoint
+
+### Step 5: Translate to Project Conventions
+
+Translate the Figma output into this project&#x27;s framework, styles, and conventions.
+
+**Key principles:**
+
+- Treat the Figma MCP output (typically React + Tailwind) as a representation of design and behavior, not as final code style
+- Replace Tailwind utility classes with the project&#x27;s preferred utilities or design system tokens
+- Reuse existing components (buttons, inputs, typography, icon wrappers) instead of duplicating functionality
+- Use the project&#x27;s color system, typography scale, and spacing tokens consistently
+- Respect existing routing, state management, and data-fetch patterns
+
+### Step 6: Achieve 1:1 Visual Parity
+
+Strive for pixel-perfect visual parity with the Figma design.
+
+**Guidelines:**
+
+- Prioritize Figma fidelity to match designs exactly
+- Avoid hardcoded values - use design tokens from Figma where available
+- When conflicts arise between design system tokens and Figma specs, prefer design system tokens but adjust spacing or sizes minimally to match visuals
+- Follow WCAG requirements for accessibility
+- Add component documentation as needed
+
+### Step 7: Validate Against Figma
+
+Before marking complete, validate the final UI against the Figma screenshot.
+
+**Validation checklist:**
+
+- [ ] Layout matches (spacing, alignment, sizing)
+- [ ] Typography matches (font, size, weight, line height)
+- [ ] Colors match (fills, strokes, opacity)
+- [ ] Assets are correct (images, icons, SVGs)
+- [ ] Interactive states match (hover, focus, active, disabled)
+- [ ] Responsive behavior matches (breakpoints, fluid sizing)
+- [ ] Accessibility requirements are met (contrast, focus order, ARIA)</pre>
+</body>
+</html>

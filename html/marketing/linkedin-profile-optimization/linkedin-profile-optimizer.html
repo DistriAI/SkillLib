@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>linkedin-profile-optimizer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">linkedin-profile-optimization</a> / linkedin-profile-optimizer</p><h1>linkedin-profile-optimizer</h1><p class="meta">combined</p><p>The three copies overlap on the core task (auditing and rewriting a LinkedIn profile) but disagree on the workflow and output format. The first copy (sergebulaev) mandates a visible scorecard and before/after diff, while the third copy (sickn33) explicitly forbids showing the audit or critique, requiring a &#x27;silent&#x27; process that delivers only the final result. The second copy (Paramchoudhary) focuses heavily on the differences between a resume and a LinkedIn profile and provides specific examples for each section. Because the first and third copies have mutually exclusive instructions regarding how to present the audit (visible vs. hidden), crowning one would hide a real alternative approach to the task.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sergebulaev/linkedin-skills">sergebulaev/linkedin-skills</a></td><td><code>.codex-marketplace/linkedin-skills/skills/linkedin-profile-optimizer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Paramchoudhary/ResumeSkills">Paramchoudhary/ResumeSkills</a></td><td><code>.agents/skills/linkedin-profile-optimizer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/linkedin-profile-optimizer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sergebulaev/linkedin-skills">sergebulaev/linkedin-skills</a></td><td><code>.codex-marketplace/linkedin-skills/skills/linkedin-profile-optimizer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Paramchoudhary/ResumeSkills">Paramchoudhary/ResumeSkills</a></td><td><code>.agents/skills/linkedin-profile-optimizer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/linkedin-profile-optimizer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/linkedin-profile-optimizer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/linkedin-profile-optimizer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sergebulaev/linkedin-skills">sergebulaev/linkedin-skills</a></td><td><code>skills/linkedin-profile-optimizer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/Paramchoudhary/ResumeSkills">Paramchoudhary/ResumeSkills</a></td><td><code>skills/linkedin-profile-optimizer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># LinkedIn Profile Optimizer
+
+## When to Use
+Use this skill when the user wants to optimize their LinkedIn profile for job searching, client acquisition, or authority building. Triggers include &quot;review my profile&quot;, &quot;rewrite my headline&quot;, or &quot;optimize LinkedIn&quot;.
+
+## Input &amp; Intake
+1. **Collect Source Material:** Ask for the profile text (Headline, About, Experience) or a PDF export. If the user provides only a URL, ask for the text or PDF, as the profile cannot be fetched directly. Also request a CV/resume and any portfolio links.
+2. **Determine Goal:** Identify if the goal is **clients**, **job seeking**, or **authority**. This determines the Featured section and CTA strategy.
+3. **Expand Context:** Cross-reference the provided sources (LinkedIn, CV, Portfolio) to find a consistent &quot;Red Thread&quot; or throughline in the person&#x27;s work. If sources conflict, ask the user to clarify.
+
+## Optimization Steps
+1. **Photo &amp; Banner:** Ensure the photo is a professional headshot (face fills 60% of frame) and the banner is 1584x396 pixels with a clear value proposition.
+2. **Headline:** Rewrite using the formula `[What You Do] | [Who You Help] [Achieve What Result]`. Use all 220 characters. Include keywords recruiters search for.
+3. **About Section:** Rebuild using a 7-step structure or a hook-achievements-CTA format. Ensure the first 265-275 characters act as a strong hook before the &quot;see more&quot; fold. Use first-person voice.
+4. **Experience:** Rewrite bullets as `action verb + specific metric`. Add 5+ skills per role. Attach media where possible.
+5. **Skills:** List up to 50 skills. Pin the top 3 that mirror the target job description or client needs.
+6. **Featured Section:** Curate 3 items matched to the goal:
+   - **Clients:** Lead magnet + case study + calendar link.
+   - **Job Seeking:** Portfolio + work samples + top post.
+   - **Authority:** Best content + media features + newsletter.
+7. **Custom URL &amp; Recommendations:** Ensure the URL is `linkedin.com/in/firstnamelastname`. Draft specific recommendation requests.
+
+## Output Format
+*Note: The user may prefer a visible audit or a silent rewrite. Default to a visible audit unless the user requests a &quot;silent&quot; or &quot;ready-to-paste&quot; result.*
+
+**Option A: Visible Audit (Default)**
+1. **Scorecard:** Pass/fail/needs-work for 9 sections.
+2. **Priority Fixes:** Ranked by impact.
+3. **Before → After:** Rewrites for each failing section.
+4. **Expected Uplift:** Based on benchmarks (e.g., 3.9x more views).
+
+**Option B: Silent Rewrite**
+1. **Final Profile:** Deliver only the finished, ready-to-paste text for each section.
+2. **No Critique:** Do not list what was wrong with the original.
+
+## Hard Rules
+- Use first-person voice (&quot;I help...&quot;).
+- Avoid AI-sounding vocabulary (&quot;passionate thought leader&quot;, &quot;results-oriented&quot;).
+- Never fabricate roles or metrics; ask for clarification if data is missing.
+- Do not infer profile content from the URL slug alone.</pre>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>baoyu-url-to-markdown</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">url-to-markdown</a> / baoyu-url-to-markdown</p><h1>baoyu-url-to-markdown</h1><p class="meta">combined</p><p>The three copies describe the same task but disagree on the underlying tooling, CLI surface, and setup behavior. JimLiu/baoyu-skills is the most complete and appears to be the upstream procedure (baoyu-fetch CLI, site-specific adapters, media download, first-time setup). anbeime/skill is a simplified wrapper around a local main.ts script with a different flag set and no first-time setup. LeoYeAI/openclaw-master-skills is a mirror of the upstream with a different version, additional fallbacks, and a different runtime resolution strategy. Crowning one would hide the real alternatives and conflicting parameters.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/JimLiu/baoyu-skills">JimLiu/baoyu-skills</a></td><td><code>skills/baoyu-url-to-markdown/SKILL.md</code></td></tr><tr><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/content-creation-publisher/baoyu-url-to-markdown/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/baoyu-url-to-markdown/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/JimLiu/baoyu-skills">JimLiu/baoyu-skills</a></td><td><code>skills/baoyu-url-to-markdown/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/content-creation-publisher/baoyu-url-to-markdown/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/baoyu-url-to-markdown/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: baoyu-url-to-markdown
+description: Fetch any URL and convert to markdown using Chrome CDP with site-specific adapters or a local script. Handles login/CAPTCHA via interaction wait modes. Use when user wants to save a webpage as markdown.
+---
+
+# URL to Markdown
+
+Fetches any URL via Chrome CDP and converts it to clean markdown.
+
+## Script Directory
+
+**Important**: All scripts are located in the `scripts/` subdirectory of this skill.
+
+**Agent Execution Instructions**:
+1. Determine this SKILL.md file&#x27;s directory path as `{baseDir}`
+2. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun
+3. If `{baseDir}/scripts/node_modules` does not exist, run `${BUN_X} install --cwd {baseDir}/scripts`
+4. `${READER}` = `{baseDir}/scripts/baoyu-fetch` (or `{baseDir}/scripts/main.ts` if using the local script variant)
+5. Replace all `${READER}` and `${BUN_X}` in this document with the resolved values
+
+## Preferences (EXTEND.md)
+
+Check EXTEND.md in priority order — the first one found wins:
+
+| Priority | Path | Scope |
+|----------|------|-------|
+| 1 | `.baoyu-skills/baoyu-url-to-markdown/EXTEND.md` | Project |
+| 2 | `${XDG_CONFIG_HOME:-$HOME/.config}/baoyu-skills/baoyu-url-to-markdown/EXTEND.md` | XDG |
+| 3 | `$HOME/.baoyu-skills/baoyu-url-to-markdown/EXTEND.md` | User home |
+
+| Result | Action |
+|--------|--------|
+| Found | Read, parse, apply settings |
+| Not found | **MUST** run first-time setup (see below) — do NOT silently create defaults |
+
+**EXTEND.md supports**: download media by default, default output directory, default capture mode, timeout settings.
+
+### First-Time Setup ⛔ BLOCKING
+
+When EXTEND.md is not found, you **MUST** use `AskUserQuestion` to gather preferences before creating EXTEND.md. **NEVER** create EXTEND.md with silent defaults. Generation is BLOCKED until setup completes. Batch all three questions into a single call:
+
+- **Q1 — Media** (header &quot;Media&quot;): &quot;How to handle images and videos in pages?&quot;
+  - &quot;Ask each time (Recommended)&quot; — Prompt after each save
+  - &quot;Always download&quot; — Download to local `imgs/` and `videos/`
+  - &quot;Never download&quot; — Keep remote URLs
+- **Q2 — Output** (header &quot;Output&quot;): &quot;Default output directory?&quot;
+  - &quot;url-to-markdown (Recommended)&quot; — Save to `./url-to-markdown/{domain}/{slug}.md`
+  - User may pick &quot;Other&quot; and type a custom path
+- **Q3 — Save** (header &quot;Save&quot;): &quot;Where to save preferences?&quot;
+  - &quot;User (Recommended)&quot; — `~/.baoyu-skills/` (all projects)
+  - &quot;Project&quot; — `.baoyu-skills/` (this project only)
+
+After answers, write EXTEND.md, confirm &quot;Preferences saved to [path]&quot;, then continue.
+
+### Supported Keys
+
+| Key | Default | Values | Description |
+|-----|---------|--------|-------------|
+| `download_media` | `ask` | `ask` / `1` / `0` | `ask` = prompt each time, `1` = always, `0` = never |
+| `default_output_dir` | empty | path or empty | Default output directory (empty = `./url-to-markdown/`) |
+
+**EXTEND.md → CLI mapping**:
+
+| EXTEND.md key | CLI argument | Notes |
+|---------------|-------------|-------|
+| `download_media: 1` | `--download-media` | Requires `--output` to be set |
+| `default_output_dir: ./posts/` | Agent constructs `--output ./posts/{domain}/{slug}.md` | Agent generates path, not a direct flag |
+
+**Value priority**: CLI arguments → EXTEND.md → skill defaults.
+
+## Usage
+
+```bash
+# Default: headless capture, markdown to stdout
+${READER} &lt;url&gt;
+
+# Save to file
+${READER} &lt;url&gt; --output article.md
+
+# Save with media download
+${READER} &lt;url&gt; --output article.md --download-media
+
+# Wait for interaction (login/CAPTCHA) — auto-detect and continue
+${READER} &lt;url&gt; --wait-for interaction --output article.md
+
+# Wait for interaction — manual control (Enter to continue)
+${READER} &lt;url&gt; --wait-for force --output article.md
+
+# JSON output
+${READER} &lt;url&gt; --format json --output article.json
+
+# Force specific adapter
+${READER} &lt;url&gt; --adapter youtube --output transcript.md
+```
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `&lt;url&gt;` | URL to fetch |
+| `--output &lt;path&gt;` | Output file path (default: stdout) |
+| `--format &lt;type&gt;` | Output format: `markdown` (default) or `json` |
+| `--json` | Shorthand for `--format json` |
+| `--adapter &lt;name&gt;` | Force adapter: `x`, `youtube`, `hn`, or `generic` (default: auto-detect) |
+| `--headless` | Force headless Chrome (no visible window) |
+| `--wait-for &lt;mode&gt;` | Interaction wait mode: `none` (default), `interaction`, or `force` |
+| `--wait-for-interaction` | Alias for `--wait-for interaction` |
+| `--wait-for-login` | Alias for `--wait-for interaction` |
+| `--timeout &lt;ms&gt;` | Page load timeout (default: 30000) |
+| `--interaction-timeout &lt;ms&gt;` | Login/CAPTCHA wait timeout (default: 600000 = 10 min) |
+| `--interaction-poll-interval &lt;ms&gt;` | Poll interval for interaction checks (default: 1500) |
+| `--download-media` | Download images/videos to local `imgs/` and `videos/`, rewrite markdown links. Requires `--output` |
+| `--media-dir &lt;dir&gt;` | Base directory for media downloads |
+
+## Capture Modes
+
+| Mode | Behavior | Use When |
+|------|----------|----------|
+| Auto (default) | Capture on network idle | Public pages, static content |
+| Wait (`--wait-for interaction`) | Auto-detect and continue | Login-required, lazy loading, paywalls |
+| Force (`--wait-for force`) | User signals when ready | Complex pages requiring manual interaction |
+
+**Wait mode workflow**:
+1. Run with `--wait-for interaction` → script outputs &quot;Press Enter when ready&quot;
+2. Ask user to confirm page is ready
+3. Send newline to stdin to trigger capture
+
+## Output Format
+
+YAML front matter with `url`, `title`, `description`, `author`, `published`, `captured_at` fields, followed by converted markdown content.
+
+## Output Directory
+
+```
+url-to-markdown/&lt;domain&gt;/&lt;slug&gt;.md
+```
+
+- `&lt;slug&gt;`: From page title or URL path (kebab-case, 2-6 words)
+- Conflict resolution: Append timestamp `&lt;slug&gt;-YYYYMMDD-HHMMSS.md`
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `URL_CHROME_PATH` | Custom Chrome executable path |
+| `URL_DATA_DIR` | Custom data directory |
+| `URL_CHROME_PROFILE_DIR` | Custom Chrome profile directory |
+
+**Troubleshooting**: Chrome not found → set `URL_CHROME_PATH`. Timeout → increase `--timeout`. Complex pages → try `--wait-for interaction` mode.
+
+## Extension Support
+
+Custom configurations via EXTEND.md. See **Preferences** section for paths and supported options.
+
+## Conflicts
+
+- **JimLiu/baoyu-skills** uses the `baoyu-fetch` CLI with site-specific adapters and a `--download-media` flag; **anbeime/skill** uses a local `main.ts` script with only `--wait` and `-o` flags and no media download; **LeoYeAI/openclaw-master-skills** uses a local `main.ts` script with a Defuddle pipeline and fallback to a hosted API, and a different runtime resolution (`bun` or `npx -y bun`).
+- **JimLiu/baoyu-skills** and **LeoYeAI/openclaw-master-skills** require a blocking first-time setup via `AskUserQuestion` when EXTEND.md is not found; **anbeime/skill** says to use defaults when not found.
+- **JimLiu/baoyu-skills** resolves the runtime as `bun` only; **LeoYeAI/openclaw-master-skills** resolves as `bun` or `npx -y bun`; **anbeime/skill** uses `npx -y bun` directly.
+- **JimLiu/baoyu-skills** and **LeoYeAI/openclaw-master-skills** include an XDG config path in the EXTEND.md search order; **anbeime/skill** does not.</pre>
+</body>
+</html>

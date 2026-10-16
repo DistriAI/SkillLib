@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clean-code</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">clean-code-review</a> / clean-code</p><h1>clean-code</h1><p class="meta">combined</p><p>The three copies overlap on the core Clean Code principles (naming, small functions, comments, formatting, error handling, tests), but each contains material steps or constraints the others lack. wondelai/skills adds a 0-10 scoring rubric, a Boy Scout Rule framing, and references to deeper per-topic files. ciembor/agent-rules-books is a thin router that mandates reading a mini rules file before a deeper reference, a workflow constraint absent from the others. sickn33/agentic-awesome-skills adds explicit sections for Objects/Data Structures (Law of Demeter, DTOs), Classes, Smells and Heuristics, an implementation checklist, and a limitations block. Crowning one copy would hide the scoring rubric, the mini-file workflow, and the additional structural/smell sections, so the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wondelai/skills">wondelai/skills</a></td><td><code>plugins/code-craftsmanship/skills/clean-code/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ciembor/agent-rules-books">ciembor/agent-rules-books</a></td><td><code>clean-code/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/clean-code/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wondelai/skills">wondelai/skills</a></td><td><code>plugins/code-craftsmanship/skills/clean-code/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ciembor/agent-rules-books">ciembor/agent-rules-books</a></td><td><code>clean-code/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/clean-code/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/clean-code/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/clean-code/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wondelai/skills">wondelai/skills</a></td><td><code>clean-code/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wondelai/skills">wondelai/skills</a></td><td><code>plugins/wondelai-skills/skills/clean-code/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: clean-code
+description: Apply Robert C. Martin-inspired clean code rules for naming, function design, comments, formatting, error handling, objects, classes, and tests. Use when writing new code, reviewing pull requests, refactoring legacy code, or improving team standards.
+license: MIT
+---
+
+# Clean Code Skill
+
+Use this skill when a task involves everyday implementation quality: naming, small functions, readable control flow, responsibilities, comments, errors, or tests.
+
+## Workflow
+1. Before making design or code decisions, read and apply the mini rules (clean-code.mini.md if available). Use the deeper reference (clean-code.md) only when the mini rules are not enough for the current code-quality tradeoff.
+2. Score the code 0-10 against the principles below. Report the current score and the specific improvements needed to reach 10/10.
+   - 9-10: Names reveal intent, functions are small and focused, error handling is consistent, tests are clean and comprehensive
+   - 7-8: Mostly clean with minor naming ambiguities or a few long functions; tests may lack edge cases
+   - 5-6: Mixed — good patterns alongside unclear names, duplicated logic, or inconsistent error handling
+   - 3-4: Long multi-purpose functions, misleading names, poor or missing tests
+   - 1-2: Nearly unreadable — magic numbers, cryptic abbreviations, no structure, no tests
+3. Apply the principles below to improve the code.
+4. Run the implementation checklist before finishing.
+
+## Core Philosophy
+Code is read far more often than it is written — optimize for the reader. Clean code reads like well-written prose: names reveal intent, functions tell a story one step at a time, and the Boy Scout Rule applies — always leave the code cleaner than you found it.
+
+## 1. Meaningful Names
+- Use intention-revealing names: elapsedTimeInDays not d.
+- Avoid disinformation: do not use accountList if it is actually a Map.
+- Make meaningful distinctions: avoid ProductData vs ProductInfo.
+- Use pronounceable, searchable names: avoid genymdhms.
+- Class names: use nouns (Customer, WikiPage). Avoid Manager, Data.
+- Method names: use verbs (postPayment, deletePage).
+- No encodings, prefixes, or type information; single letters only for tiny-scope loop counters.
+- One word per concept: do not mix fetch, retrieve, and get.
+- Longer scope demands a longer, more descriptive name.
+- Rename freely — IDEs make it trivial.
+
+## 2. Functions
+- Small: functions should be shorter than you think; ideally 4-6 lines.
+- Do one thing, and do it well.
+- One level of abstraction: do not mix high-level business logic with low-level details.
+- Descriptive names: isPasswordValid is better than check.
+- Arguments: 0 is ideal, 1-2 is okay, 3+ requires a very strong justification.
+- No side effects: functions should not secretly change global state.
+- Step-Down Rule: code reads top-down, each function calling the next level of abstraction.
+- Flag arguments are a smell — the function does two things; split it.
+- Command-Query Separation: change state or return a value, never both.
+- Extract till you drop: if you can pull out a named function, do it.
+- Guard clauses at top for error cases; single happy path.
+- Introduce parameter objects for many arguments.
+
+## 3. Comments
+- Do not comment bad code — rewrite it.
+- Explain yourself in code: prefer if employee.isEligibleForFullBenefits() over a comment explaining the flag check.
+- Good comments: legal headers, informative (regex intent), clarification (external libraries), TODOs, genuine why explanations.
+- Bad comments: mumbling, redundant, misleading, mandated, noise, position markers, commented-out code, journal comments.
+- The best comment is a well-named extracted function.
+
+## 4. Formatting
+- The Newspaper Metaphor: high-level concepts at the top, details at the bottom.
+- Vertical Density: related lines should be close to each other.
+- Distance: variables should be declared near their usage.
+- Indentation: essential for structural readability.
+- Vertical openness between concepts; vertical density within them.
+
+## 5. Objects and Data Structures
+- Data Abstraction: hide the implementation behind interfaces.
+- The Law of Demeter: a module should not know about the innards of the objects it manipulates. Avoid a.getB().getC().doSomething().
+- Data Transfer Objects (DTO): classes with public variables and no functions.
+
+## 6. Error Handling
+- Use exceptions instead of return codes.
+- Write try-catch-finally first to define the scope of the operation.
+- Do not return null: it forces the caller to check for null every time.
+- Do not pass null: leads to NullPointerException.
+
+## 7. Unit Tests
+- The Three Laws of TDD:
+  1. Do not write production code until you have a failing unit test.
+  2. Do not write more of a unit test than is sufficient to fail.
+  3. Do not write more production code than is sufficient to pass the failing test.
+- F.I.R.S.T. Principles: Fast, Independent, Repeatable, Self-Validating, Timely.
+
+## 8. Classes
+- Small: classes should have a single responsibility (SRP).
+- The Stepdown Rule: we want the code to read like a top-down narrative.
+
+## 9. Smells and Heuristics
+- Rigidity: hard to change.
+- Fragility: breaks in many places.
+- Immobility: hard to reuse.
+- Viscosity: hard to do the right thing.
+- Needless complexity or repetition.
+
+## Implementation Checklist
+- [ ] Is this function smaller than 20 lines?
+- [ ] Does this function do exactly one thing?
+- [ ] Are all names searchable and intention-revealing?
+- [ ] Have I avoided comments by making the code clearer?
+- [ ] Am I passing too many arguments?
+- [ ] Is there a failing test for this change?
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

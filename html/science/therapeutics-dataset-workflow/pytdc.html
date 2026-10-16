@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pytdc</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">therapeutics-dataset-workflow</a> / pytdc</p><h1>pytdc</h1><p class="meta">combined</p><p>The three copies cover the same PyTDC domain but diverge significantly in operational detail and safety constraints. The K-Dense-AI copy is a rigorous, version-pinned operational guide that emphasizes environment isolation (CPython 3.11, setuptools 80.9.0), network/storage planning, and metadata-only discovery before data loading. The aipoch and FreedomIntelligence copies are broader reference guides that list specific dataset names, task categories, and provide a complete end-to-end code example (load, split, train, evaluate, oracle), but they lack the strict version pinning and safety protocols found in the K-Dense-AI copy. Conversely, the K-Dense-AI copy lacks the specific dataset catalogs and the full training/evaluation code example provided by the other two. Combining them yields a skill that is both operationally safe (pinned env, network checks) and practically useful (specific datasets, code examples).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pytdc/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/pytdc/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pytdc/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pytdc/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/pytdc/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pytdc/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: pytdc
+description: Provides Therapeutics Data Commons workflows through PyTDC for registry discovery, dataset access, task-aware splits, evaluator metrics, benchmark groups, and bounded molecular-oracle scoring. Use when working with TDC therapeutic ML datasets or benchmarks.
+license: MIT
+allowed-tools: Read Write Edit Bash
+compatibility: Requires uv, CPython 3.11, PyTDC 1.1.15, and setuptools 80.9.0 for its legacy pkg_resources runtime import. Network access and disk space are needed for dataset, benchmark, and checkpoint downloads; optional oracles require their service or docking dependencies.
+metadata:
+  version: &quot;1.4&quot;
+  last-reviewed: &quot;2026-10-01&quot;
+  skill-author: K-Dense Inc.
+---
+
+# PyTDC (Therapeutics Data Commons)
+
+Use the official `PyTDC` distribution (`import tdc`) to discover therapeutic ML tasks, load approved datasets, apply task-appropriate splits, evaluate predictions, and work with curated benchmark groups. Prefer package metadata over copied dataset lists, and plan network/storage effects before constructing any loader.
+
+## Verified snapshot
+
+- Research date: **2026-10-01**
+- PyPI stable: **PyTDC 1.1.15**, released 2025-03-31
+- Package/source repository: `mims-harvard/TDC`
+- Code license: MIT
+- The dependency graph makes **CPython 3.11** the reproducible target used here.
+- PyTDC imports deprecated `pkg_resources` at runtime. Pin the verified compatibility release **setuptools 80.9.0**.
+
+## Installation
+
+Use an isolated CPython 3.11 environment and pin the reviewed snapshot:
+
+```bash
+uv venv --python 3.11 .venv-pytdc
+uv pip install --dry-run --python .venv-pytdc/bin/python \
+  &quot;setuptools==80.9.0&quot; &quot;PyTDC==1.1.15&quot;
+uv pip install --python .venv-pytdc/bin/python \
+  &quot;setuptools==80.9.0&quot; &quot;PyTDC==1.1.15&quot;
+```
+
+Review the dry run and available disk first. The environment can transfer and occupy hundreds of megabytes before any dataset is downloaded.
+
+For an ephemeral command:
+
+```bash
+uv run --no-project --isolated --python 3.11 \
+  --with &quot;setuptools==80.9.0&quot; --with &quot;PyTDC==1.1.15&quot; \
+  python scripts/discover_metadata.py --kind tasks
+```
+
+## Non-negotiable data and network policy
+
+1. **Discover first.** Reading `tdc.metadata` or using `scripts/discover_metadata.py` does not instantiate a loader or download data.
+2. **Plan second.** Record the exact task/dataset, official task page, license, expected size, cache directory, split, metric, and reproducibility seed.
+3. **Confirm the authorized scope before downloading.** Loader constructors fetch missing data. Some datasets and benchmark-group archives are large; model-backed oracles can fetch checkpoints; remote/docking oracles can transmit molecular structures.
+4. **Execute within that scope.** In bundled CLIs, `--execute` acknowledges execution and `--download` is additionally required for MolGen corpora or supported oracle checkpoints.
+5. **Keep outputs bounded.** Emit counts, schema, and small previews rather than full datasets, sequences, prediction arrays, or molecule corpora.
+
+### Cache and cost behavior
+
+- Ordinary loaders default to `path=&quot;./data&quot;` and save files beneath that path.
+- Core downloads use Harvard Dataverse file endpoints when a local filename is absent.
+- PyTDC 1.1.15 does not provide a universal cache quota, eviction policy, or dataset-wide checksum manifest. Use `scripts/cache_audit.py` and manage disk retention explicitly.
+
+The PyTDC **code** is MIT. Dataset/task licenses are heterogeneous. Verify the exact dataset&#x27;s page and original source terms before download, redistribution, publication, or commercial use.
+
+## Start with metadata-only discovery
+
+From this skill directory:
+
+```bash
+uv run --no-project --isolated --python 3.11 --with &quot;setuptools==80.9.0&quot; --with &quot;PyTDC==1.1.15&quot; \
+  python scripts/discover_metadata.py --kind datasets --task ADME --limit 50
+
+uv run --no-project --isolated --python 3.11 --with &quot;setuptools==80.9.0&quot; --with &quot;PyTDC==1.1.15&quot; \
+  python scripts/discover_metadata.py --kind benchmarks --limit 50
+```
+
+## Task Categories and Datasets
+
+PyTDC organizes tasks into three main categories:
+
+### 1. Single-Instance Prediction (`tdc.single_pred`)
+Forecasting properties of individual biomedical entities.
+
+- **ADME**: Absorption, Distribution, Metabolism, Excretion (e.g., `Caco2_Wang`, `HIA_Hou`, `Lipophilicity_AstraZeneca`).
+- **Tox**: Toxicity and adverse effects (e.g., `hERG`, `AMES`, `DILI`).
+- **HTS**: High-Throughput Screening bioactivity (e.g., `SARSCoV2_Vitro_Touret`).
+- **QM**: Quantum mechanical properties (e.g., `QM7`).
+- **Others**: Yields, Epitope, Develop, CRISPROutcome.
+
+### 2. Multi-Instance Prediction (`tdc.multi_pred`)
+Forecasting properties of interactions between multiple entities.
+
+- **DTI**: Drug-Target Interaction (e.g., `BindingDB_Kd`, `DAVIS`, `KIBA`).
+- **DDI**: Drug-Drug Interaction (e.g., `DrugBank`).
+- **PPI**: Protein-Protein Interaction (e.g., `HuRI`).
+- **Others**: GDA, DrugRes, DrugSyn, PeptideMHC, AntibodyAff, MTI, Catalyst, TrialOutcome.
+
+### 3. Generation (`tdc.generation`)
+Creating novel biomedical entities.
+
+- **MolGen**: Molecular generation.
+- **RetroSyn**: Retrosynthesis.
+- **PairMolGen**: Pair molecular generation.
+
+## Implementation Details
+
+### Dataset Access Pattern
+
+```python
+from tdc.&lt;problem&gt; import &lt;Task&gt;
+
+data = &lt;Task&gt;(name=&quot;&lt;DatasetName&gt;&quot;)
+df = data.get_data(format=&quot;df&quot;)
+split = data.get_split(method=&quot;scaffold&quot;, seed=1, frac=[0.7, 0.1, 0.2])
+```
+
+- `&lt;problem&gt;`: `single_pred`, `multi_pred`, or `generation`.
+- `&lt;Task&gt;`: Specific task category (e.g., `ADME`, `DTI`).
+- `&lt;Dataset&gt;`: Dataset name within that task.
+
+### Splitting Strategies
+
+Use `get_split(...)` to obtain `{&quot;train&quot;: ..., &quot;valid&quot;: ..., &quot;test&quot;: ...}`.
+
+Common parameters:
+- `method`: split strategy (`random`, `scaffold`, `cold_drug`, `cold_target`, `cold_drug_target`, `temporal`).
+- `seed`: random seed for reproducibility.
+- `frac`: `[train, valid, test]` fractions.
+
+### Standardized Evaluation
+
+```python
+from tdc import Evaluator
+
+evaluator = Evaluator(name=&quot;ROC-AUC&quot;)  # or &quot;MAE&quot;, &quot;RMSE&quot;, etc.
+score = evaluator(y_true, y_pred)
+```
+
+### Molecular Oracles
+
+Property scoring functions usable for goal-directed generation workflows.
+
+```python
+from tdc import Oracle
+
+oracle = Oracle(name=&quot;DRD2&quot;)
+score = oracle(&quot;CC(C)Cc1ccc(cc1)C(C)C(O)=O&quot;)
+```
+
+## Example Usage
+
+A complete runnable example that loads an ADME dataset, performs a scaffold split, trains a simple baseline model, evaluates with a standard metric, and queries an Oracle score for a SMILES.
+
+```python
+# pip install PyTDC scikit-learn
+
+from tdc.single_pred import ADME
+from tdc import Evaluator, Oracle
+
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.linear_model import Ridge
+
+def main():
+    # 1) Load a single-instance prediction dataset (ADME)
+    data = ADME(name=&quot;Caco2_Wang&quot;)
+
+    # 2) Create a scaffold split (train/valid/test)
+    split = data.get_split(method=&quot;scaffold&quot;, seed=42, frac=[0.7, 0.1, 0.2])
+    train, valid, test = split[&quot;train&quot;], split[&quot;valid&quot;], split[&quot;test&quot;]
+
+    # 3) Train a simple baseline model on SMILES strings
+    model = Pipeline(
+        steps=[
+            (&quot;featurizer&quot;, CountVectorizer(analyzer=&quot;char&quot;, ngram_range=(2, 5))),
+            (&quot;regressor&quot;, Ridge(alpha=1.0)),
+        ]
+    )
+    model.fit(train[&quot;Drug&quot;], train[&quot;Y&quot;])
+
+    # 4) Evaluate on the test set using a TDC Evaluator
+    y_pred = model.predict(test[&quot;Drug&quot;])
+    evaluator = Evaluator(name=&quot;MAE&quot;)
+    mae = evaluator(test[&quot;Y&quot;], y_pred)
+    print(f&quot;Test MAE: {mae:.4f}&quot;)
+
+    # 5) Oracle scoring example (property scoring for a SMILES)
+    oracle = Oracle(name=&quot;DRD2&quot;)
+    score = oracle(&quot;CC(C)Cc1ccc(cc1)C(C)C(O)=O&quot;)
+    print(f&quot;DRD2 Oracle score: {score}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+```</pre>
+</body>
+</html>

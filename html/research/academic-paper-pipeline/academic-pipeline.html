@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>academic-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">academic-paper-pipeline</a> / academic-pipeline</p><h1>academic-pipeline</h1><p class="meta">combined</p><p>The two copies are different major versions of the same orchestrator. The Imbad0202 copy (v3.23.0) is a 10-stage workflow that includes a detailed routing core, escape-hatch handling, and opt-in audit/reset flags, but its text is truncated before the stage table. The brycewang-stanford copy (v2.7) is a 9-stage workflow that explicitly defines the stage table, state machine, and a final &#x27;Process Summary&#x27; stage, but lacks the routing core and newer audit features. Because each copy contains material steps and constraints the other lacks (routing/audit vs. explicit stage table/process summary), crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Imbad0202/academic-research-skills">Imbad0202/academic-research-skills</a></td><td><code>academic-pipeline/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/24-Imbad0202-academic-research-skills/academic-pipeline/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Imbad0202/academic-research-skills">Imbad0202/academic-research-skills</a></td><td><code>academic-pipeline/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/24-Imbad0202-academic-research-skills/academic-pipeline/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: academic-pipeline
+description: &quot;Orchestrator for the full academic research pipeline: research -&gt; write -&gt; integrity check -&gt; review -&gt; revise -&gt; re-review -&gt; re-revise -&gt; final integrity check -&gt; finalize. Coordinates deep-research, academic-paper, and academic-paper-reviewer into a seamless workflow with mandatory integrity checks, two-stage peer review, and auditable quality-assurance artifacts.&quot;
+metadata:
+  version: &quot;3.23.0&quot;
+  depends_on: &quot;deep-research, academic-paper, academic-paper-reviewer&quot;
+---
+
+# Academic Pipeline — Full Academic Research Workflow Orchestrator
+
+A lightweight orchestrator that manages the complete academic pipeline from research exploration to final manuscript. It does not perform substantive work — it only detects stages, recommends modes, dispatches skills, manages transitions, and tracks state.
+
+## Routing Discipline
+
+**Step 0 — Escape hatch check:** If the user&#x27;s first message begins with `[direct-mode]`, strip the prefix and skip directly to explicit-intent handling. The token is not passed to the dispatched agent.
+
+**Step 1 — Explicit clear intent:** If the user invokes a specific skill via slash command or unambiguous trigger keyword, route directly.
+
+**Step 2 — Cross-phase materials:** If the user provides artifacts spanning ≥ 2 pipeline phases without naming a specific skill, clarify. List candidate workflows as options.
+
+**Step 3 — Ambiguous intent:** If no artifacts or clear request are provided, clarify.
+
+## Pipeline Stages
+
+| Stage | Name | Skill / Agent Called | Deliverables |
+|-------|------|---------------------|--------------|
+| 1 | RESEARCH | `deep-research` | RQ Brief, Methodology, Bibliography, Synthesis |
+| 2 | WRITE | `academic-paper` | Paper Draft |
+| 2.5 | INTEGRITY | `integrity_verification_agent` | Integrity verification report + corrected paper |
+| 3 | REVIEW | `academic-paper-reviewer` | 5 review reports + Editorial Decision + Revision Roadmap |
+| 4 | REVISE | `academic-paper` | Revised Draft, Response to Reviewers |
+| 3&#x27; | RE-REVIEW | `academic-paper-reviewer` | Verification review report |
+| 4&#x27; | RE-REVISE | `academic-paper` | Second revised draft (if needed) |
+| 4.5 | FINAL INTEGRITY | `integrity_verification_agent` | Final verification report (100% pass required) |
+| 5 | FINALIZE | `academic-paper` | Final Paper (MD, DOCX, PDF) |
+| 6 | PROCESS SUMMARY | orchestrator | Paper creation process record (MD + PDF) |
+
+## State Machine
+
+1. **Stage 1 RESEARCH** -&gt; user confirmation -&gt; Stage 2
+2. **Stage 2 WRITE** -&gt; user confirmation -&gt; Stage 2.5
+3. **Stage 2.5 INTEGRITY** -&gt; PASS -&gt; Stage 3 (FAIL -&gt; fix and re-verify, max 3 rounds)
+4. **Stage 3 REVIEW** -&gt; Accept -&gt; Stage 4.5 / Minor|Major -&gt; Stage 4 / Reject -&gt; Stage 2 or end
+5. **Stage 4 REVISE** -&gt; user confirmation -&gt; Stage 3&#x27;
+6. **Stage 3&#x27; RE-REVIEW** -&gt; Accept|Minor -&gt; Stage 4.5 / Major -&gt; Stage 4&#x27;
+7. **Stage 4&#x27; RE-REVISE** -&gt; user confirmation -&gt; Stage 4.5
+8. **Stage 4.5 FINAL INTEGRITY** -&gt; PASS (zero issues) -&gt; Stage 5 (FAIL -&gt; fix and re-verify)
+9. **Stage 5 FINALIZE** -&gt; MD + DOCX -&gt; ask about LaTeX -&gt; confirm -&gt; PDF -&gt; Stage 6
+10. **Stage 6 PROCESS SUMMARY** -&gt; generate process record MD -&gt; LaTeX -&gt; PDF -&gt; end
+
+## Opt-in Features
+
+- Set `ARS_PASSPORT_RESET=1` to promote checkpoints to context-reset boundaries.
+- Set `ARS_AUDIT_ARTIFACT_GATE=1` to enable the Audit Artifact Gate for external audit scripts.
+
+## Conflicts
+
+- **Imbad0202/academic-research-skills** includes the routing core and audit/reset flags but does not explicitly list Stage 6 in the provided text.
+- **brycewang-stanford/Auto-Empirical-Research-Skills** explicitly lists Stage 6 (Process Summary) and the full state machine but lacks the routing core and audit/reset flags.</pre>
+</body>
+</html>

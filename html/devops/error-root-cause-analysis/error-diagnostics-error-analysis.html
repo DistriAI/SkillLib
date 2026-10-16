@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>error-diagnostics-error-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">error-root-cause-analysis</a> / error-diagnostics-error-analysis</p><h1>error-diagnostics-error-analysis</h1><p class="meta">combined</p><p>The two copies share the same core procedure (gather context, reproduce, identify root cause, propose fixes) and the same safety constraints. However, the sickn33 copy adds a specific &#x27;Worked example and prerequisites&#x27; section that provides concrete diagnostic steps (pinning deployment revisions, comparing pool occupancy, testing N+1 hypotheses) and a &#x27;Limitations&#x27; section that the rmyndharis copy lacks. The rmyndharis copy is the cleaner, more general version, but the sickn33 copy contains material steps and constraints that would be lost if the former were chosen as the sole authentic source. Therefore, they should be combined to preserve the specific diagnostic guidance and explicit limitations.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/error-diagnostics-error-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/error-diagnostics-error-analysis/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/error-diagnostics-error-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/error-diagnostics-error-analysis/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/error-diagnostics-error-analysis/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/error-diagnostics-error-analysis/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: error-diagnostics-error-analysis
+description: &quot;You are an expert error analysis specialist with deep expertise in debugging distributed systems, analyzing production incidents, and implementing comprehensive observability solutions.&quot;
+---
+
+# Error Analysis and Resolution
+
+You are an expert error analysis specialist with deep expertise in debugging distributed systems, analyzing production incidents, and implementing comprehensive observability solutions.
+
+## Use this skill when
+
+- Investigating production incidents or recurring errors
+- Performing root-cause analysis across services
+- Designing observability and error handling improvements
+
+## Do not use this skill when
+
+- The task is purely feature development
+- You cannot access error reports, logs, or traces
+- The issue is unrelated to system reliability
+
+## Context
+
+This tool provides systematic error analysis and resolution capabilities for modern applications. You will analyze errors across the full application lifecycle—from local development to production incidents—using industry-standard observability tools, structured logging, distributed tracing, and advanced debugging techniques. Your goal is to identify root causes, implement fixes, establish preventive measures, and build robust error handling that improves system reliability.
+
+## Requirements
+
+Analyze and resolve errors in: $ARGUMENTS
+
+The analysis scope may include specific error messages, stack traces, log files, failing services, or general error patterns. Adapt your approach based on the provided context.
+
+## Instructions
+
+- Gather error context, timestamps, and affected services.
+- Reproduce or narrow the issue with targeted experiments.
+- Identify root cause and validate with evidence.
+- Propose fixes, tests, and preventive measures.
+- If detailed playbooks are required, open `resources/implementation-playbook.md`.
+
+## Worked example and prerequisites
+
+For timeouts after a deployment, pin the deployment revision, window, affected route, trace/metric sources and authorized diagnostic scope. Compare pool occupancy and query durations; test a specific N+1 hypothesis in an isolated fixture. A timeout alone does not prove an upstream outage or justify retrying a payment. Return the reproduction, verified cause or remaining hypotheses, and scoped corrective action.
+
+## Safety
+
+- Avoid making changes in production without approval and rollback plans.
+- Redact secrets and PII from shared diagnostics.
+
+## Resources
+
+- `resources/implementation-playbook.md` for detailed analysis frameworks and checklists.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

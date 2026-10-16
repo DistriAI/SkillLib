@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>docx</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">docx-manipulation</a> / docx</p><h1>docx</h1><p class="meta">combined</p><p>The four copies are not simple reproductions of one procedure. The anthropics/skills copy is the canonical upstream skill focused on docx-js creation, raw XML editing, merge_runs, validation, and tracked changes. The Vibe-Skills and awesome-llm-skills copies share a different workflow: mandatory reading of docx-js.md/ooxml.md, a Python Document library, unpack/pack scripts, and a redlining workflow; Vibe-Skills additionally adds scientific schematics. The skillsbench copy is a narrow python-docx template-filling skill centered on split placeholders, headers/footers, nested tables, and conditional sections. Each contains material steps or constraints the others lack, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/docx/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/document-skills/docx/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>document-skills/docx/SKILL.md</code></td></tr><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/offer-letter-generator/environment/skills/docx/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/docx/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/document-skills/docx/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>document-skills/docx/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/offer-letter-generator/environment/skills/docx/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/docx/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/bettafish-opinion-analysis/subskills/docx/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>document-skills/docx/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/docx/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/docx/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/docx/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/organize-messy-files/environment/skills/docx/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: docx
+description: &quot;Use this skill for creating, reading, editing, or manipulating Word documents (.docx) and templates (.dotx). Covers docx-js creation, raw XML editing, python-docx template filling, tracked changes, comments, and content extraction.&quot;
+---
+
+# DOCX creation, editing, and analysis
+
+A `.docx` is a ZIP archive of XML files. Choose the approach by task.
+
+## Conflicts
+
+- **anthropics/skills** says `docx` (npm) is preinstalled; write the script and `require(&#x27;docx&#x27;)` directly. **Vibe-Skills** and **Prat011/awesome-llm-skills** require reading `docx-js.md` completely before creating a document and note dependencies may need installation.
+- **anthropics/skills** edits existing documents by `unzip`, `merge_runs.py`, editing `word/document.xml`, `zip`, and `validate.py`. **Vibe-Skills** and **Prat011/awesome-llm-skills** use a Python Document library with `ooxml/scripts/unpack.py` and `pack.py`.
+- **Vibe-Skills** adds a scientific-schematics step for new documents; the other copies do not.
+- **benchflow-ai/skillsbench** uses `python-docx` for template filling and does not describe docx-js or raw XML redlining.
+
+## Reading and analyzing content
+
+### Text extraction
+Convert to markdown with pandoc:
+
+```bash
+pandoc --track-changes=all path-to-file.docx -o output.md
+# Options: --track-changes=accept/reject/all
+```
+
+### Raw XML access
+Unpack the document to inspect or edit XML:
+
+```bash
+# anthropics/skills approach
+unzip -q doc.docx -d unpacked/
+find unpacked -type l -delete
+python scripts/merge_runs.py unpacked/
+
+# Vibe-Skills / awesome-llm-skills approach
+python ooxml/scripts/unpack.py &lt;office_file&gt; &lt;output_directory&gt;
+```
+
+Key files:
+- `word/document.xml` — main content
+- `word/comments.xml` — comments
+- `word/media/` — embedded images
+- Tracked changes use `&lt;w:ins&gt;` and `&lt;w:del&gt;` tags
+
+## Creating a new Word document
+
+### Using docx-js (JavaScript/TypeScript)
+
+**anthropics/skills:** `docx` is preinstalled; `require(&#x27;docx&#x27;)` directly. Only if that fails: `npm install docx`.
+
+**Vibe-Skills / awesome-llm-skills:** MANDATORY — read `docx-js.md` completely before proceeding.
+
+Create a script using `Document`, `Paragraph`, `TextRun` components. Export with `Packer.toBuffer()`.
+
+Gotchas (from anthropics/skills):
+- Page size defaults to A4. For US Letter set `page: { size: { width: 12240, height: 15840 } }`.
+- Landscape: pass portrait dimensions and `orientation: PageOrientation.LANDSCAPE`.
+- Tables need dual widths: `columnWidths` on the table AND `width` on every cell, both in `WidthType.DXA`.
+- Table shading: use `ShadingType.CLEAR`, never `SOLID`.
+- Lists: use a `numbering` config with `LevelFormat.BULLET`, never literal `•`.
+- `ImageRun` requires `type:`.
+- `PageBreak` must be inside a `Paragraph`.
+- Never use `\n` — use separate `Paragraph` elements.
+- TOC: headings must use built-in `HeadingLevel.*`.
+- Don&#x27;t use a table as a horizontal rule — use a paragraph bottom border.
+- Dot-leader: use `PositionalTab` inside a `TextRun`.
+
+**Vibe-Skills only:** Consider adding scientific schematics via `python scripts/generate_schematic.py &quot;description&quot; -o figures/output.png`.
+
+### Verify the output
+
+```bash
+python scripts/office/soffice.py --headless --convert-to pdf output.docx
+pdftoppm -jpeg -r 100 output.pdf page
+ls page-*.jpg
+```
+
+## Editing an existing Word document
+
+### Raw XML editing (anthropics/skills)
+
+```bash
+unzip -q doc.docx -d unpacked/
+find unpacked -type l -delete
+python scripts/merge_runs.py unpacked/
+# edit unpacked/word/document.xml in place — do NOT reformat
+(cd unpacked &amp;&amp; rm -f ../out.docx &amp;&amp; zip -Xr ../out.docx .)
+python scripts/office/validate.py out.docx --original doc.docx
+```
+
+Legacy `.doc` files: convert first with `python scripts/office/soffice.py --headless --convert-to docx file.doc`.
+
+### Python Document library (Vibe-Skills / awesome-llm-skills)
+
+MANDATORY — read `ooxml.md` completely before proceeding.
+
+```bash
+python ooxml/scripts/unpack.py &lt;office_file&gt; &lt;output_directory&gt;
+# Create and run a Python script using the Document library
+python ooxml/scripts/pack.py &lt;input_directory&gt; &lt;office_file&gt;
+```
+
+### python-docx template filling (benchflow-ai/skillsbench)
+
+Use `python-docx` for template-based documents. Critical issue: Word splits placeholder text across multiple XML runs. Use paragraph-level search and rebuild:
+
+```python
+import re
+from docx import Document
+
+def replace_all_placeholders(doc, data):
+    def replace_in_paragraph(para):
+        text = para.text
+        pattern = r&#x27;\{\{([A-Z_]+)\}\}&#x27;
+        matches = re.findall(pattern, text)
+        if not matches:
+            return
+        new_text = text
+        for key in matches:
+            placeholder = &#x27;{{&#x27; + key + &#x27;}}&#x27;
+            if key in data:
+                new_text = new_text.replace(placeholder, str(data[key]))
+        if new_text != text:
+            runs = para.runs
+            if runs:
+                runs[0].text = new_text
+                for run in runs[1:]:
+                    run.text = &#x27;&#x27;
+
+    for para in doc.paragraphs:
+        replace_in_paragraph(para)
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for para in cell.paragraphs:
+                    replace_in_paragraph(para)
+                for nested_table in cell.tables:
+                    for nested_row in nested_table.rows:
+                        for nested_cell in nested_row.cells:
+                            for para in nested_cell.paragraphs:
+                                replace_in_paragraph(para)
+    for section in doc.sections:
+        for para in section.header.paragraphs:
+            replace_in_paragraph(para)
+        for para in section.footer.paragraphs:
+            replace_in_paragraph(para)
+```
+
+Also handle nested tables recursively and conditional sections (`{{IF_CONDITION}}...{{END_IF_CONDITION}}`).
+
+## Tracked changes and redlining
+
+### Redlining workflow (Vibe-Skills / awesome-llm-skills)
+
+1. Get markdown representation: `pandoc --track-changes=all path-to-file.docx -o current.md`
+2. Identify and group changes into batches of 3-10.
+3. Principle: Minimal, Precise Edits — only mark text that actually changes. Break replacements into: [unchanged text] + [deletion] + [insertion] + [unchanged text]. Preserve the original run&#x27;s RSID for unchanged text.
+4. Implement changes in OOXML using `&lt;w:ins&gt;`/`&lt;w:del&gt;` with `w:id`, `w:author`, `w:date` attributes. Inside `&lt;w:del&gt;`, use `&lt;w:delText&gt;`, not `&lt;w:t&gt;`.
+5. Validate with `--author &quot;&lt;name&gt;&quot;` to check every edit is tracked.
+
+### Accepting changes (anthropics/skills)
+
+`python scripts/accept_changes.py in.docx out.docx`
+
+Note: accepting a deleted paragraph mark should join that paragraph to the one below. `pandoc --track-changes=accept` never joins paragraphs. `accept_changes.py` joins them correctly except when followed by an empty spacer paragraph.
+
+## Comments
+
+Comments require six cross-linked files. Use the helper script (anthropics/skills) or the Document library (Vibe-Skills / awesome-llm-skills).</pre>
+</body>
+</html>

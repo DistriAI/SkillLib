@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clinical-interpretation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">clinical-variant-interpretation</a> / clinical-interpretation</p><h1>clinical-interpretation</h1><p class="meta">combined</p><p>The two skills cover the same task but with materially different and non-overlapping depth. The first copy (OpenClaw) is a practical, command-line workflow focused on downloading ClinVar, using bcftools for filtering, and running InterVar, but it relies on the older, flat 2015 ACMG criteria. The second copy (GPTomics) is a conceptual and methodological guide that explicitly warns against the 2015 defaults, mandates the use of 2018-2025 ClinGen refinements (e.g., graded PVS1, PM2 downgrade, PP5/BP6 retirement), and distinguishes between germline and somatic frameworks. Because the first copy&#x27;s core classification method is explicitly identified as obsolete by the second, and the second lacks the specific shell commands for data retrieval and filtering found in the first, neither is a complete reproduction of the other. Combining them is necessary to provide a workflow that is both executable and methodologically current.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/clinical-interpretation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/clinical-interpretation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/clinical-interpretation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/clinical-interpretation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Clinical Variant Interpretation
+
+## 1. Framework Selection
+Before interpreting, determine the variant origin:
+- **Germline:** Use ACMG/AMP with ClinGen SVI refinements.
+- **Somatic:** Use AMP/ASCO/CAP tiers or ClinGen/CGC/VICC oncogenicity. **Never** apply germline ACMG to somatic variants.
+
+Check for a gene-specific ClinGen VCEP specification. If present, it overrides generic ACMG defaults.
+
+## 2. Data Annotation
+Use `bcftools` to annotate variants with ClinVar and gnomAD.
+
+```bash
+# Download ClinVar
+wget https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz
+wget https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz.tbi
+
+# Annotate
+bcftools annotate \
+    -a clinvar.vcf.gz \
+    -c INFO/CLNSIG,INFO/CLNDN,INFO/CLNREVSTAT \
+    input.vcf.gz -Oz -o with_clinvar.vcf.gz
+```
+
+## 3. Filtering
+Filter for rare variants and high-confidence ClinVar assertions.
+
+```bash
+# Rare variants (gnomAD AF &lt; 0.01)
+bcftools view -i &#x27;INFO/gnomAD_AF&lt;0.01 || INFO/gnomAD_AF=&quot;.&quot;&#x27; \
+    with_clinvar.vcf.gz -Oz -o rare.vcf.gz
+
+# High-confidence ClinVar (2+ stars)
+bcftools view -i &#x27;INFO/CLNREVSTAT~&quot;multiple_submitters&quot; || \
+    INFO/CLNREVSTAT~&quot;expert_panel&quot; || \
+    INFO/CLNREVSTAT~&quot;practice_guideline&quot;&#x27; \
+    with_clinvar.vcf.gz -Oz -o high_confidence.vcf.gz
+```
+
+## 4. ACMG/AMP Classification (Germline)
+Apply the **current** ClinGen SVI refinements, not the 2015 defaults:
+- **PVS1:** Use the graded decision tree (Very Strong to Supporting) based on NMD and mechanism.
+- **PM2:** Apply as **Supporting** (not Moderate).
+- **PP5/BP6:** **Retired.** Do not use. Cite underlying data instead.
+- **PP3/BP4:** Use one calibrated predictor at its calibrated strength.
+- **Combining:** Use the Bayesian points system (Tavtigian 2020) for reproducible classification.
+
+## 5. Automated Classification
+Use InterVar for automated ACMG classification, ensuring it is configured to use the latest ClinGen specifications.
+
+```bash
+# Convert VCF to ANNOVAR format
+convert2annovar.pl -format vcf4 input.vcf &gt; input.avinput
+
+# Run InterVar
+python Intervar.py -i input.avinput -o intervar_results -b hg38
+```
+
+## 6. Interpretation
+- **ClinVar is a lead, not evidence.** Re-derive from underlying data.
+- **Context matters:** Pin the genome build, MANE Select transcript, and disease mechanism.
+- **VUS Reanalysis:** Build a loop to re-evaluate VUS as new data becomes available.</pre>
+</body>
+</html>

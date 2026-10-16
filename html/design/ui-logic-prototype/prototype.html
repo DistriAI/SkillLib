@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>prototype</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">ui-logic-prototype</a> / prototype</p><h1>prototype</h1><p class="meta">combined</p><p>The copies overlap on the core idea of building throwaway prototypes, but they disagree on the artifact type and the process. mattpocock/skills and sickn33/agentic-awesome-skills (a mirror of mattpocock) define a two-branch skill (Logic vs UI) with specific rules for throwaway code. emilkowalski/skills defines a single-branch skill focused exclusively on UI divergence with a specific &#x27;picker&#x27; harness and design engineering constraints. plugin87/ux-ui-agent-skills defines a completely different process: a 5-level fidelity ladder (content-first to code) with validation plans. Because the mattpocock version and the emilkowalski version offer mutually exclusive approaches to the &#x27;UI&#x27; branch (single HTML file vs. multi-variant picker), and the plugin87 version offers a different fidelity-based approach, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/engineering/prototype/SKILL.md</code></td></tr><tr><td><a href="https://github.com/emilkowalski/skills">emilkowalski/skills</a></td><td><code>skills/prototype/SKILL.md</code></td></tr><tr><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/prototype/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/prototype/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/engineering/prototype/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/emilkowalski/skills">emilkowalski/skills</a></td><td><code>skills/prototype/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/prototype/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/prototype/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/prototype/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/prototype/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Prototype
+
+A prototype is **throwaway code that answers a question**. The question decides the shape.
+
+## 1. Identify the Question and Fidelity
+
+Determine what is being answered and the appropriate fidelity level:
+
+- **Logic/State Model**: &quot;Does this logic feel right?&quot; → Build a runnable demo (HTML or terminal) that pushes the state machine through hard cases.
+- **UI/Visual**: &quot;What should this look like?&quot; → Build UI variations.
+- **Process/Flow**: &quot;Does this flow work?&quot; → Use a fidelity ladder (Content-first → Wireframe → Low-fi → High-fi → Code) with validation at each step.
+
+## 2. Branching Strategy
+
+### A. Logic Prototype
+- Build a single shareable HTML file or a tiny terminal app.
+- Include free-play buttons and/or guided walkthroughs.
+- Surface the full state after every action.
+
+### B. UI Prototype (Divergence)
+- **Goal**: Divergence, not convergence. Build 3-5 radically different variants.
+- **Axes**: Each variant must differ on a named axis (layout, density, personality, motion).
+- **Harness**: 
+  - *Option 1 (Simple)*: Single route with URL search params to switch variants.
+  - *Option 2 (Picker)*: A visual picker (floating bar) to flip through variants live. The picker is chrome, not a contestant.
+- **Context**: Render variants in realistic surrounding context, not in isolation.
+
+### C. Fidelity Ladder (Process)
+- Start at the lowest fidelity that answers the question.
+- **Content-first**: Info needs.
+- **Wireframe**: Layout/nav.
+- **Low-fi**: Task completion.
+- **High-fi**: Visual/a11y (pull tokens/components).
+- **Code**: Feasibility/perf.
+- Define a validation plan (usability test) for each level.
+
+## 3. Rules for All Prototypes
+
+1. **Throwaway**: Clearly mark as prototype. Locate near the real code but name it distinctly.
+2. **Trivial to Run**: One command (`pnpm`, `python`, etc.) or double-click HTML.
+3. **No Persistence**: State lives in memory unless the question is about persistence.
+4. **Skip Polish**: No tests, no abstractions, minimal error handling.
+5. **Surface State**: Show what changed after every action or variant switch.
+
+## 4. Capture and Cleanup
+
+- **Capture the Answer**: Record the verdict and the question it settled in an issue, commit, or ADR.
+- **Cleanup**: Delete the prototype or fold the validated decision into production code. Do not leave it rotting in the repo.</pre>
+</body>
+</html>

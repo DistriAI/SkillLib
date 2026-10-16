@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>saga-orchestration</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">saga-orchestration</a> / saga-orchestration</p><h1>saga-orchestration</h1><p class="meta">combined</p><p>The first copy (rmyndharis) contains the actual implementation procedure, including a Python base class for a Saga Orchestrator, state definitions, and step execution logic. The second copy (sickn33) is a wrapper that explicitly defers to an external &#x27;detailed-guide.md&#x27; file and adds safety/risk constraints (&#x27;risk: critical&#x27;, &#x27;Limitations&#x27;) that are absent from the first copy. Because the second copy contains mandatory safety constraints and a reference to a guide that the first copy lacks, and the first copy contains the concrete code that the second copy omits, crowning one would hide either the implementation or the safety protocol. They overlap in scope but each has material steps/constraints the others lack.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/saga-orchestration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/saga-orchestration/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/saga-orchestration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/saga-orchestration/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/saga-orchestration/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-architecture-design/skills/saga-orchestration/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/saga-orchestration/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: saga-orchestration
+description: Implement saga patterns for distributed transactions and cross-aggregate workflows. Use when coordinating multi-step business processes, handling compensating transactions, or managing long-running workflows.
+risk: critical
+---
+
+# Saga Orchestration
+
+Patterns for managing distributed transactions and long-running business processes.
+
+## Safety &amp; Prerequisites
+
+- **Risk Level:** Critical. Treat safety, prerequisites, and validation requirements as mandatory.
+- **External Reference:** If a `references/detailed-guide.md` is available in the context, read it before executing. It retains the complete procedure and reference material.
+- **Limitations:**
+  - Use this skill only when the task clearly matches the scope described above.
+  - Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+  - Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+## Do not use this skill when
+
+- The task is unrelated to saga orchestration
+- You need a different domain or tool outside this scope
+
+## Use this skill when
+
+- Coordinating multi-service transactions
+- Implementing compensating transactions
+- Managing long-running business workflows
+- Handling failures in distributed systems
+- Building order fulfillment processes
+- Implementing approval workflows
+
+## Core Concepts
+
+### 1. Saga Types
+
+- **Choreography:** Services communicate via events without a central coordinator.
+- **Orchestration:** A central orchestrator coordinates the steps.
+
+### 2. Saga Execution States
+
+| State            | Description                    |
+| ---------------- | ------------------------------ |
+| **Started**      | Saga initiated                 |
+| **Pending**      | Waiting for step completion    |
+| **Compensating** | Rolling back due to failure    |
+| **Completed**    | All steps succeeded            |
+| **Failed**       | Saga failed after compensation |
+
+## Implementation Template
+
+Use the following Python base class as a starting point for the orchestrator:
+
+```python
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import List, Dict, Any, Optional
+from datetime import datetime
+import uuid
+
+class SagaState(Enum):
+    STARTED = &quot;started&quot;
+    PENDING = &quot;pending&quot;
+    COMPENSATING = &quot;compensating&quot;
+    COMPLETED = &quot;completed&quot;
+    FAILED = &quot;failed&quot;
+
+
+@dataclass
+class SagaStep:
+    name: str
+    action: str
+    compensation: str
+    status: str = &quot;pending&quot;
+    result: Optional[Dict] = None
+    error: Optional[str] = None
+    executed_at: Optional[datetime] = None
+    compensated_at: Optional[datetime] = None
+
+
+@dataclass
+class Saga:
+    saga_id: str
+    saga_type: str
+    state: SagaState
+    data: Dict[str, Any]
+    steps: List[SagaStep]
+    current_step: int = 0
+    created_at: datetime = field(default_factory=datetime.utcnow)
+    updated_at: datetime = field(default_factory=datetime.utcnow)
+
+
+class SagaOrchestrator(ABC):
+    &quot;&quot;&quot;Base class for saga orchestrators.&quot;&quot;&quot;
+
+    def __init__(self, saga_store, event_publisher):
+        self.saga_store = saga_store
+        self.event_publisher = event_publisher
+
+    @abstractmethod
+    def define_steps(self, data: Dict) -&gt; List[SagaStep]:
+        &quot;&quot;&quot;Define the saga steps.&quot;&quot;&quot;
+        pass
+
+    @property
+    @abstractmethod
+    def saga_type(self) -&gt; str:
+        &quot;&quot;&quot;Unique saga type identifier.&quot;&quot;&quot;
+        pass
+
+    async def start(self, data: Dict) -&gt; Saga:
+        &quot;&quot;&quot;Start a new saga.&quot;&quot;&quot;
+        saga = Saga(
+            saga_id=str(uuid.uuid4()),
+            saga_type=self.saga_type,
+            state=SagaState.STARTED,
+            data=data,
+            steps=self.define_steps(data)
+        )
+        await self.saga_store.save(saga)
+        await self._execute_next_step(saga)
+        return saga
+
+    async def handle_step_completed(self, saga_id: str, step_name: str, result: Dict):
+        &quot;&quot;&quot;Handle successful step completion.&quot;&quot;&quot;
+        saga = await self.saga_store.get(saga_id)
+
+        # Update step
+        for step in saga.steps:
+            if step.name == step_name:
+                step.status = &quot;completed&quot;
+                step.result = result
+                step.executed_at = datetime.utcnow()
+                break
+
+        saga.current_step += 1
+        saga.updated_at = datetime.utcnow()
+
+        # Check if saga is complete
+        if saga.current_step &gt;= len(saga.steps):
+            saga.state = SagaState.COMPLETED
+            await self.saga_store.save(saga)
+            await self._on_saga_completed(saga)
+        else:
+            saga.state = SagaState.PENDING
+            await self.saga_store.save(saga)
+            await self._execute_next_step(saga)
+
+    async def handle_step_failed(self, saga_id: str, step_name: str, error: str):
+        &quot;&quot;&quot;Handle step failure - start compensation.&quot;&quot;&quot;
+        saga = await self.saga_store.get(saga_id)
+
+        # Mark step as failed
+        for step in saga.steps:
+            if step.name == step_name:
+                step.status = &quot;failed&quot;
+                step.error = error
+                break
+
+        saga.state = SagaState.COMPENSATING
+        saga.updated_at = datetime.utcnow()
+        await self.saga_store.save(saga)
+
+        # Start compensation from current step backwards
+        await self._compensate(saga)
+
+    async def _execute_next_step(self, saga: Saga):
+        &quot;&quot;&quot;Execute the next step in the saga.&quot;&quot;&quot;
+        if saga.current_step &gt;= len(saga.steps):
+            return
+
+        step = saga.steps[saga.current_step]
+        step.status = &quot;executing&quot;
+        await self.saga_store.save(saga)
+
+        # Publish command to execute step
+        await self.event_publisher.publish(
+            step.action,
+            {
+                &quot;saga_id&quot;: saga.saga_id,
+                &quot;step_name&quot;: step.name,
+                **saga.data
+            }
+        )
+
+    async def _compensate(self, saga: Saga):
+        &quot;&quot;&quot;Execute compensation for completed steps.&quot;&quot;&quot;
+        # Compensate in reverse order
+        for i in range(saga.current_step - 1, -1, -1):
+            step = saga.steps[i]
+            if step.status == &quot;completed&quot;:
+                # Execute compensation logic here
+                pass
+```
+
+## Instructions
+
+1. Clarify goals, constraints, and required inputs.
+2. Apply relevant best practices and validate outcomes.
+3. Provide actionable steps and verification.</pre>
+</body>
+</html>

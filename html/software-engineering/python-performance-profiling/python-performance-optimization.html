@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>python-performance-optimization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">python-performance-profiling</a> / python-performance-optimization</p><h1>python-performance-optimization</h1><p class="meta">combined</p><p>The first two copies are nearly identical stubs that point to a resources/implementation-playbook.md file, while the third copy (LeoYeAI/openclaw-master-skills) contains the actual detailed procedure, including specific profiling tools (cProfile, line_profiler, memory_profiler, py-spy) and optimization patterns. Because the first two copies lack the substantive steps found in the third, and the third lacks the specific &#x27;Limitations&#x27; and &#x27;Do not use&#x27; sections found in the second, no single copy is a complete superset of the others. Combining them yields a skill that has both the safety/scope constraints and the detailed technical instructions.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/python-performance-optimization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/python-performance-optimization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/python-performance-optimization/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/python-performance-optimization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/python-performance-optimization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/python-performance-optimization/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/python-performance-optimization/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/python-performance-optimization/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: python-performance-optimization
+description: Profile and optimize Python code using cProfile, memory profilers, and performance best practices. Use when debugging slow Python code, optimizing bottlenecks, or improving application performance.
+---
+
+# Python Performance Optimization
+
+Comprehensive guide to profiling, analyzing, and optimizing Python code for better performance, including CPU profiling, memory optimization, and implementation best practices.
+
+## Use this skill when
+
+- Identifying performance bottlenecks in Python applications
+- Reducing application latency and response times
+- Optimizing CPU-intensive operations
+- Reducing memory consumption and memory leaks
+- Improving database query performance
+- Optimizing I/O operations
+- Speeding up data processing pipelines
+- Implementing high-performance algorithms
+- Profiling production applications
+
+## Do not use this skill when
+
+- The task is unrelated to python performance optimization
+- You need a different domain or tool outside this scope
+
+## Instructions
+
+- Clarify goals, constraints, and required inputs.
+- Apply relevant best practices and validate outcomes.
+- Provide actionable steps and verification.
+- If detailed examples are required, open `resources/implementation-playbook.md`.
+
+## Core Concepts
+
+### 1. Profiling Types
+
+- **CPU Profiling**: Identify time-consuming functions
+- **Memory Profiling**: Track memory allocation and leaks
+- **Line Profiling**: Profile at line-by-line granularity
+- **Call Graph**: Visualize function call relationships
+
+### 2. Performance Metrics
+
+- **Execution Time**: How long operations take
+- **Memory Usage**: Peak and average memory consumption
+- **CPU Utilization**: Processor usage patterns
+- **I/O Wait**: Time spent on I/O operations
+
+### 3. Optimization Strategies
+
+- **Algorithmic**: Better algorithms and data structures
+- **Implementation**: More efficient code patterns
+- **Parallelization**: Multi-threading/processing
+- **Caching**: Avoid redundant computation
+- **Native Extensions**: C/Rust for critical paths
+
+## Quick Start
+
+### Basic Timing
+
+```python
+import time
+
+def measure_time():
+    &quot;&quot;&quot;Simple timing measurement.&quot;&quot;&quot;
+    start = time.time()
+
+    # Your code here
+    result = sum(range(1000000))
+
+    elapsed = time.time() - start
+    print(f&quot;Execution time: {elapsed:.4f} seconds&quot;)
+    return result
+
+# Better: use timeit for accurate measurements
+import timeit
+
+execution_time = timeit.timeit(
+    &quot;sum(range(1000000))&quot;,
+    number=100
+)
+print(f&quot;Average time: {execution_time/100:.6f} seconds&quot;)
+```
+
+## Profiling Tools
+
+### Pattern 1: cProfile - CPU Profiling
+
+```python
+import cProfile
+import pstats
+from pstats import SortKey
+
+def slow_function():
+    &quot;&quot;&quot;Function to profile.&quot;&quot;&quot;
+    total = 0
+    for i in range(1000000):
+        total += i
+    return total
+
+def another_function():
+    &quot;&quot;&quot;Another function.&quot;&quot;&quot;
+    return [i**2 for i in range(100000)]
+
+def main():
+    &quot;&quot;&quot;Main function to profile.&quot;&quot;&quot;
+    result1 = slow_function()
+    result2 = another_function()
+    return result1, result2
+
+# Profile the code
+if __name__ == &quot;__main__&quot;:
+    profiler = cProfile.Profile()
+    profiler.enable()
+
+    main()
+
+    profiler.disable()
+
+    # Print stats
+    stats = pstats.Stats(profiler)
+    stats.sort_stats(SortKey.CUMULATIVE)
+    stats.print_stats(10)  # Top 10 functions
+
+    # Save to file for later analysis
+    stats.dump_stats(&quot;profile_output.prof&quot;)
+```
+
+**Command-line profiling:**
+
+```bash
+# Profile a script
+python -m cProfile -o output.prof script.py
+
+# View results
+python -m pstats output.prof
+# In pstats:
+# sort cumtime
+# stats 10
+```
+
+### Pattern 2: line_profiler - Line-by-Line Profiling
+
+```python
+# Install: pip install line-profiler
+
+# Add @profile decorator (line_profiler provides this)
+@profile
+def process_data(data):
+    &quot;&quot;&quot;Process data with line profiling.&quot;&quot;&quot;
+    result = []
+    for item in data:
+        processed = item * 2
+        result.append(processed)
+    return result
+
+# Run with:
+# kernprof -l -v script.py
+```
+
+**Manual line profiling:**
+
+```python
+from line_profiler import LineProfiler
+
+def process_data(data):
+    &quot;&quot;&quot;Function to profile.&quot;&quot;&quot;
+    result = []
+    for item in data:
+        processed = item * 2
+        result.append(processed)
+    return result
+
+if __name__ == &quot;__main__&quot;:
+    lp = LineProfiler()
+    lp.add_function(process_data)
+
+    data = list(range(100000))
+
+    lp_wrapper = lp(process_data)
+    lp_wrapper(data)
+
+    lp.print_stats()
+```
+
+### Pattern 3: memory_profiler - Memory Usage
+
+```python
+# Install: pip install memory-profiler
+
+from memory_profiler import profile
+
+@profile
+def memory_intensive():
+    &quot;&quot;&quot;Function that uses lots of memory.&quot;&quot;&quot;
+    # Create large list
+    big_list = [i for i in range(1000000)]
+
+    # Create large dict
+    big_dict = {i: i**2 for i in range(100000)}
+
+    # Process data
+    result = sum(big_list)
+
+    return result
+
+if __name__ == &quot;__main__&quot;:
+    memory_intensive()
+
+# Run with:
+# python -m memory_profiler script.py
+```
+
+### Pattern 4: py-spy - Production Profiling
+
+```bash
+# Install: pip install py-spy
+
+# Profile a running Python process
+py-spy top --pid 12345
+
+# Generate flamegraph
+py-spy record -o profile.svg --pid 12345
+
+# Profile a script
+py-spy record -o profile.svg -- python script.py
+
+# Dump current call stack
+py-spy dump --pid 12345
+```
+
+## Optimization Patterns
+
+### Pattern 5: List Comprehensions vs Loops
+
+```python
+import timeit
+
+# Slow: Traditional loop
+def slow_squares(n):
+    &quot;&quot;&quot;Create list of squares using loop.&quot;&quot;&quot;
+    result = []
+    for i in range(n):
+        result.append(i**2)
+    return result
+
+# Fast: List comprehension
+def fast_squares(n):
+    &quot;&quot;&quot;Create list of squares using comprehension.&quot;&quot;&quot;
+    return [i**2 for i in range(n)]
+
+# Benchmark
+n = 100000
+
+slow_time = timeit.timeit(lambda: slow_squares(n), number=100)
+fast_time = timeit.timeit(lambda: fast_squares(n), number=100)
+
+print(f&quot;Loop: {slow_time:.4f}s&quot;)
+print(f&quot;Comprehension: {fast_time:.4f}s&quot;)
+print(f&quot;Speedup: {slow_time/fast_time:.2f}x&quot;)
+
+# Even faster for simple operations: map
+def faster_squares(n):
+    &quot;&quot;&quot;Use map for even better performance.&quot;&quot;&quot;
+    return list(map(lambda x: x**2, range(n)))
+```
+
+### Pattern 6: Generator Expressions for Memory
+
+```python
+import sys
+
+def list_approach():
+    &quot;&quot;&quot;Memory-intensive list.&quot;&quot;&quot;
+    data = [i**2 for i in range(1000000)]
+    return sum(data)
+
+def generator_approach():
+    &quot;&quot;&quot;Memory-efficient generator.&quot;&quot;&quot;
+    return sum(i**2 for i in range(1000000))
+```
+
+## Resources
+
+- `resources/implementation-playbook.md` for detailed patterns and examples.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

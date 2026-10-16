@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>medchem</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">medchem-compound-filtering</a> / medchem</p><h1>medchem</h1><p class="meta">combined</p><p>The K-Dense copy is the most technically precise and verified (pinned versions, DataFrame return types, Lilly native build requirements, and specific API distinctions like catalog_filter vs alert_filter). The other three copies (Vibe-Skills, aipoch, OpenClaw) are near-identical to each other and provide a broader, higher-level overview including Lilly Demerits, Chemical Groups, Complexity, and Constraints modules that the K-Dense copy truncates or omits in detail. They disagree on result formats (DataFrames vs dictionaries) and installation specifics (pinned vs latest). Combining is necessary to capture the verified low-level API details from K-Dense and the comprehensive module coverage from the others.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/medchem/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/medchem/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/medchem/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/medchem/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/medchem/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/medchem/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/medchem/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/medchem/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Medchem
+
+## Overview
+Medchem is a Python library for molecular filtering and prioritization in drug discovery. Apply drug-likeness rules, structural alerts, complexity metrics, and property constraints to triage compound libraries. Filters are context-specific guidelines; combine with domain expertise.
+
+## Installation
+Requires Python 3.11+.
+```bash
+uv pip install &quot;medchem==2.1.1&quot; &quot;datamol==0.13.0&quot; &quot;rdkit==2026.3.6&quot;
+```
+Optional Lilly demerits require native tools (C++ compiler, make, zlib, Ruby):
+```bash
+medchem install-lilly
+```
+
+## Core Capabilities
+
+### 1. Medicinal Chemistry Rules
+Apply drug-likeness rules via `medchem.rules`.
+
+**Single rule:**
+```python
+import medchem as mc
+smiles = &quot;CC(=O)OC1=CC=CC=C1C(=O)O&quot;
+mc.rules.basic_rules.rule_of_five(smiles)  # True
+```
+
+**Multiple rules (returns DataFrame):**
+```python
+import datamol as dm
+mols = [dm.to_mol(s) for s in smiles_list]
+rfilter = mc.rules.RuleFilters(rule_list=[&quot;rule_of_five&quot;, &quot;rule_of_cns&quot;, &quot;rule_of_leadlike_soft&quot;])
+df = rfilter(mols=mols, n_jobs=-1, progress=True)
+passing = df[df[&quot;pass_all&quot;]]
+```
+
+### 2. Structural Alert Filters
+Detect problematic patterns with `medchem.structural`. Returns DataFrames with `pass_filter`, `status`, `reasons`.
+
+**Common Alerts:**
+```python
+alert_filter = mc.structural.CommonAlertsFilters(alerts_set=[&quot;BMS&quot;, &quot;Dundee&quot;, &quot;Glaxo&quot;])
+df = alert_filter(mols=mol_list, n_jobs=-1)
+clean = df[df[&quot;pass_filter&quot;]]
+```
+
+**NIBR Filters:**
+```python
+nibr_filter = mc.structural.NIBRFilters()
+df = nibr_filter(mols=mol_list, n_jobs=-1)
+# Reject if severity &gt;= 10: df[&quot;pass_filter&quot;] &amp; (df[&quot;severity&quot;] &lt; 10)
+```
+
+**Lilly Demerits:**
+```python
+lilly = mc.structural.LillyDemeritsFilters()
+results = lilly(mols=mol_list, n_jobs=-1)
+# Reject if demerits &gt; 100
+```
+
+### 3. Named Catalogs (PAINS, Brenk, etc.)
+Use `medchem.catalogs` for RDKit FilterCatalog instances.
+```python
+passes = mc.functional.catalog_filter(mols=mol_list, catalogs=[&quot;pains&quot;], n_jobs=-1)
+```
+Note: `catalog_filter` rejects string names `nibr` and `bredt`; use dedicated functional filters for those.
+
+### 4. Chemical Groups Detection
+Identify functional groups using `medchem.groups`.
+```python
+group = mc.groups.ChemicalGroup(groups=[&quot;hinge_binders&quot;, &quot;michael_acceptors&quot;])
+has_matches = group.has_match(mol_list)
+```
+
+### 5. Molecular Complexity
+Calculate complexity metrics using `medchem.complexity`.
+```python
+complex_filter = mc.complexity.ComplexityFilter(max_complexity=500)
+results = complex_filter(mols=mol_list, n_jobs=-1)
+```
+
+### 6. Constraints Filtering
+Apply property-based constraints using `medchem.constraints`.
+```python
+constraints = mc.constraints.Constraints(
+    mw_range=(200, 500),
+    logp_range=(-2, 5),
+    tpsa_max=140,
+    rotatable_bonds_max=10
+)
+results = constraints(mols=mol_list, n_jobs=-1)
+```
+
+### 7. Medchem Query Language
+Combine heterogeneous criteria (rules + alerts + numeric thresholds) into a single expression for complex filtering.
+
+## Best Practices
+- Prevalidate inputs; reject missing/empty structures before filtering.
+- Use `keep_props=True` in RuleFilters to include computed descriptors (mw, clogp, tpsa).
+- Start broad (Ro5/Veber), then tighten (CNS/lead-like) as project constraints become clearer.
+- Use `n_jobs=-1` for parallelization on large libraries.</pre>
+</body>
+</html>

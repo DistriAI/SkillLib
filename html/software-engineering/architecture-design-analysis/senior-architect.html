@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>senior-architect</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">architecture-design-analysis</a> / senior-architect</p><h1>senior-architect</h1><p class="meta">combined</p><p>Both copies describe the same three scripts (architecture_diagram_generator, dependency_analyzer, project_architect) but with different levels of detail and scope. The first copy is a high-level wrapper that references generic reference docs and a broad tech stack, while the second copy provides specific CLI flags, output formats (Mermaid/PlantUML/ASCII), supported package managers, and concrete decision workflows (database selection, monolith vs microservices). The second copy is more actionable, but the first copy includes a &#x27;Development Workflow&#x27; and &#x27;Best Practices Summary&#x27; section that the second lacks. Because the second copy is truncated and the first copy has unique high-level guidance, combining them yields a more complete skill.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/senior-architect/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/senior-architect/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/senior-architect/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/senior-architect/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/senior-architect/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-architecture-design/skills/senior-architect/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/senior-architect/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: senior-architect
+description: &quot;Complete toolkit for senior architect with modern tools and best practices. Use for architecture decision records (ADRs), tech stack evaluation, system design reviews, dependency analysis, and generating architecture diagrams in Mermaid, PlantUML, or ASCII format.&quot;
+---
+
+# Senior Architect
+
+Architecture design and analysis tools for making informed technical decisions.
+
+## Quick Start
+
+```bash
+# Generate architecture diagram from project
+python scripts/architecture_diagram_generator.py ./my-project --format mermaid
+
+# Analyze dependencies for issues
+python scripts/dependency_analyzer.py ./my-project --output json
+
+# Get architecture assessment
+python scripts/project_architect.py ./my-project --verbose
+```
+
+## Core Capabilities
+
+### 1. Architecture Diagram Generator
+
+Generates architecture diagrams from project structure in multiple formats.
+
+**Supported diagram types:**
+- `component` - Shows modules and their relationships
+- `layer` - Shows architectural layers (presentation, business, data)
+- `deployment` - Shows deployment topology
+
+**Usage:**
+```bash
+# Mermaid format (default)
+python scripts/architecture_diagram_generator.py ./project --format mermaid --type component
+
+# PlantUML format
+python scripts/architecture_diagram_generator.py ./project --format plantuml --type layer
+
+# ASCII format (terminal-friendly)
+python scripts/architecture_diagram_generator.py ./project --format ascii
+
+# Save to file
+python scripts/architecture_diagram_generator.py ./project -o architecture.md
+```
+
+### 2. Dependency Analyzer
+
+Analyzes project dependencies for coupling, circular dependencies, and outdated packages.
+
+**Supported package managers:**
+- npm/yarn (`package.json`)
+- Python (`requirements.txt`, `pyproject.toml`)
+- Go (`go.mod`)
+- Rust (`Cargo.toml`)
+
+**Usage:**
+```bash
+# Human-readable report
+python scripts/dependency_analyzer.py ./project
+
+# JSON output for CI/CD integration
+python scripts/dependency_analyzer.py ./project --output json
+
+# Check only for circular dependencies
+python scripts/dependency_analyzer.py ./project --check circular
+```
+
+### 3. Project Architect
+
+Analyzes project structure and detects architectural patterns, code smells, and improvement opportunities.
+
+**Usage:**
+```bash
+# Full assessment
+python scripts/project_architect.py ./project
+
+# Verbose with detailed recommendations
+python scripts/project_architect.py ./project --verbose
+
+# JSON output
+python scripts/project_architect.py ./project --output json
+```
+
+## Decision Workflows
+
+### Database Selection
+
+Use when choosing a database for a new project or migrating existing data.
+
+**Step 1: Identify data characteristics**
+| Characteristic | Points to SQL | Points to NoSQL |
+|----------------|---------------|-----------------|
+| Structured with relationships | ✓ | |
+| ACID transactions required | ✓ | |
+| Flexible/evolving schema | | ✓ |
+
+### Architecture Pattern Selection
+
+Evaluate patterns such as MVC, layered, hexagonal, or microservices based on team size, scalability needs, and deployment complexity.
+
+### Monolith vs Microservices
+
+Consider microservices when independent scaling, team autonomy, or technology diversity is required. Otherwise, prefer a modular monolith for simplicity.
+
+## Best Practices Summary
+
+### Code Quality
+- Follow established patterns
+- Write comprehensive tests
+- Document decisions
+- Review regularly
+
+### Performance
+- Measure before optimizing
+- Use appropriate caching
+- Optimize critical paths
+- Monitor in production
+
+### Security
+- Validate all inputs
+- Use parameterized queries
+- Implement proper authentication
+- Keep dependencies updated
+
+### Maintainability
+- Write clear code
+- Use consistent naming
+- Add helpful comments
+- Keep it simple
+
+## Tech Stack Coverage
+
+**Languages:** TypeScript, JavaScript, Python, Go, Swift, Kotlin
+**Frontend:** React, Next.js, React Native, Flutter
+**Backend:** Node.js, Express, GraphQL, REST APIs
+**Database:** PostgreSQL, Prisma, NeonDB, Supabase
+**DevOps:** Docker, Kubernetes, Terraform, GitHub Actions, CircleCI
+**Cloud:** AWS, GCP, Azure
+
+## Common Commands
+
+```bash
+# Development
+npm run dev
+npm run build
+npm run test
+npm run lint
+
+# Analysis
+python scripts/project_architect.py .
+python scripts/dependency_analyzer.py --analyze
+
+# Deployment
+docker build -t app:latest .
+docker-compose up -d
+kubectl apply -f k8s/
+```
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

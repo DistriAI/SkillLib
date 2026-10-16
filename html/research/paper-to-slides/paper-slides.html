@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>paper-slides</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">paper-to-slides</a> / paper-slides</p><h1>paper-slides</h1><p class="meta">combined</p><p>The two copies are the same skill, but the first adds a material optional style-reference workflow (extract_paper_style.py, strict rules, abort behavior) that the second lacks, while the second adds state persistence (SLIDES_STATE.json), a full phased workflow, and a more complete venue color table. Crowning one would hide a real alternative procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/paper-slides/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/paper-slides/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/paper-slides/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/paper-slides/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex/paper-slides/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex-gemini-review/paper-slides/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex/paper-slides/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex-gemini-review/paper-slides/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: paper-slides
+description: &quot;Generate conference presentation slides (beamer LaTeX → PDF + editable PPTX) from a compiled paper, with speaker notes and full talk script. Use when user says \&quot;做PPT\&quot;, \&quot;做幻灯片\&quot;, \&quot;make slides\&quot;, \&quot;conference talk\&quot;, \&quot;presentation slides\&quot;, \&quot;生成slides\&quot;, \&quot;写演讲稿\&quot;, or wants beamer slides for a conference talk.&quot;
+argument-hint: &quot;[paper-directory-or-talk-length] [— style-ref: &lt;source&gt;]&quot;
+allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Agent, mcp__codex__codex, mcp__codex__codex-reply
+---
+
+# Paper Slides: From Paper to Conference Talk
+
+Generate conference presentation slides from: **$ARGUMENTS**
+
+## Context
+
+This skill runs after Workflow 3 (/paper-writing). It takes a compiled paper and generates a presentation slide deck for conference oral talks, spotlight presentations, or poster lightning talks.
+
+Unlike posters, slides tell a temporal story: each slide builds on the previous one, with progressive revelation of the research narrative.
+
+## Constants
+
+- VENUE = NeurIPS — Target venue, determines color scheme. Supported: NeurIPS, ICML, ICLR, AAAI, ACL, EMNLP, CVPR, ECCV, GENERIC. Override via argument.
+- TALK_TYPE = spotlight — Talk format. Options: oral (15-20 min), spotlight (5-8 min), poster-talk (3-5 min), invited (30-45 min).
+- TALK_MINUTES = 15 — Talk duration in minutes. Auto-adjusts slide count.
+- ASPECT_RATIO = 16:9 — Slide aspect ratio. Options: 16:9, 4:3.
+- SPEAKER_NOTES = true — Generate \note{} blocks in beamer and corresponding PPTX notes.
+- PAPER_DIR = paper/ — Directory containing the compiled paper.
+- OUTPUT_DIR = slides/ — Output directory for all slide files.
+- REVIEWER_MODEL = gpt-6-astra — Model used via Codex MCP for slide review.
+- AUTO_PROCEED = false — At each checkpoint, always wait for explicit user confirmation.
+- COMPILER = latexmk — LaTeX build tool.
+- ENGINE = pdflatex — LaTeX engine. Use xelatex for CJK text.
+
+&gt; Override: /paper-slides &quot;paper/&quot; — talk_type: oral, venue: ICML, minutes: 20, aspect: 4:3
+
+## Optional: Style reference (— style-ref: &lt;source&gt;, opt-in)
+
+Default OFF. Only when — style-ref: &lt;source&gt; appears in $ARGUMENTS, run the helper FIRST to extract structural guidance from the reference source.
+
+Resolve the helper via the canonical strict-safe chain. If unresolved, abort because --style-ref cannot be satisfied.
+
+Sources accepted: local TeX dir/file, local PDF, arXiv id, http(s) URL. Overleaf URLs/IDs are rejected — clone via /overleaf-sync setup &lt;id&gt; first and pass the local clone path.
+
+Strict rules:
+- Use style_profile.md to align section-budget tendency and theorem-environment density. Talk-type slide count still takes precedence.
+- Never copy speaker-note prose, slide titles, or examples from anything reachable through the cache.
+- Never pass — style-ref or the cache contents to the reviewer sub-agent.
+
+## Talk Type → Slide Count
+
+| Talk Type | Duration | Slides | Content Depth |
+|-----------|----------|:------:|---------------|
+| poster-talk | 3-5 min | 5-8 | Problem + 1 method slide + 1 result + conclusion |
+| spotlight | 5-8 min | 8-12 | Problem + 2 method + 2 results + conclusion |
+| oral | 15-20 min | 15-22 | Full story with motivation, method detail, experiments, analysis |
+| invited | 30-45 min | 25-40 | Comprehensive: background, related work, deep method, extensive results, discussion |
+
+## Venue Color Schemes
+
+| Venue | Primary | Accent | Background | Text |
+|-------|---------|--------|------------|------|
+| NeurIPS | #8B5CF6 | #2563EB | #FFFFFF | #1E1E1E |
+| ICML | #DC2626 | #1D4ED8 | #FFFFFF | #1E1E1E |
+| ICLR | #059669 | #0284C7 | #FFFFFF | #1E1E1E |
+| CVPR | #2563EB | #7C3AED | #FFFFFF | #1E1E1E |
+| GENERIC | #334155 | #2563EB | #FFFFFF | #1E1E1E |
+
+## State Persistence (Compact Recovery)
+
+Persist state to slides/SLIDES_STATE.json after each phase:
+
+```json
+{
+  &quot;phase&quot;: 3,
+  &quot;venue&quot;: &quot;NeurIPS&quot;,
+  &quot;talk_type&quot;: &quot;spotlight&quot;,
+  &quot;slide_count&quot;: 10,
+  &quot;codex_thread_id&quot;: &quot;019cfcf4-...&quot;,
+  &quot;status&quot;: &quot;in_progress&quot;,
+  &quot;timestamp&quot;: &quot;2026-03-18T15:00:00&quot;
+}
+```
+
+On startup: if SLIDES_STATE.json exists with &quot;status&quot;: &quot;in_progress&quot; and within 24h → resume. Otherwise → fresh start.
+
+## Workflow
+
+### Phase 0: Input Validation &amp; Setup
+
+1. Check prerequisites: which pdflatex &amp;&amp; which latexmk
+2. Verify paper exists: ls $PAPER_DIR/main.tex || ls $PAPER_DIR/main.pdf; ls $PAPER_DIR/sections/*.tex; ls $PAPER_DIR/figures/
+3. Backup existing slides: if slides/ exists, copy to slides-backup-{timestamp}/
+4. Create output directory: mkdir -p slides/figures
+5. Detect CJK: if paper contains Chinese/Japanese/Korean, set ENGINE to xelatex
+6. Determine slide count: from TALK_TYPE and TALK_MINUTES using the table above
+7. Check for resume: read slides/SLIDES_STATE.json if it exists
+
+State: Write SLIDES_STATE.json with phase: 0.
+
+### Phase 1: Content Extraction &amp; Slide Outline
+
+Read paper/sections/*.tex and build a slide-by-slide outline.
+
+Slide template by talk type:
+
+#### Oral (15-22 slides)
+
+| Slide | Purpose | Content Source | Figure? |
+|:-----:|---------|----------------|:-------:|
+| 1 | Title | Paper metadata | No |
+| 2 | Outline | Section headers | No |
+| 3-4 | Motivation &amp; Problem | Introduction | Optional |
+| 5 | Key Insight | Introduction (contribution) | No |
+| 6-9 | Method | Method section | Yes (hero figure) |
+| 10-14 | Results | Experiments | Yes (per slide) |
+| 15-16 | Analysis / Ablations | Experiments | Yes |
+| 17 | Limitations | Conclusion | No |
+| 18 | Conclusion / Takeaway | Conclusion | No |
+| 19 | Thank You + QR | — | QR code |
+
+#### Spotlight (8-12 slides)
+
+| Slide | Purpose | Content Source | Figure? |
+|:-----:|---------|----------------|:-------:|
+| 1 | Title | Paper metadata | No |
+| 2-3 | Problem + Why It Matters | Introduction | Optional |
+| 4 | Key Insight | Contribution | No |
+| 5-6 | Method | Method (condensed) | Yes (hero) |
+| 7-9 | Results | Key results only | Yes |
+| 10 | Takeaway | Conclusion | No |
+| 11 | Thank You + QR | — | QR code |
+
+#### Poster-talk (5-8 slides)
+
+| Slide | Purpose | Content Source | Figure? |
+|:-----:|---------|----------------|:-------:|
+| 1 | Title | Paper metadata | No |
+| 2 | Problem | Introduction (1 slide) | No |
+| 3 | Method | Method (1 slide) | Yes |
+| 4-5 | Results | Key result | Yes |
+| 6 | Takeaway | Conclusion | No |
+| 7 | Thank You + QR | — | QR code |
+
+### Phase 2: Beamer Generation
+
+Generate the beamer LaTeX file with the chosen venue color scheme, aspect ratio, and speaker notes.
+
+### Phase 3: Compilation &amp; Review
+
+Compile with latexmk and the chosen engine. Review the generated slides with the reviewer model. Iterate until the user confirms.
+
+### Phase 4: PPTX Export
+
+Export the compiled PDF to an editable PPTX with speaker notes.
+
+## Conflicts
+
+- wanshuiyin/Auto-claude-code-research-in-sleep includes an optional — style-ref helper workflow and strict rules; brycewang-stanford/Auto-Empirical-Research-Skills omits it entirely.
+- brycewang-stanford/Auto-Empirical-Research-Skills includes SLIDES_STATE.json persistence and a detailed phased workflow; wanshuiyin/Auto-claude-code-research-in-sleep does not show these in the provided text.
+- REVIEWER_MODEL differs: gpt-6-astra in wanshuiyin/Auto-claude-code-research-in-sleep vs gpt-5.4 in brycewang-stanford/Auto-Empirical-Research-Skills.
+- Venue color table is truncated in wanshuiyin/Auto-claude-code-research-in-sleep but more complete in brycewang-stanford/Auto-Empirical-Research-Skills.</pre>
+</body>
+</html>

@@ -47,6 +47,7 @@ def build_skill_index(
     progress=None,
     max_clusters: int | None = None,
     config=None,
+    place: bool = True,
 ) -> dict:
     """Index every catalogued skill, collapsing similar copies.
 
@@ -70,6 +71,7 @@ def build_skill_index(
             progress=progress,
             max_clusters=max_clusters,
             config=config,
+            place=place,
         )
     occurrences = occurrences_from_catalog(catalog)
     groups = _clusters(occurrences)

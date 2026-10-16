@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cover-letter-generator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">cover-letter-generation</a> / cover-letter-generator</p><h1>cover-letter-generator</h1><p class="meta">combined</p><p>The two skills share the name but solve different tasks. The first is a job-application cover letter generator focused on resume-to-job-description mapping, tone, hooks, and persuasive structure. The second is an academic journal submission cover letter generator focused on manuscript metadata, journal fit, novelty, declarations, and editor-facing constraints. They overlap only in the broad idea of producing a professional letter, but each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Paramchoudhary/ResumeSkills">Paramchoudhary/ResumeSkills</a></td><td><code>skills/cover-letter-generator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/cover-letter-generator/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Paramchoudhary/ResumeSkills">Paramchoudhary/ResumeSkills</a></td><td><code>skills/cover-letter-generator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/cover-letter-generator/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Cover Letter Generator
+
+Use this skill when the user asks for a cover letter. First determine the letter type from the request and available inputs.
+
+## 1. Determine Letter Type
+
+- If the user provides a resume, job description, or asks for a job application letter, use the Job Application workflow.
+- If the user provides a manuscript title, target journal, contributions, or asks for an academic submission letter, use the Academic Journal workflow.
+- If the type is ambiguous, ask the user to clarify before drafting.
+
+## 2. Job Application Workflow
+
+Use when the user wants a cover letter for a job application.
+
+### Inputs
+- Resume or summary of relevant experience
+- Job description or key requirements
+- Company name and any known hiring manager name
+
+### Structure
+- Length: 250-400 words, 3-4 paragraphs
+- Format: Professional business letter style
+- Tone: Confident but not arrogant, personalized but professional
+
+### Paragraphs
+1. Opening: Hook plus position plus why this company, 2-3 sentences
+2. Body 1: Strongest qualification match, 3-4 sentences
+3. Body 2: Additional qualifications and gap handling, 3-4 sentences
+4. Closing: Call to action plus enthusiasm, 2-3 sentences
+
+### Opening Strategies
+Choose one hook type:
+- Specific company knowledge
+- Mutual connection
+- Problem-solver framing
+- Impressive achievement
+- Industry insight
+
+Avoid openings that start with &quot;I am writing to apply for...&quot;, &quot;I am the perfect candidate...&quot;, or &quot;I saw your job posting on LinkedIn...&quot;.
+
+### Body Frameworks
+- Body 1 formula: Their need plus your exact experience plus specific result
+- Body 2: Add broader value or proactively address gaps with evidence of ramp-up ability
+
+### Closing
+- Express genuine enthusiasm for something specific
+- Reference a specific contribution you would make
+- Include a clear call to action
+- Thank the reader
+
+Avoid closings such as &quot;I look forward to hearing from you&quot;, &quot;Please find my resume attached&quot;, or &quot;I am available for an interview at your convenience&quot;.
+
+## 3. Academic Journal Workflow
+
+Use when the user is preparing an initial manuscript submission to a journal.
+
+### Required Inputs
+- Manuscript title
+- Target journal
+- 2-4 core contributions or innovation points
+- Corresponding author name, affiliation, and email
+
+### Strongly Recommended Inputs
+- One-sentence journal fit rationale
+- Brief methods summary
+- Brief key-results summary
+- Originality or exclusive-submission statement
+- Optional reviewer suggestions
+- Optional conflict-of-interest or ethics statement
+
+### Missing-Input Recovery
+If any required field is missing, do not output a fake journal-ready letter. State exactly which items are missing and offer to draft a partial shell only if the user explicitly wants one.
+
+### Output Structure
+1. Salutation to the editor
+2. Submission request with manuscript title and journal name
+3. Journal-fit paragraph
+4. Novelty or contribution paragraph
+5. Methods plus key-results paragraph
+6. Relevance, readership, or reproducibility paragraph
+7. Required declarations paragraph
+8. Optional reviewer or COI paragraph
+9. Professional closing with corresponding-author identity
+
+### Formatting Rules
+- Professional, restrained tone
+- 4-6 short paragraphs
+- No hype language such as &quot;groundbreaking&quot;, &quot;revolutionary&quot;, or &quot;game-changing&quot;
+- No claims not grounded in supplied manuscript information
+- No bullet lists in the final letter unless the user explicitly requests them
+
+### Drafting Steps
+1. Validate inputs; stop if required items are missing
+2. Build the journal-fit angle in 1-2 sentences connecting manuscript topic, journal scope, and expected readership
+3. Write the contribution core: what is new, why it matters, what prior gap it addresses
+4. Add concise methods and results evidence without turning it into a mini-abstract
+5. Add declarations: originality, author approval, and journal-specific statements such as ethics, consent, data availability, code availability, COI, or suggested reviewers
+
+### Journal-Specific Declaration Matrix
+- Basic engineering or methods journal: include originality, author approval, code or data availability if relevant
+- Biomedical or clinical journal: include originality, author approval, ethics or consent if relevant, COI, data availability
+- Computational journal: include originality, author approval, reproducibility or code availability if relevant
+
+If a declaration may be required but was not supplied, ask for it rather than inventing it.
+
+### Deterministic Rules
+- Keep paragraph order stable
+- Mention the journal name in the opening paragraph exactly once unless there is a clear need to repeat it
+- Keep reviewer suggestions and COI in the closing section, not the middle of the letter
+- If a quantitative result is not supplied, describe the contribution qualitatively instead of guessing numbers
+
+### Quality Checklist
+Before returning the letter, verify:
+- The journal fit is concrete
+- The novelty statement is specific
+- The methods and results paragraph is concise
+- Declarations are present or explicitly requested
+- The final tone sounds like editor-facing academic correspondence
+
+## 4. Error Handling
+
+- If required inputs are missing, state exactly which fields are missing and request only the minimum additional information
+- If the task goes outside the documented scope, stop instead of guessing or silently widening the assignment
+- If execution fails, report the failure point, summarize what can still be completed safely, and provide a manual fallback
+- Do not fabricate files, citations, data, search results, or execution outcomes</pre>
+</body>
+</html>

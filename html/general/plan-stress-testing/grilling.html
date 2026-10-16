@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>grilling</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">plan-stress-testing</a> / grilling</p><h1>grilling</h1><p class="meta">combined</p><p>The two copies describe the same &#x27;grilling&#x27; workflow but prescribe fundamentally different interaction patterns. The mattpocock/skills version mandates a &#x27;rounds&#x27; and &#x27;frontier&#x27; approach where all currently answerable questions are asked at once. The sickn33/agentic-awesome-skills version explicitly forbids this, stating &#x27;Asking multiple questions at once is bewildering&#x27; and requiring questions to be asked &#x27;one at a time&#x27;. Because they disagree on the core execution mechanic, crowning one would hide a valid alternative approach to the same task.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/productivity/grilling/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/grilling/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/productivity/grilling/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/grilling/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/grilling/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/grilling/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: grilling
+description: Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any &#x27;grill&#x27; trigger phrases.
+---
+
+Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it.
+
+**Interaction Mode:**
+You may choose one of two modes based on user preference or context:
+1. **Round-Based (Frontier):** Ask all questions whose prerequisites are settled in a single round. Number them and provide recommended answers. Wait for all answers before the next round.
+2. **Sequential (One-by-One):** Ask one question at a time. Wait for the user&#x27;s answer before asking the next. This is often less overwhelming for complex topics.
+
+**Process:**
+1. Identify the **frontier**: decisions whose prerequisites are already settled.
+2. For each question in the current set (whether one or a round):
+   - Word the question so &quot;yes&quot; accepts your recommended answer.
+   - Provide your recommended answer clearly.
+3. **Fact-Finding:** If a question requires a fact from the environment (filesystem, codebase, tools), dispatch a sub-agent or explore the codebase yourself. Do not ask the user for facts you can look up. Do not block the entire session on a single fact lookup; ask other independent questions while waiting.
+4. **Update Tree:** As the user answers, update the design tree. Settled decisions unblock new questions.
+5. **Completion:** The session is done when the frontier is empty (no more questions can be asked without new information) and the user confirms shared understanding.
+
+**Format (Round-Based Example):**
+```
+❓ **Q1** - **&lt;question title&gt;**: &lt;question body&gt;
+➡️ &lt;your recommended answer&gt;
+
+---
+
+❓ **Q2** - **&lt;question title&gt;**: &lt;question body&gt;
+➡️ &lt;your recommended answer&gt;
+```
+
+**Format (Sequential Example):**
+```
+❓ **Q1** - **&lt;question title&gt;**: &lt;question body&gt;
+➡️ &lt;your recommended answer&gt;
+
+[Wait for user response before proceeding to Q2]
+```</pre>
+</body>
+</html>

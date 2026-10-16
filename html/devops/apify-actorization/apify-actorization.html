@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>apify-actorization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">apify-actorization</a> / apify-actorization</p><h1>apify-actorization</h1><p class="meta">combined</p><p>The two copies describe the same Apify Actorization workflow, but each contains material steps the other lacks. The apify/agent-skills copy adds a required telemetry attribution flag (--user-agent apify-agent-skills/apify-actorization) on every apify command, a README-writing step for the Apify Store listing, and explicit security guidance about avoiding piped installs and token exposure. The sickn33/agentic-awesome-skills copy adds a Monetization section (Pay Per Event, Rental, Free), a detailed Pre-Deployment Checklist, and Apify MCP tool usage. Because crowning one copy would hide these real alternatives, the decision is combine.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/apify/agent-skills">apify/agent-skills</a></td><td><code>skills/apify-actorization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/apify-actorization/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/apify/agent-skills">apify/agent-skills</a></td><td><code>skills/apify-actorization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/apify-actorization/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/apify-actorization/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/apify-actorization/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: apify-actorization
+description: Convert existing projects into Apify Actors - serverless cloud programs. Actorize JavaScript/TypeScript (SDK with Actor.init/exit), Python (async context manager), or any language (CLI wrapper). Use when migrating code to Apify, wrapping CLI tools as Actors, or adding Actor SDK to existing projects.
+---
+
+# Apify Actorization
+
+Actorization converts existing software into reusable serverless applications compatible with the Apify platform. Actors are programs packaged as Docker images that accept well-defined JSON input, perform an action, and optionally produce structured JSON output.
+
+## Quick start
+
+1. Run `apify init --user-agent apify-agent-skills/apify-actorization` in project root
+2. Wrap code with SDK lifecycle (see language-specific section below)
+3. Configure `.actor/input_schema.json`
+4. Test with `apify run --input &#x27;{&quot;key&quot;: &quot;value&quot;}&#x27; --user-agent apify-agent-skills/apify-actorization`
+5. Deploy with `apify push --user-agent apify-agent-skills/apify-actorization`
+
+## When to use this skill
+
+- Converting an existing project to run on the Apify platform
+- Adding Apify SDK integration to a project
+- Wrapping a CLI tool or script as an Actor
+- Migrating a Crawlee project to Apify
+
+## Prerequisites
+
+Verify `apify` CLI is installed:
+
+```bash
+apify --help
+```
+
+If not installed, use one of these methods (listed in order of preference):
+
+```bash
+# Preferred: install via a package manager (provides integrity checks)
+npm install -g apify-cli
+
+# Or (Mac): brew install apify-cli
+```
+
+&gt; **Security note:** Do NOT install the CLI by piping remote scripts to a shell
+&gt; (e.g. `curl ... | bash` or `irm ... | iex`). Always use a package manager.
+
+Verify CLI is logged in:
+
+```bash
+apify info  # Should return your username
+```
+
+If not logged in, authenticate using OAuth (opens browser):
+
+```bash
+apify login
+```
+
+If browser login isn&#x27;t available (headless environment or CI), ensure the `APIFY_TOKEN` environment variable is exported (note: the variable is `APIFY_TOKEN`, not `APIFY_API_TOKEN`). The CLI reads it automatically - no explicit login needed. If the user doesn&#x27;t have a token, generate one at https://console.apify.com/settings/integrations.
+
+&gt; **Apify platform environment:** When the Actor runs on the Apify platform, `APIFY_TOKEN` is auto-injected as an environment variable and the Apify SDK reads it automatically — you do not need to pass it explicitly. Locally, `apify login` stores credentials in `~/.apify` and the SDK uses them.
+
+&gt; **Security note:** Avoid passing tokens as command-line arguments (e.g. `apify login -t &lt;token&gt;`).
+&gt; Arguments are visible in process listings and may be recorded in shell history.
+&gt; Prefer OAuth login or environment variables instead.
+&gt; Never log, print, or embed `APIFY_TOKEN` in source code or configuration files.
+&gt; Use a token with the minimum required permissions (scoped token) and rotate it periodically.
+
+### Telemetry attribution (required)
+
+Pass `--user-agent apify-agent-skills/apify-actorization` on **every** `apify` command you run from this skill - `apify init`, `apify run`, `apify push`, and the rest. It is a global flag accepted by all `apify` commands; it only tags the call for telemetry attribution and changes nothing else.
+
+```bash
+apify push --user-agent apify-agent-skills/apify-actorization
+```
+
+## Actorization checklist
+
+Copy this checklist to track progress:
+
+- [ ] Step 1: Analyze project (language, entry point, inputs, outputs)
+- [ ] Step 2: Run `apify init --user-agent apify-agent-skills/apify-actorization` to create Actor structure
+- [ ] Step 3: Apply language-specific SDK integration
+- [ ] Step 4: Configure `.actor/input_schema.json`
+- [ ] Step 5: Configure `.actor/output_schema.json` (if applicable)
+- [ ] Step 6: Update `.actor/actor.json` metadata
+- [ ] Step 7: Write README.md for Apify Store listing
+- [ ] Step 8: Test locally with `apify run --user-agent apify-agent-skills/apify-actorization`
+- [ ] Step 9: Deploy with `apify push --user-agent apify-agent-skills/apify-actorization`
+
+## Step 1: Analyze the project
+
+Before making changes, understand the project:
+
+1. **Identify the language** - JavaScript/TypeScript, Python, or other
+2. **Find the entry point** - The main file that starts execution
+3. **Identify inputs** - Command-line arguments, environment variables, config files
+4. **Identify outputs** - Files, console output, API responses
+5. **Check for state** - Does it need to persist data between runs?
+
+## Step 2: Initialize Actor structure
+
+Run in the project root:
+
+```bash
+apify init --user-agent apify-agent-skills/apify-actorization
+```
+
+This creates:
+- `.actor/actor.json` - Actor configuration and metadata
+- `.actor/input_schema.json` - Input definition for Apify Console
+- `Dockerfile` (if not present) - Container image definition
+
+## Step 3: Apply language-specific changes
+
+Choose based on your project&#x27;s language:
+
+- **JavaScript/TypeScript**: See [js-ts-actorization.md](references/js-ts-actorization.md)
+- **Python**: See [python-actorization.md](references/python-actorization.md)
+- **Other Languages (CLI-based)**: See [cli-actorization.md](references/cli-actorization.md)
+
+### Quick reference
+
+| Language | Install | Wrap Code |
+|----------|---------|-----------|
+| JS/TS | `npm install apify` | `await Actor.init()` ... `await Actor.exit()` |
+| Python | `pip install apify` | `async with Actor:` |
+| Other | Use CLI in wrapper script | `apify actor:get-input` / `apify actor:push-data` |
+
+## Steps 4-6: Configure schemas
+
+See [schemas-and-output.md](references/schemas-and-output.md) for detailed configuration of:
+- Input schema (`.actor/input_schema.json`)
+- Output schema (`.actor/output_schema.json`)
+- Actor configuration (`.actor/actor.json`)
+- State management (request queues, key-value stores)
+
+Validate schemas against `@apify/json_schemas` npm package.
+
+## Step 7: Write README
+
+**IMPORTANT:** Always generate a README.md as part of actorization. The README is the Actor&#x27;s landing page on Apify Store.
+
+## Step 8: Test Locally
+
+Run the actor with inline input (for JS/TS and Python actors):
+
+```bash
+apify run --input &#x27;{&quot;startUrl&quot;: &quot;https://example.com&quot;, &quot;maxItems&quot;: 10}&#x27; --user-agent apify-agent-skills/apify-actorization
+```
+
+Or use an input file:
+
+```bash
+apify run --input-file ./test-input.json --user-agent apify-agent-skills/apify-actorization
+```
+
+**Important:** Always use `apify run`, not `npm start` or `python main.py`. The CLI sets up the proper environment and storage.
+
+## Step 9: Deploy
+
+```bash
+apify push --user-agent apify-agent-skills/apify-actorization
+```
+
+This uploads and builds your actor on the Apify platform.
+
+## Monetization (Optional)
+
+After deploying, you can monetize your actor in the Apify Store. The recommended model is **Pay Per Event (PPE)**:
+
+- Per result/item scraped
+- Per page processed
+- Per API call made
+
+Configure PPE in the Apify Console under Actor &gt; Monetization. Charge for events in your code with `await Actor.charge(&#x27;result&#x27;)`.
+
+Other options: **Rental** (monthly subscription) or **Free** (open source).
+
+## Pre-Deployment Checklist
+
+- [ ] `.actor/actor.json` exists with correct name and description
+- [ ] `.actor/actor.json` validates against `@apify/json_schemas` (`actor.schema.json`)
+- [ ] `.actor/input_schema.json` defines all required inputs
+- [ ] `.actor/input_schema.json` validates against `@apify/json_schemas` (`input.schema.json`)
+- [ ] `.actor/output_schema.json` defines output structure (if applicable)
+- [ ] `.actor/output_schema.json` validates against `@apify/json_schemas` (`output.schema.json`)
+- [ ] `Dockerfile` is present and builds successfully
+- [ ] `Actor.init()` / `Actor.exit()` wraps main code (JS/TS)
+- [ ] `async with Actor:` wraps main code (Python)
+- [ ] Inputs are read via `Actor.getInput()` / `Actor.get_input()`
+- [ ] Outputs use `Actor.pushData()` or key-value store
+- [ ] `apify run` executes successfully with test input
+- [ ] `generatedBy` is set in actor.json meta section
+
+## Apify MCP Tools
+
+If MCP server is configured, use these tools for documentation:
+
+- `search-apify-docs` - Search documentation
+- `fetch-apify-docs` - Get full doc pages
+
+## Conflicts
+
+- **apify/agent-skills** requires `--user-agent apify-agent-skills/apify-actorization` on every `apify` command; **sickn33/agentic-awesome-skills** does not include this flag.
+- **apify/agent-skills** includes a README-writing step (Step 7); **sickn33/agentic-awesome-skills** does not.
+- **sickn33/agentic-awesome-skills** includes Monetization and Pre-Deployment Checklist sections; **apify/agent-skills** does not.
+- **apify/agent-skills** includes explicit security notes about piped installs and token handling; **sickn33/agentic-awesome-skills** does not.
+- **sickn33/agentic-awesome-skills** references Apify MCP tools; **apify/agent-skills** does not.</pre>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>image-processing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">batch-image-conversion</a> / image-processing</p><h1>image-processing</h1><p class="meta">combined</p><p>The two skills cover overlapping ground (Pillow-based image processing) but serve different primary workflows. The first skill (jezweb) focuses on a CLI tool (`img-process`) for individual operations like resizing, trimming, and generating OG cards, providing specific Python patterns for these tasks. The second skill (aipoch) focuses on a batch directory conversion script (`convert_images.py`) with specific flags for recursion, overwriting, and error handling, emphasizing a CI/automation pipeline. Neither is a strict reproduction of the other; the first lacks the batch directory logic and error-handling contract of the second, while the second lacks the specific utility commands (trim, OG card) and code patterns of the first. Combining them provides a complete toolkit for both single-file manipulation and batch directory processing.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/design-assets/skills/image-processing/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/image-processing/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/design-assets/skills/image-processing/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/image-processing/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: image-processing
+description: &quot;Process images for web development and batch conversion. Supports single-file operations (resize, trim, OG cards) via CLI or custom scripts, and batch directory conversion via Python. Uses Pillow.&quot;
+---
+
+# Image Processing
+
+This skill covers two main workflows:
+1. **Single-File Operations**: Resize, crop, trim, convert, and generate OG cards using the `img-process` CLI or custom Pillow scripts.
+2. **Batch Directory Conversion**: Convert entire directories of images to a target format with error handling and structure preservation.
+
+## Prerequisites
+
+```bash
+pip install Pillow
+```
+
+## Workflow 1: Single-File Operations
+
+Use the `img-process` CLI for standard tasks. For complex logic (compositing, watermarks), write a custom Pillow script.
+
+### CLI Examples
+
+```bash
+img-process resize hero.png --width 1920
+img-process convert logo.png --format webp
+img-process trim logo-raw.jpg -o logo-clean.png --padding 10
+img-process og-card -o og.png --title &quot;My App&quot;
+```
+
+### Custom Script Patterns
+
+**Save with Format-Specific Quality:**
+```python
+from PIL import Image
+import os
+
+def save_image(img, output_path, quality=None):
+    os.makedirs(os.path.dirname(output_path) or &quot;.&quot;, exist_ok=True)
+    kwargs = {}
+    ext = output_path.lower().rsplit(&quot;.&quot;, 1)[-1]
+
+    if ext == &quot;webp&quot;:
+        kwargs = {&quot;quality&quot;: quality or 85, &quot;method&quot;: 6}
+    elif ext in (&quot;jpg&quot;, &quot;jpeg&quot;):
+        kwargs = {&quot;quality&quot;: quality or 90, &quot;optimize&quot;: True}
+        if img.mode == &quot;RGBA&quot;:
+            bg = Image.new(&quot;RGB&quot;, img.size, (255, 255, 255))
+            bg.paste(img, mask=img.split()[3])
+            img = bg
+    elif ext == &quot;png&quot;:
+        kwargs = {&quot;optimize&quot;: True}
+
+    img.save(output_path, **kwargs)
+```
+
+**Trim Whitespace:**
+```python
+img = Image.open(input_path)
+if img.mode != &quot;RGBA&quot;:
+    img = img.convert(&quot;RGBA&quot;)
+bbox = img.getbbox()
+if bbox:
+    img = img.crop(bbox)
+```
+
+## Workflow 2: Batch Directory Conversion
+
+Use `scripts/convert_images.py` for batch processing. This script preserves directory structure and handles errors gracefully.
+
+### Usage
+
+```bash
+# Install dependencies if using the aipoch script structure
+pip install -r scripts/requirements.txt
+
+# Convert all images in &lt;src&gt; to WebP
+python scripts/convert_images.py \
+  --source-dir &quot;&lt;src&gt;&quot; \
+  --output-dir &quot;&lt;out&gt;&quot; \
+  --format webp \
+  --quality 80 \
+  --recursive \
+  --overwrite
+```
+
+### Batch Behavior
+- **Error Handling**: Continues processing remaining files if some fail; summarizes errors at the end.
+- **Structure**: Preserves relative paths from source to output.
+- **Formats**: 
+  - WebP: `method=6`.
+  - JPG: RGB mode, progressive output.
+  - PNG: Compression level derived from quality.
+
+## Output Format Guide
+
+| Use case | Format | Why |
+|----------|--------|-----|
+| Photos, hero images | WebP | Best compression |
+| Logos, icons | PNG | Lossless, alpha support |
+| Fallback | JPG | Universal support |
+| OG cards | PNG | Social platform compatibility |</pre>
+</body>
+</html>

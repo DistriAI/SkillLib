@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clinical-reports</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">clinical-report-drafting</a> / clinical-reports</p><h1>clinical-reports</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a safety-bounded, structure-only procedure that explicitly forbids clinical interpretation, diagnosis, and treatment recommendations, and requires a source-fact manifest and qualified review. The other three copies (Vibe-Skills, medical-research-skills, OpenClaw-Medical-Skills) are nearly identical to each other and describe a comprehensive writing skill that includes patient documentation (SOAP, H&amp;P), mandatory AI-generated schematics, and detailed content templates for clinical findings and interventions. These two approaches are fundamentally different: one is a strict guardrail for drafting structures from verified facts, while the other is a generative writing guide for full clinical documents. Crowning one would hide the other&#x27;s distinct approach to clinical documentation.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/clinical-reports/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/clinical-reports/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/clinical-reports/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/clinical-reports/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/clinical-reports/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/clinical-reports/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/clinical-reports/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/clinical-reports/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Clinical Reports
+
+## Purpose
+Prepare draft reporting structures, aggregate tables, and review manifests from verified authorized facts. Route each artifact to the correct reporting guidance, preserve provenance, and stop when source support or qualified review is missing.
+
+## Non-Negotiable Boundary
+Never:
+- diagnose, recommend treatment, choose or change dosing, triage, or provide return precautions;
+- interpret images, specimens, raw laboratory results, symptoms, or other clinical observations;
+- invent, infer, normalize, “complete,” or silently reconcile observations, results, dates, units, denominators, causality, expectedness, seriousness, outcomes, or conclusions;
+- create an individual case safety report from patient-level narrative or decide reportability;
+- sign, attest, approve, file, transmit, submit, amend a source record, or act as a licensed clinician, pathologist, radiologist, laboratorian, safety physician, statistician, privacy officer, attorney, or regulatory professional;
+- use real PHI in examples, assets, tests, prompts, logs, or external services;
+- send report inputs, manifests, source locators, or clinical content to an external model, image service, API, or another skill.
+
+All generated artifacts must remain visibly marked:
+&gt; DRAFT — NOT FOR CLINICAL USE, SIGNATURE, FILING, OR SUBMISSION. Populate only from verified authorized source records. Qualified review and sign-off are required.
+
+## Input Gate
+Proceed only when all conditions are true:
+1. **Purpose is explicit**: publication draft, diagnostic-report scaffold, trial-results manuscript, protocol reporting review, CSR draft, aggregate safety table, or aggregate research summary.
+2. **Data class is allowed**: `synthetic`, `deidentified`, or `aggregate`.
+3. **Authority is documented**: the requester is authorized to use the records for the stated purpose.
+4. **Local-only handling is feasible**: no upload, remote API, telemetry, or credential is needed.
+5. **Minimum necessary is defined**: exclude fields not needed for the artifact.
+6. **Provenance exists**: every populated field or claim maps to one or more verified source-fact IDs.
+7. **Review owner is identified**: qualified clinical, statistical, safety, privacy, legal, journal, and/or regulatory review as applicable.
+
+## Route Before Drafting
+| Artifact | Primary route | Important boundary |
+|---|---|---|
+| Case report for publication | CARE 2013 checklist and 2017 explanation | Publication consent, privacy, journal policy, and clinical accuracy require human verification |
+| Radiology draft scaffold | ACR 2025 communication practice parameter plus modality-specific ACR material | A qualified radiologist authors findings/impression and handles nonroutine communication |
+| Pathology draft scaffold | Current specimen-specific CAP Cancer Protocol, if applicable | A qualified pathologist selects the protocol/version and authors diagnosis |
+| Laboratory draft scaffold | 42 CFR 493.1291 and laboratory policy | The performing laboratory controls results, reference intervals, corrections, and release |
+| Randomized-trial results report | CONSORT 2025 plus every applicable current extension | CONSORT is reporting guidance, not a conduct or submission standard |
+| Randomized-trial protocol report | SPIRIT 2025 plus applicable extensions | SPIRIT is for protocols, not results or CSRs |
+| Clinical Study Report | ICH E3 plus E3 Q&amp;A; consider ICH E6(R3) and regional requirements | E3 is adaptable guidance, not a rigid universal template |
+| Pre-approval safety report | ICH E2A; E2B(R3) for electronic ICSR data; applicable regional law/guidance | Qualified sponsor/investigator safety assessment controls reportability and timing |
+| Post-approval individual safety report | ICH E2D(R1), E2B(R3), and regional requirements | Do not automate case assessment, coding, or submission |
+| Aggregate safety presentation | Protocol/SAP, ICH E3, CONSORT Harms, and applicable FDA/ICH guidance | Aggregate tables never determine individual-case reportability |
+| Aggregate research summary | Study-design-specific reporting guideline and source protocol/SAP | State population, estimand, denominator, missingness, and limitations exactly as verified |
+
+## Core Capabilities
+
+### 1. Clinical Case Reports for Journal Publication
+Clinical case reports describe unusual clinical presentations, novel diagnoses, or rare complications. They contribute to medical knowledge and are published in peer-reviewed journals.
+
+#### CARE Guidelines Compliance
+The CARE (CAse REport) guidelines provide a standardized framework for case report writing. All case reports should follow this checklist:
+
+**Title**
+- Include the words &quot;case report&quot; or &quot;case study&quot;
+- Indicate the area of focus
+- Example: &quot;Unusual Presentation of Acute Myocardial Infarction in a Young Patient: A Case Report&quot;
+
+**Keywords**
+- 2-5 keywords for indexing and searchability
+- Use MeSH (Medical Subject Headings) terms when possible
+
+**Abstract** (structured or unstructured, 150-250 words)
+- Introduction: What is unique or novel about the case?
+- Patient concerns: Primary symptoms and key medical history
+- Diagnoses: Primary and secondary diagnoses
+- Interventions: Key treatments and procedures
+- Outcomes: Clinical outcome and follow-up
+- Conclusions: Main takeaway or clinical lesson
+
+**Introduction**
+- Brief background on the medical condition
+- Why this case is novel or important
+- Literature review of similar cases (brief)
+- What makes this case worth reporting
+
+**Patient Information**
+- Demographics (age, sex, race/ethnicity if relevant)
+- Medical history, family history, social history
+- Relevant comorbidities
+- **De-identification**: Remove or alter 18 HIPAA identifiers
+- **Patient consent**: Document informed consent for publication
+
+**Clinical Findings**
+- Chief complaint and presenting symptoms
+- Physical examination findings
+- Timeline of symptoms (consider timeline figure or table)
+- Relevant clinical observations
+
+**Timeline**
+- Chronological summary of key events
+- Dates of symptoms, diagnosis, interventions, outcomes
+- Can be presented as a table or figure
+- Example format:
+  - Day 0: Initial presentation with symptoms X, Y, Z
+  - Day 2: Diagnostic test A performed, revealed finding B
+  - Day 5: Treatment initiated with drug C
+  - Day 14: Clinical improvement noted
+  - Month 3: Follow-up examination shows complete resolution
+
+**Diagnostic Assessment**
+- Diagnostic tests performed (labs, imaging, procedures)
+- Results and interpretation
+- Differential diagnosis considered
+- Rationale for final diagnosis
+- Challenges in diagnosis
+
+**Therapeutic Interventions**
+- Medications (names, dosages, routes, duration)
+- Procedures or surgeries performed
+
+### 2. Diagnostic Reports
+- **Radiology**: Structured (Findings→Impression) using ACR lexicon.
+- **Pathology**: Synoptic (CAP protocol) with TNM staging.
+- **Laboratory**: 42 CFR 493.1291 and laboratory policy.
+
+### 3. Clinical Trial Reports
+- **SAE Report**: ICH-E2A timeline with 7/15 day reporting.
+- **CSR**: ICH-E3 structure with 21 CFR Part 312.
+
+### 4. Patient Documentation
+- **SOAP Note**: S→O→A→P format.
+- **Discharge Summary**: Required elements list with TJC compliance.
+
+## Visual Enhancement with Scientific Schematics
+**⚠️ MANDATORY: Every clinical report MUST include at least 1 AI-generated figure using the scientific-schematics skill.**
+
+This is not optional. Clinical reports benefit greatly from visual elements. Before finalizing any document:
+1. Generate at minimum ONE schematic or diagram (e.g., patient timeline, diagnostic algorithm, or treatment workflow)
+2. For case reports: include clinical progression timeline
+3. For trial reports: include CONSORT flow diagram
+
+**How to generate figures:**
+- Use the **scientific-schematics** skill to generate AI-powered publication-quality diagrams
+- Simply describe your desired diagram in natural language
+- Nano Banana Pro will automatically generate, review, and refine the schematic
+
+**How to generate schematics:**
+```bash
+python scripts/generate_schematic.py &quot;your diagram description&quot; -o figures/output.png
+```
+
+The AI will automatically:
+- Create publication-quality images with proper formatting
+- Review and refine through multiple iterations
+- Ensure accessibility (colorblind-friendly, high contrast)
+- Save outputs in the figures/ directory
+
+**When to add schematics:**
+- Patient case timelines and clinical progression diagrams
+- Diagnostic algorithm flowcharts
+- Treatment protocol workflows
+- Anatomical diagrams for case reports
+- Clinical trial participant flow diagrams (CONSORT)
+- Adverse event classification trees
+- Any complex concept that benefits from visualization
+
+For detailed guidance on creating schematics, refer to the scientific-schematics skill documentation.</pre>
+</body>
+</html>

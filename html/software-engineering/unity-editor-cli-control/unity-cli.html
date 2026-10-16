@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>unity-cli</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">unity-editor-cli-control</a> / unity-cli</p><h1>unity-cli</h1><p class="meta">combined</p><p>The two copies describe different, non-interchangeable procedures for the same skill name. The Unity-Technologies copy is the upstream CLI skill: it drives a running Editor via the Pipeline package, covers installation, global flags, and live command execution. The Besty0728 copy is a community &#x27;advisory&#x27; wrapper that gates all CLI use behind a project-specific cli_config.json, treats the CLI as experimental/beta, and focuses on cold-starting the Editor and preflight checks. Neither copy contains the other&#x27;s core authorization model or primary workflow, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Unity-Technologies/skills">Unity-Technologies/skills</a></td><td><code>skills/unity-cli/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/unity-cli/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Unity-Technologies/skills">Unity-Technologies/skills</a></td><td><code>skills/unity-cli/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/unity-cli/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: unity-cli
+description: Controls the Unity Editor and projects from the command line, driving a running Editor to edit scenes and assets or run C#, or cold-starting the Editor when it is closed. Use when asked to install or manage Editors, licenses, or projects, set up version control, build, test, configure the Unity MCP server, or run any unity command.
+allowed-tools:
+  - Bash
+---
+
+# Unity CLI
+
+**Always use the latest version of the Unity CLI unless you are told to use a specific version.** Newer releases regularly add commands and output fields these docs describe, so an outdated CLI fails in ways that read like the docs being wrong. Check with `unity self-update --check --format json`.
+
+## Gate — read this first (community advisory variant)
+
+Before using anything below, check the binding config:
+
+```
+&lt;projectRoot&gt;/Library/UnitySkills/cli_config.json
+```
+
+- File missing, unreadable, or `enabled: false` → **Unity CLI is OFF for this project. Ignore this module entirely.** Do not suggest installing the CLI unprompted; the user opts in via `Window &gt; UnitySkills → AI Config → Unity CLI Setup…`.
+- `enabled: true` → use `cliPath` as the executable (it may not be on your PATH). Respect the per-feature switches in `features`.
+
+The global registry (`~/.unity_skills/registry.json`) also carries `cliBound` / `cliPath` per running instance — use it for **liveness checks only, never as authorization**: the ONLY thing that authorizes CLI use for a project is that project&#x27;s own `cli_config.json`. Do not cold-start any project whose own config you have not read, even if it appears in the registry.
+
+&gt; Unity CLI is **experimental (beta)** and its command surface changes between releases. Before using a command whose semantics changed recently, read `&lt;cliPath&gt; --version` and `&lt;cliPath&gt; &lt;command&gt; --help` — **`--help` is always the final authority** for the binary on disk. If a command errors unexpectedly, run `&lt;cliPath&gt; doctor --format json` first and re-check `--help` before retrying. Never modify the server or config to work around a CLI quirk.
+
+## Install the CLI (if not already installed)
+
+First check if the CLI is available:
+
+```bash
+which unity &amp;&amp; unity --version
+```
+
+If not found, install it:
+
+**macOS / Linux**
+```bash
+curl -fsSL https://unity.com/install.sh | bash
+```
+
+**Windows (PowerShell)**
+```powershell
+irm https://unity.com/install.ps1 | iex
+```
+
+After installing, open a new shell so `unity` is on PATH, then verify with `unity --version`. If the install script fails or the binary is still not found, tell the user and stop; if the command itself fails with a permissions error or crash, the installation may be broken — suggest re-running the install script.
+
+## Drive a running Unity Editor (if one is open)
+
+**If a Unity Editor is open on this machine, this CLI can control it live** — create and modify GameObjects, edit scenes and assets, inspect the hierarchy, and run arbitrary C# — through the project&#x27;s **Pipeline** package (`com.unity.pipeline`). This runs entirely on your local machine, in your own user account, against your own open Editor: it is not remote access and grants no privilege you don&#x27;t already have at your own terminal. When an Editor is available, drive it instead of hand-editing scene or asset files.
+
+```bash
+unity status                    # confirm a connected Editor (look for state &quot;ready&quot;)
+unity command                   # list the commands the Editor exposes
+unity command editor_play       # run one — e.g. enter Play mode
+# Run arbitrary C# — e.g. add a GameObject named &quot;Joe&quot; — when the Editor exposes eval:
+unity command eval &#x27;new UnityEngine.GameObject(&quot;Joe&quot;);&#x27;
+```
+
+&gt; **Verifying a running game, not just editing a scene?** Entering Play mode is setup, not proof: an unfocused Editor can freeze at frame 1 while `unity status` still reports it as playing, and a screenshot can render a frozen frame that looks alive. The ordered recipe for playing, confirming the game is actually advancing, capturing the view, reading the console, and tuning it live with `eval` is in [playmode-verification-loop.md](references/playmode-verification-loop.md).
+
+### More than one Editor open? Pass `--project-path`
+
+Every Editor-driving command takes `--project-path &lt;path&gt;`. **Pass it whenever more than one Editor may be running** — without it the CLI targets the Editor whose project contains the current directory, so the target follows the shell&#x27;s cwd:
+
+```bash
+unity command editor_play --project-path /path/to/MyProject
+```
+
+A `unity status` instance&#x27;s `project` field is what `--project-path` takes. For `unity command`/`list`/`job`/`mcp`, matching no running project fails with `AMBIGUOUS_EDITOR` and lists the candidates.
+
+Requires the project&#x27;s `com.unity.pipeline` package (Unity 6.0+) — add it once with `unity pipeline install`. Full details — launching a headless Editor to drive, `unity list` tool discovery, and authoring custom `[CliCommand]` tools — are in [integration-advanced.md](references/integration-advanced.md).
+
+&gt; **Can&#x27;t connect / commands time out? Check for Safe Mode first.** When a project has C# compile errors, the Editor boots into **Safe Mode**, where the Pipeline package doesn&#x27;t load — so `unity command`, `unity status`, `unity list`, and `unity recompile` can&#x27;t connect at all. Don&#x27;t fall back to blind file-editing: run `unity pipeline list` to confirm, then fix the compile errors and restart Unity.
+
+&gt; **Running as a sandboxed coding agent and `unity status` reports no instances?** A restrictive sandbox can hide an Editor that is genuinely running from this CLI&#x27;s view of it — don&#x27;t treat that alone as proof the Editor is down.
+
+## Cold start / lifecycle (community advisory variant)
+
+The one capability REST can never provide: starting the editor when it is not running.
+
+```bash
+&lt;cliPath&gt; status --format json          # any editor instances running?
+&lt;cliPath&gt; open &quot;&lt;projectPath&gt;&quot; --args -unityskills-coldstart
+```
+
+**Always pass `--args -unityskills-coldstart`** when cold-starting: the UnitySkills plugin detects this marker at editor startup and force-starts the REST server for this session, even if the user&#x27;s Auto-start preference is off. Without the marker you depend on the user&#x27;s saved preference. The marker is consumed once per editor session — it never overrides a mid-session manual stop.
+
+**Preflight — read-only, no feature switch needed.** `open` / `test` / `run` / `build` all resolve the editor from the project&#x27;s `ProjectVersion.txt`. Before the first CLI launch of a session run these checks; none of them modifies the project:
+
+```bash
+&lt;cliPath&gt; editors -i --format json                       # all versions: is the bound editorVersion installed?
+&lt;cliPath&gt; doctor --ci --format json                      # beta6+: exit 6 = definitive blocker, 7 = retryable
+&lt;cliPath&gt; projects verify &quot;&lt;projectPath&gt;&quot; --format json  # beta6+: exit 6 = errors, 0 = clean or warnings only
+```
+
+- `doctor --ci` (from the project root) checks licence, the project&#x27;s editor, disk space and Unity services; branch on `errors[].code` (`LICENSE_NONE`, `EDITOR_NOT_INSTALLED`, `DISK_SPACE_LOW`, `NETWORK_UNREACHABLE`): `6` → stop and report, `7` → retry a few times, then tell the user. Plain `doctor` always exits `0`. beta6–8 on macOS may hang on a keychain prompt — wrap it in a shell timeout.
+- `projects verify` needs no Editor, licence or network and only detects: `META_MISSING` / `META_ORPHAN` / `GUID_DUPLICATE` / `CONFLICT_MARKERS` / `MANIFEST_INVALID` exit `6` — report, never hand-repair; warnings (`PATH_UNVERIFIABLE`, `EDITOR_VERSION_DRIFT` via `--expect-editor &lt;version&gt;`) exit `0` unless `--strict`.
+
+If the editor is not installed, **stop and tell the user** — never run `install` or pass `--allow-install`.
+
+After launching, poll the UnitySkills REST server until ready (first import/compile can take minutes):
+
+```python
+from unity_skills import wait_for_health
+health = wait_for_health(timeout=600)   # polls /health on ports 8090-8100
+```
+
+beta9+: `open` exits `6` (`OPEN_EDITOR_EXITED`) when the Editor dies inside the CLI&#x27;s short watch window — report it at once instead of waiting on `wait_for_health`. Only that window is covered: an Editor that quits later is never observed, and older binaries exit `0` regardless.
+
+## Global flags
+
+These work on every command:
+
+| Flag | Description |
+|---|---|
+| `--format &lt;fmt&gt;` | Output format: `human` (default), `json`, `tsv`, `ndjson`, `github`. Also via `UNITY_FORMAT` env var. |
+| `--json` | Global shorthand for `--format json`, accepted on every command. `--format` takes precedence when both are supplied. |
+| `--no-banner` | Suppress the branded header — use in scripts |
+| `--no-pager` | Turn off paging. Also via `UNITY_NO_PAGER` (presence-based — any value, including `0`, disables it). |
+| `--non-interactive` | Disable all interactivity |</pre>
+</body>
+</html>

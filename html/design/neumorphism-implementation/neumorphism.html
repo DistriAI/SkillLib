@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>neumorphism</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">neumorphism-implementation</a> / neumorphism</p><h1>neumorphism</h1><p class="meta">combined</p><p>The two copies address different layers of the same task. The bergside copy is a design-system authoring workflow: it defines tokens, accessibility gates, component-state expectations, and a required output structure for writing neumorphism guidelines. The sickn33 copy is an implementation guide: it gives concrete CSS, SwiftUI, and Flutter code for dual-shadow extruded elements, pressed/inset states, and platform-specific tricks. Neither copy contains the other&#x27;s material steps; crowning one would hide either the implementation code or the design-system authoring process. They do not conflict on shared facts; they simply operate at different levels of abstraction.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/neumorphism/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/design-it/neumorphism/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/neumorphism/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/design-it/neumorphism/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/design-it/neumorphism/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/design-it/neumorphism/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Neumorphism Skill
+
+## Purpose
+Produce implementation-ready neumorphism (Soft UI) guidance: design-system rules plus concrete code for web and mobile.
+
+## Core Principles
+1. Unified surface color: background and elements share the exact same base color.
+2. Dual shadows: a light highlight on the side facing the light source and a dark shadow on the opposite side define the shape.
+3. No borders: the shape is entirely defined by shadows.
+4. Mid-tone neutrals only: avoid pure white or pure black so shadows and highlights remain visible.
+5. Rounded geometry: use pill shapes and rounded rectangles; sharp corners break the extruded-material illusion.
+
+## Design Tokens and Foundations
+- Define a base color token (e.g., #E6E2DD) and derive highlight and shadow tokens from it.
+- Specify typography: soft, rounded sans-serifs (e.g., Nunito, Quicksand) or a consistent mono/display pairing if the broader system requires it.
+- Define spacing, border-radius, and shadow offset/blur tokens before component-level guidance.
+- Anchor every rule to a token, threshold, or concrete example; avoid ambiguous adjectives.
+
+## Component-Level Rules
+- Define required states: default, hover, focus-visible, active/pressed, disabled, loading, error (as relevant).
+- For pressed/active states, switch from outer dual shadows to inset dual shadows.
+- Describe interaction behavior for keyboard, pointer, and touch.
+- State spacing, typography, and color-token usage explicitly.
+- Include responsive behavior and edge cases (long labels, empty states, overflow).
+
+## Web Implementation (CSS)
+- Use `box-shadow` with two values: a dark shadow offset toward the bottom-right and a light highlight offset toward the top-left.
+- For pressed/inset states, prefix both shadows with `inset`.
+- Ensure the element&#x27;s `background-color` matches the parent surface exactly.
+- Use `border-radius` to maintain the rounded, extruded look.
+
+## App Implementation
+### SwiftUI
+- Apply two `.shadow()` modifiers: one white (top-left) and one dark (bottom-right).
+- For inset/pressed states, simulate inner shadows using a ZStack or overlay of clipped, stroked shapes because SwiftUI lacks native inset shadows.
+- The view&#x27;s background color must match its parent&#x27;s background exactly.
+
+### Flutter
+- Use `BoxDecoration.boxShadow` with two `BoxShadow` entries: a dark shadow offset bottom-right and a light shadow offset top-left.
+- For pressed states, adjust offsets and opacities to simulate an inset effect.
+- Ensure the container color matches the parent surface.
+
+## Accessibility Requirements
+- Meet WCAG 2.2 AA contrast for text on the neumorphic surface.
+- Provide visible focus states that remain distinguishable from the shadow-based shape.
+- Use semantic HTML before ARIA; test labels with screen readers.
+- Ensure hit areas are large enough and not ambiguous.
+- Every accessibility statement must be testable in implementation.
+
+## Content and Tone
+- Write concise, confident, helpful, and clear guidance.
+- Pair every do-rule with at least one concrete don&#x27;t-example.
+- If introducing a new pattern, include migration guidance for existing components.
+
+## Anti-Patterns
+- Do not use pure white or pure black as the base color.
+- Do not add borders; rely on shadows for shape definition.
+- Do not use sharp corners on extruded elements.
+- Do not mix multiple visual metaphors within the same component.
+- Do not use decorative motion without purpose.
+- Do not create low-contrast text or ambiguous labels.
+
+## QA Checklist
+- [ ] Base color is a mid-tone neutral; shadows and highlights are visible.
+- [ ] Element background matches parent surface exactly.
+- [ ] Dual shadows (light and dark) are present and correctly offset.
+- [ ] Pressed/active state uses inset shadows.
+- [ ] All required interaction states are defined and implemented.
+- [ ] Keyboard focus is visible and distinguishable.
+- [ ] Text contrast meets WCAG 2.2 AA.
+- [ ] No borders are used on extruded elements.
+- [ ] Rounded corners are consistent across components.
+- [ ] Responsive behavior and edge cases are handled.
+- [ ] Accessibility labels are screen-reader tested.</pre>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>schema-markup-generator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">json-ld-schema-markup</a> / schema-markup-generator</p><h1>schema-markup-generator</h1><p class="meta">combined</p><p>The two copies overlap in purpose (generating JSON-LD structured data for rich results) but each contains material steps the other lacks. The notfair-plugin copy is a thin pointer to an external WORKFLOW.md and does not contain the implementation steps itself. The agentic-awesome-skills copy provides concrete implementation guidance, including a reusable Next.js JsonLd component, escaping of &#x27;&lt;&#x27; characters, and detailed schema examples for WebSite, SoftwareApplication, BlogPosting, FAQPage, HowTo, and BreadcrumbList. Crowning one copy would hide the other&#x27;s real alternative: a workflow-driven approach versus a component-driven implementation approach.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/schema-markup-generator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/schema-markup-generator/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/schema-markup-generator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/schema-markup-generator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/schema-markup-generator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/schema-markup-generator/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: schema-markup-generator
+description: Generate and implement JSON-LD structured data for rich results in Google Search. Supports FAQ, HowTo, Article, Product, LocalBusiness, WebSite, SoftwareApplication, BlogPosting, BreadcrumbList, and multi-type schemas. Validates against Google requirements and provides implementation guidance.
+---
+
+# Schema Markup Generator
+
+## When to Use
+- Use when asked to add schema markup, generate structured data, JSON-LD, rich snippets, FAQ schema, product markup, or any structured data task.
+- Use when adding or auditing JSON-LD schema for websites, SaaS apps, tools, articles, FAQs, breadcrumbs, or organization pages.
+- Use when schema must be implemented in Next.js App Router or validated against Google Rich Results and Schema.org tooling.
+
+## Implementation in Next.js App Router
+
+Create a reusable JsonLd component:
+
+```jsx
+// components/JsonLd.jsx
+export function JsonLd({ data }) {
+  const json = JSON.stringify(data).replace(/&lt;/g, &#x27;\\u003c&#x27;);
+  return (
+    &lt;script
+      type=&quot;application/ld+json&quot;
+      dangerouslySetInnerHTML={{ __html: json }}
+    /&gt;
+  );
+}
+```
+
+Use it in any page:
+
+```jsx
+import { JsonLd } from &#x27;@/components/JsonLd&#x27;;
+
+export default function MyPage() {
+  return (
+    &lt;&gt;
+      &lt;JsonLd data={mySchemaObject} /&gt;
+      {/* rest of page */}
+    &lt;/&gt;
+  );
+}
+```
+
+## Schema Types by Page Type
+
+### WebSite + Sitelinks Searchbox (homepage only)
+Provide a WebSite schema with name, url, description, and a potentialAction SearchAction with urlTemplate and query-input.
+
+### SoftwareApplication (tool / SaaS app pages)
+Provide a SoftwareApplication schema with name, applicationCategory, operatingSystem, url, description, offers, featureList, and provider.
+
+### Article / BlogPosting (blog posts)
+Provide a BlogPosting schema with headline, description, url, datePublished, dateModified, author, publisher, image, and mainEntityOfPage.
+
+### FAQPage (FAQ sections, tool help pages)
+Provide a FAQPage schema with a mainEntity array of Question objects, each with name and acceptedAnswer.
+
+### HowTo (step-by-step tool guides)
+Provide a HowTo schema with name, description, totalTime, and a step array of HowToStep objects with position, name, text, and optional image.
+
+### BreadcrumbList (all non-homepage pages)
+Provide a BreadcrumbList schema with an itemListElement array of ListItem objects with position, name, and item.
+
+### Product
+Provide a Product schema with name, description, image, sku, brand, and offers.
+
+### LocalBusiness
+Provide a LocalBusiness schema with name, address, geo, openingHoursSpecification, and telephone.
+
+## Validation
+- Validate generated JSON-LD against Google Rich Results Test and Schema.org validator.
+- Ensure all required properties for the chosen schema type are present.
+- Verify that the JSON is valid and properly escaped for HTML embedding.
+
+## Conflicts
+- nowork-studio/notfair-plugin delegates the entire procedure to an external WORKFLOW.md file and does not include inline implementation steps.
+- sickn33/agentic-awesome-skills provides inline implementation steps including a Next.js JsonLd component, JSON escaping, and concrete schema examples for multiple page types.</pre>
+</body>
+</html>

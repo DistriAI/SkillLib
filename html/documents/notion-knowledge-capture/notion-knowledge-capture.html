@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>notion-knowledge-capture</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">notion-knowledge-capture</a> / notion-knowledge-capture</p><h1>notion-knowledge-capture</h1><p class="meta">combined</p><p>The openai/skills and composio-community copies are identical and provide the core procedure, including a specific Codex MCP setup step. The Prat011 copy is a distinct, more detailed variant that omits the MCP setup but adds substantial material on content type structures, destination patterns, and indexing/organization that the other copies lack. Crowning one would hide the alternative approach and the extra structural guidance.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/notion-knowledge-capture/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>notion-knowledge-capture/SKILL.md</code></td></tr><tr><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>notion-knowledge-capture/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/notion-knowledge-capture/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>notion-knowledge-capture/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>notion-knowledge-capture/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: notion-knowledge-capture
+description: Capture conversations and decisions into structured Notion pages; use when turning chats/notes into wiki entries, how-tos, decisions, or FAQs with proper linking.
+metadata:
+  short-description: Capture conversations into structured Notion pages
+---
+
+# Knowledge Capture
+
+Convert conversations and notes into structured, linkable Notion pages for easy reuse.
+
+## Quick start
+1) Clarify what to capture (decision, how-to, FAQ, learning, documentation) and target audience.
+2) Identify the right database/template in `reference/` (team wiki, how-to, FAQ, decision log, learning, documentation).
+3) Pull any prior context from Notion with `Notion:notion-search` → `Notion:notion-fetch` (existing pages to update/link).
+4) Draft the page with `Notion:notion-create-pages` using the database’s schema; include summary, context, source links, and tags/owners.
+5) Link from hub pages and related records; update status/owners with `Notion:notion-update-page` as the source evolves.
+
+## Workflow
+### 0) If any MCP call fails because Notion MCP is not connected, pause and set it up:
+1. Add the Notion MCP:
+   - `codex mcp add notion --url https://mcp.notion.com/mcp`
+2. Enable remote MCP client:
+   - Set `[features].rmcp_client = true` in `config.toml` **or** run `codex --enable rmcp_client`
+3. Log in with OAuth:
+   - `codex mcp login notion`
+
+After successful login, the user will have to restart codex. You should finish your answer and tell them so when they try again they can continue with Step 1.
+
+### 1) Define the capture
+- Ask purpose, audience, freshness, and whether this is new or an update.
+- Determine content type: decision, how-to, FAQ, concept/wiki entry, learning/note, documentation page.
+
+### 2) Locate destination
+- Pick the correct database using `reference/*-database.md` guides; confirm required properties (title, tags, owner, status, date, relations).
+- If multiple candidate databases, ask the user which to use; otherwise, create in the primary wiki/documentation DB.
+
+### 3) Extract and structure
+- Extract facts, decisions, actions, and rationale from the conversation.
+- For decisions, record alternatives, rationale, and outcomes.
+- For how-tos/docs, capture steps, pre-reqs, links to assets/code, and edge cases.
+- For FAQs, phrase as Q&amp;A with concise answers and links to deeper docs.
+
+### 4) Create/update in Notion
+- Use `Notion:notion-create-pages` with the correct `data_source_id`; set properties (title, tags, owner, status, dates, relations).
+- Use templates in `reference/` to structure content (section headers, checklists).
+- If updating an existing page, fetch then edit via `Notion:notion-update-page`.
+
+### 5) Link and surface
+- Add relations/backlinks to hub pages, related specs/docs, and teams.
+- Add a short summary/changelog for future readers.
+- If follow-up tasks exist, create tasks in the relevant database and link them.
+
+## Content Types
+Choose appropriate structure based on content:
+- **Concept**: Overview → Definition → Characteristics → Examples → Use Cases → Related
+- **How-To**: Overview → Prerequisites → Steps (numbered) → Verification → Troubleshooting → Related
+- **Decision**: Context → Decision → Rationale → Options Considered → Consequences → Implementation
+- **FAQ**: Short Answer → Detailed Explanation → Examples → When to Use → Related Questions
+- **Learning**: What Happened → What Went Well → What Didn&#x27;t → Root Causes → Learnings → Actions
+
+## Destination Patterns
+- **General Wiki**: Standalone page → add to index → tag → link from related pages
+- **Project Wiki**: Child of project page → link from project overview → tag with project name
+- **Documentation Database**: Use properties (Title, Type, Category, Tags, Last Updated, Owner)
+- **Decision Log Database**: Use properties (Decision, Date, Status, Domain, Deciders, Impact)
+- **FAQ Database**: Use properties (Question, Category, Tags, Last Reviewed, Useful Count)
+
+## References and examples
+- `reference/` — database schemas and templates (e.g., `team-wiki-database.md`, `how-to-guide-database.md`, `faq-database.md`, `decision-log-database.md`, `documentation-database.md`, `learning-database.md`, `database-best-practices.md`).
+- `examples/` — capture patterns in practice (e.g., `decision-capture.md`, `how-to-guide.md`, `conversation-to-faq.md`).</pre>
+</body>
+</html>

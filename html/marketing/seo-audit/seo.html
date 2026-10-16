@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>seo</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">seo-audit</a> / seo</p><h1>seo</h1><p class="meta">combined</p><p>The three skills cover the same domain but operate at different levels of abstraction and contain material, non-overlapping procedures. The first is a strategic planning guide (workflow order, prioritization, product-led SEO). The second is a technical execution guide (Lighthouse audits, specific code snippets for robots.txt, sitemaps, and meta tags). The third is an orchestration framework (subagent delegation, industry detection, scoring methodology, and specific quality gates like the FAQ schema restriction). No single copy contains the full procedure of the others; combining them is necessary to capture the strategic, technical, and orchestration constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/strategies/structure/seo/SKILL.md</code></td></tr><tr><td><a href="https://github.com/addyosmani/web-quality-skills">addyosmani/web-quality-skills</a></td><td><code>skills/seo/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/seo/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/strategies/structure/seo/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/addyosmani/web-quality-skills">addyosmani/web-quality-skills</a></td><td><code>skills/seo/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/seo/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/seo/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/seo/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: seo-comprehensive
+description: Comprehensive SEO strategy, technical audit, and orchestration. Use for planning, technical execution, or full-site audits.
+---
+
+# Comprehensive SEO Skill
+
+This skill combines strategic planning, technical execution, and audit orchestration.
+
+## 1. Strategic Planning &amp; Prioritization
+
+**Workflow Order:**
+1. **Technical**: Fix crawlability, indexing, and sitemaps first.
+2. **On-Page**: Optimize metadata, structure, and schema.
+3. **Content**: Develop keyword clusters and optimize content.
+4. **Off-Page**: Build backlinks and authority.
+
+**Priorities:**
+- **P0 (Blocker)**: Crawlability, indexing, robots blocking.
+- **P1 (Core)**: Title, meta, schema, sitemap, internal links.
+- **P2 (Important)**: Open Graph, Twitter Cards, IndexNow.
+- **P3 (Nice to have)**: Rich results, sitelinks.
+
+**Product-Led SEO:**
+- Leverage existing product content (features, use cases).
+- Do SEO around product/users, not just industry keywords.
+
+## 2. Technical Execution &amp; Code Standards
+
+**Crawlability:**
+- **robots.txt**: Allow `/`, Disallow `/admin/`, `/api/`. Include `Sitemap:` directive.
+- **Meta Robots**: Use `index, follow` by default. Use `noindex` for private pages.
+- **Canonicals**: Use self-referencing canonicals to prevent duplicate content.
+
+**Sitemaps:**
+- Max 50,000 URLs or 50MB per file.
+- Include only canonical, indexable URLs.
+- Update `lastmod` accurately.
+
+**On-Page:**
+- **Title Tags**: 50-60 chars (linting proxy). Unique per page. Keyword near start.
+- **Meta Descriptions**: 150-160 chars (linting proxy). Compelling and unique.
+- **URLs**: Lowercase, hyphens, &lt;75 chars, no parameters if possible.
+
+## 3. Audit Orchestration &amp; Quality Gates
+
+**Orchestration Logic:**
+1. Detect business type (SaaS, Local, E-commerce, etc.).
+2. Delegate to subagents: technical, content, schema, sitemap, performance, visual, geo.
+3. Generate unified report with SEO Health Score (0-100).
+4. Create prioritized action plan (Critical -&gt; High -&gt; Medium -&gt; Low).
+
+**Quality Gates &amp; Constraints:**
+- **FAQ Schema**: Only for government/healthcare sites for Google rich results. Flag as Info for commercial sites (AI benefit only).
+- **HowTo Schema**: Do not recommend (deprecated).
+- **Core Web Vitals**: Use INP (Interaction to Next Paint), never FID.
+- **Thin Content**: Warning at 30+ location pages; Hard Stop at 50+ without justification.
+
+**Scoring Weights:**
+- Technical: 22%
+- Content: 23%
+- On-Page: 20%
+- Schema: 10%
+- Performance: 10%
+- AI Search: 10%
+- Images: 5%</pre>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>breadth-chart-analyst</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">market-breadth-analysis</a> / breadth-chart-analyst</p><h1>breadth-chart-analyst</h1><p class="meta">combined</p><p>The two copies describe the same breadth-chart analysis task but disagree on the primary data source and workflow. The tradermonty copy mandates fetching CSV data from public sources as the primary input and treats chart images as supplementary, while the LeoYeAI copy is image-first, instructing the agent to receive chart images, read a local methodology reference, and view sample assets. Because each copy contains material steps the other lacks (CSV fetching vs. image-based extraction and reference loading), crowning one would hide a real alternative procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/tradermonty/claude-trading-skills">tradermonty/claude-trading-skills</a></td><td><code>skills/breadth-chart-analyst/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/breadth-chart-analyst/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/tradermonty/claude-trading-skills">tradermonty/claude-trading-skills</a></td><td><code>skills/breadth-chart-analyst/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/breadth-chart-analyst/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Breadth Chart Analyst
+
+## Overview
+Analyze market breadth using two complementary charts: the S&amp;P 500 Breadth Index (200-Day MA based) for strategic positioning and the US Stock Market Uptrend Stock Ratio for tactical timing. All analysis and output are conducted in English.
+
+## When to Use
+- User provides breadth chart images for analysis
+- User requests market breadth assessment or positioning recommendations
+- User wants medium-term strategic and short-term tactical market outlook
+- User requests breadth analysis without chart images (CSV data mode)
+
+## Core Principles
+1. Dual-Timeframe Analysis: Combine strategic and tactical perspectives
+2. Backtested Strategy Focus: Apply proven systematic strategies
+3. Objective Signal Identification: Use clearly defined thresholds and transitions
+4. English Communication: All analysis and reports in English
+5. Actionable Recommendations: Specific positioning guidance for different investor types
+
+## Chart Types and Purposes
+
+### Chart 1: S&amp;P 500 Breadth Index (200-Day MA Based)
+**Purpose**: Medium to long-term strategic market positioning
+
+**Key Elements**:
+- 8-Day MA (Orange Line): Short-term breadth trend, primary entry signal generator
+- 200-Day MA (Green Line): Long-term breadth trend, primary exit signal generator
+- Red Dashed Line (73%): Average peak level - market overheating threshold
+- Blue Dashed Line (23%): Average 8MA trough level - extreme oversold
+- Triangles: Purple ▼ = 8MA troughs, Blue ▼ = 200MA troughs, Red ▲ = 200MA peaks
+- Pink Background: Downtrend periods
+
+**Backtested Strategy**:
+- BUY: When 8MA reverses from a trough (especially below 23%)
+- SELL: When 200MA forms a peak (typically near/above 73%)
+
+### Chart 2: US Stock Market - Uptrend Stock Ratio
+**Purpose**: Short-term tactical timing and swing trading
+
+**Key Elements**:
+- Uptrend Stock Definition: Stocks above 200MA/50MA/20MA with positive 1-month performance
+- Green Regions: Market in uptrend phase
+- Red Regions: Market in downtrend phase
+- ~10% Level: Short-term bottom, extreme oversold
+- ~40% Level: Short-term top, market overheating
+
+**Swing Trading Strategy**:
+- ENTER LONG: When color changes from red to green (especially from &lt;10-15% levels)
+- EXIT LONG: When color changes from green to red (especially from &gt;35-40% levels)
+- Timeframe: Days to weeks
+
+## Analysis Workflow
+
+### Step 1: Determine Data Source
+- If user provides chart images, use image-based analysis (Step 2A)
+- If no chart images are provided, fetch CSV data from public sources (Step 2B)
+
+### Step 2A: Image-Based Analysis
+1. Confirm receipt of chart image(s) and identify which chart(s) are provided
+2. Read the comprehensive breadth chart methodology from references/breadth_chart_methodology.md
+3. Review sample charts in assets/ for reference on chart format and visual elements
+4. Extract current readings from the chart image:
+   - Current 8MA level (orange line) and 200MA level (green line)
+   - 8MA and 200MA slopes (rising, falling, or flat)
+   - Distance from 73% and 23% thresholds
+   - Most recent date visible on the chart
+5. CRITICAL: Focus on the rightmost 3-5 data points for latest trend direction
+   - Confirm line colors: 8MA = ORANGE, 200MA = GREEN
+   - Analyze the very latest trajectory of each line
+6. Identify signals based on thresholds and transitions
+
+### Step 2B: CSV Data Analysis
+1. Fetch CSV data from public sources:
+   - Market Breadth: tradermonty.github.io/market-breadth-analysis/market_breadth_data.csv
+   - Uptrend Ratio: tradermonty/uptrend-dashboard/data/uptrend_ratio_timeseries.csv
+   - Sector Summary: tradermonty/uptrend-dashboard/data/sector_summary.csv
+2. Extract current readings from CSV data:
+   - 200-Day MA, 8-Day MA, Trend, Dead Cross status
+   - Current ratio, 10MA, slope, trend (UP/DOWN), color (GREEN/RED)
+   - Per-sector ratio, trend, status (overbought/oversold)
+3. Identify signals based on thresholds and transitions
+
+### Step 3: Signal Identification
+- Identify buy/sell signals based on backtested strategy rules
+- Note proximity to key thresholds (73%, 23%, ~10%, ~40%)
+- Identify recent transitions (red to green, green to red)
+
+### Step 4: Scenario Analysis
+- Develop scenario analysis with probabilities
+- Consider both strategic and tactical perspectives
+- Identify risks and potential catalysts
+
+### Step 5: Positioning Recommendations
+- Provide specific positioning guidance for different investor types
+- Include entry/exit levels and timeframes
+- Note risk management considerations
+
+## Output
+Generate markdown analysis reports saved to the reports/ directory:
+- Chart 1 only: breadth_200ma_analysis_[YYYY-MM-DD].md
+- Chart 2 only: uptrend_ratio_analysis_[YYYY-MM-DD].md
+- Both charts: breadth_combined_analysis_[YYYY-MM-DD].md
+
+Reports include executive summaries, current readings, signal identification, scenario analysis with probabilities, and actionable positioning recommendations.
+
+## Conflicts
+- tradermonty/claude-trading-skills mandates CSV data as the PRIMARY source and requires fetching it before any image analysis; LeoYeAI/openclaw-master-skills begins with image receipt and does not include a CSV fetching step
+- LeoYeAI/openclaw-master-skills requires reading a local methodology reference and viewing sample chart assets; tradermonty/claude-trading-skills does not reference these local files</pre>
+</body>
+</html>

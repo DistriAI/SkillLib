@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>handoff-spec</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">spec-handoff</a> / handoff-spec</p><h1>handoff-spec</h1><p class="meta">combined</p><p>The two copies use the same name for two different tasks. The dzhng/skills copy is a procedure for updating a living spec so a cold agent on another machine can continue mid-implementation work. The Owl-Listener copy is a template for a design-to-engineering handoff document containing visual, interaction, content, asset, and edge-case specifications. They overlap only in the broad idea of handing off work, but each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/handoff-spec/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>design-ops/skills/handoff-spec/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/handoff-spec/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>design-ops/skills/handoff-spec/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Handoff Spec
+
+Use this skill to create a handoff that lets the next implementer continue the work without the original context.
+
+## 1. Determine the handoff type
+- If the work is mid-implementation and the next session starts cold on another machine or agent, follow the spec-update procedure.
+- If engineering is picking up a finished design, follow the design-handoff procedure.
+
+## 2. Spec-update procedure (mid-implementation handoff)
+- Collect what the current session knows that the spec does not yet say.
+- Record what is done, what is half-done and exactly where it stopped, and what is next.
+- Record decisions and corrections made along the way, and how the work should be done.
+- Record calls made where the user was silent, and anything still waiting on the user.
+- Record what is known to be broken or unverified, with findings already gathered.
+- Record anything that lives only on this machine and the next session needs: unpushed branches, uncommitted work, scratch results worth keeping.
+- Write this into the spec&#x27;s own handoff section in place; the spec stays one current account, not a transcript with a new note on top.
+- Push so everything the spec points at exists on the remote.
+- Done when a fresh agent, given only the repository, would pick the same next step and would not repeat a question already answered.
+
+## 3. Design-handoff procedure (design to engineering)
+- Create a handoff document that gives developers everything needed to implement the design accurately.
+- Include visual specifications: spacing and sizing, color values (token names), typography, border radius, shadows, opacity, and responsive breakpoint behavior.
+- Include interaction specifications: state definitions, transitions and animations, gesture behaviors, and keyboard interactions.
+- Include content specifications: character limits, dynamic content rules, localization considerations, and empty/loading/error state content.
+- Include asset delivery: icons, images, fonts, and custom illustrations or graphics.
+- Include edge cases: minimum and maximum content scenarios, responsive behavior at each breakpoint, browser/device-specific considerations, and accessibility requirements.
+- Include implementation notes: component reuse suggestions, data structure assumptions, API dependencies, and performance considerations.
+- Use design tokens, not raw values.
+- Annotate behavior, not just appearance.
+- Include all states, not just the happy path.
+- Provide redlines for complex layouts.
+- Walk through the handoff with the developer.
+
+## Conflicts
+- dzhng/skills: Update the spec in place with session state, decisions, blockers, and machine-local artifacts, then push to the remote.
+- Owl-Listener/designer-skills: Write a design handoff document covering visual specs, interactions, content rules, assets, edge cases, and implementation notes.</pre>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>release-it</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">production-resilience</a> / release-it</p><h1>release-it</h1><p class="meta">combined</p><p>The two copies overlap on the same topic (production reliability patterns) but are not interchangeable. The wondelai copy is a self-contained, detailed framework with a scoring rubric, six areas, and concrete parameter examples. The ciembor copy is a thin router that defers to external files (release-it.mini.md and release-it.md) and does not contain the procedure itself. Crowning one would hide a real alternative: the wondelai copy provides the actual steps, while the ciembor copy provides a different workflow (read mini rules first, consult full reference only when needed) and a different framing (Nygard-inspired rules).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wondelai/skills">wondelai/skills</a></td><td><code>plugins/systems-architecture/skills/release-it/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ciembor/agent-rules-books">ciembor/agent-rules-books</a></td><td><code>release-it/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wondelai/skills">wondelai/skills</a></td><td><code>plugins/systems-architecture/skills/release-it/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ciembor/agent-rules-books">ciembor/agent-rules-books</a></td><td><code>release-it/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wondelai/skills">wondelai/skills</a></td><td><code>release-it/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wondelai/skills">wondelai/skills</a></td><td><code>plugins/wondelai-skills/skills/release-it/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: release-it
+description: &#x27;Build production-ready systems with stability patterns: circuit breakers, bulkheads, timeouts, and retry logic. Use when the user mentions &quot;production outage&quot;, &quot;circuit breaker&quot;, &quot;deployment pipeline&quot;, &quot;chaos engineering&quot;, &quot;retry storm&quot;, &quot;health checks&quot;, &quot;my service keeps crashing&quot;, &quot;prevent cascading failures&quot;, or &quot;make it resilient&quot;. Also trigger when designing resilient microservices, planning zero-downtime deployments, or capacity-planning for peak load. Covers stability patterns, capacity planning, deploy/release decoupling, and observability.&#x27;
+license: MIT
+---
+
+# Release It! Framework
+
+Framework for designing, deploying, and operating production-ready software. Production is hostile, and systems must expect and handle failure at every level.
+
+## Core Principle
+
+Every system will eventually be pushed beyond its design limits. The question is not whether failures happen, but whether your system degrades gracefully or collapses catastrophically.
+
+## Workflow
+
+1. **Quick Diagnostic (Score 8/8):** Score the system by answering yes/no to 8 checks: timeouts, circuit breakers, bulkheads, zero-downtime deploy, deep health checks, correlated telemetry, load-tested past peak, failure injection. 1 point per &quot;yes&quot;. Bands: 7-8 = every integration point is bounded, isolated, observable, and deploy/release are decoupled; 4-5 = some patterns present but ≥3 diagnostic rows fail; ≤2 = relies on the happy path with no breakers, no capacity model, no failure testing. Always state the current score, the failing rows, and the specific fix for each.
+2. **Stability Anti-Patterns:** Walk every integration point and identify which anti-pattern it enables. Key anti-patterns: unbounded result sets, slow responses, blocked threads, retry storms, self-denial attacks. Close the specific crack rather than hardening at random.
+3. **Stability Patterns:** Counter each anti-pattern with a stability pattern. Circuit Breaker: three states (closed, open, half-open) — trips after threshold failures, periodically tests recovery. Timeouts: every outbound call needs connect AND read timeouts, propagated up the call chain. Retry with exponential backoff + jitter prevents thundering herd. Fail Fast: reject requests you know will fail. Steady State: design automatic cleanup for logs, sessions, temp files. Let It Crash: a clean restart often beats limping along in an unknown state.
+4. **Capacity and Availability:** Capacity is multi-dimensional. Plan for peak load, pre-scale before known events, and coordinate launches with capacity planning.
+5. **Deploy/Release Decoupling:** Zero-downtime deployments. Decouple deploy from release so you can roll back without user impact.
+6. **Observability:** Correlated telemetry. Deep health checks. Page on the breaker staying open, not on it opening.
+
+## Code Applications
+
+| Context | Guard/Pattern | Example |
+|---------|---------------|---------|
+| HTTP calls | Timeout + circuit breaker | Wrap all external calls with timeout + circuit breaker |
+| Database queries | Result set limits | Add LIMIT; paginate all list endpoints |
+| Thread pools | Isolate pools per dependency | Separate pool for payment gateway vs. search |
+| Service calls | Circuit Breaker | Open after 5 failures in 60s; half-open after 30s |
+| Resource isolation | Bulkhead | Dedicated connection pools for critical vs. non-critical |
+| Network calls | Timeout with propagation | Connect 1s, read 5s; propagate deadline downstream |
+| Retries | Backoff + jitter + budget | Base 100ms, max 3 retries, 20% fleet retry budget |
+| Data cleanup | Steady State | Purge sessions &gt;24h; rotate logs at 500MB |
+| Marketing events | Coordinate launches with capacity planning | Pre-scale before Black Friday; queue coupon redemptions |
+
+## Conflicts
+
+- **ciembor/agent-rules-books** instructs the agent to read `release-it.mini.md` before making decisions and to use `release-it.md` only as a deeper reference. This skill does not include those external files; the full framework is provided inline above.
+- **wondelai/skills** provides the full framework inline with a scoring rubric and concrete parameter examples. The ciembor copy does not include these details and defers to external files.
+
+## References
+
+See [references/anti-patterns.md](references/anti-patterns.md) when triaging an outage or hardening an integration point.
+See [references/stability-patterns.md](references/stability-patterns.md) when implementing a breaker or tuning thresholds.</pre>
+</body>
+</html>

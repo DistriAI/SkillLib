@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>code-simplification</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">code-simplification</a> / code-simplification</p><h1>code-simplification</h1><p class="meta">combined</p><p>The copies overlap heavily on the core goal (preserve behavior, improve readability, use Chesterton&#x27;s Fence), but they disagree on the required workflow and deliverables. addyosmani and sickn33 share the same five-principle, pattern-table process, while mohitagw15856 adds a distinct &#x27;removal ledger&#x27;, explicit &#x27;required inputs&#x27;, and a &#x27;one hunt-class per pass&#x27; discipline that the others lack. Crowning one copy would hide the ledger-based alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/addyosmani/agent-skills">addyosmani/agent-skills</a></td><td><code>skills/code-simplification/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-method/skills/code-simplification/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/code-simplification/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/addyosmani/agent-skills">addyosmani/agent-skills</a></td><td><code>skills/code-simplification/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-method/skills/code-simplification/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/code-simplification/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/code-simplification/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/code-simplification/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/code-simplification/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Code Simplification
+
+Simplify code by reducing complexity while preserving exact behavior. The goal is code that is easier to read, understand, modify, and debug.
+
+## When to Use
+- After a feature is working and tests pass, but the implementation feels heavier than it needs to be
+- During code review when readability or complexity issues are flagged
+- When refactoring code written under time pressure or AI-generated code that is over-engineered
+
+## When NOT to Use
+- Code is already clean and readable
+- You don&#x27;t understand what the code does yet
+- The code is performance-critical and the &quot;simpler&quot; version would be measurably slower
+
+## Required Inputs
+- The code to simplify
+- What must not change (public API, behavior, performance)
+- Test coverage status
+
+## The Process
+
+### Step 1: Understand Before Touching (Chesterton&#x27;s Fence)
+Before changing or removing anything, understand why it exists. Check git blame and history for the original context. If you can&#x27;t answer why the code is shaped that way, read more context first.
+
+### Step 2: Identify Simplification Opportunities
+Scan for these patterns in order of payoff:
+1. **Speculative generality** — interfaces with one implementation, parameters always called with the same value, config options no caller sets.
+2. **Indirection without insulation** — layers that only forward, wrappers calling one function, factories returning one type.
+3. **Dead and duplicate paths** — unreachable branches, local re-implementations of existing utilities.
+4. **Cleverness taxing readers** — nested ternaries, reduces that should be loops, regexes doing multiple jobs.
+5. **Flatten control flow** — guard clauses over nested ifs, early returns over else-pyramids.
+
+### Step 3: Apply Simplifications
+- Preserve behavior exactly: all inputs, outputs, side effects, and error behavior must remain identical.
+- Follow project conventions: match the codebase&#x27;s style for imports, naming, and error handling.
+- Prefer clarity over cleverness: explicit code is better than compact code when the compact version requires a mental pause.
+- Maintain balance: don&#x27;t inline too aggressively, combine unrelated logic, or optimize for line count.
+- Scope to what changed: avoid drive-by refactors of unrelated code.
+- One hunt-class per pass where the code is load-bearing: remove speculation, verify; then collapse indirection, verify.
+
+### Step 4: Verify
+- Run the full relevant test suite before AND after simplification.
+- If coverage is thin over the code being simplified, add pinning tests first.
+- For exported/shared code, check callers across the codebase.
+
+## Output Format
+
+### Simplification: [target]
+
+**Verification:** [suite/build run before → after: identical] · pinning tests added: [n or none-needed because…]
+
+**Removal ledger**
+| What was removed/flattened | Class | Why safe | Future foreclosed (honest) |
+|---|---|---|---|
+
+**Kept deliberately:** [the weird-but-load-bearing bits, with their Chesterton evidence]
+**Size:** [LOC/complexity before → after]
+
+## Quality Checks
+- [ ] Full verification ran before and after — identical behaviour, evidenced
+- [ ] Thinly-tested code got pinning tests before simplification
+- [ ] Every removal states the future it forecloses
+- [ ] Strange code was history-checked before deletion
+- [ ] The result is simpler for a READER, not just shorter
+
+## Anti-Patterns
+- Do not simplify and change behaviour in one pass
+- Do not delete weirdness without checking why it&#x27;s weird
+- Do not confuse terse with simple
+- Do not remove flexibility that&#x27;s actually on the roadmap
+- Do not skip the ledger</pre>
+</body>
+</html>

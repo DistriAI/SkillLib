@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>joint-calling</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">joint-variant-calling</a> / joint-calling</p><h1>joint-calling</h1><p class="meta">combined</p><p>The two skills cover the same GATK joint-calling pipeline but have distinct, non-overlapping material. The first copy is a procedural runbook with specific commands for CombineGVCFs, GenomicsDBImport, GenotypeGVCFs, and VQSR/Hard Filtering. The second copy is a conceptual guide that adds the GLnexus/DeepVariant alternative, explains the &#x27;N+1&#x27; problem, and provides critical warnings about the difference between joint genotyping and merging VCFs (the `./.` vs `0/0` distinction). Neither copy contains the other&#x27;s unique steps or constraints, so crowning one would hide a real alternative workflow (GLnexus) and important theoretical context.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/joint-calling/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/joint-calling/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/joint-calling/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/joint-calling/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: bio-variant-calling-joint-calling
+description: Joint genotype calling across multiple samples using GATK or GLnexus. Essential for cohort studies and VQSR.
+tool_type: cli
+primary_tool: GATK
+---
+
+# Joint Calling
+
+Call variants jointly across multiple samples for improved accuracy and consistent genotyping.
+
+## Core Principle
+
+**Never merge single-sample VCFs.** Use gVCFs to ensure a squared-off genotype matrix where `0/0` (hom-ref) is distinct from `./.` (no data). Joint genotyping rescues low-coverage het sites by borrowing evidence across the cohort.
+
+## Workflow Overview
+
+1. **Per-Sample gVCF Generation**: `gatk HaplotypeCaller -ERC GVCF` (or `deepvariant --output_gvcf`).
+2. **Consolidation**: 
+   - Small cohorts (&lt;100): `gatk CombineGVCFs`
+   - Large cohorts (&gt;100): `gatk GenomicsDBImport` (per chromosome for parallelism)
+   - DeepVariant cohorts: `glnexus_cli --config DeepVariantWGS`
+3. **Joint Genotyping**: `gatk GenotypeGVCFs` (or `glnexus_cli` for DeepVariant).
+4. **Filtering**: VQSR (for &gt;30 samples) or Hard Filtering.
+
+## Step 1: Per-Sample gVCF Generation
+
+```bash
+gatk HaplotypeCaller \
+    -R reference.fa \
+    -I sample1.bam \
+    -O sample1.g.vcf.gz \
+    -ERC GVCF
+```
+
+## Step 2: Consolidation
+
+### Option A: CombineGVCFs (Small Cohorts)
+
+```bash
+gatk CombineGVCFs \
+    -R reference.fa \
+    -V sample1.g.vcf.gz \
+    -V sample2.g.vcf.gz \
+    -O cohort.g.vcf.gz
+```
+
+### Option B: GenomicsDBImport (Large Cohorts)
+
+```bash
+# Create sample map
+ls *.g.vcf.gz | while read f; do echo -e &quot;$(basename $f .g.vcf.gz)\t$f&quot;; done &gt; sample_map.txt
+
+# Import per chromosome
+gatk GenomicsDBImport \
+    --sample-name-map sample_map.txt \
+    --genomicsdb-workspace-path genomicsdb_chr1 \
+    -L chr1
+```
+
+### Option C: GLnexus (DeepVariant)
+
+```bash
+glnexus_cli --config DeepVariantWGS --reference reference.fa --output cohort.vcf.gz *.g.vcf.gz
+```
+
+## Step 3: GenotypeGVCFs
+
+```bash
+gatk GenotypeGVCFs \
+    -R reference.fa \
+    -V gendb://genomicsdb_chr1 \
+    -O chr1.vcf.gz
+```
+
+## Step 4: Filtering
+
+### VQSR (Recommended for &gt;30 Samples)
+
+```bash
+gatk VariantRecalibrator \
+    -R reference.fa \
+    -V cohort.vcf.gz \
+    --resource:hapmap,known=false,training=true,truth=true,prior=15.0 hapmap.vcf.gz \
+    --resource:omni,known=false,training=true,truth=false,prior=12.0 omni.vcf.gz \
+    --resource:1000G,known=false,training=true,truth=false,prior=10.0 1000G.vcf.gz \
+    --resource:dbsnp,known=true,training=false,truth=false,prior=2.0 dbsnp.vcf.gz \
+    -an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR \
+    -mode SNP \
+    -O snps.recal \
+    --tranches-file snps.tranches
+
+gatk ApplyVQSR \
+    -R reference.fa \
+    -V cohort.vcf.gz \
+    --recal-file snps.recal \
+    --tranches-file snps.tranches \
+    -mode SNP \
+    --truth-sensitivity-filter-level 99.5 \
+    -O cohort.snps.vcf.gz
+```
+
+### Hard Filtering (Small Cohorts)
+
+```bash
+gatk VariantFiltration \
+    -R reference.fa \
+    -V cohort.vcf.gz \
+    --filter-expression &quot;QD &lt; 2.0&quot; \
+    --filter-name &quot;LowQD&quot; \
+    -O cohort.filtered.vcf.gz
+```</pre>
+</body>
+</html>

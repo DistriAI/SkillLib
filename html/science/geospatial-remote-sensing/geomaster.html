@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>geomaster</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">geospatial-remote-sensing</a> / geomaster</p><h1>geomaster</h1><p class="meta">combined</p><p>The K-Dense copy is a rigorous, versioned procedure that emphasizes provenance, CRS verification, alignment, and safe use of bundled helpers, while the Vibe-Skills copy is a broad catalog of installation commands and illustrative examples (including Earth Engine and a naive NDVI snippet) that the K-Dense copy explicitly warns against. Each contains material steps the other lacks, and they disagree on how to handle CRS and NDVI, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/geomaster/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/geomaster/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/geomaster/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/geomaster/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: geomaster
+description: Geospatial research workflows for remote sensing, vector and raster GIS, spatial statistics, terrain and network analysis, and machine learning for Earth observation.
+license: MIT License
+metadata:
+  version: &quot;1.5&quot;
+  skill-author: K-Dense Inc.
+---
+
+# GeoMaster
+
+Geospatial analysis across vector/raster GIS, remote sensing, spatial ML, terrain, networks, and scientific applications. Start with the relevant workflow, inspect input provenance, and load only the reference needed for the task.
+
+## Installation
+
+Set up a dedicated environment. Install only the workflow&#x27;s optional dependencies.
+
+```bash
+uv venv --python 3.13
+uv pip install geopandas==1.2.0 rasterio==1.5.2 shapely==2.1.2 pyproj==3.8.0
+uv pip install rioxarray==0.23.0 xarray==2026.9.0 &#x27;dask[array]&#x27; scikit-learn==1.9.1
+uv pip install pystac-client==0.9.0 planetary-computer==1.0.0 odc-stac
+```
+
+For native GIS applications, point cloud processing, or additional languages, install the required runtimes separately (e.g., conda-forge for GDAL/PDAL, R packages for sf/terra, Julia packages for ArchGDAL).
+
+## Workflow
+
+1. Record product/collection ID, acquisition time, processing baseline, license, band names, scale/offset, QA meaning, horizontal/vertical CRS and units.
+2. Verify CRS from authoritative metadata. `set_crs` labels coordinates; `to_crs` transforms them. Never infer an unknown CRS from plausible bounds.
+3. Align extent, affine transform, dimensions, pixel registration and resolution. Reproject categorical masks with nearest-neighbor resampling; choose an appropriate resampler for continuous data. Matching array shape alone does not prove alignment.
+4. Preserve nodata, clouds, shadows and saturation masks. Convert unsigned integers to floating point before differences; apply the provider&#x27;s radiometric transform once.
+5. Run the analysis at a defensible support/resolution. Keep training labels and validation blocks separate. Terrain elevation and horizontal units must agree.
+6. Export CRS, transform, valid-data mask, units, model settings and provenance. Check numeric expectations on a small known fixture before scaling up.
+
+## Local Raster Recipes
+
+Import the bundled raster helper from its directory. It implements small in-memory recipes; use windows/Dask for larger data. Writers require a new output path. It does not infer band identities or masks.
+
+### NDVI
+
+```python
+from raster_workflows import write_ndvi
+
+# This example assumes a VERIFIED four-band B02/B03/B04/B08 stack whose mask
+# already excludes clouds/shadows, and harmonized DN reflectance = DN * 0.0001.
+write_ndvi(&#x27;s2_masked_stack.tif&#x27;, &#x27;ndvi.tif&#x27;, red_band=3, nir_band=4,
+           scale=0.0001, offset=0.0)
+```
+
+Do not use those indices or calibration for an arbitrary `sentinel2.tif`. SAFE products and STAC assets are often separate single-band rasters. Additive radiometric offsets affect even NDVI. EVI/SAVI require physical reflectance. `normalized_difference` keeps undefined ratios and invalid cells as NaN, not zero.
+
+### Terrain
+
+```python
+import rasterio
+from raster_workflows import terrain_metrics
+
+with rasterio.open(&#x27;dem_metres.tif&#x27;) as src:
+    slope_deg, aspect_deg, shade = terrain_metrics(
+        src.read(1, masked=True), src.transform, src.crs)
+```
+
+The helper requires a north-up projected metric grid and elevations in metres. Aspect points downslope clockwise from north; it is undefined for flat cells. Slope is resolution-aware; nodata contaminating a derivative stencil stays invalid. Hillshade is an illumination visualization, not hydrological flow or exposure risk.
+
+### Classification
+
+```python
+import geopandas as gpd
+from raster_workflows import classify_imagery
+
+training = gpd.read_file(&#x27;training.gpkg&#x27;)  # polygons with class_id in 1..65534
+model = classify_imagery(&#x27;masked_features.tif&#x27;, training, &#x27;classified.tif&#x27;)
+```
+
+The helper checks CRS, geometry, labels, valid training pixels and overlapping labels, then preserves nodata in a uint16 output. It fits a small demonstration model; it does not measure accuracy. Use spatial/temporal holdouts at the field, scene or regional level before reporting predictive performance.
+
+## Vector Analysis
+
+```python
+import geopandas as gpd
+
+zones = gpd.read_file(&#x27;zones.geojson&#x27;)
+points = gpd.read_file(&#x27;points.geojson&#x27;)
+if zones.crs is None or points.crs is None:
+    raise ValueError(&#x27;Resolve missing CRS before analysis&#x27;)
+points = points.to_crs(zones.crs)
+joined = gpd.sjoin(points, zones, how=&#x27;inner&#x27;, predicate=&#x27;within&#x27;)
+stats = joined.groupby(&#x27;zone_id&#x27;)[&#x27;value&#x27;].agg([&#x27;count&#x27;, &#x27;mean&#x27;, &#x27;std&#x27;])
+
+# Local data only: verify the estimated CRS area of use before accepting it.
+metric = zones.to_crs(zones.estimate_utm_crs())
+metric[&#x27;area_m2&#x27;] = metric.area
+buffers = metric.geom.buffer(100)
+```
+
+## Conflicts
+
+- **CRS Verification**: K-Dense-AI/scientific-agent-skills requires verifying CRS from authoritative metadata and never inferring an unknown CRS, while foryourhealth111-pixel/Vibe-Skills simply checks if CRS differ and transforms without that verification step.
+- **NDVI Handling**: K-Dense-AI/scientific-agent-skills warns against using arbitrary band indices or calibration for an arbitrary sentinel2.tif and keeps invalid cells as NaN, while foryourhealth111-pixel/Vibe-Skills reads bands 4 and 8 directly and replaces NaN with 0.
+- **Installation**: K-Dense-AI/scientific-agent-skills pins specific package versions and uses uv for a dedicated environment, while foryourhealth111-pixel/Vibe-Skills recommends conda-forge and lists many additional optional packages without version pins.</pre>
+</body>
+</html>

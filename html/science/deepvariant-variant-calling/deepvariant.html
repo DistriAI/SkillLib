@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>deepvariant</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">deepvariant-variant-calling</a> / deepvariant</p><h1>deepvariant</h1><p class="meta">combined</p><p>The two skills cover the same core DeepVariant workflow but contain material, non-overlapping guidance. The first copy (OpenClaw) provides concrete, copy-pasteable commands for installation, the three-stage pipeline, GPU acceleration, platform-specific runs, GLnexus joint calling, quality metrics, and a complete workflow script. The second copy (GPTomics) provides critical conceptual constraints and decision logic that the first lacks: the prohibition against applying GATK hard filters/VQSR to DeepVariant output, the recommendation to skip BQSR, the distinction between germline and somatic calling, and a detailed model selection table explaining failure modes. It also includes version compatibility checks. Combining them is necessary to avoid hiding the critical &#x27;do not filter&#x27; constraint or the specific command templates.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/deepvariant/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/deepvariant/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/deepvariant/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/deepvariant/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: bio-variant-calling-deepvariant
+description: Deep learning-based variant calling with Google DeepVariant. Covers model selection, pipeline execution, and critical post-processing constraints.
+tool_type: cli
+primary_tool: DeepVariant
+---
+
+# DeepVariant Variant Calling
+
+## Critical Constraints
+1. **No GATK Hard Filters/VQSR:** Do not apply GATK hard filters (QD, FS, MQ, SOR) or VQSR to DeepVariant output. The CNN emits calibrated FILTER columns (PASS/RefCall). Post-call handling is limited to QUAL/GQ thresholding, normalization, and region restriction.
+2. **Skip BQSR:** Do not run Base Quality Score Recalibration (BQSR) before DeepVariant. The model is trained on raw base qualities; BQSR can lower accuracy.
+3. **Germline Only:** DeepVariant calls germline variants. Use DeepSomatic for somatic calling.
+
+## Version Compatibility
+Reference examples tested with: DeepVariant 1.6.1+, GLnexus 1.4+, bcftools 1.19+.
+Before running, verify installed versions. If using newer releases (1.8.x+), confirm `--model_type` tokens against the container&#x27;s `--help` output.
+
+## Installation
+
+### Docker (Recommended)
+```bash
+docker pull google/deepvariant:1.6.1
+# Or with GPU support
+docker pull google/deepvariant:1.6.1-gpu
+```
+
+### Singularity
+```bash
+singularity pull docker://google/deepvariant:1.6.1
+```
+
+## Model Selection
+Match `--model_type` to the sequencing platform. Using the wrong model silently degrades accuracy.
+
+| `--model_type` | Use for | Notes |
+|----------------|---------|-------|
+| `WGS` | Illumina WGS | 30-50x PCR-free Illumina |
+| `WES` | Illumina WES | Requires `--regions` BED file |
+| `PACBIO` | PacBio HiFi | CCS reads, Q30+ |
+| `ONT_R104` | ONT R10.4+ | R10.4 simplex/duplex |
+| `HYBRID_PACBIO_ILLUMINA` | Mixed | Both HiFi and Illumina reads |
+
+## Basic Usage: One-Step Run
+
+```bash
+docker run -v &quot;${PWD}:/input&quot; -v &quot;${PWD}/output:/output&quot; \
+    google/deepvariant:1.6.1 \
+    /opt/deepvariant/bin/run_deepvariant \
+    --model_type=WGS \
+    --ref=/input/reference.fa \
+    --reads=/input/sample.bam \
+    --output_vcf=/output/sample.vcf.gz \
+    --output_gvcf=/output/sample.g.vcf.gz \
+    --num_shards=16
+```
+
+## Step-by-Step Workflow
+
+### Step 1: Make Examples
+```bash
+docker run -v &quot;${PWD}:/data&quot; google/deepvariant:1.6.1 \
+    /opt/deepvariant/bin/make_examples \
+    --mode calling \
+    --ref /data/reference.fa \
+    --reads /data/sample.bam \
+    --examples /data/examples.tfrecord.gz \
+    --gvcf /data/gvcf.tfrecord.gz
+```
+
+### Step 2: Call Variants
+```bash
+docker run -v &quot;${PWD}:/data&quot; google/deepvariant:1.6.1 \
+    /opt/deepvariant/bin/call_variants \
+    --outfile /data/call_variants.tfrecord.gz \
+    --examples /data/examples.tfrecord.gz \
+    --checkpoint /opt/models/wgs/model.ckpt
+```
+
+### Step 3: Postprocess Variants
+```bash
+docker run -v &quot;${PWD}:/data&quot; google/deepvariant:1.6.1 \
+    /opt/deepvariant/bin/postprocess_variants \
+    --ref /data/reference.fa \
+    --infile /data/call_variants.tfrecord.gz \
+    --outfile /data/output.vcf.gz \
+    --gvcf_outfile /data/output.g.vcf.gz \
+    --nonvariant_site_tfrecord_path /data/gvcf.tfrecord.gz
+```
+
+## GPU Acceleration
+
+```bash
+docker run --gpus all -v &quot;${PWD}:/data&quot; \
+    google/deepvariant:1.6.1-gpu \
+    /opt/deepvariant/bin/run_deepvariant \
+    --model_type=WGS \
+    --ref=/data/reference.fa \
+    --reads=/data/sample.bam \
+    --output_vcf=/data/output.vcf.gz \
+    --num_shards=16
+```
+
+## Platform-Specific Examples
+
+### PacBio HiFi
+```bash
+docker run -v &quot;${PWD}:/data&quot; google/deepvariant:1.6.1 \
+    /opt/deepvariant/bin/run_deepvariant \
+    --model_type=PACBIO \
+    --ref=/data/reference.fa \
+    --reads=/data/hifi_aligned.bam \
+    --output_vcf=/data/hifi_variants.vcf.gz \
+    --num_shards=16
+```
+
+### ONT R10.4
+```bash
+docker run -v &quot;${PWD}:/data&quot; google/deepvariant:1.6.1 \
+    /opt/deepvariant/bin/run_deepvariant \
+    --model_type=ONT_R104 \
+    --ref=/data/reference.fa \
+    --reads=/data/ont_aligned.bam \
+    --output_vcf=/data/ont_variants.vcf.gz \
+    --num_shards=16
+```
+
+### Exome/Targeted
+```bash
+docker run -v &quot;${PWD}:/data&quot; google/deepvariant:1.6.1 \
+    /opt/deepvariant/bin/run_deepvariant \
+    --model_type=WES \
+    --ref=/data/reference.fa \
+    --reads=/data/exome.bam \
+    --regions=/data/targets.bed \
+    --output_vcf=/data/exome_variants.vcf.gz \
+    --num_shards=8
+```
+
+## Joint Calling with GLnexus
+
+For multi-sample cohorts, generate gVCFs for each sample, then use GLnexus.
+
+```bash
+# Generate gVCFs for each sample
+for bam in *.bam; do
+    sample=$(basename $bam .bam)
+    docker run -v &quot;${PWD}:/data&quot; google/deepvariant:1.6.1 \
+        /opt/deepvariant/bin/run_deepvariant \
+        --model_type=WGS \
+        --ref=/data/reference.fa \
+        --reads=/data/$bam \
+        --output_vcf=/data/${sample}.vcf.gz \
+        --output_gvcf=/data/${sample}.g.vcf.gz \
+        --num_shards=16
+done
+
+# Joint genotyping with GLnexus
+docker run -v &quot;${PWD}:/data&quot; quay.io/mlin/glnexus:v1.4.1 \
+    /usr/local/bin/glnexus_cli \
+    --config DeepVariantWGS \
+    /data/*.g.vcf.gz \
+    | bcftools view - -Oz -o cohort.vcf.gz
+```
+
+## Output Quality Metrics
+
+```bash
+# Variant statistics
+bcftools stats output.vcf.gz &gt; stats.txt
+
+# Filter by quality (only QUAL/GQ, no GATK filters)
+bcftools view -i &#x27;QUAL&gt;20 &amp;&amp; FMT/GQ&gt;20&#x27; output.vcf.gz -Oz -o filtered.vcf.gz
+
+# Ti/Tv ratio (expect ~2.0-2.1 for WGS)
+bcftools stats output.vcf.gz | grep TSTV
+```
+
+## Benchmarking
+
+```bash
+# Using hap.py for GIAB benchmarking
+docker run -v &quot;${PWD}:/data&quot; jmcdani20/hap.py:latest \
+    /opt/hap.py/bin/hap.py \
+    /data/HG002_GRCh38_truth.vcf.gz \
+    /data/deepvariant_output.vcf.gz \
+    -r /data/reference.fa \
+    -o /data/benchmark \
+    --threads 16
+```</pre>
+</body>
+</html>

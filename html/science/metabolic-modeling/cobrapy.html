@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cobrapy</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">metabolic-modeling</a> / cobrapy</p><h1>cobrapy</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a highly specific, version-pinned (cobra 0.32.1) procedural guide with critical warnings about deprecated arguments (e.g., `loopless=True`), solver selection, and reproducibility. The FreedomIntelligence copy provides a broader API reference including features omitted by K-Dense (production envelopes, gapfilling, model construction) but uses deprecated syntax (`loopless=True`) and lacks version pinning. The aipoch copy is a generic wrapper with no unique technical value. Because K-Dense is the most &#x27;authentic&#x27; procedure but lacks the full feature set of FreedomIntelligence, and FreedomIntelligence contains outdated/incorrect syntax for the current version, combining them is necessary to provide a complete and correct skill.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/cobrapy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/cobrapy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/cobrapy/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/cobrapy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/cobrapy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/cobrapy/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: cobrapy
+description: Performs constraint-based metabolic modeling with COBRApy, including FBA, pFBA, FVA, gene knockouts, flux sampling, growth media, production envelopes, gap filling, and SBML model validation.
+license: GPL-2.0
+allowed-tools: Read Write Edit Bash
+compatibility: Requires Python 3.9+ and cobra 0.32.1. GLPK installs via swiglpk.
+metadata:
+  version: &quot;1.5&quot;
+  skill-author: K-Dense Inc. / FreedomIntelligence
+---
+
+# COBRApy - Constraint-Based Reconstruction and Analysis
+
+## When to use
+Use for loading/building metabolic networks, optimizing steady-state fluxes, knockout screens, medium design, feasible-space sampling, and gap-filling. FBA is a constraint-based prediction; it does not infer kinetic rates.
+
+## Setup and reproducibility
+Targets **cobra 0.32.1**.
+
+```bash
+uv pip install &quot;cobra==0.32.1&quot;
+```
+
+Record model source/version/checksum, cobra and solver versions, objective, medium, bounds, tolerances, and random seeds. Start with `processes=1` for multiprocessing safety.
+
+## Workflow
+
+### 1. Load, inspect, and validate a model
+
+```python
+from cobra.io import load_model, read_sbml_model, write_sbml_model
+
+# Bundled models: textbook, iJO1366, salmonella
+model = load_model(&quot;textbook&quot;)
+model.solver = &quot;glpk&quot;
+
+# File I/O
+# model = read_sbml_model(&quot;path/to/model.xml&quot;)
+# write_sbml_model(model, &quot;output.xml&quot;)
+
+solution = model.optimize(raise_error=True)
+assert solution.status == &quot;optimal&quot;
+```
+
+Note: `e_coli_core` is a remote BiGG identifier, not a bundled alias for `textbook`. Check chemical formulas/charges separately from solver feasibility.
+
+### 2. Compare FBA, pFBA, and FVA
+
+```python
+from cobra.flux_analysis import pfba, geometric_fba, flux_variability_analysis
+
+biomass_id = &quot;Biomass_Ecoli_core&quot;
+parsimonious = pfba(model)
+centered = geometric_fba(model, processes=1)
+
+# Use string methods for loopless, not boolean (deprecated)
+fva = flux_variability_analysis(
+    model, reaction_list=[&quot;PFK&quot;, &quot;FBA&quot;, &quot;PGI&quot;],
+    fraction_of_optimum=0.9, processes=1,
+)
+loopless_fva = flux_variability_analysis(
+    model, reaction_list=[&quot;PFK&quot;, &quot;FBA&quot;, &quot;PGI&quot;],
+    fraction_of_optimum=0.9, loopless=&quot;fastSNP&quot;, processes=1,
+)
+```
+
+### 3. Knockouts and media
+
+```python
+from cobra.flux_analysis import single_gene_deletion, double_gene_deletion
+from cobra.medium import minimal_medium
+
+results = single_gene_deletion(model, processes=1)
+
+# Double deletions (uses multiprocessing)
+# double_results = double_gene_deletion(model, processes=4)
+
+with model:
+    medium = model.medium
+    medium[&quot;EX_o2_e&quot;] = 0.0
+    model.medium = medium  # Must reassign dict
+    anaerobic = model.optimize()
+
+min_medium = minimal_medium(model, 0.5 * baseline, minimize_components=True)
+```
+
+### 4. Flux Sampling
+
+```python
+from cobra.sampling import sample
+
+# In 0.32.1, method=&quot;auto&quot; defaults to CHRR if hopsy is installed, else OptGP.
+# Choose explicitly to avoid environment-dependent changes.
+samples = sample(model, n=1000, method=&quot;optgp&quot;, processes=1)
+```
+
+### 5. Production Envelopes and Gapfilling
+
+```python
+from cobra.flux_analysis import production_envelope, gapfill
+
+envelope = production_envelope(
+    model,
+    reactions=[&quot;EX_glc__D_e&quot;, &quot;EX_o2_e&quot;],
+    objective=&quot;EX_ac_e&quot;
+)
+
+# Gapfilling requires a universal model/database
+# gapfill_result = gapfill(model, universal_model, objective=&quot;Biomass_Ecoli_core&quot;)
+```</pre>
+</body>
+</html>

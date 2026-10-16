@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>build</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">autonomous-app-and-feature-build</a> / build</p><h1>build</h1><p class="meta">combined</p><p>The two skills share the name &#x27;build&#x27; and the high-level concept of a phased pipeline, but they define fundamentally different procedures and scopes. The first skill (davepoon) is an autonomous application builder that generates, tests, and deploys a new app from a plain-English description using specific tech stacks (Next.js, FastAPI, etc.). The second skill (sickn33) is a feature development workflow for existing projects that focuses on research, planning, and tracking progress for a specific feature, explicitly referencing a detailed guide and prohibiting deployment in read-only modes. Because they address different tasks (creating a new app vs. developing a feature in an existing codebase) and have conflicting operational constraints (one deploys, the other restricts deployment), crowning one would hide a valid alternative workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/shipwright/skills/build/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/build/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/shipwright/skills/build/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/build/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/build/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/build/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: build
+description: Unified build skill for autonomous app creation and structured feature development.
+---
+
+# Build Skill
+
+This skill supports two distinct workflows: **Autonomous App Building** and **Feature Development**.
+
+## 1. Autonomous App Building
+Use this mode when creating a new application from a plain-English description.
+
+**Pipeline:**
+1. **Requirements**: Analyze the description.
+2. **Scaffold**: Initialize the project using one of the supported stacks (Next.js + TS + Tailwind, FastAPI + Python, Express + TS, or Static HTML/CSS/JS).
+3. **Implement**: Write the application code.
+4. **Test**: Execute automated tests.
+5. **Lint**: Ensure code quality.
+6. **Security**: Run security audits.
+7. **Docs**: Generate documentation.
+8. **Verify**: Final validation.
+9. **Deploy**: Deploy the application.
+
+**Safety:** Enforce pre-commit validation, test coverage, and security gates.
+
+## 2. Feature Development
+Use this mode when adding a major feature to an existing project.
+
+**Prerequisites:**
+- Read the detailed guide (`references/detailed-guide.md`) before execution.
+- Validate feature IDs and destination containment.
+
+**Pipeline:**
+1. **Research**: Investigate the project context.
+2. **Plan**: Create a phased implementation plan.
+3. **Implement**: Execute the plan.
+4. **Track**: Monitor progress and phase outcomes.
+5. **Verify**: Confirm phase completion.
+
+**Constraints:**
+- Do not deploy during read-only status or research phases.
+- Preserve existing plans and unrelated work.
+- Validate environment-specific requirements before declaring completion.
+
+## When to Use
+- **App Building**: When the user requests a new app via `/shipwright:build` or similar.
+- **Feature Development**: When the user requests status, planning, or implementation of a specific feature via `/build [subcommand] [name]`.</pre>
+</body>
+</html>

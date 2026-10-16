@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>diffdock</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">protein-ligand-docking</a> / diffdock</p><h1>diffdock</h1><p class="meta">combined</p><p>The K-Dense copy is a rigorous, source-verified procedure that pins the v1.1.3 release, corrects the CLI flag to --ligand_description, and details input preparation and output file naming. The FreedomIntelligence copy is a broader workflow guide that includes a results analysis script (analyze_results.py) and a pre-computed ESM embedding workflow for large-scale screening, which are absent from the K-Dense copy. The FreedomIntelligence copy also uses the incorrect --ligand flag and lacks the specific version pinning and input validation constraints found in the K-Dense copy. Combining them provides a complete, accurate, and scalable docking workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/diffdock/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/diffdock/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/diffdock/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/diffdock/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: diffdock
+description: Predicts protein-small-molecule binding poses with DiffDock and DiffDock-L from PDB or sequence plus SMILES/SDF/MOL2. Covers batch docking, pose triage, confidence interpretation, and validation. Use for molecular docking and virtual-screening pose generation, not binding-affinity prediction.
+allowed-tools: Read Write Edit Bash Glob Grep
+compatibility: Requires the upstream DiffDock v1.1.3 repository/environment (Python 3.9.18, PyTorch 1.13.1, fair-esm 2.0.0, RDKit/PyG) or its Docker image. Network and disk space for model weights; CUDA required by upstream sequence-folding path. Bundled CSV helper needs pandas and RDKit.
+license: MIT license
+metadata:
+  version: &quot;1.6&quot;
+  skill-author: K-Dense Inc.
+  last-reviewed: &quot;2026-09-30&quot;
+---
+
+# DiffDock: protein-small-molecule docking
+
+DiffDock-L generates candidate ligand poses and ranks them by model confidence.
+Confidence is neither a measured probability of correctness nor binding affinity.
+Use this skill for one pair, batches, or separate receptor conformations; treat
+library-wide confidence sorting as pose triage, not hit identification.
+
+## Verified scope
+
+Targets the current [v1.1.3 release](https://github.com/gcorso/DiffDock/releases/tag/v1.1.3).
+Released source and current main&#x27;s identical `inference.py` were checked on
+2026-09-30. Bundled helpers were tested on tiny synthetic inputs; pretrained docking,
+ESMFold, CUDA, Docker, GNINA, and hosted-demo execution were **not** run in this
+review. Commands requiring those components are source-verified recipes, not
+successful end-to-end demonstrations.
+
+## Set up the upstream environment
+
+```bash
+git clone --branch v1.1.3 --depth 1 https://github.com/gcorso/DiffDock.git
+cd DiffDock
+conda env create --file environment.yml
+conda activate diffdock
+```
+
+The upstream environment pins Python 3.9.18, CUDA 11.7 Torch/PyG wheels and old
+scientific dependencies. Do not substitute current `torch` or the unrelated PyPI
+`esm` package for `fair-esm`. The published CUDA environment is not a macOS-native
+installation recipe. Follow upstream Docker instructions if suitable:
+
+```bash
+docker pull rbgcsail/diffdock
+docker run -it --gpus all --entrypoint /bin/bash rbgcsail/diffdock
+micromamba activate diffdock
+```
+
+Record the image digest: its unversioned tag need not equal the checked source.
+PDB-based inference has a CPU path; sequence folding calls `.cuda()` unconditionally.
+ESM2 embeddings are needed even for PDB inputs. First use can download docking,
+ESM2 and (for sequence inputs) ESMFold weights and build SO(2)/SO(3) tables. Budget
+storage and memory for all components; do not assume a single small checkpoint.
+
+Run this skill&#x27;s checker from the **DiffDock checkout** using its absolute path:
+
+```bash
+python /path/to/diffdock-skill/scripts/setup_check.py
+```
+
+It checks imports/files, not successful model loading, scientific validity, or full
+version compatibility. An existing but incomplete score-model directory suppresses
+upstream&#x27;s automatic download; inspect checkpoint files when restoring a partial run.
+
+## Prepare traceable inputs
+
+1. Select the biological assembly/chains and a defensible protonation/tautomer state.
+   Record receptor and ligand identifiers, file hashes, preparation choices, source
+   coordinates, software versions, and intended stereochemistry. Missing atoms,
+   waters, cofactors, metal coordination, and induced fit need explicit judgment.
+2. Use PDB for the receptor or a complete amino-acid sequence. No ellipses. Upstream
+   ESM2 truncates each chain at 1022 residues; longer chains can cause graph/embedding
+   mismatches. Do not silently trim a biological target to make a run pass.
+3. Use a SMILES or ligand file. Source readers support `.sdf`, `.mol2`, `.pdb`,
+   `.pdbqt`; SDF input uses its first record. Existing ligand coordinates are
+   discarded and a conformer regenerated. Inputting a pose does not restrain docking.
+4. Use a fresh output directory for each run. Reusing one can leave old rank files
+   from failed or differently sampled jobs. Preserve the expected input-ID manifest.
+
+## Single pair
+
+Run from the upstream repository root, with real prepared inputs:
+
+```bash
+python -m inference \
+  --config default_inference_args.yaml \
+  --protein_path protein.pdb \
+  --ligand_description &quot;CC(=O)Oc1ccccc1C(=O)O&quot; \
+  --out_dir results/run_001/ \
+  --loglevel INFO
+```
+
+For sequence input, replace `--protein_path` with `--protein_sequence` and a full
+sequence; this adds ESMFold/CUDA requirements and structural uncertainty.
+Use the registered name `--ligand_description`, not argparse&#x27;s implicit abbreviation
+`--ligand` from the README.
+
+Typical output (scores shown here are illustrative):
+
+```text
+results/run_001/complex_0/
+  rank1.sdf
+  rank1_confidence0.87.sdf
+  rank2_confidence0.42.sdf
+  ...
+  rank10_confidence-1.23.sdf
+```
+
+`rank1.sdf` duplicates the top pose. Filename confidence is rounded to two decimals;
+upstream rank reflects the original model score. `--save_visualisation` additionally
+writes `rank&lt;N&gt;_reverseprocess.pdb`, not the SDFs themselves.
+
+## Batch and ensemble runs
+
+CSV columns are `complex_name,protein_path,ligand_description,protein_sequence`.
+Use unique explicit names; paths resolve relative to the **inference working
+directory**, not the CSV&#x27;s directory. Protein path takes precedence over sequence.
+The helper deliberately rejects unsafe/duplicate/blank names, empty batches,
+duplicate headers and malformed sequence strings before inference.
+
+```bash
+python /path/to/diffdock-skill/scripts/prepare_batch_csv.py --create --output batch.csv
+# Replace all example rows with the real inputs; run validation from inference CWD.
+python /path/to/diffdock-skill/scripts/prepare_batch_csv.py batch.csv --validate
+python -m inference --config default_inference_args.yaml \
+  --protein_ligand_csv batch.csv --out_dir results/batch_001/ --batch_size 10
+```
+
+Validation checks paths and SMILES, not PDB/file chemistry or model suitability.
+
+## Large-scale screening
+
+For large virtual screening (&gt;100 compounds), pre-compute protein embeddings for faster processing:
+
+```bash
+# Pre-compute embeddings
+python datasets/esm_embedding_preparation.py \
+  --protein_ligand_csv screening_input.csv \
+  --out_file protein_embeddings.pt
+
+# Run with pre-computed embeddings
+python -m inference \
+  --config default_inference_args.yaml \
+  --protein_ligand_csv screening_input.csv \
+  --esm_embeddings_path protein_embeddings.pt \
+  --out_dir results/screening/
+```
+
+## Analyzing Results
+
+After docking completes, analyze confidence scores and rank predictions:
+
+```bash
+# Analyze all results
+python scripts/analyze_results.py results/batch/
+
+# Show top 5 per complex
+python scripts/analyze_results.py results/batch/ --top 5
+
+# Filter by confidence threshold
+python scripts/analyze_results.py results/batch/ --threshold 0.0
+
+# Export to CSV
+python scripts/analyze_results.py results/batch/ --export summary.csv
+
+# Show top 20 predictions across all complexes
+python scripts/analyze_results.py results/batch/ --best 20
+```
+
+The analysis script:
+- Parses confidence scores from all predictions
+- Classifies as High (&gt;0), Moderate (-1.5 to 0), or Low (&lt;-1.5)
+- Ranks predictions within and across complexes
+- Generates statistical summaries
+- Exports results to CSV for downstream analysis
+
+## Confidence Score Interpretation
+
+**Understanding Scores:**
+
+| Score Range | Confidence Level | Interpretation |
+|------------|------------------|----------------|
+| **&gt; 0** | High | Strong prediction, likely accurate |
+| **-1.5 to 0** | Moderate | Reasonable prediction, verify with other methods |
+| **&lt; -1.5** | Low | Weak prediction, likely inaccurate |</pre>
+</body>
+</html>

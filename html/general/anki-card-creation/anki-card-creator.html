@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>anki-card-creator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">anki-card-creation</a> / anki-card-creator</p><h1>anki-card-creator</h1><p class="meta">combined</p><p>The two copies describe the same skill but with materially different procedures and capabilities. The aipoch copy is a lightweight, script-driven workflow focused on TSV output, drug/anatomy flags, and a strict stop-on-missing-input rule. The LeoYeAI copy is a richer, Python-class-based workflow supporting cloze, image occlusion, reversible cards, automated hierarchical tagging, and .apkg output, with explicit &#x27;do not use&#x27; boundaries and integration with other skills. Neither is a simple reproduction of the other; crowning one would hide the alternative approach and its unique steps (e.g., image occlusion, cloze strategies, tagging hierarchy).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/anki-card-creator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/anki-card-creator/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/anki-card-creator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/anki-card-creator/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: anki-card-creator
+description: Convert medical study materials into Anki flashcards with support for basic, cloze, and image occlusion cards, automated tagging, and multiple output formats.
+license: MIT
+---
+
+# Anki Card Creator
+
+## When to Use
+- Preparing for medical board exams (USMLE, MCAT, specialty boards).
+- Memorizing drug names, mechanisms, side effects, anatomy, and pathways.
+- Converting lecture notes, textbook chapters, or Q&amp;A material into active recall cards.
+
+## Do NOT Use When
+- Learning conceptual understanding (use textbooks/videos first).
+- Memorizing without context (ensure comprehension first).
+- Creating cards for rapidly changing information.
+- Substituting clinical experience or procedural skills.
+
+## Workflow
+1. Confirm the study objective, learner level, card format, and content source.
+2. Check whether the material is in Q/A form, needs restructuring, or is too incomplete. If required content is missing, stop and request only the minimum additional input.
+3. Choose the card type:
+   - **Basic/Reversible**: For Q/A pairs. Use `create_basic_cards` with `reversible=True` for bidirectional recall.
+   - **Cloze Deletion**: For dense text. Use `create_cloze_cards` with strategies: single deletion, multiple deletions, or hierarchical.
+   - **Image Occlusion**: For diagrams. Use `create_image_occlusion` with occlude_regions and card_type (one_by_one, all_at_once, transparent, colored).
+4. Apply automated tagging using a hierarchical structure (e.g., Source::Subject::Topic::Difficulty).
+5. Generate output in the desired format:
+   - **TSV**: For simple Anki import. Use `scripts/main.py` with `--input`, `--output`, and domain flags (`--drug`, `--anatomy`).
+   - **.apkg**: For full deck with media. Use `scripts/main.py` with `--card-type`, `--n-cards-per-page`, and `--tags`.
+6. Review the generated cards for atomicity, accuracy, and importability.
+7. Return cards or a card blueprint with assumptions, tagging guidance, and validation notes.
+
+## Parameters (CLI)
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `--input`, `-i` | string | No | - | Input text/PDF file |
+| `--output`, `-o` | string | No | `anki_cards.txt` | Output TSV or .apkg file |
+| `--drug` | flag | No | false | Create a drug card |
+| `--anatomy` | flag | No | false | Create an anatomy card |
+| `--card-type` | string | No | basic | basic, cloze, image_occlusion |
+| `--n-cards-per-page` | int | No | 3 | Cards per page for cloze |
+| `--tags` | string | No | - | Hierarchical tags (e.g., First_Aid::Cardiology) |
+
+## Python API
+```python
+from scripts.card_creator import AnkiCardCreator
+
+creator = AnkiCardCreator()
+
+# Cloze
+cards = creator.create_cloze_cards(text=text, n_cards=3, difficulty=&quot;intermediate&quot;, tags=[&quot;Pathology&quot;])
+
+# Basic
+cards = creator.create_basic_cards(content={&quot;Q&quot;: &quot;A&quot;}, reversible=True, tags=[&quot;Pharmacology&quot;])
+
+# Image Occlusion
+cards = creator.create_image_occlusion(image_path=&quot;diagram.png&quot;, occlude_regions=[{&quot;label&quot;: &quot;Nerve&quot;, &quot;coords&quot;: (100, 200, 300, 400)}], card_type=&quot;one_by_one&quot;)
+```
+
+## Output Discipline
+- Keep results reproducible and atomic.
+- Identify assumptions explicitly.
+- Avoid undocumented side effects.
+- Validate input file paths before execution.
+- Restrict output directory to workspace.
+
+## Integration
+- **Upstream**: `abstract-summarizer`, `pdf-text-extractor`
+- **Downstream**: `anki-sync-server`, `study-schedule-optimizer`</pre>
+</body>
+</html>

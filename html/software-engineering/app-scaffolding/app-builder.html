@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>app-builder</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">app-scaffolding</a> / app-builder</p><h1>app-builder</h1><p class="meta">combined</p><p>The two skills share the name &#x27;app-builder&#x27; but describe fundamentally different procedures. The Microsoft skill is a domain-specific tool for building model-driven Power Apps using the cds-maker-sdk, focusing on data models, adaptive forms, and business process flows. The sickn33 skill is a general-purpose orchestrator for full-stack web/mobile applications, focusing on tech stack selection (Next.js, React Native, etc.) and multi-agent coordination. They do not overlap in steps or constraints; one is a specialized vertical tool, the other a horizontal scaffolding framework.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/model-apps/skills/app-builder/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/app-builder/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/model-apps/skills/app-builder/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/app-builder/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/app-builder/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/app-builder/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># App Builder
+
+This skill handles application creation requests. Determine the target platform to select the appropriate workflow.
+
+## 1. Determine Application Type
+- **Power Platform / Model-Driven App**: If the user requests a model-driven app, CRM, or Power Apps solution, follow the **Power Apps Workflow**.
+- **General Full-Stack / Mobile / Desktop App**: If the user requests a web, mobile, or desktop application using standard tech stacks, follow the **General Scaffolding Workflow**.
+
+## 2. Power Apps Workflow (Microsoft)
+1. **Plugin Check**: Run `node &quot;${PLUGIN_ROOT}/scripts/check-version.js&quot;`.
+2. **Interactive Authoring**: Run the authoring flow in the main conversation (do not use subagents).
+   - Select environment.
+   - Define jobs-to-be-done.
+   - Author App Spec (JSON) including tables, columns, relationships, forms, and views.
+   - **Critical**: Paste all preview wireframes, dry-run plans, and lint findings verbatim into the chat message; do not rely on collapsed tool output.
+3. **Build**: Use `cds-maker-sdk` to build the app from the spec.
+4. **Edit**: Download deployed app to spec for idempotent re-builds.
+
+## 3. General Scaffolding Workflow (sickn33)
+1. **Project Detection**: Read `project-detection.md` to identify project type.
+2. **Tech Stack Selection**: Read `tech-stack.md` to choose the stack (e.g., Next.js, FastAPI, Flutter).
+3. **Template Selection**: Select the matching template from the 13 available (e.g., `nextjs-fullstack`, `react-native-app`).
+4. **Agent Coordination**: Coordinate specialized agents (`project-planner`, `frontend-specialist`, `backend-specialist`, etc.) to build components.
+5. **Scaffolding**: Create directory structure and core files based on the selected template.
+
+## Conflicts
+- **Repository: microsoft/power-platform-skills** vs **sickn33/agentic-awesome-skills**: The Microsoft skill mandates running interactive steps in the main loop and explicitly forbids subagents for authoring, whereas the sickn33 skill relies on coordinating multiple specialized agents for execution. The Microsoft skill is restricted to Power Apps, while the sickn33 skill is for general-purpose applications.</pre>
+</body>
+</html>

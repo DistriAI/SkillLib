@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>meta-ads</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">meta-ads-management</a> / meta-ads</p><h1>meta-ads</h1><p class="meta">combined</p><p>The two copies are not reproductions of the same procedure. The first copy is a self-contained, educational guide covering campaign structure, naming conventions, creative best practices, and a pre-launch checklist. The second copy is a thin wrapper that explicitly forbids substituting its own content and mandates reading an external WORKFLOW.md file for the actual procedure. Because the second copy&#x27;s &#x27;procedure&#x27; is an external file not provided here, and the first copy contains substantial, actionable steps that the second copy lacks (and vice versa, the second has specific triggers and a strict path-resolution protocol), crowning one would hide the other&#x27;s unique approach. They overlap in domain but disagree on how the task is executed (inline guide vs. external workflow reference).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/paid-ads/platforms/meta-ads/SKILL.md</code></td></tr><tr><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/meta-ads/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/paid-ads/platforms/meta-ads/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/meta-ads/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: meta-ads
+description: Manage and optimize Meta (Facebook/Instagram) Ads campaigns, including setup, performance analysis, and creative strategy.
+---
+
+# Meta Ads Management
+
+## Workflow Selection
+1. **Check for External Workflow**: If operating within the `nowork-studio/notfair-plugin` environment, read `&lt;plugin-root&gt;/meta-ads/manage/WORKFLOW.md` completely. If this file is missing, stop and report a packaging error. Do not substitute other skills.
+2. **Inline Guidance**: If no external workflow is available or if the user requests general guidance, follow the steps below.
+
+## Campaign Structure &amp; Setup
+- **Hierarchy**: Campaign → Ad Set → Ad.
+- **Principle**: One objective per campaign. Consolidate by objective to help the algorithm learn.
+- **Naming**: Use `META_[Objective]_[Audience]_[Offer]_[Date]`.
+- **Objectives**: Select Awareness, Traffic, Conversions, or Engagement based on the goal.
+
+## Audience &amp; Targeting
+- **Lookalikes**: Base on high-LTV customers, not all customers.
+- **Advantage+**: Use for automated audience discovery and broad targeting.
+- **Exclusions**: Always exclude existing customers and recent converters (7–14 days).
+
+## Creative Best Practices
+- **Image**: Clear product, human faces, text &lt;20% of image.
+- **Video**: 15–30s duration. Hook (0–3s), Problem (3–8s), Solution (8–20s), CTA (20–30s).
+- **Volume**: Test 3–5 ad variants per ad set.
+
+## Optimization &amp; Performance
+- **Learning Phase**: Aim for 50+ conversions per ad set per week. Avoid changes during this phase.
+- **Budgets**: Use CBO (Campaign Budget Optimization) for scaling; ABO for specific ad set control.
+- **Frequency**: Keep below 3 to avoid fatigue.
+- **Metrics**: Monitor ROAS, CPM, CTR, and audience overlap.
+
+## Pre-Launch Checklist
+- [ ] Meta Pixel and Conversions API configured.
+- [ ] Conversion events firing correctly.
+- [ ] Landing page is mobile-friendly and fast.
+- [ ] 3+ creatives ready per ad set.
+- [ ] Audience exclusions applied.</pre>
+</body>
+</html>

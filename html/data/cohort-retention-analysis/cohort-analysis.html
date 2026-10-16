@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cohort-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">cohort-retention-analysis</a> / cohort-analysis</p><h1>cohort-analysis</h1><p class="meta">combined</p><p>The two copies overlap on the core task (cohort retention analysis) but each contains material steps the other lacks. The phuryn copy is a data-processing workflow: read/validate CSV/Excel/JSON, compute retention and feature adoption, generate heatmaps/line charts, identify patterns, and suggest qualitative follow-ups. The mohitagw15856 copy is a structured deliverable framework: required inputs, mutually exclusive cohort definitions, retention table with plateau detection, LTV projection, behavioral segmentation, churn signals, SQL reference, and a quality checklist. Neither is a reproduction of the other, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/phuryn/pm-skills">phuryn/pm-skills</a></td><td><code>pm-data-analytics/skills/cohort-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>i18n/es/skills/cohort-analysis/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/phuryn/pm-skills">phuryn/pm-skills</a></td><td><code>pm-data-analytics/skills/cohort-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>i18n/es/skills/cohort-analysis/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-data/skills/cohort-analysis/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/cohort-analysis/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: cohort-analysis
+description: &quot;Perform cohort analysis on user engagement data — retention curves, feature adoption trends, LTV estimation, and segment-level insights. Use when analyzing user retention by cohort, studying feature adoption over time, investigating churn patterns, or identifying engagement trends.&quot;
+---
+
+# Cohort Analysis &amp; Retention Explorer
+
+## Purpose
+Analyze user engagement and retention patterns by cohort to identify trends in user behavior, feature adoption, and long-term engagement. Combine quantitative insights with qualitative research recommendations.
+
+## Required Inputs
+Before starting, confirm or request any missing inputs. Do not invent numbers, benchmarks, or schema details.
+
+| Input | What to ask if missing |
+|---|---|
+| Analysis objective | Retention improvement / LTV modeling / behavioral segmentation / churn prediction |
+| Product or feature | What is being analyzed? |
+| Cohort definition | What groups users into a cohort? (acquisition month, signup channel, plan tier, feature adoption date) |
+| Observation window | How many periods to track? (e.g., 12 months, 8 weeks) |
+| Key metric | What is measured per cohort? (retention rate, revenue, engagement score, feature usage) |
+| Available data | Paste schema, table names, or describe available metrics — do not assume |
+| Baseline or target | Are there existing retention benchmarks or targets to compare against? |
+
+If the user cannot supply real data, produce the framework with clearly marked placeholders (`[X%]`, `[£X]`, `[N users]`) and note which sections require real data to complete.
+
+## Process
+
+### Step 1: Confirm Inputs and Validate Data
+- Surface any ambiguity before producing output (e.g., conflicting cohort definitions, missing observation window).
+- Accept CSV, Excel, JSON, or SQL query results with user cohort information.
+- Verify data structure: cohort identifier, time periods, engagement metrics.
+- Check for missing values and data quality issues.
+- Summarize key statistics (cohort sizes, date ranges, metrics available).
+
+### Step 2: Define Cohorts
+- Establish entry event, exit criteria, and exclusions so cohorts are mutually exclusive.
+- If any cohort falls below a minimum size threshold for statistical reliability, flag it explicitly and exclude it from trend conclusions.
+
+### Step 3: Build Retention Table and Curves
+- Complete or template the period-by-period retention matrix.
+- Calculate cohort retention rates and engagement trends.
+- Identify the plateau period where the curve flattens; if the observation window is too short to show a plateau, declare it explicitly.
+- Identify retention curves, drop-off patterns, and anomalies.
+- Compute feature adoption rates across cohorts.
+- Calculate period-over-period changes.
+
+### Step 4: Project LTV
+- Use only observed retention data for LTV estimation.
+- Mark if data is insufficient for reliable projection.
+
+### Step 5: Segment by Behavior
+- Create mutually exclusive behavioral segments.
+- Identify the activation threshold for each segment.
+
+### Step 6: Surface Churn Signals
+- List observable churn signals with lead time and intervention mapping.
+
+### Step 7: Compare Cohorts Over Time
+- Evaluate whether product changes are reflected in newer cohorts.
+- Compare cohort performance to establish baselines.
+
+### Step 8: Create Visualizations
+- Generate retention heatmaps (cohorts vs. time periods).
+- Create line charts showing cohort progression.
+- Build comparison charts for feature adoption.
+- Visualize drop-off points and engagement trends.
+- Output as interactive charts or static images.
+
+### Step 9: Identify Insights and Patterns
+- Spot one or more significant patterns:
+  - Early churn in specific cohorts
+  - Late-stage engagement changes
+  - Feature adoption clusters
+  - Seasonal or temporal trends
+- Highlight surprising findings and deviations.
+
+### Step 10: Prioritize Recommendations
+- Link each recommendation to a specific cohort finding or segment.
+- Recommend qualitative research methods:
+  - Targeted user interviews with churning users
+  - Feature usage surveys with engaged cohorts
+  - Session replays of key interaction patterns
+  - Win/loss analysis for high vs. low retention cohorts
+- Design follow-up quantitative studies.
+- Suggest A/B tests or feature experiments.
+
+### Step 11: Provide SQL Reference
+- Adapt the query template to the user&#x27;s actual schema if supplied.
+
+### Step 12: Execute Quality Checks
+- Verify all items on the checklist before delivering output.
+
+## Output Template
+Produce the following sections in order. Omit a section only if explicitly out of scope; note the omission.
+
+# Cohort Analysis: [Product / Feature]
+
+**Analysis objective:** [Retention / LTV / Behavioral segmentation / Churn prediction]
+**Cohort definition:** [e.g., Acquisition month — users grouped by calendar month of first signup]
+**Observation window:** [X months / weeks]
+**Primary metric:** [Metric name and definition]
+**Data source:** [Tables or metrics used — do not invent if not supplied]
+**Date prepared:** [Date]
+
+## 1. Cohort Definitions
+| Cohort | Period | Size | Description |
+|---|---|---|---|
+| [Cohort 1] | [Jan 2025] | [N users] | [e.g., Users who signed up in Jan 2025 via organic search] |
+
+**Cohort logic:**
+- **Entry event:** [e.g., First signup / First purchase / Feature activation]
+- **Exit / churn definition:** [e.g., No activity matching key retention event for 30 days]
+- **Exclusions:** [e.g., Internal test accounts, trial users with &lt; 3 days of data, cohorts with &lt; [N] users]
+
+## 2. Retention Curve
+| Cohort | P0 | P1 | P2 | P3 | P6 | P12 |
+|---|---|---|---|---|---|---|
+| [Jan 2025] | 100% | [X%] | [X%] | [X%] | [X%] | [X%] |
+
+**Retention plateau:** [At which period does the curve flatten? At what %? If the window is too short, declare it.]
+
+**Key observations:**
+- [e.g., Largest single-period drop is P1 → P2, averaging X pp — this is the primary churn moment to address]
+
+## 3. LTV Projection
+[Projection based on observed retention; note if data is insufficient]
+
+## 4. Behavioral Segments
+[Segment definitions, activation thresholds, and cohort distribution]
+
+## 5. Churn Signals
+[Observable signals, lead time, and intervention mapping]
+
+## 6. Cohort Comparison Over Time
+[Whether product changes are reflected in newer cohorts]
+
+## 7. Visualizations
+[Retention heatmaps, line charts, feature adoption comparisons]
+
+## 8. Insights and Patterns
+[2-3 significant insights from the data]
+
+## 9. Prioritized Recommendations
+[Each recommendation linked to a specific cohort finding or segment]
+
+## 10. SQL Reference
+[Adapted query template if schema was supplied]
+
+## 11. Research Recommendations
+[Specific qualitative and quantitative follow-ups]
+
+## 12. Next Steps
+[Prioritized actions based on findings]
+
+## Tips for Best Results
+1. **Include time dimension**: Provide data across multiple time periods.
+2. **Define cohort clearly**: Make cohort grouping explicit (signup month, feature launch date, etc.).
+3. **Provide context**: Explain product changes, launches, or events during the period.
+4. **Multiple metrics**: Include retention, engagement, feature usage, revenue, etc.
+5. **Sufficient data**: At least 3-4 cohorts for meaningful pattern identification.
+6. **Request specific output**: Ask for visualizations, Python scripts, or research recommendations.
+
+## Key Capabilities
+- **Data Reading**: Import CSV, Excel, JSON, SQL query results
+- **Retention Analysis**: Calculate and visualize retention rates over time
+- **Cohort Comparison**: Compare metrics across cohort groups
+- **Anomaly Detection**: Flag unusual patterns or drop-offs
+- **LTV Estimation**: Project lifetime value from observed retention
+- **Behavioral Segmentation**: Create mutually exclusive segments with activation thresholds
+- **Python Scripts**: Generate reusable analysis code for ongoing analysis
+- **Visualizations**: Create heatmaps, charts, and interactive dashboards
+- **Research Design**: Suggest targeted follow-up studies and interview approaches
+- **Statistical Summary**: Provide quantitative metrics and correlation analysis</pre>
+</body>
+</html>

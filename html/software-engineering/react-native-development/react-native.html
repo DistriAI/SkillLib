@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>react-native</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">react-native-development</a> / react-native</p><h1>react-native</h1><p class="meta">combined</p><p>The copies cover two distinct, non-overlapping procedures. The vercel-labs and sickn33 copies are identical best-practice guides for general React Native/Expo development (performance, animations, UI patterns). The google-labs-code copy is a specific workflow for converting Stitch HTML designs into React Native components, involving MCP tool calls, file downloads, and theme extraction. The jezweb copy is a third variation of the best-practice guide with different specific patterns (e.g., FlatList checklist, Expo Router structure). Because the Stitch conversion workflow is a unique procedure not present in the others, and the best-practice guides have different specific details, no single copy is the authentic source for all.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/vercel-labs/agent-skills">vercel-labs/agent-skills</a></td><td><code>skills/react-native-skills/SKILL.md</code></td></tr><tr><td><a href="https://github.com/google-labs-code/stitch-skills">google-labs-code/stitch-skills</a></td><td><code>plugins/stitch-build/skills/react-native/SKILL.md</code></td></tr><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/frontend/skills/react-native/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/react-native-skills/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/vercel-labs/agent-skills">vercel-labs/agent-skills</a></td><td><code>skills/react-native-skills/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/google-labs-code/stitch-skills">google-labs-code/stitch-skills</a></td><td><code>plugins/stitch-build/skills/react-native/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/frontend/skills/react-native/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/react-native-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/react-native-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/react-native-skills/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: react-native
+description: React Native and Expo best practices and Stitch design conversion workflow.
+---
+
+# React Native Skills
+
+## General Best Practices
+
+Reference these guidelines when building or optimizing React Native/Expo apps.
+
+### 1. List Performance (CRITICAL)
+- Use FlashList or FlatList for large lists.
+- Memoize list item components.
+- Stabilize callback references.
+- Avoid inline style objects.
+- Use `keyExtractor` and `getItemLayout` for FlatList.
+
+### 2. Animation (HIGH)
+- Animate only transform and opacity.
+- Use `react-native-reanimated` for complex animations.
+- Use `Gesture.Tap` instead of Pressable for gestures.
+
+### 3. Navigation (HIGH)
+- Use native stack and native tabs.
+- Use Expo Router for file-based routing in new projects.
+
+### 4. UI Patterns (HIGH)
+- Use `expo-image` for all images.
+- Use `Pressable` over `TouchableOpacity`.
+- Handle safe areas with `SafeAreaView` or `useSafeAreaInsets`.
+- Use `StyleSheet.create` or Nativewind.
+
+## Stitch Design Conversion Workflow
+
+Use this workflow when converting Stitch HTML designs to React Native components.
+
+### Phase 1: Retrieval
+1. Run `list_tools` to find the Stitch MCP prefix.
+2. Call `[prefix]:get_screen` for every screen.
+3. Check for existing `.stitch/designs/` files. Ask user to refresh or reuse.
+4. Use `scripts/fetch-stitch.sh` to download HTML and PNG screenshots.
+5. Visually audit the downloaded screenshots.
+6. Save project metadata to `.stitch/metadata.json`.
+
+### Phase 2: Theme Extraction
+1. Extract `tailwind.config` tokens from the HTML `&lt;head&gt;`.
+2. Create or update `src/theme.ts` with these tokens.
+3. Verify theme matches the design.
+
+### Phase 3: Component Mapping
+1. Map HTML elements to React Native components (e.g., `&lt;div&gt;` to `View`, `&lt;span&gt;` to `Text`).
+2. Convert CSS/Tailwind styles to `StyleSheet.create()`.
+3. Ensure all text is wrapped in `Text` components.</pre>
+</body>
+</html>

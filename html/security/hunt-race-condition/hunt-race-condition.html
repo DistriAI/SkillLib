@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-race-condition</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">hunt-race-condition</a> / hunt-race-condition</p><h1>hunt-race-condition</h1><p class="meta">combined</p><p>The two copies share the same core methodology, target list, and attack-surface signals, but each contains material steps the other lacks. The uphiago copy provides a detailed 10-step methodology including response analysis, exploitability window testing, and specific Turbo Intruder/curl payload examples. The sickn33 copy adds a mandatory authorization gate, a distinct &#x27;Different-requests race&#x27; primitive (partial construction/TOCTOU) with a specific email-verification bypass example, and explicit source attribution. Crowning one would hide the other&#x27;s unique procedural constraints and attack patterns.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-race-condition/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-race-condition/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-race-condition/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-race-condition/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-race-condition/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-race-condition/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-race-condition
+description: Hunting skill for race condition vulnerabilities. Covers coupon double-redemption, gift-card double-spend, MFA-OTP-validate race, account-create race, faucet/crypto token double-mint, email-activation race, vote/upvote inflation, password-reset token race, rate-limit bypass via concurrent requests. Use when hunting race conditions, TOCTOU bugs, MFA-bypass-via-timing.
+version: 1.1.0
+license: MIT
+category: security
+risk: offensive
+tags: [race-condition, hunt, redteam, security]
+---
+
+&gt; **⚠️ AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## Crown Jewel Targets
+
+Race conditions are high-severity findings because they break financial, access control, and integrity assumptions that defenders rarely stress-test. Highest payouts come from:
+
+- **Monetary/credit systems** — double-spending gift cards, coupons, referral bonuses, promotional credits, wallet balances
+- **Vote/reputation manipulation** — upvoting the same content multiple times, gaming leaderboards or trending algorithms
+- **Account limits bypass** — exceeding free-tier quotas, bypassing &quot;one per user&quot; restrictions on invites, trial activations, or API key generation
+- **Privilege escalation** — racing role assignment or permission checks during user creation/upgrade flows
+- **Deletion bypass** — reading or exfiltrating data during a narrow window between &quot;marked for deletion&quot; and &quot;actually deleted&quot;
+- **Payment flows** — charging a card once but receiving multiple fulfillments
+
+**Best-paying asset types:** Fintech apps, SaaS platforms with credit/subscription models, social platforms with reputation systems, e-commerce checkout flows, OAuth/SSO token endpoints.
+
+---
+
+## Attack Surface Signals
+
+### URL Patterns
+```
+/vote, /upvote, /like, /favorite
+/redeem, /apply-coupon, /use-code, /claim
+/purchase, /checkout, /confirm-order, /pay
+/transfer, /withdraw, /send-money
+/invite, /referral, /accept-invite
+/upgrade, /activate, /trial
+/delete, /deactivate, /cancel
+/follow, /subscribe
+```
+
+### Response Headers That Signal Race-Prone Backends
+```
+X-RateLimit-*        # rate limiting exists, but may not be atomic
+X-Request-Id         # each request independently tracked
+No Cache-Control     # stateful ops not idempotent
+```
+
+### JavaScript Patterns to Grep
+```javascript
+// Single-use action buttons with client-side disable
+button.disabled = true
+$(&#x27;#btn&#x27;).prop(&#x27;disabled&#x27;, true)
+// Optimistic UI updates (state set before server confirms)
+setState({ used: true })
+// Sequential async calls without locking
+await useVoucher(); await deductBalance();
+```
+
+### Tech Stack Signals
+- **Ruby on Rails** without `with_lock` / `lock!` — ActiveRecord doesn&#x27;t lock by default
+- **Node.js** with async/await chains — non-atomic DB reads then writes
+- **PHP** without `SELECT ... FOR UPDATE` — common in legacy codebases
+- **Microservices** — inter-service calls introduce natural TOCTOU windows
+- **Redis counters** without Lua scripts or `INCR` atomicity checks
+- **Message queues** — idempotency keys often missing
+
+---
+
+## Firing a Race — Two Primitives
+
+Winning a race needs requests that arrive in the *same* narrow window — sequential sends never work. Use a single-packet / synchronized-send tool: **Burp Repeater** &quot;Send group in parallel&quot; (HTTP/2 single-packet attack), **Turbo Intruder** (`engine=Engine.BURP2`, `gate` sync), or any client that can flush N requests simultaneously.
+
+### Primitive 1: Identical-Copies Race
+Fire N IDENTICAL copies of one request at once (limit-overrun: double-spend a coupon/gift-card, exceed a one-per-user quota). Success = ≥2 of the N return 2xx.
+
+### Primitive 2: Different-Requests Race (Partial Construction)
+Fire a LIST of DIFFERENT requests in one synchronized window, repeated over several rounds. For register-then-confirm / TOCTOU races where the object exists in a usable state mid-creation. Example (email-verification bypass — register an arbitrary email, then confirm it through the construction window with a blank token):
+```
+Request A:  POST /register   body: csrf=&lt;csrf&gt;&amp;username=hacker&amp;email=anything@exploit.net&amp;password=pw
+Request B:  GET  /confirm    params: token=   (empty)
+Fire A and B together, repeat ~20 rounds.
+```
+Get a fresh CSRF from `GET /register` first, then fire the batch. After it succeeds, log in as the new account and perform the objective (e.g. a state-changing admin action such as deleting a user). The blank-token confirm wins during the window where the user row exists but its verification token isn&#x27;t set yet.
+
+---
+
+## Step-by-Step Hunting Methodology
+
+1. **Enumerate one-time or limited-use actions** — Map every endpoint that enforces a &quot;once per user&quot;, &quot;limited quantity&quot;, or &quot;deduct balance&quot; constraint. These are your primary targets.
+
+2. **Understand the state machine** — For each target action, identify: (a) what state is read, (b) what state is written, (c) what validation sits between read and write. The gap between read and write is your window.
+
+3. **Capture a clean baseline request** — Perform the action once legitimately with Burp Suite intercepting. Confirm you get the expected single-use behavior (e.g., coupon marked used, vote counted once).
+
+4. **Set up parallel request tooling** — Use one of:
+   - Burp Suite Repeater → &quot;Send group in parallel&quot; (Turbo Intruder for HTTP/2 single-packet attacks)
+   - Turbo Intruder with `engine=Engine.BURP2` for last-byte sync
+   - `curl` with `&amp;` backgrounding
+   - Python `threading` or `asyncio` with pre-built connections
+
+5. **Execute the race** — Send 10–50 identical requests simultaneously. Key technique: **pre-connect and buffer all requests, release the final byte of all simultaneously** (single-packet attack when HTTP/2 is available).
+
+6. **Analyze responses** — Look for:
+   - Multiple `200 OK` where only one should succeed
+   - Duplicate success messages
+   - Database constraint errors (signals the race worked but hit the last-line-of-defense)
+   - Inconsistent response times (one fast, rest slow = serialized; all same speed = parallel processing)
+
+7. **Verify the effect** — Check the actual state: Was the credit applied twice? Did the vote count increment multiple times? Is the coupon still marked unused despite two successes?
+
+8. **Determine exploitability window** — Re-run with decreasing parallelism (5 requests, 3 requests, 2 requests) to understand how tight the window is and reliability of exploitation.
+
+9. **Test across account types** — Sometimes the race only works for new accounts, specific subscription tiers, or under specific server load. Test varied conditions.
+
+10. **Document reproducibility** — Record exact timing, number of parallel requests needed, and success rate across 5 independent attempts before reporting.
+
+---
+
+## Payload &amp; Detection Patterns
+
+### Turbo Intruder — Basic Parallel Race
+```python
+# turbo_intruder_race.py
+def queueRequests(target, wordlists):
+    engine = RequestEngine(endpoint=target.endpoint,
+                           concurrentConnections=1,
+                           engine=Engine.BURP2)  # HTTP/2 single-packet
+    for i in range(20):
+        engine.queue(target.req, gate=&#x27;race1&#x27;)
+    engine.openGate(&#x27;race1&#x27;)
+
+def handleResponse(req, interesting):
+    if &#x27;200&#x27; in req.status:
+        table.add(req)
+```
+
+### curl — Parallel Requests (bash)
+```bash
+# Fire 15 simultaneous requests
+for i in {1..15}; do
+  curl -s -X POST &quot;https://target.example/redeem&quot; \
+    -H &quot;Authorization: Bearer $TOKEN&quot; \
+    -d &#x27;{&quot;code&quot;:&quot;COUPON123&quot;}&#x27; &amp;
+done
+wait
+```</pre>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clinvar-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">clinvar-variant-query</a> / clinvar-database</p><h1>clinvar-database</h1><p class="meta">combined</p><p>Both skills cover querying ClinVar, interpreting significance, and bulk data access, but they diverge significantly in implementation details and scope. The first skill (aipoch) is a wrapper around specific Python scripts (`scripts/search.py`, `scripts/annotate.py`) and relies on `bcftools` for annotation. The second skill (FreedomIntelligence) provides direct API usage examples (curl), detailed FTP file paths, specific update schedules, and manual `bcftools` commands for filtering/annotation without relying on the first skill&#x27;s custom scripts. Combining them is necessary to capture both the script-based workflow and the direct API/FTP procedural details.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/clinvar-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/clinvar-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/clinvar-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/clinvar-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: clinvar-database
+description: Utilities for querying the NCBI ClinVar database to retrieve variant records, clinical significance, and phenotype relationships; use when searching variants by gene/condition/significance, interpreting Pathogenic/Benign/VUS classifications, or annotating VCF files with ClinVar annotations.
+---
+
+## When to Use
+
+- You need to find ClinVar variant records by **gene**, **condition/phenotype**, or **clinical significance**.
+- You want to interpret a variant’s **clinical significance** and **review status**.
+- You need to **annotate a VCF** with ClinVar identifiers.
+- You want to perform **bulk retrieval** of ClinVar datasets.
+
+## Dependencies
+
+- Python `&gt;=3.8`
+- `requests` (Python package)
+- `bcftools` (system dependency)
+- `pandas` (optional)
+
+## 1. Search and Query ClinVar
+
+### Option A: Using Custom Scripts (if available in environment)
+
+```bash
+# Search for pathogenic variants in a gene
+python scripts/search.py --term &quot;BRCA1[gene] AND pathogenic[CLNSIG]&quot;
+```
+
+### Option B: Direct API Access (E-utilities)
+
+Use NCBI E-utilities for programmatic access. Refer to `references/api_reference.md` for details.
+
+**Quick example using curl:**
+```bash
+curl &quot;https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=clinvar&amp;term=BRCA1[gene]+AND+pathogenic[CLNSIG]&amp;retmode=json&quot;
+```
+
+**Best practices:**
+- Use API keys to increase rate limits.
+- Implement exponential backoff for rate limit errors.
+
+## 2. Interpret Clinical Significance
+
+Refer to `references/clinical_significance.md` for detailed guidelines.
+
+**Key classifications:**
+- **Pathogenic (P)**
+- **Likely Pathogenic (LP)**
+- **Uncertain Significance (VUS)**
+- **Likely Benign (LB)**
+- **Benign (B)**
+
+**Review status (star ratings):**
+- ★★★★ Practice guideline
+- ★★★ Expert panel review
+- ★★ Multiple submitters, no conflicts
+- ★ Single submitter with criteria
+- ☆ No assertion criteria
+
+## 3. Bulk Data Access
+
+Download from `ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/`.
+
+**Available Formats:**
+- **XML**: `xml/clinvar_variation/` (most comprehensive)
+- **VCF**: `vcf_GRCh38/clinvar.vcf.gz` (for pipelines)
+- **Tab-delimited**: `tab_delimited/variant_summary.txt.gz`
+
+**Example download:**
+```bash
+wget ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/clinvar.vcf.gz
+```
+
+## 4. VCF Annotation
+
+### Option A: Using Custom Script (if available)
+
+```bash
+python scripts/annotate.py --input input.vcf --output annotated.vcf
+```
+
+### Option B: Using bcftools Directly
+
+```bash
+# Annotate your VCF with ClinVar
+bcftools annotate -a clinvar.vcf.gz -c INFO your_variants.vcf
+
+# Filter pathogenic variants
+bcftools view -i &#x27;INFO/CLNSIG~&quot;Pathogenic&quot;&#x27; clinvar.vcf.gz
+```</pre>
+</body>
+</html>

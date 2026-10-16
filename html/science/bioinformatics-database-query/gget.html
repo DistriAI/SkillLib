@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gget</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">bioinformatics-database-query</a> / gget</p><h1>gget</h1><p class="meta">combined</p><p>The K-Dense copy is the most complete and authoritative procedure, pinning a specific version and detailing advanced modules and best practices. However, the aipoch copy introduces a distinct implementation pattern (a wrapper script) and different dependency requirements (Python 3.9+ vs 3.12+), while the FreedomIntelligence copy provides a detailed parameter catalog for core modules that the others omit. Because the copies disagree on environment requirements and implementation entry points, and each contains material steps or constraints the others lack, they must be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/gget/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/gget/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/gget/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/gget/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/gget/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/gget/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: gget
+description: &quot;Queries 20+ bioinformatics resources through CLI/Python. Supports quick lookups of gene info, BLAST/BLAT, viral sequence downloads, PDB/mmCIF structures, G2P residue annotations, enrichment analysis, OpenTargets, COSMIC, CELLxGENE, and 8cube mouse specificity/expression data. Best for interactive exploration and simple queries. For batch processing or advanced BLAST use biopython; for multi-database Python workflows use bioservices.&quot;
+license: MIT
+---
+
+# gget
+
+## Overview
+
+gget is a command-line bioinformatics tool and Python package providing unified access to 20+ genomic databases and analysis methods. Query gene information, sequence analysis, protein structures, viral sequences, expression data, disease associations, and mouse tissue/cell specificity metrics through a consistent interface. Most gget modules work both as command-line tools and as Python functions.
+
+**Important**: The databases queried by gget are continuously updated, which sometimes changes their structure. For reproducible work, pin `gget==0.30.8`; for broken upstream database adapters, update gget after checking release notes.
+
+## Installation
+
+Install gget in a clean virtual environment to avoid conflicts:
+
+```bash
+# Reproducible install targeting this skill
+uv venv --python 3.13 .venv
+source .venv/bin/activate
+uv pip install &quot;gget==0.30.8&quot;
+```
+
+```python
+import gget
+```
+
+## Quick Start
+
+Inspect module-specific syntax before querying:
+
+```bash
+gget info --help
+gget pdb --help
+```
+
+Most modules return:
+- **Command-line**: JSON (default) or CSV with `-csv` flag
+- **Python**: DataFrame or dictionary
+
+Common flags across modules:
+- `-o/--out`: Save results to file
+- `-q/--quiet`: Suppress progress information
+- `-csv`: Return CSV format (command-line only)
+
+Python argument names generally match long CLI options without leading dashes. For example, `--census_version` becomes `census_version=...`. Use `gget &lt;module&gt; --help` for CLI syntax and `inspect.signature(gget.&lt;module&gt;)` for Python; CLI flags such as `--download` may have no Python equivalent.
+
+## Module Categories
+
+gget exposes 24 modules in six categories. Parameters, CLI and Python examples, and return shapes for every one are in [references/module_catalog.md](references/module_catalog.md); fuller per-parameter documentation is in [references/module_reference.md](references/module_reference.md).
+
+| Category | Modules |
+| --- | --- |
+| 1. Reference &amp; gene information | `ref` (Ensembl reference downloads), `search` (gene search), `info` (gene/transcript detail), `seq` (nucleotide and protein sequences) |
+| 2. Sequence analysis &amp; alignment | `blast`, `blat`, `muscle` (multiple alignment), `diamond` (local alignment) |
+| 3. Structural &amp; protein analysis | `pdb` (PDB/mmCIF structures and metadata), `g2p` (residue annotations and isoform maps), `elm` (linear motifs), `alphafold` (deprecated prediction wrapper) |
+| 4. Expression &amp; disease data | `archs4` (correlation, tissue expression), `cellxgene` (single-cell), `enrichr` (enrichment), `bgee` (orthology and expression), `opentargets` (disease and drug), `cbio` (cancer genomics), `cosmic` (mutations) |
+| 5. Viral &amp; mouse specificity | `virus` (viral sequences), `8cube` (mouse specificity and expression) |
+| 6. Additional tools | `mutate` (mutated sequences), `gpt` (deprecated text generation), `setup` (install module dependencies) |
+
+Several modules need a one-time `gget setup` before first use (`elm`, `cellxgene`, `cbio`; legacy `alphafold`/`gpt`), and `cosmic` prompts for COSMIC credentials to download its database.
+
+## Common Workflows
+
+Worked multi-module pipelines — gene characterization, structural comparison, expression and enrichment analysis, disease and drug association, orthology comparison, and reference-file preparation for kallisto or alignment — are in [references/common_workflows.md](references/common_workflows.md), with longer versions in [references/workflows.md](references/workflows.md).
+
+## Best Practices
+
+### Data Retrieval
+- Use `--limit` where supported; it is often a local cap, not a complete pagination mechanism
+- Save results with `-o/--out` for reproducibility
+- Check database versions/releases for consistency across analyses
+- Use `--quiet` in production scripts to reduce output
+
+### Sequence Analysis
+- For BLAST/BLAT, start with default parameters, then adjust sensitivity
+- Use `gget diamond` with `--threads` for faster local alignment
+- Save DIAMOND databases with `--diamond_db`; gget still requires the reference input
+- For multiple sequence alignment, use `-s5/--super5` for large datasets
+
+### Expression and Disease Data
+- Gene symbols are case-sensitive in cellxgene (e.g., &#x27;PAX7&#x27; vs &#x27;Pax7&#x27;)
+- Install optional dependencies for cellxgene, elm, and cbio with `gget setup &lt;module&gt;`
+- For enrichment, record the full library name and release, not only a shortcut: [the adapter](https://github.com/scverse/gget/blob/main/gget/gget_enrichr.py) maps shortcuts to specific dated libraries, and non-human/mouse species need full species-specific names. For human/mouse, supply the tested-gene universe through `background_list` when appropriate; custom backgrounds are not supported for the other species. Report mapped/unmapped query and background counts and adjusted p-values, so identifier loss and selection bias are visible.
+- Cache cBioPortal data with `-dd` to avoid repeated downloads
+- Open Targets filters are local and applied after `limit`; expression fetches only th</pre>
+</body>
+</html>

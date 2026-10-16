@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scientific-visualization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">publication-figure-creation</a> / scientific-visualization</p><h1>scientific-visualization</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a distinct, more rigorous procedure that adds non-negotiable data-integrity guardrails, a structured evidence/destination workflow, and specific Matplotlib layout/norm constraints. The other three copies are near-identical reproductions of a simpler, style-focused guide. Crowning one of the simpler copies would hide the real alternative provided by the K-Dense-AI skill, so the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/scientific-visualization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scientific-visualization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scientific-visualization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/scientific-visualization/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/scientific-visualization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scientific-visualization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scientific-visualization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/scientific-visualization/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/scientific-visualization/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Scientific Visualization
+
+Create truthful, accessible, publication-ready scientific figures using matplotlib, seaborn, or plotly.
+
+## Non-negotiable guardrails
+- Never alter, hide, invent, or selectively enhance data to improve a figure.
+- Preserve raw tables/images, exclusions, missing-value codes, analysis code, normalization, binning, image adjustments, and random seeds.
+- Do not infer journal requirements. Identify the exact journal, article type, figure type, and submission phase; verify its live official guidance.
+- Do not claim that a palette, DPI value, format, or automated report makes a figure accessible or journal-compliant.
+- Do not silently connect missing observations, suppress inconvenient points, upsample images as if detail increased, or tune axes/dual axes to exaggerate a conclusion.
+- Keep interactive and static outputs as distinct deliverables.
+
+## Workflow
+
+### 1. Define the evidence and destination
+Record audience and medium, exact publisher/journal, article type, submission phase, intended final width, variable semantics, units, sample/replicate structure, missing/censored values, estimator and uncertainty definition, transformations, and source-data paths. If requirements are unknown, create a provisional general figure and label publisher choices as pending verification.
+
+### 2. Choose an honest encoding
+- Bars/areas: normally include zero.
+- Points/lines: nonzero limits can be valid; show context and disclose breaks.
+- Uncertainty: name SD, SE, CI, percentile, or posterior; state n and unit of replication.
+- Raw observations: show them when feasible.
+- Missing data: distinguish missing, zero, censored, and excluded.
+- Area/volume: scale area/volume, not radius/diameter; avoid decorative 3D.
+- Log axes: label the base/transform and declare how zero/negative values are handled.
+- Binning/smoothing: record edges, bandwidth/window, method, and sensitivity.
+- Normalization: state formula/reference and keep limits consistent across compared panels.
+- Dual axes: prefer aligned panels; if unavoidable, justify units.
+- Images: preserve originals, disclose adjustments, show scale bars.
+
+### 3. Design accessibility in, not after
+- Use color plus marker, line style, hatching, direct label, or panel separation.
+- Choose qualitative, sequential, diverging, or cyclic color according to data semantics.
+- Audit foreground/background contrast at the rendered size.
+- Make missing and out-of-range values explicit.
+- Provide alt text, a longer description for complex figures, and underlying data for web delivery.
+- Treat WCAG 2.2 as web guidance: 4.5:1 normal text, 3:1 large text, and 3:1 for graphical objects required for understanding.
+- Test figures in grayscale.
+
+### 4. Implement with scoped styles
+Use Matplotlib&#x27;s object-oriented API and temporary style contexts:
+
+```python
+import matplotlib.pyplot as plt
+from style_presets import style_context
+
+with style_context(&quot;default&quot;, palette_name=&quot;okabe_ito_on_white&quot;):
+    fig, ax = plt.subplots(figsize=(89 / 25.4, 60 / 25.4), layout=&quot;constrained&quot;)
+    ax.plot(x, y, marker=&quot;o&quot;, label=&quot;Observed&quot;)
+    ax.set(xlabel=&quot;Time (hours)&quot;, ylabel=&quot;Response (unit)&quot;)
+    ax.legend()
+```
+
+Do not call `tight_layout()` after using `layout=&quot;constrained&quot;`. For exact physical dimensions, do not use `bbox_inches=&quot;tight&quot;` unless the changed page size is intentional.
+
+### 5. Apply publication formatting
+- Raster images: 300-600 DPI.
+- Line art: 600-1200 DPI or vector format.
+- Vector formats preferred: PDF, EPS, SVG.
+- Raster formats: TIFF, PNG (never JPEG for scientific data).
+- Sans-serif fonts: Arial, Helvetica, Calibri.
+- Minimum sizes at final print size: axis labels 7-9 pt, tick labels 6-8 pt, panel labels 8-12 pt (bold).
+- Sentence case for labels; always include units in parentheses.
+- Journal-specific widths: Nature single 89 mm, double 183 mm; Science single 55 mm, double 175 mm; Cell single 85 mm.
+
+### 6. Export and verify
+Use `figure_export.py` or equivalent to save in required formats with correct DPI. Inspect delivered files rather than trusting plotting defaults. Verify that the figure works in both color and grayscale.</pre>
+</body>
+</html>

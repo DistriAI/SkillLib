@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>qutip</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">quantum-systems-simulation</a> / qutip</p><h1>qutip</h1><p class="meta">combined</p><p>The copies from zLanqing/codex-claude-academic-skills and benchflow-ai/skillsbench are nearly identical, providing a general overview, quick start, and common workflows for QuTiP. However, the copy from K-Dense-AI/scientific-agent-skills is a significantly more rigorous, version-specific (QuTiP 5.3.1) guide that includes critical &#x27;non-negotiable model contract&#x27; steps (units, tensor order, state validity, convergence checks) and corrects misconceptions about optional packages (e.g., clarifying that qutip-qtrl is for optimal control, not just a viewer). The general copies lack these safety and reproducibility constraints, while the rigorous copy lacks the broad &#x27;common workflows&#x27; examples found in the others. Combining them yields a skill that is both comprehensive in examples and rigorous in execution.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/qutip/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/qutip/SKILL.md</code></td></tr><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/quantum-numerical-simulation/environment/skills/qutip/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/qutip/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/qutip/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/quantum-numerical-simulation/environment/skills/qutip/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: qutip
+description: Quantum physics simulation library for open quantum systems. Use when studying master equations, Lindblad dynamics, decoherence, quantum optics, or cavity QED. Best for physics research, open system dynamics, and educational simulations. NOT for circuit-based quantum computing—use qiskit, cirq, or pennylane for quantum algorithms and hardware execution.
+license: MIT
+metadata:
+  version: &quot;1.4&quot;
+  skill-author: K-Dense Inc.
+---
+
+# QuTiP: Quantum Toolbox in Python
+
+## Overview
+
+QuTiP provides comprehensive tools for simulating and analyzing quantum mechanical systems. It handles both closed (unitary) and open (dissipative) quantum systems with multiple solvers optimized for different scenarios.
+
+## Installation
+
+For reproducible simulations, pin the version and Python environment:
+
+```bash
+uv venv --python 3.11
+uv pip install &quot;qutip==5.3.1&quot;
+```
+
+For plotting:
+
+```bash
+uv pip install &quot;qutip[graphics]==5.3.1&quot;
+```
+
+Optional packages (independently versioned):
+
+```bash
+# Quantum information processing (circuits, gates)
+uv pip install &quot;qutip-qip==0.4.2&quot;
+
+# Quantum optimal control (GRAPE, CRAB)
+uv pip install &quot;qutip-qtrl==0.2.0&quot;
+```
+
+## Non-negotiable Model Contract
+
+Before solving, record:
+1. **Units and convention.** QuTiP equations normally set \(\hbar=1\). Hamiltonian entries are angular frequencies. Convert cyclic frequency with \(2\pi f\); never mix Hz and rad/s.
+2. **Subsystem order.** `tensor(A, B, C)` fixes subsystem indices `0, 1, 2`. Preserve that order in every state, operator, and partial trace.
+3. **State validity.** Check ket norm or density-matrix Hermiticity, unit trace, and eigenvalues.
+4. **Generator meaning.** A Lindblad channel with rate `gamma` is represented by `sqrt(gamma) * A`.
+5. **Approximations.** State rotating-wave, Born-Markov, secular, and truncation assumptions.
+6. **Numerics.** Justify Hilbert truncation, output grid, integration method, and tolerances.
+7. **Convergence.** Sweep every artificial cutoff: Fock dimension, time window, ODE tolerances, and trajectory count.
+
+## Quick Start
+
+```python
+from qutip import *
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Create quantum state
+psi = basis(2, 0)  # |0⟩ state
+
+# Create operator
+H = sigmaz()  # Hamiltonian
+
+# Time evolution
+tlist = np.linspace(0, 10, 100)
+result = sesolve(H, psi, tlist, e_ops=[sigmaz()])
+
+# Plot results
+plt.plot(tlist, result.expect[0])
+plt.xlabel(&#x27;Time&#x27;)
+plt.ylabel(&#x27;⟨σz⟩&#x27;)
+plt.show()
+```
+
+## Core Capabilities
+
+### 1. Quantum Objects and States
+
+```python
+# States
+psi = basis(N, n)  # Fock state |n⟩
+psi = coherent(N, alpha)  # Coherent state |α⟩
+rho = thermal_dm(N, n_avg)  # Thermal density matrix
+
+# Operators
+a = destroy(N)  # Annihilation operator
+H = num(N)  # Number operator
+sx, sy, sz = sigmax(), sigmay(), sigmaz()  # Pauli matrices
+
+# Composite systems
+psi_AB = tensor(psi_A, psi_B)  # Tensor product
+```
+
+### 2. Time Evolution and Dynamics
+
+**Solver selection guide:**
+- `sesolve`: Pure states, unitary evolution
+- `mesolve`: Mixed states, dissipation, general open systems
+- `mcsolve`: Quantum jumps, photon counting, individual trajectories
+- `brmesolve`: Weak system-bath coupling
+- `fmmesolve`: Time-periodic Hamiltonians (Floquet)
+
+```python
+# Closed systems
+result = sesolve(H, psi0, tlist, e_ops=[num(N)])
+
+# Open systems
+c_ops = [np.sqrt(0.1) * destroy(N)]
+result = mesolve(H, psi0, tlist, c_ops, e_ops=[num(N)])
+```
+
+### 3. Analysis and Measurement
+
+```python
+# Expectation values
+n_avg = expect(num(N), psi)
+
+# Entropy measures
+S = entropy_vn(rho)  # Von Neumann entropy
+C = concurrence(rho)  # Entanglement (two qubits)
+
+# Steady states
+rho_ss = steadystate(H, c_ops)
+```
+
+### 4. Visualization
+
+```python
+# Bloch sphere
+b = Bloch()
+b.add_states(psi)
+b.show()
+
+# Wigner function
+xvec = np.linspace(-5, 5, 200)
+W = wigner(psi, xvec, xvec)
+plt.contourf(xvec, xvec, W, 100, cmap=&#x27;RdBu&#x27;)
+```
+
+### 5. Advanced Methods
+
+```python
+# Floquet theory
+T = 2 * np.pi / w_drive
+f_modes, f_energies = floquet_modes(H, T, args)
+
+# HEOM (non-Markovian)
+from qutip.nonmarkov.heom import HEOMSolver, BosonicBath
+bath = BosonicBath(Q, ck_real, vk_real)
+hsolver = HEOMSolver(H_sys, [bath], max_depth=5)
+```
+
+## Common Workflows
+
+### Simulating a Damped Harmonic Oscillator
+
+```python
+N = 20
+omega = 1.0
+kappa = 0.1
+
+H = omega * num(N)
+c_ops = [np.sqrt(kappa) * destroy(N)]
+psi0 = coherent(N, 3.0)
+
+tlist = np.linspace(0, 50, 200)
+result = mesolve(H, psi0, tlist, c_ops, e_ops=[num(N)])
+
+plt.plot(tlist, result.expect[0])
+plt.xlabel(&#x27;Time&#x27;)
+plt.ylabel(&#x27;⟨n⟩&#x27;)
+plt.title(&#x27;Photon Number Decay&#x27;)
+plt.show()
+```
+
+### Two-Qubit Entanglement Dynamics
+
+```python
+psi0 = bell_state(&#x27;00&#x27;)
+gamma = 0.1
+c_ops = [
+    np.sqrt(gamma) * tensor(sigmaz(), qeye(2)),
+    np.sqrt(gamma) * tensor(qeye(2), sigmaz())
+]
+
+tlist = np.linspace(0, 10, 100)
+result = mesolve(qeye([2, 2]), psi0, tlist, c_ops)
+
+C_t = [concurrence(state.proj()) for state in result.states]
+plt.plot(tlist, C_t)
+plt.xlabel(&#x27;Time&#x27;)
+plt.ylabel(&#x27;Concurrence&#x27;)
+plt.title(&#x27;Entanglement Decay&#x27;)
+plt.show()
+```</pre>
+</body>
+</html>

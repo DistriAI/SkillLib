@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>outlier-post-finder</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">social-outlier-analysis</a> / outlier-post-finder</p><h1>outlier-post-finder</h1><p class="meta">combined</p><p>The ScrapeCreators copy is the more complete, operational procedure: it defines the data layer, per-platform endpoints, normalization rules, explicit lift formulas, outlier thresholds, enrichment steps, and a concrete report template. The gooseworks copy adds constraints and cautions the ScrapeCreators copy does not state, such as keeping format differences visible rather than blending them, explicitly flagging deleted posts, giveaways, paid boosts, and platform mismatches as limitations, and requiring brand-specific experiments in the output. Because each copy has material steps or constraints the other lacks, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/social/composites/outlier-post-finder/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/outlier-post-finder/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/social/composites/outlier-post-finder/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/outlier-post-finder/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: outlier-post-finder
+description: Find posts that materially outperform an account&#x27;s normal baseline and explain the hook, topic, format, timing, and audience response patterns worth testing.
+---
+
+# Outlier Post Finder
+
+Identify unusual performance relative to the account that published the post.
+
+## Inputs
+
+- Profile URLs or handles and platforms.
+- Window and sample size; default to 50 recent posts per account, but pull at least 20 when available and paginate if the user wants a larger window.
+- Metric priority such as views, engagement, shares, comments, or saves when available.
+
+## Data Sources
+
+Prefer the platform-specific feed endpoint, then enrich individual posts only when needed.
+
+| Platform | Feed endpoint | Detail/enrichment endpoint |
+|---|---|---|
+| TikTok | `/v3/tiktok/profile/videos` | `/v2/tiktok/video`, `/v1/tiktok/video/transcript` |
+| Instagram posts | `/v2/instagram/user/posts` | `/v1/instagram/post`, `/v2/instagram/media/transcript` |
+| Instagram reels | `/v1/instagram/user/reels` | `/v1/instagram/post`, `/v2/instagram/media/transcript` |
+| YouTube videos | `/v1/youtube/channel-videos` | `/v1/youtube/video`, `/v1/youtube/video/transcript` |
+| YouTube Shorts | `/v1/youtube/channel/shorts` | `/v1/youtube/video`, `/v1/youtube/video/transcript` |
+| Facebook | `/v1/facebook/profile/posts`, `/v1/facebook/profile/reels` | `/v1/facebook/post`, `/v1/facebook/post/transcript` |
+| LinkedIn | `/v1/linkedin/company/posts` | `/v1/linkedin/post`, `/v1/linkedin/post/transcript` |
+| X/Twitter | `/v1/twitter/user-tweets` | `/v1/twitter/tweet`, `/v1/twitter/tweet/transcript` |
+| Threads | `/v1/threads/user/posts` | `/v1/threads/post` |
+| Bluesky | `/v1/bluesky/user/posts` | `/v1/bluesky/post` |
+
+Before calling an endpoint, fetch its docs or per-endpoint OpenAPI spec if parameter names or response fields are uncertain.
+
+## Workflow
+
+1. **Clarify scope only if needed**
+   - Platform(s)
+   - Handles or URLs
+   - Time/post count window
+   - Whether to include transcript/comment analysis
+
+2. **Fetch recent posts**
+   - Pull at least 20 posts when available; default to 50 recent posts per account when the user does not specify.
+   - Paginate if the endpoint supports cursors and the user wants a larger window.
+   - Keep source URLs for citations.
+
+3. **Normalize metrics**
+   - Capture whatever exists: views, plays, likes, comments, shares, reposts, saves.
+   - Build a combined engagement score only after preserving raw metrics.
+   - For video-first platforms, views/play count is usually the primary metric.
+   - For text-first platforms, likes + replies/comments + reposts/shares is usually better.
+   - Keep format differences visible rather than blending all formats into one baseline.
+
+4. **Calculate the account baseline**
+   - Use median instead of mean so one viral post does not distort the baseline.
+   - Calculate per-platform and per-account baselines separately.
+   - If mixed formats exist, split by format when possible: reel vs carousel, short vs long video, text vs video.
+
+5. **Score outliers**
+   - `view_lift = post_views / median_views`
+   - `engagement_lift = post_engagement / median_engagement`
+   - Label posts as:
+     - **Huge outlier:** 5x+ baseline
+     - **Strong outlier:** 2x-5x baseline
+     - **Mild outlier:** 1.5x-2x baseline
+   - If sample size is under 10 posts, call confidence low.
+
+6. **Enrich the winners**
+   - Fetch post details for top outliers.
+   - Fetch transcripts for video posts when useful.
+   - Optionally fetch comments to understand audience reaction.
+   - Do not invent transcript quotes. Fetch transcripts or quote only visible captions/text.
+
+7. **Explain why they worked**
+   Look for:
+   - hook style
+   - topic/category
+   - format
+   - emotional trigger
+   - novelty/timeliness
+   - creator proof or authority
+   - controversy or debate
+   - comments showing confusion, desire, or buying intent
+   - paid/earned distribution indicators
+   - collaboration
+   - without asserting causality
+
+8. **Extract reusable principles, not copied creative.**
+
+## Output Format
+
+```markdown
+# Outlier Posts Report: {creator_or_brand}
+
+## Summary
+- Sample: {n} posts from {platforms}
+- Window: {window}
+- Baseline: median {primary_metric} = {value}
+- Confidence: High/Medium/Low
+
+## Biggest Outliers
+| Rank | Post | Platform | Date | Primary Metric | Lift | Why it likely worked |
+|---:|---|---|---|---:|---:|---|
+| 1 | [title/hook](url) | TikTok | 2026-01-01 | 1.2M views | 8.4x | Contrarian hook + clear before/after |
+
+## Repeatable Patterns
+1. **Pattern name** — evidence and examples.
+2. **Pattern name** — evidence and examples.
+
+## Hooks to Steal
+- &quot;Exact hook from caption or transcript&quot;
+- &quot;Exact hook from caption or transcript&quot;
+
+## Content Ideas Based on the Outliers
+1. ...
+2. ...
+
+## Brand-Specific Experiments
+1. ...
+2. ...
+
+## Notes and Caveats
+- Public data only.
+- Small samples are directional, not definitive.
+- Flag missing metrics, deleted posts, giveaways, paid boosts, and platform mismatches as limitations.
+```
+
+## Common Pitfalls
+
+- Do not call the highest raw-view post the best outlier if a huge account is being compared with a small one. Use lift versus each account&#x27;s own baseline.
+- Do not average TikTok, Instagram, YouTube, and LinkedIn metrics into one baseline. Score each platform separately.
+- Do not invent transcript quotes. Fetch transcripts or quote only visible captions/text.
+- Do not overstate confidence when sample size is small or metrics are missing.</pre>
+</body>
+</html>

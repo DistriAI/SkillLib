@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>drugbank-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">drugbank-xml-analysis</a> / drugbank-database</p><h1>drugbank-database</h1><p class="meta">combined</p><p>The two copies cover the same DrugBank XML analysis task but with materially different scope and structure. The aipoch copy is a single, self-contained SKILL.md with a concrete end-to-end Python example (lxml XPath extraction, pandas DataFrames, networkx DDI graph) and explicit dependencies. The FreedomIntelligence copy is a broader, modular skill that references separate files (data-access.md, drug-queries.md, interactions.md, targets-pathways.md, chemical-analysis.md) and adds capabilities the aipoch copy lacks, such as ADMET prediction, chemical similarity/fingerprints, CYP450/transporter analysis, and community detection. Neither is a strict reproduction of the other; crowning one would hide the other&#x27;s unique steps and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/drugbank-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/drugbank-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/drugbank-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/drugbank-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: drugbank-database
+description: Programmatic access to DrugBank drug and target data; use when you need to download, parse, and analyze DrugBank XML for properties, interactions, pathways, pharmacology, chemical similarity, and ADMET.
+license: MIT
+---
+
+## When to Use
+- Extract structured drug properties (identifiers, synonyms, ATC codes, SMILES, InChI) from DrugBank XML.
+- Build and analyze drug-drug interaction (DDI) networks, including severity classification, community detection, and risk scoring.
+- Map drugs to targets (proteins/genes), enzymes (CYP450, Phase II), and transporters for mechanism-of-action, repurposing, or off-target analysis.
+- Connect drugs to biological pathways (SMPDB) and pharmacology annotations.
+- Perform structure-based analysis: molecular similarity, fingerprints, substructure searches, ADMET prediction, and chemical space exploration.
+- Generate tabular datasets (CSV/Parquet) for notebooks, dashboards, or ML pipelines.
+
+## Dependencies
+- drugbank-downloader (version varies by environment)
+- lxml&gt;=4.9
+- pandas&gt;=2.0
+- networkx&gt;=3.0
+- rdkit&gt;=2022.09 (required for structure/chemistry workflows)
+
+## Data Access and Authentication
+1. Obtain a DrugBank account (free academic or paid license) and store credentials securely via environment variables or a config file.
+2. Use drugbank-downloader to fetch the desired release; comply with DrugBank terms.
+3. Place the XML file at a known path (e.g., ./drugbank.xml) or update the path in your code.
+4. For repeated work, cache the parsed data to avoid re-parsing the large XML document.
+
+## XML Parsing Approach
+- DrugBank is distributed as a large XML document; use lxml.etree for robust XPath-based extraction.
+- The XML uses the namespace http://www.drugbank.ca; always include the namespace mapping in XPath queries (e.g., NS = {&quot;db&quot;: &quot;http://www.drugbank.ca&quot;}).
+- Core extraction patterns:
+  - Primary DrugBank ID: db:drugbank-id[@primary=&#x27;true&#x27;]
+  - Drug name: db:name
+  - Calculated properties (e.g., SMILES): db:calculated-properties/db:property[db:kind=&#x27;SMILES&#x27;]/db:value
+  - Drug interactions: db:drug-interactions/db:drug-interaction with fields db:drugbank-id, db:name, db:description
+
+## Core Extraction and Data Modeling
+1. Parse the XML with lxml.etree.parse and get the root element.
+2. Iterate over //db:drug elements to extract drug records (drugbank_id, name, type, smiles, and any additional fields such as CAS, InChI, molecular formula, pharmacology, and external identifiers).
+3. Build a pandas DataFrame for the drug table; drop rows missing a primary drugbank_id.
+4. Extract drug-drug interactions by iterating over each drug&#x27;s db:drug-interactions/db:drug-interaction children; record source_id, source_name, target_id, target_name, and description.
+5. Build a DDI graph with networkx.from_pandas_edgelist (nodes are drugs, edges are interactions, description as edge attribute).
+6. For drug-target analysis, extract target records (protein/UniProt ID, action such as inhibitor/agonist/antagonist, enzyme/transporter type) and build a bipartite drug-target graph.
+7. For pathway analysis, map drugs to SMPDB pathway identifiers and build a drug-pathway association table.
+
+## DDI Network Analysis
+- Compute degree centrality to identify drugs with the most interactions.
+- Classify interactions by severity and mechanism where description text allows.
+- Perform community detection on the DDI graph to identify interaction clusters.
+- Calculate interaction risk scores for polypharmacy regimens by aggregating severity and mechanism attributes.
+- Create interaction matrices for specific drug pairs or cohorts.
+
+## Chemical Properties and Similarity
+- Extract chemical structures (SMILES, InChI, molecular formula) from calculated-properties or experimental-properties sections.
+- Use rdkit to calculate physicochemical properties (MW, logP, PSA, H-bond donors/acceptors).
+- Apply Lipinski&#x27;s Rule of Five and Veber&#x27;s rules for drug-likeness assessment.
+- Generate molecular fingerprints (Morgan, MACCS, topological) and compute Tanimoto similarity between molecules.
+- Perform substructure searches with SMARTS patterns.
+- Find structurally similar drugs for repurposing and create similarity matrices for clustering.
+- Predict oral absorption and BBB permeability using rdkit descriptors or external ADMET models.
+- Analyze chemical space with PCA and clustering.
+
+## Target and Pathway Analysis
+- Extract drug targets with actions (inhibitor, agonist, antagonist, substrate, etc.).
+- Identify metabolic enzymes (CYP450 isoforms, Phase II enzymes) and transporters (uptake, efflux) for ADME studies.
+- Map drugs to biological pathways (SMPDB) and extract Gene Ontology (GO) terms for targets.
+- Cross-reference with UniProt for protein sequence and function data.
+- Find drugs targeting specific proteins and identify drugs with shared targets for repurposing.
+- Analyze polypharmacology and off-target effects.
+
+## Typical Workflows
+### Drug Discovery Workflow
+1. Download and access the latest DrugBank data using the data-access steps above.
+2. Build a searchable drug database by extracting core and extended drug fields into a pandas DataFrame.
+3. Use chemical-analysis steps to find similar compounds and assess drug-likeness.
+4. Use targets-pathways steps to identify shared targets and map to pathways.
+5. Use DDI analysis steps to assess interaction risk for candidate combinations.
+
+### Pharmacovigilance Workflow
+1. Extract all interactions for a cohort of drugs.
+2. Build a bidirectional interaction network and classify by severity.
+3. Perform community detection and calculate risk scores.
+4. Export interaction matrices and network visualizations for clinical review.
+
+## Performance Notes
+- DrugBank XML is large; parse once and cache intermediate DataFrames or pickled objects.
+- Use lxml&#x27;s C-accelerated parser for speed.
+- For very large DDI graphs, consider sampling or subgraph analysis to keep networkx operations tractable.
+- Use rdkit in batch mode when calculating properties for many molecules.
+
+## Conflicts
+- aipoch/medical-research-skills presents a single inline Python example and lists rdkit as optional; FreedomIntelligence/OpenClaw-Medical-Skills defers to separate reference files and treats rdkit-based chemical analysis as a core capability. This combined instruction merges both: it includes the inline example patterns from aipoch and the modular reference structure and additional capabilities from FreedomIntelligence.
+- FreedomIntelligence/OpenClaw-Medical-Skills includes community detection and interaction risk scoring in DDI analysis; aipoch/medical-research-skills only shows degree-based ranking. This combined instruction includes both degree-based ranking and community detection/risk scoring.</pre>
+</body>
+</html>

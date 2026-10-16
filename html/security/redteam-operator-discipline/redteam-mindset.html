@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>redteam-mindset</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">redteam-operator-discipline</a> / redteam-mindset</p><h1>redteam-mindset</h1><p class="meta">combined</p><p>The two copies share the same core red-team mindset (scope definition, DO NOT STOP directive, anti-throttling rules), but they disagree on a critical operational control. The uphiago copy explicitly forbids mid-engagement permission gates and `AskUserQuestion` calls, treating the initial authorization as covering the entire engagement. The sickn33 copy, however, inserts a &#x27;Mandatory confirmation gate&#x27; that requires explicit user confirmation for every probing command before execution. These are mutually exclusive operational procedures: one mandates continuous autonomous execution, while the other mandates step-by-step human-in-the-loop approval. Additionally, the sickn33 copy includes a detailed &#x27;data-minimization boundary&#x27; section that is absent from the uphiago copy, adding material constraints on data extraction that the other lacks. Because they conflict on the primary execution loop and differ in scope of constraints, neither is a pure reproduction of the other.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/redteam-mindset/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/redteam-mindset/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/redteam-mindset/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/redteam-mindset/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/redteam-mindset/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/redteam-mindset/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: redteam-mindset
+description: Red-team operator discipline — the mindset corrections that separate offensive testing from defensive WAPT.
+version: 1.2.0
+license: MIT
+category: security
+---
+
+## When to use this skill
+
+Trigger when:
+- Engagement scope says &quot;red team&quot;, &quot;adversary emulation&quot;, &quot;assume breach&quot;, &quot;TIBER-style&quot;
+- You&#x27;re tempted to retract a finding because reproducibility failed once
+- You&#x27;re tempted to call a defense &quot;working as intended&quot; instead of probing further
+- You hit a blocker (captcha, rate limit, WAF, CA-block, lockout) and consider stopping
+- You&#x27;re about to spend time on IDOR/CSRF/XSS instead of access-yielding bugs
+- You found a vuln on app A and there are sister apps B, C, D you haven&#x27;t touched
+
+DO NOT use for:
+- Bug bounty programs (use bug-bounty skill — different scope rules)
+- WAPT/PCI-style assessments (use OWASP-aligned skills)
+- Pure compliance audits
+
+## The one-line summary
+
+**Red team scope = &quot;gain access, prove impact&quot;. Bug bounty / WAPT scope = &quot;find a bug, write a report&quot;.**
+
+## DO NOT STOP — primary directive
+
+### Authorization and Execution Mode
+
+**Conflict Resolution:** The operator must clarify the engagement mode at the start.
+1. **Autonomous Mode (uphiago style):** If the user explicitly grants &quot;full engagement&quot; or &quot;go deep&quot; authorization, do not insert mid-engagement permission gates. `AskUserQuestion` mid-loop is a stall. The initial authorization covers the entire engagement window.
+2. **Supervised Mode (sickn33 style):** If the user requires step-by-step approval, a **Mandatory confirmation gate** applies. Before running any command that probes, exploits, or extracts data:
+   - Ask the user to state the exact target.
+   - Ask the user to confirm written authorization and scope.
+   - Show the exact command(s) and explain their expected effect.
+   - Wait for explicit confirmation in the current conversation.
+
+*Note: These modes are mutually exclusive. Do not mix them. If the user has not specified, default to Supervised Mode for safety, or ask once at the start to establish the mode.*
+
+### Discipline rules are about correctness of FINDINGS, not throttling of EFFORT.
+
+The bundle&#x27;s discipline rules (OOB-Or-It-Didn&#x27;t-Happen, Marker Discipline, etc.) answer: *&quot;is this signal actually a finding?&quot;*. They do not answer *&quot;should I send the next probe?&quot;*. The answer to the latter is *yes*, unless scope is exhausted or the user said stop (subject to the Execution Mode above).
+
+### &quot;Stop at PoC&quot; means stop ESCALATING, not stop TESTING.
+
+When you confirm impact on bug class X, don&#x27;t keep escalating class X. But classes Y and Z have not been tested yet. Run Y. Then Z.
+
+### The data-minimization boundary
+
+&quot;Keep digging&quot; applies to **coverage** (untested surfaces, classes, hosts), NOT to **extraction**.
+- An access/exfil vulnerability is proven by the MISSING CHECK, not by the volume of data you copy out.
+- 3 records that should have required auth = complete proof. 3,000 records = the same finding + a liability.
+- &quot;Keep digging&quot; = test the next endpoint family / the next host / the next class. It does NOT mean &quot;enumerate every record from the endpoint you already broke.&quot;
+- The data usually belongs to the target&#x27;s customers / fourth parties. Copying their data onto your host is harm you shouldn&#x27;t create when the point is already made.
+- A client/program owner saying &quot;dig more&quot; does NOT override this. Push back: confirm the finding is already conclusive, explain that volume ≠ evidence, and offer harm-minimal alternatives.
+- Classify what you did pull precisely.
+
+### Marker Discipline ≠ &quot;one probe per surface.&quot;
+
+Marker Discipline is about WHICH payloads to use (synthetic, identifiable, recoverable) — never about HOW MANY. A hardened target needs MORE marker-discipline probes than a soft one, not fewer.
+
+### Self-throttling anti-patterns
+
+Flag immediately if you catch yourself doing any of these:
+1. Asking &quot;want me to continue?&quot; mid-run after the user already chose a mode (in Autonomous Mode).
+2. Stopping at first-class-returning-401/403. Run all auth-bypass classes per surface.
+3. &quot;Interesting constant token, not chased.&quot; If you see a token, hash, ID, or fingerprint that&#x27;s constant across what should be varying responses, that&#x27;s a *lead*. `GET` it. Decode it. Pass it back.
+4. Reading robots.txt for cross-template signals and NOT READING the Disallow lines. Every Disallow line is a probe target.
+5. Treating soft-404 as &quot;noted.&quot; A large body inside a 404 status is leaking content. Read it. Grep it. Diff it.
+6. &quot;OpenAPI exposed → finding logged&quot; with only a subset of endpoints probed. Every endpoint × every relevant test class.
+7. &quot;APK retest deferred — needs tooling.&quot; Setup is five minutes, not &quot;another session.&quot;
+8. Volume framed as a problem. For an authorized engagement, high request volume is normal cadence. The question is *&quot;have I run every test class on every live surface,&quot;* not *&quot;have I sent too many requests.&quot;*
+9. Inserting `AskUserQuestion` at any decision point inside an active engagement loop (in Autonomous Mode).
+10. Skill-gap-as-stop-condition. If a specific skill is missing, document the gap and proceed with manual methodology rather than stopping.</pre>
+</body>
+</html>

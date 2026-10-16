@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from skillrepo.net import HttpStatusError, request
+from skillrepo.sorting.download import skill_cache_path
 from skillrepo.sorting.records import SkillOccurrence
 from skillrepo.visit import _is_cached, repository_cache_path, visit_repository
 
@@ -38,9 +39,17 @@ class SkillRetriever:
         self._repo_state: dict[str, str] = {}
         self._failures = 0
         self.submodules_disabled = False
-        self.counts = {"submodule": 0, "raw": 0, "missing": 0}
+        self.counts = {"cache": 0, "submodule": 0, "raw": 0, "missing": 0}
 
     def read(self, occurrence: SkillOccurrence) -> SkillBody:
+        cached = self._read_file(
+            occurrence,
+            skill_cache_path(self.root, occurrence.repository, occurrence.path),
+            "cache",
+        )
+        if cached is not None:
+            self._count("cache")
+            return cached
         local = self._read_checkout(occurrence)
         if local is not None:
             self._count("submodule")
@@ -64,13 +73,19 @@ class SkillRetriever:
             self.counts[source] += 1
 
     def _read_checkout(self, occurrence: SkillOccurrence) -> SkillBody | None:
-        path = repository_cache_path(occurrence.repository, self.root) / occurrence.path
-        if not path.is_file():
+        return self._read_file(
+            occurrence,
+            repository_cache_path(occurrence.repository, self.root) / occurrence.path,
+            "submodule",
+        )
+
+    def _read_file(self, occurrence: SkillOccurrence, path: Path, source: str) -> SkillBody | None:
+        if not path.is_file() or path.stat().st_size <= 0:
             return None
         text = path.read_text(encoding="utf-8", errors="replace")
         if not text.strip():
             return None
-        return SkillBody(occurrence.occurrence_id, text, "submodule", "")
+        return SkillBody(occurrence.occurrence_id, text, source, "")
 
     def _ensure_submodule(self, occurrence: SkillOccurrence) -> None:
         with self._lock:

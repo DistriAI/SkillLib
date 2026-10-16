@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>treatment-plans</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">treatment-plan-documentation</a> / treatment-plans</p><h1>treatment-plans</h1><p class="meta">combined</p><p>The copies define two different procedures for the same skill name. K-Dense-AI/scientific-agent-skills treats treatment-plans as a documentation-only formatting/validation workflow that explicitly forbids clinical decision-making, uses local JSON templates, and requires a DRAFT notice and release gate. The other three copies (Vibe-Skills, medical-research-skills, OpenClaw-Medical-Skills) treat it as a LaTeX/PDF generation workflow that creates concise clinical treatment plans, includes SMART goals, evidence-based interventions, and mandatory AI-generated schematics. These are not shortenings or wrappers of one another; they disagree on purpose, output format, safety scope, and required steps, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/treatment-plans/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/treatment-plans/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/treatment-plans/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/treatment-plans/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/treatment-plans/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/treatment-plans/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/treatment-plans/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/treatment-plans/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Treatment-Plan Documentation
+
+## Purpose
+
+This skill covers two distinct workflows for treatment-plan documentation. Select the appropriate workflow based on the task:
+
+- **Documentation-Only Workflow** (K-Dense-AI/scientific-agent-skills): Formats and structurally validates local treatment-plan documentation after clinical decisions have already been supplied and verified by authorized licensed professionals. Does not perform clinical decision-making.
+- **LaTeX/PDF Generation Workflow** (Vibe-Skills, medical-research-skills, OpenClaw-Medical-Skills): Generates concise, focused medical treatment plans in LaTeX/PDF format for all clinical specialties, including SMART goals, evidence-based interventions, and professional formatting.
+
+## Conflicts
+
+- **K-Dense-AI/scientific-agent-skills** forbids clinical decision-making, therapy selection, dose selection, and outcome prediction. The other three copies instruct the agent to generate evidence-based interventions and clinical recommendations.
+- **K-Dense-AI/scientific-agent-skills** outputs local JSON packages and requires a DRAFT notice and release gate. The other three copies output LaTeX/PDF documents.
+- **K-Dense-AI/scientific-agent-skills** requires no network or third-party packages. The other three copies require TeX Live and specific LaTeX packages.
+- **Vibe-Skills and OpenClaw-Medical-Skills** make at least one AI-generated schematic mandatory. **medical-research-skills** lists it as optional. **K-Dense-AI/scientific-agent-skills** does not require figures.
+
+## Documentation-Only Workflow
+
+### Hard Safety Boundary
+
+This workflow only formats and validates documentation of decisions already made, supplied, and verified by authorized licensed professionals. Never use it to diagnose, select therapies, choose medications or doses, start/stop/titrate treatments, check interactions, infer missing clinical content, triage, predict outcomes, or replace clinical review.
+
+### Required Visible Notice
+
+Every component and derived schedule must display:
+
+&gt; **DRAFT — NOT MEDICAL ADVICE — DOCUMENTATION-ONLY — AUTHORIZED CLINICIAN SIGN-OFF REQUIRED**
+
+### Data Gate
+
+Prefer synthetic or qualified de-identified structured manifests. Do not place patient names, medical-record numbers, contact details, dates of birth, addresses, free-text notes, images, or other direct identifiers in examples. For real-patient data, work only in a locally authorized environment, use minimum necessary information, do not send content to external tools, and require qualified privacy review.
+
+### Allowed Inputs
+
+Accept only bounded UTF-8 JSON objects built from the six generic templates: source_fact_manifest, clinician_authored_intervention, goals_monitoring_checkpoint, informed_preference_shared_decision, transition_reconciliation, and intended_use_handoff.
+
+### Workflow
+
+1. Establish authority and intended use: confirm the accountable clinical owner, authorized signatory, jurisdiction, institution, setting, document owner, local policies, retention rule, and intended recipients. Keep the release gate blocked until every required review is complete.
+2. Generate a generic package using the bundled Python script. The generator copies all six templates and does not create clinical content.
+3. Transcribe supplied decisions without inference: copy only clinician-authored facts and interventions from verified local sources. Preserve source locators, versions, author role, verification role, and verification time. Leave missing fields unresolved.
+4. Validate structure: run bundled validation scripts against local paths. Reports identify rule codes and field paths, not clinical values.
+5. Release gate: only the authorized local workflow may set the release gate. Structural success never removes the DRAFT notice.
+
+## LaTeX/PDF Generation Workflow
+
+### Overview
+
+Generate concise, focused treatment plans (1–4 pages standard) across all medical specialties with full regulatory compliance. Prioritize brevity and clinical actionability.
+
+### Critical Principles
+
+1. **CONCISE &amp; ACTIONABLE**: Treatment plans default to 3–4 pages maximum, focusing only on clinically essential information.
+2. **Patient-Centered**: Plans must be evidence-based, measurable, and compliant with healthcare regulations.
+3. **Minimal Citations**: Use brief in-text citations only when needed; avoid extensive bibliographies.
+
+### When to Use
+
+- Creating individualized treatment plans for patient care
+- Documenting therapeutic interventions for chronic disease management
+- Developing rehabilitation programs
+- Writing mental health and psychiatric treatment plans
+- Planning perioperative and surgical care pathways
+- Establishing pain management protocols
+- Setting patient-centered goals using SMART criteria
+- Coordinating multidisciplinary care across specialties
+- Ensuring regulatory compliance in treatment documentation
+
+### Visual Enhancement
+
+- **Vibe-Skills and OpenClaw-Medical-Skills**: Every treatment plan MUST include at least 1 AI-generated figure using the scientific-schematics skill. Generate at minimum one schematic or diagram (e.g., treatment pathway flowchart, care coordination diagram, or therapy timeline).
+- **medical-research-skills**: Supports adding at least one diagram (e.g., pathway, timeline, decision algorithm) to improve usability, but it is optional.
+
+### Document Format
+
+- **Option 1: One-Page Treatment Plan** (PREFERRED for most cases): Single page containing all essential treatment information in scannable sections. Required sections: Header Box, Treatment Regimen, Supportive Care, Rationale, Monitoring, Evidence Level, Expected Outcome.
+- **Option 2: Standard 3–4 Page Plan**: Front-page executive summary with 2–4 colored boxes (goals, interventions, decision points, timeline) plus supporting detail.
+- **Option 3: Extended 5–6 Page Plan**: Only when complexity requires it (multiple comorbidities, complex monitoring, research protocols).
+
+### Dependencies
+
+- **Python**: 3.10+
+- **TeX distribution**: TeX Live 2022+ (or MiKTeX equivalent)
+- **LaTeX engines**: xelatex (recommended), pdflatex (supported)
+- **Key LaTeX packages**: tcolorbox, tikz/pgf, geometry, xcolor, fontspec, fancyhdr, titlesec, enumitem, booktabs, longtable, array, colortbl, hyperref, natbib
+- **Project scripts**: generate_template.py, check_completeness.py, validate_treatment_plan.py, timeline_generator.py, (optional) generate_schematic.py
+
+### Workflow
+
+1. Generate a LaTeX template using the bundled Python script.
+2. (Optional) Generate a diagram for the plan using the scientific-schematics skill.
+3. Compile to PDF using xelatex or pdflatex.
+4. Run completeness and quality validation using the bundled validation scripts.
+5. (Optional) Generate a timeline artifact.
+
+### Implementation Details
+
+- Start with the 1-page format whenever possible.
+- Expand to 3–4 pages only when supporting detail is needed.
+- Use 5–6 pages rarely.
+- Page 1 must be a scan-friendly summary with title, patient/report info box, and 2–4 colored boxes.
+- Table of contents (if used) begins on page 2; detailed sections follow.</pre>
+</body>
+</html>

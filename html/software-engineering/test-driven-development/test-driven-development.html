@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>test-driven-development</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">test-driven-development</a> / test-driven-development</p><h1>test-driven-development</h1><p class="meta">combined</p><p>The copies overlap heavily on the red-green-refactor loop, but they disagree on how to handle existing code and on the strictness of the &#x27;test-first&#x27; rule. obra/superpowers and LeoYeAI/openclaw-master-skills enforce an &#x27;Iron Law&#x27; where any code written before a failing test must be deleted. In contrast, sickn33/agentic-awesome-skills explicitly forbids deleting user work or resetting branches, instead advocating for characterization tests when implementation already exists. addyosmani/agent-skills adds a unique &#x27;Discover the Stack First&#x27; step and a &#x27;Prove-It Pattern&#x27; for bug fixes that the others lack. Because crowning one copy would either hide the &#x27;delete code&#x27; rule or the &#x27;preserve work&#x27; rule, a combined instruction is required.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/addyosmani/agent-skills">addyosmani/agent-skills</a></td><td><code>skills/test-driven-development/SKILL.md</code></td></tr><tr><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/test-driven-development/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/test-driven-development/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/test-driven-development/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/addyosmani/agent-skills">addyosmani/agent-skills</a></td><td><code>skills/test-driven-development/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/test-driven-development/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/test-driven-development/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/test-driven-development/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/test-driven-development/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/test-driven-development/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-qa-test-automation/skills/test-driven-development/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-essentials/skills/test-driven-development/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/test-driven-development/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Test-Driven Development (TDD)
+
+## Overview
+Write a failing test before writing the code that makes it pass. For bug fixes, reproduce the bug with a test before attempting a fix. Tests are proof — &quot;seems right&quot; is not done.
+
+## When to Use
+- Implementing any new logic or behavior
+- Fixing any bug (the Prove-It Pattern)
+- Modifying existing functionality
+- Adding edge case handling
+
+**When NOT to use:** Pure configuration changes, documentation updates, or static content changes that have no behavioral impact.
+
+## Discover the Stack First
+Before writing the first test, discover how *this* repository tests:
+- **Language and build system** — `package.json`, `pom.xml`, `pyproject.toml`, `go.mod`, `Cargo.toml`, etc.
+- **Checked-in wrappers** — prefer `./gradlew`, `./mvnw`, `make test`, or a repo script over globally installed tools.
+- **Test framework and configuration** — how it runs a single focused test vs the full suite.
+- **Existing conventions** — where tests live, how files are named.
+- **Documented commands** — README, CONTRIBUTING, and CI workflows.
+
+Run the repository&#x27;s focused-test command during the loop and its full-suite command before completion.
+
+## The TDD Cycle
+
+### Step 1: RED — Write a Failing Test
+Write the test first. It must fail. A test that passes immediately proves nothing.
+- **One behavior:** Test one thing. If the name has &quot;and&quot;, split it.
+- **Clear name:** The name should describe the behavior.
+- **Real code:** Avoid mocks unless unavoidable. Test the production code, not the mock.
+
+### Step 2: Verify RED — Watch It Fail
+**MANDATORY. Never skip.**
+Run the focused test command. Confirm:
+- Test fails (not errors).
+- Failure message is expected.
+- Fails because the feature is missing (not typos).
+
+**Test passes?** You are testing existing behavior. Fix the test to target the new behavior.
+**Test errors?** Fix the error, re-run until it fails correctly.
+
+### Step 3: GREEN — Make It Pass
+Write the minimum code to make the test pass. Don&#x27;t over-engineer.
+- Don&#x27;t add features, refactor other code, or &quot;improve&quot; beyond the test.
+- If the test fails, fix the code, not the test.
+
+### Step 4: Verify GREEN — Watch It Pass
+**MANDATORY.**
+Run the focused test command. Confirm:
+- Test passes.
+- Other tests still pass.
+- Output is pristine (no errors, warnings).
+
+**Other tests fail?** Fix them now. A green run of the test you wrote is not a green suite. Run the project&#x27;s full test command before calling the change done.
+
+### Step 5: REFACTOR — Clean Up
+With tests green, improve the code without changing behavior:
+- Extract shared logic.
+- Improve naming.
+- Remove duplication.
+
+Run tests after every refactor step to confirm nothing broke.
+
+## Handling Existing Code
+- **New Feature:** Follow the standard RED-GREEN-REFACTOR loop.
+- **Bug Fix (Prove-It Pattern):**
+  1. Write a test that reproduces the bug.
+  2. Verify it fails (confirming the bug exists).
+  3. Implement the fix.
+  4. Verify the test passes (proving the fix works).
+  5. Run the full test suite (no regressions).
+- **Existing Implementation:** If code already exists, do not delete it to force a test-first history. Instead, write characterization or regression tests to capture the current behavior, then proceed with changes.
+
+## The Iron Law (For New Code)
+For new features where no code exists, **NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST**. If you write code before the test, delete it and start over. Do not keep it as &quot;reference&quot; or &quot;adapt&quot; it while writing tests.
+
+## Good Tests
+| Quality | Good | Bad |
+|---------|------|-----|
+| **Minimal** | One thing. &quot;and&quot; in name? Split it. | `test(&#x27;validates email and domain and whitespace&#x27;)` |
+| **Clear** | Name describes behavior | `test(&#x27;test1&#x27;)` |
+| **Shows intent** | Demonstrates desired API | Obscures what code should do |
+
+## Common Rationalizations
+- **&quot;Too simple to test&quot;:** Simple code breaks. Test takes 30 seconds.
+- **&quot;I&#x27;ll test after&quot;:** Tests written after pass immediately — which proves nothing. They may test the wrong thing or miss edge cases.
+- **&quot;Deleting work is wasteful&quot;:** For new code, keeping untested code is technical debt. For existing code, preserve it and add tests.
+- **&quot;TDD is dogmatic&quot;:** TDD is pragmatic. It finds bugs before commit and prevents regressions.</pre>
+</body>
+</html>

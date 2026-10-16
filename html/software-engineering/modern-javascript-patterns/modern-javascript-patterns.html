@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>modern-javascript-patterns</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">modern-javascript-patterns</a> / modern-javascript-patterns</p><h1>modern-javascript-patterns</h1><p class="meta">combined</p><p>The three copies share the same high-level scope and use-case list, but they diverge in how they instruct the agent. The first two are thin wrappers that defer to a resources/implementation-playbook.md file, while the third copy inlines a detailed ES6+ reference (arrow functions, destructuring, spread/rest, template literals, object literals, and the start of async patterns). Crowning one copy would either hide the inline reference or hide the resource-based workflow, so the catalog should combine them.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/modern-javascript-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/modern-javascript-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/modern-javascript-patterns/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/modern-javascript-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/modern-javascript-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/modern-javascript-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/modern-javascript-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/modern-javascript-patterns/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: modern-javascript-patterns
+description: Master ES6+ features including async/await, destructuring, spread operators, arrow functions, promises, modules, iterators, generators, and functional programming patterns for writing clean, efficient JavaScript code. Use when refactoring legacy code, implementing modern patterns, or optimizing JavaScript applications.
+---
+
+# Modern JavaScript Patterns
+
+Comprehensive guide for mastering modern JavaScript (ES6+) features, functional programming patterns, and best practices for writing clean, maintainable, and performant code.
+
+## Use this skill when
+
+- Refactoring legacy JavaScript to modern syntax
+- Implementing functional programming patterns
+- Optimizing JavaScript performance
+- Writing maintainable and readable code
+- Working with asynchronous operations
+- Building modern web applications
+- Migrating from callbacks to Promises/async-await
+- Implementing data transformation pipelines
+
+## Do not use this skill when
+
+- The task is unrelated to modern javascript patterns
+- You need a different domain or tool outside this scope
+
+## Instructions
+
+- Clarify goals, constraints, and required inputs.
+- Apply relevant best practices and validate outcomes.
+- Provide actionable steps and verification.
+- If detailed examples are required, open `resources/implementation-playbook.md`.
+- When the playbook is unavailable, use the inline ES6+ reference below.
+
+## ES6+ Core Features
+
+### 1. Arrow Functions
+
+**Syntax and Use Cases:**
+
+```javascript
+// Traditional function
+function add(a, b) {
+  return a + b;
+}
+
+// Arrow function
+const add = (a, b) =&gt; a + b;
+
+// Single parameter (parentheses optional)
+const double = (x) =&gt; x * 2;
+
+// No parameters
+const getRandom = () =&gt; Math.random();
+
+// Multiple statements (need curly braces)
+const processUser = (user) =&gt; {
+  const normalized = user.name.toLowerCase();
+  return { ...user, name: normalized };
+};
+
+// Returning objects (wrap in parentheses)
+const createUser = (name, age) =&gt; ({ name, age });
+```
+
+**Lexical &#x27;this&#x27; Binding:**
+
+```javascript
+class Counter {
+  constructor() {
+    this.count = 0;
+  }
+
+  // Arrow function preserves &#x27;this&#x27; context
+  increment = () =&gt; {
+    this.count++;
+  };
+
+  // Traditional function loses &#x27;this&#x27; in callbacks
+  incrementTraditional() {
+    setTimeout(function () {
+      this.count++; // &#x27;this&#x27; is undefined
+    }, 1000);
+  }
+
+  // Arrow function maintains &#x27;this&#x27;
+  incrementArrow() {
+    setTimeout(() =&gt; {
+      this.count++; // &#x27;this&#x27; refers to Counter instance
+    }, 1000);
+  }
+}
+```
+
+### 2. Destructuring
+
+**Object Destructuring:**
+
+```javascript
+const user = {
+  id: 1,
+  name: &quot;John Doe&quot;,
+  email: &quot;john@example.com&quot;,
+  address: {
+    city: &quot;New York&quot;,
+    country: &quot;USA&quot;,
+  },
+};
+
+// Basic destructuring
+const { name, email } = user;
+
+// Rename variables
+const { name: userName, email: userEmail } = user;
+
+// Default values
+const { age = 25 } = user;
+
+// Nested destructuring
+const {
+  address: { city, country },
+} = user;
+
+// Rest operator
+const { id, ...userWithoutId } = user;
+
+// Function parameters
+function greet({ name, age = 18 }) {
+  console.log(`Hello ${name}, you are ${age}`);
+}
+greet(user);
+```
+
+**Array Destructuring:**
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+
+// Basic destructuring
+const [first, second] = numbers;
+
+// Skip elements
+const [, , third] = numbers;
+
+// Rest operator
+const [head, ...tail] = numbers;
+
+// Swapping variables
+let a = 1,
+  b = 2;
+[a, b] = [b, a];
+
+// Function return values
+function getCoordinates() {
+  return [10, 20];
+}
+const [x, y] = getCoordinates();
+
+// Default values
+const [one, two, three = 0] = [1, 2];
+```
+
+### 3. Spread and Rest Operators
+
+**Spread Operator:**
+
+```javascript
+// Array spreading
+const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+const combined = [...arr1, ...arr2];
+
+// Object spreading
+const defaults = { theme: &quot;dark&quot;, lang: &quot;en&quot; };
+const userPrefs = { theme: &quot;light&quot; };
+const settings = { ...defaults, ...userPrefs };
+
+// Function arguments
+const numbers = [1, 2, 3];
+Math.max(...numbers);
+
+// Copying arrays/objects (shallow copy)
+const copy = [...arr1];
+const objCopy = { ...user };
+
+// Adding items immutably
+const newArr = [...arr1, 4, 5];
+const newObj = { ...user, age: 30 };
+```
+
+**Rest Parameters:**
+
+```javascript
+// Collect function arguments
+function sum(...numbers) {
+  return numbers.reduce((total, num) =&gt; total + num, 0);
+}
+sum(1, 2, 3, 4, 5);
+
+// With regular parameters
+function greet(greeting, ...names) {
+  return `${greeting} ${names.join(&quot;, &quot;)}`;
+}
+greet(&quot;Hello&quot;, &quot;John&quot;, &quot;Jane&quot;, &quot;Bob&quot;);
+
+// Object rest
+const { id, ...userData } = user;
+
+// Array rest
+const [first, ...rest] = [1, 2, 3, 4, 5];
+```
+
+### 4. Template Literals
+
+```javascript
+// Basic usage
+const name = &quot;John&quot;;
+const greeting = `Hello, ${name}!`;
+
+// Multi-line strings
+const html = `
+  &lt;div&gt;
+    &lt;h1&gt;${title}&lt;/h1&gt;
+    &lt;p&gt;${content}&lt;/p&gt;
+  &lt;/div&gt;
+`;
+
+// Expression evaluation
+const price = 19.99;
+const total = `Total: $${(price * 1.2).toFixed(2)}`;
+
+// Tagged template literals
+function highlight(strings, ...values) {
+  return strings.reduce((result, str, i) =&gt; {
+    const value = values[i] || &quot;&quot;;
+    return result + str + `&lt;mark&gt;${value}&lt;/mark&gt;`;
+  }, &quot;&quot;);
+}
+
+const name = &quot;John&quot;;
+const age = 30;
+const html = highlight`Name: ${name}, Age: ${age}`;
+// Output: &quot;Name: &lt;mark&gt;John&lt;/mark&gt;, Age: &lt;mark&gt;30&lt;/mark&gt;&quot;
+```
+
+### 5. Enhanced Object Literals
+
+```javascript
+const name = &quot;John&quot;;
+const age = 30;
+
+// Shorthand property names
+const user = { name, age };
+
+// Shorthand method names
+const calculator = {
+  add(a, b) {
+    return a + b;
+  },
+  subtract(a, b) {
+    return a - b;
+  },
+};
+
+// Computed property names
+const field = &quot;email&quot;;
+const user = {
+  name: &quot;John&quot;,
+  [field]: &quot;john@example.com&quot;,
+  [`get${field.charAt(0).toUpperCase()}${field.slice(1)}`]() {
+    return this[field];
+  },
+};
+
+// Dynamic property creation
+const createUser = (name, ...props) =&gt; {
+  return props.reduce(
+    (user, [key, value]) =&gt; ({
+      ...user,
+      [key]: value,
+    }),
+    { name },
+  );
+};
+
+const user = createUser(&quot;John&quot;, [&quot;age&quot;, 30], [&quot;email&quot;, &quot;john@example.com&quot;]);
+```
+
+## Asynchronous Patterns
+
+### 1. Promises
+
+**Creating and Using Promises:**
+
+```javascript
+// Creating a promise
+const fetchUser = (id) =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    setTimeout(() =&gt; {
+      if (id &gt; 0) {
+        resolve({ id, name: &quot;John&quot; });
+      } else {
+        reject(new Error(&quot;Invalid ID&quot;));
+      }
+    }, 1000);
+  });
+};
+```
+
+## Resources
+
+- `resources/implementation-playbook.md` for detailed patterns and examples.
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

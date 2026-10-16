@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>consensus-sequences</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">vcf-consensus-fasta</a> / consensus-sequences</p><h1>consensus-sequences</h1><p class="meta">combined</p><p>Both copies describe the same core task (applying VCF variants to a reference with bcftools consensus), but the GPTomics copy adds material constraints and workflows the FreedomIntelligence copy lacks: a governing principle about silent reference emission at zero-coverage sites, the chimeric-haplotype footgun on unphased VCFs, version-compatibility checks, and an iVar-based viral/amplicon consensus path. The FreedomIntelligence copy adds specific chain-file generation, custom sequence prefixing, and a broader set of filtering examples. Crowning one would hide the other&#x27;s real alternative steps and safety constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/consensus-sequences/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/consensus-sequences/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/consensus-sequences/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/consensus-sequences/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Consensus Sequences
+
+Generate consensus FASTA sequences by applying VCF variants to a reference using bcftools consensus, or build viral/amplicon consensus with iVar.
+
+## Version Compatibility
+
+Reference examples tested with: bcftools 1.19+, samtools 1.19+, bedtools 2.31+, iVar 1.4+, minimap2 2.26+, BioPython 1.83+.
+
+Before using code patterns, verify installed versions match. If versions differ, introspect the installed package or CLI help and adapt the example to match the actual API rather than retrying. Note: the -H argument vocabulary has grown across bcftools 1.x releases; IUPAC output is available both as the -H I code and the standalone -I/--iupac-codes flag. Always confirm the accepted letters with bcftools consensus on the installed version before scripting a selection.
+
+## The Governing Principle
+
+bcftools consensus walks the reference and substitutes ALT alleles at the positions present in the VCF. Everything else is copied from the reference verbatim. This drives three traps:
+
+1. A consensus silently emits REFERENCE wherever the VCF is silent, including positions with zero coverage. Mask no-coverage sites or the FASTA lies.
+2. -H 1 on an UNPHASED VCF yields a chimeric pseudo-haplotype. Haplotype selection is only meaningful when genotypes are phased. Verify | phasing before selecting a haplotype.
+3. A single FASTA cannot faithfully represent a diploid genome. Every projection is lossy; for phase-sensitive work keep the VCF, not the consensus.
+
+The input VCF must be bgzipped and indexed (bgzip + bcftools index/tabix). The REF bases in the VCF must match the FASTA exactly or bcftools warns and skips those records. Normalize first if needed.
+
+## Basic Usage
+
+```bash
+bcftools index input.vcf.gz
+bcftools consensus -f reference.fa input.vcf.gz &gt; consensus.fa
+bcftools consensus -f reference.fa -o consensus.fa input.vcf.gz
+```
+
+For a multi-sample VCF, always pass -s:
+
+```bash
+bcftools query -l input.vcf.gz
+bcftools consensus -f reference.fa -s sample1 input.vcf.gz &gt; sample1.fa
+```
+
+Restrict to a region with -r:
+
+```bash
+bcftools consensus -f reference.fa -r chr1:1000000-1010000 -s sample1 input.vcf.gz &gt; gene.fa
+```
+
+## Haplotype Selection and the Phasing Trap
+
+-H chooses which allele to apply from FORMAT/GT. The codes are case-insensitive:
+
+| Option | Applies | Use when |
+|--------|---------|----------|
+| -H 1 / -H 2 | Allele at GT index 1 or 2 | Emitting one true chromosome -- only valid on PHASED genotypes |
+| -H A | ALT allele in every genotype | Maximum divergence from reference; a chimera of both chromosomes |
+| -H R | REF allele at heterozygous sites | Conservative consensus; discards het ALT alleles |
+| -H I (or -I / --iupac-codes) | IUPAC ambiguity code | Retain heterozygosity in one sequence |
+| -H LA/LR/SA/SR | Longer/shorter allele, tie broken by ALT/REF | Length-driven selection; confirm the letter set on the installed version |
+
+The chimeric-haplotype footgun: -H 1/-H 2 are only meaningful when genotypes are phased (0|1, pipe separator). With unphased genotypes (0/1, slash), the assignment of which allele is haplotype 1 is arbitrary per site, so -H 1 across many heterozygous sites produces a switch-error mosaic that corresponds to no real chromosome. Verify phasing before any -H 1/-H 2:
+
+```bash
+bcftools query -f &#x27;%CHROM\t%POS[\t%GT]\n&#x27; input.vcf.gz | head
+```
+
+If genotypes are unphased, phase first (read-backed WhatsHap/HapCUT2, trio, statistical SHAPEIT/Eagle, or native long-read phasing).
+
+## IUPAC Codes for Heterozygous Sites
+
+```bash
+bcftools consensus -f reference.fa -I input.vcf.gz &gt; consensus_iupac.fa
+```
+
+Heterozygous sites encoded with IUPAC ambiguity codes: A/G -&gt; R, C/T -&gt; Y, A/C -&gt; M, G/T -&gt; K, A/T -&gt; W, C/G -&gt; S.
+
+## Missing Data and Masking
+
+Mark missing as N:
+
+```bash
+bcftools consensus -f reference.fa -M N input.vcf.gz &gt; consensus.fa
+```
+
+Mark low coverage as N using a mask BED file:
+
+```bash
+samtools depth input.bam | awk &#x27;$3&lt;10 {print $1&quot;\t&quot;$2-1&quot;\t&quot;$2}&#x27; &gt; low_coverage.bed
+bcftools consensus -f reference.fa -m low_coverage.bed input.vcf.gz &gt; consensus.fa
+```
+
+Mask options: -m FILE masks regions in a BED file with N; -M CHAR sets the character for masked regions (default N).
+
+## Region Selection
+
+Specific region:
+
+```bash
+bcftools consensus -f reference.fa -r chr1:1000-2000 input.vcf.gz &gt; region.fa
+```
+
+Multiple regions: use with a BED file to extract multiple regions.
+
+## Chain Files
+
+Generate a chain file to map coordinates between reference and consensus:
+
+```bash
+bcftools consensus -f reference.fa -c chain.txt input.vcf.gz &gt; consensus.fa
+```
+
+Chain files are useful for liftover of annotations and required when indels change sequence length.
+
+## Sample-Specific Consensus
+
+For each sample:
+
+```bash
+for sample in $(bcftools query -l input.vcf.gz); do
+    bcftools consensus -f reference.fa -s &quot;$sample&quot; input.vcf.gz &gt; &quot;${sample}.fa&quot;
+done
+```
+
+Both haplotypes (only if phased):
+
+```bash
+sample=&quot;sample1&quot;
+bcftools consensus -f reference.fa -s &quot;$sample&quot; -H 1 input.vcf.gz &gt; &quot;${sample}_hap1.fa&quot;
+bcftools consensus -f reference.fa -s &quot;$sample&quot; -H 2 input.vcf.gz &gt; &quot;${sample}_hap2.fa&quot;
+```
+
+## Filtering Before Consensus
+
+PASS variants only:
+
+```bash
+bcftools view -f PASS input.vcf.gz | bcftools consensus -f reference.fa &gt; consensus.fa
+```
+
+High-quality variants only:
+
+```bash
+bcftools filter -i &#x27;QUAL&gt;=30 &amp;&amp; INFO/DP&gt;=10&#x27; input.vcf.gz | bcftools consensus -f reference.fa &gt; consensus.fa
+```
+
+SNPs only:
+
+```bash
+bcftools view -v snps input.vcf.gz | bcftools consensus -f reference.fa &gt; consensus_snps.fa
+```
+
+## Sequence Naming
+
+Default naming uses reference sequence names. Custom prefix:
+
+```bash
+bcftools consensus -f reference.fa -p &quot;sample1_&quot; input.vcf.gz &gt; consensus.fa
+```
+
+Sequences named: sample1_chr1, sample1_chr2, etc.
+
+## Common Workflows
+
+Phylogenetic analysis preparation:
+
+```bash
+mkdir -p consensus
+for sample in $(bcftools query -l cohort.vcf.gz); do
+    bcftools view -s &quot;$sample&quot; cohort.vcf.gz | \
+        bcftools view -c 1 | \
+        bcftools consensus -f reference.fa &gt; &quot;consensus/${sample}.fa&quot;
+done
+cat consensus/*.fa &gt; all_samples.fa
+```
+
+Viral genome assembly (bcftools path):
+
+```bash
+bcftools filter -i &#x27;QUAL&gt;=30 &amp;&amp; INFO/DP&gt;=20&#x27; variants.vcf.gz | \
+    bcftools view -f PASS | \
+    bcftools consensus -f reference.fa -M N &gt; consensus.fa
+```
+
+Viral/amplicon consensus (iVar path):
+
+```bash
+samtools mpileup -f reference.fa input.bam | ivar consensus -p out
+```
+
+Gene-specific consensus:
+
+```bash
+bcftools consensus -f reference.fa -r chr1:1000000-1010000 -s sample1 variants.vcf.gz &gt; gene.fa
+```
+
+Masked low-coverage regions:
+
+```bash
+samtools depth -a input.bam | \
+    awk &#x27;$3&lt;5 {print $1&quot;\t&quot;$2-1&quot;\t&quot;$2}&#x27; | \
+    bedtools merge &gt; low_coverage.bed
+bcftools consensus -f reference.fa -m low_coverage.bed variants.vcf.gz &gt; consensus.fa
+```
+
+## Verify Consensus
+
+Check differences:
+
+```bash
+minimap2 -a reference.fa consensus.fa | samtools view -bS &gt; alignment.bam
+diff &lt;(grep -v &quot;^&gt;&quot; reference.fa) &lt;(grep -v &quot;^&gt;&quot; consensus.fa) | head
+```
+
+Count changes:
+
+```bash
+bcftools view -H input.vcf.gz | wc -l
+```
+
+## Handling Overlapping Variants
+
+bcftools consensus handles overlapping variants automatically, applying variants in order and warning about conflicts. Check for warnings:
+
+```bash
+bcftools consensus -f reference.fa input.vcf.gz 2&gt;&amp;1 | grep -i warn
+```</pre>
+</body>
+</html>

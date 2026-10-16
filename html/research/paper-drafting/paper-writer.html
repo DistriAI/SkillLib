@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>paper-writer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">paper-drafting</a> / paper-writer</p><h1>paper-writer</h1><p class="meta">combined</p><p>The two skills share the name &#x27;paper-writer&#x27; but define fundamentally different procedures. The HKUSTDial skill is a general-purpose, evidence-discipline-focused prose generator that operates on user materials and verified retrieval, explicitly avoiding LaTeX and specific empirical workflows. The brycewang-stanford skill is a specialized, LaTeX-focused workflow for empirical finance/economics papers that requires a PDF input, reads tables/figures, and follows a specific &#x27;write results first&#x27; assembly order. They do not reproduce or shorten each other; they are distinct tools for different stages and types of academic writing.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/HKUSTDial/Supervisor-Skills">HKUSTDial/Supervisor-Skills</a></td><td><code>skills/paper-writer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/67-econfin-workflow-toolkit/paper-writer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/HKUSTDial/Supervisor-Skills">HKUSTDial/Supervisor-Skills</a></td><td><code>skills/paper-writer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/67-econfin-workflow-toolkit/paper-writer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: paper-writer
+description: &gt;-
+  Drafts academic paper prose. Use the General mode for STEM/non-STEM prose from
+  notes/ideas with strict evidence tracing. Use the Empirical LaTeX mode for
+  finance/economics papers where a PDF of tables/figures is provided.
+---
+
+# Paper Writer
+
+## Mode Selection
+
+1. **General Prose Mode**: Use when the user provides notes, ideas, or results
+   and wants publishable prose (paragraph to full manuscript) without a specific
+   LaTeX template or PDF of tables.
+2. **Empirical LaTeX Mode**: Use when the user provides a PDF containing
+   tables/figures for an empirical finance/economics paper and wants LaTeX
+   output.
+
+## General Prose Mode (HKUSTDial)
+
+### Hard Rules
+1. Every factual claim must trace to user materials, verified retrieval, or
+   field common knowledge (no numbers/names).
+2. Zero placeholder tags in output.
+3. No invented details.
+4. Claim strength matches evidence strength.
+5. Distinguish real vs. planned results.
+
+### Workflow
+1. **Scope**: Determine granularity (full paper vs. section), paradigm (STEM,
+   humanities, etc.), and mode (Draft vs. Final).
+2. **Evidence**: Inventory user materials. Build literature pool via search.
+   Identify gaps. Create Evidence Map for full papers.
+3. **Blueprint**: Route by paradigm. Use CER skeleton for non-STEM.
+4. **Draft**: Write prose adhering to evidence rules.
+5. **Review**: Verify citations and claims.
+6. **Deliver**: Clean prose with delivery note.
+
+## Empirical LaTeX Mode (brycewang-stanford)
+
+### Input
+- PDF path containing tables and figures.
+
+### Workflow
+1. **Initialization**: Read PDF, map tables/figures to sections, confirm plan
+   with user, set output path (`main.tex`).
+2. **Empirical Results (Write First)**: For each section, ask user for word
+   count, read relevant PDF pages, write LaTeX section, append to `main.tex`.
+3. **Research Design**: Write Data/Sample and Variable Construction sections.
+4. **Lit Review &amp; Hypotheses**: Write Literature Review and Hypothesis
+   Development.
+5. **Introduction &amp; Abstract**: Write Introduction, Title, Abstract, and
+   Institutional Background.
+6. **Conclusion**: Write Conclusion.
+7. **Assembly**: Finalize `main.tex` with correct document order (Intro, Lit
+   Review, Design, Results, Conclusion).
+
+## Conflicts
+- **HKUSTDial/Supervisor-Skills**: Focuses on evidence tracing and general
+  prose; does not require PDF or LaTeX.
+- **brycewang-stanford/Auto-Empirical-Research-Skills**: Requires PDF input,
+  outputs LaTeX, and follows a specific empirical writing order.</pre>
+</body>
+</html>

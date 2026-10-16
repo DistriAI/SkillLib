@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>de-ai-writer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">media</a> / <a href="index.html">de-ai-rewrite</a> / de-ai-writer</p><h1>de-ai-writer</h1><p class="meta">combined</p><p>The two copies overlap on the goal (removing AI smell from Chinese copy) but each contains material steps the other lacks. The davepoon copy is a thin wrapper around a local Python script (deai.py) with API-key and prompt-only modes. The sickn33 copy is a documentation-only procedure that defines a deterministic AI-smell scoring formula, a 35-pattern catalog, a diagnose-rewrite-verify loop, and optional style-clone/variant/tone steps. Crowning one would hide a real alternative: a script-based tool versus a manual, formula-driven editing procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/de-ai-writer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/de-ai-writer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/de-ai-writer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/de-ai-writer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/de-ai-writer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/de-ai-writer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># De-AI Writer — Chinese AI-Smell Removal
+
+Rewrite AI-generated Chinese copy into natural, human-sounding text. Use when the user asks 去AI味, 改得像人写的, or provides a draft that reads machine-written.
+
+## Step 1: Diagnose — Score the Draft
+
+1. Scan the text against the 35-pattern Chinese AI-tell catalog (e.g., 赋能/闭环, 首先-其次-最后, 随着…的发展, 拔高意义 endings, 公文套话).
+2. Count hits per paragraph (repeats in the same paragraph count once).
+3. Weight: strong patterns = 2 points; weak-evidence patterns (em-dash, hedges, passive/no-subject, 的-stacking, inconsistent quotation marks) = 1 point.
+4. Normalize: D = weighted total / max(1, total characters / 100).
+5. Index: AI味指数 = min(100, round(D × 10)).
+6. Bands: 0–20 基本像人写 · 21–45 轻度 AI 味 · 46–75 明显 AI 味 · 76–100 一眼假.
+7. Report three numbers: 命中处数 / 加权总分 / AI味指数.
+
+## Step 2: Rewrite Against Specific Patterns
+
+- Work through the hit list one pattern at a time.
+- A single weak-evidence hit is not evidence; act only when two or more appear in the same paragraph.
+- Delete, don&#x27;t decorate: drop the negation half of 不是 X，而是 Y, drop significance endings, drop 开场铺垫, drop assistant residue.
+- Facts come from the source only. Never introduce a fact, number, or specification the source does not contain. If a fact is needed for clarity, ask the user.
+
+## Step 3: Verify the Rewrite
+
+- Re-score the rewritten text with the same formula.
+- Report the before/after triple (命中处数 / 加权总分 / 指数) and how many patterns were cleared.
+- Confirm no fact was added or lost. A rewrite that lowers the score by deleting facts is a failed edit.
+
+## Step 4: Optional Extensions
+
+- **Style clone**: match a reference sample&#x27;s sentence rhythm, vocabulary, and colloquial ratio.
+- **Variants**: produce 2–6 clearly different versions for A/B testing.
+- **Tone**: re-target to casual, formal, marketing, humor, or direct register.
+- **Review**: score on Hook / Pacing / Emotion / AI-Smell / Clarity / Persuasion / Structure / Readability, plus three concrete improvements.
+
+## Alternative: Script-Based Mode
+
+If a local rule engine is available (e.g., scripts/deai.py from the source repository):
+
+1. With an API key:
+   ```bash
+   export LLM_API_KEY=&quot;your-key&quot;
+   export LLM_BASE_URL=&quot;https://api.deepseek.com/v1&quot;
+   export LLM_MODEL=&quot;deepseek-chat&quot;
+   python3 scripts/deai.py draft.txt -o output.txt
+   ```
+2. Without an API key (zero-cost):
+   ```bash
+   python3 scripts/deai.py draft.txt --prompt-only
+   ```
+   Paste the output prompt into any AI assistant to perform the rewrite.
+
+## Conflicts
+
+- davepoon/buildwithclaude ships a runnable Python script as the primary workflow; sickn33/agentic-awesome-skills is documentation-only and does not include the script.
+- sickn33/agentic-awesome-skills requires a deterministic scoring formula before and after rewriting; davepoon/buildwithclaude has no scoring step.
+- davepoon/buildwithclaude offers a --prompt-only mode for external AI assistants; sickn33/agentic-awesome-skills does not mention this mode.</pre>
+</body>
+</html>

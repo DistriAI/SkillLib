@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>literature-search</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">academic-literature-search</a> / literature-search</p><h1>literature-search</h1><p class="meta">combined</p><p>The three copies are not reproductions of one procedure. The LeoYeAI copy is a CLI/API tool specification for a multi-source search engine with query expansion and PDF download. The brycewang-stanford copy is a workflow for an agent to search, web-verify every citation, and curate a bibliography with a specific output table. The FreedomIntelligence copy is a wrapper around the Valyu semantic search API for PubMed/arXiv/bioRxiv/medRxiv. They overlap only in the broad goal of finding academic papers, but each has material steps, constraints, and tools the others lack, and they disagree on sources, verification, and output format.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/scholargraph/literature-search/skill.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/60-regisely-superpapers/skills/literature-search/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/literature-search/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/scholargraph/literature-search/skill.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/60-regisely-superpapers/skills/literature-search/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/literature-search/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Literature Search
+
+## Overview
+
+This skill searches academic literature using one or more of the following approaches, depending on the user&#x27;s needs and available tools:
+
+1. **Multi-source CLI/API search** (LeoYeAI style): Use the `lit` CLI or TypeScript API to search arXiv, Semantic Scholar, OpenAlex, PubMed, CrossRef, DBLP, CORE, IEEE Xplore, Google Scholar, Unpaywall, and Web Search. Supports query expansion, PDF download, and smart sorting.
+2. **Agent-driven web search with verification** (brycewang-stanford style): Search field-appropriate databases (Google Scholar, Web of Science, JSTOR, Semantic Scholar, and field-specific sources), web-fetch every candidate paper to verify title, authors, year, and DOI, curate results, and output a markdown table.
+3. **Valyu semantic search** (FreedomIntelligence style): Use the Valyu API to search PubMed, arXiv, bioRxiv, and medRxiv with natural language queries, returning full-text content and images.
+
+## When to Use
+
+- The user asks to search for papers, review literature, find references, verify a paper exists, or build a bibliography.
+- The user needs comprehensive coverage across multiple academic sources.
+- The user needs PDFs of open-access papers.
+- The user needs full-text content from biomedical and preprint sources.
+
+## Conflicts
+
+- **LeoYeAI/openclaw-master-skills** uses a local CLI (`lit`) and TypeScript API with a wide range of sources and PDF download capabilities. It does not require per-paper web verification or a specific markdown table output.
+- **brycewang-stanford/Auto-Empirical-Research-Skills** mandates web-fetching every candidate paper to verify existence and DOI, curating results, and outputting a markdown table with specific columns. It does not use a local CLI or the Valyu API.
+- **FreedomIntelligence/OpenClaw-Medical-Skills** requires a Valyu API key and uses the Valyu semantic search API for PubMed, arXiv, bioRxiv, and medRxiv. It returns full-text content and images, which the other two do not.
+
+## Steps
+
+### 1. Determine the Search Approach
+
+- If the user needs PDFs or a wide range of sources, use the **Multi-source CLI/API** approach.
+- If the user needs verified citations for a bibliography, use the **Agent-driven web search with verification** approach.
+- If the user needs full-text content from biomedical and preprint sources, use the **Valyu semantic search** approach.
+
+### 2. Multi-source CLI/API Search (LeoYeAI style)
+
+- Use the `lit` CLI or TypeScript API.
+- Specify sources, limit, and sort criteria.
+- Optionally download PDFs.
+
+### 3. Agent-driven Web Search with Verification (brycewang-stanford style)
+
+- Identify the research field from context.
+- Choose field-appropriate databases.
+- Search with specific queries.
+- Web-fetch every candidate paper to verify title, authors, year, and DOI.
+- Curate results and output a markdown table.
+
+### 4. Valyu Semantic Search (FreedomIntelligence style)
+
+- Ensure a Valyu API key is available.
+- Use the Valyu API to search PubMed, arXiv, bioRxiv, and medRxiv.
+- Process results using `jq` or the Valyu SDK.
+
+## Output Format
+
+- **Multi-source CLI/API**: JSON or markdown with paper metadata and optional PDF paths.
+- **Agent-driven web search**: Markdown table with columns: `Authors (Year)`, `Title`, `Venue`, `DOI`, `Relevance`.
+- **Valyu semantic search**: JSON with `success`, `type`, `query`, `result_count`, `results` (including `title`, `url`, `content`, `source`, `relevance_score`, `images`), and `cost`.
+
+## Verification
+
+- For the agent-driven approach, every paper in the final list must be web-fetched and verified.
+- For the other approaches, verify that the search was successful and that the results are relevant.</pre>
+</body>
+</html>

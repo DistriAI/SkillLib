@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>imagegen</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">media</a> / <a href="index.html">image-generation</a> / imagegen</p><h1>imagegen</h1><p class="meta">combined</p><p>The two copies describe the same task but disagree on the primary execution path and several operational constraints. The openai/skills copy treats the built-in image_gen tool as the default and the CLI as an explicit-only fallback, while the Vibe-Skills copy treats the bundled CLI as the default and requires OPENAI_API_KEY for all live calls. They also differ on save-path policy, model defaults, dependency installation, and prompt-augmentation taxonomy. Crowning one copy would hide a real alternative workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.system/imagegen/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/imagegen/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.system/imagegen/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/imagegen/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: &quot;imagegen&quot;
+description: &quot;Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when the agent should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not use when the task is better handled by editing existing SVG/vector/code-native assets, extending an established icon or logo system, or building the visual directly in HTML/CSS/canvas.&quot;
+---
+
+# Image Generation Skill
+
+Generates or edits images for the current project (for example website assets, game assets, UI mockups, product mockups, wireframes, logo design, photorealistic images, or infographics).
+
+## Top-level modes and rules
+
+This skill has two top-level modes:
+
+- **Built-in tool mode (preferred when available):** built-in `image_gen` tool for normal image generation and editing. Does not require `OPENAI_API_KEY`.
+- **CLI mode:** `scripts/image_gen.py` CLI. Use when the built-in tool is unavailable, when the user explicitly asks for the CLI path, or when the environment is configured for CLI-first execution. Requires `OPENAI_API_KEY`.
+
+Within CLI mode, the CLI exposes three subcommands:
+
+- `generate`
+- `edit`
+- `generate-batch`
+
+Rules:
+- Use the built-in `image_gen` tool by default when it is available and the user has not explicitly requested the CLI.
+- If the built-in tool fails or is unavailable, tell the user the CLI fallback exists and that it requires `OPENAI_API_KEY`. Proceed only if the user explicitly asks for that fallback or if the environment is configured for CLI-first execution.
+- If the user explicitly asks for CLI mode, use the bundled `scripts/image_gen.py` workflow. Do not create one-off SDK runners.
+- Never modify `scripts/image_gen.py`. If something is missing, ask the user before doing anything else.
+
+Built-in save-path policy:
+- In built-in tool mode, the agent saves generated images under `$CODEX_HOME/*` by default.
+- Do not describe or rely on OS temp as the default built-in destination.
+- Do not describe or rely on a destination-path argument (if any) on the built-in `image_gen` tool. If a specific location is needed, generate first and then move or copy the selected output from `$CODEX_HOME/generated_images/...`.
+- Save-path precedence in built-in mode:
+  1. If the user names a destination, move or copy the selected output there.
+  2. If the image is meant for the current project, move or copy the final selected image into the workspace before finishing.
+  3. If the image is only for preview or brainstorming, render it inline; the underlying file can remain at the default `$CODEX_HOME/*` path.
+- Never leave a project-referenced asset only at the default `$CODEX_HOME/*` path.
+- Do not overwrite an existing asset unless the user explicitly asked for replacement; otherwise create a sibling versioned filename such as `hero-v2.png` or `item-icon-edited.png`.
+
+CLI save-path policy:
+- Use `tmp/imagegen/` for intermediate files (for example JSONL batches); delete when done.
+- Write final artifacts under `output/imagegen/` when working in a repository that uses that convention.
+- Use `--out` or `--out-dir` to control output paths; keep filenames stable and descriptive.
+
+Shared prompt guidance for both modes lives in `references/prompting.md` and `references/sample-prompts.md`.
+
+Fallback-only docs/resources for CLI mode:
+- `references/cli.md`
+- `references/image-api.md`
+- `references/codex-network.md`
+- `scripts/image_gen.py`
+
+## When to use
+- Generate a new image (concept art, product shot, cover, website hero)
+- Generate a new image using one or more reference images for style, composition, or mood
+- Edit an existing image (inpainting, lighting or weather transformations, background replacement, object removal, compositing, transparent background)
+- Produce many assets or variants for one task
+
+## When not to use
+- Extending or matching an existing SVG/vector icon set, logo system, or illustration library inside the repo
+- Creating simple shapes, diagrams, wireframes, or icons that are better produced directly in SVG, HTML/CSS, or canvas
+- Making a small project-local asset edit when the source file already exists in an editable native format
+- Any task where the user clearly wants deterministic code-native output instead of a generated bitmap
+
+## Decision tree
+
+Think about two separate questions:
+
+1. **Intent:** is this a new image or an edit of an existing image?
+2. **Execution strategy:** is this one asset or many assets/variants?
+
+Intent:
+- If the user wants to modify an existing image while preserving parts of it, treat the request as **edit**.
+- If the user provides images only as references for style, composition, mood, or subject guidance, treat the request as **generate**.
+- If the user provides no images, treat the request as **generate**.
+
+Built-in edit semantics:
+- Built-in edit mode is for images already visible in the conversation context, such as attached images or images generated earlier in the thread.
+- If the user wants to edit a local image file with the built-in tool, first load it with built-in `view_image` tool so the image is visible in the conversation context, then proceed with the built-in edit flow.
+- Do not promise arbitrary filesystem-path editing through the built-in tool.
+- If a local file still needs direct file-path control, masks, or other explicit CLI-only parameters, use the explicit CLI fallback only when the user asks for it.
+- For edits, preserve invariants aggressively and save non-destructively by default.
+
+Execution strategy:
+- In the built-in default path, produce many assets or variants by issuing one `image_gen` call per requested asset or variant.
+- In the explicit CLI fallback path, use the CLI `generate-batch` subcommand only when the user explicitly chose CLI mode and needs many prompts/assets.
+
+Assume the user wants a new image unless they clearly ask to change an existing one.
+
+## Workflow
+1. Decide the top-level mode: built-in by default when available, CLI when the built-in tool is unavailable or the user explicitly requests it.
+2. Decide the intent: `generate` or `edit`.
+3. Decide whether the output is preview-only or meant to be consumed by the current project.
+4. Decide the execution strategy: single asset vs repeated built-in calls vs CLI batch.
+5. Collect inputs up front: prompt(s), exact text (verbatim), constraints/avoid list, and any input image(s)/mask(s). For multi-image edits, label each input by index and role; for edits, list invariants explicitly.
+6. If batch in CLI mode: write a temporary JSONL under `tmp/imagegen/` (one job per line), run once, then delete the JSONL.
+7. Augment prompt into a short labeled spec (structure + constraints) without inventing new creative requirements.
+8. Run the selected mode: built-in `image_gen` tool or the bundled CLI (`scripts/image_gen.py`) with sensible defaults (see references/cli.md).
+9. For complex edits/generations, inspect outputs (open/view images) and validate: subject, style, composition, text accuracy, and invariants/avoid items.
+10. Iterate: make a single targeted change (prompt or mask), re-run, re-check.
+11. Save/return final outputs and note the final prompt + flags used.
+
+## Dependencies (CLI mode)
+Prefer `uv` for dependency management.
+
+Python packages:
+```
+uv pip install openai pillow
+```
+If `uv` is unavailable:
+```
+python3 -m pip install openai pillow
+```
+
+## Environment
+- `OPENAI_API_KEY` must be set for live API calls in CLI mode.
+
+If the key is missing, give the user these steps:
+1. Create an API key in the OpenAI platform UI: https://platform.openai.com/api-keys
+2. Set `OPENAI_API_KEY` as an environment variable in their system.
+3. Offer to guide them through setting the environment variable for their OS/shell if needed.
+- Never ask the user to paste the full key in chat. Ask them to set it locally and confirm when ready.
+
+If installation isn&#x27;t possible in this environment, tell the user which dependency is missing and how to install it locally.
+
+## Defaults &amp; rules
+- Use `gpt-image-1.5` unless the user explicitly asks for `gpt-image-1-mini` or explicitly prefers a cheaper/faster model.
+- Assume the user wants a new image unless they explicitly ask for an edit.
+- Require `OPENAI_API_KEY` before any live API call in CLI mode.
+- Use the OpenAI Python SDK (`openai` package) for all API calls; do not use raw HTTP.
+- If the user requests edits, use `client.images.edit(...)` and include input images (and mask if provided).
+- Prefer the bundled CLI (`scripts/image_gen.py`) over writing new one-off scripts.
+- Never modify `scripts/image_gen.py`. If something is missing, ask the user before doing anything else.
+- If the result isn&#x27;t clearly relevant or doesn&#x27;t satisfy constraints, iterate with small targeted prompt changes; only ask a question if a missing detail blocks success.
+
+## Prompt augmentation
+Reformat user prompts into a structured, production-oriented spec. Only make implicit details explicit; do not invent new requirements.
+
+## Use-case taxonomy (exact slugs)
+Classify each request into one of these buckets and keep the slug consistent across prompts and references.
+
+Generate:
+- photorealistic-natural — candid/editorial lifestyle scenes with real texture and natural lighting.
+- product-mockup — product/packaging shots, catalog imagery, merch concepts.
+- ui-mockup — app/web interface mockups that look shippable.
+- infographic-diagram — diagrams/infographics with structured layout and text.
+- logo-brand — logo/mark exploration, vector-friendly.
+- illustration-story — comics, children&#x27;s book art, narrative scenes.
+- stylized-concept — style-driven concept art, 3D/stylized renders.
+- historical-scene — period-accurate/world-knowledge scenes.
+
+Edit:
+- text-localization — translate/replace in-image text, preserve layout.
+- identity-preserve — try-on, person-in-scene; lock face/body/pose.
+- precise-object-edit — remove/replace a specific element (incl. interior swaps).
+- lighting-weather — time-of-day/season/atmosphere changes only.
+- background-extraction — transparent background / clean cutout.
+- style-transfer — apply reference style while changing subject/scene.
+- compositing — multi-image insert/merge with matched lighting/perspective.
+- sketch-to-render — drawing/line art to photoreal render.
+
+Quick clarification (augmentation vs invention):
+- If the user says &quot;a hero image for a landing page&quot;, you may add *layout/composition constraints* that are implied by that use (e.g., &quot;generous negative space on the right for headline text&quot;).
+- Do not introduce new creative elements the user didn&#x27;t ask for (e.g., adding a mascot, changing the subject, inventing brand names/logos).
+
+Template (include only relevant lines):
+```
+Use case: &lt;taxonomy slug&gt;
+Subject: &lt;primary subject&gt;
+Style: &lt;style descriptors&gt;
+Composition: &lt;layout/composition constraints&gt;
+Constraints: &lt;must-include items&gt;
+Avoid: &lt;must-exclude items&gt;
+Invariants: &lt;elements to preserve for edits&gt;
+```</pre>
+</body>
+</html>

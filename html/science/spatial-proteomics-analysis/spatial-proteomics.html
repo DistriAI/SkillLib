@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-proteomics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">spatial-proteomics-analysis</a> / spatial-proteomics</p><h1>spatial-proteomics</h1><p class="meta">combined</p><p>The two skills cover the same task but with different emphases and conflicting technical guidance. The first copy (OpenClaw) provides a concise, code-heavy workflow using scimap and squidpy, but it recommends log1p transformation, which is generally incorrect for continuous protein intensity data. The second copy (GPTomics) provides a much deeper conceptual framework, explicitly warning against log1p and recommending arcsinh/z-score, and it details platform-specific confounds and segmentation errors. Because the first copy&#x27;s preprocessing step is technically flawed compared to the second, and the second copy contains substantial material (platform decision logic, governing principles) missing from the first, crowning one would hide the correct approach or the practical code structure. They must be combined to get the correct preprocessing and the complete workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-proteomics/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-proteomics/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-proteomics/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-proteomics/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Spatial Proteomics Analysis
+
+## 1. Data Loading &amp; Version Check
+Verify installed versions of `scimap`, `scanpy`, `anndata`, and `squidpy`. If versions differ from reference (scimap 2.0+, scanpy 1.10+), introspect APIs before running code.
+
+```python
+import scimap as sm
+import anndata as ad
+import squidpy as sq
+
+# Load data (cell x marker matrix with spatial coordinates)
+adata = ad.read_h5ad(&#x27;spatial_proteomics.h5ad&#x27;)
+# Ensure adata.obsm[&#x27;spatial&#x27;] and adata.X are populated
+```
+
+## 2. Preprocessing (Critical)
+**Do NOT use log1p.** Protein intensity is continuous, not count-based. Use arcsinh or z-score normalization to handle antibody/batch confounds.
+
+```python
+# Recommended: arcsinh transform (cofactor ~15-20 for fluorescence, adjust for mass spec)
+# sm.pp.arcsinh(adata, cofactor=15) 
+# OR z-score per marker
+# sm.pp.zscore(adata)
+
+# Rescale markers if necessary
+sm.pp.rescale(adata)
+
+# Batch correction if multiple FOVs
+sm.pp.combat(adata, batch_key=&#x27;fov&#x27;)
+```
+
+## 3. Phenotyping
+Choose between manual gating (for known markers) or clustering (for discovery).
+
+```python
+# Gating approach
+phenotype_markers = {
+    &#x27;T_cell&#x27;: [&#x27;CD3&#x27;, &#x27;CD45&#x27;],
+    &#x27;B_cell&#x27;: [&#x27;CD20&#x27;, &#x27;CD45&#x27;],
+    &#x27;Macrophage&#x27;: [&#x27;CD68&#x27;, &#x27;CD163&#x27;],
+    &#x27;Tumor&#x27;: [&#x27;panCK&#x27;, &#x27;Ki67&#x27;]
+}
+sm.tl.phenotype_cells(adata, phenotype=phenotype_markers, gate=0.5, label=&#x27;phenotype&#x27;)
+
+# OR Clustering approach
+sm.tl.cluster(adata, method=&#x27;leiden&#x27;, resolution=1.0)
+```
+
+## 4. Spatial Analysis
+Build spatial graphs and analyze neighborhoods.
+
+```python
+# Build spatial neighbors
+sm.tl.spatial_distance(adata, x_coordinate=&#x27;X&#x27;, y_coordinate=&#x27;Y&#x27;)
+
+# Neighborhood enrichment
+sm.tl.spatial_interaction(adata, phenotype=&#x27;phenotype&#x27;, method=&#x27;knn&#x27;, knn=10)
+
+# Spatial clustering
+sm.tl.spatial_cluster(adata, phenotype=&#x27;phenotype&#x27;)
+```
+
+## 5. Visualization
+
+```python
+# Spatial scatter
+sm.pl.spatial_scatterPlot(adata, colorBy=&#x27;phenotype&#x27;, x=&#x27;X&#x27;, y=&#x27;Y&#x27;, s=5)
+
+# Interaction heatmap
+sm.pl.spatial_interaction(adata)
+
+# Image overlay
+sm.pl.image_viewer(adata, markers=[&#x27;CD3&#x27;, &#x27;CD20&#x27;, &#x27;panCK&#x27;])
+```
+
+## 6. Platform-Specific Considerations
+- **CODEX/PhenoCycler**: Watch for cycle-to-cycle registration drift and photobleaching.
+- **IMC/MIBI**: Handle metal-channel spillover (compensation). For deep IMC pipeline mechanics, defer to `imaging-mass-cytometry` skills.
+- **CyCIF/Opal**: Account for bleach/restain degradation and spectral unmixing artifacts.
+
+## 7. Integration with Transcriptomics
+If matched spatial transcriptomics (e.g., Xenium, MERFISH) is available, use `squidpy` to compare spatial patterns across modalities.
+
+```python
+sq.gr.spatial_neighbors(adata_protein)
+sq.gr.spatial_neighbors(adata_rna)
+```
+
+## Key Principles
+1. **Intensity is not Count**: Never apply log1p as if data were UMIs.
+2. **Segmentation is Critical**: Cell masks are the dominant error source. Use whole-cell segmentation (e.g., Mesmer) to avoid phantom double-positives from lateral spillover.
+3. **Panel is Bounded**: Absence of a marker means it wasn&#x27;t stained, not that the protein is absent.</pre>
+</body>
+</html>

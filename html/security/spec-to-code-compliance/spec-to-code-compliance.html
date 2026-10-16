@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spec-to-code-compliance</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">spec-to-code-compliance</a> / spec-to-code-compliance</p><h1>spec-to-code-compliance</h1><p class="meta">combined</p><p>The two copies describe the same task but prescribe different, non-interchangeable procedures. The trailofbits copy is a dispatcher: it tells the agent to run a specific slash command and subagent, explains why the work must be fanned out per requirement, and defines a six-verdict output schema with a refutation step. The sickn33 copy is a self-contained, multi-phase audit procedure (Discovery, Normalization, Spec-IR, Code-IR, Alignment) with explicit global rules, a rationalization table, and a confidence-score requirement. Neither copy contains the other&#x27;s core mechanism (the slash-command dispatch vs. the IR-based line-by-line analysis), so crowning one would hide a real alternative approach.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/spec-to-code-compliance/skills/spec-to-code-compliance/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/spec-to-code-compliance/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/spec-to-code-compliance/skills/spec-to-code-compliance/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/spec-to-code-compliance/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/spec-to-code-compliance/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/spec-to-code-compliance/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: spec-to-code-compliance
+description: Check code against the documentation that specifies it - which requirements hold, which the code contradicts, which are absent, and what the code does that no document mentions. Use when comparing an implementation against a whitepaper, protocol spec, or design document.
+---
+
+# Spec-to-Code Compliance
+
+Two artifacts disagree, and the job is to find where. The documentation says what the system does; the code decides what it actually does. Every gap between them is either a bug or a documentation fix, and which one it is is the finding.
+
+## When to Use
+
+You have both documentation describing intended behavior and the code that should implement it. A whitepaper against a protocol, a design note against a service, a README&#x27;s stated guarantees against the functions behind them.
+
+Most useful when the document is authoritative — something a client wrote, published, or is audited against — because then a divergence is a defect rather than stale prose.
+
+## When NOT to Use
+
+- Not for code with no documentation of intended behavior. There is nothing to check against, and a requirement inferred from the code is checked against itself. Build the system model first with `audit-context-building`.
+- Not for finding bugs in general. This finds one class: where the code and the document disagree. A bug both artifacts are silent about is out of scope, and a bug the document endorses is a finding against the document.
+- Not for writing or improving documentation, though it produces the list of what needs fixing.
+
+## Procedure
+
+### Option A: Dispatched Workflow (Preferred for Large Specs)
+
+Run `/spec-to-code-compliance:spec-compliance &lt;path&gt;`. The slash command takes a path; to name the specification directly or widen the fan-out, ask for the run with those values — &quot;run spec-compliance on ./contracts against SPEC.md, checking 20 requirements&quot; — and they reach the script as `{path, spec, limit}`. Typing the object literally after the slash command does not work; it arrives as a string and becomes the path.
+
+It finds the documents, splits them into individually checkable requirements, gives each requirement its own agent to hunt the code with, has independent agents try to refute every divergence before it is reported, and writes `spec-compliance/REPORT.md` plus one file per requirement under `spec-compliance/requirements/`. Only compact records come back here.
+
+For a single requirement, dispatch the `spec-to-code-compliance:spec-compliance-checker` agent at it.
+
+This is not a preference about where output lands. The check does not fit in one context window if it is done honestly: judging one requirement means reading the enforcement, its callees, and its callers, and doing that for thirty requirements means holding thirty call chains at once. Attempted inline, the first few get a real check and the rest get a plausible one — and the transcript looks the same either way, because a verdict resting on a promising function name reads exactly like one resting on having read the function. Per requirement, in its own context, is what makes that difference visible.
+
+Two properties come from the script rather than from instructions, and cannot be had here:
+
+- **A refutation the finding&#x27;s author did not perform.** Claude favors findings it produced when asked to check them. The workflow sends each divergence to agents that did not produce it — one reading the code again, one re-reading the document — and drops what either knocks down.
+- **Records that cannot be prose.** A subagent bound to a return schema has to name the lines it read and the searches it ran. An `absent` verdict arrives with the patterns tried and their results attached, which is the only thing separating a real absence from a search that stopped early.
+
+### Option B: Inline Multi-Phase Analysis (For Small Specs or When Dispatch Is Unavailable)
+
+If the dispatched workflow is not available, perform the following phases inline. Maintain strict separation between extraction, alignment, classification, and reporting.
+
+**Global Rules:**
+- Never infer unspecified behavior.
+- Always cite exact evidence from the documentation (section/title/quote) and the code (file + line numbers).
+- Always provide a confidence score (0–1) for mappings.
+- Always classify ambiguity instead of guessing.
+- Do NOT rely on prior knowledge of known protocols. Only use provided materials.
+- Be literal, pedantic, and exhaustive.
+
+**Rationalizations (Do Not Skip):**
+
+| Rationalization | Why It&#x27;s Wrong | Required Action |
+|-----------------|----------------|-----------------|
+| &quot;Spec is clear enough&quot; | Ambiguity hides in plain sight | Extract to IR, classify ambiguity explicitly |
+| &quot;Code obviously matches&quot; | Obvious matches have subtle divergences | Document match_type with evidence |
+| &quot;I&#x27;ll note this as partial match&quot; | Partial = potential vulnerability | Investigate until full_match or mismatch |
+| &quot;This undocumented behavior is fine&quot; | Undocumented = untested = risky | Classify as UNDOCUMENTED CODE PATH |
+| &quot;Low confidence is okay here&quot; | Low confidence findings get ignored | Investigate until confidence ≥ 0.8 or classify as AMBIGUOUS |
+| &quot;I&#x27;ll infer what the spec meant&quot; | Inference = hallucination | Quote exact text or mark UNDOCUMENTED |
+
+**Phase 0 — Documentation Discovery:**
+Identify all content representing documentation, even if not named &quot;spec.&quot; Documentation may appear as whitepapers, protocol docs, design notes, READMEs, kickoff transcripts, Notion exports, or anything describing logic, flows, assumptions, incentives, etc. Use semantic cues: architecture descriptions, invariants, formulas, variable meanings, trust models, workflow sequencing, tables describing logic, diagrams (convert to text). Extract ALL relevant documents into a unified spec corpus.
+
+**Phase 1 — Universal Format Normalization:**
+Normalize ANY input format (PDF, Markdown, DOCX, HTML, TXT, Notion export, Meeting transcripts). Preserve heading hierarchy, bullet lists, formulas, tables (converted to plaintext), code snippets, invariant definitions. Remove layout noise, styling artifacts, watermarks. Output: a clean, canonical spec_corpus.
+
+**Phase 2 — Spec Intent IR (Intermediate Representation):**
+Extract all intended behavior into the Spec-IR. Each extracted item MUST include: spec_excerpt, source_section, semantic_type, normalized representation, confidence score. Extract: protocol purpose, actors/roles/trust boundaries, variable definitions &amp; expected relationships, all preconditions/postconditions, explicit invariants, implicit invariants deduced from context, math formulas (in canonical symbolic form), expected flows &amp; state-machine transitions, economic assumptions, ordering &amp; timing constraints, error conditions &amp; expected revert logic, security requirements (&quot;must/never/always&quot;), edge-case behavior.
+
+**Phase 3 — Code Behavior IR:**
+Perform structured, deterministic, line-by-line and block-by-block semantic analysis of the entire codebase. For EVERY LINE and EVERY BLOCK, extract: file + exact line numbers, local variable updates, state reads/writes, conditional branches &amp; alternative paths, unreachable branches, revert conditions &amp; custom errors, external calls, event emissions, math operations and rounding behavior, implicit assumptions, block-level preconditions &amp; postconditions, locally enforced invariants, state transitions, side effects, dependencies on prior state. For EVERY FUNCTION, extract: signature &amp; visibility, applied modifiers (and their logic), purpose (based on actual behavior), input/output semantics, read/write sets, full control-flow structure, success vs revert paths, internal/external call graph, cross-function interactions. Also capture: storage layout, initialization logic, authorization graph (roles → permissions), upgradeability mechanism (if present).
+
+**Phase 4 — Alignment &amp; Classification:**
+Map each Spec-IR item to Code-IR items. Classify each requirement with one of six verdicts: `implemented`, `partial`, `contradicted`, `stronger-than-spec`, `absent`, or `undecidable`. The interesting ones are the middle four.
+
+- **`partial`** is usually the most serious thing in the report. The requirement holds on the paths anyone would test and fails on one nobody did, which is how it survived long enough to be found.
+- **`absent`** rests entirely on its `searched` record. Read it. Enforcement often lives somewhere the search did not go — a modifier, a base class, a caller that checks first.
+- **`undecidable`**, and any `documentProblem`, are findings about the documentation. A requirement too vague to check is one the client cannot hold anyone to.
+- **`stronger-than-spec`** is an undocumented constraint. It works today, and nothing tells the next person changing that code that anything depended on it.
+
+The report also carries the reverse direction — behavior the code has that no document mentions — which the per-requirement pass cannot find by construction, since it is driven by the documents.
+
+Read `notChecked`, `unverified`, and `unreadableDocuments` before treating the report as complete. Requirements below the fan-out cut were never checked, and a divergence whose refutation agents both failed is unverified rather than confirmed.
+
+## Judgment the Workflow Does Not Make for You
+
+Severity is consequence, not distance from the text. A rounding step that bleeds a pool outranks a MUST satisfied by different means than the document describes, and documentation drift with no behavioral consequence is a docs ticket.</pre>
+</body>
+</html>

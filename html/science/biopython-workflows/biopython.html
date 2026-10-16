@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>biopython</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">biopython-workflows</a> / biopython</p><h1>biopython</h1><p class="meta">combined</p><p>The copies share a common core structure (Overview, When to Use, Core Capabilities, Installation, and module-specific sections) but diverge significantly on versioning, security practices, and scope. The K-Dense-AI copy is the most recent (Biopython 1.88) and includes specific security fixes and environment variable handling for NCBI keys. The aipoch copy provides a unique, complete end-to-end pipeline example with explicit rate-limiting logic (time.sleep) and error handling for missing environment variables. The foryourhealth111 and sickn33 copies are older (Biopython 1.85) and lack these specific operational details. Because the K-Dense copy is outdated in the other repos but the aipoch copy has unique implementation details not present in K-Dense, and the versions conflict, a combined instruction is necessary to capture the best practices from all sources without hiding the version discrepancy.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/biopython/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/biopython/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/biopython/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/biopython/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/biopython/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/biopython/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/biopython/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/biopython/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/biopython/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/biopython/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/biopython/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: biopython
+description: Provides Biopython workflows for sequence manipulation, file parsing, phylogenetics, and NCBI/BLAST access. Supports batch processing and structural analysis.
+---
+
+# Biopython: Computational Molecular Biology in Python
+
+## Overview
+Biopython is a comprehensive set of Python tools for biological computation. This skill targets **Biopython 1.88** (latest stable) but notes that 1.85 is widely used. It requires Python 3.10+ and NumPy.
+
+## When to Use This Skill
+Use this skill for:
+- Sequence manipulation (DNA, RNA, protein)
+- File I/O (FASTA, GenBank, FASTQ, PDB, mmCIF)
+- NCBI database access (Entrez)
+- BLAST searches and parsing
+- Sequence alignments
+- Protein structure analysis
+- Phylogenetic tree manipulation
+
+## Installation
+Install the latest stable version for security fixes:
+```bash
+uv pip install &quot;biopython==1.88&quot;
+```
+
+## NCBI Configuration
+Always set your email. Use environment variables for keys to avoid hardcoding secrets.
+
+```python
+import os
+from Bio import Entrez
+
+# Required by NCBI policy
+Entrez.email = os.environ.get(&quot;NCBI_EMAIL&quot;, &quot;your.email@example.com&quot;)
+
+# Optional: API key for higher rate limits (10 req/s)
+if api_key := os.environ.get(&quot;NCBI_API_KEY&quot;):
+    Entrez.api_key = api_key
+```
+
+## Core Workflows
+
+### 1. Sequence Handling (Bio.Seq &amp; Bio.SeqIO)
+Use `SeqIO.parse` for streaming large files to avoid memory issues.
+
+```python
+from Bio import SeqIO
+
+# Read sequences from FASTA file
+for record in SeqIO.parse(&quot;sequences.fasta&quot;, &quot;fasta&quot;):
+    print(f&quot;{record.id}: {len(record.seq)} bp&quot;)
+```
+
+### 2. Alignment Analysis (Bio.Align)
+Use `PairwiseAligner` for global or local alignments.
+
+```python
+from Bio import Align
+
+aligner = Align.PairwiseAligner()
+aligner.mode = &#x27;global&#x27;
+alignments = aligner.align(&quot;ACCGGT&quot;, &quot;ACGGT&quot;)
+print(alignments[0])
+```
+
+### 3. Database Access (Bio.Entrez)
+Respect rate limits in batch workflows by adding delays (e.g., `time.sleep(0.34)`).
+
+```python
+from Bio import Entrez
+
+handle = Entrez.esearch(db=&quot;pubmed&quot;, term=&quot;biopython&quot;, retmax=10)
+results = Entrez.read(handle)
+handle.close()
+```
+
+### 4. BLAST Operations (Bio.Blast)
+Use `NCBIWWW.qblast` for remote searches. For high-throughput, prefer local BLAST+.
+
+```python
+from Bio.Blast import NCBIWWW, NCBIXML
+
+result_handle = NCBIWWW.qblast(&quot;blastn&quot;, &quot;nt&quot;, &quot;ATCGATCGATCG&quot;)
+blast_record = NCBIXML.read(result_handle)
+```
+
+### 5. Structural Bioinformatics (Bio.PDB)
+Parse PDB/mmCIF files and navigate the SMCRA hierarchy (Structure/Model/Chain/Residue/Atom).
+
+```python
+from Bio.PDB import PDBParser
+
+parser = PDBParser(QUIET=True)
+structure = parser.get_structure(&quot;example&quot;, &quot;example.pdb&quot;)
+```
+
+## Implementation Details
+- **Streaming I/O**: Prefer iterator-based parsing (`SeqIO.parse`) for large datasets.
+- **Rate Limiting**: Implement retries and delays for NCBI Entrez and BLAST calls.
+- **Security**: Upgrade to Biopython 1.88 for `Bio.Nexus` parser and Entrez XML security fixes.</pre>
+</body>
+</html>

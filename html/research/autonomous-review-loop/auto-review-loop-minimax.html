@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>auto-review-loop-minimax</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">autonomous-review-loop</a> / auto-review-loop-minimax</p><h1>auto-review-loop-minimax</h1><p class="meta">combined</p><p>The two copies are the same MiniMax-based autonomous review loop, but they disagree on the stop condition, file locations, and allowed tools. The wanshuiyin copy is more specific (review-stage/ paths, legacy fallbacks, explicit AND stop condition, warning against external schedulers), while the brycewang copy uses project-root paths and an OR-based stop condition with different verdict vocabulary. Crowning one would hide a real alternative, so the combined instruction preserves both variants and flags the conflicts.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/auto-review-loop-minimax/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/auto-review-loop-minimax/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/auto-review-loop-minimax/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/auto-review-loop-minimax/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex/auto-review-loop-minimax/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex/auto-review-loop-minimax/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: auto-review-loop-minimax
+description: Autonomous multi-round research review loop using MiniMax API. Use when you want to use MiniMax instead of Codex MCP for external review. Trigger with &quot;auto review loop minimax&quot; or &quot;minimax review&quot;.
+argument-hint: &quot;[topic-or-scope]&quot;
+allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, Agent, Skill
+---
+
+# Auto Review Loop (MiniMax Version): Autonomous Research Improvement
+
+&gt; 🔒 **Do not wrap this skill in `/loop`, `/schedule`, or `CronCreate`.** It already loops internally (review → fix → re-review), feeding each round&#x27;s prior-round summary into the next review prompt. An external timer re-enters from the top each tick, dropping accumulated context and firing the verdict on wall-clock time instead of on artifact change — zero new signal, full token cost. Schedule the *external wait that precedes it*, not the verdict.
+
+Autonomously iterate: review → implement fixes → re-review, until the external reviewer gives a positive assessment or MAX_ROUNDS is reached.
+
+## Context: $ARGUMENTS
+
+## Constants
+
+- MAX_ROUNDS = 4
+- POSITIVE_THRESHOLD: score &gt;= 6/10 **AND** verdict ∈ {&quot;ready&quot;, &quot;almost&quot;} — **both** must hold. Verdict vocabulary is {&quot;ready&quot;, &quot;almost&quot;, &quot;not ready&quot;}. (Earlier wording used `or` and a stale verdict set; the `AND` form is authoritative.)
+- REVIEW_DOC: `review-stage/AUTO_REVIEW.md` (cumulative log) *(fall back to `./AUTO_REVIEW.md` for legacy projects)*
+- REVIEWER_MODEL = `MiniMax-M3` — Model used via MiniMax API
+
+## API Configuration
+
+This skill uses MiniMax API for external review. Two methods are supported:
+
+### Method 1: MCP Tool (Primary)
+
+If `mcp__minimax-chat__minimax_chat` is available, use it:
+
+```
+mcp__minimax-chat__minimax_chat:
+  prompt: |
+    [Review prompt content]
+  model: &quot;MiniMax-M3&quot;
+  system: &quot;You are a senior machine learning researcher...&quot;
+```
+
+### Method 2: curl (Fallback)
+
+If MCP is not available, use curl directly:
+
+```bash
+curl -s &quot;https://api.minimax.io/v1/chat/completions&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Authorization: Bearer $MINIMAX_API_KEY&quot; \
+  -d &#x27;{
+    &quot;model&quot;: &quot;MiniMax-M3&quot;,
+    &quot;messages&quot;: [
+      {&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;You are a senior ML researcher...&quot;},
+      {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;[Review prompt]&quot;}
+    ],
+    &quot;max_tokens&quot;: 4096
+  }&#x27;
+```
+
+**API Key**: Read from `~/.claude/settings.json` under `env.MINIMAX_API_KEY`, or from environment variable.
+
+**Why MiniMax instead of Codex MCP?** Codex CLI uses OpenAI&#x27;s Responses API (`/v1/responses`) which is not supported by third-party providers. See: https://github.com/openai/codex/discussions/7782
+
+## State Persistence (Compact Recovery)
+
+Long-running loops may hit the context window limit, triggering automatic compaction. To survive this, persist state to `review-stage/REVIEW_STATE.json` after each round:
+
+```json
+{
+  &quot;round&quot;: 2,
+  &quot;status&quot;: &quot;in_progress&quot;,
+  &quot;last_score&quot;: 5.0,
+  &quot;last_verdict&quot;: &quot;not ready&quot;,
+  &quot;pending_experiments&quot;: [&quot;screen_name_1&quot;],
+  &quot;timestamp&quot;: &quot;2026-03-13T21:00:00&quot;
+}
+```
+
+**Write this file at the end of every Phase E** (after documenting the round). Overwrite each time — only the latest state matters.
+
+**On completion** (positive assessment or max rounds), set `&quot;status&quot;: &quot;completed&quot;` so future invocations don&#x27;t accidentally resume a finished loop.
+
+## Workflow
+
+### Initialization
+
+1. **Check for `review-stage/REVIEW_STATE.json`** *(fall back to `./REVIEW_STATE.json` if not found — legacy path)*:
+   - If neither path exists: **fresh start** (normal case)
+   - If it exists AND `status` is `&quot;completed&quot;`: **fresh start** (previous loop finished normally)
+   - If it exists AND `status` is `&quot;in_progress&quot;` AND `timestamp` is older than 24 hours: **fresh start** (stale state from a killed/abandoned run — delete the file and start over)
+   - If it exists AND `status` is `&quot;in_progress&quot;` AND `timestamp` is within 24 hours: **resume**
+     - Read the state file to recover `round`, `last_score`, `pending_experiments`
+     - Read `review-stage/AUTO_REVIEW.md` to restore full context of prior rounds *(fall back to `./AUTO_REVIEW.md`)*
+     - If `pending_experiments` is non-empty, check if they have completed (e.g., check screen sessions)
+     - Resume from the next round (round = saved round + 1)
+     - Log: &quot;Recovered from context compaction. Resuming at Round N.&quot;
+2. Read project narrative documents, memory files, and any prior review documents
+3. Read recent experiment results (check output directories, logs)
+4. Identify current weaknesses and open TODOs from prior reviews
+5. Initialize round counter = 1 (unless recovered from state file)
+6. Create/update `review-stage/AUTO_REVIEW.md` with header and timestamp
+
+### Loop (repeat up to MAX_ROUNDS)
+
+#### Phase A: Review
+
+Send comprehensive context to the external reviewer.
+
+**Check MCP availability first**, then use appropriate method:
+
+**If MCP available (Primary):**
+```
+Use mcp__minimax-chat__minimax_chat tool with:
+- system: &quot;You are a senior machine learning researcher serving as a reviewer for top-tier conferences like NeurIPS, ICML, and ICLR. Provide rigorous, constructive feedback.&quot;
+- prompt: [Full review prompt with context]
+- model: &quot;MiniMax-M3&quot;
+```
+
+**If MCP NOT available (Fallback):**
+```bash
+curl -s &quot;https://api.minimax.io/v1/chat/completions&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Authorization: Bearer $MINIMAX_API_KEY&quot; \
+  -d &#x27;{
+    &quot;model&quot;: &quot;MiniMax-M3&quot;,
+    &quot;messages&quot;: [
+      {
+        &quot;role&quot;: &quot;system&quot;,
+        &quot;content&quot;: &quot;You are a senior machine learning researcher serving as a reviewer for top-tier conferences like NeurIPS, ICML, and ICLR. Provide rigorous, constructive feedback.&quot;
+      },
+      {
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: &quot;[Round N/MAX_ROUNDS of autonomous review loop]\n\n[Full research context: claims, methods, results, known weaknesses]\n[Changes since last round, if any]\n[For round 2+: Summary of previous review feedback and what was addressed]\n\nPlease act as a senior ML reviewer (NeurIPS/ICML level).\n\n1. Score this work 1-10 for a top venue\n2. List remaining critical weaknesses (ranked by severity)\n3. For each weakness, specify the MINIMUM fix (experiment, analysis, or reframing)\n4. State clearly: is this READY for submission? Yes/No/Almost\n\nBe brutally honest. If the work is ready, say so clearly.&quot;
+      }
+    ],
+    &quot;max_tokens&quot;: 4096
+  }&#x27;
+```
+
+**Note**: Each round is a standalone API call. For round 2+, include the summary of previous reviews and changes in the prompt itself.
+
+#### Phase B: Parse Assessment
+
+**CRITICAL: Save the FULL raw response** from the external reviewer verbatim (store in a variable for Phase E). Do NOT discard or summarize — the raw text is the primary record.
+
+Then extract structured fields:
+- **Score** (numeric 1-10)
+- **Verdict** (&quot;ready&quot; / &quot;almost&quot; / &quot;not ready&quot;)
+- **Critical weaknesses** (ranked list)
+- **Minimum fixes** (per weakness)
+
+#### Phase C: Implement Fixes
+
+For each critical weakness, implement the minimum fix specified by the reviewer. Prioritize by severity. If a fix requires a new experiment, launch it and add to `pending_experiments`.
+
+#### Phase D: Re-review
+
+If fixes were implemented, proceed to the next round (Phase A). If no fixes were possible, proceed to Phase E.
+
+#### Phase E: Document Round
+
+1. Append the full raw reviewer response to `review-stage/AUTO_REVIEW.md`
+2. Update `review-stage/REVIEW_STATE.json` with current round, status, last_score, last_verdict, pending_experiments, and timestamp
+3. If the stop condition is met (score &gt;= 6/10 AND verdict in {&quot;ready&quot;, &quot;almost&quot;}) or MAX_ROUNDS is reached, set `&quot;status&quot;: &quot;completed&quot;` in the state file and exit the loop
+
+## Conflicts
+
+- **wanshuiyin/Auto-claude-code-research-in-sleep** uses POSITIVE_THRESHOLD as score &gt;= 6/10 AND verdict in {&quot;ready&quot;, &quot;almost&quot;}; **brycewang-stanford/Auto-Empirical-Research-Skills** uses score &gt;= 6/10 OR verdict contains &quot;accept&quot;, &quot;sufficient&quot;, &quot;ready for submission&quot;. The combined instruction uses the AND form as authoritative.
+- **wanshuiyin/Auto-claude-code-research-in-sleep** stores REVIEW_DOC and REVIEW_STATE.json under `review-stage/` with legacy fallbacks; **brycewang-stanford/Auto-Empirical-Research-Skills** stores them in project root. The combined instruction uses `review-stage/` with fallbacks.
+- **wanshuiyin/Auto-claude-code-research-in-sleep** allows `Skill` but not `Agent`; **brycewang-stanford/Auto-Empirical-Research-Skills** allows `Agent` but not `Skill`. The combined instruction allows both.
+- **wanshuiyin/Auto-claude-code-research-in-sleep** includes an explicit warning not to wrap the skill in `/loop`, `/schedule`, or `CronCreate`; **brycewang-stanford/Auto-Empirical-Research-Skills** omits this warning. The combined instruction includes the warning.</pre>
+</body>
+</html>

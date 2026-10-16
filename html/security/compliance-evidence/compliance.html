@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>compliance</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">compliance-evidence</a> / compliance</p><h1>compliance</h1><p class="meta">combined</p><p>The two skills both address compliance but for entirely different domains and toolchains. The first is a financial-regulatory skill for MiCA and stablecoin evidence using FeedOracle MCP tools. The second is a software/AI security compliance engine (agent-bom) that evaluates scans against OWASP, NIST, SOC 2, ISO 27001, EU AI Act, etc., and generates SBOMs. They do not reproduce, shorten, or wrap each other; each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/feedoracle-compliance/skills/compliance/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/agent-bom/compliance/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/feedoracle-compliance/skills/compliance/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/agent-bom/compliance/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: compliance
+description: Compliance evidence and reporting for both financial (MiCA/stablecoin) and AI/software security (OWASP, NIST, SOC 2, ISO 27001, EU AI Act) contexts. Use when the user asks for compliance status, evidence, SBOMs, or framework reports.
+---
+
+# Compliance
+
+Determine which compliance domain the user is asking about, then follow the matching procedure.
+
+## 1. Financial / MiCA / Stablecoin Compliance
+
+Use FeedOracle MCP tools for regulated tokenized markets. Every response is ES256K-signed and JWKS-verifiable.
+
+### Tool Selection
+- MiCA compliance: `mica_status` for a single token, `mica_full_pack` for full evidence, `mica_market_overview` for market-wide.
+- Stablecoin risk: `peg_deviation` for current peg, `peg_history` for 30-day trend, `compliance_preflight` for PASS/WARN/BLOCK.
+- Reserve and custody: `reserve_quality` for composition, `custody_risk` for custodian analysis.
+- Audit trail: `audit_verify` to check chain integrity, `audit_query` to list decisions, `audit_log` to log (user-initiated only).
+- Natural language: `ai_query` routes to the right evidence API automatically.
+
+### Response Guidelines
+1. Always cite the `request_id` and `status` from tool responses.
+2. Reference the ES256K signature and JWKS URL for verifiability.
+3. Present data factually; let the user draw conclusions.
+4. For write tools (`audit_log`, `kya_register`): only invoke on explicit user request.
+
+## 2. AI / Software Security Compliance
+
+Use the `agent-bom` CLI to evaluate scan results against security and regulatory frameworks and generate SBOMs.
+
+### Install
+```bash
+pipx install agent-bom
+agent-bom agents -f compliance-export  # run agents scan with compliance export
+agent-bom generate-sbom                # generate CycloneDX SBOM
+```
+
+### Tools
+- `compliance`: OWASP LLM/Agentic Top 10, EU AI Act, MITRE ATLAS, NIST AI RMF.
+- `policy_check`: Evaluate results against custom security policy (17 conditions).
+- `cis_benchmark`: Run CIS benchmark checks against cloud accounts (optional; uses locally configured cloud credentials for read-only API calls).
+- `generate_sbom`: Generate SBOM in CycloneDX or SPDX format.
+- `aisvs_benchmark`: OWASP AISVS v1.0 compliance (9 AI security checks).
+
+### Supported Frameworks
+OWASP LLM Top 10 (2025), OWASP MCP Top 10, OWASP Agentic Top 10, OWASP AISVS v1.0, MITRE ATLAS, NIST AI RMF, NIST CSF 2.0, NIST 800-53 Rev 5, SOC 2, ISO 27001, CMMC, FedRAMP, EU AI Act, and related frameworks.
+
+### Constraints
+- OWASP/NIST/EU AI Act/MITRE evaluation and SBOM generation are fully local with zero credentials.
+- CIS benchmark checks optionally use cloud SDK credentials (AWS/Azure/GCP/Snowflake) and make read-only API calls only when explicitly invoked.
+- File reads are limited to user-provided SBOMs and policy files.
+
+## Conflicts
+- davepoon/buildwithclaude: procedure is MiCA/stablecoin evidence via FeedOracle MCP tools with ES256K/JWKS verifiability.
+- LeoYeAI/openclaw-master-skills: procedure is AI/software security compliance via agent-bom CLI with framework evaluation and SBOM generation.
+These are distinct compliance domains; select the matching procedure based on the user&#x27;s request.</pre>
+</body>
+</html>

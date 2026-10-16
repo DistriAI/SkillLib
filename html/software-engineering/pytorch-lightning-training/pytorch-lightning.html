@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pytorch-lightning</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">pytorch-lightning-training</a> / pytorch-lightning</p><h1>pytorch-lightning</h1><p class="meta">combined</p><p>The copies split into two distinct procedures. The Orchestra-Research copy is a self-contained, code-heavy tutorial that teaches the 3-step conversion and shows concrete Trainer/callback/scheduler examples. The K-Dense, Vibe-Skills, and OpenClaw copies are a reference-style skill that points to external scripts/ and references/ files, defines a 7-section capability map, and includes a Quick Workflow. The K-Dense copy adds material constraints the others lack (pinned Lightning 2.6.6, import-namespace warning, prepare_data rank-zero behavior, Neptune removal, and a memory-based strategy selection rule), while the Orchestra copy adds concrete code workflows the others omit. Crowning one would hide either the reference structure or the executable examples.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Orchestra-Research/AI-Research-SKILLs">Orchestra-Research/AI-Research-SKILLs</a></td><td><code>08-distributed-training/pytorch-lightning/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pytorch-lightning/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pytorch-lightning/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pytorch-lightning/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Orchestra-Research/AI-Research-SKILLs">Orchestra-Research/AI-Research-SKILLs</a></td><td><code>08-distributed-training/pytorch-lightning/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pytorch-lightning/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pytorch-lightning/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pytorch-lightning/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># PyTorch Lightning
+
+## Overview
+PyTorch Lightning organizes PyTorch code into LightningModules and Trainers to eliminate boilerplate while maintaining flexibility. It automates training loops, device management, distributed training, mixed precision, checkpointing, and logging.
+
+## Installation
+```bash
+uv pip install &quot;lightning==2.6.6&quot;
+```
+Optional extras:
+```bash
+uv pip install &quot;lightning[extra]==2.6.6&quot;
+uv pip install wandb mlflow
+```
+Use `import lightning as L` with the `lightning` distribution. Do not mix `import lightning as L` and `import pytorch_lightning as pl` within one application.
+
+## When to Use
+- Building, training, or deploying neural networks with PyTorch Lightning
+- Organizing PyTorch code into LightningModules
+- Configuring Trainers for multi-GPU/TPU training
+- Implementing data pipelines with LightningDataModules
+- Working with callbacks, logging, and distributed training strategies
+
+## Core Capabilities
+
+### 1. LightningModule - Model Definition
+Organize PyTorch models into six logical sections:
+1. Initialization - `__init__()` and `setup()`
+2. Training Loop - `training_step(batch, batch_idx)`
+3. Validation Loop - `validation_step(batch, batch_idx)`
+4. Test Loop - `test_step(batch, batch_idx)`
+5. Prediction - `predict_step(batch, batch_idx)`
+6. Optimizer Configuration - `configure_optimizers()`
+
+### 2. Trainer - Training Automation
+The Trainer automates the training loop, device management, gradient operations, and callbacks. Key features:
+- Multi-GPU/TPU support with strategy selection (DDP, FSDP, DeepSpeed)
+- Automatic mixed precision training
+- Gradient accumulation and clipping
+- Checkpointing and early stopping
+- Progress bars and logging
+
+### 3. LightningDataModule - Data Pipeline Organization
+Encapsulate all data processing steps in a reusable class:
+1. `prepare_data()` - Download/cache on local rank zero per node by default; use global rank zero with shared storage when configured
+2. `setup()` - Create datasets and apply transforms (per-GPU)
+3. `train_dataloader()` - Return training DataLoader
+4. `val_dataloader()` - Return validation DataLoader
+5. `test_dataloader()` - Return test DataLoader
+
+### 4. Callbacks - Extensible Training Logic
+Built-in callbacks include:
+- ModelCheckpoint - Save best/latest models
+- EarlyStopping - Stop when metrics plateau
+- LearningRateMonitor - Track LR scheduler changes
+- BatchSizeFinder - Auto-determine optimal batch size
+
+### 5. Logging - Experiment Tracking
+Integrate with multiple logging platforms:
+- CSV locally; TensorBoard is the default only when its optional package is installed
+- Weights &amp; Biases (WandbLogger)
+- MLflow (MLFlowLogger)
+- Comet (CometLogger)
+- CSV (CSVLogger)
+
+Note: NeptuneLogger was removed in Lightning 2.6.4; the Neptune service shut down March 5, 2026.
+
+Log metrics with `self.log(&quot;metric_name&quot;, value)` in supported LightningModule hooks.
+
+### 6. Distributed Training - Scale to Multiple Devices
+Choose the right strategy based on model size:
+- DDP - When each device can hold the full model, optimizer state and activations
+- FSDP - When sharding training state addresses measured memory pressure
+- DeepSpeed - When its ZeRO/offload features fit the measured workload and CUDA stack
+
+Choose from peak memory and throughput measurements, not a fixed parameter-count threshold.
+
+Configure with: `Trainer(strategy=&quot;ddp&quot;, accelerator=&quot;gpu&quot;, devices=4)`
+
+### 7. Best Practices
+- Device agnostic code - Use `self.device` instead of `.cuda()`
+- Hyperparameter saving - Use `self.save_hyperparameters()` in `__init__()`
+- Metric logging - Use `self.log()` for automatic aggregation across devices
+- Reproducibility - Use `seed_everything()` and `Trainer(deterministic=True)`
+- Debugging - Use `Trainer(fast_dev_run=True)` to test with 1 batch
+
+## Quick Workflow
+
+### Step 1: Define LightningModule
+```python
+import lightning as L
+import torch
+from torch import nn
+
+class LitModel(L.LightningModule):
+    def __init__(self, hidden_size=128):
+        super().__init__()
+        self.save_hyperparameters()
+        self.model = nn.Sequential(
+            nn.Linear(28 * 28, hidden_size),
+            nn.ReLU(),
+            nn.Linear(hidden_size, 10)
+        )
+
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self.model(x)
+        loss = nn.functional.cross_entropy(y_hat, y)
+        self.log(&#x27;train_loss&#x27;, loss)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self.model(x)
+        val_loss = nn.functional.cross_entropy(y_hat, y)
+        acc = (y_hat.argmax(dim=1) == y).float().mean()
+        self.log(&#x27;val_loss&#x27;, val_loss)
+        self.log(&#x27;val_acc&#x27;, acc)
+
+    def configure_optimizers(self):
+        optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer, T_max=100, eta_min=1e-5
+        )
+        return {
+            &#x27;optimizer&#x27;: optimizer,
+            &#x27;lr_scheduler&#x27;: {
+                &#x27;scheduler&#x27;: scheduler,
+                &#x27;interval&#x27;: &#x27;epoch&#x27;
+            }
+        }
+```
+
+### Step 2: Prepare Data
+```python
+from torch.utils.data import DataLoader
+
+# Option 1: Direct DataLoaders
+train_loader = DataLoader(train_dataset, batch_size=32)
+val_loader = DataLoader(val_dataset, batch_size=32)
+
+# Option 2: LightningDataModule (recommended for reusability)
+# dm = MyDataModule(batch_size=32)
+```
+
+### Step 3: Train with Trainer
+```python
+from lightning.pytorch.callbacks import ModelCheckpoint, EarlyStopping, LearningRateMonitor
+
+checkpoint = ModelCheckpoint(
+    monitor=&#x27;val_loss&#x27;,
+    mode=&#x27;min&#x27;,
+    save_top_k=3,
+    filename=&#x27;model-{epoch:02d}-{val_loss:.2f}&#x27;
+)
+
+early_stop = EarlyStopping(
+    monitor=&#x27;val_loss&#x27;,
+    patience=5,
+    mode=&#x27;min&#x27;
+)
+
+lr_monitor = LearningRateMonitor(logging_interval=&#x27;epoch&#x27;)
+
+trainer = L.Trainer(
+    max_epochs=100,
+    accelerator=&#x27;gpu&#x27;,
+    devices=2,
+    strategy=&#x27;ddp&#x27;,
+    callbacks=[checkpoint, early_stop, lr_monitor]
+)
+
+model = LitModel()
+trainer.fit(model, train_loader, val_loader)
+
+# Test
+trainer.test(model, test_loader)
+```
+
+## Resources
+
+### scripts/
+Executable Python templates for common PyTorch Lightning patterns:
+- `template_lightning_module.py` - Complete LightningModule boilerplate
+- `template_datamodule.py` - Complete LightningDataModule boilerplate
+- `quick_trainer_setup.py` - Common Trainer configurations
+
+### references/
+Detailed documentation:
+- `lightning_module.md` - Comprehensive method documentation, hooks, properties, and best practices
+- `trainer.md` - All parameters, methods, and configuration options
+- `data_module.md` - Method details and usage patterns
+- `callbacks.md` - Built-in callbacks and custom callback creation
+- `logging.md` - Logger setup and configuration
+- `distributed_training.md` - Strategy comparison and configuration
+- `best_practices.md` - Common patterns and pitfalls
+
+## Conflicts
+- K-Dense-AI/scientific-agent-skills pins lightning==2.6.6 and warns against mixing import namespaces; other copies do not.
+- K-Dense-AI/scientific-agent-skills states NeptuneLogger was removed; foryourhealth111-pixel/Vibe-Skills and FreedomIntelligence/OpenClaw-Medical-Skills still list it.
+- K-Dense-AI/scientific-agent-skills recommends choosing distributed strategy from memory/throughput measurements; foryourhealth111-pixel/Vibe-Skills and FreedomIntelligence/OpenClaw-Medical-Skills use a fixed 500M parameter threshold.
+- K-Dense-AI/scientific-agent-skills specifies prepare_data() runs on local rank zero per node; other copies describe it as single-process.</pre>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cosmic-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">cosmic-data-download</a> / cosmic-database</p><h1>cosmic-database</h1><p class="meta">combined</p><p>Both copies describe the same COSMIC download workflow, but the FreedomIntelligence copy adds material steps and constraints the aipoch copy lacks: command-line usage with --data-type and --assembly flags, an output_filename parameter, a list of available data types (fusions, copy number, resistance), genome assembly guidance (GRCh37 vs GRCh38), versioning notes, and pysam for VCF. The aipoch copy adds a py_compile validation step and a references/ pointer. Because each has steps the other lacks, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/cosmic-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/cosmic-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/cosmic-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/cosmic-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: cosmic-database
+description: Access COSMIC to download mutation datasets, query Cancer Gene Census, and retrieve mutational signatures for genomic analysis. Requires authentication.
+---
+
+# COSMIC Database Skill
+
+## When to Use
+- Downloading COSMIC mutation exports (TSV/VCF) for cohort or sample-level variant analysis.
+- Retrieving Cancer Gene Census (CGC) gene lists for oncogene/tumor suppressor annotation.
+- Working with COSMIC mutational signatures (SBS/DBS/ID) for signature attribution.
+- Accessing additional COSMIC datasets (copy number, fusions, expression, resistance mutations).
+- Building reproducible pipelines that programmatically fetch COSMIC releases.
+
+## Prerequisites
+- A registered COSMIC account at https://cancer.sanger.ac.uk/cosmic (academic free; commercial license required).
+- Python 3.9+ (3.10+ recommended).
+- Install dependencies: `uv pip install requests pandas` (or `pip install requests pandas`).
+- For VCF parsing, install `pysam` or use `bcftools`/`GATK`.
+
+## Quick Start
+
+### 1. Validate the Script
+```bash
+python -m py_compile scripts/download_cosmic.py
+python scripts/download_cosmic.py --help
+```
+
+### 2. Basic File Download (Python API)
+```python
+from scripts.download_cosmic import download_cosmic_file
+
+download_cosmic_file(
+    email=&quot;your_email@institution.edu&quot;,
+    password=&quot;your_password&quot;,
+    filepath=&quot;GRCh38/cosmic/latest/CosmicMutantExport.tsv.gz&quot;,
+    output_filename=&quot;cosmic_mutations.tsv.gz&quot;
+)
+```
+
+### 3. Command-Line Usage
+```bash
+# Download using shorthand data type
+python scripts/download_cosmic.py user@email.com --data-type mutations
+
+# Download specific file
+python scripts/download_cosmic.py user@email.com \
+    --filepath GRCh38/cosmic/latest/cancer_gene_census.csv
+
+# Download for specific genome assembly
+python scripts/download_cosmic.py user@email.com \
+    --data-type gene_census --assembly GRCh37 -o cancer_genes.csv
+```
+
+## Available Data Types
+- `mutations` - Complete coding mutations (TSV format).
+- `mutations_vcf` - Coding mutations in VCF format.
+- `sample_info` - Sample metadata and tumor information.
+- `gene_census` - Cancer Gene Census (~700+ curated cancer genes).
+- `structural_variants` - Structural breakpoints.
+- `fusion_genes` - Gene fusion events.
+- `copy_number` - Copy number gains/losses.
+- `gene_expression` - Over/under-expression data.
+- Resistance mutations - Drug resistance mutation data with clinical annotations.
+
+## Working with Downloaded Data
+```python
+import pandas as pd
+
+# Read mutation data
+mutations = pd.read_csv(&#x27;cosmic_mutations.tsv.gz&#x27;, sep=&#x27;\t&#x27;, compression=&#x27;gzip&#x27;)
+
+# Read Cancer Gene Census
+gene_census = pd.read_csv(&#x27;cancer_gene_census.csv&#x27;)
+
+# Read VCF format
+import pysam
+vcf = pysam.VariantFile(&#x27;CosmicCodingMuts.vcf.gz&#x27;)
+```
+
+## Genome Assemblies and Versioning
+- **GRCh38** (recommended, current standard) and **GRCh37** (legacy).
+- Use `latest` in file paths for the most recent release, or a specific version (e.g., `v102`) for reproducibility.
+- COSMIC is updated quarterly.
+
+## File Formats
+- **TSV/CSV**: Tab/comma-separated, gzip compressed, read with pandas.
+- **VCF**: Standard variant format, use with pysam, bcftools, or GATK.
+
+## Conflicts
+- aipoch/medical-research-skills specifies Python 3.10+ and no pinned third-party packages; FreedomIntelligence/OpenClaw-Medical-Skills specifies Python 3.9+ and `uv pip install requests pandas`.
+- aipoch/medical-research-skills includes a `py_compile` validation step; FreedomIntelligence/OpenClaw-Medical-Skills does not.
+- FreedomIntelligence/OpenClaw-Medical-Skills documents command-line flags and an `output_filename` parameter; aipoch/medical-research-skills only shows `--help` and a generic run plan.
+
+## Reference
+- See `references/cosmic_data_reference.md` for dataset field definitions and COSMIC file specifics.</pre>
+</body>
+</html>

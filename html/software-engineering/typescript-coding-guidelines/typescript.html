@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>typescript</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">typescript-coding-guidelines</a> / typescript</p><h1>typescript</h1><p class="meta">combined</p><p>The two skills cover overlapping ground (TypeScript best practices, async handling, type safety) but have distinct focuses and conflicting advice. The first skill (sickn33) is a &#x27;super-code&#x27; efficiency reference focused on idiomatic refactoring (e.g., preferring `type` for unions, avoiding explicit return types when obvious). The second skill (LeoYeAI) is a comprehensive style guide covering naming, file structure, and specific conventions (e.g., preferring `interface` for object shapes, requiring explicit return types for public APIs). Because they disagree on specific conventions (like `type` vs `interface` preference and return type annotation), crowning one would hide the other&#x27;s valid alternative approach.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/super-code/typescript/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/typescript-skills/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/super-code/typescript/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/typescript-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/super-code/typescript/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/super-code/typescript/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: typescript
+description: &quot;Comprehensive TypeScript coding guidelines combining idiomatic efficiency and strict style conventions.&quot;
+---
+
+# TypeScript Coding Guidelines
+
+## 1. General Principles
+- **Strict Mode**: Always enable `&quot;strict&quot;: true` in `tsconfig.json`.
+- **Immutability**: Use `const` by default; prefer `readonly` properties.
+- **Type Safety**: Minimize `any`. Use `unknown` with type guards or generics.
+- **Readability**: Prefer explicit, self-documenting code over clever one-liners.
+
+## 2. Naming Conventions
+- **Variables/Functions**: `camelCase` (e.g., `getUserName`).
+- **Booleans**: Prefix with `is`, `has`, `can` (e.g., `isLoading`).
+- **Constants**: `UPPER_SNAKE_CASE` for module-level, `camelCase` for local.
+- **Classes/Interfaces/Types**: `PascalCase` (e.g., `UserService`).
+- **Files**: `kebab-case.ts` for modules, `PascalCase.tsx` for React components.
+- **No `I` Prefix**: Do not prefix interfaces with `I` (use `User`, not `IUser`).
+
+## 3. Types &amp; Interfaces
+- **Object Shapes**: Prefer `interface` for extensible object shapes and class-like structures.
+- **Unions/Intersections**: Use `type` for unions, intersections, and mapped types.
+- **Return Types**: Annotate return types explicitly for public APIs; let TS infer for simple local functions.
+- **Utility Types**: Use `Partial&lt;T&gt;`, `Pick&lt;T, K&gt;`, `Omit&lt;T, K&gt;` to derive types.
+
+## 4. Idiomatic Efficiency (Super-Code)
+- **Array Operations**: Use `.filter()`, `.map()`, `.reduce()` instead of imperative loops.
+  ```ts
+  // ✅
+  const result = items.filter(i =&gt; i.active).map(i =&gt; i.name.toUpperCase())
+  ```
+- **Destructuring**: Use object/array destructuring for extraction and omission.
+  ```ts
+  // ✅ Omit key
+  const { password, ...safe } = obj
+  ```
+- **Async**: Use `Promise.all` for independent parallel operations.
+  ```ts
+  // ✅
+  const [user, config] = await Promise.all([fetchUser(id), fetchConfig()])
+  ```
+- **Null Safety**: Use optional chaining (`?.`) and nullish coalescing (`??`).
+
+## 5. React Specifics (if applicable)
+- **Derived State**: Compute during render, do not use `useEffect` for simple derivations.
+- **Keys**: Use stable IDs (`item.id`), not array indices, for list keys.
+- **Memoization**: Use `useMemo`/`useCallback` only when necessary (e.g., for memoized children or effect deps).
+
+## 6. Anti-patterns
+- Avoid `var`.
+- Avoid `for...in` on arrays; use `for...of` or array methods.
+- Avoid `as` assertions to silence errors; use type guards instead.
+- Avoid `== null` (loose); use `=== null` or `??`.</pre>
+</body>
+</html>

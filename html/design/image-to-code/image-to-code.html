@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>image-to-code</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">image-to-code</a> / image-to-code</p><h1>image-to-code</h1><p class="meta">combined</p><p>The two skills share the name and the high-level goal of turning a visual reference into code, but they define fundamentally different procedures. The Leonxlnx skill is a self-contained, image-generation-first workflow where the agent must create the design images itself, analyze them, and then implement, with heavy emphasis on art direction, image count, and avoiding generic UI patterns. The plugin87 skill is a token-driven reconstruction workflow that assumes a user-provided reference, requires a specific external &#x27;kit&#x27; of files and scripts, and focuses on inferring a design system, building DTCG tokens, and passing automated verification gates. Because they disagree on the source of the visual reference (generated vs. provided) and the core implementation strategy (art-directed section images vs. token-driven system reconstruction), crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Leonxlnx/taste-skill">Leonxlnx/taste-skill</a></td><td><code>skills/image-to-code-skill/SKILL.md</code></td></tr><tr><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/image-to-code/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Leonxlnx/taste-skill">Leonxlnx/taste-skill</a></td><td><code>skills/image-to-code-skill/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/image-to-code/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Image to Code
+
+## Step 1: Determine Reference Source
+- If the user provides a reference image, screenshot, or mockup, use it as the source of truth.
+- If no reference is provided and the task is visually important, generate the design images yourself first. Prefer large, readable, section-specific images over tiny compressed boards.
+
+## Step 2: Analyze the Reference
+- **If using a provided reference:** Infer the design system (palette, type scale, spacing, radius, layout archetype). Anchor to a known system if close. Build a 3-tier DTCG token theme. Verify contrast with available tools.
+- **If using generated images:** Deeply inspect and analyze the generated images. Extract the design system (colors, typography, spacing, components). Ensure images are clear enough for extraction; generate more if needed.
+
+## Step 3: Implement the Frontend
+- **Token-Driven Approach:** Rebuild layout and components using the inferred token theme. Ensure accessibility, use a shared primitive layer, and avoid hardcoded values.
+- **Art-Directed Approach:** Implement the frontend to match the generated images closely. Keep the hero clean, spacious, and readable. Avoid nested cards, excessive pills, and generic layouts.
+
+## Step 4: Verify
+- **If using the plugin87 kit:** Run `npm run verify`, `measure_render.mjs`, `lint_hardcodes.py`, and `taste_audit.mjs`. Ensure 100% pass rate.
+- **If using the Leonxlnx approach:** Render and screenshot the result. Compare side-by-side to the reference (provided or generated). Ensure the design language matches and the UI is readable on a small laptop viewport.
+
+## Conflicts
+- **Leonxlnx/taste-skill** requires the agent to generate images first if no reference is provided.
+- **plugin87/ux-ui-agent-skills** assumes a user-provided reference and requires a specific external kit for token verification.
+- **Leonxlnx/taste-skill** focuses on art direction and image analysis.
+- **plugin87/ux-ui-agent-skills** focuses on token-driven system reconstruction and automated verification.</pre>
+</body>
+</html>

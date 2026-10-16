@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>imaging-data-commons</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">idc-imaging-data-query</a> / imaging-data-commons</p><h1>imaging-data-commons</h1><p class="meta">combined</p><p>The three copies are different versions of the same skill, but they disagree on the access strategy and the pinned environment. The K-Dense-AI copy (v1.8) is the most advanced: it introduces a routing gate that prefers the hosted MCP server or the REST API for read-only metadata and only installs idc-index when heavier work is needed, and it pins idc-index 0.12.5 / IDC v24. The other two copies (v1.3.1 and v1.4.0) are older, pin idc-index 0.11.9/0.11.10 and IDC v23, and mandate installing/upgrading idc-index as the first step. Because the copies conflict on the primary access path and the required versions, crowning one would hide a real alternative procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/imaging-data-commons/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/imaging-data-commons/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/imaging-data-commons/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/imaging-data-commons/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/imaging-data-commons/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/imaging-data-commons/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Imaging Data Commons
+
+## Overview
+Query and download public cancer imaging data from the National Cancer Institute Imaging Data Commons (IDC). No authentication is required for public data access.
+
+## Routing Boundary
+Use this skill for NCI Imaging Data Commons, IDC, TCIA cancer imaging cohorts, DICOMWeb, public cancer imaging data, radiology datasets, and DICOM imaging cohort retrieval. This is not generic Data Commons, public statistical data, population indicators, statistical variables, DCIDs, PubMed, ClinicalTrials.gov, or generic public dataset search.
+
+## Choose the Access Path
+There is no single default; the cheapest correct path depends on the session and the task.
+1. **Session already has the IDC MCP server?** Route discovery and metadata there. Identify it by the MCP resource `idc://guide` or by three or more of the tool names `build_cohort`, `get_cohort_urls`, `list_analysis_results`, and `get_idc_version`. If available, treat it as authoritative for discovery and metadata. Return to this skill for downloading files, local pandas/notebook analysis, DICOMweb, BigQuery, digital pathology tiling, and reproducible scripts.
+2. **Otherwise, is `idc-index` installed and current?** Run `python scripts/check_version.py`. If it passes, use `idc-index` for everything.
+3. **Not installed, and the task is read-only metadata** (counts, attribute values, collection lookups, SQL under 10,000 rows, licenses, citations, viewer URLs)? Use the REST API over `curl` at `https://api.imaging.datacommons.cancer.gov/v3`; do not install anything.
+4. **Not installed, and the task needs more than metadata** (downloading files, pandas or plotting, pydicom/SimpleITK, pathology tiling, results past 10,000 rows, or a version-pinned script)? Install `idc-index`. `check_version.py` exits non-zero and prints the exact install command for the running interpreter. Prefer a virtual environment, then restart Python.
+
+## Setup for the `idc-index` Path
+Use the intended interpreter for `scripts/check_version.py` and confirm its `meets pinned minimum` message before continuing. A launch failure is not a pass.
+
+```python
+from idc_index import IDCClient
+client = IDCClient()
+
+# Verify IDC data version
+print(f&quot;IDC data version: {client.get_idc_version()}&quot;)
+```
+
+## Core Workflow
+1. Query metadata → `client.sql_query()`
+2. Download DICOM files → `client.download_from_selection()`
+3. Visualize in browser → `client.get_viewer_URL(seriesInstanceUID=...)`
+
+## When to Use This Skill
+- Finding publicly available radiology (CT, MR, PET) or pathology (slide microscopy) images
+- Selecting image subsets by cancer type, modality, anatomical site, or other metadata
+- Downloading DICOM data from IDC
+- Checking data licenses before use in research or commercial applications
+- Visualizing medical images in a browser without local DICOM viewer software
+
+## Quick Navigation
+**Core Sections (inline):**
+- IDC Data Model - Collection and analysis result hierarchy
+- Index Tables - Available tables and joining patterns
+- Installation - Package setup and version verification
+- Core Capabilities - Essential API patterns (query, download, visualize, license, citations, batch)
+- Best Practices - Usage guidelines
+- Troubleshooting - Common issues and solutions
+
+**Reference Guides (load on demand):**
+
+| Guide | When to Load |
+|-------|--------------|
+| `index_tables_guide.md` | Complex JOINs, schema discovery, DataFrame access |
+| `use_cases.md` | End-to-end workflow examples (training datasets, batch downloads) |
+| `sql_patterns.md` | Quick SQL patterns for filter discovery, annotations, size estimation |
+| `clinical_data_guide.md` | Clinical/tabular data, imaging+clinical joins, value mapping |
+| `cloud_storage_guide.md` | Direct S3/GCS access, versioning, UUID mapping |
+| `dicomweb_guide.md` | DICOMweb endpoints, PACS integration |
+| `digital_pathology_guide.md` | Slide microscopy (SM), annotations (ANN), pathology workflows |
+| `bigquery_guide.md` | Full DICOM metadata, private elements (requires GCP) |
+| `cli_guide.md` | Command-line tools (`idc download`, manifest files) |
+
+## IDC Data Model
+IDC adds two grouping levels above the standard DICOM hierarchy (Patient → Study → Series → Instance):
+
+- **collection_id**: Groups patients by disease, modality, or research focus (e.g., `tcga_luad`, `nlst`). A patient belongs to exactly one collection.
+- **analysis_result_id**: Identifies derived objects (segmentations, annotations, radiomics features) across one or more original collections.
+
+Use `collection_id` to find original imaging data, may include annotations deposited along with the images; use `analysis_result_id` to find AI-generated or expert annotations.
+
+**Key identifiers for queries:**
+| Identifier | Scope | Use for |
+|------------|-------|---------|
+| `collection_id` | Dataset grouping | Filtering by project/study |
+| `PatientID` | Patient | Grouping images by patient |
+| `StudyInstanceUID` | DICOM study | Grouping of related series, visualization |
+| `SeriesInstanceUID` | DICOM series | Grouping of related series, visualization |
+
+## Index Tables
+The `idc-index` package provides multiple metadata index tables, accessible via SQL or as pandas DataFrames.
+
+**Complete index table documentation:** Use https://idc-index.readthedocs.io/en/latest/indices_reference.html for quick check of available tables and columns without executing any code.
+
+**Important:** Use `client.indices_overview` to get current table descriptions and column schemas. This is the authoritative source for available columns and their types — always query it when writing SQL or exploring data structure.
+
+### Available Tables
+| Table | Row Granularity | Loaded | Description |
+|-------|-----------------|--------|-------------|
+| `index` | 1 row = 1 DICOM series | Auto | Primary metadata for all current IDC data |
+| `prior_versions_i` | ... | ... | ... |
+
+## Conflicts
+- **K-Dense-AI/scientific-agent-skills::skills/imaging-data-commons/SKILL.md** uses a routing gate that prefers the hosted MCP server or REST API for read-only metadata and only installs idc-index when needed, while **foryourhealth111-pixel/Vibe-Skills::bundled/skills/imaging-data-commons/SKILL.md** and **FreedomIntelligence/OpenClaw-Medical-Skills::skills/imaging-data-commons/SKILL.md** mandate checking and upgrading idc-index as the first step.
+- **K-Dense-AI/scientific-agent-skills::skills/imaging-data-commons/SKILL.md** pins idc-index 0.12.5 and IDC v24, while **FreedomIntelligence/OpenClaw-Medical-Skills::skills/imaging-data-commons/SKILL.md** pins idc-index 0.11.10 and IDC v23, and **foryourhealth111-pixel/Vibe-Skills::bundled/skills/imaging-data-commons/SKILL.md** pins idc-index 0.11.9 and IDC v23.
+- **K-Dense-AI/scientific-agent-skills::skills/imaging-data-commons/SKILL.md** includes a detailed IDC MCP Server section with identification and handoff instructions, which is absent from the other two copies.</pre>
+</body>
+</html>

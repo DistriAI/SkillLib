@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>codex</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">codex-cli-automation</a> / codex</p><h1>codex</h1><p class="meta">combined</p><p>The four copies are not reproductions of one procedure. dzhng/skills treats Codex as a second-opinion reviewer with a specific review command, triage, and reporting loop. softaworks/agent-toolkit treats Codex as a task runner with model selection, reasoning effort, sandbox flags, and resume syntax. LeoYeAI/openclaw-master-skills treats Codex as a managed coding agent with worktrees, tmux, polling, and PR workflow. bergside/awesome-design-skills is a design-system authoring skill that merely names Codex in its frontmatter and does not describe running the CLI. Each contains material steps or constraints the others lack, and they disagree on defaults and safety controls, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/codex/SKILL.md</code></td></tr><tr><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/codex/SKILL.md</code></td></tr><tr><td><a href="https://github.com/softaworks/agent-toolkit">softaworks/agent-toolkit</a></td><td><code>skills/codex/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/codex-skill/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/codex/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/codex/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/softaworks/agent-toolkit">softaworks/agent-toolkit</a></td><td><code>skills/codex/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/codex-skill/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/softaworks/agent-toolkit">softaworks/agent-toolkit</a></td><td><code>dist/plugins/codex/skills/codex/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: codex
+description: Use the local Codex CLI as an independent second agent or delegated implementation agent. Covers proactive review, explicit implementation delegation, model and sandbox selection, session resume, and managed worktree/tmux workflows.
+---
+
+# Codex
+
+Codex is an independent agent on PATH (`codex` — invoke as `command codex` if a shell alias shadows it), sharing the working tree and already authenticated. It is a second opinion, not ground truth: verify what it reports, own what it changes.
+
+## If `codex` is not installed
+
+When `codex` is missing from PATH, ask the user for approval before installing. On yes, follow the current instructions at https://developers.openai.com/codex/cli. First-run authentication is interactive — hand that step to the user. Verify with `codex --version` before proceeding.
+
+## Prompting Codex
+
+Prompt Codex like an operator, not a collaborator: compact, block-structured with XML tags. State the task, what &quot;done&quot; looks like, and the few constraints that matter.
+
+- One task per run. Split unrelated asks into separate runs.
+- Name skills instead of restating them when the repo carries them.
+- Use blocks only where the task needs them: `&lt;task&gt;`, `&lt;output_contract&gt;`, `&lt;default_follow_through&gt;`, `&lt;verification_loop&gt;`, `&lt;grounding&gt;`, `&lt;action_safety&gt;`.
+- Anti-patterns: vague framing, no output contract, &quot;think harder&quot; in place of a contract, mixing jobs in one run, demanding certainty the evidence can&#x27;t support.
+
+## Review — proactive
+
+Run a Codex review whenever you have a substantive diff you&#x27;d want a second set of eyes on — a refactor, a tricky algorithm, renderer work, a security-sensitive change — before declaring it done or committing. Skip it for trivial edits.
+
+1. Fix the diff scope before launching: `--uncommitted` for working-tree changes, `--base &lt;branch&gt;` for a branch diff, `--commit &lt;sha&gt;` for a landed commit. Resolve a landed commit to its full SHA. Use the non-interactive review entry point with an explicit read-only sandbox and separate progress and verdict files in a fresh temporary directory:
+
+   ```sh
+   review_dir=$(mktemp -d &quot;${TMPDIR:-/tmp}/codex-review.XXXXXX&quot;)
+   codex exec --sandbox read-only -C &quot;$(git rev-parse --show-toplevel)&quot; review \
+     --commit &quot;$(git rev-parse HEAD)&quot; --json -o &quot;$review_dir/verdict.md&quot; \
+     &lt; /dev/null &gt; &quot;$review_dir/events.jsonl&quot; 2&gt; &quot;$review_dir/stderr.log&quot;
+   ```
+
+   Background long runs and retain their process/session handle. Scope flags and custom instructions are mutually exclusive: a scope flag takes no prompt. For custom framing, specify the exact diff to inspect in the prompt. Never state the answer you expect.
+2. Monitor progress in `events.jsonl` and failures in `stderr.log`. An active reviewer reading relevant code is not hung merely because five minutes elapsed. If it stalls or drifts outside the diff and its dependencies, inspect the last command/error before interrupting; correct the cause or narrow the task before retrying. Completion requires exit status zero, `turn.completed`, and a nonempty final verdict. A timeout, `turn.failed`, or missing verdict is incomplete, never a clean review.
+3. Triage every finding: confirm it against the code before acting. Preserve Codex&#x27;s evidence boundaries — an inference it labelled is not a fact. Overlap with your own doubts is high-priority evidence; a finding you dismiss needs a stated reason, not silence.
+4. Report the outcome to the user — what Codex flagged, what you fixed, what you dismissed and why. Done when every finding is either fixed or explicitly dismissed.
+
+## Implementation — explicit ask only
+
+Delegate implementation to Codex only when the user names Codex for the task. Never hand it work on your own initiative, and never re-delegate follow-up work without a fresh ask.
+
+1. Slice the task sharp before delegating — goal, constraints, and how to verify — using the prompt discipline above. An underspecified task stays with you until a fresh agent couldn&#x27;t misread it.
+2. Start from a clean tree (or record the baseline commit) so Codex&#x27;s diff is separable from yours.
+3. Pick the sandbox by what the task must RUN:
+   - Pure code + typecheck/unit: `codex exec --sandbox workspace-write &quot;&lt;task&gt;&quot;`. Network is off; add `-c sandbox_workspace_write.network_access=true` only when the task must fetch.
+   - Browser verification, dev servers, or full test runs: use `codex exec --dangerously-bypass-approvals-and-sandbox &quot;&lt;task&gt;&quot;` in a container or VM where full access is acceptable.
+   - Read-only analysis: `codex exec --sandbox read-only &quot;&lt;task&gt;&quot;`.
+4. Model and reasoning effort:
+   - Default to the Codex CLI default model unless the user explicitly requests a model.
+   - Ask the user which reasoning effort to use (`xhigh`, `high`, `medium`, or `low`) when the task is non-trivial.
+   - Use `-m &lt;MODEL&gt;` only when the user explicitly requests a model.
+   - Use `--config model_reasoning_effort=&quot;&lt;level&gt;&quot;` to set reasoning effort.
+5. Run the command, capture stdout/stderr, and summarize the outcome for the user.
+6. After Codex completes, inform the user: &quot;You can resume this Codex session at any time by saying &#x27;codex resume&#x27; or asking me to continue with additional analysis or changes.&quot;
+
+### Quick Reference
+
+| Use case | Sandbox mode | Key flags |
+| --- | --- | --- |
+| Read-only review or analysis | `read-only` | `--sandbox read-only` |
+| Apply local edits | `workspace-write` | `--sandbox workspace-write --full-auto` |
+| Permit network or broad access | `danger-full-access` | `--sandbox danger-full-access --full-auto` |
+| Resume recent session | Inherited from original | `echo &quot;prompt&quot; \| codex exec --skip-git-repo-check resume --last` (no flags allowed) |
+| Run from another directory | Match task needs | `-C &lt;DIR&gt;` plus other flags |
+
+### Resume Syntax
+
+When continuing a previous session, use `codex exec --skip-git-repo-check resume --last` via stdin. When resuming, do not use any configuration flags unless explicitly requested by the user. Resume syntax: `echo &quot;your prompt here&quot; | codex exec --skip-git-repo-check resume --last 2&gt;/dev/null`. All flags have to be inserted between exec and resume.
+
+### Suppressing Thinking Tokens
+
+By default, append `2&gt;/dev/null` to all `codex exec` commands to suppress thinking tokens (stderr). Only show stderr if the user explicitly requests to see thinking tokens or if debugging is needed.
+
+## Managed Workflow — Features, Bugfixes, Refactors
+
+For non-trivial tasks, use the full workflow below. This gives you:
+- Isolated worktree — no conflicts with other work
+- tmux session — mid-task steering without killing the agent
+- Task tracking — know what&#x27;s running at all times
+- Quality gates — Definition of Done checklist
+- Smart retries — don&#x27;t waste tokens on repeated failures
+
+### Step 1: Create Worktree
+
+Isolate each task in its own worktree and branch:
+
+```bash
+TASK_ID=&quot;feat-custom-templates&quot;
+BRANCH=&quot;feat/$TASK_ID&quot;
+REPO_ROOT=$(git rev-parse --show-toplevel)
+WORKTREE=&quot;/tmp/worktrees/$TASK_ID&quot;
+
+git worktree add -b &quot;$BRANCH&quot; &quot;$WORKTREE&quot; origin/main
+cd &quot;$WORKTREE&quot;
+
+# Install dependencies (adapt to your stack)
+pnpm install   # or: npm install / go mod tidy / pip install -r requirements.txt
+```
+
+### Step 2: Launch Agent in tmux
+
+Start Codex in interactive mode (no `exec`) so you can steer mid-task. Use `tmux pipe-pane` to log output — do NOT use `| tee` because it turns stdout into a pipe, which breaks interactive mode.
+
+```bash
+LOG_FILE=&quot;/tmp/worktrees/$TASK_ID/codex-output.log&quot;
+
+# 1. Create session (starts a shell — codex not launched yet)
+tmux new-session -d -s &quot;$TASK_ID&quot; -c &quot;$WORKTREE&quot;
+
+# 2. Attach logging BEFORE launching codex — prevents losing early output
+tmux pipe-pane -t &quot;$TASK_ID&quot; -o &quot;stdbuf -oL cat &gt;&gt; $LOG_FILE&quot;
+
+# 3. Launch codex via send-keys — all output captured from the start
+tmux send-keys -t &quot;$TASK_ID&quot; \
+  &#x27;codex -c &quot;model_reasoning_effort=high&quot; \
+   --dangerously-bypass-approvals-and-sandbox \
+   &quot;&lt;task prompt&gt;&quot;&#x27; Enter
+```
+
+### Step 3: Monitor and Steer
+
+- Poll the tmux session periodically to check progress.
+- Use `tmux send-keys` to steer the agent mid-task if needed.
+- Check the log file for output and errors.
+- If the process exits, check the exit code and read the log for the final result.
+
+### Step 4: Quality Gates
+
+Before declaring the task done:
+- Verify the diff is scoped to the task.
+- Run relevant tests or type checks.
+- Confirm the output matches the task requirements.
+- Report the outcome to the user.
+
+## Error Handling
+
+- Stop and report failures whenever `codex --version` or a `codex exec` command exits non-zero; request direction before retrying.
+- Before you use high-impact flags (`--full-auto`, `--sandbox danger-full-access`, `--skip-git-repo-check`, `--dangerously-bypass-approvals-and-sandbox`) ask the user for permission unless it was already given.
+- When output includes warnings or partial results, summarize them and ask how to adjust.
+
+## CLI Version
+
+Requires Codex CLI v0.57.0 or later for GPT-5.2 model support. Check version: `codex --version`. Use `/model` slash command within a Codex session to switch models, or configure default in `~/.codex/config.toml`.
+
+## Conflicts
+
+- dzhng/skills says to ask the user before installing Codex and to verify with codex --version; softaworks/agent-toolkit and LeoYeAI/openclaw-master-skills provide install commands or version requirements without the same approval-first framing.
+- dzhng/skills uses codex exec --sandbox read-only for review and codex exec --dangerously-bypass-approvals-and-sandbox for browser/dev-server tasks; softaworks/agent-toolkit defaults to --sandbox read-only and uses --sandbox danger-full-access for network/broad access; LeoYeAI/openclaw-master-skills uses --full-auto for quick mode and --dangerously-bypass-approvals-and-sandbox in containers/VMs.
+- dzhng/skills says to run a proactive codex review after substantive changes; softaworks/agent-toolkit and LeoYeAI/openclaw-master-skills do not include a proactive review step and instead focus on delegating implementation tasks.
+- softaworks/agent-toolkit says to always use --skip-git-repo-check and to append 2&gt;/dev/null to all codex exec commands; dzhng/skills and LeoYeAI/openclaw-master-skills do not mandate these flags.
+- softaworks/agent-toolkit defaults to gpt-5.2 and asks the user for reasoning effort; LeoYeAI/openclaw-master-skills says to omit -m unless the user explicitly requests a model; dzhng/skills does not specify a model.</pre>
+</body>
+</html>

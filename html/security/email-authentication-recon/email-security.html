@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>email-security</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">email-authentication-recon</a> / email-security</p><h1>email-security</h1><p class="meta">combined</p><p>The two copies overlap on SPF/DKIM/DMARC validation but each contains material steps the other lacks. The uphiago copy provides concrete dig commands, an interpretation table for SPF/DMARC/DKIM results, SMTP relay testing, and an AWS SES spoofing scenario. The sickn33 copy adds a mandatory authorization gate, phishing/BEC analysis workflow, header chain inspection, URL/attachment sandboxing, and tenant policy checks. Crowning one would hide a real alternative: a command-driven recon procedure versus an authorized phishing-investigation workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>recon/email-security/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/email-security/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>recon/email-security/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/email-security/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/email-security/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/email-security/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: email-security
+description: &quot;Authorized email security review: SPF/DKIM/DMARC validation, email spoofing exposure, SMTP testing, and phishing/BEC header analysis.&quot;
+license: MIT
+---
+
+# Email Security
+
+## Authorization Gate
+Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+1. Ask the user to state the exact target domain, IP, account, or resource.
+2. Ask the user to confirm written authorization and the permitted scope.
+3. Show the exact command(s) and explain their expected effect.
+4. Wait for explicit confirmation in the current conversation.
+
+Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## When to Use
+- During passive reconnaissance or after initial DNS enumeration.
+- Analyzing suspicious messages or domain spoofing exposure.
+- Validating a domain&#x27;s email authentication posture.
+- Investigating BEC patterns or mailbox token abuse.
+
+## Workflow
+1. Collect the full raw email headers: Received chain, From/Return-Path consistency.
+2. Query SPF, DKIM, DMARC, and MX records.
+3. Interpret SPF/DMARC/DKIM alignment and results.
+4. If analyzing a phishing message, sandbox URLs and statically inspect attachments.
+5. Compare spoofed brand and reply-address differences.
+6. Review tenant anti-phishing policies, external sender marking, MFA, and OAuth app consent.
+
+## DNS Check Commands
+```bash
+# SPF
+dig +short TXT $target | grep &quot;v=spf1&quot;
+
+# DMARC
+dig +short TXT _dmarc.$target
+
+# DKIM (common selectors: google, selector1, selector2, 2022, 2023)
+dig +short TXT google._domainkey.$target
+
+# MX
+dig +short MX $target
+```
+
+## Interpreting Results
+| Config | Meaning | Risk |
+|--------|---------|------|
+| v=spf1 ~all (softfail) | SPF suggests blocking but does not enforce | Spoofed emails may pass |
+| v=spf1 ?all (neutral) | SPF does nothing | Totally permissive |
+| v=spf1 include:amazonses.com ~all | SES can send as domain | Any AWS SES account can spoof |
+| v=DMARC1; p=none | DMARC disabled | Zero spoofing protection |
+| v=DMARC1; p=quarantine | Failed emails go to spam | Partial protection |
+| v=DMARC1; p=reject | Failed emails rejected | Full protection |
+| DKIM missing | No cryptographic signature | Email can be forged |
+
+## SMTP Spoofing Test (Authorized Only)
+```bash
+# Test SMTP relay
+timeout 3 bash -c &#x27;exec 3&lt;&gt;/dev/tcp/TARGET/25; head -1 &lt;&amp;3&#x27;
+
+# Send spoofed email via open relay (swaks)
+swaks --to victim@target.com --from admin@target.com --server TARGET --body &quot;Spoofed email&quot;
+```
+
+## Headers That Indicate Security Level
+| Header | Value | Meaning |
+|--------|-------|---------|
+| Authentication-Results | spf=pass | SPF passed |
+| Authentication-Results | spf=fail | SPF failed |
+| Authentication-Results | dmarc=pass | DMARC passed |
+| Authentication-Results | dmarc=fail | DMARC failed |
+| Authentication-Results | dkim=pass | DKIM passed |
+| Received-SPF | Pass | Sender authorized |
+| Received-SPF | Softfail | Sender not fully authorized |
+| Received-SPF | Fail | Sender not authorized |
+| ARC-Authentication-Results | | Authentication chain |
+
+## AWS SES Spoofing (When SPF includes amazonses.com)
+With `v=spf1 include:amazonses.com ~all`:
+1. Create AWS account.
+2. Configure SES with your own domain (verified).
+3. Send email with From: admin@target.com.
+4. SPF PASSES (because of include:amazonses.com).
+5. DMARC p=none — provider delivers normally.
+
+## Pitfalls
+| Issue | Solution |
+|-------|----------|
+| SPF lookup limit | DNS has 10 lookup limit for SPF includes |
+| DKIM selector unknown | Try common selectors: google, selector1, selector2, 2022, 2023 |
+| DMARC reporting | rua=mailto: may leak authentication results to third party |
+
+## Verification
+```bash
+dig +short TXT _dmarc.target.com
+# If p=none -&gt; confirmed spoofable
+```
+
+## Limitations
+- Live mailbox investigation touches personal data; minimize and anonymize.
+- Header analysis cannot detect compromise that leaves no mail trail.
+- Do not send unauthorized test phishing to third-party domains.</pre>
+</body>
+</html>

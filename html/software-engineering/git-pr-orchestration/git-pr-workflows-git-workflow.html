@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>git-pr-workflows-git-workflow</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">git-pr-orchestration</a> / git-pr-workflows-git-workflow</p><h1>git-pr-workflows-git-workflow</h1><p class="meta">combined</p><p>The two skills describe the same high-level goal (moving code from local changes to a PR) but diverge significantly in implementation strategy and safety constraints. The first skill (rmyndharis) is a &#x27;multi-agent orchestration&#x27; template that relies on specific subagent types (code-reviewer, test-automator) and a rigid 3-phase pipeline with specific JSON output formats. It lacks safety gates regarding branch protection or repository policy. The second skill (sickn33) is a &#x27;guarded&#x27; workflow that prioritizes repository policy (AGENTS.md), branch protection, and manual verification steps (git status, gh pr view) over automated subagent delegation. It explicitly forbids bypassing policy and includes a &#x27;Policy Gate&#x27; phase that the first skill completely omits. Combining them is necessary to capture both the automated quality assurance steps (from skill 1) and the critical safety/policy compliance steps (from skill 2).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/git-pr-workflows-git-workflow/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/git-pr-workflows-git-workflow/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/git-pr-workflows-git-workflow/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/git-pr-workflows-git-workflow/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/git-pr-workflows-git-workflow/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/git-pr-workflows-git-workflow/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: git-pr-workflows-git-workflow
+description: &quot;Orchestrate a guarded Git workflow from code review to PR creation, combining multi-agent quality checks with strict repository policy compliance.&quot;
+---
+
+# Guarded Git PR Workflow with Multi-Agent Orchestration
+
+Move completed changes from local review to a verified pull request. This workflow combines automated multi-agent quality assurance with strict adherence to repository policy and branch protection.
+
+## When to Use
+
+- When completed implementation work must be reviewed, tested, committed, and opened as a PR.
+- When you need to coordinate specialized agents for code review and testing while ensuring compliance with repository-specific rules.
+
+## Policy Gate (Critical)
+
+Before any mutation or agent delegation:
+
+1. **Read Repository Policy**: Inspect `AGENTS.md`, contribution guides, and nested instructions. Repository policy wins over user flags or shorthand.
+2. **Inspect Branch State**: Check current branch, worktree, remotes, and target-branch protection.
+3. **Discover Native Commands**: Identify repository-specific validation, commit, and PR commands.
+4. **Preserve User Work**: Ensure unrelated dirty/staged files are not touched.
+
+*Note: Trunk-based development does not imply direct push. If the target is protected, use a short-lived branch and PR.*
+
+## Inputs
+
+Resolve from request and repository:
+- Target branch (default: repository default).
+- Intended changed files (exclude user work).
+- Required checks (test, lint, security, build).
+- Branch naming and commit conventions.
+- PR state (draft vs. ready) and required reviewers/labels.
+
+## Workflow
+
+### 1. Capture the Exact Change
+
+```bash
+git status --short --branch
+git diff --stat
+git diff --cached --stat
+git branch --show-current
+git remote -v
+```
+
+Confirm every file in scope. Stop if staged/dirty files cannot be separated safely.
+
+### 2. Multi-Agent Review and Analysis
+
+If subagents are available and authorized, assign independent bounded passes. If not, perform these checks manually.
+
+**A. Code Quality Assessment**
+- *Agent*: `code-reviewer`
+- *Task*: Review uncommitted changes for style, security, performance, and error handling.
+- *Output*: Structured report with severity levels (critical/high/medium/low).
+
+**B. Dependency and Breaking Change Analysis**
+- *Agent*: `code-reviewer`
+- *Task*: Analyze new dependencies, breaking API changes, and schema modifications.
+- *Context*: Use issues from Step A.
+- *Output*: Breaking change assessment and migration requirements.
+
+**C. Security and Policy Compliance**
+- *Agent*: `security-reviewer` (or manual check)
+- *Task*: Check for secrets, permissions, and dependency risks. Verify compliance with repository policy.
+
+### 3. Testing and Validation
+
+**A. Test Execution**
+- *Agent*: `test-automator`
+- *Task*: Execute unit, integration, and E2E tests. Generate coverage report.
+- *Context*: Ensure tests cover critical issues identified in Phase 2.
+- *Output*: Test results and coverage metrics.
+
+**B. Gap Analysis**
+- *Agent*: `test-automator`
+- *Task*: Identify missing test scenarios and edge cases based on results and breaking changes.
+
+**Validation Rule**: Do not weaken gates or hide skipped tests. If a check fails, identify the cause (source vs. environment) and fix only in-scope source defects. Rerun the complete required suite after fixes.
+
+### 4. Commit Message Generation
+
+**A. Change Categorization**
+- *Agent*: `code-reviewer`
+- *Task*: Categorize changes per Conventional Commits (feat/fix/docs/etc.). Determine if single or multiple atomic commits are needed.
+
+**B. Message Creation**
+- *Agent*: `prompt-engineer` (or manual)
+- *Task*: Create Conventional Commit messages.
+- *Format*: `&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;` + body (what/why) + footer (BREAKING CHANGE if applicable).
+- *Constraint*: Subject max 50 chars. Include issue references.
+
+### 5. Prepare Branch and Commit
+
+1. Fetch the target branch.
+2. If on a protected/default branch, create a topic branch:
+   ```bash
+   git fetch origin &lt;target-branch&gt;
+   git switch -c &lt;topic-branch&gt; origin/&lt;target-branch&gt;
+   ```
+3. Stage only intended paths.
+4. Create focused conventional commits.
+5. Rebase if strict checks demand the latest target. Never force push shared branches without explicit authorization.
+
+### 6. Push and Create Pull Request
+
+```bash
+git push -u origin &lt;topic-branch&gt;
+gh pr create --base &lt;target-branch&gt; --head &lt;topic-branch&gt; \
+  --title &quot;&lt;conventional title&gt;&quot; --body-file &lt;body-file&gt;
+```
+
+**PR Body Requirements**:
+- What changed and why.
+- Tests and validation actually run.
+- Risk, deployment, rollback, and breaking-change notes.
+- Issue links and repository checklists.
+
+*Never mark pending automated reviews or tests as completed.*
+
+### 7. Verify Remote Result
+
+```bash
+gh pr view &lt;pr-number&gt; --json headRefOid,baseRefOid,mergeable,mergeStateStatus,url
+gh pr checks &lt;pr-number&gt;
+```
+
+- Bind review evidence to the current full head SHA.
+- If head/base changes, discard stale conclusions and rerun checks.
+- Use the repository&#x27;s guarded merge path. Do not replace required checks with raw merge APIs.
+
+## Stop Condition
+
+Finish when:
+- The PR exists at the intended head.
+- Required checks are green or have one exact blocker.
+- Review evidence is current.
+- Unrelated user work is preserved.
+- Any requested guarded merge or deployment is verified.
+
+## Limitations
+
+- Cannot bypass branch protection, required reviews, or permissions.
+- Does not authorize destructive cleanup or force pushes beyond user request and policy.
+- Keep unresolved environment failures explicit; do not convert them into source changes without evidence.</pre>
+</body>
+</html>

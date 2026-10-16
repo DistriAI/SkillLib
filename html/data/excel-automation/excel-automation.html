@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>excel-automation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">excel-automation</a> / excel-automation</p><h1>excel-automation</h1><p class="meta">combined</p><p>The daymade skill is a local, code-first procedure using openpyxl, stdlib zipfile/xml parsing, and macOS AppleScript. The two Composio skills are identical MCP-based procedures that drive Microsoft Excel and Google Sheets through the Rube MCP server. They overlap in the goal of automating spreadsheets but use entirely different toolchains, prerequisites, and workflows. Crowning one would hide a real alternative: local file manipulation versus cloud/MCP-driven spreadsheet management.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>daymade-docs/excel-automation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>composio-skills/excel-automation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>composio-skills/excel-automation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>daymade-docs/excel-automation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>composio-skills/excel-automation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>composio-skills/excel-automation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Excel Automation
+
+Automate spreadsheet operations using either local Python tooling or MCP-based cloud integration.
+
+## Choose Your Approach
+
+- **Local file manipulation** (openpyxl, zipfile, AppleScript): Use when working with local .xlsx/.xlsm files, complex financial models, or macOS Excel window control.
+- **MCP cloud integration** (Rube MCP, Google Sheets, OneDrive): Use when working with cloud-hosted spreadsheets, CRM syncs, or when local file access is unavailable.
+
+## Local Approach (openpyxl + stdlib)
+
+### Quick Start
+
+Before controlling Excel windows, check user activity and agent occupancy. Use only foreground operations covered by the current task&#x27;s authorization.
+
+```bash
+# Create a formatted Excel report
+uv run --with openpyxl scripts/create_formatted_excel.py output.xlsx
+
+# Parse a complex xlsm that openpyxl can&#x27;t handle
+uv run scripts/parse_complex_excel.py model.xlsm              # List sheets
+uv run scripts/parse_complex_excel.py model.xlsm &quot;DCF&quot;        # Extract a sheet
+uv run scripts/parse_complex_excel.py model.xlsm --fix        # Fix corrupted names
+
+# Control Excel via AppleScript (with timeout to prevent hangs)
+timeout 5 osascript -e &#x27;tell application &quot;Microsoft Excel&quot; to activate&#x27;
+```
+
+### Tool Selection
+
+- Simple file (no VBA, &lt;1MB): openpyxl or pandas
+- .xlsm, investment bank file, or &gt;1MB: zipfile + xml.etree.ElementTree
+- True .xls (BIFF): xlrd
+- Always run `file &lt;path&gt;` first; extensions lie.
+
+### Professional Color Convention
+
+| Color | RGB | Meaning |
+|-------|-----|---------|
+| Blue | 0000FF | User input / assumption |
+| Black | 000000 | Calculated value |
+| Green | 008000 | Cross-sheet reference |
+| White on dark blue | FFFFFF on 4472C4 | Section headers |
+
+### Number Formats
+
+- Currency: `&#x27;$#,##0&#x27;`
+- Percentage: `&#x27;0.0%&#x27;`
+- Multiplier: `&#x27;0.0x&#x27;`
+
+### Conditional Formatting (Sensitivity Tables)
+
+Use ColorScaleRule with red-to-green gradient for sensitivity analysis.
+
+## MCP Cloud Approach (Rube MCP)
+
+### Setup
+
+Requires the Rube MCP server connected at `https://rube.app/mcp`. Ensure an active connection for the `excel` and/or `googlesheets` toolkit before executing tools. If no connection is active, initiate one via `RUBE_MANAGE_CONNECTIONS`.
+
+### Core Workflows
+
+1. **Create workbook**: `EXCEL_CREATE_WORKBOOK` generates a .xlsx file and uploads to OneDrive.
+2. **Write data**: `GOOGLESHEETS_BATCH_UPDATE` with `spreadsheet_id`, `sheet_name`, `values` (2D array), optional `first_cell_location` (A1 notation), and `valueInputOption` (`USER_ENTERED` or `RAW`).
+3. **Upsert rows**: `GOOGLESHEETS_UPSERT_ROWS` with `keyColumn` for matching, `headers`, and `rows`. Use `strictMode: true` to error on mismatched columns.
+4. **Format cells**: `GOOGLESHEETS_FORMAT_CELL` with `range` (A1 notation), `bold`, `italic`, `fontSize`, and background color as 0.0-1.0 float components.
+5. **Add worksheet**: `GOOGLESHEETS_ADD_SHEET` with `title` and optional `forceUnique`.
+6. **Read data**: `GOOGLESHEETS_BATCH_GET` to retrieve and validate cell ranges.
+
+### Recommended Execution Plan
+
+1. Create or locate the spreadsheet
+2. Confirm the destination tab; create if missing
+3. Read existing headers to align columns
+4. Write or upsert data
+5. Apply formatting
+6. Verify results
+7. Fallback: If Google Sheets creation returns HTTP 403, use `EXCEL_CREATE_WORKBOOK` for local .xlsx output
+
+### Known Pitfalls
+
+- HTTP 403 on sheet creation: fall back to local .xlsx output
+- Color values in `GOOGLESHEETS_FORMAT_CELL` are 0.0-1.0 floats, not 0-255 integers
+- `valueInputOption: RAW` stores formulas as text; use `USER_ENTERED` to parse them</pre>
+</body>
+</html>

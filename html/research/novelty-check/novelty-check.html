@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>novelty-check</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">novelty-check</a> / novelty-check</p><h1>novelty-check</h1><p class="meta">combined</p><p>The two copies implement the same four-phase novelty check, but the wanshuiyin copy adds a dossier-file handoff to the Codex reviewer and a verbatim NOVELTY VERDICT LIMITS block that changes how the final verdict is judged, while the brycewang copy uses a different reviewer model and a simpler inline prompt with a different report schema. Crowning one copy would hide the other&#x27;s real alternative for the cross-model verification and verdict rules.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/novelty-check/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/novelty-check/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/novelty-check/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/novelty-check/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex/novelty-check/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex-claude-review/novelty-check/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex-gemini-review/novelty-check/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/67-econfin-workflow-toolkit/novelty-check/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex/novelty-check/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex-claude-review/novelty-check/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex-gemini-review/novelty-check/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: novelty-check
+description: Verify research idea novelty against recent literature. Use when user says &quot;查新&quot;, &quot;novelty check&quot;, &quot;有没有人做过&quot;, &quot;check novelty&quot;, or wants to verify a research idea is novel before implementing.
+argument-hint: &quot;[method-or-idea-description]&quot;
+allowed-tools: WebSearch, WebFetch, Grep, Read, Glob, mcp__codex__codex
+---
+
+# Novelty Check Skill
+
+Check whether a proposed method/idea has already been done in the literature: **$ARGUMENTS**
+
+## Constants
+
+- REVIEWER_MODEL = an OpenAI model (e.g., `gpt-6-astra`, `gpt-5.4`, `o3`, `gpt-4o`) — Model used via Codex MCP.
+
+## Instructions
+
+Given a method description, systematically verify its novelty:
+
+### Phase A: Extract Key Claims
+1. Read the user&#x27;s method description.
+2. Identify 3-5 core technical claims that carry the claimed delta:
+   - What is the method?
+   - What problem does it solve?
+   - What is the mechanism?
+   - What makes it different from obvious baselines?
+
+### Phase B: Multi-Source Literature Search
+For EACH core claim, search using ALL available sources:
+
+1. **Web Search** (via `WebSearch`):
+   - Search arXiv, Google Scholar, Semantic Scholar.
+   - Use specific technical terms from the claim.
+   - Try at least 3 different query formulations per claim.
+   - Include year filters for 2024-2026.
+
+2. **Known paper databases**: Check against:
+   - ICLR 2025/2026, NeurIPS 2025, ICML 2025/2026.
+   - Recent arXiv preprints (2025-2026).
+
+3. **Read abstracts**: For each potentially overlapping paper, WebFetch its abstract and related work section.
+
+### Phase C: Cross-Model Verification
+Call REVIEWER_MODEL via Codex MCP (`mcp__codex__codex`) with xhigh reasoning.
+
+When the method description plus the Phase-B paper list is more than a short note, avoid pasting it inline into the MCP prompt. Write a dossier file such as `NOVELTY_DOSSIER.md` (or a project-local equivalent) containing the method description, core claims, candidate papers, and the exact questions below, then send only the file path:
+
+```
+mcp__codex__codex:
+  model: &lt;REVIEWER_MODEL&gt;
+  config: {&quot;model_reasoning_effort&quot;: &quot;xhigh&quot;}
+  prompt: |
+    Read the novelty dossier at &lt;absolute path to NOVELTY_DOSSIER.md&gt; and
+    follow all instructions in it.
+```
+
+Dossier contents should include:
+- The proposed method description.
+- All papers found in Phase B.
+- Ask: &quot;Is this method novel? What is the closest prior work? What is the delta?&quot;
+- The NOVELTY VERDICT LIMITS block below, verbatim — the reviewer judges under it.
+
+### The verdict limits
+
+Copy this block **verbatim** into the reviewer&#x27;s briefing; the report in Phase D is judged under it too.
+
+```
+=== NOVELTY VERDICT LIMITS (these bound how you judge, never how widely you search) ===
+Search exhaustively; judge calibrated. Two failures waste months equally:
+passing an idea a published paper already contains, and killing a viable idea
+because the territory has neighbors.
+1. Proximity is information, not a verdict. Someone working nearby goes in the
+   report; it is not by itself a reason to reject.
+2. ABANDON has exactly one qualification: a specific published paper already
+   contains this result — name that paper. No named paper, no ABANDON.
+3. Crowded-but-deltaed is PROCEED: state the delta in one sentence a reviewer
+   could verify. Thin or contested delta is PROCEED WITH CAUTION — say what
+   would make it carry, not why it should die. CAUTION is not a safe middle:
+   if you cannot name the specific thing that makes the delta thin, the
+   verdict is PROCEED.
+4. Concurrent or competing work is not a veto. That is a race — report it and
+   let the user decide whether to run it.
+5. A direct attack on a central problem is legitimate novelty when nobody has
+   executed it well. &quot;This area is hot&quot; does not mean &quot;this area is taken.&quot;
+6. This check is an early gate, never the last one — more triage, pilots, or
+   external review still stand between any idea and a paper, whatever order
+   this run uses. A wrongly passed idea dies cheaply at one of them; a wrongly
+   killed idea is never seen again. When torn between two verdicts, choose the
+   more permissive one.
+Say plainly when an idea clears the check. Do not manufacture overlap.
+```
+
+### Phase D: Novelty Report
+Output a structured report:
+
+```markdown
+## Novelty Check Report
+
+### Proposed Method
+[1-2 sentence description]
+
+### Core Claims
+1. [Claim 1] — Novelty: HIGH/MEDIUM/LOW — Closest: [paper] — What stays unknown or different: [delta]
+2. [Claim 2] — Novelty: HIGH/MEDIUM/LOW — Closest: [paper] — What stays unknown or different: [delta]
+...
+
+### Closest Prior Work
+| Paper | Year | Venue | Overlap | Key Difference |
+|-------|------|-------|---------|----------------|
+
+### Overall Novelty Assessment
+- Score: X/10 (anchor: 5/10 = has clear neighbors but a defensible delta worth a pilot; reserve 1-3 for results a named published paper already contains)
+- Recommendation: PROCEED / PROCEED WITH CAUTION / ABANDON (per the verdict limits: crowded-but-deltaed ground is PROCEED; ABANDON must name the paper)
+- Key differentiator: [what makes this unique, if anything]
+- Risk: [what a reviewer would cite as prior work]
+
+### Suggested Positioning
+[State the delta honestly in one sentence a reviewer could verify]
+```
+
+### Important Rules
+- Two failures waste months equally: a false novelty claim, and a viable idea abandoned because the territory has neighbors. Be brutally honest in both directions — and when an idea clears the check, say so plainly.
+- Novelty can live in the combination or the finding even when every individual claim rates LOW — judge the idea, not each claim in isolation. Known parts arranged to reveal something unknown are novel.
+- &quot;Applying X to Y&quot; earns novelty by what the application reveals — a non-obvious interaction, failure mode, or insight. Judge the revelation, not the template.
+- Check both the method AND the experimental setting for novelty.
+- If the method is not novel but the FINDING would be, say so explicitly.
+- Always check the most recent 6 months of arXiv — the field moves fast.
+
+## Conflicts
+- wanshuiyin/Auto-claude-code-research-in-sleep sets REVIEWER_MODEL to `gpt-6-astra`, while brycewang-stanford/Auto-Empirical-Research-Skills sets it to `gpt-5.4`.
+- wanshuiyin/Auto-claude-code-research-in-sleep requires a dossier file for the Codex reviewer, while brycewang-stanford/Auto-Empirical-Research-Skills uses an inline prompt.
+- wanshuiyin/Auto-claude-code-research-in-sleep includes the NOVELTY VERDICT LIMITS block, while brycewang-stanford/Auto-Empirical-Research-Skills does not.
+- The report schemas differ: wanshuiyin/Auto-claude-code-research-in-sleep uses &#x27;What stays unknown or different&#x27; and a score anchor, while brycewang-stanford/Auto-Empirical-Research-Skills uses &#x27;Novelty: HIGH/MEDIUM/LOW&#x27; and a simpler score.</pre>
+</body>
+</html>

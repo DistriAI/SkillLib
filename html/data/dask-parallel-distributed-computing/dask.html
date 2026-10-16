@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>dask</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">dask-parallel-distributed-computing</a> / dask</p><h1>dask</h1><p class="meta">combined</p><p>The three copies share the same core Dask structure (DataFrames, Arrays, Bags, Futures) and the same high-level guidance, but they disagree on concrete parameters and add different constraints. K-Dense-AI/scientific-agent-skills pins dask 2026.8.0, requires Python 3.10+, pandas 2+, PyArrow 16+, and states that since 2025.1.0 the expression-based DataFrame API is the only implementation (do not install dask-expr or disable query planning). It also uses a small, memory-safe array example and a more specific DataFrame groupby example. The other two copies use a much larger array example (100000x100000) and a simpler groupby example, and they include a laptop-to-cluster capacity line that the K-Dense copy omits. FreedomIntelligence/OpenClaw-Medical-Skills adds a tool-selection note (use vaex for out-of-core single-machine analytics, polars for in-memory speed) that the others lack. Because each copy has material steps or constraints the others lack, and they disagree on version pinning and example sizing, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/dask/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/dask/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/dask/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/dask/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/dask/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/dask/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: dask
+description: Scales pandas, NumPy, and custom Python research workflows beyond memory or across clusters with Dask. Covers DataFrames, Arrays, Bags, Futures, chunking, schedulers, and distributed diagnostics. Use for partitioned file processing, scientific array computation, or parallel tasks whose memory and dependency structure require Dask. For out-of-core analytics on a single machine consider vaex; for in-memory speed consider polars.
+allowed-tools: Read Write Edit Bash
+license: BSD-3-Clause license
+compatibility: Requires Python 3.10+ and dask 2026.8.0; current Zarr 3.4 needs Python 3.12+. DataFrame workflows need pandas 2+ and PyArrow 16+. Cloud paths (s3://, gcs://) need s3fs or gcsfs. Cluster deployment uses dask.distributed (included with dask[complete]).
+metadata:
+  version: &quot;1.4&quot;
+  last-reviewed: &quot;2026-09-30&quot;
+  skill-author: K-Dense Inc.
+---
+
+# Dask
+
+## Overview
+
+Dask is a Python library for parallel and distributed computing that enables three critical capabilities:
+- **Larger-than-memory execution** on single machines for data exceeding available RAM
+- **Parallel processing** for improved computational speed across multiple cores
+- **Distributed computation** supporting terabyte-scale datasets across multiple machines
+
+Dask scales from laptops (processing ~100 GiB) to clusters (processing ~100 TiB) while maintaining familiar Python APIs. Capacity depends on partition sizes, intermediate data, concurrency, storage, and available memory.
+
+**Reviewed release:** dask/distributed **2026.8.0** (September 30, 2026 review). Docs: [docs.dask.org](https://docs.dask.org/en/stable/). Since **2025.1.0**, the expression-based DataFrame API with query planning is the only implementation — do not install `dask-expr` separately or set `dataframe.query-planning: False`.
+
+## Quick Start
+
+### Installation
+
+```bash
+uv pip install &quot;dask[array,dataframe]==2026.8.0&quot;
+```
+
+For a typical pandas/NumPy workflow with the distributed scheduler and dashboard:
+
+```bash
+uv pip install &quot;dask[complete]==2026.8.0&quot;
+```
+
+Remote object storage (requires provider credentials for private data):
+
+```bash
+uv pip install s3fs    # s3:// paths
+uv pip install gcsfs   # gs:// paths
+```
+
+Requires **Python 3.10+**, pandas 2+, PyArrow 16+. Zarr, HDF5, SciPy, Xarray, Dask-ML, and cluster deployment packages are separate optional dependencies. File paths and undefined application functions below are illustrative. Put process scheduler/`Client()` execution in a `main()` guarded by `if __name__ == &quot;__main__&quot;:` in scripts; close clients and clusters afterward.
+
+## When to Use This Skill
+
+This skill should be used when:
+- Process datasets that exceed available RAM
+- Scale pandas or NumPy operations to larger datasets
+- Parallelize computations for performance improvements
+- Process multiple files efficiently (CSVs, Parquet, JSON, text logs)
+- Build custom parallel workflows with task dependencies
+- Distribute workloads across multiple cores or machines
+
+## Core Capabilities
+
+Dask provides five main components, each suited to different use cases:
+
+### 1. DataFrames - Parallel Pandas Operations
+
+**Purpose**: Scale pandas operations to larger datasets through parallel processing.
+
+**When to Use**:
+- Tabular data exceeds available RAM
+- Need to process multiple CSV/Parquet files together
+- Pandas operations are slow and need parallelization
+- Scaling from pandas prototype to production
+
+**Reference Documentation**: For comprehensive guidance on Dask DataFrames, refer to `references/dataframes.md` which includes:
+- Reading data (single files, multiple files, glob patterns)
+- Common operations (filtering, groupby, joins, aggregations)
+- Custom operations with `map_partitions`
+- Performance optimization tips
+- Common patterns (ETL, time series, multi-file processing)
+
+**Quick Example**:
+```python
+import dask.dataframe as dd
+
+# Read multiple files as single DataFrame
+ddf = dd.read_csv(&#x27;data/2024-*.csv&#x27;)
+
+# Operations are lazy until compute()
+filtered = ddf[ddf[&#x27;value&#x27;] &gt; 100]
+result = filtered.groupby(&#x27;category&#x27;)[&#x27;value&#x27;].mean().compute()
+```
+
+**Key Points**:
+- Operations are lazy (build task graph) until `.compute()` called
+- Use `map_partitions` for efficient custom operations
+- Convert to DataFrame early when working with structured data from other sources
+
+### 2. Arrays - Parallel NumPy Operations
+
+**Purpose**: Extend NumPy capabilities to datasets larger than memory using blocked algorithms.
+
+**When to Use**:
+- Arrays exceed available RAM
+- NumPy operations need parallelization
+- Working with scientific datasets (HDF5, Zarr, NetCDF)
+- Need parallel linear algebra or array operations
+
+**Reference Documentation**: For comprehensive guidance on Dask Arrays, refer to `references/arrays.md` which includes:
+- Creating arrays (from NumPy, random, from disk)
+- Chunking strategies and optimization
+- Common operations (arithmetic, reductions, linear algebra)
+- Custom operations with `map_blocks`
+- Integration with HDF5, Zarr, and XArray
+
+**Quick Example**:
+```python
+import dask.array as da
+
+# Small executable example; size chunks from uncompressed memory before scaling
+x = da.random.default_rng(42).random((1000, 1000), chunks=(250, 250))
+
+# Operations are lazy
+y = x + 100
+z = y.mean(axis=0)
+
+# Compute result
+result = z.compute()
+```
+
+**Key Points**:
+- Chunk size is critical (aim for ~100 MiB per chunk, adjusted to memory and operation)
+- Operations work on chunks in parallel
+- Rechunk data when needed for efficient operations
+- Use `map_blocks` for operations not available in Dask
+
+### 3. Bags - Parallel Processing of Unstructured Data
+
+**Purpose**: Process unstructured or semi-structured data (text, JSON, logs) with functional operations.
+
+**When to Use**:
+- Processing text files, logs, or JSON records
+- Data cleaning and ETL before structured analysis
+- Working with Python objects that don&#x27;t fit array/dataframe formats
+- Need memory-efficient streaming processing
+
+**Reference Documentation**: For comprehensive guidance on Dask Bags, refer to `references/bags.md` which includes:
+- Reading text and JSON files
+- Functional operations (map, filter, fold, groupby)
+- Converting to DataFrames
+- Common patterns (log analysis, JSON processing, text processing)
+- Performance considerations
+
+**Quick Example**:
+```python
+import dask.bag as db
+import json
+
+# Read and parse JSON files
+bag = db.read_text(&#x27;logs/*.json&#x27;).map(json.loads)
+
+# Filter and transform
+valid = bag.filter(lambda x: x[&#x27;status&#x27;] == &#x27;valid&#x27;)
+processed = valid.map(lambda x: {&#x27;id&#x27;: x[&#x27;id&#x27;], &#x27;value&#x27;: x[&#x27;value&#x27;]})
+
+# Convert to DataFrame for analysis
+ddf = processed.to_dataframe()
+```
+
+**Key Points**:
+- Use for initial data cleaning, then convert to DataFrame/Array
+- Use `foldby` instead of `groupby` for better performance
+- Operations are streaming and memory-efficient
+- Convert to structured formats (DataFrame) for complex operations
+
+### 4. Futures - Task-Based Parallelization
+
+**Purpose**: Build custom parallel workflows with fine-grained control over task execution and dependencies.
+
+**When to Use**:
+- Building dynamic, evolving workflows
+- Need immediate task execution (not lazy)
+- Computations depend on runtime conditions
+- Implementing custom parallel algorithms
+- Need stateful computations
+
+**Reference Documentation**: For comprehensive guidance on Dask Futures, refer to `references/futures.md` which includes:
+- Setting up distributed client
+- Submitting tasks and working with futures
+- Task dependencies and data movement
+- Advanced coordination (queues, locks, events, actors)
+- Common patterns (parameter sweeps, dynamic tasks, iterative algorithms)
+
+**Quick Example**:
+```python
+from dask.distributed import Client
+
+client = Client()  # Create local cluster
+
+# Submit tasks (executes immediately)
+def process(x):
+    return x ** 2
+
+futures = client.map(process, range(100))
+
+# Gather results
+results = client.gather(futures)
+
+client.close()
+```
+
+**Key Points**:
+- Requires distributed client
+- Tasks execute immediately (not lazy)
+- Use for dynamic workflows and stateful computations
+- Close clients and clusters when done
+
+## Conflicts
+
+- **K-Dense-AI/scientific-agent-skills** pins dask 2026.8.0 and requires Python 3.10+, pandas 2+, PyArrow 16+, and states the expression-based DataFrame API is the only implementation since 2025.1.0. The other two copies do not pin a version or mention the expression-based API constraint.
+- **K-Dense-AI/scientific-agent-skills** uses a small array example (1000x1000, chunks 250x250) and a specific groupby example (filtered.groupby(&#x27;category&#x27;)[&#x27;value&#x27;].mean()). The other two copies use a large array example (100000x100000, chunks 10000x10000) and a simpler groupby example (filtered.groupby(&#x27;category&#x27;).mean()).
+- **foryourhealth111-pixel/Vibe-Skills** and **FreedomIntelligence/OpenClaw-Medical-Skills** include a laptop-to-cluster capacity line (~100 GiB to ~100 TiB) that K-Dense-AI/scientific-agent-skills omits.
+- **FreedomIntelligence/OpenClaw-Medical-Skills** adds a tool-selection note (use vaex for out-of-core single-machine analytics, polars for in-memory speed) that the other two copies lack.</pre>
+</body>
+</html>

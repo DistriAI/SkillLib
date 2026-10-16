@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>find-bugs</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">branch-diff-security-review</a> / find-bugs</p><h1>find-bugs</h1><p class="meta">combined</p><p>The three copies share the same five-phase structure, attack-surface mapping, security checklist, verification, pre-conclusion audit, and output format. However, they disagree on how to obtain the diff and on the final reporting/fixing boundary. The benchflow copy hardcodes `git diff master...HEAD`, the getsentry copy uses `gh repo view` to resolve the default branch, and the sickn33 copy requires validated commit SHAs and explicitly distinguishes review-only from combined review-and-fix requests. The sickn33 copy also adds a &#x27;When to Use&#x27; section, an example, limitations, and stricter evidence/audit wording. Because each copy contains material steps or constraints the others lack, and they conflict on the diff command and fix authorization, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/fix-erlang-ssh-cve/environment/skills/find-bugs/SKILL.md</code></td></tr><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/find-bugs/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/find-bugs/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/fix-erlang-ssh-cve/environment/skills/find-bugs/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/find-bugs/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/find-bugs/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/find-bugs/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/find-bugs/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: find-bugs
+description: Find bugs, security vulnerabilities, and code quality issues in local branch changes. Use when asked to review changes, find bugs, security review, or audit code on the current branch.
+---
+
+# Find Bugs
+
+Review changes on this branch for bugs, security vulnerabilities, and code quality issues.
+
+## When to Use
+- You need a review focused on bugs, security issues, or risky code changes.
+- The task involves auditing the current branch diff rather than implementing new behavior.
+- You want a structured review process with checklist-driven verification against changed files.
+
+## Phase 1: Complete Input Gathering
+
+1. Establish the requested base and head as verified commit SHAs. Check the remote/default branch if needed; do not assume a stale local branch is current. Read the full branch diff with `git diff &quot;$BASE_SHA...$HEAD_SHA&quot; --`, using validated refs in separately quoted arguments. Include staged and unstaged changes when they are in scope; preserve the checkout.
+2. If output is truncated, read each changed file individually until you have seen every changed line
+3. List all files modified in this branch before proceeding
+
+## Phase 2: Attack Surface Mapping
+
+For each changed file, identify and list:
+
+* All user inputs (request params, headers, body, URL components)
+* All database queries
+* All authentication/authorization checks
+* All session/state operations
+* All external calls
+* All cryptographic operations
+
+## Phase 3: Security Checklist (check EVERY item for EVERY file)
+
+* [ ] **Injection**: SQL, command, template, header injection
+* [ ] **XSS**: All outputs in templates properly escaped?
+* [ ] **Authentication**: Auth checks on all protected operations?
+* [ ] **Authorization/IDOR**: Access control verified, not just auth?
+* [ ] **CSRF**: State-changing operations protected?
+* [ ] **Race conditions**: TOCTOU in any read-then-write patterns?
+* [ ] **Session**: Fixation, expiration, secure flags?
+* [ ] **Cryptography**: Secure random, proper algorithms, no secrets in logs?
+* [ ] **Information disclosure**: Error messages, logs, timing attacks?
+* [ ] **DoS**: Unbounded operations, missing rate limits, resource exhaustion?
+* [ ] **Business logic**: Edge cases, state machine violations, numeric overflow?
+
+## Phase 4: Verification
+
+For each potential issue:
+
+* Check if it&#x27;s already handled elsewhere in the changed code
+* Search for existing tests covering the scenario
+* Read surrounding context to verify the issue is real
+
+## Phase 5: Pre-Conclusion Audit
+
+Before finalizing, you MUST:
+
+1. List every file you reviewed and confirm you read it completely
+2. List each applicable checklist item as a finding, verified within the reviewed scope, not applicable, or unverified; absence of a finding is not proof of security
+3. List any areas you could NOT fully verify and why
+4. Only then provide your final findings
+
+## Output Format
+
+**Prioritize**: security vulnerabilities &gt; bugs &gt; code quality
+
+**Skip**: stylistic/formatting issues
+
+For each issue:
+
+* **File:Line** - Brief description
+* **Severity**: Critical/High/Medium/Low
+* **Problem**: What&#x27;s wrong
+* **Evidence**: Concrete trigger, reachable path and observed or reasoned impact; missing tests alone do not prove a bug
+* **Fix**: Concrete suggestion
+* **References**: OWASP, RFCs, or other standards if applicable
+
+If you find nothing significant, say so - don&#x27;t invent issues.
+
+For a review-only request, report findings without changing code. An explicit combined review-and-fix request authorizes scoped repairs and verification; preserve the distinction between findings and completed fixes.
+
+## Example
+
+**User request:**
+
+&gt; Review the current branch diff for real bugs, security issues, and regressions, citing exact files and lines.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

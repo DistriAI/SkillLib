@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>bioservices</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">bioinformatics-service-workflows</a> / bioservices</p><h1>bioservices</h1><p class="meta">combined</p><p>The three copies overlap on the core BioServices use case (UniProt, KEGG, UniChem, QuickGO, PSICQUIC) but each contains material steps or constraints the others lack. K-Dense-AI provides version-pinned installation, response-type validation, pagination/limit guidance, KEGG rate limits, and SIF namespace caveats. aipoch provides a broader cross-service example including QuickGO and PSICQUIC and optional dependencies. FreedomIntelligence provides BLAST asynchronous workflow, organism/pathway lookup methods, and a direct-REST alternative note. Crowning one would hide real alternatives and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/bioservices/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/bioservices/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/bioservices/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/bioservices/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/bioservices/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/bioservices/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: bioservices
+description: Python interface to bioinformatics services including UniProt, KEGG, ChEMBL, Reactome, QuickGO, UniChem, and PSICQUIC. Use for cross-database protein annotation, pathway retrieval, chemical identifier mapping, and integrated biological data workflows.
+license: MIT
+---
+
+# BioServices
+
+## When to use
+Use BioServices when combining protein annotation, gene/pathway membership, compound cross-references, or genomic resources in Python. Its service clients share transport helpers, but their request parameters and return types differ. Use the service reference before composing clients; method names from PubChemPy, mygene, or older BioServices are not portable.
+
+Install a compatible version. K-Dense-AI pins bioservices==1.16.0 for Python &gt;=3.9,&lt;4; other copies leave the version environment-dependent. Choose the pin that matches your environment and test before batching.
+
+```bash
+uv pip install &quot;bioservices==1.16.0&quot;
+```
+
+## Workflow
+1. Resolve the requested organism and entity to stable accessions. Review search hits before selecting one; gene symbols and compound names may be ambiguous.
+2. Inspect the service&#x27;s actual response type, including pagination and errors. BioServices can return an integer-like HTTP error or None, not only raise.
+3. Preserve one-to-many mappings, failed identifiers, taxonomy, database release, query parameters, and retrieval date alongside derived tables.
+4. Distinguish annotations and inferred associations from experimental evidence. Pathway membership alone is not an enrichment analysis or causal finding.
+5. Run a small lookup before batching; honor provider limits and retain failures separately from confirmed empty results.
+
+## Protein search, sequence retrieval, and mapping
+
+```python
+from bioservices import UniProt
+
+u = UniProt(verbose=False)
+u.services.TIMEOUT = 30
+rows = u.search(
+    &quot;gene_exact:ZAP70 AND organism_id:9606 AND reviewed:true&quot;,
+    frmt=&quot;tsv&quot;, columns=&quot;accession,gene_names,organism_name,length&quot;,
+    limit=5, size=5,
+)
+if not isinstance(rows, str):
+    raise RuntimeError(&quot;UniProt search failed&quot;)
+print(rows)
+fasta = u.retrieve(&quot;P43403&quot;, frmt=&quot;fasta&quot;)
+record = u.retrieve(&quot;P43403&quot;, frmt=&quot;json&quot;)
+
+mapping = u.mapping(fr=&quot;UniProtKB_AC-ID&quot;, to=&quot;KEGG&quot;, query=&quot;P43403&quot;)
+if not isinstance(mapping, dict) or &quot;results&quot; not in mapping:
+    raise RuntimeError(&quot;Mapping incomplete or failed&quot;)
+kegg_ids = [row[&quot;to&quot;] for row in mapping[&quot;results&quot;] if row[&quot;from&quot;] == &quot;P43403&quot;]
+print(kegg_ids, mapping.get(&quot;failedIds&quot;, []))
+```
+
+Use frmt=&quot;tsv&quot; for tabular output; some older examples use frmt=&quot;tab&quot;. Current field names include accession, gene_names, organism_name, protein_name, go_id, and xref_pdb. mapping() returns a results/failedIds envelope, not a source-to-list dictionary. Mapping to UniProt uses to=&quot;UniProtKB&quot; and returns full records in row[&quot;to&quot;]; extract primaryAccession. UniProtKB_AC-ID is a source code. For bounded searches set size=limit (at most 500); 1.16.0 mixes the two values in its pagination loop.
+
+## KEGG pathways and networks
+
+```python
+from bioservices import KEGG
+
+k = KEGG(verbose=False)
+k.services.url = &quot;https://rest.kegg.jp&quot;
+pathway_names = k.get_pathway_by_gene(&quot;7535&quot;, &quot;hsa&quot;)  # dict: pathway ID -&gt; name
+print(pathway_names)
+kgml = k.parse_kgml_pathway(&quot;hsa04660&quot;)
+entries = {entry[&quot;id&quot;]: entry for entry in kgml[&quot;entries&quot;]}
+for relation in kgml[&quot;relations&quot;][:5]:
+    print(entries[relation[&quot;entry1&quot;]][&quot;name&quot;], relation[&quot;name&quot;],
+          entries[relation[&quot;entry2&quot;]][&quot;name&quot;])
+```
+
+The reviewed /list/organism endpoint returned HTTP 400 despite remaining in the manual. SDK methods that validate against that catalogue can fail. Use documented scoped endpoints through k.services.http_get to avoid that unrelated catalogue dependency.
+
+KEGG get permits at most ten entries; KGML permits one pathway per request. Keep requests at or below three per second. list/find return TSV strings; get returns a flat-file string unless an option changes the representation. KGML entries include genes, compounds, groups, and maps. A relation can produce several subtype records; those counts are neither unique genes nor independent physical interactions. Entry IDs are local to each pathway. The bundled SIF export namespaces them as pathway#entry so combining pathways cannot merge unrelated nodes. pathway2sif(..., uniprot=False) is an optional lossy projection of gene-to-gene activation/inhibition, not a complete pathway network.
+
+## Compound cross-references
+
+```python
+from bioservices import UniChem
+
+uc = UniChem(verbose=False)
+response = uc.get_compounds(&quot;CHEBI:15365&quot;, &quot;chebi&quot;)  # aspirin
+if not isinstance(response, dict) or &quot;compounds&quot; not in response:
+    raise RuntimeError(&quot;UniChem request failed&quot;)
+chembl_ids = sorted({source[&quot;compoundId&quot;]
+    for match in response[&quot;compounds&quot;] for source in match.get(&quot;sources&quot;, [])
+    if source.get(&quot;shortName&quot;) == &quot;chembl&quot;})
+print(chembl_ids)
+```
+
+UniChem 2 uses POST /api/v1/compounds with a JSON body; BioServices assembles it. Discover source names through uc.source_ids; KEGG is absent at review. From a KEGG compound, preserve every ChEBI cross-reference and use only a uniquely resolved, structurally reviewed candidate. Check charge, stereochemistry, salts, and parent.
+
+## QuickGO annotations
+
+```python
+from bioservices import QuickGO
+
+g = QuickGO(verbose=False)
+ann = g.Annotation(protein=&quot;P43403&quot;, format=&quot;tsv&quot;)
+print(ann.splitlines()[0])
+```
+
+## PSICQUIC interactions
+
+```python
+from bioservices import PSICQUIC
+
+p = PSICQUIC(verbose=False)
+interactions = p.query(&quot;intact&quot;, &quot;ZAP70 AND species:9606&quot;)
+print(&quot;\n&quot;.join(interactions.splitlines()[:3]))
+```
+
+Choose a database that is active in your environment; &quot;intact&quot; is commonly available. List available databases through p.activeDBs.
+
+## BLAST (optional)
+
+```python
+from bioservices import NCBIblast
+
+s = NCBIblast(verbose=False)
+jobid = s.run(
+    program=&quot;blastp&quot;,
+    sequence=protein_sequence,
+    stype=&quot;protein&quot;,
+    database=&quot;uniprotkb&quot;,
+    email=&quot;your.email@example.com&quot;,
+)
+s.getStatus(jobid)
+results = s.getResult(jobid, &quot;out&quot;)
+```
+
+BLAST jobs are asynchronous. Check status before retrieving results. EMBL-EBI BLAST submission requires a real contact email; the bundled script reads NCBI_EMAIL or an explicit parameter.
+
+## Conflicts
+- K-Dense-AI/scientific-agent-skills pins bioservices==1.16.0 and Python &gt;=3.9,&lt;4; aipoch/medical-research-skills says version depends on your environment; FreedomIntelligence/OpenClaw-Medical-Skills gives no version pin.
+- K-Dense-AI/scientific-agent-skills says use frmt=&quot;tsv&quot;, not &quot;tab&quot;; aipoch/medical-research-skills and FreedomIntelligence/OpenClaw-Medical-Skills use frmt=&quot;tab&quot; in examples.
+- K-Dense-AI/scientific-agent-skills says mapping() returns a results/failedIds envelope; aipoch/medical-research-skills and FreedomIntelligence/OpenClaw-Medical-Skills use mapping results without that envelope handling.
+- FreedomIntelligence/OpenClaw-Medical-Skills includes NCBI BLAST as a core capability and says to use individual database skills for direct REST control; K-Dense-AI treats BLAST as an optional compatibility note; aipoch omits BLAST from the main example to stay lightweight.</pre>
+</body>
+</html>

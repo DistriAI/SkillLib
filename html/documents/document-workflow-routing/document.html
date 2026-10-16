@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>document</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">document-workflow-routing</a> / document</p><h1>document</h1><p class="meta">combined</p><p>The three copies are not reproductions of one procedure. The first is a dispatcher for office file formats (PDF/DOCX/XLSX/PPTX) that routes to other skills. The second is a specific writer for software change documentation (PR, changelog, release notes, postmortems) generated from git history. The third is a catalog of academic/research document processing tools (GROBID, Zotero, PDF parsing). They overlap only in the broad label &#x27;document&#x27; but have disjoint steps, tools, and outputs.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/document-skills/SKILL.md</code></td></tr><tr><td><a href="https://github.com/jsmastery-pro/skills">jsmastery-pro/skills</a></td><td><code>skills/document/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/43-wentorai-research-plugins/skills/tools/document/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/document-skills/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/jsmastery-pro/skills">jsmastery-pro/skills</a></td><td><code>skills/document/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/43-wentorai-research-plugins/skills/tools/document/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: document
+allowed-tools: Bash, Read, Grep, Glob, Write, Edit, Agent, AskUserQuestion
+description: &quot;Unified document workflow dispatcher. Routes to office format skills, software change documentation, or academic research tools based on user intent.&quot;
+---
+
+# Document Workflow Dispatcher
+
+Use this skill when the task involves document creation, processing, or routing. Determine the specific domain and dispatch accordingly.
+
+## 1. Determine Document Domain
+
+Ask the user or infer from context which of the following applies:
+1. **Office Formats**: PDF, DOCX, XLSX, PPTX (formatting, conversion, layout).
+2. **Software Change Docs**: PR descriptions, changelogs, release notes, postmortems (from git history).
+3. **Academic/Research**: Citation parsing, reference extraction, academic PDF processing, Zotero management.
+
+## 2. Dispatch Rules
+
+### A. Office Formats (PDF/DOCX/XLSX/PPTX)
+- **PDF**: Use `pdf` skill for extraction, rendering, or layout review.
+- **Word/DOCX**: Use `docx` skill for formatting and tracked changes.
+- **Excel/XLSX**: Use `xlsx` skill for spreadsheets and pivot tables.
+- **Slides/PPTX**: Use `scientific-slides` or `pptx-posters` for decks and posters.
+- **Safety**: Do not guess formats. If unclear, ask: &quot;What is the target file type?&quot;
+- **Sequencing**: For multiple outputs, sequence as: source-of-truth → derived exports.
+
+### B. Software Change Documentation
+- **Types**: `pr`, `changelog`, `release-note`, `postmortem`.
+- **Source**: Git commits, diffs, and incident facts.
+- **Output Style**: Plain, simple language. No dashes or hyphens in prose (except in code/paths).
+- **Process**:
+  1. Determine type (ask if unclear).
+  2. Gather source material (`git log`, `git diff`, `git tag`).
+  3. Write document to the appropriate location (`CHANGELOG.md`, `docs/releases/`, etc.).
+  4. For PRs, check `gh` availability and existing PRs.
+
+### C. Academic/Research Tools
+- **Citation Parsing**: Use `anystyle-api` or `grobid-pdf-parsing`.
+- **PDF Extraction**: Use `pdf-extraction-guide` or `paper-parse-guide`.
+- **Reference Management**: Use `zotero-*` skills for Zotero plugins and themes.
+- **Long Documents**: Use `large-document-reader` for chapter-by-chapter analysis.
+
+## 3. Output Expectations
+
+- **Office**: Preserve formatting if a template is provided. State output paths and verification steps.
+- **Software**: Trace every sentence to a commit or diff. Do not invent timelines or causes.
+- **Academic**: Ensure structured extraction of metadata and references. Verify citation accuracy.
+
+## Conflicts
+
+- **jsmastery-pro/skills** vs **foryourhealth111-pixel/Vibe-Skills**: The former writes prose from git history; the latter routes to format-specific skills. They do not share steps.
+- **brycewang-stanford/Auto-Empirical-Research-Skills** vs **jsmastery-pro/skills**: The former focuses on academic tools (GROBID, Zotero); the latter on software change docs. They do not share steps.
+- **foryourhealth111-pixel/Vibe-Skills** vs **brycewang-stanford/Auto-Empirical-Research-Skills**: The former handles office formats; the latter handles academic PDFs. They may overlap in PDF handling but with different tools and goals.</pre>
+</body>
+</html>

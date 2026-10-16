@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>architecture</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">architecture-advice</a> / architecture</p><h1>architecture</h1><p class="meta">combined</p><p>The three copies cover different scopes and workflows. The first is a Unity-specific gameplay architecture advisor with concrete C#/MonoBehaviour execution-order and guard-clause rules. The second is a general system-design skill focused on ADRs, checklists, and patterns. The third is a general decision framework that references external files for context discovery, trade-offs, and pattern selection. No single copy is the procedure the others reproduce; each contains material steps or constraints the others lack.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/architecture/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/cc-best/skills/architecture/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/architecture/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/architecture/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/cc-best/skills/architecture/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/architecture/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/architecture/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/architecture/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: architecture
+description: Advise on software and Unity architecture with ADRs, trade-off analysis, and execution-order guidance
+---
+
+# Architecture Advisor
+
+Use this skill when planning code organization, system design, or refactoring direction.
+
+## Workflow
+
+1. Identify scope: prototype, small game, long-lived project, or general system.
+2. Define the core loop or primary requirements and the minimum systems needed.
+3. Recommend the smallest architecture that fits the scope.
+4. Separate concerns:
+   - scene/bootstrap or entry-point layer
+   - domain/business logic
+   - data/config assets
+   - view/presentation layer
+5. Call out what should stay simple now versus what is worth abstracting.
+
+## Unity-Specific Guidance
+
+- Prefer thin MonoBehaviour scripts as composition bridges.
+- Put reusable gameplay rules in plain C# classes when possible.
+- Use ScriptableObject for authored config and shared static data, not as a default dump for runtime state.
+- Keep dependencies explicit. Avoid hidden global state unless the project size clearly justifies a small service layer.
+- Favor simple module boundaries over framework-heavy architecture.
+
+### Make startup order explicit
+
+- Use one Bootstrap script as the single entry point that owns initialization and calls sub.Init() on managers it creates.
+- Prefer pull over push: subscribers call source.GetValue() on demand or subscribe to events.
+- Reserve [DefaultExecutionOrder(n)] for load-bearing singletons only. If more than 3-4 scripts need it, the architecture is wrong.
+
+### Make update preconditions explicit
+
+- Every Update/LateUpdate/FixedUpdate should open with guard clauses that early-return when the system is not ready.
+- Prefer the cheapest check first: construction-time, dependency-level, then gameplay-state.
+
+## General System Design
+
+- Record significant decisions as ADRs with context, options, and rationale.
+- Evaluate trade-offs for each decision and consider simpler alternatives.
+- Apply a system design checklist covering scalability, reliability, observability, and security.
+- Choose patterns (microservices, event-driven, layered, hexagonal) based on requirements, not fashion.
+
+## Output Format
+
+Structure the advice as:
+
+- Project tier: prototype / small-game / long-lived / general system
+- Recommended modules: 3-7 modules with one-line responsibilities
+- Scene/bootstrap or entry-point plan: where composition and initialization happen
+- Data ownership: what belongs in scene objects, ScriptableObjects, or pure classes
+- Communication rules: direct refs, interfaces, events, or commands
+- Performance risks: only the hot paths that matter
+- Do now / skip now: avoid over-engineering
+- ADRs: list significant decisions with trade-off summaries
+
+## Validation Checklist
+
+Before finalizing architecture:
+
+- [ ] Requirements clearly understood
+- [ ] Constraints identified
+- [ ] Each decision has trade-off analysis
+- [ ] Simpler alternatives considered
+- [ ] ADRs written for significant decisions
+- [ ] Team expertise matches chosen patterns
+
+## Guardrails
+
+- Do not start from a giant reusable framework unless the project truly needs it.
+- Do not add layers just to satisfy textbook SOLID wording.
+- Prefer a small architecture that can grow, not an impressive one that slows iteration.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

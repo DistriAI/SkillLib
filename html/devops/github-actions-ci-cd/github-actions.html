@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>github-actions</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">github-actions-ci-cd</a> / github-actions</p><h1>github-actions</h1><p class="meta">combined</p><p>The copies cover different scopes of the same skill name. BagelHole and sickn33 are nearly identical general GitHub Actions references, with sickn33 adding a security/scope section and safer runner registration guidance. callstackincubator is a specialized React Native mobile build artifact skill that references composite actions and gh CLI downloads not present in the others. Crowning one would hide either the mobile artifact workflow or the security constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>devops/ci-cd/github-actions/SKILL.md</code></td></tr><tr><td><a href="https://github.com/callstackincubator/agent-skills">callstackincubator/agent-skills</a></td><td><code>skills/github-actions/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/github-actions/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>devops/ci-cd/github-actions/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/callstackincubator/agent-skills">callstackincubator/agent-skills</a></td><td><code>skills/github-actions/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/github-actions/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/github-actions/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/github-actions/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: github-actions
+description: Build, test, and deploy applications using GitHub Actions workflows, including general CI/CD patterns and React Native mobile artifact builds.
+license: MIT
+---
+
+# GitHub Actions
+
+Automate software workflows in GitHub repositories. Use this skill for general CI/CD pipelines, reusable workflows, secrets, caching, artifacts, Docker builds, self-hosted runners, and React Native mobile artifact builds.
+
+## When to Use
+
+- Setting up CI/CD pipelines for GitHub repositories.
+- Automating build, test, and deployment workflows.
+- Creating reusable workflow components.
+- Configuring self-hosted runners.
+- Managing workflow secrets and variables.
+- Debugging failed workflow runs.
+- Building React Native iOS simulator or Android emulator artifacts in CI.
+- Downloading GitHub Actions artifacts via gh CLI or GitHub API.
+
+## Prerequisites
+
+- GitHub repository with write access.
+- Understanding of YAML syntax.
+- For self-hosted runners: a server with Docker (optional).
+- For mobile artifact workflows: access to the referenced composite actions and gh CLI or GitHub API.
+
+## Scope and Security Notes
+
+Examples are independent YAML fragments, not a complete deployable pipeline. Each new job needs its own checkout, tool setup, locked dependency installation, and artifact transfer; jobs do not share a working directory. Review untrusted event inputs, least-privilege permissions, protected environments, and secret exposure before adoption. Image push, deployment, and runner registration require authorization.
+
+## Workflow File Structure
+
+Workflows are defined in `.github/workflows/`:
+
+```yaml
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: &#x27;22&#x27;
+          cache: &#x27;npm&#x27;
+      - run: npm ci
+      - run: npm test
+```
+
+## Common Triggers
+
+### Push and Pull Request
+
+```yaml
+on:
+  push:
+    branches: [main]
+    paths:
+      - &#x27;src/**&#x27;
+      - &#x27;package.json&#x27;
+  pull_request:
+    branches: [main]
+```
+
+### Scheduled Runs
+
+```yaml
+on:
+  schedule:
+    - cron: &#x27;0 2 * * *&#x27;  # Daily at 2 AM UTC
+```
+
+### Manual Dispatch
+
+```yaml
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: &#x27;Deployment environment&#x27;
+        required: true
+        default: &#x27;staging&#x27;
+        type: choice
+        options:
+          - staging
+          - production
+```
+
+## Job Configuration
+
+### Matrix Builds
+
+```yaml
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22, 24]
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm test
+```
+
+### Job Dependencies
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run build
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm test
+
+  deploy:
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    steps:
+      - run: ./deploy.sh
+```
+
+### Environment Protection
+
+```yaml
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://example.com
+    steps:
+      - run: ./deploy.sh
+```
+
+## Secrets and Variables
+
+### Using Secrets
+
+```yaml
+steps:
+  - name: Deploy
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    run: aws s3 sync ./dist s3://my-bucket
+```
+
+### Using Variables
+
+```yaml
+steps:
+  - name: Build
+    env:
+      API_URL: ${{ vars.API_URL }}
+    run: npm run build
+```
+
+## Caching Dependencies
+
+```yaml
+- uses: actions/cache@v4
+  with:
+    path: ~/.npm
+    key: ${{ runner.os }}-node-${{ hashFiles(&#x27;**/package-lock.json&#x27;) }}
+    restore-keys: |
+      ${{ runner.os }}-node-
+```
+
+## Artifacts
+
+### Upload Artifacts
+
+```yaml
+- uses: actions/upload-artifact@v4
+  with:
+    name: build-output
+    path: dist/
+    retention-days: 5
+```
+
+### Download Artifacts
+
+```yaml
+- uses: actions/download-artifact@v4
+  with:
+    name: build-output
+    path: dist/
+```
+
+## Docker Builds
+
+```yaml
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: user/app:latest
+```
+
+## Reusable Workflows
+
+### Define Reusable Workflow
+
+```yaml
+# .github/workflows/reusable-deploy.yml
+name: Reusable Deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+    secrets:
+      deploy_key:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - name: Report selected environment
+        env:
+          DEPLOY_ENVIRONMENT: ${{ inputs.environment }}
+        run: printf &#x27;Deploying to %s\n&#x27; &quot;$DEPLOY_ENVIRONMENT&quot;
+```
+
+### Call Reusable Workflow
+
+```yaml
+jobs:
+  deploy-staging:
+    uses: ./.github/workflows/reusable-deploy.yml
+    with:
+      environment: staging
+    secrets:
+      deploy_key: ${{ secrets.STAGING_KEY }}
+```
+
+## Self-Hosted Runners
+
+Use the selected repository&#x27;s current runner setup instructions. Verify the official release checksum before extracting or executing it, choose the intended architecture, and use a short-lived registration token without printing it. Do not use a historical hardcoded runner version. Treat self-hosted runner access as highly privileged.
+
+## React Native Mobile Artifact Builds
+
+For React Native iOS simulator and Android emulator cloud builds:
+
+1. Add composite actions for iOS simulator `.app.tar.gz` builds and Android emulator `.apk` builds.
+2. Wire them into `.github/workflows/mobile-build.yml`.
+3. Upload with `actions/upload-artifact@v4` and capture `artifact-id` output.
+4. Download with `gh run download` or `GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/{archive_format}`.
+
+## Debugging Workflows
+
+### Enable Debug Logging
+
+Set repository secrets:
+- `ACTIONS_RUNNER_DEBUG`: `true`
+- `ACTIONS_STEP_DEBUG`: `true`
+
+### Debug Step
+
+```yaml
+- name: Debug
+  run: |
+    echo &quot;GitHub context: ${{ toJson(github) }}&quot;
+    echo &quot;Job context: ${{ toJson(job) }}&quot;
+```
+
+## Common Issues
+
+### Workflow Not Triggering
+Check branch filters, path filters, and ensure the workflow file is on the default branch.
+
+### Permission Denied
+Configure `permissions` in the workflow or update repository settings.
+
+```yaml
+permissions:
+  contents: write
+  pull-requests: write
+```</pre>
+</body>
+</html>

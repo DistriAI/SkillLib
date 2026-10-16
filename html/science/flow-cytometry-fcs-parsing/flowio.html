@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>flowio</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">flow-cytometry-fcs-parsing</a> / flowio</p><h1>flowio</h1><p class="meta">combined</p><p>The three skills cover the same library (FlowIO) but contain conflicting and complementary information. The K-Dense skill is the most rigorous, specifying a pinned version (1.4.0), strict parsing defaults, and a critical semantic difference in how TEXT keys are accessed (lowercase/no-dollar vs. uppercase/dollar-prefixed). The other two skills (aipoch and FreedomIntelligence) use the uppercase/dollar-prefixed keys (e.g., `$DATE`) which contradicts the K-Dense skill&#x27;s explicit warning. Additionally, the aipoch and FreedomIntelligence skills provide specific error-handling patterns (catching `DataOffsetDiscrepancyError`) and multi-dataset handling examples that are absent or less detailed in the K-Dense skill. Because the K-Dense skill warns against the key-access pattern used by the others, and the others provide workflow steps (error handling) that K-Dense lacks, no single copy is a safe superset.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/flowio/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/flowio/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/flowio/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/flowio/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/flowio/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/flowio/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: flowio
+description: Reads, inspects, and writes Flow Cytometry Standard (FCS) 2.0, 3.0, and 3.1 files with FlowIO. Use for low-level FCS metadata and channel inspection, NumPy event extraction, multi-dataset files, table export, and FCS 3.1 creation.
+---
+
+# FlowIO
+
+## Purpose
+Use FlowIO for low-level reading and writing of FCS files. It is appropriate for:
+- Reading FCS 2.0, 3.0, and 3.1 files.
+- Inspecting HEADER, TEXT, ANALYSIS, and channel metadata.
+- Retrieving event data as NumPy arrays.
+- Writing list-mode, single-precision FCS 3.1 files.
+
+It does **not** perform compensation, gating, or logicle transforms. Use FlowKit for those.
+
+## Install
+```bash
+uv pip install &quot;flowio==1.4.0&quot;
+```
+
+## Critical Semantics
+
+### TEXT Keys
+`FlowData.text` keys are **lowercase** and **do not** include the leading `$`.
+- Correct: `flow.text.get(&#x27;date&#x27;)`, `flow.text.get(&#x27;cyt&#x27;)`
+- Incorrect: `flow.text.get(&#x27;$DATE&#x27;)`, `flow.text.get(&#x27;$CYT&#x27;)`
+
+### Event Extraction
+- `flow.as_array(preprocess=True)`: Applies gain, log, and time scaling from FCS metadata.
+- `flow.as_array(preprocess=False)`: Returns decoded DATA values without scaling.
+- Note: `as_array()` returns a 2D NumPy array `(events, channels)`. `flow.events` is a 1D flattened array.
+
+### Channel Indices
+- `flow.scatter_indices`, `flow.fluoro_indices`, `flow.time_index` use **zero-based** indices.
+- `flow.channels` uses FCS parameter numbers (1-based).
+
+## Operating Workflow
+
+1. **Inspect Metadata First**
+   Use `only_text=True` for large files to avoid loading event data into memory.
+   ```python
+   from flowio import FlowData
+   flow = FlowData(&#x27;sample.fcs&#x27;, only_text=True)
+   print(flow.text.get(&#x27;date&#x27;))
+   ```
+
+2. **Handle Parsing Errors**
+   By default, parsing is strict. If you encounter `DataOffsetDiscrepancyError` or `FCSParsingError` with known vendor files, you may relax checks, but validate the resulting data carefully.
+   ```python
+   from flowio import FlowData, DataOffsetDiscrepancyError
+   
+   try:
+       flow = FlowData(&#x27;sample.fcs&#x27;)
+   except DataOffsetDiscrepancyError:
+       # Only use for known problematic files
+       flow = FlowData(&#x27;sample.fcs&#x27;, ignore_offset_discrepancy=True)
+   ```
+
+3. **Extract Events**
+   ```python
+   events = flow.as_array(preprocess=True)
+   # Verify shape matches declared counts
+   assert events.shape == (flow.event_count, flow.channel_count)
+   ```
+
+4. **Multi-Dataset Files**
+   If a file contains multiple datasets, use `read_multiple_data_sets`.
+   ```python
+   from flowio import read_multiple_data_sets
+   datasets = read_multiple_data_sets(&#x27;multi.fcs&#x27;)
+   flow = datasets[0]
+   ```
+
+5. **Writing FCS**
+   `create_fcs` requires a file handle or path, flattened 1D event data (row-major), and PnN labels.
+   ```python
+   from flowio import create_fcs
+   import numpy as np
+   
+   # Note: create_fcs expects flattened 1D data in row-major order (event, channel)
+   # If you have a 2D array, flatten it: data.flatten(order=&#x27;C&#x27;)
+   create_fcs(&#x27;output.fcs&#x27;, events.flatten(order=&#x27;C&#x27;), flow.pnn_labels)
+   ```
+
+## Validation
+Always reopen written files to verify event counts, channel labels, and representative values.</pre>
+</body>
+</html>

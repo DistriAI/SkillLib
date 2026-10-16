@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>onboarding-cro</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">onboarding-activation</a> / onboarding-cro</p><h1>onboarding-cro</h1><p class="meta">combined</p><p>The three copies share the same core onboarding CRO framework (assessment, activation definition, flow design, multi-channel coordination, stalled users), but each contains material steps the others lack. The LeoYeAI/openclaw-marketing-skills copy adds a product-marketing-context file check, a measurement/funnel section, an output format, and product-type patterns. The LeoYeAI/openclaw-master-skills copy adds a detailed checklist item structure, empty-state structure, progress indicator types, push notifications, and engagement loops. The sickn33/agentic-awesome-skills copy adds a risk label and a specific constraint on progress indicators (never invent a completion percentage). Crowning one copy would hide these real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/onboarding-cro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/onboarding-cro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/onboarding-cro/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/onboarding-cro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/onboarding-cro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/onboarding-cro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/onboarding-cro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-saas-launch-revenue/skills/onboarding-cro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/onboarding-cro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/onboarding-cro/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: onboarding-cro
+description: When the user wants to optimize post-signup onboarding, user activation, first-run experience, or time-to-value. Also use when the user mentions &quot;onboarding flow,&quot; &quot;activation rate,&quot; &quot;user activation,&quot; &quot;first-run experience,&quot; &quot;empty states,&quot; &quot;onboarding checklist,&quot; &quot;aha moment,&quot; or &quot;new user experience.&quot; For signup/registration optimization, see signup-flow-cro. For ongoing email sequences, see email-sequence.
+---
+
+# Onboarding CRO
+
+You are an expert in user onboarding and activation. Your goal is to help users reach their &quot;aha moment&quot; as quickly as possible and establish habits that lead to long-term retention.
+
+## Initial Assessment
+
+**Check for product marketing context first:**
+If `.agents/product-marketing-context.md` exists, read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+
+Before providing recommendations, understand:
+
+1. **Product Context**
+   - What type of product? (SaaS tool, marketplace, app, etc.)
+   - B2B or B2C?
+   - What&#x27;s the core value proposition?
+
+2. **Activation Definition**
+   - What&#x27;s the &quot;aha moment&quot; for your product?
+   - What action indicates a user &quot;gets it&quot;?
+   - What&#x27;s your current activation rate?
+
+3. **Current State**
+   - What happens immediately after signup?
+   - Is there an existing onboarding flow?
+   - Where do users currently drop off?
+
+---
+
+## Core Principles
+
+### 1. Time-to-Value Is Everything
+- How quickly can someone experience the core value?
+- Remove every step between signup and that moment
+- Consider: Can they experience value BEFORE signup?
+
+### 2. One Goal Per Session
+- Don&#x27;t try to teach everything at once
+- Focus first session on one successful outcome
+- Save advanced features for later
+
+### 3. Do, Don&#x27;t Show
+- Interactive &gt; Tutorial
+- Doing the thing &gt; Learning about the thing
+- Show UI in context of real tasks
+
+### 4. Progress Creates Motivation
+- Show advancement
+- Celebrate completions
+- Make the path visible
+
+---
+
+## Defining Activation
+
+### Find Your Aha Moment
+The action that correlates most strongly with retention:
+- What do retained users do that churned users don&#x27;t?
+- What&#x27;s the earliest indicator of future engagement?
+- What action demonstrates they &quot;got it&quot;?
+
+**Examples by product type:**
+- Project management: Create first project + add team member
+- Analytics: Install tracking + see first report
+- Design tool: Create first design + export/share
+- Collaboration: Invite first teammate
+- Marketplace: Complete first transaction
+
+### Activation Metrics
+- % of signups who reach activation
+- Time to activation
+- Steps to activation
+- Activation by cohort/source
+
+---
+
+## Onboarding Flow Design
+
+### Immediate Post-Signup (First 30 Seconds)
+
+**Options:**
+1. **Product-first**: Drop directly into product
+   - Best for: Simple products, B2C, mobile apps
+   - Risk: Blank slate overwhelm
+
+2. **Guided setup**: Short wizard to configure
+   - Best for: Products needing personalization
+   - Risk: Adds friction before value
+
+3. **Value-first**: Show outcome immediately
+   - Best for: Products with demo data or samples
+   - Risk: May not feel &quot;real&quot;
+
+**Whatever you choose:**
+- Clear single next action
+- No dead ends
+- Progress indication if multi-step
+
+### Onboarding Checklist Pattern
+
+**When to use:**
+- Multiple setup steps required
+- Product has several features to discover
+- Self-serve B2B products
+
+**Best practices:**
+- 3-7 items (not overwhelming)
+- Order by value (most impactful first)
+- Start with quick wins
+- Progress bar/completion %
+- Celebration on completion
+- Dismiss option (don&#x27;t trap users)
+
+**Checklist item structure:**
+- Clear action verb
+- Benefit hint
+- Estimated time
+- Quick-start capability
+
+Example:
+```
+☐ Connect your first data source (2 min)
+  Get real-time insights from your existing tools
+  [Connect Now]
+```
+
+### Empty States
+
+Empty states are onboarding opportunities, not dead ends.
+
+**Good empty state:**
+- Explains what this area is for
+- Shows what it looks like with data
+- Clear primary action to add first item
+- Optional: Pre-populate with example data
+
+**Structure:**
+1. Illustration or preview
+2. Brief explanation of value
+3. Primary CTA to add first item
+4. Optional: Secondary action (import, template)
+
+### Tooltips and Guided Tours
+
+**When to use:**
+- Complex UI that benefits from orientation
+- Features that aren&#x27;t self-evident
+- Power features users might miss
+
+**When to avoid:**
+- Simple, intuitive interfaces
+- Mobile apps (limited screen space)
+- When they interrupt important flows
+
+**Best practices:**
+- Max 3-5 steps per tour
+- Point to actual UI elements
+- Dismissable at any time
+- Don&#x27;t repeat for returning users
+- Consider user-initiated tours
+
+### Progress Indicators
+
+**Types:**
+- Checklist (discrete tasks)
+- Progress bar (% complete)
+- Level/stage indicator
+- Profile completeness
+
+**Best practices:**
+- Show progress from genuinely completed steps; never invent a completion percentage
+- Quick early wins (first items easy to complete)
+- Clear benefit of completing
+- Don&#x27;t block features behind completion
+
+---
+
+## Multi-Channel Onboarding
+
+### Email + In-App Coordination
+
+**Trigger-based emails:**
+- Welcome email (immediate)
+- Incomplete onboarding (24h, 72h)
+- Activation achieved (celebration + next step)
+- Feature discovery (days 3, 7, 14)
+- Stalled user re-engagement
+
+**Email should:**
+- Reinforce in-app actions
+- Not duplicate in-app messaging
+- Drive back to product with specific CTA
+- Be personalized based on actions taken
+
+### Push Notifications (Mobile)
+
+- Permission timing is critical (not immediately)
+- Clear value proposition for enabling
+- Reserve for genuine value moments
+- Re-engagement for stalled users
+
+---
+
+## Engagement Loops
+
+### Building Habits
+- What regular action should users take?
+- What trigger can prompt return?
+- What reward reinforces the behavior?
+
+**Loop structure:**
+Trigger → Action → Variable Reward → Investment
+
+**Examples:**
+- Trigger: Email digest of activity
+- Action: Log in to respond
+- Reward: Social engagement, progress, achievement
+- Investment: Add more data, connections, content
+
+### Milestone Celebrations
+- Acknowledge meaningful achievements
+- Show progress relative to journey
+- Suggest next milestone
+- Shareable moments (social proof generation)
+
+---
+
+## Handling Stalled Users
+
+### Detection
+- Define &quot;stalled&quot; criteria (X days inactive, incomplete setup)
+
+### Re-engagement Tactics
+
+1. **Email sequence** - Reminder of value, address blockers, offer help
+2. **In-app recovery** - Welcome back, pick up where left off
+3. **Human touch** - For high-value accounts, personal outreach
+
+---
+
+## Measurement
+
+### Key Metrics
+
+| Metric | Description |
+|--------|-------------|
+| Activation rate | % reaching activation event |
+| Time to activation | How long to first value |
+| Onboarding completion | % completing setup |
+| Day 1/7/30 retention | Return rate by timeframe |
+
+### Funnel Analysis
+
+Track drop-off at each step:
+```
+Signup → Step 1 → Step 2 → Activation → Retention
+100%      80%       60%       40%         25%
+```
+
+Identify biggest drops and focus there.
+
+---
+
+## Output Format
+
+### Onboarding Audit
+For each issue: Finding → Impact → Recommendation → Priority
+
+### Onboarding Flow Design
+- Activation goal
+- Step-by-step flow
+- Checklist items (if applicable)
+- Empty state copy
+- Email sequence triggers
+- Metrics plan
+
+---
+
+## Common Patterns by Product Type
+
+| Product Type | Key Steps |
+|--------------|-----------|
+| B2B SaaS | Setup wizard → First value action → Team invite → Deep setup |
+| Marketplace | Complete profile → Browse → First transaction → Repeat loop |
+| Mobile App | Permissions → Quick win → Push setup → Habit loop |
+| Content Platform | Follow/customize → Consume → Create → Engage |
+
+---
+
+## Experiment Ideas
+
+When recommending experiments, consider tests for:
+- Flow simplification (step count, ordering)
+- Progress and motivation mechanics
+- Personalization by role or goal
+- Support and help availability
+
+---
+
+## Conflicts
+
+- **sickn33/agentic-awesome-skills** states: &quot;Show progress from genuinely completed steps; never invent a completion percentage.&quot;
+- **LeoYeAI/openclaw-master-skills** states: &quot;Show early progress (start at 20%, not 0%).&quot;
+
+These conflict on whether to display a non-zero progress percentage before any steps are completed. The combined instruction adopts the stricter constraint from sickn33/agentic-awesome-skills to avoid misleading users, but both approaches are present in the source copies.</pre>
+</body>
+</html>

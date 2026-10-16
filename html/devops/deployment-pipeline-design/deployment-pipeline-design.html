@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>deployment-pipeline-design</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">deployment-pipeline-design</a> / deployment-pipeline-design</p><h1>deployment-pipeline-design</h1><p class="meta">combined</p><p>The two copies share the same skeleton (stages, approval patterns, deployment strategies, best practices), but they diverge on material steps and constraints. The antigravity copy includes a full multi-stage GitHub Actions orchestration example and a concrete Azure Pipelines multi-approver YAML, while the agentic-awesome copy replaces the Azure YAML with a policy/verification constraint, changes the blue-green kubectl commands from label to patch, adds a multi-stage implementation contract (immutable artifact digest, scoped credentials, observation window), and adds a rollback section. Crowning one copy would hide the other&#x27;s real alternative steps and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/deployment-pipeline-design/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/deployment-pipeline-design/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/deployment-pipeline-design/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/deployment-pipeline-design/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/deployment-pipeline-design/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/deployment-pipeline-design/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: deployment-pipeline-design
+description: Design multi-stage CI/CD pipelines with approval gates, security checks, and deployment orchestration. Use when architecting deployment workflows, setting up continuous delivery, or implementing GitOps practices.
+---
+
+# Deployment Pipeline Design
+
+Architecture patterns for multi-stage CI/CD pipelines with approval gates and deployment strategies.
+
+## Do not use this skill when
+
+- The task is unrelated to deployment pipeline design
+- You need a different domain or tool outside this scope
+
+## Instructions
+
+- Clarify goals, constraints, and required inputs.
+- Apply relevant best practices and validate outcomes.
+- Provide actionable steps and verification.
+
+## Purpose
+
+Design robust, secure deployment pipelines that balance speed with safety through proper stage organization and approval workflows.
+
+## Use this skill when
+
+- Design CI/CD architecture
+- Implement deployment gates
+- Configure multi-environment pipelines
+- Establish deployment best practices
+- Implement progressive delivery
+
+## Pipeline Stages
+
+### Standard Pipeline Flow
+
+```
+┌─────────┐   ┌──────┐   ┌─────────┐   ┌────────┐   ┌──────────┐
+│  Build  │ → │ Test │ → │ Staging │ → │ Approve│ → │Production│
+└─────────┘   └──────┘   └─────────┘   └────────┘   └──────────┘
+```
+
+### Detailed Stage Breakdown
+
+1. **Source** - Code checkout
+2. **Build** - Compile, package, containerize
+3. **Test** - Unit, integration, security scans
+4. **Staging Deploy** - Deploy to staging environment
+5. **Integration Tests** - E2E, smoke tests
+6. **Approval Gate** - Manual approval required
+7. **Production Deploy** - Canary, blue-green, rolling
+8. **Verification** - Health checks, monitoring
+9. **Rollback** - Automated rollback on failure
+
+## Approval Gate Patterns
+
+### Pattern 1: Manual Approval
+
+```yaml
+# GitHub Actions
+production-deploy:
+  needs: staging-deploy
+  environment:
+    name: production
+    url: https://app.example.com
+  runs-on: ubuntu-latest
+  steps:
+    - name: Deploy to production
+      run: |
+        # Deployment commands
+```
+
+### Pattern 2: Delayed Deployment
+
+```yaml
+# GitLab CI
+deploy:production:
+  stage: deploy
+  script:
+    - deploy.sh production
+  environment:
+    name: production
+  when: delayed
+  start_in: 30 minutes
+  only:
+    - main
+```
+
+### Pattern 3: Multi-Approver
+
+Configure the platform&#x27;s actual protected-environment approval policy and verify who may approve or bypass it. For Azure, bind manual validation to the installed task version and its supported agentless job rather than placing it in an arbitrary deployment hook. Record required approvers and evidence; notifications alone are not approval.
+
+Example Azure Pipelines configuration:
+
+```yaml
+# Azure Pipelines
+stages:
+- stage: Production
+  dependsOn: Staging
+  jobs:
+  - deployment: Deploy
+    environment:
+      name: production
+      resourceType: Kubernetes
+    strategy:
+      runOnce:
+        preDeploy:
+          steps:
+          - task: ManualValidation@0
+            inputs:
+              notifyUsers: &#x27;team-leads@example.com&#x27;
+              instructions: &#x27;Review staging metrics before approving&#x27;
+```
+
+## Deployment Strategies
+
+### 1. Rolling Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+```
+
+**Characteristics:**
+- Gradual rollout
+- Availability depends on readiness, capacity and compatible changes
+- Easy rollback
+- Best for most applications
+
+### 2. Blue-Green Deployment
+
+```yaml
+# Blue (current)
+kubectl apply -f blue-deployment.yaml
+kubectl patch service my-app --type merge -p &#x27;{&quot;spec&quot;:{&quot;selector&quot;:{&quot;app&quot;:&quot;my-app&quot;,&quot;version&quot;:&quot;blue&quot;}}}&#x27;
+
+# Green (new)
+kubectl apply -f green-deployment.yaml
+# Test green environment
+kubectl patch service my-app --type merge -p &#x27;{&quot;spec&quot;:{&quot;selector&quot;:{&quot;app&quot;:&quot;my-app&quot;,&quot;version&quot;:&quot;green&quot;}}}&#x27;
+
+# Rollback if needed
+kubectl patch service my-app --type merge -p &#x27;{&quot;spec&quot;:{&quot;selector&quot;:{&quot;app&quot;:&quot;my-app&quot;,&quot;version&quot;:&quot;blue&quot;}}}&#x27;
+```
+
+**Characteristics:**
+- Instant switchover
+- Easy rollback
+- Doubles infrastructure cost temporarily
+- Good for high-risk deployments
+
+### 3. Canary Deployment
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: my-app
+spec:
+  replicas: 10
+  strategy:
+    canary:
+      steps:
+      - setWeight: 10
+      - pause: {duration: 5m}
+      - setWeight: 25
+      - pause: {duration: 5m}
+      - setWeight: 50
+      - pause: {duration: 5m}
+      - setWeight: 100
+```
+
+**Characteristics:**
+- Gradual traffic shift
+- Risk mitigation
+- Real user testing
+- Requires service mesh or similar
+
+### 4. Feature Flags
+
+```python
+from flagsmith import Flagsmith
+
+flagsmith = Flagsmith(environment_key=&quot;API_KEY&quot;)
+
+if flagsmith.has_feature(&quot;new_checkout_flow&quot;):
+    # New code path
+    process_checkout_v2()
+else:
+    # Existing code path
+    process_checkout_v1()
+```
+
+**Characteristics:**
+- Deploy without releasing
+- A/B testing
+- Instant rollback
+- Granular control
+
+## Pipeline Orchestration
+
+### Multi-stage implementation contract
+
+Build once, record the commit and immutable artifact digest, run tests/security checks on that artifact, deploy to authorized staging, run integration checks, obtain configured production approval, then deploy that same digest with bounded progressive traffic. Each job must establish its own checkout, locked tools, scoped credentials and artifact transfer. Verify rollout and application metrics before promotion; do not immediately promote a canary and thereby skip its observation window. Notifications require an explicitly configured authorized recipient and destination.
+
+### Multi-Stage Pipeline Example
+
+```yaml
+name: Production Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build application
+        run: make build
+      - name: Build Docker image
+        run: docker build -t myapp:${{ github.sha }} .
+      - name: Push to registry
+        run: docker push myapp:${{ github.sha }}
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Unit tests
+        run: make test
+      - name: Security scan
+        run: trivy image myapp:${{ github.sha }}
+
+  deploy-staging:
+    needs: test
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    steps:
+      - name: Deploy to staging
+        run: kubectl apply -f k8s/staging/
+
+  integration-test:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run E2E tests
+        run: npm run test:e2e
+
+  deploy-production:
+    needs: integration-test
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: Canary deployment
+        run: |
+          kubectl apply -f k8s/production/
+          kubectl argo rollouts promote my-app
+
+  verify:
+    needs: deploy-production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health check
+        run: curl -f https://app.example.com/health
+      - name: Notify team
+        run: |
+          curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
+            -d &#x27;{&quot;text&quot;:&quot;Production deployment successful!&quot;}&#x27;
+```
+
+## Pipeline Best Practices
+
+1. **Fail fast** - Run quick tests first
+2. **Parallel execution** - Run independent jobs concurrently
+3. **Caching** - Cache dependencies between runs
+4. **Artifact management** - Store build artifacts
+5. **Environment parity** - Keep environments consistent
+6. **Secrets management** - Use secret stores (Vault, etc.)
+7. **Deployment windows** - Schedule deployments appropriately
+8. **Monitoring integration** - Track deployment metrics
+9. **Rollback automation** - Auto-rollback on failures
+10. **Documentation** - Document pipeline stages
+
+## Rollback Strategies
+
+### Automated Rollback
+
+```yaml
+deploy-and-verify:
+  steps:
+    - name: Deploy new version
+      run: kubectl apply -f k8s/
+
+    - name: Wait for rollout
+      run: kubectl rollout status deployment/my-app
+
+    - name: Health check
+      id: health
+      run: |
+        # Health check commands
+```</pre>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ontoly-software-graph</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">codebase-architecture-analysis</a> / ontoly-software-graph</p><h1>ontoly-software-graph</h1><p class="meta">combined</p><p>The three copies describe the same core workflow (check for graph, build if missing, check diagnostics, use Ontoly, fall back to source), but each contains material steps or constraints the others lack. The anbeime copy adds a specific &#x27;Answer Shape&#x27; and &#x27;Fallback Rules&#x27; (e.g., NOT_FOUND handling, disambiguation). The sickn33 copy adds a &#x27;Security &amp; Safety&#x27; section, specific CLI verification commands (`ontoly --help`, `find`), and a step to start the MCP server (`ontoly mcp`). The davepoon copy is the most concise but lacks the specific capability names and safety constraints found in the others. Crowning one would hide the specific operational details (like security notes or specific MCP commands) present in the others.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/ontoly-software-graph/SKILL.md</code></td></tr><tr><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/ontoly-software-graph/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ontoly-software-graph/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/ontoly-software-graph/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/ontoly-software-graph/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ontoly-software-graph/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/ontoly-software-graph/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/ontoly-software-graph/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: ontoly-software-graph
+description: Use Ontoly&#x27;s deterministic Software Graph and MCP capabilities for architecture review, request tracing, dependency analysis, and impact analysis.
+---
+
+# Ontoly Software Graph
+
+Use this skill when a coding agent needs evidence-backed software understanding from an Ontoly graph before searching repository files directly.
+
+## Workflow
+
+1. **Verify Availability**: Check for existing Ontoly outputs (`.ontoly/`, `SoftwareGraph.json`, `diagnostics.json`). If the `ontoly` command is unavailable, ask the user to install it or use documented package manager commands.
+2. **Build or Refresh**: If no graph exists and the user permits local analysis, run `ontoly build .`. If the project documents a different command, prefer that.
+3. **Check Health**: Inspect graph diagnostics, trust score, semantic coverage, framework detection, and validation status. Treat unresolved imports or low trust as answer limitations.
+4. **Use Ontoly Capabilities**: Prefer Ontoly CLI or MCP capabilities (e.g., `ExplainArchitecture`, `TraceExecution`, `ImpactAnalysis`) over source file scanning. If MCP is supported, start the server with `ontoly mcp`.
+5. **Answer with Evidence**: Structure the answer to include:
+   - The direct answer.
+   - Graph evidence (node IDs, edge types, file paths, diagnostics).
+   - Confidence statement derived from graph evidence.
+   - Diagnostics or caveats.
+6. **Fallback**: Only inspect source files if the graph is missing, stale, incomplete, or the user explicitly asks for source-level verification. Explain why the graph evidence was insufficient.
+
+## Fallback Rules
+
+- If graph validation fails, report the failure and use source search only to verify the affected area.
+- If multiple nodes match a name, ask for disambiguation or show candidates with context.
+- If a concept is not in the graph, return `NOT_FOUND` with the closest evidence instead of inventing an answer.
+
+## Security &amp; Safety
+
+- Run Ontoly only on repositories the user is authorized to analyze.
+- Do not send graph files, source code, or environment variables to external services unless explicitly permitted.
+
+## Best Practices
+
+- Separate graph facts from inference.
+- Rebuild the graph after large user changes before making claims about current architecture.
+- Keep fallbacks narrow and explain why they were needed.</pre>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>mental-health-analyzer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">mental-health-data-analysis</a> / mental-health-analyzer</p><h1>mental-health-analyzer</h1><p class="meta">combined</p><p>The two copies share the same name and high-level purpose, but they are structurally different. The first copy is a thin wrapper that defers to an external detailed guide and provides only usage/limitation notes. The second copy is a self-contained, step-by-step procedure with specific data files, scoring formulas, crisis-risk thresholds, and a report template. Because the first copy lacks the concrete steps and the second copy lacks the wrapper&#x27;s explicit safety/clarification constraints, crowning one would hide a real alternative. The combined instruction merges the wrapper&#x27;s safety/clarification requirements with the detailed procedure&#x27;s steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/mental-health-analyzer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/mental-health-analyzer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/mental-health-analyzer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/mental-health-analyzer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/mental-health-analyzer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/mental-health-analyzer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: mental-health-analyzer
+description: 分析心理健康数据、识别心理模式、评估心理健康状况、提供个性化心理健康建议。支持与睡眠、运动、营养等其他健康数据的关联分析。
+allowed-tools: Read, Grep, Glob, Write, Edit
+risk: critical
+source: community
+---
+
+# 心理健康分析技能
+
+## Safety and Prerequisites
+- Treat safety, prerequisites, and validation requirements as mandatory.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+- This skill does not diagnose mental illness, prescribe medication, predict suicide, replace professional therapy, or handle acute psychiatric crises.
+
+## When to Use
+- 需要分析情绪、焦虑、抑郁评分、治疗进展或危机风险时使用。
+- 任务涉及心理健康趋势、情绪模式识别或与睡眠/运动/营养的关联分析。
+- 用户请求心理健康报告、风险预警或治疗进展追踪时使用。
+
+## Execution Steps
+
+### Step 1: Data Reading
+- Read `data-example/mental-health-tracker.json` (main profile), `data-example/mental-health-logs/.index.json` (log index), and `data-example/mental-health-logs/YYYY-MM/YYYY-MM-DD.json` (daily diaries).
+- Validate file existence, data structure integrity, and sufficient data points (at least 3 PHQ-9/GAD-7 assessments or 7 days of diaries).
+
+### Step 2: Mental Health Assessment Trend Analysis
+- Analyze PHQ-9 and GAD-7 score trends, change rates, severity changes, and item 9 (self-harm ideation) changes.
+- Correlate PSQI sleep quality with PHQ-9/GAD-7 scores.
+- Detect rapid deterioration (≥5 points/month) or rapid improvement.
+
+### Step 3: Emotional Pattern Recognition
+- Identify top 5 common emotions, average intensity, and distribution patterns.
+- Analyze time-of-day and day-of-week patterns, mood volatility (variance/standard deviation), and stability.
+- Identify top 10 high-frequency triggers and their average impact.
+- Evaluate coping strategy effectiveness (helpful vs. not helpful ratios).
+
+### Step 4: Therapy Progress Tracking
+- Assess goal completion percentages, symptom improvement (baseline → current → target), and estimated time to goal.
+- Analyze therapy frequency, adherence, homework completion, and pre/post-consultation mood changes.
+
+### Step 5: Crisis Risk Assessment (Highest Priority)
+- Calculate risk score (0-20+) using:
+  1. PHQ-9 Item 9: Score 2 (+10, high risk), Score 1 (+5), Score 0 (+0).
+  2. Symptom deterioration: ≥5 pts/mo (+5), 2-4 pts/mo (+3), stable (+0), improvement (-2).
+  3. High-intensity negative emotion ratio: &gt;70% (+3), 50-70% (+2), &lt;50% (+0).
+  4. Mood volatility: Variance &gt;6 (+2), 4-6 (+1), &lt;4 (+0).
+  5. Crisis plan warning signals: +2 per signal.
+  6. Social withdrawal: &gt;80% alone (+3), 50-80% (+2), &lt;50% (+0).
+  7. Functional impairment: ≥5 days/week (+4), 3-4 days/week (+2), &lt;3 days/week (+0).
+- Risk Levels: High (≥10, immediate care), Medium (5-9, care within 48h), Low (0-4, monitor).
+- Detect warning signals: hopelessness, social withdrawal, extreme mood swings, talk of death, giving away possessions, self-harm, suicidal thoughts, substance abuse.
+
+### Step 6: Sleep-Mental Health Correlation
+- Read `data-example/sleep-tracker.json`.
+- Analyze correlations between sleep duration/quality and PHQ-9/GAD-7 scores.
+- Output correlation coefficients, impact level, and sleep improvement suggestions.
+
+### Step 7: Exercise-Mood Correlation
+- Read `data-example/fitness-tracker.json`.
+- Analyze relationships between exercise frequency/type/intensity and mood/anxiety levels.
+- Output impact level, recommended exercise types, and frequency suggestions.
+
+### Step 8: Nutrition-Mental Health Correlation
+- Read `data-example/nutrition-tracker.json`.
+- Analyze relationships between caffeine/sugar intake, diet regularity, and anxiety/mood stability.
+- Output impact level, nutritional suggestions, and potential deficiency alerts.
+
+### Step 9: Chronic Disease-Mental Health Correlation
+- Read relevant chronic disease data files (e.g., `diabetes-tracker.json`).
+- Analyze relationships between disease control, pain, functional limitations, and mental health.
+- Output impact level, specific psychological concerns, and holistic health management suggestions.
+
+### Step 10: Report Generation
+- Generate a report including:
+  - Mental health status summary.
+  - Assessment scale trend analysis.
+  - Emotional patterns and triggers.
+  - Therapy progress evaluation.
+  - Crisis risk level and recommendations.
+  - Correlation analysis with other health factors.
+  - Personalized suggestions and action plan.
+- Include a disclaimer: &quot;This report is for reference only and does not constitute a medical diagnosis. If you have severe psychological distress, please seek help from a professional psychologist.&quot;
+
+## Output Format
+- Use the structured markdown template provided in the detailed guide, including sections for Crisis Risk Warning, Mental Health Status Summary, Assessment Trend Analysis, Emotional Pattern Analysis, Trigger Factor Analysis, Therapy Progress, and Correlation Analysis.</pre>
+</body>
+</html>

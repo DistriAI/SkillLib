@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>typescript-pro</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">typescript-advanced-typing</a> / typescript-pro</p><h1>typescript-pro</h1><p class="meta">combined</p><p>The three copies overlap on the core task (advanced TypeScript typing, strict configuration, generics/utility types, and build optimization), but each contains material steps or constraints the others lack. Jeffallan/claude-skills adds a concrete 5-step workflow with tsc --noEmit and type-coverage, a reference-loading table, code examples (branded types, discriminated unions, custom utility types), a recommended tsconfig, and explicit MUST/MUST NOT constraints (e.g., no enums, use satisfies, generate declaration files). rmyndharis/antigravity-skills and sickn33/agentic-awesome-skills share a near-identical shorter instruction set (use/do-not-use, 4-step instructions, focus areas, approach, output) and add decorators/metadata, framework integration, TSDoc, and gradual typing, but lack the concrete workflow, examples, and constraints in the Jeffallan copy. Crowning one would hide the alternative approach and the extra constraints/examples, so combine is appropriate.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/typescript-pro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/typescript-pro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/typescript-pro/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/typescript-pro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/typescript-pro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/typescript-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/typescript-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/typescript-pro/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: typescript-pro
+description: Implements advanced TypeScript type systems, creates custom type guards, utility types, and branded types, and configures tRPC for end-to-end type safety. Use when building TypeScript applications requiring advanced generics, conditional or mapped types, discriminated unions, monorepo setup, or full-stack type safety with tRPC.
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
+  version: &quot;1.1.0&quot;
+  domain: language
+  triggers: TypeScript, generics, type safety, conditional types, mapped types, tRPC, tsconfig, type guards, discriminated unions
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: fullstack-guardian, api-designer
+---
+
+# TypeScript Pro
+
+## Use this skill when
+
+- Designing TypeScript architectures or shared types
+- Solving complex typing, generics, or inference issues
+- Hardening type safety for production systems
+
+## Do not use this skill when
+
+- You only need JavaScript guidance
+- You cannot enforce TypeScript in the build pipeline
+- You need UI/UX design rather than type design
+
+## Core Workflow
+
+1. **Analyze type architecture** - Review tsconfig, type coverage, build performance
+2. **Design type-first APIs** - Create branded types, generics, utility types
+3. **Implement with type safety** - Write type guards, discriminated unions, conditional types; run `tsc --noEmit` to catch type errors before proceeding
+4. **Optimize build** - Configure project references, incremental compilation, tree shaking; re-run `tsc --noEmit` to confirm zero errors after changes
+5. **Test types** - Confirm type coverage with a tool like `type-coverage`; validate that all public APIs have explicit return types; iterate on steps 3–4 until all checks pass
+
+## Reference Guide
+
+Load detailed guidance based on context:
+
+| Topic | Reference | Load When |
+|-------|-----------|-----------|
+| Advanced Types | `references/advanced-types.md` | Generics, conditional types, mapped types, template literals |
+| Type Guards | `references/type-guards.md` | Type narrowing, discriminated unions, assertion functions |
+| Utility Types | `references/utility-types.md` | Partial, Pick, Omit, Record, custom utilities |
+| Configuration | `references/configuration.md` | tsconfig options, strict mode, project references |
+| Patterns | `references/patterns.md` | Builder pattern, factory pattern, type-safe APIs |
+
+## Code Examples
+
+### Branded Types
+```typescript
+// Branded type for domain modeling
+type Brand&lt;T, B extends string&gt; = T &amp; { readonly __brand: B };
+type UserId  = Brand&lt;string, &quot;UserId&quot;&gt;;
+type OrderId = Brand&lt;number, &quot;OrderId&quot;&gt;;
+
+const toUserId  = (id: string): UserId  =&gt; id as UserId;
+const toOrderId = (id: number): OrderId =&gt; id as OrderId;
+
+// Usage — prevents accidental id mix-ups at compile time
+function getOrder(userId: UserId, orderId: OrderId) { /* ... */ }
+```
+
+### Discriminated Unions &amp; Type Guards
+```typescript
+type LoadingState = { status: &quot;loading&quot; };
+type SuccessState = { status: &quot;success&quot;; data: string[] };
+type ErrorState   = { status: &quot;error&quot;;   error: Error };
+type RequestState = LoadingState | SuccessState | ErrorState;
+
+// Type predicate guard
+function isSuccess(state: RequestState): state is SuccessState {
+  return state.status === &quot;success&quot;;
+}
+
+// Exhaustive switch with discriminated union
+function renderState(state: RequestState): string {
+  switch (state.status) {
+    case &quot;loading&quot;: return &quot;Loading…&quot;;
+    case &quot;success&quot;: return state.data.join(&quot;, &quot;);
+    case &quot;error&quot;:   return state.error.message;
+    default: {
+      const _exhaustive: never = state;
+      throw new Error(`Unhandled state: ${_exhaustive}`);
+    }
+  }
+}
+```
+
+### Custom Utility Types
+```typescript
+// Deep readonly — immutable nested objects
+type DeepReadonly&lt;T&gt; = {
+  readonly [K in keyof T]: T[K] extends object ? DeepReadonly&lt;T[K]&gt; : T[K];
+};
+
+// Require exactly one of a set of keys
+type RequireExactlyOne&lt;T, Keys extends keyof T = keyof T&gt; =
+  Pick&lt;T, Exclude&lt;keyof T, Keys&gt;&gt; &amp;
+  { [K in Keys]-?: Required&lt;Pick&lt;T, K&gt;&gt; &amp; Partial&lt;Record&lt;Exclude&lt;Keys, K&gt;, never&gt;&gt; }[Keys];
+```
+
+### Recommended tsconfig.json
+```json
+{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2022&quot;,
+    &quot;module&quot;: &quot;NodeNext&quot;,
+    &quot;moduleResolution&quot;: &quot;NodeNext&quot;,
+    &quot;strict&quot;: true,
+    &quot;noUncheckedIndexedAccess&quot;: true,
+    &quot;noImplicitOverride&quot;: true,
+    &quot;exactOptionalPropertyTypes&quot;: true,
+    &quot;isolatedModules&quot;: true,
+    &quot;declaration&quot;: true,
+    &quot;declarationMap&quot;: true,
+    &quot;incremental&quot;: true,
+    &quot;skipLibCheck&quot;: false
+  }
+}
+```
+
+## Focus Areas
+- Advanced type systems (generics, conditional types, mapped types)
+- Strict TypeScript configuration and compiler options
+- Type inference optimization and utility types
+- Decorators and metadata programming
+- Module systems and namespace organization
+- Integration with modern frameworks (React, Node.js, Express)
+
+## Approach
+1. Leverage strict type checking with appropriate compiler flags
+2. Use generics and utility types for maximum type safety
+3. Prefer type inference over explicit annotations when clear
+4. Design robust interfaces and abstract classes
+5. Implement proper error boundaries with typed exceptions
+6. Optimize build times with incremental compilation
+
+## Constraints
+
+### MUST DO
+- Enable strict mode with all compiler flags
+- Use type-first API design
+- Implement branded types for domain modeling
+- Use `satisfies` operator for type validation
+- Create discriminated unions for state machines
+- Use `Annotated` pattern with type predicates
+- Generate declaration files for libraries
+- Optimize for type inference
+
+### MUST NOT DO
+- Use explicit `any` without justification
+- Skip type coverage for public APIs
+- Mix type-only and value imports
+- Disable strict null checks
+- Use `as` assertions without necessity
+- Ignore compiler performance warnings
+- Skip declaration file generation
+- Use enums (prefer const objects with `as const`)
+
+## Output
+
+When implementing TypeScript features, provide:
+1. Type definitions (interfaces, types, generics)
+2. Implementation with type guards
+3. tsconfig configuration if needed
+4. Brief explanation of type design decisions
+
+Additionally, ensure output includes:
+- Strongly-typed TypeScript with comprehensive interfaces
+- Generic functions and classes with proper constraints
+- Custom utility types and advanced type manipulations
+- Jest/Vitest tests with proper type assertions
+- TSConfig optimization for project requirements
+- Type declaration files (.d.ts) for external libraries
+
+Support both strict and gradual typing approaches. Include comprehensive TSDoc comments and maintain compatibility with latest TypeScript versions.
+
+## Knowledge Reference
+
+TypeScript 5.0+, generics, conditional types, mapped types, template literal types, discriminated unions, type guards, branded types, tRPC, project references, incremental compilation, declaration files, const assertions, satisfies operator
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
+
+[Documentation](https://jeffallan.github.io/claude-skills/skills/language/typescript-pro/)</pre>
+</body>
+</html>

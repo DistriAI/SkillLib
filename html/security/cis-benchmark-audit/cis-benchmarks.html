@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cis-benchmarks</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">cis-benchmark-audit</a> / cis-benchmarks</p><h1>cis-benchmarks</h1><p class="meta">combined</p><p>The second copy is a safety-hardened adaptation of the first, but it changes the operational procedure in ways that would hide a real alternative if one copy were crowned. The first copy provides concrete, runnable commands (hardcoded CIS profile ID, specific kube-bench check sections, fixed report paths). The second copy replaces those with variable-driven, approval-gated steps (oscap info to discover profile, reviewed image digest, private audit directory, explicit limitations and read-only inventory). Because the copies disagree on how to select the OpenSCAP profile, how to pin the kube-bench image, and where to write reports, crowning one would discard the other&#x27;s material constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>security/hardening/cis-benchmarks/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cis-benchmarks/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>security/hardening/cis-benchmarks/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cis-benchmarks/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/cis-benchmarks/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/cis-benchmarks/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: cis-benchmarks
+description: Audit and remediate CIS benchmark violations. Use automated tools to assess compliance and implement hardening recommendations. Use when meeting compliance requirements or implementing security baselines.
+license: MIT
+metadata:
+  author: devops-skills
+  version: &quot;1.0&quot;
+---
+
+# CIS Benchmarks
+
+Implement and audit CIS security benchmarks. Assess a selected benchmark/version against explicitly authorized systems. Scanner output is partial evidence, not certification; verify applicability, documented exceptions and operational impact before remediation.
+
+## When to Use This Skill
+
+Use this skill when:
+- Assessing security compliance
+- Implementing security baselines
+- Meeting regulatory requirements
+- Hardening systems to standards
+
+## Assessment Tools
+
+### OpenSCAP
+
+```bash
+# Install
+apt install openscap-scanner scap-security-guide
+
+# Confirm installed content matches the actual OS and required benchmark/version.
+SCAP_FILE=&quot;&lt;approved-installed-datastream.xml&gt;&quot;
+oscap info &quot;$SCAP_FILE&quot;
+PROFILE_ID=&quot;&lt;exact-CIS-profile-listed-by-oscap-info&gt;&quot;
+# Run the selected assessment only after scope and report-location approval.
+oscap xccdf eval \
+  --profile &quot;$PROFILE_ID&quot; \
+  --results results.xml \
+  --report report.html \
+  &quot;$SCAP_FILE&quot;
+```
+
+### Lynis
+
+```bash
+# Install
+apt install lynis
+
+# Run audit
+lynis audit system
+
+# Generate report
+lynis audit system --report-file &quot;$PRIVATE_AUDIT_DIR/lynis-report.dat&quot;
+```
+
+### InSpec
+
+```ruby
+# cis-profile/controls/ssh.rb
+control &#x27;cis-ssh-1&#x27; do
+  impact 1.0
+  title &#x27;Ensure SSH root login is disabled&#x27;
+  
+  describe sshd_config do
+    its(&#x27;PermitRootLogin&#x27;) { should eq &#x27;no&#x27; }
+  end
+end
+
+control &#x27;cis-ssh-2&#x27; do
+  impact 0.7
+  title &#x27;Ensure SSH password authentication is disabled&#x27;
+  
+  describe sshd_config do
+    its(&#x27;PasswordAuthentication&#x27;) { should eq &#x27;no&#x27; }
+  end
+end
+```
+
+```bash
+# Run InSpec
+inspec exec cis-profile -t ssh://user@target
+```
+
+### Kubernetes CIS
+
+```bash
+# kube-bench
+docker run --rm -v /etc:/etc:ro -v /var:/var:ro \
+  aquasec/kube-bench@sha256:&lt;reviewed-image-digest&gt; run --targets node
+
+# Check specific sections
+kube-bench --help
+# Select role/sections supported by the reviewed version and actual cluster; do not assume master is a current target name.
+```
+
+## Remediation Workflow
+
+```yaml
+workflow:
+  1_scan:
+    - Run automated assessment
+    - Generate baseline report
+    
+  2_analyze:
+    - Review findings
+    - Identify false positives
+    - Prioritize by risk
+    
+  3_remediate:
+    - Apply fixes
+    - Document exceptions
+    - Verify changes
+    
+  4_validate:
+    - Re-run assessment
+    - Confirm remediation
+    - Generate compliance report
+```
+
+## Best Practices
+
+- Baseline before hardening
+- Document exceptions
+- Automate assessments
+- Track compliance over time
+- Regular re-assessment
+- Version control configurations
+
+## Related Skills
+
+- linux-hardening - Linux security
+- vulnerability-scanning - Security scanning
+
+## Limitations
+
+- An OpenSCAP/Lynis assessment may require privileges and read sensitive host configuration; approve the exact host, profile, privileges, private outputs and limits first. Do not enable auto-remediation or mount all host paths without reviewing necessity. A generic Lynis audit is not a complete CIS benchmark.
+- Benchmark/profile identifiers and installed SCAP content vary; use OpenSCAP&#x27;s documented info/eval flow. Test changes and preserve rollback/access before hardening production.
+- Docs-only import: upstream scripts and templates not bundled.
+
+### Example
+
+```bash
+# Read-only first: inventory before any active step.
+command -v oscap
+oscap --version
+```</pre>
+</body>
+</html>

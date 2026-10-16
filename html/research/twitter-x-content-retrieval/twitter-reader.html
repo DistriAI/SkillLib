@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>twitter-reader</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">twitter-x-content-retrieval</a> / twitter-reader</p><h1>twitter-reader</h1><p class="meta">combined</p><p>The two skills share the name and the broad goal of reading Twitter/X, but they implement materially different procedures and tools. The first copy is a read-only financial-research skill built on opencli (browser-session reuse, opencli doctor, timeline/search/trending/bookmarks/profiles/notifications). The second copy is a content-fetching skill built on fxtwitter, Jina, and local scripts (fetch_article.py, fetch_tweet.py, fetch_tweets.sh) that downloads images and emits Markdown with YAML frontmatter. Neither copy is a reproduction, shortening, or wrapper of the other; crowning one would hide a real alternative workflow. They also disagree on prerequisites (Chrome + Browser Bridge + opencli vs uv + JINA_API_KEY + fxtwitter) and on what the skill can do (broad read-only browsing vs single-post/article fetching with media).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/himself65/finance-skills">himself65/finance-skills</a></td><td><code>plugins/social-readers/skills/twitter-reader/SKILL.md</code></td></tr><tr><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>twitter-reader/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/himself65/finance-skills">himself65/finance-skills</a></td><td><code>plugins/social-readers/skills/twitter-reader/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>twitter-reader/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: twitter-reader
+description: &gt;
+  Read Twitter/X content for research or archiving. Use the opencli path for broad
+  read-only browsing (timeline, search, trending, bookmarks, profiles, notifications)
+  and the fxtwitter/Jina/script path for fetching a single post or X Article with
+  images into Markdown. Read-only: do not post, like, retweet, reply, or follow.
+---
+
+# Twitter Reader (Combined)
+
+Choose the path that matches the task.
+
+## Path A: Broad read-only browsing with opencli
+
+Use when the user wants to check a feed, search tweets, see trending topics, read
+bookmarks, look up a profile, or list followers/following/notifications.
+
+1. Ensure opencli is installed and ready:
+   - Run `command -v opencli &amp;&amp; opencli doctor 2&gt;&amp;1 | head -5`.
+   - If not installed: `npm install -g @jackwener/opencli`.
+   - If setup is needed: install the Browser Bridge extension in Chrome, log in to
+     x.com in Chrome, then run `opencli doctor`.
+2. Match the request to a command:
+   - Home feed: `opencli twitter timeline --type for-you|following --limit N`
+   - Search: `opencli twitter search &quot;QUERY&quot; --filter top|live --limit N`
+   - Trending: `opencli twitter trending --limit N`
+   - Bookmarks: `opencli twitter bookmarks --limit N`
+   - User tweets: `opencli twitter tweets USERNAME --limit N`
+   - Thread: `opencli twitter thread TWEET_ID --limit N`
+   - Article: `opencli twitter article TWEET_ID`
+   - Profile: `opencli twitter profile USERNAME`
+   - Followers: `opencli twitter followers USERNAME --limit N`
+   - Following: `opencli twitter following USERNAME --limit N`
+   - Notifications: `opencli twitter notifications --limit N`
+3. Use `-f json` or `-f yaml` for programmatic processing, `-f csv` for spreadsheet
+   export, and `-f md` for reports. Start with `--limit 10` to `--limit 20` unless
+   the user asks for more.
+4. Do not use opencli write commands (post, like, retweet, reply, follow, delete).
+
+## Path B: Fetch a single post or X Article with media
+
+Use when the user wants the full text of one tweet, the full body of a long-form
+note tweet, or an X Article with images saved locally as Markdown.
+
+1. For plain post text, prefer the fxtwitter mirror API:
+   ```bash
+   curl -sS --max-time 20 &quot;https://api.fxtwitter.com/&lt;user&gt;/status/&lt;id&gt;&quot; \
+     | python3 -c &quot;import json,sys; t=json.load(sys.stdin)[&#x27;tweet&#x27;]; print(t[&#x27;created_at&#x27;]); print(t[&#x27;text&#x27;])&quot;
+   ```
+   Note: `tweet.text` contains the full note_tweet body; there is no `full_text`
+   key. `replies` is a count, not the reply thread.
+2. For X Articles with images, use the article fetcher:
+   ```bash
+   uv run --with pyyaml python scripts/fetch_article.py &lt;article_url&gt; [output_dir]
+   ```
+   This fetches metadata via twitter-cli, content and image URLs via Jina, downloads
+   images to `attachments/YYYY-MM-DD-AUTHOR-TITLE/`, and writes Markdown with YAML
+   frontmatter and local image references.
+3. If Jina refuses, the response is a JSON envelope with `code` 403 or 402 and no
+   `Markdown Content:` marker. Treat that as a refusal, not a success. The script
+   should warn on stderr, keep the twitter-cli text, and report `Images: 0`.
+4. For simple text-only fetching with a Jina key:
+   ```bash
+   curl &quot;https://r.jina.ai/https://x.com/USER/status/TWEET_ID&quot; \
+     -H &quot;Authorization: Bearer ${JINA_API_KEY}&quot;
+   ```
+   Batch fetching: `scripts/fetch_tweets.sh url1 url2 url3`.
+5. Supported URL formats:
+   - `https://x.com/USER/status/ID`
+   - `https://x.com/USER/article/ID`
+   - `https://twitter.com/USER/status/ID`
+
+## Conflicts
+
+- himself65/finance-skills requires opencli, Node.js &gt;= 20, Chrome with the Browser
+  Bridge extension, and an existing x.com login. daymade/claude-code-skills requires
+  uv, JINA_API_KEY for Jina-based scripts, and uses fxtwitter for plain text.
+- himself65/finance-skills exposes broad read commands (timeline, search, trending,
+  bookmarks, tweets, thread, article, profile, followers, following, notifications).
+  daymade/claude-code-skills focuses on fetching a single post or article and
+  generating Markdown with downloaded images.
+- daymade/claude-code-skills treats Jina anonymous access as intermittent and
+  requires a key for its scripts. himself65/finance-skills does not use Jina.
+- himself65/finance-skills uses opencli output formats (-f json/yaml/csv/md/table).
+  daymade/claude-code-skills uses curl/fxtwitter and Python/shell scripts with local
+  file output.
+
+## Prerequisites
+
+- Path A: Node.js &gt;= 20, Chrome with the Browser Bridge extension, logged-in x.com
+  session, opencli installed.
+- Path B: `uv` for the article fetcher; `JINA_API_KEY` for Jina-based scripts; no
+  key ships with the repository.
+
+## Output
+
+- Path A: terminal table, JSON, YAML, CSV, or Markdown depending on `-f`.
+- Path B: Markdown file with YAML frontmatter and an `attachments/` folder of
+  downloaded images, or plain text from fxtwitter/Jina.</pre>
+</body>
+</html>

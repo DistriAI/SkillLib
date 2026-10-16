@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>neuropixels-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">neuropixels-spike-sorting</a> / neuropixels-analysis</p><h1>neuropixels-analysis</h1><p class="meta">combined</p><p>The copies describe the same high-level workflow (load, preprocess, drift correction, sort, metrics, curation) but diverge significantly on implementation details. The K-Dense-AI copy is the most rigorous, using the native SpikeInterface API (`si`) and specific version constraints (0.105.0), while the other three copies (Vibe-Skills, medical-research-skills, OpenClaw-Medical-Skills) rely on a hypothetical `neuropixels_analysis` (npa) wrapper package that is not part of the standard SpikeInterface distribution. The K-Dense copy also includes specific hardware-aware constraints (e.g., shank-specific referencing) that the others omit or simplify. Because the &#x27;wrapper&#x27; approach in the other copies is a distinct (and potentially non-functional or different) implementation path compared to the &#x27;native API&#x27; path in K-Dense, crowning one would hide the alternative implementation strategy.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/neuropixels-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/neuropixels-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/neuropixels-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/neuropixels-analysis/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/neuropixels-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/neuropixels-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/neuropixels-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/neuropixels-analysis/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Neuropixels Data Analysis
+
+## Overview
+Analyze Neuropixels 1.0/2.0 extracellular recordings end-to-end using SpikeInterface. This skill covers data loading, preprocessing, drift correction, spike sorting, quality metrics, and unit curation.
+
+## Dependencies
+- Python 3.10+
+- `spikeinterface[full]` (&gt;= 0.105.0 recommended)
+- `probeinterface`, `neo`, `numpy`, `scipy`, `pandas`, `matplotlib`, `numba`, `scikit-learn`
+- Optional: `kilosort` (GPU), `anthropic` (for AI curation)
+
+## Workflow
+
+### 1. Setup and Loading
+Configure parallel processing and load data using the native SpikeInterface API.
+
+```python
+import spikeinterface.full as si
+
+# Configure parallel processing
+si.set_global_job_kwargs(n_jobs=-1, chunk_duration=&quot;1s&quot;, progress_bar=True)
+
+# Load SpikeGLX (most common)
+recording = si.read_spikeglx(&quot;/path/to/data&quot;, stream_name=&quot;imec0.ap&quot;)
+
+# For quick iteration, slice the first 60s
+fs = recording.get_sampling_frequency()
+recording_sub = recording.frame_slice(0, min(int(60 * fs), recording.get_num_samples()))
+```
+
+### 2. Preprocessing
+Apply filtering, bad channel removal, and referencing. **Note:** For multi-shank probes, reference each shank separately to avoid cross-shank artifacts.
+
+```python
+rec = si.highpass_filter(recording, freq_min=400.0)
+bad_channel_ids, _ = si.detect_bad_channels(rec)
+rec = rec.remove_channels(bad_channel_ids)
+
+# Phase shift is required for Neuropixels 1.0
+rec = si.phase_shift(rec)
+
+# Common reference (use shank-specific referencing for multi-shank)
+rec = si.common_reference(rec, operator=&quot;median&quot;, reference=&quot;global&quot;)
+```
+
+### 3. Drift and Motion Correction
+Always inspect drift before sorting. Correct if motion exceeds ~10 microns.
+
+```python
+# Estimate motion
+motion_info = si.estimate_motion(rec, preset=&quot;kilosort_like&quot;)
+
+# Correct if necessary
+if motion_info[&quot;motion&quot;].max() &gt; 10.0:
+    rec = si.correct_motion(rec, preset=&quot;nonrigid_accurate&quot;)
+```
+
+### 4. Spike Sorting
+Run a sorter. Kilosort4 is recommended for GPU; use CPU alternatives if needed.
+
+```python
+# GPU (Recommended)
+sorting = si.run_sorter(&quot;kilosort4&quot;, rec, folder=&quot;ks4_output&quot;)
+
+# CPU Alternatives
+# sorting = si.run_sorter(&quot;tridesclous2&quot;, rec, folder=&quot;tdc2_output&quot;)
+# sorting = si.run_sorter(&quot;spykingcircus2&quot;, rec, folder=&quot;sc2_output&quot;)
+```
+
+### 5. Postprocessing and Metrics
+Compute waveforms, templates, and quality metrics using the SortingAnalyzer.
+
+```python
+analyzer = si.create_sorting_analyzer(sorting, rec, sparse=True)
+
+analyzer.compute(&quot;random_spikes&quot;, max_spikes_per_unit=500)
+analyzer.compute(&quot;waveforms&quot;, ms_before=1.0, ms_after=2.0)
+analyzer.compute(&quot;templates&quot;, operators=[&quot;average&quot;, &quot;std&quot;])
+analyzer.compute(&quot;spike_amplitudes&quot;)
+analyzer.compute(&quot;correlograms&quot;, window_ms=50.0, bin_ms=1.0)
+analyzer.compute(&quot;unit_locations&quot;, method=&quot;monopolar_triangulation&quot;)
+analyzer.compute(&quot;quality_metrics&quot;)
+
+metrics = analyzer.get_extension(&quot;quality_metrics&quot;).get_data()
+```
+
+### 6. Curation
+Curate units based on quality metrics. Use Allen/IBL criteria or AI-assisted review for borderline units.
+
+```python
+# Threshold-based curation (Allen criteria example)
+good_units = metrics.query(&quot;&quot;&quot;
+    presence_ratio &gt; 0.9 and
+    isi_violations_ratio &lt; 0.5 and
+    amplitude_cutoff &lt; 0.1
+&quot;&quot;&quot;).index.tolist()
+
+# AI-Assisted Curation (Optional)
+# Use Anthropic API to visually inspect uncertain units (SNR 3-8)
+```
+
+### 7. Export
+Export results to Phy for manual review and NWB for storage.
+
+```python
+si.export_to_phy(sorting, rec, output_folder=&quot;phy_output/&quot;)
+si.export_to_nwb(sorting, rec, output_file=&quot;results.nwb&quot;)
+```
+
+## Conflicts
+- **API Usage**: K-Dense-AI uses native `spikeinterface` functions. Other copies (Vibe-Skills, medical-research-skills, OpenClaw) reference a `neuropixels_analysis` (npa) wrapper package. This combined instruction uses the native API to ensure compatibility with standard SpikeInterface installations.
+- **Versioning**: K-Dense-AI targets SpikeInterface 0.105.0. Other copies allow &gt;= 0.99. Use 0.105.0+ for the `estimate_motion` and `correct_motion` APIs as described.</pre>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>competitor-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">competitor-analysis</a> / competitor-analysis</p><h1>competitor-analysis</h1><p class="meta">combined</p><p>The four copies share the name and the broad goal of analyzing competitors, but they are materially different procedures for different surfaces and toolchains. phuryn is a generic product-market competitive brief (5 direct competitors, positioning, pricing, differentiation). aaron-he-zhu is an SEO/GEO benchmark (keywords, backlinks, traffic share, AI citations, Immediate/Short-term/Long-term plan, memory handoff). appeeky is App Store/ASO-specific (App IDs, metadata, screenshots, ratings, monetization). browserbase is a tool-bound pipeline that requires BROWSERBASE_API_KEY and the browse CLI, auto-discovers competitors, and compiles an HTML report with a matrix and mentions feed. No single copy is the procedure the others reproduce; each contains steps and constraints the others lack, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/phuryn/pm-skills">phuryn/pm-skills</a></td><td><code>pm-market-research/skills/competitor-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aaron-he-zhu/aaron-marketing-skills">aaron-he-zhu/aaron-marketing-skills</a></td><td><code>seo-geo/survey/competitor-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/competitor-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/browserbase/skills">browserbase/skills</a></td><td><code>skills/competitor-analysis/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/phuryn/pm-skills">phuryn/pm-skills</a></td><td><code>pm-market-research/skills/competitor-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aaron-he-zhu/aaron-marketing-skills">aaron-he-zhu/aaron-marketing-skills</a></td><td><code>seo-geo/survey/competitor-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/competitor-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/browserbase/skills">browserbase/skills</a></td><td><code>skills/competitor-analysis/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/competitor-analysis/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/competitor-analysis/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Competitor Analysis
+
+Analyze competitors for the user&#x27;s product, app, or website. Choose the lane that matches the user&#x27;s context, then follow the steps below.
+
+## 1. Determine Scope and Lane
+- Ask for the user&#x27;s product/company, target market or country, and any known competitor names or URLs.
+- If the user is doing App Store optimization, use the ASO lane. If the user is doing SEO/GEO, use the SEO lane. If the user wants a general product-market brief, use the Product lane. If the user has Browserbase credentials and wants an automated HTML report, use the Browserbase lane.
+- If the user does not know their competitors, help identify them:
+  - Product: web search for direct competitors in the market segment.
+  - SEO: infer from target keywords or SERP analysis.
+  - ASO: category chart, keyword overlap, Apple&#x27;s &quot;You Might Also Like,&quot; or user perception.
+  - Browserbase: use the discovery pipeline (alternatives, precise category, comparison-page graph).
+- Recommend analyzing 3-5 competitors: 2 direct, 1-2 aspirational, 1 emerging.
+
+## 2. Gather Data
+- Product lane: research each competitor&#x27;s positioning, features, pricing, go-to-market, funding, and customer feedback. Use web search and any user-provided data.
+- SEO lane: capture domain age, estimated traffic, domain authority, keyword rankings, content strategy, backlink profile, technical SEO, and AI citation presence. Label every metric Measured, User-provided, or Estimated.
+- ASO lane: capture App ID, title, subtitle, description, screenshots, app preview video, icon, ratings, reviews, chart position, downloads, revenue, update frequency, and monetization model.
+- Browserbase lane: use `browse cloud search` and `browse cloud fetch` to gather marketing surface, external signals, public benchmarks, and strategic diffs. Write one markdown file per competitor.
+
+## 3. Analyze
+- Product: assess strengths, weaknesses, pricing, competitive threats, and differentiation opportunities. Map unmet needs, feature/pricing/UX gaps, underserved segments, and channel opportunities.
+- SEO: compare keyword rankings, content volume, backlink quality, technical SEO, and AI citation coverage. Identify keyword gaps, content recommendations, and linkable assets.
+- ASO: compare metadata, creative strategy, ratings/reviews, growth signals, and monetization. Identify keyword gaps, creative edges, feature gaps, and market gaps.
+- Browserbase: synthesize per-competitor deep dives, a side-by-side feature/pricing matrix, and a chronological mentions feed.
+
+## 4. Output
+- Product: Market Overview, Competitive Set Summary, per-competitor profiles (strengths, weaknesses, pricing, threats), Differentiation Opportunities, and Competitive Positioning Recommendation.
+- SEO: Executive Summary, comparison table, CITE comparison, strengths to learn, weaknesses to exploit, keyword opportunities, content recommendations, and Immediate/Short-term/Long-term plan. Emit a handoff summary to memory/research/.
+- ASO: Executive Summary, Competitive Position Map, Top Opportunities (Quick Win, Keyword Gap, Creative Edge, Feature Gap, Market Gap), and Threats to Monitor.
+- Browserbase: HTML report with overview, per-competitor deep dives, matrix, and mentions views. Save to ~/Desktop/{company_slug}_competitors_{YYYY-MM-DD}/.
+
+## 5. Quality Bar
+- Every strength or weakness must tie to a labeled metric and a named competitor.
+- Distinguish direct competitors from indirect alternatives.
+- Validate insights across multiple sources.
+- Flag emerging competitors and long-term competitive dynamics.
+
+## Conflicts
+- phuryn/pm-skills specifies exactly 5 direct competitors and a strategic product brief; aaron-he-zhu specifies 3-5 competitors with SEO/GEO metrics and an action plan; appeeky/aso-skills requires App IDs and ASO-specific comparisons; browserbase/skills requires BROWSERBASE_API_KEY and outputs an HTML report. These are different procedures for different surfaces and cannot be averaged into a single step.</pre>
+</body>
+</html>

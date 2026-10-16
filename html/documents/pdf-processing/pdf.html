@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pdf</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">pdf-processing</a> / pdf</p><h1>pdf</h1><p class="meta">combined</p><p>The anthropics, foryourhealth111-pixel, and zLanqing copies are near-identical reproductions of the same upstream PDF processing guide (pypdf, pdfplumber, reportlab, qpdf, pdftotext). The openai copy is a distinct, shorter skill that adds a visual-review workflow (render pages with pdftoppm, inspect PNGs), dependency installation via uv, temp/output directory conventions, and quality expectations (ASCII hyphens, no placeholder tokens) that the other copies lack. The foryourhealth111-pixel copy adds a scientific-schematics generation step that the others lack. Because the openai and foryourhealth111-pixel copies each contain material steps or constraints the others do not, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/pdf/SKILL.md</code></td></tr><tr><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/pdf/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/document-skills/pdf/SKILL.md</code></td></tr><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/pdf/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/pdf/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/pdf/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/document-skills/pdf/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/pdf/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>document-skills/pdf/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks-extra/find-topk-similiar-chemicals/environment/skills/pdf/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/pdf/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/bettafish-opinion-analysis/subskills/pdf/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>document-skills/pdf/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/court-form-filling/environment/skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/financial-modeling-qa/environment/skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/flink-query/environment/skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/invoice-fraud-detection/environment/skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/jpg-ocr-stat/environment/skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/latex-formula-extraction/environment/skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/organize-messy-files/environment/skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/paper-anonymizer/environment/skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/pdf-excel-diff/environment/skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/sales-pivot-analysis/environment/skills/pdf/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/simpo-code-reproduction/environment/skills/pdf/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: pdf
+description: Use this skill for any PDF task: reading, extracting text/tables, creating, merging, splitting, rotating, watermarking, form filling, encrypting/decrypting, image extraction, and OCR. Prefer visual checks by rendering pages and use Python tools (reportlab, pdfplumber, pypdf) for generation and extraction.
+---
+
+# PDF Processing Guide
+
+## Overview
+This guide covers essential PDF processing operations using Python libraries and command-line tools. For advanced features, see REFERENCE.md. For form filling, read FORMS.md.
+
+## Workflow
+1. Prefer visual review: render PDF pages to PNGs and inspect them.
+   - Use `pdftoppm` if available. If unavailable, install Poppler or ask the user to review locally.
+2. Use `reportlab` to generate PDFs when creating new documents.
+3. Use `pdfplumber` (or `pypdf`) for text extraction and quick checks; do not rely on it for layout fidelity.
+4. After each meaningful update, re-render pages and verify alignment, spacing, and legibility.
+5. When creating documents, consider adding scientific diagrams and schematics to enhance visual communication. If your document does not already contain schematics, use the scientific-schematics skill to generate AI-powered publication-quality diagrams.
+
+## Temp and output conventions
+- Use `tmp/pdfs/` for intermediate files; delete when done.
+- Write final artifacts under `output/pdf/` when working in this repo.
+- Keep filenames stable and descriptive.
+
+## Dependencies (install if missing)
+Prefer `uv` for dependency management.
+
+Python packages:
+```
+uv pip install reportlab pdfplumber pypdf
+```
+If `uv` is unavailable:
+```
+python3 -m pip install reportlab pdfplumber pypdf
+```
+System tools (for rendering):
+```
+# macOS (Homebrew)
+brew install poppler
+
+# Ubuntu/Debian
+sudo apt-get install -y poppler-utils
+```
+
+If installation isn&#x27;t possible, tell the user which dependency is missing and how to install it locally.
+
+## Rendering command
+```
+pdftoppm -png $INPUT_PDF $OUTPUT_PREFIX
+```
+
+## Quick Start
+```python
+from pypdf import PdfReader, PdfWriter
+
+# Read a PDF
+reader = PdfReader(&quot;document.pdf&quot;)
+print(f&quot;Pages: {len(reader.pages)}&quot;)
+
+# Extract text
+text = &quot;&quot;
+for page in reader.pages:
+    text += page.extract_text()
+```
+
+## Python Libraries
+
+### pypdf - Basic Operations
+
+#### Merge PDFs
+```python
+from pypdf import PdfWriter, PdfReader
+
+writer = PdfWriter()
+for pdf_file in [&quot;doc1.pdf&quot;, &quot;doc2.pdf&quot;, &quot;doc3.pdf&quot;]:
+    reader = PdfReader(pdf_file)
+    for page in reader.pages:
+        writer.add_page(page)
+
+with open(&quot;merged.pdf&quot;, &quot;wb&quot;) as output:
+    writer.write(output)
+```
+
+#### Split PDF
+```python
+reader = PdfReader(&quot;input.pdf&quot;)
+for i, page in enumerate(reader.pages):
+    writer = PdfWriter()
+    writer.add_page(page)
+    with open(f&quot;page_{i+1}.pdf&quot;, &quot;wb&quot;) as output:
+        writer.write(output)
+```
+
+#### Extract Metadata
+```python
+reader = PdfReader(&quot;document.pdf&quot;)
+meta = reader.metadata
+print(f&quot;Title: {meta.title}&quot;)
+print(f&quot;Author: {meta.author}&quot;)
+print(f&quot;Subject: {meta.subject}&quot;)
+print(f&quot;Creator: {meta.creator}&quot;)
+```
+
+#### Rotate Pages
+```python
+reader = PdfReader(&quot;input.pdf&quot;)
+writer = PdfWriter()
+
+page = reader.pages[0]
+page.rotate(90)  # Rotate 90 degrees clockwise
+writer.add_page(page)
+
+with open(&quot;rotated.pdf&quot;, &quot;wb&quot;) as output:
+    writer.write(output)
+```
+
+### pdfplumber - Text and Table Extraction
+
+#### Extract Text with Layout
+```python
+import pdfplumber
+
+with pdfplumber.open(&quot;document.pdf&quot;) as pdf:
+    for page in pdf.pages:
+        text = page.extract_text()
+        print(text)
+```
+
+#### Extract Tables
+```python
+with pdfplumber.open(&quot;document.pdf&quot;) as pdf:
+    for i, page in enumerate(pdf.pages):
+        tables = page.extract_tables()
+        for j, table in enumerate(tables):
+            print(f&quot;Table {j+1} on page {i+1}:&quot;)
+            for row in table:
+                print(row)
+```
+
+#### Advanced Table Extraction
+```python
+import pandas as pd
+
+with pdfplumber.open(&quot;document.pdf&quot;) as pdf:
+    all_tables = []
+    for page in pdf.pages:
+        tables = page.extract_tables()
+        for table in tables:
+            if table:  # Check if table is not empty
+                df = pd.DataFrame(table[1:], columns=table[0])
+                all_tables.append(df)
+
+# Combine all tables
+if all_tables:
+    combined_df = pd.concat(all_tables, ignore_index=True)
+    combined_df.to_excel(&quot;extracted_tables.xlsx&quot;, index=False)
+```
+
+### reportlab - Create PDFs
+
+#### Basic PDF Creation
+```python
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
+c = canvas.Canvas(&quot;hello.pdf&quot;, pagesize=letter)
+width, height = letter
+
+# Add text
+c.drawString(100, height - 100, &quot;Hello World!&quot;)
+c.drawString(100, height - 120, &quot;This is a PDF created with reportlab&quot;)
+
+# Add a line
+c.line(100, height - 140, 400, height - 140)
+
+# Save
+c.save()
+```
+
+#### Create PDF with Multiple Pages
+```python
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.lib.styles import getSampleStyleSheet
+
+doc = SimpleDocTemplate(&quot;report.pdf&quot;, pagesize=letter)
+styles = getSampleStyleSheet()
+story = []
+
+# Add content
+title = Paragraph(&quot;Report Title&quot;, styles[&#x27;Title&#x27;])
+story.append(title)
+story.append(Spacer(1, 12))
+
+body = Paragraph(&quot;This is the body of the report. &quot; * 20, styles[&#x27;Normal&#x27;])
+story.append(body)
+story.append(PageBreak())
+
+# Page 2
+story.append(Paragraph(&quot;Page 2&quot;, styles[&#x27;Heading1&#x27;]))
+story.append(Paragraph(&quot;Content for page 2&quot;, styles[&#x27;Normal&#x27;]))
+
+# Build PDF
+doc.build(story)
+```
+
+#### Subscripts and Superscripts
+
+**IMPORTANT**: Never use Unicode subscript/superscript characters (₀₁₂₃₄₅₆₇₈₉, ⁰¹²³⁴⁵⁶⁷⁸⁹) in ReportLab PDFs. The built-in fonts do not include these glyphs, causing them to render as solid black boxes.
+
+Instead, use ReportLab&#x27;s XML markup tags in Paragraph objects:
+```python
+from reportlab.platypus import Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+
+styles = getSampleStyleSheet()
+
+# Subscripts: use &lt;sub&gt; tag
+chemical = Paragraph(&quot;H&lt;sub&gt;2&lt;/sub&gt;O&quot;, styles[&#x27;Normal&#x27;])
+
+# Superscripts: use &lt;super&gt; tag
+squared = Paragraph(&quot;x&lt;super&gt;2&lt;/super&gt; + y&lt;super&gt;2&lt;/super&gt;&quot;, styles[&#x27;Normal&#x27;])
+```
+
+For canvas-drawn text (not Paragraph objects), manually adjust font size and position rather than using Unicode subscripts/superscripts.
+
+## Command-Line Tools
+
+### pdftotext (poppler-utils)
+```bash
+# Extract text
+pdftotext input.pdf output.txt
+
+# Extract text preserving layout
+pdftotext -layout input.pdf output.txt
+
+# Extract specific pages
+pdftotext -f 1 -l 5 input.pdf output.txt  # Pages 1-5
+```
+
+### qpdf
+```bash
+# Merge PDFs
+qpdf --empty --pages file1.pdf file2.pdf -- merged.pdf
+
+# Split pages
+qpdf input.pdf --pages . 1-5 -- pages1-5.pdf
+qpdf input.pdf --pages . 6-10 -- pages6-10.pdf
+
+# Rotate pages
+qpdf input.pdf output.pdf --rotate=+90:1  # Rotate page 1 by 90 degrees
+
+# Remove password
+qpdf --password=mypassword --decrypt encrypted.pdf decrypted.pdf
+```
+
+### pdftk (if available)
+```bash
+# Merge
+pdftk file1.pdf file2.pdf cat output merged.pdf
+
+# Split
+pdftk input.pdf burst
+
+# Rotate
+pdftk input.pdf rotate 1east output rotated.pdf
+```
+
+## Quality expectations
+- Maintain polished visual design: consistent typography, spacing, margins, and section hierarchy.
+- Avoid rendering issues: clipped text, overlapping elements, broken tables, black squares, or unreadable glyphs.
+- Charts, tables, and images must be sharp, aligned, and clearly labeled.
+- Use ASCII hyphens only. Avoid U+2011 (non-breaking hyphen) and other Unicode dashes.
+- Citations and references must be human-readable; never leave tool tokens or placeholder strings.
+
+## Final checks
+- Do not deliver until the latest PNG inspection shows zero visual or formatting defects.
+- Confirm headers/footers, page numbering, and section transitions look polished.
+- Keep intermediate files organized or remove them after final approval.</pre>
+</body>
+</html>

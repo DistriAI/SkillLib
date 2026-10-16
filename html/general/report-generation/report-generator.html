@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>report-generator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">report-generation</a> / report-generator</p><h1>report-generator</h1><p class="meta">combined</p><p>The three skills share the name &#x27;report-generator&#x27; but target completely different domains and workflows. The first is for influencer marketing campaign reports with strict privacy/authorization constraints. The second is for SEO/GEO analysis reports with multi-format output (HTML/JSON/Excel) and visualization. The third is a specific utility for video compression statistics using ffprobe. None of these are reproductions of the others; they are distinct tools that happen to share a generic name. Combining them is necessary to preserve the distinct procedures for marketing, SEO, and video processing.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aaron-he-zhu/aaron-marketing-skills">aaron-he-zhu/aaron-marketing-skills</a></td><td><code>influencer/report/report-generator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/report-generator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/video-silence-remover/environment/skills/report-generator/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aaron-he-zhu/aaron-marketing-skills">aaron-he-zhu/aaron-marketing-skills</a></td><td><code>influencer/report/report-generator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/report-generator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/video-silence-remover/environment/skills/report-generator/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: report-generator
+description: Unified skill for generating reports in Marketing, SEO/GEO, and Video Processing contexts.
+---
+
+# Report Generator
+
+This skill handles three distinct reporting workflows. Identify the context based on the input data and user request.
+
+## 1. Influencer Marketing Reports
+**Context:** Post-campaign wrap-ups, executive summaries, client results.
+**Procedure:**
+1. Identify audience (executive, client, team, board).
+2. Use pre-computed metrics from `performance-analyzer` and `roi-calculator`. Do not compute raw ROI.
+3. Structure the report with narrative, key learnings, and recommendations.
+4. **Privacy Constraint:** Use opaque refs (`client_ref`, `creator_ref`) in all saved artifacts. Resolve names only in-memory for transient rendering. Never save resolved PII.
+5. Save to `memory/influencer/report-generator/YYYY-MM-DD-&lt;topic&gt;.md` only with explicit WARM-save authorization.
+
+## 2. SEO/GEO Analysis Reports
+**Context:** AI search visibility, technical SEO audits, competitive analysis.
+**Procedure:**
+1. Determine report type (Executive Summary, Technical Analysis, Comprehensive GEO).
+2. Collect data from GEO audits, citation monitoring, and competitive sources.
+3. Generate visualizations:
+   - Line charts for trends.
+   - Bar charts for engine comparisons (ChatGPT, Claude, Perplexity, SGE).
+   - Heatmaps for keyword opportunities.
+4. Output in requested format (Markdown, HTML, JSON, Excel). HTML should include interactive elements and CSS styling.
+
+## 3. Video Compression Reports
+**Context:** Post-processing video silence removal or compression.
+**Procedure:**
+1. Run the report script:
+   ```bash
+   python3 scripts/generate_report.py \
+       --original &lt;original.mp4&gt; \
+       --compressed &lt;compressed.mp4&gt; \
+       --segments &lt;segments.json&gt; \
+       --output &lt;report.json&gt;
+   ```
+2. Ensure `ffprobe` is available for duration measurement.
+3. Output JSON must include `original_duration_seconds`, `compressed_duration_seconds`, `removed_duration_seconds`, `compression_percentage`, and `segments_removed`.
+
+## Conflicts &amp; Disambiguation
+- If the user provides video files, use Workflow 3.
+- If the user provides SEO/GEO metrics or asks for AI visibility reports, use Workflow 2.
+- If the user provides campaign metrics or asks for stakeholder reports, use Workflow 1.
+- Do not mix privacy constraints from Workflow 1 with the open data visualization of Workflow 2 unless explicitly requested for a client-facing SEO report (in which case, apply Workflow 1 privacy rules to the output).</pre>
+</body>
+</html>

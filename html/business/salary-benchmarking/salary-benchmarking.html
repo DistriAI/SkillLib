@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>salary-benchmarking</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">salary-benchmarking</a> / salary-benchmarking</p><h1>salary-benchmarking</h1><p class="meta">combined</p><p>The two copies describe different procedures for the same skill name. The first is an individual-career research method: triangulate market sources, adjust for level/location/industry/skills/company size, position the person in the band, and produce a defensible low/target/high with framing guidance. The second is an organizational compensation-benchmarking setup: identify intent, collect role/market/band/process/outcome inputs, recommend a smallest workflow, and optionally generate CSV/SQL/JSON/Notion artifacts with specific field lists and safety constraints. Each has material steps the other lacks, and they disagree on the primary output (a personal defensible range vs. a benchmark register/artifacts).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-career/skills/salary-benchmarking/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/salary-benchmarking/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-career/skills/salary-benchmarking/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/salary-benchmarking/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/salary-benchmarking/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/salary-benchmarking/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/salary-benchmarking/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Salary Benchmarking
+
+Use this skill to build a defensible salary benchmark, either for an individual&#x27;s market position or for an organizational role/grade register. Choose the track that matches the request.
+
+## Track A: Individual Salary Range
+
+Use when the user asks what they should be paid, whether their salary is fair, or how much to ask for.
+
+1. **Gather inputs.** Ask for the role (title, level, field), location and remote status, the person&#x27;s profile (years, key skills, notable results), context (current pay, company size/industry, goal), and any sources they have already seen.
+2. **Triangulate sources.** Combine salary surveys, aggregators, live job postings, peer/recruiter input, and community data. Do not rely on a single source.
+3. **Adjust for drivers.** Apply level/seniority, location/cost-of-living, industry, scarce skills, and company size/stage to the raw range.
+4. **Position the person.** Estimate where they sit in the band based on actual experience, skills, and results.
+5. **Build a defensible range.** Produce a low/target/high with the reasoning behind each number.
+6. **Frame with evidence.** Present the number tied to market data and the person&#x27;s value; avoid a single cherry-picked figure or an unbacked demand.
+7. **Caveat the data.** Note that pay data is noisy and can be stale; triangulate and adjust rather than trusting one source.
+
+### Output Format (Track A)
+
+```
+Salary benchmark: [role/level] · [location/remote] · [industry]
+Research from: [surveys · aggregators · live postings · peers · recruiters]
+Adjust for: level [x] · location/COL [y] · industry · scarce skills · company size/stage
+Your position in the band: [where + why]
+Defensible range: low [ ] · target [ ] · high [ ] — justified by [factors]
+How to frame it: [number + evidence, tied to value]
+```
+
+## Track B: Organizational Benchmark Register
+
+Use when the user asks to set up, build, or review a salary benchmarking process for roles, departments, or grades.
+
+1. **Identify intent.** Determine whether the user wants to set up/build artifacts, move an existing process, review/audit, or get advice. Ask only the highest-value missing fact if needed.
+2. **Collect missing inputs.** Ask one at a time for roles, market/city/currency, existing bands, current process, and desired outcome. Never invent answers; record unknowns.
+3. **Hold internal context.** Maintain a structured record of confirmed facts, open questions, and requested output formats. Do not show this to the user unless asked.
+4. **Recommend the smallest workflow.** Benchmark the hardest-to-fill roles first. Store market range beside internal band so the gap is visible. Workflow: Role list → Market data → Internal band → Gap analysis → Band decision.
+5. **Build artifacts only on request.** Derive fields from confirmed context and emit the requested formats (CSV, SQL, JSON, Notion, XLSX). For Notion, route to the notion-manual-import skill. For CSV, use UTF-8 with BOM and name columns needing number/date/currency formatting. For SQL, provide DDL with appropriate types.
+6. **Safety constraints.** This skill produces empty templates only; it never holds or processes real employee or customer data. Do not use for payroll calculation, tax filing, or legal advice.
+
+### Output Format (Track B)
+
+CSV columns: Role Title, Benchmark ID, Currency, Data Source, Department, Grade Level, Internal Max, Internal Min, Last Updated, Market Max, Market Median, Market Min, Notes.
+
+SQL table: salary_benchmarking with corresponding typed columns.
+
+## Quality Checks
+- [ ] Builds the range or register from multiple sources, not one
+- [ ] Adjusts for level, location, industry, skills, and company size (Track A) or compares internal vs. market bands (Track B)
+- [ ] Positions the person honestly within the band (Track A) or identifies gaps between internal and market (Track B)
+- [ ] Produces a defensible low/target/high (Track A) or a benchmark register with min/median/max (Track B)
+- [ ] Frames the number with evidence, not entitlement (Track A)
+- [ ] Caveats data noise/staleness and triangulation
+- [ ] Artifacts are generated only on request and from a single field list (Track B)
+
+## Anti-Patterns
+- A single-source number treated as truth.
+- Ignoring location/level/industry adjustments.
+- Aspirational or imposter-driven self-positioning (Track A).
+- A number with no justification.
+- Trusting stale data without triangulating.
+- Generating artifacts without being asked (Track B).
+- Holding or processing real employee data (Track B).</pre>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clinical-decision-support</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">clinical-decision-support-artifacts</a> / clinical-decision-support</p><h1>clinical-decision-support</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a distinct, safety-first procedure for generating research-only CDS evaluation and governance artifacts using local Python scripts and strict data gates. The other three copies (Vibe-Skills, aipoch, OpenClaw) are near-identical reproductions of a different skill focused on generating publication-ready LaTeX/PDF documents for pharmaceutical research, including specific formatting and statistical visualization instructions. Because the K-Dense copy provides a unique workflow (script-based validation, data gating, artifact headers) that the others lack, and the others provide unique content (LaTeX/PDF generation, specific pharma use cases) that the K-Dense copy lacks, crowning one would hide a real alternative approach to the same named skill.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/clinical-decision-support/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/clinical-decision-support/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/clinical-decision-support/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/clinical-decision-support/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/clinical-decision-support/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/clinical-decision-support/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/clinical-decision-support/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/clinical-decision-support/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Clinical Decision Support
+
+## Safety Boundary
+This skill produces research, evaluation, and documentation artifacts only. It must never be used to diagnose, treat, or make patient-specific clinical decisions. If a request affects care for a person, stop and route to a licensed healthcare professional.
+
+## Workflow
+
+### 1. Frame the Research Question
+- Define the estimand or evaluation target.
+- Distinguish descriptive, prognostic, predictive, and causal questions.
+- Pre-specify outcomes, subgroups, and statistical methods.
+
+### 2. Select Artifact Type
+Choose between:
+- **Research/Governance Artifacts**: Intended-use statements, evidence profiles, cohort table shells, survival analysis plans.
+- **Pharmaceutical/Research Documents**: Patient cohort analyses, treatment recommendation reports, clinical guidelines.
+
+### 3. Data Gate (For Research Artifacts)
+Before generating any data-driven artifact:
+1. Confirm input is synthetic or aggregate.
+2. Reject patient rows, identifiers, or free text.
+3. Keep source files local.
+4. Record provenance and data cut date.
+
+### 4. Generate Content
+- **For Research Artifacts**: Use local Python scripts (e.g., `validate_cds_artifact.py`, `evidence_profile_check.py`) to validate and generate structured JSON artifacts. Ensure every artifact includes a header with intended use, limitations, and the statement: **Not for patient care or live clinical use.**
+- **For Pharmaceutical Documents**: Generate publication-ready LaTeX/PDF files. Include:
+  - Biomarker-stratified cohort analyses with statistical outcomes (HR, p-values, CIs).
+  - GRADE evidence grading (1A-2C).
+  - Treatment algorithm flowcharts (TikZ).
+  - Regulatory compliance headers (HIPAA, ICH-GCP).
+  - Professional formatting (compact margins, color-coded recommendations).
+
+### 5. Human Review
+- Require review by a methodologist/statistician for design.
+- Require review by a domain expert for clinical context.
+- Require review by a privacy officer for disclosure decisions.
+- Outputs remain drafts until approved by qualified humans.</pre>
+</body>
+</html>

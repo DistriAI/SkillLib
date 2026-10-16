@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>referral-program</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">referral-program-design</a> / referral-program</p><h1>referral-program</h1><p class="meta">combined</p><p>The four skills cover the same high-level goal but diverge on scope, product context, and specific mechanics. The first is SaaS/web-focused with specific tool recommendations (Cello, RefRef) and a 10-30% reward benchmark. The second is mobile-app-focused, emphasizing deep links, K-factor math, and specific app-store fraud vectors (IDFV, Family Sharing). The third and fourth are broader B2B/B2C hybrids that include affiliate program design, email sequences, and a different incentive sizing formula (LTV x Margin - CAC). Because they disagree on reward sizing logic, target platforms (web vs mobile), and include unique steps (email sequences vs deep link setup), no single copy is the authentic source for the others.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/channels/partnerships/referral-program/SKILL.md</code></td></tr><tr><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/referral-program/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/referral-program/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/referral-program/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/channels/partnerships/referral-program/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/referral-program/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/referral-program/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/referral-program/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-growth/skills/referral-program/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/referral-program/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/referral-program/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-saas-launch-revenue/skills/referral-program/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/referral-program/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/referral-program/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/referral-program/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Referral Program Strategy
+
+## 1. Initial Assessment
+- **Context**: Read project context files (e.g., `contextus.md`, `app-marketing-context.md`) if present.
+- **Product Fit**: Determine if the product has network effects, natural sharing moments, or high LTV. If weak fit, consider UGC or retention strategies instead.
+- **Economics**: Identify CAC, LTV, and Gross Margin. 
+  - *Sizing Rule*: Max Reward ≤ (LTV × Margin) - Target CAC. 
+  - *Benchmark*: Typically 10-30% of price or $10-$50 for B2C.
+
+## 2. Program Design
+- **Type**: Choose between Customer Referral (existing users) and Affiliate (partners/creators). Hybrid is common.
+- **Incentive Structure**:
+  - **Double-sided**: Both referrer and referee get rewards (highest conversion).
+  - **Tiered**: Rewards increase with volume (motivates power users).
+  - **Type**: Cash, credits, free months, or status/cosmetics.
+- **Mechanism**:
+  - **Web/SaaS**: Unique links, codes, or in-product share buttons.
+  - **Mobile**: Deep links with deferred handling, system share sheet, and one-tap share.
+
+## 3. Implementation &amp; Tracking
+- **Attribution**: Use first-touch attribution. Set windows (30-90 days for web, 180 for subscription).
+- **Tools**: 
+  - *Self-build*: URL params/cookies + fraud logic.
+  - *Third-party*: Cello, Viral Loops, ReferralCandy (E-com), Impact (Enterprise), Branch/AppsFlyer (Mobile).
+- **UX**: One-click share, clear rules, dashboard with referral stats, and instant reward notification.
+
+## 4. Fraud Prevention
+- **Self-referral**: Detect same device/IP/payment.
+- **Bot/Fake accounts**: Require email/phone verification or qualifying actions (e.g., purchase, retention).
+- **Caps**: Limit referrals per user (e.g., max 10-50).
+- **Mobile Specifics**: Check for Family Sharing signals and IDFV/Android ID.
+
+## 5. Optimization &amp; Measurement
+- **KPIs**: Referral rate, conversion, CAC, LTV of referred users, and K-factor (for mobile/viral loops).
+- **A/B Testing**: Test incentive amounts, share copy, and trigger moments (e.g., after &#x27;aha&#x27; moment vs. onboarding).
+- **Communication**: Use email sequences for launch and nurture (Day 7, 30, 60 reminders).</pre>
+</body>
+</html>

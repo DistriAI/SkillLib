@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>seo-drift</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">seo-drift-monitoring</a> / seo-drift</p><h1>seo-drift</h1><p class="meta">combined</p><p>The first copy is a thin pointer that delegates to a WORKFLOW.md file not included in the prompt, so it contains no executable steps. The second copy is a self-contained, detailed procedure. Because the first copy&#x27;s actual procedure is missing and the second copy adds substantial steps, constraints, and severity rules not present in the first, crowning one would hide the real alternative. The second copy is the only one with actionable content, but the first copy&#x27;s delegation pattern is a distinct structural choice that should be noted.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/seo-drift/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/seo-drift/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/seo-drift/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/seo-drift/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/seo-drift/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/seo-drift/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># SEO Drift Monitoring
+
+## Overview
+Capture a known-good SEO baseline and compare later snapshots against it so regressions become visible. The skill combines search-performance data with live on-page checks to surface ranking drops, deindexation, overwritten metadata, directive changes, and missing schema before they quietly cost traffic.
+
+## When to Use
+Use this skill when the user asks to:
+- baseline or monitor a site&#x27;s SEO over time;
+- check whether a migration, redesign, CMS change, or redeploy damaged SEO;
+- compare current search performance and page metadata with a prior snapshot;
+- investigate titles, descriptions, canonicals, robots directives, or schema that changed unexpectedly;
+- identify rankings or indexed pages that disappeared.
+
+For a one-time comprehensive SEO audit with no historical comparison, use a general SEO audit skill instead.
+
+## Prerequisites
+Before capturing data:
+1. Confirm the site and the key URLs in scope. Prefer top organic landing pages, commercial pages, and any URLs affected by a recent release.
+2. Confirm baseline or compare mode. If no prior snapshot exists, use baseline mode and explain that there is nothing to compare yet.
+3. Ask where the snapshot should be stored. Use a local `seo-drift/` directory alongside the user&#x27;s other audit reports only after confirming the intended project or reports location.
+4. Prefer a connected Google Search Console source for query, page, position, impression, click, and indexation signals.
+5. Use a browser or web-fetch capability for current on-page values. Respect robots directives and avoid high-volume crawling.
+
+If Search Console is unavailable, continue only with the on-page comparison and state that ranking and indexation drift could not be measured. Never infer missing Search Console values from a live crawl.
+
+## How It Works
+
+### 1. Choose the comparison boundary
+Record:
+- the site property and snapshot date supplied by the user or runtime;
+- whether the snapshot is a baseline or comparison;
+- the prior snapshot used for comparison, when applicable;
+- the exact URL set and search-data window;
+- any known migration, release, or CMS event that may explain expected changes.
+
+Do not invent dates or silently compare mismatched date windows.
+
+### 2. Capture the current snapshot
+For the agreed URL set, collect:
+- **Search performance:** query and page clicks, impressions, click-through rate, and average position for a stable window;
+- **Indexation:** indexed status or coverage evidence for each key URL when the connected source exposes it;
+- **Metadata:** title, meta description, and H1;
+- **Directives:** canonical URL, robots header, and meta-robots value;
+- **Structured data:** schema types present;
+- **Content shape:** word count and another stable content fingerprint or summary useful for detecting large changes.
+
+Persist both the values and their source. Keep unavailable fields as `unknown`; do not coerce them to zero or absent.
+
+### 3. Diff against the previous baseline
+Surface changes in five groups:
+1. **Rankings:** queries that dropped by the agreed threshold or disappeared from the observed window.
+2. **Indexation:** key pages that lost indexed status or a material drop in indexed-page count.
+3. **Metadata:** titles, descriptions, or H1s that changed, became blank, or fell back to a generic template.
+4. **Directives:** canonicals that changed or disappeared, and newly introduced `noindex` directives.
+5. **Schema:** structured-data types that disappeared from pages where they previously existed.
+
+Separate expected content changes from unexplained regressions. A changed value is evidence of drift, not proof of causation.
+
+### 4. Rank severity
+Use these default levels:
+- **Critical:** an important page is newly `noindex`, deindexed, or canonicalized to an unintended URL.
+- **Warning:** a material ranking decline, lost query visibility, blank or generic metadata, or missing schema.
+- **Info:** an expected content or metadata change with no observed search-performance harm.
+
+Put directive and indexation failures first because they can suppress the entire page regardless of content quality.
+
+### 5. Report and preserve evidence
+For every reported change, include:
+- URL and field or metric;
+- before and after values;
+- comparison dates and data window;
+- severity and likely cause, clearly labeled as an inference;
+- the next verification or repair action.
+
+End by offering to create a new baseline only after the user confirms that intended changes and critical repairs are complete.
+
+## Best Practices
+- Keep the key URL set stable so comparisons remain interpretable.
+- Compare equivalent Search Console windows and call out incomplete or delayed data.
+- Preserve raw snapshot evidence separately from the narrative report.
+- Treat missing data as unknown, not zero.</pre>
+</body>
+</html>

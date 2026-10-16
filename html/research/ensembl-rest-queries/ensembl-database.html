@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ensembl-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">ensembl-rest-queries</a> / ensembl-database</p><h1>ensembl-database</h1><p class="meta">combined</p><p>The two copies overlap on Ensembl REST use cases (gene lookup, sequence, VEP, homology, assembly mapping) but each has material steps the other lacks. The aipoch copy is a packaged skill centered on scripts/query_ensembl.py with a CLI contract (--action lookup|sequence|vep, --species, --symbol, --id, --hgvs) and references/api_endpoints.md, but it omits rate-limiting, error handling, and direct REST examples. The FreedomIntelligence copy provides direct REST endpoints, ensembl_rest Python examples, rate-limiting (15 req/s, Retry-After), error handling, and assembly-mapping server selection, but it does not define the packaged CLI or the repository&#x27;s script-based execution path. Crowning one would hide a real alternative workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/ensembl-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/ensembl-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/ensembl-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/ensembl-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: ensembl-database
+description: Query the Ensembl REST API for vertebrate genomic data. Use for gene/ID lookups, sequence retrieval, VEP variant effect prediction, homology/ortholog queries, and assembly coordinate mapping.
+---
+
+# Ensembl Database Skill
+
+## When to Use
+
+- Resolve gene symbols or genomic regions to Ensembl identifiers and annotations.
+- Retrieve DNA, cDNA, or protein sequences in FASTA or JSON.
+- Predict variant consequences with VEP from HGVS notation.
+- Find orthologs/paralogs across vertebrate species.
+- Map coordinates between assemblies (e.g., GRCh37 to GRCh38).
+- Integrate Ensembl data into reproducible genomic research pipelines.
+
+## Execution Path
+
+1. Confirm the user&#x27;s input, output path, and any required configuration values.
+2. Choose the execution method:
+   - **Packaged CLI** (preferred when `scripts/query_ensembl.py` is available): run the script with the appropriate `--action`.
+   - **Direct REST / Python client**: use `requests` or the `ensembl_rest` package when the CLI is unavailable or custom logic is needed.
+3. Run the query with validated inputs.
+4. Review the generated output and return the final artifact with any assumptions called out.
+
+## Packaged CLI (scripts/query_ensembl.py)
+
+### Core Parameters
+
+- `--action`: Operation selector. Supported values: `lookup`, `sequence`, `vep`.
+- `--species`: Target species name (e.g., `human`).
+- `--symbol`: Gene symbol for lookup actions (e.g., `BRCA2`).
+- `--id`: Ensembl stable ID for sequence retrieval (e.g., `ENSG...`, `ENST...`, `ENSP...`).
+- `--hgvs`: HGVS notation string for VEP (e.g., `ENST...:c.123A&gt;G`).
+
+### Examples
+
+```bash
+# Gene lookup by symbol
+python scripts/query_ensembl.py --action lookup --species human --symbol BRCA2
+
+# Retrieve sequence by Ensembl ID
+python scripts/query_ensembl.py --action sequence --id ENSG00000139618
+
+# Variant effect prediction (VEP) by HGVS
+python scripts/query_ensembl.py --action vep --species human --hgvs &quot;ENST00000380152.8:c.68_69delAG&quot;
+```
+
+## Direct REST API
+
+Base URL: `https://rest.ensembl.org`
+
+For GRCh37/hg19 queries, use: `https://grch37.rest.ensembl.org`
+
+### Gene Lookup by Symbol
+
+```python
+import requests
+
+server = &quot;https://rest.ensembl.org&quot;
+response = requests.get(
+    f&quot;{server}/lookup/symbol/homo_sapiens/BRCA2&quot;,
+    headers={&quot;Content-Type&quot;: &quot;application/json&quot;}
+)
+gene_data = response.json()
+```
+
+### Sequence Retrieval
+
+```python
+# Using ensembl_rest package
+from ensembl_rest import EnsemblClient
+
+client = EnsemblClient()
+sequence = client.sequence_id(
+    id=&#x27;ENSG00000139618&#x27;,
+    content_type=&#x27;application/json&#x27;
+)
+
+# Get sequence for a genomic region
+region_seq = client.sequence_region(
+    species=&#x27;human&#x27;,
+    region=&#x27;7:140424943-140624564&#x27;
+)
+```
+
+### VEP Variant Effect Prediction
+
+```python
+vep_result = client.vep_hgvs(
+    species=&#x27;human&#x27;,
+    hgvs_notation=&#x27;ENST00000380152.7:c.803C&gt;T&#x27;
+)
+```
+
+### Homology / Orthologs
+
+```python
+orthologs = client.homology_ensemblgene(
+    id=&#x27;ENSG00000139618&#x27;,
+    target_species=&#x27;mouse&#x27;
+)
+```
+
+### Assembly Mapping
+
+```python
+from ensembl_rest import AssemblyMapper
+
+mapper = AssemblyMapper(
+    species=&#x27;human&#x27;,
+    asm_from=&#x27;GRCh37&#x27;,
+    asm_to=&#x27;GRCh38&#x27;
+)
+mapped = mapper.map(chrom=&#x27;7&#x27;, start=140453136, end=140453136)
+```
+
+## API Best Practices
+
+### Rate Limiting
+
+- Maximum 15 requests per second for anonymous users.
+- Handle 429 responses by checking the `Retry-After` header and waiting.
+- Use batch endpoints where available.
+- Cache frequently accessed data to reduce API calls.
+
+### Error Handling
+
+```python
+import requests
+import time
+
+def query_ensembl(endpoint, params=None, max_retries=3):
+    server = &quot;https://rest.ensembl.org&quot;
+    headers = {&quot;Content-Type&quot;: &quot;application/json&quot;}
+
+    for attempt in range(max_retries):
+        response = requests.get(
+            f&quot;{server}{endpoint}&quot;,
+            headers=headers,
+            params=params
+        )
+
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 429:
+            retry_after = int(response.headers.get(&#x27;Retry-After&#x27;, 1))
+            time.sleep(retry_after)
+        else:
+            response.raise_for_status()
+    return None
+```
+
+## Dependencies
+
+- Python `&gt;=3.8` (use `3.10+` if following the aipoch repository baseline).
+- `ensembl_rest` Python client (version depends on environment).
+- Network access to `https://rest.ensembl.org` (and `https://grch37.rest.ensembl.org` for GRCh37).
+
+## Reference
+
+- Endpoint reference: `references/api_endpoints.md` (when available in the packaged skill).
+- Ensembl REST documentation: https://rest.ensembl.org</pre>
+</body>
+</html>

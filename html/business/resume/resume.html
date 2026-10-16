@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>resume</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">resume</a> / resume</p><h1>resume</h1><p class="meta">combined</p><p>The two copies share the name &#x27;resume&#x27; but describe completely different tasks. The first is a development workflow command to resume a paused automated experiment by checking out a git branch and reading results history. The second is a document generation skill for writing a professional, ATS-friendly resume/CV. They do not overlap in steps, constraints, or intent, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/autoresearch-agent/skills/resume/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-personal/skills/resume/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/autoresearch-agent/skills/resume/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-personal/skills/resume/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills-i18n/es/resume/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills-i18n/fr/resume/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills-i18n/id/resume/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills-i18n/ja/resume/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/resume/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills-i18n/vi/resume/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills-i18n/zh/resume/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills-i18n/zh-TW/resume/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: resume
+description: &quot;Either resume a paused automated experiment or write a professional, ATS-friendly resume/CV.&quot;
+---
+
+# Resume Skill
+
+This skill handles two distinct tasks based on user intent:
+
+## Task 1: Resume a Paused Experiment
+
+Use when the user wants to continue a paused or context-limited automated experiment.
+
+### Steps
+1. **List experiments if needed**: If no experiment is specified, run `python {skill_path}/scripts/setup_experiment.py --list` to show status for each experiment. Let the user pick.
+2. **Load full context**:
+   - Checkout the experiment branch: `git checkout autoresearch/{domain}/{name}`
+   - Read config: `cat .autoresearch/{domain}/{name}/config.cfg`
+   - Read strategy: `cat .autoresearch/{domain}/{name}/program.md`
+   - Read full results history: `cat .autoresearch/{domain}/{name}/results.tsv`
+   - Read recent git log: `git log --oneline -20`
+3. **Report current state**: Summarize the experiment&#x27;s target, metric, total experiments, best result, and recent patterns.
+4. **Ask next action**: Offer options to run a single iteration, start an autonomous loop, or just review results.
+
+## Task 2: Write a Professional Resume/CV
+
+Use when the user asks to write, rewrite, or tailor a resume or CV.
+
+### Steps
+1. **Gather inputs**: Infer any missing details (target role, experience, skills, education) from the user&#x27;s brief. Label any inferred details as *(assumed — confirm)*.
+2. **Quantify achievements**: Lead with the user&#x27;s real numbers. Only add defensible, conservative estimates if a metric is genuinely absent, and mark them clearly.
+3. **Structure the resume**:
+   - **Header**: Full name, target title, contact info.
+   - **Summary**: 2–3 lines highlighting strongest proof and target role.
+   - **Experience**: Reverse-chronological, with 3–5 accomplishment bullets per recent role (action verb → what you did → quantified impact).
+   - **Skills**: Grouped, keyword-rich, mirroring the job description.
+   - **Education**: Degree, institution, year, certifications.
+4. **Tailor to the job**: Ensure keywords from the target job description appear naturally in skills and bullets.
+5. **Quality checks**:
+   - Every bullet is an achievement with a metric, not a duty.
+   - Single-column, ATS-friendly format (no tables, text-boxes, or graphics).
+   - Length fits seniority (1 page for &lt;10 years experience, 2 max).
+6. **Output**: Provide only the finished resume and a short tailoring note. No preamble or meta-commentary.
+
+## Conflicts
+
+- **LeoYeAI/openclaw-master-skills**: This copy is exclusively about resuming a paused automated experiment using git branches and results files.
+- **mohitagw15856/pm-claude-skills**: This copy is exclusively about writing a professional, ATS-friendly resume/CV with quantified accomplishments.</pre>
+</body>
+</html>

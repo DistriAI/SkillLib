@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scikit-learn</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">scikit-learn-ml-pipelines</a> / scikit-learn</p><h1>scikit-learn</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the most complete and current, but the other copies contain material constraints and steps it lacks. The foryourhealth111-pixel copy adds a critical scope boundary (excluding causal identification) and a specific use case (ordinary regression) that the K-Dense copy omits. The sickn33 copy adds a mandatory pre-execution step to read a detailed guide and specific script execution commands. The zLanqing copy is a truncated version of the K-Dense content. Because the K-Dense copy lacks the causal analysis exclusion and the sickn33 copy lacks the detailed algorithmic reference, crowning one would hide real alternatives and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/scikit-learn/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scikit-learn/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scikit-learn/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/scikit-learn/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/scikit-learn/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scikit-learn/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scikit-learn/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/scikit-learn/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/17-DAAF-Contribution-Community-daaf/dot-claude/skills/scikit-learn/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/scikit-learn/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/scikit-learn/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/scikit-learn/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: scikit-learn
+description: Machine learning in Python with scikit-learn. Use for classification, regression, clustering, model evaluation, and ML pipelines.
+license: BSD-3-Clause license
+metadata:
+  skill-author: K-Dense Inc.
+  version: &quot;1.5&quot;
+---
+
+# Scikit-learn
+
+## Overview
+
+This skill provides comprehensive guidance for machine learning tasks using scikit-learn. Use this skill for classification, regression, clustering, dimensionality reduction, preprocessing, model evaluation, and building production-ready ML pipelines.
+
+## Scope Boundaries
+
+- **Use for:** Ordinary regression analysis (fitting, coefficients, confidence intervals, residual checks) where the need is not causal identification.
+- **Do NOT use for:** Causal identification, policy-effect claims, DiD, synthetic control, or interrupted time-series effect estimation. Use `performing-causal-analysis` for those tasks.
+
+## Installation
+
+Targets **scikit-learn 1.9.1**, verified with Python 3.13. The release requires Python 3.11+.
+
+```bash
+# Install scikit-learn using uv
+uv pip install &quot;scikit-learn==1.9.1&quot;
+
+# Optional: plotting utilities and bundled script dependencies
+uv pip install &quot;scikit-learn[plots]==1.9.1&quot; matplotlib pandas
+```
+
+## Pre-Execution Requirements
+
+Before executing complex workflows, read the relevant reference documentation. For end-to-end work, consult the detailed guide if available in the skill directory.
+
+## Quick Start
+
+### Classification Example
+
+```python
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=42
+)
+
+# Preprocess
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Train model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train_scaled, y_train)
+
+# Evaluate
+y_pred = model.predict(X_test_scaled)
+print(classification_report(y_test, y_pred))
+```
+
+### Complete Pipeline with Mixed Data
+
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.ensemble import GradientBoostingClassifier
+
+# Define feature types
+numeric_features = [&#x27;age&#x27;, &#x27;income&#x27;]
+categorical_features = [&#x27;gender&#x27;, &#x27;occupation&#x27;]
+
+# Create preprocessing pipelines
+numeric_transformer = Pipeline([
+    (&#x27;imputer&#x27;, SimpleImputer(strategy=&#x27;median&#x27;)),
+    (&#x27;scaler&#x27;, StandardScaler())
+])
+
+categorical_transformer = Pipeline([
+    (&#x27;imputer&#x27;, SimpleImputer(strategy=&#x27;most_frequent&#x27;)),
+    (&#x27;onehot&#x27;, OneHotEncoder(handle_unknown=&#x27;ignore&#x27;))
+])
+
+# Combine transformers
+preprocessor = ColumnTransformer([
+    (&#x27;num&#x27;, numeric_transformer, numeric_features),
+    (&#x27;cat&#x27;, categorical_transformer, categorical_features)
+])
+
+# Full pipeline
+model = Pipeline([
+    (&#x27;preprocessor&#x27;, preprocessor),
+    (&#x27;classifier&#x27;, GradientBoostingClassifier(random_state=42))
+])
+
+# Fit and predict
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+```
+
+## Core Capabilities
+
+1. **Supervised learning** — classification and regression estimator families.
+2. **Unsupervised learning** — clustering, decomposition, and manifold learning.
+3. **Model evaluation and selection** — metrics, cross-validation, and hyperparameter search.
+4. **Data preprocessing** — scaling, encoding, imputation, and feature selection.
+5. **Pipelines and composition** — `Pipeline` and `ColumnTransformer`.
+
+Always fit preprocessing inside a `Pipeline` so it is refit per cross-validation fold; scaling or imputing before splitting leaks test information into training.
+
+## Example Scripts
+
+If bundled scripts are available in the skill directory:
+
+### Classification Pipeline
+
+```bash
+python scripts/classification_pipeline.py
+```
+
+### Clustering Analysis
+
+```bash
+python scripts/clustering_analysis.py
+```
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

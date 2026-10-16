@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-visualization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">spatial-transcriptomics-visualization</a> / spatial-visualization</p><h1>spatial-visualization</h1><p class="meta">combined</p><p>The two skills cover the same domain (spatial transcriptomics visualization) but differ significantly in depth and intent. The first copy (OpenClaw) is a practical &#x27;cookbook&#x27; of code snippets for common plotting tasks (basic plots, gene expression, co-expression, napari). The second copy (GPTomics) is a conceptual guide focused on &#x27;honest visualization,&#x27; emphasizing the distinction between spot/capture data (Visium) and imaging/FOV data (Xenium/MERFISH), the importance of correct scalefactors, and avoiding artifacts like interpolation or misleading colormaps. The first copy lacks the critical platform-specific logic and honesty warnings present in the second, while the second copy is truncated and lacks the specific code examples for complex tasks like co-expression RGB plots or multi-panel figures found in the first. Combining them provides both the practical code and the necessary scientific rigor.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-visualization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-visualization/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-visualization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-visualization/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: bio-spatial-transcriptomics-spatial-visualization
+description: Visualize spatial transcriptomics data using Squidpy and Scanpy. Distinguishes between spot/capture (Visium) and imaging/FOV (Xenium/MERFISH) data to ensure honest, artifact-free visualization.
+tool_type: python
+primary_tool: squidpy
+---
+
+# Spatial Visualization
+
+Create visualizations for spatial transcriptomics data. The first step is to identify the data platform to select the correct plotting strategy.
+
+## 1. Platform Fork &amp; Honesty Principles
+
+**Spot/Capture Data (Visium, Slide-seq):**
+- Data consists of spots on a hexagonal lattice.
+- Use `sc.pl.spatial` or `sq.pl.spatial_scatter`.
+- **Critical:** Use the dataset&#x27;s `scalefactors` to map coordinates to the histology image.
+- **Spot Size:** Set `spot_size` or `size` to reflect the real capture diameter (e.g., 55um for Visium). Do not inflate size to fake coverage.
+
+**Imaging/FOV Data (Xenium, MERFISH, CosMx):**
+- Data consists of individual molecules or segmented cells (point cloud).
+- Use `sq.pl.spatial_scatter` with `shape=None` for points or polygon shapes for segmentation.
+- **Do not** use spot-based plotters that assume a lattice.
+- **Do not** interpolate or use KDE to create continuous surfaces from sparse molecule data.
+
+**General Honesty Rules:**
+- Avoid non-uniform colormaps (jet/rainbow); use perceptually uniform maps (viridis, plasma).
+- Explicitly set `vmin`/`vmax` to avoid silent clipping.
+- Do not interpret UMAP/tSNE distances as spatial distances.
+
+## 2. Required Imports
+
+```python
+import squidpy as sq
+import scanpy as sc
+import matplotlib.pyplot as plt
+import numpy as np
+```
+
+## 3. Basic Spatial Plots
+
+### Spot/Capture (Visium)
+```python
+# Plot spots colored by a variable
+sq.pl.spatial_scatter(adata, color=&#x27;total_counts&#x27;, size=1.3)
+
+# Using Scanpy (handles scalefactors automatically if available)
+sc.pl.spatial(adata, color=&#x27;leiden&#x27;, spot_size=1.5)
+```
+
+### Imaging/FOV (Xenium/MERFISH)
+```python
+# Point cloud visualization
+sq.pl.spatial_scatter(adata, color=&#x27;leiden&#x27;, shape=None)
+```
+
+## 4. Tissue Image Overlay
+
+```python
+# With tissue background (Visium)
+sc.pl.spatial(adata, color=&#x27;leiden&#x27;, img_key=&#x27;hires&#x27;, alpha_img=0.5)
+
+# Without tissue
+sc.pl.spatial(adata, color=&#x27;leiden&#x27;, img_key=None)
+```
+
+## 5. Gene Expression on Tissue
+
+```python
+# Single gene
+sc.pl.spatial(adata, color=&#x27;CD3D&#x27;, cmap=&#x27;viridis&#x27;, vmin=0, vmax=&#x27;p99&#x27;)
+
+# Multiple genes side by side
+genes = [&#x27;CD3D&#x27;, &#x27;MS4A1&#x27;, &#x27;CD14&#x27;, &#x27;NKG7&#x27;]
+sc.pl.spatial(adata, color=genes, ncols=2, cmap=&#x27;Reds&#x27;, vmin=0)
+```
+
+## 6. Co-expression Plot (RGB)
+
+Visualize co-expression of two genes using RGB channels.
+
+```python
+gene1, gene2 = &#x27;CD3D&#x27;, &#x27;CD8A&#x27;
+expr1 = adata[:, gene1].X.toarray().flatten()
+expr2 = adata[:, gene2].X.toarray().flatten()
+
+from matplotlib.colors import Normalize
+norm = Normalize(vmin=0, vmax=np.percentile(np.concatenate([expr1, expr2]), 99))
+colors = np.zeros((adata.n_obs, 3))
+colors[:, 0] = norm(expr1)  # Red channel
+colors[:, 1] = norm(expr2)  # Green channel
+
+fig, ax = plt.subplots(figsize=(8, 8))
+coords = adata.obsm[&#x27;spatial&#x27;]
+ax.scatter(coords[:, 0], coords[:, 1], c=colors, s=10)
+ax.set_aspect(&#x27;equal&#x27;)
+ax.set_title(f&#x27;{gene1} (red) + {gene2} (green)&#x27;)
+plt.savefig(&#x27;coexpression.png&#x27;, dpi=300)
+```
+
+## 7. Interactive Visualization with Napari
+
+```python
+import napari
+
+viewer = napari.Viewer()
+library_id = list(adata.uns[&#x27;spatial&#x27;].keys())[0]
+img = adata.uns[&#x27;spatial&#x27;][library_id][&#x27;images&#x27;][&#x27;hires&#x27;]
+viewer.add_image(img, name=&#x27;tissue&#x27;)
+
+coords = adata.obsm[&#x27;spatial&#x27;]
+scalef = adata.uns[&#x27;spatial&#x27;][library_id][&#x27;scalefactors&#x27;][&#x27;tissue_hires_scalef&#x27;]
+viewer.add_points(coords * scalef, size=10, name=&#x27;spots&#x27;)
+
+napari.run()
+```
+
+## 8. Publication-Quality Figures
+
+```python
+fig, ax = plt.subplots(figsize=(8, 8))
+sc.pl.spatial(
+    adata,
+    color=&#x27;leiden&#x27;,
+    ax=ax,
+    show=False,
+    frameon=False,
+    title=&#x27;&#x27;,
+    legend_loc=&#x27;right margin&#x27;,
+)
+plt.savefig(&#x27;figure.pdf&#x27;, dpi=300, bbox_inches=&#x27;tight&#x27;)
+```</pre>
+</body>
+</html>

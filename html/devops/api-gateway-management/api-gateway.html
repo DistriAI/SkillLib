@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>api-gateway</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">api-gateway-management</a> / api-gateway</p><h1>api-gateway</h1><p class="meta">combined</p><p>The two skills share the name &#x27;api-gateway&#x27; but describe completely different services and procedures. The first is a guide for managing AWS API Gateway (REST/HTTP APIs, Lambda integrations, CLI commands). The second is a guide for using Maton.ai&#x27;s API Gateway (a third-party proxy for OAuth-protected SaaS APIs like Slack and Gmail). They do not overlap in functionality, steps, or constraints, so crowning one would hide a valid alternative for a different use case.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/itsmostafa/aws-agent-skills">itsmostafa/aws-agent-skills</a></td><td><code>skills/api-gateway/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/api-gateway/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/itsmostafa/aws-agent-skills">itsmostafa/aws-agent-skills</a></td><td><code>skills/api-gateway/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/api-gateway/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># API Gateway
+
+This skill covers two distinct services named &#x27;API Gateway&#x27;. Determine which service the user intends to use.
+
+## 1. AWS API Gateway
+Use this section when the user wants to create, manage, or troubleshoot AWS API Gateway resources (REST or HTTP APIs).
+
+- **Core Concepts**: Understand API types (HTTP, REST, WebSocket) and components (Resources, Methods, Integrations, Stages).
+- **Common Patterns**:
+  - **Create HTTP API**: Use `aws apigatewayv2 create-api` or SAM templates.
+  - **Create REST API**: Use `aws apigateway create-rest-api`, `create-resource`, `put-method`, and `put-integration`.
+  - **Lambda Integration**: Configure Lambda Proxy or Custom integrations.
+  - **CORS**: Configure CORS for HTTP APIs via `update-api` or for REST APIs via `put-method`/`put-integration` for OPTIONS.
+  - **Authorization**: Set up JWT or IAM authorizers.
+- **Troubleshooting**: Check CloudWatch logs and API Gateway access logs.
+
+## 2. Maton.ai API Gateway
+Use this section when the user wants to interact with third-party SaaS APIs (e.g., Slack, Gmail, Notion) using managed OAuth.
+
+- **Prerequisites**: Requires `MATON_API_KEY` environment variable.
+- **Base URL**: `https://gateway.maton.ai/{app}/{native-api-path}`.
+- **Authentication**: Include `Authorization: Bearer $MATON_API_KEY` in all requests.
+- **Connection Management**:
+  - **List Connections**: `GET https://ctrl.maton.ai/connections`.
+  - **Create Connection**: `POST https://ctrl.maton.ai/connections` with `app` name.
+  - **Specify Connection**: Use `Maton-Connection` header if multiple connections exist for an app.
+- **Usage**: Call native API endpoints directly through the gateway (e.g., `https://gateway.maton.ai/slack/api/chat.postMessage`).
+
+## Conflicts
+- **itsmostafa/aws-agent-skills**: Focuses on AWS infrastructure management.
+- **LeoYeAI/openclaw-master-skills**: Focuses on third-party SaaS API proxying via Maton.ai.</pre>
+</body>
+</html>

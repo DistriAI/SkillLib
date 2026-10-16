@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>github-automation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">github-automation</a> / github-automation</p><h1>github-automation</h1><p class="meta">combined</p><p>Both copies describe the same Rube MCP/Composio GitHub automation task, but they are not interchangeable. The davepoon copy is a tool-catalog skill that lists specific Rube tool names, parameter names, and API pitfalls (e.g., GITHUB_CREATE_A_PULL_REQUEST 422, code search 384KB limit, pagination). The sickn33 copy is a policy-governance skill that adds repository policy gates, exact-SHA binding, guarded merge paths, Actions/deployment state handling, and destructive-action authorization rules that the davepoon copy lacks. The davepoon copy lacks the policy gates and Actions/deployment workflows, while the sickn33 copy lacks the concrete tool names and parameter pitfalls. Crowning one would hide a real alternative: a tool-reference procedure versus a policy-safeguard procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/github-automation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/github-automation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/github-automation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/github-automation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/github-automation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-automation-builder/skills/github-automation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/github-automation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: github-automation
+description: Automate GitHub repositories, issues, pull requests, branches, CI/CD, and permissions via Rube MCP (Composio) with repository-policy safeguards.
+requires:
+  mcp: [rube]
+category: devops
+---
+
+# GitHub Automation via Rube MCP
+
+Automate GitHub repository management, issue tracking, pull request workflows, branch operations, CI/CD, and permissions through Composio&#x27;s GitHub toolkit, while preserving repository policy, exact revision identity, and branch protection.
+
+**Toolkit docs**: [composio.dev/toolkits/github](https://composio.dev/toolkits/github)
+
+## Prerequisites
+
+- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)
+- Active GitHub connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `github`
+- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas
+- Never request, print, or persist GitHub credentials in prompts or artifacts
+
+## Setup
+
+1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds
+2. Search for the current GitHub tool schemas before composing calls
+3. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `github`
+4. If connection is not ACTIVE, follow the returned auth link to complete GitHub OAuth
+5. Confirm connection status shows ACTIVE before running any workflows
+6. Resolve the exact `owner/repo`; do not rely on a similarly named repository
+
+## Repository Policy Gate
+
+Before any mutation, read `AGENTS.md`, contribution and maintainer docs, then inspect the default branch and effective protection. Repository-native commands and required checks take precedence over generic Rube operations.
+
+If a repository provides a guarded merge or release command, use it instead of the generic merge tool.
+
+## Core Workflows
+
+### 1. Create and Manage Issues
+
+**When to use**: User wants to create, list, or manage GitHub issues
+
+**Tool sequence**:
+1. `GITHUB_LIST_REPOSITORIES_FOR_THE_AUTHENTICATED_USER` - Find target repo if unknown [Prerequisite]
+2. `GITHUB_LIST_REPOSITORY_ISSUES` - List existing issues (includes PRs) [Required]
+3. `GITHUB_CREATE_AN_ISSUE` - Create a new issue [Required]
+4. `GITHUB_CREATE_AN_ISSUE_COMMENT` - Add comments to an issue [Optional]
+5. `GITHUB_SEARCH_ISSUES_AND_PULL_REQUESTS` - Search across repos by keyword [Optional]
+
+**Key parameters**:
+- `owner`: Repository owner (username or org), case-insensitive
+- `repo`: Repository name without .git extension
+- `title`: Issue title (required for creation)
+- `body`: Issue description (supports Markdown)
+- `labels`: Array of label names
+- `assignees`: Array of GitHub usernames
+- `state`: &#x27;open&#x27;, &#x27;closed&#x27;, or &#x27;all&#x27; for filtering
+
+**Policy safeguards**:
+- List or search existing issues before creating a duplicate
+- Distinguish issues from pull requests in mixed results by checking the `pull_request` field
+- Read the current item, comments, labels, and linked PRs before changing state
+- Create, comment, label, assign, or close only within the user&#x27;s requested scope
+- Re-read the item and verify the resulting state
+- Paginate until the requested result set is complete
+- Treat silent omission of labels or assignees as a permissions failure, not success
+
+**Pitfalls**:
+- `GITHUB_LIST_REPOSITORY_ISSUES` returns both issues AND pull requests; check `pull_request` field to distinguish
+- Only users with push access can set assignees, labels, and milestones; they are silently dropped otherwise
+- Pagination: `per_page` max 100; iterate pages until empty
+
+### 2. Manage Pull Requests
+
+**When to use**: User wants to create, review, or merge pull requests
+
+**Tool sequence**:
+1. `GITHUB_FIND_PULL_REQUESTS` - Search and filter PRs [Required]
+2. `GITHUB_GET_A_PULL_REQUEST` - Get detailed PR info including mergeable status [Required]
+3. `GITHUB_LIST_PULL_REQUESTS_FILES` - Review changed files [Optional]
+4. `GITHUB_CREATE_A_PULL_REQUEST` - Create a new PR [Required]
+5. `GITHUB_CREATE_AN_ISSUE_COMMENT` - Post review comments [Optional]
+6. `GITHUB_LIST_CHECK_RUNS_FOR_A_REF` - Verify CI status before merge [Optional]
+7. `GITHUB_MERGE_A_PULL_REQUEST` - Merge after explicit user approval [Required]
+
+**Key parameters**:
+- `head`: Source branch with changes (must exist; for cross-repo: &#x27;username:branch&#x27;)
+- `base`: Target branch to merge into (e.g., &#x27;main&#x27;)
+- `title`: PR title (required unless `issue` number provided)
+- `merge_method`: &#x27;merge&#x27;, &#x27;squash&#x27;, or &#x27;rebase&#x27;
+- `state`: &#x27;open&#x27;, &#x27;closed&#x27;, or &#x27;all&#x27;
+
+**Policy safeguards**:
+- Resolve the PR and capture its number, base, full head SHA, draft state, author, fork identity, and mergeability
+- Inspect changed files, reviews, conversations, and required check runs
+- Bind every review or approval decision to the current full head SHA
+- Create or update the PR body truthfully; never mark pending tests or reviews as completed
+- Immediately before merge, re-read base/head identity, branch protection, mergeability, required checks, and repository policy
+- Use the repository&#x27;s guarded merge path. Call a generic merge tool only when policy permits it and the user authorized the merge
+- Verify the PR reports `MERGED` and confirm the target branch contains the intended commit
+- Do not treat a successful API call that enables auto-merge or queues work as an immediate merge
+
+**Pitfalls**:
+- `GITHUB_CREATE_A_PULL_REQUEST` fails with 422 if base/head are invalid, identical, or already merged
+- `GITHUB_MERGE_A_PULL_REQUEST` can be rejected if PR is draft, closed, or branch protection applies
+- Always verify mergeable status with `GITHUB_GET_A_PULL_REQUEST` immediately before merging
+- Require explicit user confirmation before calling MERGE
+
+### 3. Manage Repositories and Branches
+
+**When to use**: User wants to create repos, manage branches, or update repo settings
+
+**Tool sequence**:
+1. `GITHUB_LIST_REPOSITORIES_FOR_THE_AUTHENTICATED_USER` - List user&#x27;s repos [Required]
+2. `GITHUB_GET_A_REPOSITORY` - Get detailed repo info [Optional]
+3. `GITHUB_CREATE_A_REPOSITORY_FOR_THE_AUTHENTICATED_USER` - Create personal repo [Required]
+4. `GITHUB_CREATE_AN_ORGANIZATION_REPOSITORY` - Create org repo [Alternative]
+5. `GITHUB_LIST_BRANCHES` - List branches [Required]
+6. `GITHUB_CREATE_A_REFERENCE` - Create new branch from SHA [Required]
+7. `GITHUB_UPDATE_A_REPOSITORY` - Update repo settings [Optional]
+
+**Key parameters**:
+- `name`: Repository name
+- `private`: Boolean for visibility
+- `ref`: Full reference path (e.g., &#x27;refs/heads/new-branch&#x27;)
+- `sha`: Commit SHA to point the new reference to
+- `default_branch`: Default branch name
+
+**Policy safeguards**:
+- Resolve the source commit SHA and target ref explicitly
+- Create topic branches rather than updating protected/default branches directly
+- Reject non-fast-forward or force updates unless the user explicitly authorizes them and repository policy permits them
+- Confirm the remote ref after mutation
+- Deletion, force-push, default-branch changes, and protection changes are destructive or high-impact actions requiring explicit authorization
+
+**Pitfalls**:
+- `GITHUB_CREATE_A_REFERENCE` only creates NEW references; use `GITHUB_UPDATE_A_REFERENCE` for existing ones
+- `ref` must start with &#x27;refs/&#x27; and contain at least two slashes
+- `GITHUB_LIST_BRANCHES` paginates via `page`/`per_page`; iterate until empty page
+- `GITHUB_DELETE_A_REPOSITORY` is permanent and irreversible; requires admin privileges
+
+### 4. Search Code and Commits
+
+**When to use**: User wants to find code, files, or commits across repositories
+
+**Tool sequence**:
+1. `GITHUB_SEARCH_CODE` - Search file contents and paths [Required]
+2. `GITHUB_SEARCH_CODE_ALL_PAGES` - Multi-page code search [Alternative]
+3. `GITHUB_SEARCH_COMMITS_BY_AUTHOR` - Search commits by author/date/org [Required]
+4. `GITHUB_LIST_COMMITS` - List commits for a specific repo [Alternative]
+5. `GITHUB_GET_A_COMMIT` - Get detailed commit info [Optional]
+6. `GITHUB_GET_REPOSITORY_CONTENT` - Get file content [Optional]
+
+**Key parameters**:
+- `q`: Search query with qualifiers (`language:python`, `repo:owner/repo`, `extension:js`)
+- `owner`/`repo`: For repo-specific commit listing
+- `author`: Filter by commit author
+- `since`/`until`: ISO 8601 date range for commits
+
+**Pitfalls**:
+- Code search only indexes files under 384KB on default branch
+- Maximum 1000 results returned from code search
+- `GITHUB_SEARCH_COMMITS_BY_AUTHOR` requires keywords
+
+### 5. Actions and Deployments
+
+**When to use**: User wants to trigger, inspect, or manage GitHub Actions workflows or deployments
+
+**Policy safeguards**:
+- Resolve the workflow by trusted ID or path and confirm `workflow_dispatch` support before dispatch
+- Bind run inspection to the intended event, ref, and head SHA
+- Distinguish `queued`, `in_progress`, `action_required`, `completed`, and `skipped` states
+- Read failed job logs before proposing source changes
+- Wait for terminal success and verify the deployed or published surface separately
+- Do not approve fork workflow runs by raw run ID when the repository provides a guarded approval command
+
+### 6. Permissions and Protection
+
+**When to use**: User wants to manage collaborators, roles, branch protection, or rulesets
+
+**Policy safeguards**:
+- Read collaborators, role, branch protection, and applicable rulesets before proposing changes
+- Treat a 404 protection response as &quot;not configured&quot; only after confirming repository and branch identity
+- Show the exact before/after policy and impact before any protection or permission mutation
+- Re-read effective state after the change
+
+## Failure Rules
+
+- Re-resolve tool schemas when Rube reports missing or changed parameters
+- Stop on repository ambiguity, stale head/base SHA, missing permissions, incomplete pagination, or inconclusive protection state
+- Never bypass required checks, reviews, merge queues, maintainer commands, or server-side branch protection
+- Do not claim a merge, workflow, deployment, or permission change succeeded without reading the resulting remote state
+
+## Limitations
+
+- Available Rube tool names and schemas can change; discover them at runtime
+- GitHub permissions, organization policy, and external checks can block otherwise valid operations
+- This skill does not authorize repository deletion, force pushes, protection changes, merges, deployments, or releases beyond explicit user intent</pre>
+</body>
+</html>

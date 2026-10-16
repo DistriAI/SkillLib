@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>statsmodels</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">statistical-modeling</a> / statsmodels</p><h1>statsmodels</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the upstream source (v1.5) and contains material constraints the other copies lack, such as explicit version pinning, the missing=&#x27;raise&#x27; data-preparation rule, and the requirement to use result_object=True for transitioning tests. The zLanqing and foryourhealth111 copies are near-identical reproductions of an earlier version that include inline code examples but lack these specific safety and compatibility checks. The sickn33 copy is a wrapper that defers to a separate guide. Because the upstream copy has unique, mandatory steps that the reproductions omit, crowning one would hide the real alternative of using the inline examples versus the version-pinned constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/statsmodels/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/statsmodels/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/statsmodels/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/statsmodels/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/statsmodels/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/statsmodels/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/statsmodels/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/statsmodels/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/17-DAAF-Contribution-Community-daaf/dot-claude/skills/statsmodels/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/statsmodels/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/statsmodels/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/statsmodels/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: statsmodels
+description: Statistical models library for Python. Use when you need specific model classes (OLS, GLM, mixed models, ARIMA) with detailed diagnostics, residuals, and inference.
+license: BSD-3-Clause license
+metadata:
+    skill-author: K-Dense Inc.
+---
+
+# Statsmodels: Statistical Modeling and Econometrics
+
+## Overview
+
+Statsmodels is Python&#x27;s premier library for statistical modeling, providing tools for estimation, inference, and diagnostics. Apply this skill for rigorous statistical analysis, from simple linear regression to complex time series models.
+
+## Compatibility and Setup
+
+- **Version Pinning**: Use statsmodels 0.15.0 with Python 3.12+ (NumPy 2.5.3, SciPy 1.18.1).
+- **Imports**: Use `statsmodels.api` for stable high-level imports.
+- **API Changes**: In 0.15, use `result_object=True` for ADF/KPSS tests and `rng=` instead of `seed`.
+
+## When to Use This Skill
+
+- Fitting regression models (OLS, WLS, GLS, quantile regression)
+- Performing generalized linear modeling (logistic, Poisson, Gamma, etc.)
+- Analyzing discrete outcomes (binary, multinomial, count, ordinal)
+- Conducting time series analysis (ARIMA, SARIMAX, VAR, forecasting)
+- Running statistical tests and diagnostics
+
+## Best Practices
+
+1. **Data Preparation**:
+   - **Intercept**: Always add a constant for array-based models (`sm.add_constant`).
+   - **Missing Values**: Use `missing=&quot;raise&quot;` during construction to catch unexpected NaNs.
+   - **Scaling**: Record units and estimate scaling on training data only.
+
+2. **Model Building**:
+   - Start with a simple model and add complexity as needed.
+   - Match the model to the outcome type (e.g., Logit for binary, Poisson for counts).
+
+3. **Inference**:
+   - Report effect sizes and confidence intervals, not just p-values.
+   - Use robust standard errors when heteroskedasticity or clustering is present.
+
+4. **Model Evaluation**:
+   - Check residuals (plot vs fitted, Q-Q plot).
+   - Use AIC/BIC only for comparable likelihoods on the same response and rows.
+
+## Quick Start Examples
+
+### Linear Regression (OLS)
+
+```python
+import statsmodels.api as sm
+
+X = sm.add_constant(X_data)
+model = sm.OLS(y, X)
+results = model.fit()
+print(results.summary())
+```
+
+### Time Series (ARIMA)
+
+```python
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.stattools import adfuller
+
+# Check stationarity
+adf_result = adfuller(y_series, result_object=True)
+print(f&quot;ADF p-value: {adf_result.pvalue:.4f}&quot;)
+
+model = ARIMA(y_series, order=(1, 1, 1))
+results = model.fit()
+forecast = results.get_forecast(steps=10).summary_frame()
+```
+
+## Reporting
+
+- Use `.summary()` for detailed output.
+- Document transformations and excluded observations.
+- Interpret coefficients carefully, accounting for link functions (e.g., exp(β) for log link).</pre>
+</body>
+</html>

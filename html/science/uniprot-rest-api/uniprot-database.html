@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>uniprot-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">uniprot-rest-api</a> / uniprot-database</p><h1>uniprot-database</h1><p class="meta">combined</p><p>The copies overlap heavily on the UniProt REST endpoints, but they disagree on the recommended Python implementation and include material steps the others lack. The foryourhealth111, sickn33, and FreedomIntelligence copies are near-identical and point to a bundled scripts/uniprot_client.py helper, while the aipoch copy provides a self-contained inline Python client with explicit polling logic and dependency versions. Crowning one copy would hide the alternative implementation and the missing-script caveat present in the sickn33 copy.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/uniprot-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/uniprot-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/uniprot-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/uniprot-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/uniprot-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/uniprot-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/uniprot-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/uniprot-database/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/uniprot-database/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/uniprot-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: uniprot-database
+description: &quot;Direct REST API access to UniProt. Protein searches, FASTA retrieval, ID mapping, Swiss-Prot/TrEMBL. Use this for direct HTTP/REST work or UniProt-specific control.&quot;
+---
+
+# UniProt Database
+
+## Overview
+
+UniProt is the world&#x27;s leading comprehensive protein sequence and functional information resource. Search proteins by name, gene, or accession, retrieve sequences in FASTA format, perform ID mapping across databases, and access Swiss-Prot/TrEMBL annotations via REST API for protein analysis.
+
+## When to Use This Skill
+
+Use this skill when:
+- Searching for protein entries by name, gene symbol, accession, or organism
+- Retrieving protein sequences in FASTA or other formats
+- Mapping identifiers between UniProt and external databases (Ensembl, RefSeq, PDB, etc.)
+- Accessing protein annotations including GO terms, domains, and functional descriptions
+- Batch retrieving multiple protein entries efficiently
+- Querying reviewed (Swiss-Prot) vs. unreviewed (TrEMBL) protein data
+- Streaming large protein datasets
+- Building custom queries with field-specific search syntax
+
+## Core Capabilities
+
+### 1. Searching for Proteins
+
+Search UniProt using natural language queries or structured search syntax.
+
+**Common search patterns:**
+```python
+# Search by protein name
+query = &quot;insulin AND organism_name:\&quot;Homo sapiens\&quot;&quot;
+
+# Search by gene name
+query = &quot;gene:BRCA1 AND reviewed:true&quot;
+
+# Search by accession
+query = &quot;accession:P12345&quot;
+
+# Search by sequence length
+query = &quot;length:[100 TO 500]&quot;
+
+# Search by taxonomy
+query = &quot;taxonomy_id:9606&quot;  # Human proteins
+
+# Search by GO term
+query = &quot;go:0005515&quot;  # Protein binding
+```
+
+Use the API search endpoint: `https://rest.uniprot.org/uniprotkb/search?query={query}&amp;format={format}`
+
+**Supported formats:** JSON, TSV, Excel, XML, FASTA, RDF, TXT
+
+### 2. Retrieving Individual Protein Entries
+
+Retrieve specific protein entries by accession number.
+
+**Accession number formats:**
+- Classic: P12345, Q1AAA9, O15530 (6 characters: letter + 5 alphanumeric)
+- Extended: A0A022YWF9 (10 characters for newer entries)
+
+**Retrieve endpoint:** `https://rest.uniprot.org/uniprotkb/{accession}.{format}`
+
+Example: `https://rest.uniprot.org/uniprotkb/P12345.fasta`
+
+### 3. Batch Retrieval and ID Mapping
+
+Map protein identifiers between different database systems and retrieve multiple entries efficiently.
+
+**ID Mapping workflow:**
+1. Submit mapping job to: `https://rest.uniprot.org/idmapping/run`
+2. Check job status: `https://rest.uniprot.org/idmapping/status/{jobId}`
+3. Retrieve results: `https://rest.uniprot.org/idmapping/results/{jobId}`
+
+**Supported databases for mapping:**
+- UniProtKB AC/ID
+- Gene names
+- Ensembl, RefSeq, EMBL
+- PDB, AlphaFoldDB
+- KEGG, GO terms
+- And many more (see `/references/id_mapping_databases.md`)
+
+**Limitations:**
+- Maximum 100,000 IDs per job
+- Results stored for 7 days
+
+### 4. Streaming Large Result Sets
+
+For large queries that exceed pagination limits, use the stream endpoint:
+
+`https://rest.uniprot.org/uniprotkb/stream?query={query}&amp;format={format}`
+
+The stream endpoint returns all results without pagination, suitable for downloading complete datasets.
+
+### 5. Customizing Retrieved Fields
+
+Specify exactly which fields to retrieve for efficient data transfer.
+
+**Common fields:**
+- `accession` - UniProt accession number
+- `id` - Entry name
+- `gene_names` - Gene name(s)
+- `organism_name` - Organism
+- `protein_name` - Protein names
+- `sequence` - Amino acid sequence
+- `length` - Sequence length
+- `go_*` - Gene Ontology annotations
+- `cc_*` - Comment fields (function, interaction, etc.)
+- `ft_*` - Feature annotations (domains, sites, etc.)
+
+**Example:** `https://rest.uniprot.org/uniprotkb/search?query=insulin&amp;fields=accession,gene_names,organism_name,length,sequence&amp;format=tsv`
+
+See `/references/api_fields.md` for complete field list.
+
+## Python Implementation
+
+### Option A: Bundled Helper Script
+
+If the original skill installation is available, use the provided helper script `scripts/uniprot_client.py` which implements:
+
+- `search_proteins(query, format)` - Search UniProt with any query
+- `get_protein(accession, format)` - Retrieve single protein entry
+- `map_ids(ids, from_db, to_db)` - Map between identifier types
+- `batch_retrieve(accessions, format)` - Retrieve multiple entries
+- `stream_results(query, format)` - Stream large result sets
+
+**Important:** If the catalog copy does not include `scripts/uniprot_client.py`, do not run steps that depend on it until the file exists. Ask for the original supporting material or an existing installation before using a step that depends on these paths. Do not fabricate the missing scripts or treat an unrelated file with the same name as equivalent. Independent steps fully documented here can proceed within the user&#x27;s authorized scope; report any dependent step as unavailable.
+
+### Option B: Inline Python Client
+
+For self-contained access without the bundled script, use the following inline implementation. Requires Python &gt;=3.8 and `requests &gt;=2.31.0`.
+
+```python
+import time
+import requests
+
+BASE = &quot;https://rest.uniprot.org&quot;
+
+def search_protein(query: str, fmt: str = &quot;json&quot;, size: int = 5):
+    &quot;&quot;&quot;
+    Search UniProtKB using Lucene-style query syntax.
+    &quot;&quot;&quot;
+    url = f&quot;{BASE}/uniprotkb/search&quot;
+    params = {&quot;query&quot;: query, &quot;format&quot;: fmt, &quot;size&quot;: size}
+    r = requests.get(url, params=params, timeout=30)
+    r.raise_for_status()
+    return r.json() if fmt == &quot;json&quot; else r.text
+
+def retrieve_entry(accession: str, fmt: str = &quot;json&quot;):
+    &quot;&quot;&quot;
+    Retrieve a UniProtKB entry by accession.
+    &quot;&quot;&quot;
+    url = f&quot;{BASE}/uniprotkb/{accession}&quot;
+    params = {&quot;format&quot;: fmt}
+    r = requests.get(url, params=params, timeout=30)
+    r.raise_for_status()
+    return r.json() if fmt == &quot;json&quot; else r.text
+
+def id_mapping(from_db: str, to_db: str, ids, poll_interval_s: float = 1.0):
+    &quot;&quot;&quot;
+    Map identifiers using UniProt ID Mapping.
+    ids can be a list of strings or a comma-separated string.
+    &quot;&quot;&quot;
+    if isinstance(ids, (list, tuple)):
+        ids = &quot;,&quot;.join(ids)
+
+    # 1) Submit mapping job
+    submit_url = f&quot;{BASE}/idmapping/run&quot;
+    r = requests.post(
+        submit_url,
+        data={&quot;from&quot;: from_db, &quot;to&quot;: to_db, &quot;ids&quot;: ids},
+        timeout=30,
+    )
+    r.raise_for_status()
+    job_id = r.json()[&quot;jobId&quot;]
+
+    # 2) Poll job status
+    status_url = f&quot;{BASE}/idmapping/status/{job_id}&quot;
+    while True:
+        s = requests.get(status_url, timeout=30)
+        s.raise_for_status()
+        payload = s.json()
+        if payload.get(&quot;jobStatus&quot;) in (None, &quot;FINISHED&quot;):
+            break
+        if payload.get(&quot;jobStatus&quot;) == &quot;FAILED&quot;:
+            raise RuntimeError(f&quot;ID mapping failed: {payload}&quot;)
+        time.sleep(poll_interval_s)
+
+    # 3) Fetch results (JSON)
+    results_url = f&quot;{BASE}/idmapping/results/{job_id}&quot;
+    res = requests.get(results_url, params={&quot;format&quot;: &quot;json&quot;}, timeout=30)
+    res.raise_for_status()
+    return res.json()
+```
+
+**Alternative Python packages:**
+- **Unipressed**: Modern, typed Python client for UniProt REST API
+- **bioservices**: Comprehensive bioinformatics web services client for multi-database workflows
+- **bio-database-evidence**: Unified route owner for biological evidence lookup across multiple databases
+
+## Query Syntax Examples
+
+**Boolean operators:**
+```
+kinase AND organism_name:human
+(diabetes OR insulin) AND reviewed:true
+cancer NOT lung
+```
+
+**Field-specific searches:**
+```
+gene:BRCA1
+accession:P12345
+organism_id:9606
+taxonomy_name:&quot;Homo sapiens&quot;
+annotation:(type:signal)
+```
+
+**Range queries:**
+```
+length:[100 TO 500]
+mass:[50000 TO 100000]
+```
+
+**Wildcards:**
+```
+gene:BRCA*
+protein_name:kinase*
+```
+
+See `/references/query_syntax.md` for comprehensive syntax documentation.
+
+## Best Practices
+
+1. **Use reviewed entries when possible**: Filter with `reviewed:true` for Swiss-Prot (manually curated) entries
+2. **Specify format explicitly**: Choose the most appropriate format (FASTA for sequences, TSV for tabular data, JSON for programmatic parsing)
+3. **Use field selection**: Only request fields you need to reduce bandwidth and processing time
+4. **Handle pagination**: For large result sets, implement proper pagination or use the stream endpoint
+5. **Cache results**: Store frequently accessed data locally to minimize API calls
+6. **Rate limiting**: Be respectful of API resources; implement delays for large batch operations
+7. **Check data quality**: TrEMBL entries are computational predictions; Swiss-Prot entries are manually reviewed
+
+## Resources
+
+### scripts/
+`uniprot_client.py` - Python client with helper functions for common UniProt operations including search, retrieval, ID mapping, batch retrieval, and streaming. Verify the file exists before use.
+
+### references/
+- `query_syntax.md` - Comprehensive UniProt query syntax documentation
+- `api_fields.md` - Complete list of available API fields
+- `id_mapping_databases.md` - Supported databases for ID mapping</pre>
+</body>
+</html>

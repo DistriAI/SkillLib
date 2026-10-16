@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>design-review</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">design-review</a> / design-review</p><h1>design-review</h1><p class="meta">combined</p><p>The two skills share the name and the high-level goal of reviewing a web UI, but they define different procedures. The jezweb copy is a visual-polish checklist (layout, typography, color, hierarchy, component consistency, interaction) that produces a findings report with screenshots and explicitly excludes usability. The plugin87 copy is a scored heuristic audit (6 weighted dimensions, Nielsen&#x27;s 10 heuristics, WCAG/contrast scripts, anti-slop taste file) that produces a weighted score and prioritized findings table. Neither copy contains the other&#x27;s core steps, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/frontend/skills/design-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/design-review/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/frontend/skills/design-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/design-review/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Design Review
+
+Review a web app or page for design quality. The review can be run as a visual-polish check, a scored heuristic audit, or both, depending on the user&#x27;s request.
+
+## Step 0 — Environment Check
+- If the plugin87 kit is available, verify it: `ls ${CLAUDE_SKILL_DIR}/../../../tokens &gt;/dev/null 2&gt;&amp;1 &amp;&amp; echo KIT_OK || echo KIT_MISSING`. On `KIT_MISSING`, tell the user the kit is incomplete and stop.
+- If a browser tool is available (Chrome MCP, Playwright MCP, or playwright-cli), use it to inspect the live page. Prefer a deployed/live URL over localhost.
+
+## Step 1 — Gather Context
+- Identify the screen(s) or flow to review.
+- Note target users, platform, and any constraints.
+- Take screenshots of the page at relevant breakpoints if a browser tool is available.
+
+## Step 2 — Visual Polish Checklist
+Check the following areas and record findings with Good/Bad examples:
+1. **Layout and Spacing**: consistent spacing, alignment, breathing room, grid discipline, responsive proportions, vertical rhythm.
+2. **Typography**: hierarchy, line length (50-75 chars), line height (1.5-1.7 body, 1.1-1.3 headings), font size scale, weight usage, truncation.
+3. **Colour and Contrast**: semantic colour tokens, WCAG AA contrast (4.5:1 body, 3:1 large), colour consistency, dark mode, status colours, colour overuse.
+4. **Visual Hierarchy**: primary action, squint test, progressive disclosure, grouping, negative space.
+5. **Component Consistency**: button styles, card styles, form inputs, icon style, border radius, shadow.
+6. **Interaction Design**: hover states, focus states, and other interaction feedback.
+
+## Step 3 — Scored Heuristic Audit (if requested or if the kit is available)
+1. Read the rubric from `${CLAUDE_SKILL_DIR}/../../../workflows/design-review.md`.
+2. Score the 6 dimensions: Visual Hierarchy (20%), Consistency (20%), Accessibility (20%), Usability (20%), Responsiveness (10%), Performance (10%). Compute the weighted overall score.
+3. Run the accessibility lens using `${CLAUDE_SKILL_DIR}/../../../accessibility/wcag-checklist.md`; use `${CLAUDE_SKILL_DIR}/../../../scripts/contrast.py` for colour-pair doubts.
+4. Check against the anti-slop tells in `${CLAUDE_SKILL_DIR}/../../../taste/design-taste.md` (Banned Defaults checklist).
+5. Apply Nielsen&#x27;s 10 heuristics; flag violations by number.
+
+## Output
+- A design findings report with screenshots (from the visual polish checklist).
+- If the scored audit was run: the 6-dimension scored table + overall score.
+- A prioritized findings table: # · Severity (Critical → Major → Minor → Enhancement) · Finding · Recommendation.
+- Concrete, token-referenced fixes where applicable.
+
+## Conflicts
+- jezweb/claude-skills::plugins/frontend/skills/design-review/SKILL.md excludes usability and focuses on visual polish; plugin87/ux-ui-agent-skills::.claude/skills/design-review/SKILL.md includes Usability as a 20% weighted dimension and applies Nielsen&#x27;s 10 heuristics. The combined instruction includes both, with the scored audit as an optional step.
+- jezweb/claude-skills::plugins/frontend/skills/design-review/SKILL.md requires a browser tool and produces screenshots; plugin87/ux-ui-agent-skills::.claude/skills/design-review/SKILL.md reads local kit files and does not require a browser. The combined instruction uses the browser when available and the kit files when available.</pre>
+</body>
+</html>

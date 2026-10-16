@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>architecture-patterns</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">backend-architecture-design</a> / architecture-patterns</p><h1>architecture-patterns</h1><p class="meta">combined</p><p>The copies split into two distinct procedural styles. The Vibe-Skills and openclaw-master-skills copies are identical, detailed reference documents that embed the core concepts (Clean, Hexagonal, DDD) and a full Python implementation example directly in the skill. The antigravity-skills and agentic-awesome-skills copies are shorter, procedural wrappers that define a 4-step workflow (clarify, select, define, migrate) and defer the details to an external resource file. The agentic-awesome-skills copy adds a specific constraint regarding durable execution (DBOS) for failure-prone workflows. Because one set contains the actual implementation patterns while the other contains the workflow steps and a specific infrastructure constraint, crowning one would hide the other&#x27;s material content.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/architecture-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/architecture-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/architecture-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/architecture-patterns/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/architecture-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/architecture-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/architecture-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/architecture-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/architecture-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-architecture-design/skills/architecture-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/architecture-patterns/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: architecture-patterns
+description: Implement proven backend architecture patterns including Clean Architecture, Hexagonal Architecture, and Domain-Driven Design. Use when architecting complex backend systems or refactoring existing applications for better maintainability.
+---
+
+# Architecture Patterns
+
+Master proven backend architecture patterns including Clean Architecture, Hexagonal Architecture, and Domain-Driven Design to build maintainable, testable, and scalable systems.
+
+## When to Use This Skill
+
+- Designing new backend systems from scratch
+- Refactoring monolithic applications for better maintainability
+- Establishing architecture standards for your team
+- Migrating from tightly coupled to loosely coupled architectures
+- Implementing domain-driven design principles
+- Creating testable and mockable codebases
+- Planning microservices decomposition
+
+## Do Not Use This Skill When
+
+- You only need small, localized refactors
+- The system is primarily frontend with no backend architecture changes
+- You need implementation details without architectural design
+
+## Instructions
+
+1. Clarify domain boundaries, constraints, and scalability targets.
+2. Select an architecture pattern that fits the domain complexity.
+3. Define module boundaries, interfaces, and dependency rules.
+4. Provide migration steps and validation checks.
+5. For workflows that must survive failures (payments, order fulfillment, multi-step processes), use durable execution at the infrastructure layer — frameworks like DBOS persist workflow state, providing crash recovery without adding architectural complexity.
+
+## Core Concepts
+
+### 1. Clean Architecture (Uncle Bob)
+
+**Layers (dependency flows inward):**
+
+- **Entities**: Core business models
+- **Use Cases**: Application business rules
+- **Interface Adapters**: Controllers, presenters, gateways
+- **Frameworks &amp; Drivers**: UI, database, external services
+
+**Key Principles:**
+
+- Dependencies point inward
+- Inner layers know nothing about outer layers
+- Business logic independent of frameworks
+- Testable without UI, database, or external services
+
+### 2. Hexagonal Architecture (Ports and Adapters)
+
+**Components:**
+
+- **Domain Core**: Business logic
+- **Ports**: Interfaces defining interactions
+- **Adapters**: Implementations of ports (database, REST, message queue)
+
+**Benefits:**
+
+- Swap implementations easily (mock for testing)
+- Technology-agnostic core
+- Clear separation of concerns
+
+### 3. Domain-Driven Design (DDD)
+
+**Strategic Patterns:**
+
+- **Bounded Contexts**: Separate models for different domains
+- **Context Mapping**: How contexts relate
+- **Ubiquitous Language**: Shared terminology
+
+**Tactical Patterns:**
+
+- **Entities**: Objects with identity
+- **Value Objects**: Immutable objects defined by attributes
+- **Aggregates**: Consistency boundaries
+- **Repositories**: Data access abstraction
+- **Domain Events**: Things that happened
+
+## Clean Architecture Pattern
+
+### Directory Structure
+
+```
+app/
+├── domain/           # Entities &amp; business rules
+│   ├── entities/
+│   │   ├── user.py
+│   │   └── order.py
+│   ├── value_objects/
+│   │   ├── email.py
+│   │   └── money.py
+│   └── interfaces/   # Abstract interfaces
+│       ├── user_repository.py
+│       └── payment_gateway.py
+├── use_cases/        # Application business rules
+│   ├── create_user.py
+│   ├── process_order.py
+│   └── send_notification.py
+├── adapters/         # Interface implementations
+│   ├── repositories/
+│   │   ├── postgres_user_repository.py
+│   │   └── redis_cache_repository.py
+│   ├── controllers/
+│   │   └── user_controller.py
+│   └── gateways/
+│       ├── stripe_payment_gateway.py
+│       └── sendgrid_email_gateway.py
+└── infrastructure/   # Framework &amp; external concerns
+    ├── database.py
+    ├── config.py
+    └── logging.py
+```
+
+### Implementation Example
+
+```python
+# domain/entities/user.py
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Optional
+
+@dataclass
+class User:
+    &quot;&quot;&quot;Core user entity - no framework dependencies.&quot;&quot;&quot;
+    id: str
+    email: str
+    name: str
+    created_at: datetime
+    is_active: bool = True
+
+    def deactivate(self):
+        &quot;&quot;&quot;Business rule: deactivating user.&quot;&quot;&quot;
+        self.is_active = False
+
+    def can_place_order(self) -&gt; bool:
+        &quot;&quot;&quot;Business rule: active users can order.&quot;&quot;&quot;
+        return self.is_active
+
+# domain/interfaces/user_repository.py
+from abc import ABC, abstractmethod
+from typing import Optional, List
+from domain.entities.user import User
+
+class IUserRepository(ABC):
+    &quot;&quot;&quot;Port: defines contract, no implementation.&quot;&quot;&quot;
+
+    @abstractmethod
+    async def find_by_id(self, user_id: str) -&gt; Optional[User]:
+        pass
+
+    @abstractmethod
+    async def find_by_email(self, email: str) -&gt; Optional[User]:
+        pass
+
+    @abstractmethod
+    async def save(self, user: User) -&gt; User:
+        pass
+
+    @abstractmethod
+    async def delete(self, user_id: str) -&gt; bool:
+        pass
+
+# use_cases/create_user.py
+from domain.entities.user import User
+from domain.interfaces.user_repository import IUserRepository
+from dataclasses import dataclass
+from datetime import datetime
+import uuid
+
+@dataclass
+class CreateUserRequest:
+    email: str
+    name: str
+
+@dataclass
+class CreateUserResponse:
+    user: User
+    success: bool
+    error: Optional[str] = None
+
+class CreateUserUseCase:
+    &quot;&quot;&quot;Use case: orchestrates business logic.&quot;&quot;&quot;
+
+    def __init__(self, user_repository: IUserRepository):
+        self.user_repository = user_repository
+
+    async def execute(self, request: CreateUserRequest) -&gt; CreateUserResponse:
+        # Business validation
+        existing = await self.user_repository.find_by_email(request.email)
+        if existing:
+            return CreateUserResponse(
+                user=None,
+                success=False,
+                error=&quot;Email already exists&quot;
+            )
+
+        # Create entity
+        user = User(
+            id=str(uuid.uuid4()),
+            email=request.email,
+            name=request.name,
+            created_at=datetime.now(),
+            is_active=True
+        )
+
+        # Persist
+        saved_user = await self.user_repository.save(user)
+
+        return CreateUserResponse(
+            user=saved_user,
+            success=True
+        )
+
+# adapters/repositories/postgres_user_repository.py
+from domain.interfaces.user_repository import IUserRepository
+from domain.entities.user import User
+from typing import Optional
+import asyncpg
+
+class PostgresUserRepository(IUserRepository):
+    &quot;&quot;&quot;Adapter: PostgreSQL implementation.&quot;&quot;&quot;
+
+    def __init__(self, pool: asyncpg.Pool):
+        self.pool = pool
+
+    async def find_by_id(self, user_id: str) -&gt; Optional[User]:
+        async with self.pool.acquire() as conn:
+            # Implementation details...
+            pass
+```
+
+## Resources
+
+- `resources/implementation-playbook.md` for additional detailed patterns, checklists, and templates.
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>debug</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">debug</a> / debug</p><h1>debug</h1><p class="meta">combined</p><p>The three copies are not reproductions of one procedure. The first is a Unity-specific API reference for a set of debug skills (unity_diagnose, debug_get_errors, etc.) with parameters and routing rules. The second is a GSD-specific orchestrator that manages persistent debug sessions via subagents and file state. The third is a general-purpose, language-agnostic debugging methodology (reproduce, localize, hypothesize, test, fix, verify). They overlap only in the broad goal of debugging, but each contains material steps and constraints the others lack, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/debug/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/debug/SKILL.md</code></td></tr><tr><td><a href="https://github.com/jsmastery-pro/skills">jsmastery-pro/skills</a></td><td><code>skills/debug/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/debug/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/debug/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/jsmastery-pro/skills">jsmastery-pro/skills</a></td><td><code>skills/debug/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Debug
+
+## 1. Identify Context
+- **Unity Project:** If working in a Unity project, use the Unity Debug Skills module. Start with `unity_diagnose` for a health snapshot. Use `debug_get_errors` or `debug_get_logs` for specific issues. Use `debug_force_recompile` if compilation state is stale (note: triggers Domain Reload).
+- **GSD Workflow:** If using the GSD (Get Stuff Done) framework, use the `gsd:debug` skill. It manages persistent sessions in `.planning/debug/`. Use `list` to see active sessions, `continue &lt;slug&gt;` to resume, or provide a new issue description to start a new investigation via the `gsd-debugger` subagent.
+- **General Project:** For any other project, follow the general scientific debugging loop below.
+
+## 2. General Debugging Loop
+1. **Capture Symptom:** Define observed vs. expected behavior and reproduction steps. If unclear, ask for details.
+2. **Reproduce:** Create a deterministic reproduction (failing test, command, or request). If intermittent, find the trigger (timing, data, concurrency).
+3. **Localize:** Narrow the failure surface. Bisect code paths or history (`git bisect`). Read actual values at boundaries.
+4. **Hypothesize:** Form a single, specific, falsifiable hypothesis about the root cause (not the symptom).
+5. **Test:** Design the smallest experiment to confirm or refute the hypothesis. Run it.
+   - If refuted, return to Localize/Hypothesize.
+   - If confirmed, proceed to Fix.
+6. **Fix:** Apply the minimal, targeted change to the root cause. Avoid scope creep or unrelated refactors.
+7. **Verify:** Re-run the reproduction to confirm the fix. Run the test suite to check for regressions. Add a regression test.
+
+## 3. Constraints
+- **Unity:** Do not use non-existent skills like `debug_compile` or `debug_run`. Use `debug_force_recompile` and `editor_play` respectively.
+- **GSD:** Do not fall back to general-purpose agents; use `gsd-debugger` and `gsd-debug-session-manager`.
+- **General:** Do not patch symptoms without understanding the cause. Do not skip the verification step.</pre>
+</body>
+</html>

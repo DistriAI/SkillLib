@@ -7,7 +7,8 @@ from skillrepo.sorting.build import build_skill_index
 from skillrepo.sorting.llm_judge import judge_contents
 from skillrepo.sorting.records import SkillOccurrence, normalize_skill_name
 from skillrepo.sorting.retrieve import SkillBody, SkillRetriever
-from skillrepo.sorting.screen import screen_cluster
+from skillrepo.sorting.download import download_shortlist, skill_cache_path
+from skillrepo.sorting.screen import SCREEN_PATH, load_screened_clusters, save_skill_screen, screen_catalog, screen_cluster
 
 
 def occurrence(repository: str, name: str, path: str, **extra) -> SkillOccurrence:
@@ -78,6 +79,31 @@ class ScreenTests(unittest.TestCase):
             {"anthropics/skills", "acme/pack"},
         )
 
+    def test_saved_screen_reloads_the_shortlist(self) -> None:
+        catalog = catalog_with(
+            repository("anthropics/skills", [("skills", "pdf", "skills/pdf/SKILL.md")], stars=180000, skill_count=19),
+            repository("acme/pack", [("skills", "pdf", "skills/pdf/SKILL.md")], stars=3000),
+            repository("solo/pack", [("skills", "notes", "skills/notes/SKILL.md")], stars=2000),
+        )
+        document = screen_catalog(catalog)
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "skill_screen.json"
+            save_skill_screen(document, path)
+            loaded = load_screened_clusters(path)
+        by_name = {cluster.name: cluster for cluster in loaded}
+        self.assertEqual(document["summary"]["content_clusters"], 1)
+        self.assertEqual(document["summary"]["downloads"], 2)
+        self.assertEqual(
+            {item["repository"] for item in document["downloads"]},
+            {"anthropics/skills", "acme/pack"},
+        )
+        self.assertTrue(by_name["pdf"].needs_llm)
+        self.assertFalse(by_name["notes"].needs_llm)
+        self.assertEqual(
+            {copy.occurrence.repository for copy in by_name["pdf"].content_copies},
+            {"anthropics/skills", "acme/pack"},
+        )
+
     def test_harness_copies_in_one_repository_skip_the_model(self) -> None:
         cluster = screen_cluster(
             [
@@ -86,6 +112,67 @@ class ScreenTests(unittest.TestCase):
             ]
         )
         self.assertFalse(cluster.needs_llm)
+
+
+class DownloadTests(unittest.TestCase):
+    def test_download_skips_files_already_stored(self) -> None:
+        catalog = catalog_with(
+            repository("acme/pack", [("skills", "notes", "skills/notes/SKILL.md")]),
+            repository("other/pack", [("skills", "notes", "skills/notes/SKILL.md")]),
+        )
+        document = screen_catalog(catalog)
+        calls: list[str] = []
+
+        def fetch(url: str, timeout: float) -> bytes:
+            calls.append(url)
+            return b"# notes\nKeep a log.\n"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            save_skill_screen(document, root / SCREEN_PATH)
+            present = skill_cache_path(root, "acme/pack", "skills/notes/SKILL.md")
+            present.parent.mkdir(parents=True)
+            present.write_text("# notes\nalready here\n")
+            first = download_shortlist(root, fetch=fetch, workers=2)
+            second = download_shortlist(root, fetch=fetch, workers=2)
+        self.assertEqual(first["downloaded"], 1)
+        self.assertEqual(first["cached"], 1)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(second["cached"], 2)
+        self.assertEqual(len(calls), 1)
+
+    def test_retry_fetches_only_the_failed_file(self) -> None:
+        catalog = catalog_with(
+            repository("acme/pack", [("skills", "notes", "skills/notes/SKILL.md")]),
+            repository("other/pack", [("skills", "notes", "skills/notes/SKILL.md")]),
+        )
+        document = screen_catalog(catalog)
+        calls: list[str] = []
+        fail = True
+
+        def fetch(url: str, timeout: float) -> bytes:
+            calls.append(url)
+            if fail and "other/pack" in url:
+                raise TimeoutError("timed out")
+            return b"# notes\nKeep a log.\n"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            save_skill_screen(document, root / SCREEN_PATH)
+            present = skill_cache_path(root, "acme/pack", "skills/notes/SKILL.md")
+            present.parent.mkdir(parents=True)
+            present.write_text("# notes\nalready here\n")
+            first = download_shortlist(root, fetch=fetch, workers=1)
+            fail = False
+            calls.clear()
+            second = download_shortlist(root, fetch=fetch, workers=1)
+            kept = present.read_text()
+        self.assertEqual(first["failed"], 1)
+        self.assertEqual(len(first["failures"]), 1)
+        self.assertTrue(all("other/pack" in url for url in calls))
+        self.assertEqual(second["downloaded"], 1)
+        self.assertEqual(second["cached"], 1)
+        self.assertEqual(kept, "# notes\nalready here\n")
 
 
 class ContentJudgeTests(unittest.TestCase):
@@ -211,6 +298,16 @@ class ContentJudgeTests(unittest.TestCase):
         )
         self.assertEqual(skill["judge"], "heuristic-fallback")
         self.assertEqual(document["domains"][0]["name"], "documents")
+
+    def test_downloaded_skill_file_is_read_without_cloning(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = skill_cache_path(root, "acme/pack", "skills/notes/SKILL.md")
+            path.parent.mkdir(parents=True)
+            path.write_text("# notes\nKeep a log.\n")
+            body = SkillRetriever(root).read(occurrence("acme/pack", "notes", "skills/notes/SKILL.md"))
+        self.assertEqual(body.source, "cache")
+        self.assertIn("Keep a log", body.text)
 
     def test_checkout_is_read_before_the_network(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

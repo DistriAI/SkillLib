@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ui-review</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">ui-code-review</a> / ui-review</p><h1>ui-review</h1><p class="meta">combined</p><p>The two copies describe different review procedures. The davepoon copy is a thin wrapper that delegates to an external workflow file and produces a 6-pillar graded audit (1-4 per pillar) in a UI-REVIEW.md file. The sickn33 copy is a self-contained checklist covering 8 specific areas (design tokens, component conventions, a11y, mobile, performance, typography, spacing, coherence) with a Pass/Needs Improvement/Fail output format. They overlap in the general goal of reviewing UI code, but the sickn33 copy contains material steps and constraints (specific checklists, output format, when-not-to-use guidance) that the davepoon copy lacks, and the davepoon copy has a different output artifact and grading scale. Crowning one would hide a real alternative procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/ui-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ui-review/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/ui-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ui-review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/ui-review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-design-studio/skills/ui-review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/ui-review/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: ui-review
+description: Review UI code for design system compliance, accessibility, and best practices
+argument-hint: &quot;[file-or-phase]&quot;
+---
+
+# UI Design Review
+
+## When to Use
+Use this skill when you need to review UI code for design system compliance, accessibility, and best practices.
+
+## When NOT to Use
+- For accessibility-only issues → use a dedicated a11y skill
+- For Nielsen UX heuristics → use a dedicated audit skill
+- For a quick automated check → use a linter
+- For non-UI code (data fetching, business rules)
+
+## Input
+Review the file or phase specified in $ARGUMENTS. If no argument is given, default to the last completed phase or the most recently modified UI file.
+
+## Checklist
+
+### 1. Design Token Compliance
+- [ ] No hardcoded hex colors (use semantic tokens: `text-foreground`, `bg-brand`, etc.)
+- [ ] No hardcoded px spacing in Tailwind (use `p-6` not `p-[24px]`)
+- [ ] Shadows use CSS variables (`shadow-[var(--shadow-card)]`)
+- [ ] Border radius follows the scale (`rounded-md`, `rounded-lg`, `rounded-2xl`)
+
+### 2. Component Conventions
+- [ ] Uses `data-slot` attribute
+- [ ] Uses `cn()` for className merging
+- [ ] Props typed with `React.ComponentProps&lt;&gt;`
+- [ ] Supports `className` prop override
+- [ ] Named export (not default export for components)
+- [ ] No wrapper components that only add a className
+
+### 3. Accessibility (a11y)
+- [ ] Touch targets &gt;= 44x44px for interactive elements
+- [ ] `focus-visible` styles on all interactive elements
+- [ ] Proper `aria-*` attributes where needed
+- [ ] Color contrast meets WCAG AA (4.5:1 for text, 3:1 for large text)
+- [ ] Animations respect `prefers-reduced-motion`
+- [ ] Images have `alt` text
+- [ ] Form inputs have associated labels
+
+### 4. Mobile Best Practices
+- [ ] No horizontal overflow
+- [ ] Touch-friendly spacing between interactive elements
+- [ ] Safe area insets handled for notched devices
+- [ ] Text sizes &gt;= 12px for readability
+- [ ] Scrollable containers have `-webkit-overflow-scrolling: touch`
+
+### 5. Performance
+- [ ] No unnecessary re-renders (stable references, memoization where needed)
+- [ ] Images are lazy-loaded
+- [ ] Heavy components are code-split
+
+### 6. Typography
+- [ ] Uses the project&#x27;s font stack
+- [ ] Font sizes from the defined scale
+- [ ] Proper font weights (400, 500, 600, 700)
+- [ ] Display text: `leading-none` + `tracking-[-0.02em]`
+- [ ] Heading text: `leading-snug` + `tracking-[-0.01em]`
+- [ ] Body text: `leading-normal` (no custom tracking)
+- [ ] Caption uppercase: `tracking-[0.05em]` or `tracking-wide`
+- [ ] No `line-height: 1.5` on display/heading text
+
+### 7. Spacing Consistency
+- [ ] All spacing values are multiples of the base unit (e.g. 6px)
+- [ ] No arbitrary spacing values
+- [ ] Uses `size-*` shorthand instead of `w-* h-*`
+- [ ] Uses `ms-*/me-*` instead of `ml-*/mr-*` (logical properties)
+- [ ] Motion transitions use design tokens
+
+### 8. Coherence
+- [ ] One radius personality applied system-wide
+- [ ] One accent color for interactive emphasis
+- [ ] No emoji as UI icons
+- [ ] Status color = severity, not decoration
+- [ ] No decorative hues
+- [ ] One shadow language
+- [ ] One icon family / fill mode / stroke weight
+- [ ] Nested-radius law: inner = outer − padding
+- [ ] Consistent control heights
+- [ ] Errors/states never rely on color alone
+
+## Output Format
+Provide:
+1. **Score**: Pass / Needs Improvement / Fail
+2. **Issues**: List each violation with file:line reference
+3. **Fixes**: Concrete code changes for each issue
+
+## Limitations
+- Use this skill only when the task clearly matches the project context.
+- Verify commands, generated code, dependencies, and external service behavior before applying changes.
+- Do not treat examples as a substitute for environment-specific tests, security review, or user approval for destructive or costly actions.</pre>
+</body>
+</html>

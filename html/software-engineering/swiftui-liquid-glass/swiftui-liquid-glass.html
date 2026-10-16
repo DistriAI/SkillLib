@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>swiftui-liquid-glass</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">swiftui-liquid-glass</a> / swiftui-liquid-glass</p><h1>swiftui-liquid-glass</h1><p class="meta">combined</p><p>The Dimillian/Skills copy is the base procedure, and the sickn33 and LeoYeAI copies are near-verbatim reproductions of it. However, the dpearson2699 copy is a materially expanded version that adds API signatures, a Glass struct property table, transition style decision rules (matchedGeometry vs materialize vs identity), configurable button styles, and related iOS 26 APIs (scrollEdgeEffectStyle, backgroundExtensionEffect, ToolbarSpacer) that the other copies lack. Crowning the Dimillian copy would hide these real, non-conflicting additions, so the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Dimillian/Skills">Dimillian/Skills</a></td><td><code>swiftui-liquid-glass/SKILL.md</code></td></tr><tr><td><a href="https://github.com/dpearson2699/swift-ios-skills">dpearson2699/swift-ios-skills</a></td><td><code>skills/swiftui-liquid-glass/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/swiftui-liquid-glass/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/swiftui-liquid-glass/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Dimillian/Skills">Dimillian/Skills</a></td><td><code>swiftui-liquid-glass/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/dpearson2699/swift-ios-skills">dpearson2699/swift-ios-skills</a></td><td><code>skills/swiftui-liquid-glass/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/swiftui-liquid-glass/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/swiftui-liquid-glass/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/swiftui-liquid-glass/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/swiftui-liquid-glass/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: swiftui-liquid-glass
+description: Implement, review, or improve SwiftUI Liquid Glass effects for iOS 26+. Covers glassEffect modifier, GlassEffectContainer, glass button styles, glass toolbar/tab bar, static status badges vs interactive controls, morphing transitions, tinting, interactive glass, ToolbarSpacer, scrollEdgeEffectStyle, backgroundExtensionEffect, and availability gating. Use when asked about Liquid Glass, glass buttons, glassEffect, GlassEffectTransition, glassEffectID, glassEffectUnion, scroll edge effects, or adopting iOS 26 design.
+---
+
+# SwiftUI Liquid Glass
+
+Liquid Glass is the dynamic translucent material introduced across Apple platforms 26. Standard SwiftUI bars and presentations adopt it automatically when built with the current SDK. Reserve custom glass for functional controls and navigation surfaces, not general content backgrounds.
+
+## Workflow
+
+Choose the path that matches the request:
+
+### 1. Implement a new feature with Liquid Glass
+
+1. Identify target surfaces (floating controls, custom bars, transient controls).
+2. Decide shape, prominence, and whether each element is a real control or static status.
+3. Wrap grouped glass elements in a `GlassEffectContainer`.
+4. Apply `.glassEffect()` **after** layout and appearance modifiers.
+5. Add `.interactive()` only to tappable/focusable elements.
+6. Add morphing transitions with `glassEffectID(_:in:)` where the view hierarchy changes with animation. Put `glassEffectTransition(_:)` on the inserted or removed glass child, not on the always-present container, and choose the style using the transition decision rules below.
+7. Gate with `if #available(iOS 26, *)` and provide a fallback for earlier versions.
+
+### 2. Improve an existing feature with Liquid Glass
+
+1. Find custom control or navigation backgrounds that can be replaced with `.glassEffect()`.
+2. Wrap sibling glass elements in `GlassEffectContainer` for blending and performance.
+3. Replace custom glass-like buttons with `.buttonStyle(.glass)`, `.buttonStyle(.glassProminent)`, or configurable styles such as `.buttonStyle(.glass(.clear))`. Use `.glass(_:)` when the button needs a specific tint or variant; reserve `.glassProminent` for high-emphasis primary actions.
+4. Add morphing transitions where animated insertion/removal occurs.
+
+### 3. Review existing Liquid Glass usage
+
+Trace each effect through content/control ownership, layout order, container scope, interactivity, transitions, availability, accessibility settings, and fallback. Restore the same UI fixture and rerun the checklist after each correction.
+
+## Core API Summary
+
+### glassEffect(_:in:)
+
+Applies Liquid Glass behind a view. Default: `.regular` variant in a `Capsule` shape.
+
+```swift
+nonisolated func glassEffect(
+    _ glass: Glass = .regular,
+    in shape: some Shape = DefaultGlassEffectShape()
+) -&gt; some View
+```
+
+### Glass struct
+
+| Property / Method | Purpose |
+|---|---|
+| `.regular` | Standard glass material |
+| `.clear` | Clear variant; add dimming/contrast treatment when legibility needs it |
+| `.identity` | No visual effect (pass-through) |
+| `.tint(_:)` | Add a color tint for prominence |
+| `.interactive(_:)` | React to touch and pointer interactions |
+
+Chain them: `.regular.tint(.blue).interactive()`
+
+### GlassEffectContainer
+
+Wraps multiple glass views for shared rendering, blending, and morphing.
+
+```swift
+GlassEffectContainer(spacing: 24) {
+    // child views with .glassEffect()
+}
+```
+
+The `spacing` controls when nearby glass shapes begin to blend. Match or exceed the interior layout spacing so shapes merge during animated transitions but remain separate at rest.
+
+### Morphing &amp; Transitions
+
+| Modifier | Purpose |
+|---|---|
+| `glassEffectID(_:in:)` | Stable identity for morphing during view hierarchy changes |
+| `glassEffectUnion(id:namespace:)` | Merge multiple views into one glass shape |
+| `glassEffectTransition(_:)` | Control how glass appears/disappears |
+
+Transition decision: use `.matchedGeometry` for nearby effects inside the container&#x27;s spacing; use `.materialize` for distant insertion/removal or when no geometry match should occur; use `.identity` only when no transition animation is wanted.
+
+### Button Styles
+
+```swift
+Button(&quot;Action&quot;) { }
+    .buttonStyle(.glass)           // standard glass button
+
+Button(&quot;Primary&quot;) { }
+    .buttonStyle(.glassProminent)  // prominent glass button
+
+Button(&quot;Media&quot;) { }
+    .buttonStyle(.glass(.clear))    // configurable variant; verify contrast
+```
+
+### Related iOS 26 APIs
+
+| API | Use |
+|---|---|
+| `scrollEdgeEffectStyle` | Configure a scroll boundary&#x27;s visual treatment. |
+| `backgroundExtensionEffect` | Extend one background under safe-area edges with mirrored blur. |
+| `ToolbarSpacer` | Create a visual break between toolbar items. |
+
+## Code Examples
+
+### Glass button with availability gate
+
+```swift
+if #available(iOS 26, *) {
+    Button(&quot;Show Status&quot;) { showStatusDetails() }
+        .buttonStyle(.glass)
+} else {
+    Button(&quot;Show Status&quot;) { showStatusDetails() }
+        .buttonStyle(.bordered)
+}
+```
+
+### Grouped glass shapes in a container
+
+```swift
+let symbols = [&quot;pencil&quot;, &quot;eraser.fill&quot;, &quot;lasso&quot;]
+
+GlassEffectContainer(spacing: 24) {
+    HStack(spacing: 24) {
+        ForEach(symbols, id: \.self) { symbol in
+            Image(systemName: symbol)
+                .frame(width: 56, height: 56)
+                .glassEffect()
+        }
+    }
+}
+```
+
+### Simple text with glass and fallback
+
+```swift
+if #available(iOS 26, *) {
+    Text(&quot;Hello&quot;)
+        .padding()
+        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 16))
+} else {
+    Text(&quot;Hello&quot;)
+        .padding()
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+}
+```
+
+## Review Checklist
+
+- **Availability**: `#available(iOS 26, *)` present with fallback UI.
+- **Composition**: Multiple glass views wrapped in `GlassEffectContainer`.
+- **Modifier order**: `glassEffect` applied after layout/appearance modifiers.
+- **Interactivity**: `interactive()` only where user interaction exists.
+- **Transitions**: `glassEffectID` used with `@Namespace` for morphing; `glassEffectTransition` on the inserted/removed child.
+- **Consistency**: Shapes, tinting, and spacing align across the feature.
+
+## Implementation Checklist
+
+- Define target elements and desired glass prominence.
+- Wrap grouped glass elements in `GlassEffectContainer` and tune spacing.
+- Use `.glassEffect(.regular.tint(...).interactive(), in: .rect(cornerRadius: ...))` as needed.
+- Use `.buttonStyle(.glass)` / `.buttonStyle(.glassProminent)` for actions.
+- Add morphing transitions with `glassEffectID` when hierarchy changes.
+- Provide fallback materials and visuals for earlier iOS versions.
+
+## Resources
+- Reference guide: `references/liquid-glass.md`
+- Prefer Apple docs for up-to-date API details.</pre>
+</body>
+</html>

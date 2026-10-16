@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>atlas-cloud-media</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">media</a> / <a href="index.html">atlas-cloud-media-generation</a> / atlas-cloud-media</p><h1>atlas-cloud-media</h1><p class="meta">combined</p><p>The two skills describe the same high-level workflow (discover models, inspect schema, submit one paid request, poll with bounds) but implement it via fundamentally different mechanisms. The first skill relies on a bundled Python CLI (`scripts/atlas_media.py`) that abstracts away the HTTP details, while the second skill is a &#x27;source-only&#x27; skill that provides raw `curl` and `jq` commands for direct API interaction. The second skill also introduces specific operational constraints (private per-run workspace with `umask 077`, specific polling intervals of 3s/200 attempts, explicit API endpoint table) that are absent from the first. Conversely, the first skill provides a specific CLI interface and safety rules regarding the `--confirm-paid` flag. Combining them is necessary to capture both the high-level CLI abstraction and the low-level manual API contract details.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/atlas-cloud-media/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/atlas-cloud-media/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/atlas-cloud-media/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/atlas-cloud-media/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/atlas-cloud-media/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/atlas-cloud-media/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: atlas-cloud-media
+category: media-content
+description: Discover Atlas Cloud image and video models, inspect their live schemas, and submit one confirmed media generation request with bounded GET polling. Supports both a bundled CLI and direct API interaction.
+---
+
+# Atlas Cloud Media
+
+Use this skill to generate images or videos via Atlas Cloud. You may use the bundled `scripts/atlas_media.py` CLI if available, or interact directly with the REST API using `curl` and `jq`.
+
+## When to Use This Skill
+
+- The user wants to find an available Atlas Cloud image or video model.
+- An integration needs the current model ID, input fields, endpoint, or price.
+- The user wants one explicitly confirmed media generation request.
+- An asynchronous Atlas Cloud task needs bounded status polling.
+
+## Setup
+
+Set the API key in the environment. Never pass it as a CLI argument or commit it to a repository.
+
+```bash
+export ATLASCLOUD_API_KEY=&quot;your-api-key&quot;
+```
+
+`ATLASCLOUD_BASE_URL` may point to a compatible deployment. It defaults to `https://api.atlascloud.ai`.
+
+## Workflow Option A: Using the Bundled CLI
+
+If `scripts/atlas_media.py` is present, use it for a streamlined experience.
+
+### 1. Discover current models
+
+```bash
+python3 scripts/atlas_media.py models --type Image --query flux
+```
+
+### 2. Inspect the exact schema
+
+```bash
+python3 scripts/atlas_media.py describe black-forest-labs/flux-schnell
+```
+
+### 3. Prepare parameters in a file
+
+Create a JSON file with the required fields (e.g., `prompt`, `size`). Do not include the `model` field; the CLI inserts it.
+
+### 4. Confirm cost and generate once
+
+```bash
+python3 scripts/atlas_media.py generate \
+  black-forest-labs/flux-schnell \
+  --params-file request.json \
+  --confirm-paid
+```
+
+The `--confirm-paid` flag is mandatory. The CLI sends exactly one POST and polls with a fixed interval.
+
+## Workflow Option B: Direct API Interaction
+
+If the CLI is not available, use the following raw API steps.
+
+### 0. Create a Private Per-Run Workspace
+
+Create a private directory to store prompts, responses, and IDs securely.
+
+```bash
+umask 077
+atlas_tmp_dir=$(mktemp -d &quot;${TMPDIR:-/tmp}/atlas-cloud-media.XXXXXXXX&quot;) || exit 1
+chmod 700 -- &quot;$atlas_tmp_dir&quot;
+trap &#x27;rm -rf -- &quot;$atlas_tmp_dir&quot;&#x27; EXIT
+```
+
+### 1. Discover and Validate a Model
+
+Fetch the catalog and filter by type.
+
+```bash
+curl --fail --silent --show-error \
+  &quot;https://api.atlascloud.ai/api/v1/models&quot; \
+  --output &quot;${atlas_tmp_dir:?run private workspace setup first}/models.json&quot;
+
+jq -r &#x27;.data[] | select(.type == &quot;Image&quot;) | [.model, .displayName, .schema] | @tsv&#x27; \
+  &quot;$atlas_tmp_dir/models.json&quot;
+```
+
+Fetch the specific model&#x27;s schema URL from the catalog entry and validate your parameters against it. Do not guess parameters.
+
+### 2. Submit One Generation Task
+
+Build the JSON body in a file. Ensure the `model` field is included in the payload for direct API calls.
+
+**Image Example:**
+```bash
+jq -n \
+  --arg model &quot;qwen-image-3.0/text-to-image&quot; \
+  --arg prompt &quot;A paper-cut city map&quot; \
+  &#x27;{model: $model, prompt: $prompt, size: &quot;1024*1024&quot;, n: 1}&#x27; \
+  &gt; &quot;${atlas_tmp_dir:?run private workspace setup first}/request.json&quot;
+
+curl --fail --silent --show-error \
+  --request POST \
+  &quot;https://api.atlascloud.ai/api/v1/model/generateImage&quot; \
+  --header &quot;Authorization: Bearer $ATLASCLOUD_API_KEY&quot; \
+  --header &quot;Content-Type: application/json&quot; \
+  --data @&quot;$atlas_tmp_dir/request.json&quot; \
+  --output &quot;$atlas_tmp_dir/submit.json&quot;
+```
+
+**Video Example:**
+```bash
+jq -n \
+  --arg model &quot;bytedance/seedance-2.0-fast/text-to-video&quot; \
+  --arg prompt &quot;A small paper boat&quot; \
+  &#x27;{model: $model, prompt: $prompt, duration: 4, resolution: &quot;480p&quot;, ratio: &quot;16:9&quot;}&#x27; \
+  &gt; &quot;${atlas_tmp_dir:?run private workspace setup first}/request.json&quot;
+
+curl --fail --silent --show-error \
+  --request POST \
+  &quot;https://api.atlascloud.ai/api/v1/model/generateVideo&quot; \
+  --header &quot;Authorization: Bearer $ATLASCLOUD_API_KEY&quot; \
+  --header &quot;Content-Type: application/json&quot; \
+  --data @&quot;$atlas_tmp_dir/request.json&quot; \
+  --output &quot;$atlas_tmp_dir/submit.json&quot;
+```
+
+Check that `.data.id` is a non-empty string. Do not retry on failure.
+
+### 3. Poll with a Deadline
+
+Poll every 3 seconds. Stop after 200 attempts (10 minutes) or on terminal status.
+
+```bash
+prediction_id=$(jq -er &#x27;.data.id | select(type == &quot;string&quot; and length &gt; 0)&#x27; \
+  &quot;${atlas_tmp_dir:?run private workspace setup first}/submit.json&quot;)
+
+for attempt in $(seq 1 200); do
+  sleep 3
+  curl --fail --silent --show-error \
+    &quot;https://api.atlascloud.ai/api/v1/model/prediction/$prediction_id&quot; \
+    --header &quot;Authorization: Bearer $ATLASCLOUD_API_KEY&quot; \
+    --output &quot;$atlas_tmp_dir/prediction.json&quot;
+
+  status=$(jq -r &#x27;.data.status // &quot;unknown&quot;&#x27; &quot;$atlas_tmp_dir/prediction.json&quot;)
+  case &quot;$status&quot; in
+    completed|succeeded)
+      echo &quot;Success&quot;
+      break
+      ;;
+    failed|timeout)
+      echo &quot;Failed&quot;
+      break
+      ;;
+  esac
+done
+```
+
+## Safety Rules
+
+- Keep `ATLASCLOUD_API_KEY` server-side and out of logs, prompts, or committed files.
+- Never retry a generation POST automatically. If submission fails, report the error and require a new explicit confirmation.
+- Poll only with GET and stop at the defined maximum.
+- Validate the live schema again when changing models.
+- Download returned media URLs before they expire when persistent storage is required.
+- Require human review for sensitive, regulated, or high-impact content.
+
+## Output
+
+- **CLI:** Writes structured JSON to stdout including prediction ID, status, and URLs.
+- **Direct API:** Files in the temporary workspace (`submit.json`, `prediction.json`) contain the raw API responses.</pre>
+</body>
+</html>

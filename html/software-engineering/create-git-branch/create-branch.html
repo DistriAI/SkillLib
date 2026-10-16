@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>create-branch</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">create-git-branch</a> / create-branch</p><h1>create-branch</h1><p class="meta">combined</p><p>Both copies implement the same Sentry-style branch naming workflow, but they disagree on the branch name format and on how much interaction is allowed. The getsentry/skills copy uses &lt;type&gt;/&lt;short-description&gt; and is explicitly non-interactive, auto-deriving a generic description when there are no local changes and auto-resolving base/collision cases. The sickn33/agentic-awesome-skills copy uses &lt;username&gt;/&lt;type&gt;/&lt;short-description&gt;, requires a username prefix, asks the user when there are no local changes, asks for confirmation before creating, and asks the user to choose a different name on collision. Crowning one copy would hide a real alternative naming convention and interaction model.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/create-branch/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/create-branch/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/create-branch/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/create-branch/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/create-branch/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-oss-maintainer/skills/create-branch/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/create-branch/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: create-branch
+description: Create a git branch following Sentry naming conventions. Use when asked to &quot;create a branch&quot;, &quot;new branch&quot;, &quot;start a branch&quot;, &quot;make a branch&quot;, &quot;switch to a new branch&quot;, or when starting new work on the default branch.
+argument-hint: &#x27;[optional description of the work]&#x27;
+---
+
+# Create Branch
+
+Create a git branch following Sentry naming conventions.
+
+## Conflicts
+
+- getsentry/skills: branch name is &lt;type&gt;/&lt;short-description&gt;; workflow is non-interactive; auto-derives a generic description when there are no local changes; auto-resolves base and collision cases.
+- sickn33/agentic-awesome-skills: branch name is &lt;username&gt;/&lt;type&gt;/&lt;short-description&gt;; workflow asks the user for a username prefix, asks for confirmation before creating, asks the user to choose a different name on collision, and asks whether to branch from the current branch or switch to the default branch.
+
+## Workflow
+
+1. Resolve the work description:
+   - If `$ARGUMENTS` is present, use it.
+   - Otherwise inspect:
+     ```bash
+     git diff
+     git diff --cached
+     git status --short
+     ```
+   - If there are local changes, derive a short description from the diff.
+   - If there are no local changes:
+     - getsentry/skills: use a generic description like `repo-maintenance`, `tooling-update`, or `work-in-progress`.
+     - sickn33/agentic-awesome-skills: ask the user what they are about to work on.
+
+2. Classify the branch type:
+
+| Type | Use when |
+|------|----------|
+| `feat` | New functionality |
+| `fix` | Broken behavior now works |
+| `ref` | Behavior stays the same, structure changes |
+| `chore` | Maintenance of existing tooling/config |
+| `perf` | Same behavior, faster |
+| `style` | Visual or formatting only |
+| `docs` | Documentation only |
+| `test` | Tests only |
+| `ci` | CI/CD config |
+| `build` | Build system |
+| `meta` | Repo metadata |
+| `license` | License changes |
+
+   When unsure: use `feat` for new things, `ref` for restructuring, `chore` for maintenance.
+
+3. Generate the branch name:
+   - getsentry/skills: `&lt;type&gt;/&lt;short-description&gt;`.
+   - sickn33/agentic-awesome-skills: `&lt;username&gt;/&lt;type&gt;/&lt;short-description&gt;`, where `&lt;username&gt;` is obtained from `gh api user --jq .login` or asked from the user if the command fails.
+   - Keep `&lt;short-description&gt;` kebab-case, ASCII-only, and ideally 3 to 6 words.
+
+4. Choose the base without prompting (getsentry/skills) or with prompting (sickn33/agentic-awesome-skills):
+   ```bash
+   git branch --show-current
+   git remote | grep -qx origin &amp;&amp; echo origin || git remote | head -1
+   git symbolic-ref refs/remotes/&lt;remote&gt;/HEAD 2&gt;/dev/null | sed &#x27;s|refs/remotes/&lt;remote&gt;/||&#x27; | tr -d &#x27;[:space:]&#x27;
+   ```
+   - If default branch detection fails, fall back to `main`, then `master`, then the current branch (getsentry/skills) or ask the user (sickn33/agentic-awesome-skills).
+   - If on a detached HEAD, branch from the current commit (getsentry/skills) or ask the user (sickn33/agentic-awesome-skills).
+   - If already on a non-default branch, branch from the current branch (getsentry/skills) or ask the user (sickn33/agentic-awesome-skills).
+   - Only switch to the default branch when the user explicitly asks (getsentry/skills) or when the user chooses to switch (sickn33/agentic-awesome-skills).
+
+5. Avoid collisions:
+   - getsentry/skills: append `-2`, `-3`, and so on until the name is unused locally and remotely.
+   - sickn33/agentic-awesome-skills: check that the name doesn&#x27;t already exist locally or on the remote (`git show-ref`); if it does, ask the user to choose a different name.
+
+6. Create the branch:
+   ```bash
+   git checkout -b &lt;branch-name&gt;
+   ```
+   - getsentry/skills: report the final branch name, but do not stop for confirmation.
+   - sickn33/agentic-awesome-skills: present the proposed name to the user and ask if they want to use it, modify it, or change the type before creating.
+
+## References
+
+- [Sentry Branch Naming](https://develop.sentry.dev/sdk/getting-started/standards/code-submission/#branch-naming)</pre>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pymoo</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">multi-objective-optimization</a> / pymoo</p><h1>pymoo</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the most complete and current procedure, but the other copies contain material constraints and steps it lacks. Specifically, the foryourhealth111-pixel copy includes a &#x27;Routing Boundary&#x27; section that explicitly excludes the skill from generic optimization, gradient descent, and Bayesian modeling, which is a critical guardrail for an agent. The K-Dense copy also contains specific version-pinning (pymoo 0.6.2) and a more detailed result contract (distinguishing G, H, and CV) that the others omit. Because the K-Dense copy lacks the routing boundary and the others lack the version/result details, crowning one would hide a real alternative or a necessary constraint.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/pymoo/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pymoo/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pymoo/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pymoo/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/pymoo/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pymoo/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pymoo/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pymoo/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: pymoo
+description: Solves and validates single-, multi-, and many-objective optimization with pymoo, including NSGA-II, NSGA-III, MOEA/D, constraints, Pareto approximations, reference directions, and ZDT/DTLZ benchmarks.
+license: Apache-2.0
+metadata:
+  skill-author: K-Dense Inc.
+---
+
+# Pymoo - Multi-Objective Optimization in Python
+
+## Routing Boundary
+Use this skill only for pymoo, NSGA-II/NSGA, Pareto-front analysis, multi-objective optimization, constrained optimization, and pymoo algorithm implementation. Do not use it for generic optimization planning, experiment design, gradient descent, Bayesian modeling, PyMC, or causal analysis.
+
+## Overview
+Pymoo is a comprehensive Python framework for optimization with emphasis on multi-objective problems. Solve single and multi-objective optimization using state-of-the-art algorithms (NSGA-II/III, MOEA/D), benchmark problems (ZDT, DTLZ), and multi-criteria decision making methods.
+
+## Installation
+```bash
+uv pip install &quot;pymoo==0.6.2&quot;
+```
+
+## Core Concepts
+### The Unified Interface
+Pymoo uses a consistent `minimize()` function for all optimization tasks:
+
+```python
+from pymoo.optimize import minimize
+
+result = minimize(
+    problem,        # What to optimize
+    algorithm,      # How to optimize
+    termination,    # When to stop
+    seed=1,
+    verbose=True
+)
+```
+
+**Result object contains:**
+- `result.X`: Decision variables of optimal solution(s)
+- `result.F`: Objective values of optimal solution(s)
+- `result.G`: Raw inequality values (`g(x) &lt;= 0` is feasible)
+- `result.H`: Raw equality residuals
+- `result.CV`: Aggregated constraint violation under the configured tolerances
+- `result.algorithm`: Final algorithm state; history is retained when requested
+
+**Check feasibility before plotting or selecting:** If no feasible solution was found, `result.X` and `result.F` can be `None`. With `return_least_infeasible=True`, a returned candidate can still violate constraints; report its `CV` and residuals instead of calling it feasible.
+
+### Problem Definition Styles
+- **`Problem`**: Vectorized — `_evaluate` receives a batch of solutions (matrix)
+- **`ElementwiseProblem`**: One solution per call — recommended for custom problems and parallel evaluation
+- **`FunctionalProblem`**: Define objectives and constraints as separate functions without subclassing
+
+## Quick Start Workflows
+
+### Workflow 1: Single-Objective Optimization
+**When:** Optimizing one objective function
+**Steps:**
+1. Define or select problem
+2. Choose single-objective algorithm (GA, DE, PSO, CMA-ES)
+3. Configure termination criteria
+4. Run optimization
+5. Extract best solution
+
+### Workflow 2: Multi-Objective Optimization (2-3 objectives)
+**When:** Optimizing 2-3 conflicting objectives, need Pareto front
+**Algorithm choice:** NSGA-II (standard for bi/tri-objective)
+**Steps:**
+1. Define multi-objective problem
+2. Configure NSGA-II
+3. Run optimization to obtain Pareto front
+4. Visualize trade-offs
+5. Apply decision making (optional)
+
+### Workflow 3: Many-Objective Optimization (4+ objectives)
+**When:** Optimizing 4 or more objectives
+**Algorithm choice:** NSGA-III (designed for many objectives)
+**Key difference:** Must provide reference directions for population guidance
+**Steps:**
+1. Define many-objective problem
+2. Generate reference directions
+3. Configure NSGA-III with reference directions
+4. Run optimization
+5. Visualize using Parallel Coordinate Plot
+
+### Workflow 4: Custom Problem Definition
+**When:** Solving domain-specific optimization problem
+**Steps:**
+1. Extend `ElementwiseProblem` class
+2. Define `__init__` with problem dimensions and bounds
+3. Implement `_evaluate` method for objectives (and constraints)
+4. Use with any algorithm</pre>
+</body>
+</html>

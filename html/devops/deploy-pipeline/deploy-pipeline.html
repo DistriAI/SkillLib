@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>deploy-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">deploy-pipeline</a> / deploy-pipeline</p><h1>deploy-pipeline</h1><p class="meta">combined</p><p>The two skills share the name &#x27;deploy-pipeline&#x27; but describe entirely different systems and procedures. The first is a Power Platform/Power Pages ALM skill that uses PAC CLI, Azure CLI, and a local pipeline configuration file to promote a solution to a target environment. The second is a full-stack release skill using the Composio CLI to coordinate Stripe, Supabase, and Vercel. They do not overlap in steps, tools, or constraints, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/power-pages/skills/deploy-pipeline/SKILL.md</code></td></tr><tr><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>deploy-pipeline/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/power-pages/skills/deploy-pipeline/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>deploy-pipeline/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Deploy Pipeline
+
+This skill covers two distinct deployment workflows. Select the appropriate section based on your target platform.
+
+## Option A: Power Platform / Power Pages
+
+Use this when deploying a Power Pages solution via a Power Platform Pipeline.
+
+1. **Prerequisites**: Ensure `docs/alm/last-pipeline.json` and `.solution-manifest.json` exist. Verify Azure CLI (`az account show`) and PAC CLI (`pac env who`) are logged in.
+2. **ALM Plan Gate**: Run `node &quot;${PLUGIN_ROOT}/scripts/lib/check-alm-plan.js&quot;` to check for an active ALM plan. If no plan exists, prompt the user to run `/power-pages:plan-alm` or bypass the gate.
+3. **Select Stage**: Choose the target stage (e.g., staging, production).
+4. **Validate Package**: Validate the solution package.
+5. **Deploy**: Trigger the pipeline deployment using PAC CLI.
+6. **Poll**: Poll for completion and report status.
+
+## Option B: Stripe / Supabase / Vercel (Composio CLI)
+
+Use this for full-stack releases involving billing, database, and frontend.
+
+1. **Prerequisites**: Install and login to Composio CLI. Link Stripe, Supabase, Vercel, and Slack.
+2. **Stripe**: Create or update the price/product using `STRIPE_CREATE_PRICE` or `STRIPE_UPDATE_PRODUCT`.
+3. **Supabase**: Apply database migrations using `SUPABASE_APPLY_MIGRATION`. Sanity-check the schema with `SUPABASE_RUN_SQL_QUERY`.
+4. **Vercel**: Trigger a production deployment using `VERCEL_CREATE_A_NEW_DEPLOYMENT`. Poll `VERCEL_GET_A_DEPLOYMENT_BY_ID_OR_URL` until `readyState` is `READY`.
+5. **Verify**: Run health checks and database queries to confirm the deployment.
+6. **Announce**: Send a release announcement via Slack using `SLACK_SEND_MESSAGE`.
+
+## Rollback
+
+- **Power Pages**: Use the pipeline&#x27;s rollback capabilities or redeploy the previous solution version.
+- **Stripe/Supabase/Vercel**: Undo in reverse order: Vercel (promote previous deployment), Supabase (apply down migration), Stripe (deactivate price, do not delete), Slack (announce rollback).</pre>
+</body>
+</html>

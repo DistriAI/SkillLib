@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gsea</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">gsea</a> / gsea</p><h1>gsea</h1><p class="meta">combined</p><p>The two skills describe different GSEA workflows. The first is a specific CLI wrapper (scripts/main.R) with a fixed set of arguments and modes. The second is a conceptual guide for using R packages (clusterProfiler, fgsea) directly, emphasizing statistical validity, permutation types, and version compatibility. They do not reproduce each other; the first is a tool-specific procedure, while the second is a methodological framework. Combining them provides both the specific tool usage and the critical statistical context.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>awesome-med-research-skills/Data Analysis/gsea/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>pathway-analysis/gsea/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>awesome-med-research-skills/Data Analysis/gsea/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>pathway-analysis/gsea/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># GSEA Analysis
+
+## 1. Statistical Foundation
+Before running GSEA, ensure the input is a **named vector** of genes sorted **decreasingly** by a signed, variance-calibrated statistic (e.g., DESeq2 `stat` or limma `t`). Do not use raw p-values, as they erase directionality. 
+
+**Critical Choices:**
+- **Ranking Statistic:** Must be signed and variance-calibrated.
+- **Permutation Type:** Gene permutation (default in preranked tools) is anti-conservative for correlated genes. If an expression matrix is available and n &gt;= 7 per group, prefer phenotype permutation or CAMERA for valid type-I error control.
+- **Reporting:** Always log the ranking metric, weight exponent, permutation type, and gene-set version.
+
+## 2. Execution Options
+
+### Option A: Using the `gsea` CLI Wrapper (aipoch/medical-research-skills)
+Use this for a streamlined pipeline with pre-configured gene sets (KEGG, Hallmarks, GO).
+
+**Analysis Mode:**
+```bash
+Rscript scripts/main.R --input &lt;ranked_genes.csv&gt; --outdir ./GSEA_analysis --type KEGG --species human --seed 42
+```
+
+**Plot Mode:**
+```bash
+Rscript scripts/main.R --running_file ./GSEA_analysis/Table/gsea_running_scores.csv --enrich_file ./GSEA_analysis/Table/enrichGSEA.csv --plot_output ./GSEA_analysis/plot/gsea_plot.pdf --top_n 5
+```
+
+### Option B: Using R Packages Directly (GPTomics/bioSkills)
+Use this for maximum control over permutation and gene-set sources.
+
+**Preranked GSEA (clusterProfiler):**
+```r
+library(clusterProfiler)
+# geneList is a named vector sorted by statistic
+gseGO(geneList, OrgDb = org.Hs.eg.db, ont = &quot;BP&quot;)
+gseKEGG(geneList, organism = &quot;hsa&quot;)
+```
+
+**Phenotype-Permutation GSEA (if matrix available):**
+Use `fgsea` or `camera` from `limma` for correlation-aware testing.
+
+## 3. Validation
+- Check installed package versions (`packageVersion(&#x27;clusterProfiler&#x27;)`).
+- Verify that the ranking statistic preserves sign and variance calibration.
+- If using gene permutation, acknowledge the potential for false positives due to gene-gene correlation.</pre>
+</body>
+</html>

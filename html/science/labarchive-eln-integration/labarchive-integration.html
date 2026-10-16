@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>labarchive-integration</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">labarchive-eln-integration</a> / labarchive-integration</p><h1>labarchive-integration</h1><p class="meta">combined</p><p>The three copies describe the same skill name but perform different tasks. The K-Dense copy is a technical API integration guide focused on authentication, regional endpoints, and the distinction between the Legacy ELN API and Inventory API v1. The aipoch copy is an academic writing workflow that uses LabArchives data to generate manuscript sections (Methods, Data Availability, etc.). The FreedomIntelligence copy is a general ELN automation guide focused on notebook operations, backups, and third-party integrations. Because they overlap in the domain of LabArchives but each contains material steps and constraints the others lack (e.g., specific HMAC signing details vs. writing output contracts vs. backup script usage), crowning one would hide the specific use case of the others.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/labarchive-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/labarchive-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/labarchive-integration/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/labarchive-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/labarchive-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/labarchive-integration/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># LabArchives Integration
+
+This skill covers three distinct workflows for interacting with LabArchives: API integration, academic writing, and general ELN automation. Select the appropriate section based on the user&#x27;s goal.
+
+## 1. API Integration &amp; Authentication
+Use this section when implementing direct API calls or debugging authentication.
+
+### Regional Endpoints
+- **US/International:** `https://api.labarchives.com/api`
+- **Australia:** `https://auapi.labarchives.com/api`
+- **UK:** `https://ukapi.labarchives.com/api`
+- **Inventory API:** `https://iapi.labarchives.com` (Append `/public/v1/...` routes)
+
+### Authentication Model
+- **ELN API:** Uses signed query parameters (`akid`, `expires`, `sig`).
+  1. Set `expires` to current Unix epoch in milliseconds.
+  2. Concatenate: `&lt;Access Key ID&gt;&lt;API method name&gt;&lt;expires&gt;`.
+  3. Compute HMAC-SHA-512 using Access Password as key.
+  4. Base64-encode and URI-encode the signature.
+- **Inventory API v1:** Uses signed headers (`X-LabArchives-*`).
+  - Signs the exact relative route (excluding query string).
+  - `GET /public/v1/users/me` exempts `X-LabArchives-LabId`.
+
+### Configuration
+- Use `scripts/setup_config.py` to validate environment variables.
+- Required env vars: `LABARCHIVES_ELN_API_URL`, `LABARCHIVES_ACCESS_KEY_ID`, `LABARCHIVES_ACCESS_PASSWORD`.
+
+## 2. Academic Writing Workflow
+Use this section when converting LabArchives data into manuscript-ready text.
+
+### Primary Outputs
+- **Methods Draft:** Chronological workflow based on notebook entries.
+- **Data Availability Statement:** Based on repository links and sharing constraints.
+- **Reproducibility Appendix:** Based on protocol versions and software environments.
+- **Experiment Timeline:** Based on dated entries and milestones.
+
+### Workflow
+1. **Validate Authorization:** Confirm the user has access to the source data.
+2. **Acquire Data:** Use `scripts/notebook_operations.py` or `scripts/entry_operations.py` to export data, or use pasted text.
+3. **Normalize Evidence:** Extract dates, protocol names, sample descriptors, and QC notes.
+4. **Draft Output:** Write factual, audit-trail-grounded prose.
+5. **Safety Pass:** Ensure every claim maps to source evidence; label missing data as missing.
+
+### Refusal Contract
+If data is missing or unauthorized, respond with:
+```
+Cannot generate the requested LabArchives-based writing output yet.
+Reason: &lt;missing authorization / insufficient export / incomplete metadata&gt;
+Minimum next step:
+- &lt;step 1&gt;
+```
+
+## 3. General ELN Automation
+Use this section for notebook management, backups, and entry creation.
+
+### Notebook Operations
+- **Backup:** `python3 scripts/notebook_operations.py backup --uid USER_ID --nbid NOTEBOOK_ID`
+- **List Notebooks:** Use `notebooks/notebook_list` API method.
+
+### Entry Management
+- **Create Entry:** `python3 scripts/entry_operations.py create --uid USER_ID --nbid NOTEBOOK_ID --title &quot;Title&quot; --content &quot;Content&quot;`
+- **Upload Attachment:** `python3 scripts/entry_operations.py upload --uid USER_ID --nbid NOTEBOOK_ID --entry-id ENTRY_ID --file /path/to/file`
+
+### Third-Party Integrations
+- **Protocols.io:** Export protocols to notebooks.
+- **Jupyter/REDCap:** Use product-specific UI or file workflows; do not assume a general OAuth API.
+
+## Conflicts
+- **K-Dense-AI/scientific-agent-skills** emphasizes strict separation between ELN and Inventory APIs and provides detailed HMAC signing steps.
+- **aipoch/medical-research-skills** focuses on writing outputs and includes a specific refusal template for missing evidence.
+- **FreedomIntelligence/OpenClaw-Medical-Skills** provides general automation scripts and mentions a Python wrapper client (`labarchivespy`).</pre>
+</body>
+</html>

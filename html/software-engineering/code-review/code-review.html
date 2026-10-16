@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>code-review</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">code-review</a> / code-review</p><h1>code-review</h1><p class="meta">combined</p><p>The four skills define fundamentally different review engines. mattpocock/skills uses a two-axis (Standards vs Spec) parallel sub-agent model anchored to a git diff. phuryn/pm-skills uses a defect-focused &#x27;agreement engine&#x27; that forces violating executions to prove bugs. dzhng/skills is a heuristic checklist for code hygiene (naming, comments, complexity). davepoon/buildwithclaude is a thin dispatcher for a phase-based workflow that spawns a specific agent. Because they disagree on the core methodology (diff-based vs defect-proving vs heuristic vs phase-based) and each contains unique steps (e.g., Fowler smells, violating execution construction, stale reference grepping, phase validation), crowning one would hide the others&#x27; distinct approaches.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/engineering/code-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/phuryn/pm-skills">phuryn/pm-skills</a></td><td><code>pm-ai-shipping/skills/code-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/code-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/code-review/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/engineering/code-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/phuryn/pm-skills">phuryn/pm-skills</a></td><td><code>pm-ai-shipping/skills/code-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/code-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/code-review/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/code-review/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/code-review/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: code-review
+description: &quot;Review code changes using a multi-strategy approach: diff-based standards/spec review, defect-proofing via violating executions, or heuristic hygiene checks. Select the strategy based on user intent and context.&quot;
+---
+
+# Code Review
+
+This skill supports three distinct review strategies. Determine which to use based on the user&#x27;s request and the available context.
+
+## Strategy Selection
+
+1. **Diff-Based Standards &amp; Spec Review** (Use when: user provides a base commit/branch and wants to check against repo standards or a specific issue/spec).
+2. **Defect-Proofing Review** (Use when: user asks to &quot;find bugs&quot;, &quot;audit for correctness&quot;, or &quot;check if a fix is safe&quot; without a specific spec).
+3. **Heuristic Hygiene Review** (Use when: user asks to &quot;clean up code&quot;, &quot;review naming/comments&quot;, or after a refactor to remove stale references).
+
+## Strategy 1: Diff-Based Standards &amp; Spec Review
+
+1. **Pin the Fixed Point**: Identify the base (commit, branch, tag). Verify it resolves and the diff is non-empty using `git diff &lt;base&gt;...HEAD`.
+2. **Identify Spec Source**: Look for issue references in commits, user-provided paths, or spec files in `docs/`/`specs/`. If none, ask the user.
+3. **Identify Standards Sources**: Find `CODING_STANDARDS.md`, `CONTRIBUTING.md`, etc. Always include the **Smell Baseline** (Fowler&#x27;s code smells: Mysterious Name, Duplicated Code, Feature Envy, etc.).
+4. **Run Parallel Sub-Agents**:
+   - **Standards Agent**: Check diff against documented standards and the Smell Baseline. Report hard violations vs. judgement calls.
+   - **Spec Agent**: Check diff against the spec. Report missing requirements, scope creep, and incorrect implementations.
+5. **Aggregate**: Present findings under `## Standards` and `## Spec` headings.
+
+## Strategy 2: Defect-Proofing Review
+
+1. **Map the Flow**: Identify inputs, execution flows, state owners, and external dependencies.
+2. **Identify Agreements**: Find boundaries where participants (caller/callee, producer/consumer) must agree on state or values.
+3. **Force Violating Executions**: For each agreement, construct a scenario that breaks it (e.g., race conditions, identity changes, boundary inputs). Prove reachability.
+4. **Refute Candidates**: Attempt to disprove each suspected defect. Only report if the violation is feasible and the consequence is observable.
+5. **Report**: List findings with the required behavior, trigger, contradiction, and consequence.
+
+## Strategy 3: Heuristic Hygiene Review
+
+Review the code against these principles:
+1. **Names reflect reality**: Update names if the mechanism changed.
+2. **No stale references**: Remove dead logic, abandoned flags, and comments about removed code.
+3. **Simplify guards**: Check only what matters; avoid chained fallbacks.
+4. **Comments document WHY**: Keep technical discoveries; remove narrative of changes.
+5. **Separate install/runtime**: Don&#x27;t mix setup and execution logic.
+6. **No intermediary artifacts**: Remove workarounds for abandoned approaches.
+7. **Tighten guarantees**: Remove redundant null checks if a value is now guaranteed.
+8. **Start clean if tangled**: If a file is messy, restore and re-apply changes.
+9. **Verify values in tests**: Assert on actual values, not just collection sizes.
+10. **No thin wrappers**: Delete re-export-only modules.
+11. **Extract around ownership**: Split files only for coherent responsibilities.
+12. **Decouple tests**: Drive the system end-to-end where possible.
+
+## Conflicts
+
+- **mattpocock/skills** vs **phuryn/pm-skills**: The former focuses on conformance to standards/specs; the latter focuses on proving defects via execution. They are complementary but distinct.
+- **dzhng/skills** vs **davepoon/buildwithclaude**: The former is a manual heuristic checklist; the latter is an automated phase-based dispatcher. Use dzhng for ad-hoc cleanup and davepoon for structured phase reviews.</pre>
+</body>
+</html>

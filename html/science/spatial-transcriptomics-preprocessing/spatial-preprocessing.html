@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-preprocessing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">spatial-transcriptomics-preprocessing</a> / spatial-preprocessing</p><h1>spatial-preprocessing</h1><p class="meta">combined</p><p>The two skills cover the same task but disagree on the core procedure. The first copy (OpenClaw) provides a standard, platform-agnostic pipeline using Scanpy/Squidpy with fixed thresholds (min_counts=500, min_genes=200) and standard normalization (CP10k/log1p or Pearson residuals). The second copy (GPTomics) explicitly argues that these standard thresholds and normalization methods are incorrect for imaging-based spatial platforms (Xenium, MERFISH, CosMx), stating that they delete real cells and introduce bias. It mandates a &#x27;platform-class fork&#x27; decision and different QC/normalization strategies (e.g., area/volume normalization) for imaging data. Because the first copy&#x27;s procedure is actively contradicted by the second for a major subset of spatial data, crowning one would hide a critical alternative workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-preprocessing/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-preprocessing/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-preprocessing/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-preprocessing/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Spatial Preprocessing
+
+## 1. Determine Platform Class
+Before applying any thresholds, identify the assay family:
+- **Sequencing/Spot** (Visium, Slide-seq, Stereo-seq): Unit is a spot (1-10 cells). Library size confounds with cellularity.
+- **Imaging/In-situ** (Xenium, MERFISH, CosMx): Unit is a segmented cell. Library size confounds with cell area/size. Targeted panel.
+
+## 2. Calculate QC Metrics
+```python
+import squidpy as sq
+import scanpy as sc
+
+# Standard metrics
+sc.pp.calculate_qc_metrics(adata, inplace=True)
+
+# Mitochondrial (only if on-panel)
+if &#x27;MT-&#x27; in adata.var_names.values:
+    adata.var[&#x27;mt&#x27;] = adata.var_names.str.startswith(&#x27;MT-&#x27;)
+    sc.pp.calculate_qc_metrics(adata, qc_vars=[&#x27;mt&#x27;], inplace=True)
+```
+
+## 3. Filter Spots/Cells
+**Choose thresholds based on platform:**
+- **Sequencing/Spot:** Use standard scRNA-like floors (e.g., `min_counts=500-1000`, `min_genes=200-500`). Filter high mito% (&lt;20%).
+- **Imaging/In-situ:** Use low transcript floors (e.g., `min_counts=10-20`). Do NOT use high gene counts (ceilinged by panel). Do NOT use mito% if off-panel. Consider cell area/size metrics.
+
+```python
+# Example for Sequencing
+sc.pp.filter_cells(adata, min_counts=500)
+sc.pp.filter_cells(adata, min_genes=200)
+
+# Example for Imaging
+sc.pp.filter_cells(adata, min_counts=10)
+```
+
+## 4. Filter Genes
+Remove genes detected in too few cells/spots.
+```python
+sc.pp.filter_genes(adata, min_cells=10)
+```
+
+## 5. Normalization
+**Choose method based on platform:**
+- **Sequencing/Spot:** Standard CP10k + log1p or Pearson residuals (SCTransform-like).
+- **Imaging/In-situ:** Avoid gene-count-based normalization (CP10k, Pearson) on skewed panels. Use cell volume/area normalization or spatially-aware methods (e.g., SpaNorm) to avoid region-specific bias.
+
+```python
+# Sequencing
+adata.layers[&#x27;counts&#x27;] = adata.X.copy()
+sc.pp.normalize_total(adata, target_sum=1e4)
+sc.pp.log1p(adata)
+
+# Imaging (Pseudocode for area normalization)
+# adata.X = adata.X / adata.obs[&#x27;cell_area&#x27;]
+```
+
+## 6. Feature Selection
+Identify Highly Variable Genes (HVGs) and Spatially Variable Genes (SVGs).
+```python
+# HVGs
+sc.pp.highly_variable_genes(adata, n_top_genes=2000, flavor=&#x27;seurat_v3&#x27;, layer=&#x27;counts&#x27;)
+
+# SVGs (requires spatial neighbors)
+sq.gr.spatial_neighbors(adata, coord_type=&#x27;generic&#x27;, n_neighs=6)
+sq.gr.spatial_autocorr(adata, mode=&#x27;moran&#x27;, genes=adata.var_names[:1000])
+```
+
+## 7. Scale and PCA
+```python
+sc.pp.scale(adata, max_value=10)
+sc.tl.pca(adata, n_comps=50)
+```
+
+## 8. Visualize QC Spatially
+Always inspect QC metrics on the tissue image to detect spatial artifacts (e.g., edge effects, hybridization failures) that 1D distributions miss.
+```python
+sq.pl.spatial_scatter(adata, color=[&#x27;total_counts&#x27;, &#x27;n_genes_by_counts&#x27;])
+```</pre>
+</body>
+</html>

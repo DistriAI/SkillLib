@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>phylogenetics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">phylogenetic-tree-inference</a> / phylogenetics</p><h1>phylogenetics</h1><p class="meta">combined</p><p>The two copies describe the same MAFFT/IQ-TREE/FastTree/ETE3 pipeline but disagree on key parameters and operational rules. The K-Dense copy is a more rigorous, version-pinned procedure (IQ-TREE 3, MFP model, explicit FastTree flags, ETE3/Python 3.12 constraints, no silent trim fallback, bundled helper script). The OpenClaw copy is a broader, more permissive Python-subprocess wrapper (IQ-TREE 2, TEST model, --redo by default, silent trim fallback, FigTree option, different MAFFT method mapping). Crowning one would hide a real alternative workflow and conflicting defaults.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/phylogenetics/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/phylogenetics/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/phylogenetics/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/phylogenetics/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Phylogenetics
+
+## When to use
+Use this workflow for an alignment of homologous loci or proteins, a gene tree, branch support, and an interpretable tree figure. Applies to microbial gene trees, protein families, viral phylodynamics, and cautiously interpreted dated phylogenies. A gene tree does not establish a species tree, transmission direction, or horizontal transfer by itself.
+
+## Installation
+```bash
+conda create -n phylo -c conda-forge -c bioconda mafft iqtree fasttree trimal
+conda activate phylo
+uv venv --python 3.12 .venv-phylo
+uv pip install --python .venv-phylo/bin/python ete3==3.1.3 numpy six
+# Optional rendering backend
+uv pip install --python .venv-phylo/bin/python PyQt5
+```
+Verify executable versions after installation. The native executables are not Python packages.
+
+## Workflow
+
+### 1. Establish the biological input
+- Select homologs with appropriate taxon coverage; investigate paralogs, contamination and recombination.
+- Use unique, whitespace-free FASTA IDs and keep a separate sample metadata table.
+- Specify `--type nt` or `--type aa` for nucleotide or protein data.
+- Coding DNA needs codon-aware alignment if using a codon model.
+- Keep the original sequences, accession versions, filters, alignment and exact commands.
+
+### 2. Align and inspect
+```bash
+mafft --auto --thread 1 --inputorder sequences.fasta &gt; aligned.fasta
+# L-INS-i: locally alignable homologs, typically small datasets.
+mafft --localpair --maxiterate 1000 --thread 1 --inputorder sequences.fasta &gt; linsi.fasta
+# E-INS-i: homologs with large internal gaps.
+mafft --genafpair --maxiterate 1000 --thread 1 --inputorder sequences.fasta &gt; einsi.fasta
+# FFT-NS-i (two refinement cycles), then FFT-NS-2 (progressive).
+mafft --retree 2 --maxiterate 2 --thread 1 --inputorder sequences.fasta &gt; fftnsi.fasta
+mafft --retree 2 --maxiterate 0 --thread 1 --inputorder sequences.fasta &gt; fftns.fasta
+```
+Trimming is optional and must be justified by alignment quality. If using trimAl:
+```bash
+trimal -in aligned.fasta -out trimmed.fasta -automated1 -fasta
+```
+A failed trim must stop the trimming step; do not silently copy the untrimmed input under a &quot;trimmed&quot; filename.
+
+### 3. Infer a tree
+Use IQ-TREE 3 with ModelFinder:
+```bash
+iqtree3 -s aligned.fasta -m MFP -B 1000 --alrt 1000 -T 1 --prefix results
+```
+Or use FastTree for approximate inference:
+```bash
+fasttree -nt -gtr -gamma aligned.fasta &gt; fasttree.tree
+# For proteins:
+fasttree -lg -gamma proteins.fasta &gt; fasttree_aa.tree
+```
+IQ-TREE checkpoints are preserved; `--redo` explicitly restarts and replaces results. Use a new output prefix when data or model assumptions change.
+
+### 4. Summarize and visualize
+Use ETE3 3.1.3 on Python 3.12 for tree summaries and visualization. ETE4 is a separate API and is not a drop-in replacement. ETE3 imports `cgi`, removed in Python 3.13.
+
+## Conflicts
+- **FreedomIntelligence/OpenClaw-Medical-Skills** uses IQ-TREE 2 with `-m TEST` and `--redo` by default, while **K-Dense-AI/scientific-agent-skills** uses IQ-TREE 3 with `-m MFP` and preserves checkpoints unless `--redo` is explicitly given.
+- **FreedomIntelligence/OpenClaw-Medical-Skills** falls back to copying the untrimmed alignment on trimAl failure, while **K-Dense-AI/scientific-agent-skills** requires a failed trim to stop the trimming step.
+- **FreedomIntelligence/OpenClaw-Medical-Skills** maps MAFFT methods `fftnsi`/`fftns` to `--fftnsi`/`--fftns` flags, while **K-Dense-AI/scientific-agent-skills** maps them to `--retree 2 --maxiterate 2` and `--retree 2 --maxiterate 0` respectively.
+- **FreedomIntelligence/OpenClaw-Medical-Skills** includes FigTree as an optional visualization tool; **K-Dense-AI/scientific-agent-skills** does not mention FigTree.</pre>
+</body>
+</html>

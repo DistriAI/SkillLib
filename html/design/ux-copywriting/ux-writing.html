@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ux-writing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">ux-copywriting</a> / ux-writing</p><h1>ux-writing</h1><p class="meta">combined</p><p>Both copies define the same task (writing interface copy) and share core principles (clear, concise, human, action-oriented, error what/why/how, empty states, inclusive language). However, they disagree on mechanics and each contains material steps the other lacks. The Owl-Listener copy is a self-contained set of categories and principles (microcopy, errors, empty states, confirmations, onboarding, CTAs, voice/tone, best practices) with no external file dependencies. The plugin87 copy is a procedural skill that depends on external kit files (voice-tone.md, i18n-rtl.md), enforces specific mechanics (sentence case, numerals, labels not placeholders, no color/direction-only cues), mandates a 10-item pre-ship checklist, and adds confirmation-dialog and type-to-confirm rules. Crowning one would hide a real alternative: a self-contained principles guide versus a file-dependent, checklist-driven procedure with stricter mechanics.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>designer-toolkit/skills/ux-writing/SKILL.md</code></td></tr><tr><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/ux-writing/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>designer-toolkit/skills/ux-writing/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/ux-writing/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># UX Writing
+
+Write or review interface copy (microcopy, error messages, empty states, confirmations, onboarding, CTAs) in the product&#x27;s voice.
+
+## Steps
+1. If a voice-tone reference file is available (e.g., `voice-tone.md`), read it for voice principles, tone spectrum, formulas, and inclusive-language rules. If no reference file is available, proceed with the principles below.
+2. Match tone to the user&#x27;s emotional state (onboarding, success, routine, error, destructive). Higher stress → plainer language.
+3. Apply the following formulas:
+   - **Buttons/CTAs:** Frontload the verb, name the outcome. Be specific about the outcome. Match user intent, not business intent. Primary CTA should be the most common action.
+   - **Confirmation dialogs:** The confirm button restates the action and object (e.g., &quot;Delete account&quot;, not &quot;Delete&quot;/&quot;OK&quot;/&quot;Yes&quot;). The title asks (&quot;Delete account?&quot;), the button answers in matching words. Cancel stays &quot;Cancel&quot;. For irreversible/high-stakes actions, require a type-to-confirm step.
+   - **Errors:** What happened → why (if helpful and brief) → how to fix. No dead ends, no codes/stack traces. Use a human tone, not robotic or blaming.
+   - **Empty states:** Explain what will appear here → guide the user to take a first action. Use an encouraging, helpful tone. Provide a clear CTA.
+   - **Onboarding:** Welcome without overwhelming. One concept at a time. Action-oriented. Allow skipping.
+   - **Form labels:** Clear, concise, no jargon. Use labels, not placeholders, for input fields. Placeholder text, if used, should show example format, not instructions.
+   - **Tooltips:** Brief explanations for complex features.
+4. Enforce mechanics:
+   - Sentence case (no ALL CAPS).
+   - Use numerals, not spelled-out numbers, where appropriate.
+   - No blame on the user.
+   - No directional or color-only instructions (accessibility).
+   - Inclusive language; avoid jargon, abbreviations, and idioms.
+5. Run a pre-ship copy checklist:
+   - Reads naturally aloud; frontloaded verb on actions; no jargon/blame/dead-ends.
+   - Errors follow what→why→how; empty states give value→action; no bare &quot;No data&quot;/&quot;Error&quot;.
+   - Mechanics: sentence case, numerals, labels (not placeholders), no color/direction-only cues, inclusive language.
+   - Within character limits for tight UI.
+   - Translatable (no string concatenation; consider localization from the start).
+   - Consistent with brand voice and terminology dictionary.
+   - Tested with real users where possible.
+
+## Output
+Final copy (or a redline review) that reads naturally aloud and passes the checklist. Keep within any character limits for tight UI.
+
+## Conflicts
+- **Owl-Listener/designer-skills** recommends placeholder text as example format; **plugin87/ux-ui-agent-skills** enforces labels (not placeholders). The combined instruction allows placeholders for example format but requires labels for input fields.
+- **plugin87/ux-ui-agent-skills** mandates sentence case, numerals, and a 10-item checklist; **Owl-Listener/designer-skills** does not. The combined instruction includes these as enforced mechanics and checklist items.
+- **plugin87/ux-ui-agent-skills** depends on external kit files; **Owl-Listener/designer-skills** is self-contained. The combined instruction treats the reference file as optional and falls back to the principles above.</pre>
+</body>
+</html>

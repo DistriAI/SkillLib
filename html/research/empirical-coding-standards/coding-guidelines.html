@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>coding-guidelines</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">empirical-coding-standards</a> / coding-guidelines</p><h1>coding-guidelines</h1><p class="meta">combined</p><p>The two skills share the name &#x27;coding-guidelines&#x27; but address completely different domains and languages. The first (actionbook/rust-skills) provides specific Rust language conventions (naming, memory, concurrency, async). The second (brycewang-stanford/Auto-Empirical-Research-Skills) provides project structure and coding standards for empirical research using Python and Stata. They do not overlap in content, so one is not a reproduction of the other. Combining them creates a comprehensive skill for a researcher who might use both Rust (for performance-critical data processing) and Python/Stata (for analysis and reporting).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/actionbook/rust-skills">actionbook/rust-skills</a></td><td><code>skills/coding-guidelines/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/30-zirui-song-claude-skills/coding-guidelines/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/actionbook/rust-skills">actionbook/rust-skills</a></td><td><code>skills/coding-guidelines/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/30-zirui-song-claude-skills/coding-guidelines/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: coding-guidelines
+description: &quot;Use when establishing coding standards for empirical research projects involving Rust, Python, or Stata. Covers project structure, language-specific best practices, and reproducibility.&quot;
+---
+
+# Empirical Research Coding Guidelines
+
+This skill defines standards for empirical research projects. It covers project organization, Python/Stata analysis workflows, and Rust performance-critical components.
+
+## 1. Project Structure (Research Standard)
+
+Use the following directory structure for all empirical projects:
+
+```
+ProjectName/
+├── Code/
+│   ├── [Number]_[Name].py         # Data processing (Python)
+│   ├── AN_[Number]_[Name].do      # Analysis scripts (Stata)
+│   ├── AN_[Number]_[Name].py      # Analysis scripts (Python)
+│   ├── LogFiles/                  # Stata log files
+│   └── README.md                  # Project documentation
+├── Data/
+│   ├── Raw/                       # Original data (never modify)
+│   ├── Intermediate/              # Partial processing
+│   └── Clean/                     # Analysis-ready data
+└── Results/
+    ├── Tables/                    # Regression tables
+    └── Figures/                   # Visualizations
+```
+
+**Script Numbering:**
+- `0`: Initial data extraction
+- `1a, 1b`: Data cleaning
+- `2a, 2b`: Data merging
+- `3a, 3b`: Feature engineering
+- `AN_1, AN_2`: Formal analysis
+
+## 2. Python Guidelines (Analysis &amp; Data Processing)
+
+### Path Management
+Always use relative paths from the project root for portability:
+
+```python
+from pathlib import Path
+
+def get_project_root():
+    return Path(__file__).parent.absolute()
+
+base_dir = get_project_root()
+data_clean_dir = base_dir / &quot;..&quot; / &quot;Data&quot; / &quot;Clean&quot;
+```
+
+### Script Template
+Include a docstring with input/output files, author, and date. Use `main()` function pattern.
+
+### Data Handling
+- Use `pandas` for data manipulation.
+- Always validate input files exist before processing.
+- Log progress with clear section headers and record counts.
+
+## 3. Stata Guidelines (Econometrics)
+
+- Use `reghdfe` for panel regressions.
+- Use `outreg2` or `esttab` for regression tables.
+- Save logs to `Code/LogFiles/`.
+
+## 4. Rust Guidelines (Performance-Critical Components)
+
+If using Rust for data processing or high-performance tasks, adhere to these core rules:
+
+### Naming
+- No `get_` prefix: `fn name()` not `fn get_name()`.
+- Iterators: `iter()`, `iter_mut()`, `into_iter()`.
+- Conversions: `as_` (cheap), `to_` (expensive), `into_` (ownership).
+
+### Data Types &amp; Memory
+- Use newtypes for domain semantics (e.g., `struct Email(String)`).
+- Pre-allocate: `Vec::with_capacity()`.
+- Use `Cow&lt;str&gt;` for potentially modified borrowed data.
+- Meaningful lifetimes: `&#x27;src`, `&#x27;ctx`.
+
+### Error Handling
+- Use `?` for propagation.
+- Use `expect()` over `unwrap()` when value is guaranteed.
+- Use `thiserror`/`anyhow` for error types.
+
+### Concurrency &amp; Async
+- Use atomics for primitive types, not `Mutex`.
+- Do not hold locks across `await` points.
+- Use `parking_lot::Mutex` over `std::sync::Mutex` where appropriate.
+
+## 5. General Best Practices
+
+- **Reproducibility:** All scripts must be runnable from the project root without hardcoded absolute paths.
+- **Documentation:** Public functions and modules must have docstrings/comments.
+- **Versioning:** Track data versions in `Data/` subdirectories.</pre>
+</body>
+</html>

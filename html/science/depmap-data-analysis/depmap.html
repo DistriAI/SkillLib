@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>depmap</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">depmap-data-analysis</a> / depmap</p><h1>depmap</h1><p class="meta">combined</p><p>The two skills cover the same domain (DepMap cancer dependency data) but diverge significantly on methodology and data access. The K-Dense-AI skill is a rigorous, release-aware procedure that explicitly warns against using the API endpoints suggested by the FreedomIntelligence skill, mandates checksum verification, and provides a detailed file contract table. The FreedomIntelligence skill provides a simpler, API-first approach with specific Python helper functions for selective dependency analysis and defines specific score thresholds (e.g., Chronos &lt;= -0.5) that are absent in the K-Dense-AI skill. Because the K-Dense-AI skill explicitly states that the API endpoints used by the FreedomIntelligence skill are not verified or supported, and the FreedomIntelligence skill lacks the critical data integrity checks (MD5, release pinning) found in the K-Dense-AI skill, neither is a complete reproduction of the other. A combined skill is needed to provide the robust data acquisition and integrity checks from K-Dense-AI with the specific analytical workflows and thresholds from FreedomIntelligence.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/depmap/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/depmap/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/depmap/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/depmap/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: depmap
+description: Retrieves and analyzes Cancer Dependency Map (DepMap) release data, including CRISPR Chronos gene effects, cancer model annotations, omics biomarkers, and PRISM drug sensitivity. Supports cancer-selective dependency, co-essentiality, and candidate synthetic-lethality analyses with release-aware identifiers and statistical checks.
+license: CC-BY-4.0
+compatibility: Requires Python 3.10+ with numpy, pandas, and scipy&gt;=1.11. Network access is needed for release discovery.
+metadata:
+  version: &quot;1.3&quot;
+  skill-author: Kuan-lin Huang
+  last-reviewed: &quot;2026-09-30&quot;
+---
+
+# DepMap — Cancer Dependency Map
+
+## When to use
+
+Use this skill to rank dependencies in cancer models, compare prespecified biomarker cohorts, inspect co-essentiality, or relate genetic dependencies to PRISM compound response. These analyses generate target and synthetic-lethality hypotheses; they do not establish clinical efficacy.
+
+## 1. Discover a release, then obtain its files
+
+**Do not use the legacy API endpoints** (`/api/gene`, `/api/data/gene_dependency`) as they are not verified for current releases. Instead, use the verified public endpoint to discover the latest release and file metadata.
+
+1. **Fetch Catalogue**: Use `GET https://depmap.org/portal/api/no-captcha/download/files` to get the CSV catalogue.
+2. **Select Release**: Identify the latest `DepMap Public` release (e.g., 26Q1). Note that recent releases may have blank `url` fields in the catalogue; you must obtain files via the DepMap Portal UI if direct links are missing.
+3. **Verify Integrity**: Always verify the `md5_hash` of downloaded files against the catalogue. If a checksum is missing, record a local SHA-256 and note the discrepancy.
+
+```python
+from scripts.depmap_data import fetch_catalogue, select_file, verify_md5
+
+catalogue = fetch_catalogue()
+public = catalogue[catalogue[&quot;release&quot;].str.startswith(&quot;DepMap Public &quot;)]
+release = public[&quot;release&quot;].iloc[0] # Select latest
+record = select_file(catalogue, release, &quot;CRISPRGeneEffect.csv&quot;)
+# Download file from portal if record[&#x27;url&#x27;] is blank
+# verify_md5(&quot;CRISPRGeneEffect.csv&quot;, record[&quot;md5_hash&quot;])
+```
+
+## 2. Inspect File Contracts
+
+Key files in the release:
+- `CRISPRGeneEffect.csv`: Integrated Chronos effects. Rows are `ModelID`, columns are `Symbol (EntrezID)`.
+- `Model.csv`: Metadata keyed by `ModelID` (includes `CellLineName`, `OncotreeLineage`, etc.).
+- `OmicsExpressionTPMLogp1HumanProteinCodingGenes.csv`: Expression data. Exclude metadata columns from calculations.
+
+## 3. Analyze Dependencies
+
+Load the local CSVs into pandas. 
+
+**Score Interpretation:**
+- **Chronos**: More negative = more essential.
+- **Thresholds**: 
+  - `&lt;= -0.5`: Likely dependent.
+  - `&lt;= -1.0`: Strongly dependent (common essential range).
+
+### Identifying Selective Dependencies
+
+```python
+import pandas as pd
+import numpy as np
+
+def find_selective_dependencies(gene_effect_df, model_df, target_gene, 
+                                 cancer_type=None, threshold=-0.5):
+    &quot;&quot;&quot;Find cell lines selectively dependent on a gene.&quot;&quot;&quot;
+    if target_gene not in gene_effect_df.columns:
+        return None
+
+    scores = gene_effect_df[target_gene].dropna()
+    dependent = scores[scores &lt;= threshold]
+
+    result = pd.DataFrame({
+        &quot;ModelID&quot;: dependent.index,
+        &quot;gene_effect&quot;: dependent.values
+    }).merge(model_df[[&quot;ModelID&quot;, &quot;CellLineName&quot;, &quot;OncotreePrimaryDisease&quot;]], on=&quot;ModelID&quot;)
+
+    if cancer_type:
+        result = result[result[&quot;OncotreePrimaryDisease&quot;].str.contains(cancer_type, case=False, na=False)]
+
+    return result.sort_values(&quot;gene_effect&quot;)
+```
+
+## 4. Output
+
+Save the selected metadata, retrieval date, release citation, local checksum, and analysis outputs together. Record source dataset terms separately from this skill&#x27;s license.</pre>
+</body>
+</html>

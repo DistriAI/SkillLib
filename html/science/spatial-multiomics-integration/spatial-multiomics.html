@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-multiomics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">spatial-multiomics-integration</a> / spatial-multiomics</p><h1>spatial-multiomics</h1><p class="meta">combined</p><p>The two skills use the same name but define different tasks. The first copy is a platform-specific analysis guide for high-resolution spatial transcriptomics (Slide-seq, Stereo-seq, Visium HD, MERFISH) using Squidpy and SpatialData. The second copy is a conceptual and methodological guide for integrating spatial RNA with a second modality (protein, ATAC) using Muon, MOFA, and registration tools like PASTE. They disagree on the primary tool (squidpy vs muon) and the core objective (high-res spatial analysis vs multi-modal integration). Combining them is necessary to capture both the high-resolution processing steps and the multi-modal integration logic.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-multiomics/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-multiomics/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-multiomics/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-multiomics/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: spatial-multiomics
+description: Analyze high-resolution spatial platforms and integrate spatial RNA with secondary modalities (protein, ATAC).
+tool_type: python
+primary_tool: squidpy, muon
+---
+
+# Spatial Multi-omics Analysis
+
+## 1. High-Resolution Spatial Analysis (Squidpy)
+Use this section for subcellular or high-density data (Slide-seq, Stereo-seq, Visium HD).
+
+```python
+import squidpy as sq
+import scanpy as sc
+
+# Load spatial data
+adata = sc.read_h5ad(&#x27;spatial_multiomics.h5ad&#x27;)
+
+# Spatial neighbors
+sq.gr.spatial_neighbors(adata, coord_type=&#x27;generic&#x27;, n_neighs=10, spatial_key=&#x27;spatial&#x27;)
+
+# Spatial autocorrelation
+sq.gr.spatial_autocorr(adata, mode=&#x27;moran&#x27;, genes=adata.var_names[:100])
+
+# Neighborhood enrichment
+sq.gr.nhood_enrichment(adata, cluster_key=&#x27;cell_type&#x27;)
+```
+
+## 2. Multi-Modal Integration (Muon)
+Use this section when integrating spatial RNA with protein or ATAC data.
+
+### Determine Integration Regime
+- **Vertical (Same-pixel):** Modalities are co-measured on the same pixels (e.g., spatial-CITE-seq, DBiT-seq). Use joint factor methods like MOFA or WNN.
+- **Diagonal (Serial-section):** Modalities are from different sections (e.g., RNA on section N, ATAC on N+1). Use registration methods like PASTE or STalign. Do NOT use same-cell coupling methods.
+
+```python
+import muon as mu
+
+# Example: Vertical integration using MOFA
+# mdata = mu.MuData({&#x27;rna&#x27;: adata_rna, &#x27;protein&#x27;: adata_protein})
+# mu.tl.mofa(mdata)
+```
+
+## 3. Quality Metrics
+| Metric | Visium | High-Resolution |
+|--------|--------|-----------------|
+| Genes/spot | &gt;2000 | &gt;500 |
+| UMI/spot | &gt;5000 | &gt;1000 |
+| Spatial coverage | &gt;80% | &gt;50% |</pre>
+</body>
+</html>

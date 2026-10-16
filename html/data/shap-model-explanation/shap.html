@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>shap</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">shap-model-explanation</a> / shap</p><h1>shap</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a rigorous, version-pinned procedure for SHAP 0.52.0 that includes operating rules, additivity validation, and security constraints. The other three copies (Vibe-Skills, medical-research-skills, OpenClaw-Medical-Skills) are nearly identical to each other and provide a broader, more general guide with specific workflows for debugging, feature engineering, model comparison, and fairness analysis that the K-Dense copy lacks. Because the K-Dense copy is a specialized, high-fidelity version of the core procedure while the others add distinct workflow steps, crowning one would hide the other&#x27;s material steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/shap/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/shap/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/shap/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/shap/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/shap/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/shap/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/shap/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/shap/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: shap
+description: Explain and audit machine-learning predictions with SHAP. Use for selecting explainers, computing attributions, and producing visualizations or fairness analyses.
+---
+
+# SHAP
+
+Use SHAP to describe how a fitted predictive model maps inputs to outputs. Work from the modern `shap.Explanation` API, make the explained output and background distribution explicit, and validate every explanation before interpreting it.
+
+## Operating Rules
+1. Explain a fixed, evaluated model; do not use SHAP as a substitute for predictive validation.
+2. Use held-out or clearly labeled analysis rows for explanations. Choose background rows only from an appropriate training or reference population.
+3. State the explained output: regression value, raw margin, probability, log loss, logit, or another model method.
+4. Prefer `shap.Explanation` objects and `explainer(X)`. Preserve output indexes and baselines explicitly.
+5. For multi-output models, select one output before using tabular plots: `explanation[..., output_index]`.
+6. Check `base_values + values.sum(...)` against the exact model output being explained.
+7. Treat SHAP as a description of model behavior under a masking/background choice. It does not establish causality, fairness, recourse, or scientific mechanism.
+8. Never silence an additivity failure until input shape, preprocessing, model version, output space, and row ordering have been checked.
+9. Do not load untrusted pickle, joblib, model, or explainer artifacts.
+
+## Standard Workflow
+
+### 1. Define the explanation target
+Record the model version, exact callable, output name/index, evaluation rows, background population, and masker/explainer algorithm.
+
+### 2. Select an explainer and masker
+- **Tree-based model**: Use `shap.TreeExplainer`.
+- **Deep neural network**: Use `shap.DeepExplainer` or `shap.GradientExplainer`.
+- **Linear model**: Use `shap.LinearExplainer`.
+- **Black-box model**: Use `shap.KernelExplainer`.
+- **Unsure**: Use `shap.Explainer` for automatic dispatch.
+
+### 3. Compute a modern `Explanation`
+```python
+import shap
+explainer = shap.Explainer(model, masker)
+explanation = explainer(X_test)
+```
+
+### 4. Visualize Results
+- **Global**: `shap.plots.beeswarm(explanation)` or `shap.plots.bar(explanation)`.
+- **Individual**: `shap.plots.waterfall(explanation[0])` or `shap.plots.force(explanation[0])`.
+- **Feature Relationships**: `shap.plots.scatter(explanation[:, &quot;Feature_Name&quot;])`.
+
+### 5. Advanced Workflows
+- **Model Debugging**: Identify prediction errors, explain misclassified samples, and check for data leakage via unexpected feature importance.
+- **Feature Engineering**: Identify nonlinear relationships and interactions to guide new feature creation.
+- **Model Comparison**: Compare global feature importance and consistency across multiple models.
+- **Fairness and Bias**: Compare feature importance across demographic groups to detect bias.</pre>
+</body>
+</html>

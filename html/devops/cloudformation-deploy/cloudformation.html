@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cloudformation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">cloudformation-deploy</a> / cloudformation</p><h1>cloudformation</h1><p class="meta">combined</p><p>The copies overlap on core CloudFormation stack operations, but each has material steps the others lack. BagelHole and sickn33 are near-identical (sickn33 is a mirror of BagelHole) and focus on a production web template with ASG/ELB, cfn-lint, and termination protection. itsmostafa adds distinct material: Stack Sets, a troubleshooting section, and specific resource patterns (Lambda, VPC, DynamoDB) not present in the others. Crowning one would hide the itsmostafa-specific patterns and troubleshooting guidance.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>infrastructure/cloud-aws/cloudformation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/itsmostafa/aws-agent-skills">itsmostafa/aws-agent-skills</a></td><td><code>skills/cloudformation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cloudformation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>infrastructure/cloud-aws/cloudformation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/itsmostafa/aws-agent-skills">itsmostafa/aws-agent-skills</a></td><td><code>skills/cloudformation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cloudformation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/cloudformation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/cloudformation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: cloudformation
+description: Deploy AWS resources with CloudFormation templates. Create stacks, use nested stacks, implement drift detection, and manage multi-account deployments with Stack Sets. Use when deploying AWS-native IaC.
+license: MIT
+metadata:
+  author: devops-skills
+  version: &quot;1.0&quot;
+---
+
+# CloudFormation
+
+Deploy AWS infrastructure with native CloudFormation templates, change sets, nested stacks, drift detection, and Stack Sets.
+
+## When to Use This Skill
+
+- Deploying AWS resources using AWS-native Infrastructure as Code
+- Creating repeatable, parameterized infrastructure templates
+- Managing multi-environment deployments (dev, staging, prod) with the same template
+- Implementing safe deployments with change sets and rollback protection
+- Detecting and remediating configuration drift
+- Organizing large infrastructure into nested stacks
+- Deploying stacks across multiple accounts and regions with Stack Sets
+- Exporting/importing values between stacks
+
+## Prerequisites
+
+- AWS CLI v2 installed and configured
+- IAM permissions: `cloudformation:*`, plus permissions for all resources in the template
+- (Optional) `cfn-lint` installed for template validation (`pip install cfn-lint`)
+- S3 bucket for storing templates larger than 51,200 bytes
+
+## Core Concepts
+
+- **Templates**: JSON or YAML files defining AWS resources with Parameters, Mappings, Conditions, Resources, and Outputs
+- **Stacks**: Collection of resources managed as a single unit
+- **Change Sets**: Preview changes before executing updates
+- **Stack Sets**: Deploy stacks across multiple accounts and regions
+- **Nested Stacks**: Organize large infrastructure into modular sub-templates
+
+## Template Structure
+
+```yaml
+AWSTemplateFormatVersion: &#x27;2010-09-09&#x27;
+Description: Production web application infrastructure
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label: { default: &quot;Environment&quot; }
+        Parameters: [Environment, InstanceType]
+      - Label: { default: &quot;Network&quot; }
+        Parameters: [VpcId, SubnetIds]
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues: [dev, staging, prod]
+    Default: dev
+
+  InstanceType:
+    Type: String
+    Default: t3.micro
+    AllowedValues: [t3.micro, t3.small, t3.medium, t3.large]
+
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC to deploy into
+
+  SubnetIds:
+    Type: List&lt;AWS::EC2::Subnet::Id&gt;
+    Description: Subnets for the application
+
+Conditions:
+  IsProd: !Equals [!Ref Environment, prod]
+
+Mappings:
+  RegionAMI:
+    us-east-1:
+      AL2023: ami-0abcdef1234567890
+    us-west-2:
+      AL2023: ami-0fedcba9876543210
+
+Resources:
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub &#x27;${Environment}-web-sg&#x27;
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub &#x27;${Environment}-web-sg&#x27;
+
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: !Sub &#x27;${Environment}-web&#x27;
+      LaunchTemplateData:
+        ImageId: !FindInMap [RegionAMI, !Ref &#x27;AWS::Region&#x27;, AL2023]
+        InstanceType: !If [IsProd, t3.large, !Ref InstanceType]
+        MetadataOptions:
+          HttpTokens: required
+        SecurityGroupIds:
+          - !Ref SecurityGroup
+
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: !Sub &#x27;${Environment}-web-asg&#x27;
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MinSize: !If [IsProd, 2, 1]
+      MaxSize: !If [IsProd, 10, 3]
+      DesiredCapacity: !If [IsProd, 4, 1]
+      VPCZoneIdentifier: !Ref SubnetIds
+      TargetGroupARNs:
+        - !Ref TargetGroup
+      HealthCheckType: ELB
+      HealthCheckGracePeriod: 300
+      Tags:
+        - Key: Name
+          Value: !Sub &#x27;${Environment}-web&#x27;
+          PropagateAtLaunch: true
+    UpdatePolicy:
+      AutoScalingRollingUpdate:
+        MinInstancesInService: !If [IsProd, 2, 0]
+        MaxBatchSize: 1
+        PauseTime: PT5M
+        WaitOnResourceSignals: true
+        SuspendProcesses:
+          - HealthCheck
+          - ReplaceUnhealthy
+          - AZRebalance
+          - AlarmNotification
+          - ScheduledActions
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub &#x27;${Environment}-web-tg&#x27;
+      Port: 8080
+      Protocol: HTTP
+      VpcId: !Ref VpcId
+      TargetType: instance
+      HealthCheckPath: /health
+      HealthCheckIntervalSeconds: 30
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 3
+
+Outputs:
+  SecurityGroupId:
+    Description: Web security group ID
+    Value: !Ref SecurityGroup
+    Export:
+      Name: !Sub &#x27;${Environment}-WebSecurityGroup&#x27;
+
+  AutoScalingGroupName:
+    Description: ASG name
+    Value: !Ref AutoScalingGroup
+    Export:
+      Name: !Sub &#x27;${Environment}-WebASG&#x27;
+```
+
+## Common Resource Patterns
+
+### Lambda Function
+
+```yaml
+Resources:
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub &#x27;${AWS::StackName}-function&#x27;
+      Runtime: python3.12
+      Handler: index.handler
+      Role: !GetAtt LambdaRole.Arn
+      Code:
+        ZipFile: |
+          def handler(event, context):
+              return {&#x27;statusCode&#x27;: 200, &#x27;body&#x27;: &#x27;Hello&#x27;}
+      Environment:
+        Variables:
+          ENVIRONMENT: !Ref Environment
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: &#x27;2012-10-17&#x27;
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+```
+
+### VPC with Subnets
+
+```yaml
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub &#x27;${AWS::StackName}-vpc&#x27;
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [0, !GetAZs &#x27;&#x27;]
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [0, !GetAZs &#x27;&#x27;]
+      CidrBlock: 10.0.10.0/24
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+```
+
+### DynamoDB Table
+
+```yaml
+Resources:
+  OrdersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub &#x27;${AWS::StackName}-orders&#x27;
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST
+```
+
+## Stack Operations
+
+```bash
+# Validate a template
+aws cloudformation validate-template --template-body file://template.yaml
+
+# Lint with cfn-lint (catches more issues)
+cfn-lint template.yaml
+
+# Create a stack
+aws cloudformation create-stack \
+  --stack-name production-web \
+  --template-body file://template.yaml \
+  --parameters \
+    ParameterKey=Environment,ParameterValue=prod \
+    ParameterKey=VpcId,ParameterValue=vpc-abc123 \
+    ParameterKey=SubnetIds,ParameterValue=&quot;subnet-aaa\\,subnet-bbb&quot; \
+  --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
+  --tags Key=Environment,Value=production Key=Team,Value=platform \
+  --enable-termination-protection \
+  --on-failure ROLLBACK
+
+# Wait for stack creation
+aws cloudformation wait stack-create-complete --stack-name production-web
+
+# Describe stack status and outputs
+aws cloudformation describe-stacks \
+  --stack-name production-web \
+  --query &quot;Stacks[0].{Status:StackStatus,Outputs:Outputs}&quot; \
+  --output table
+
+# List stack resources
+aws cloudformation list-stack-resources --stack-name production-web \
+  --query &quot;StackResourceSummaries[].{Logical:LogicalResourceId,Physical:PhysicalResourceId,Type:ResourceType,Status:ResourceStatus}&quot; \
+  --output table
+
+# Update a stack
+aws cloudformation update-stack \
+  --stack-name production-web \
+  --template-body file://template.yaml \
+  --parameters ParameterKey=Environment,ParameterValue=prod
+
+# Delete a stack
+aws cloudformation delete-stack --stack-name dev-web
+aws cloudformation wait stack-delete-complete --stack-name dev-web
+```
+
+## Change Sets (Safe Updates)
+
+```bash
+# Create a change set to preview changes before applying
+aws cloudformation create-change-set \
+  --stack-name my-stack \
+  --change-set-name my-changes \
+  --template-body file://template.yaml \
+  --parameters ParameterKey=Environment,ParameterValue=prod
+
+# Describe changes
+aws cloudformation describe-change-set \
+  --stack-name my-stack \
+  --change-set-name my-changes
+
+# Execute change set
+aws cloudformation execute-change-set \
+  --stack-name my-stack \
+  --change-set-name my-changes
+```
+
+## Stack Sets (Multi-Account/Region)
+
+```bash
+# Create a stack set
+aws cloudformation create-stack-set \
+  --stack-set-name my-stack-set \
+  --template-body file://template.yaml \
+  --parameters ParameterKey=Environment,ParameterValue=prod \
+  --capabilities CAPABILITY_IAM
+
+# Create instances in specific accounts/regions
+aws cloudformation create-stack-instances \
+  --stack-set-name my-stack-set \
+  --regions us-east-1 us-west-2 \
+  --accounts 111111111111 222222222222
+
+# List stack instances
+aws cloudformation list-stack-instances --stack-set-name my-stack-set
+```
+
+## Drift Detection
+
+```bash
+# Detect drift in a stack
+aws cloudformation detect-stack-drift --stack-name production-web
+
+# Wait for drift detection to complete
+aws cloudformation wait stack-drift-detection-complete --stack-name production-web
+
+# Describe drift details
+aws cloudformation describe-stack-resource-drifts --stack-name production-web
+```
+
+## Troubleshooting
+
+- **Template validation errors**: Run `cfn-lint` for detailed syntax and best-practice checks
+- **Stack creation failures**: Check `describe-stack-events` for the specific resource that failed
+- **Permission denied**: Ensure IAM role has `cloudformation:*` plus permissions for all resources in the template
+- **Drift detected**: Use `detect-stack-drift` and `describe-stack-resource-drifts` to identify and remediate changes
+- **Change set conflicts**: Delete the existing change set before creating a new one with the same name
+
+## Best Practices
+
+- Use `cfn-lint` in CI/CD pipelines to catch template issues early
+- Enable termination protection on production stacks
+- Use change sets for all production updates
+- Tag all resources with Environment, Team, and CostCenter
+- Use nested stacks to keep templates under 51,200 bytes
+- Export/import values between stacks instead of hardcoding IDs
+- Use Stack Sets for multi-account and multi-region deployments</pre>
+</body>
+</html>

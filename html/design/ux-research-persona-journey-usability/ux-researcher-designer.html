@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ux-researcher-designer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">ux-research-persona-journey-usability</a> / ux-researcher-designer</p><h1>ux-researcher-designer</h1><p class="meta">combined</p><p>The two copies overlap on the same toolkit (persona generation, journey mapping, usability testing, research synthesis), but the second copy adds concrete workflows, trigger terms, task formats, success metrics, and synthesis coding that the first copy does not contain. The first copy is a short overview that references a persona script; the second copy is a fuller procedure. Crowning one would hide the other&#x27;s material steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/ux-researcher-designer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ux-researcher-designer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/ux-researcher-designer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ux-researcher-designer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: ux-researcher-designer
+description: UX research and design toolkit for Senior UX Designer/Researcher including data-driven persona generation, journey mapping, usability testing frameworks, and research synthesis. Use for user research, persona creation, journey mapping, and design validation.
+---
+
+# UX Researcher &amp; Designer
+
+Comprehensive toolkit for user-centered research and experience design.
+
+## Core Capabilities
+- Data-driven persona generation
+- Customer journey mapping
+- Usability testing frameworks
+- Research synthesis and insights
+- Design validation methods
+
+## Trigger Terms
+Use this skill when you need to:
+- create user persona
+- generate persona from data
+- build customer journey map
+- map user journey
+- plan usability test
+- design usability study
+- analyze user research
+- synthesize interview findings
+- identify user pain points
+- define user archetypes
+- calculate research sample size
+- create empathy map
+- identify user needs
+
+## Workflow 1: Generate User Persona
+
+Situation: You have user data (analytics, surveys, interviews) and need to create a research-backed persona.
+
+1. Prepare user data in JSON format:
+```json
+[
+  {
+    &quot;user_id&quot;: &quot;user_1&quot;,
+    &quot;age&quot;: 32,
+    &quot;usage_frequency&quot;: &quot;daily&quot;,
+    &quot;features_used&quot;: [&quot;dashboard&quot;, &quot;reports&quot;, &quot;export&quot;],
+    &quot;primary_device&quot;: &quot;desktop&quot;,
+    &quot;usage_context&quot;: &quot;work&quot;,
+    &quot;tech_proficiency&quot;: 7,
+    &quot;pain_points&quot;: [&quot;slow loading&quot;, &quot;confusing UI&quot;]
+  }
+]
+```
+
+2. Run persona generator:
+```bash
+# Human-readable output
+python scripts/persona_generator.py
+
+# JSON output for integration
+python scripts/persona_generator.py json
+```
+
+3. Review generated components:
+
+| Component | What to Check |
+|-----------|---------------|
+| Archetype | Does it match the data patterns? |
+| Demographics | Are they derived from actual data? |
+| Goals | Are they specific and actionable? |
+| Frustrations | Do they include frequency counts? |
+| Design implications | Can designers act on these? |
+
+4. Validate persona:
+- Show to 3-5 real users: &quot;Does this sound like you?&quot;
+- Cross-check with support tickets
+- Verify against analytics data
+
+5. Reference: See `references/persona-methodology.md` for validity criteria
+
+## Workflow 2: Create Journey Map
+
+Situation: You need to visualize the end-to-end user experience for a specific goal.
+
+1. Define scope:
+
+| Element | Description |
+|---------|-------------|
+| Persona | Which user type |
+| Goal | What they&#x27;re trying to achieve |
+| Start | Trigger that begins journey |
+| End | Success criteria |
+| Timeframe | Hours/days/weeks |
+
+2. Gather journey data from:
+- User interviews (ask &quot;walk me through...&quot;)
+- Session recordings
+- Analytics (funnel, drop-offs)
+- Support tickets
+
+3. Map the stages. Typical B2B SaaS stages:
+```
+Awareness → Evaluation → Onboarding → Adoption → Advocacy
+```
+
+4. Fill in layers for each stage:
+```
+Stage: [Name]
+├── Actions: What does user do?
+├── Touchpoints: Where do they interact?
+├── Emotions: How do they feel? (1-5)
+├── Pain Points: What frustrates them?
+└── Opportunities: Where can we improve?
+```
+
+5. Identify opportunities using Priority Score = Frequency × Severity × Solvability
+
+6. Reference: See `references/journey-mapping-guide.md` for templates
+
+## Workflow 3: Plan Usability Test
+
+Situation: You need to validate a design with real users.
+
+1. Define research questions. Transform vague goals into testable questions:
+
+| Vague | Testable |
+|-------|----------|
+| &quot;Is it easy to use?&quot; | &quot;Can users complete checkout in &lt;3 min?&quot; |
+| &quot;Do users like it?&quot; | &quot;Will users choose Design A or B?&quot; |
+| &quot;Does it make sense?&quot; | &quot;Can users find settings without hints?&quot; |
+
+2. Select method:
+
+| Method | Participants | Duration | Best For |
+|--------|--------------|----------|----------|
+| Moderated remote | 5-8 | 45-60 min | Deep insights |
+| Unmoderated remote | 10-20 | 15-20 min | Quick validation |
+| Guerrilla | 3-5 | 5-10 min | Rapid feedback |
+
+3. Design tasks. Good task format:
+```
+SCENARIO: &quot;Imagine you&#x27;re planning a trip to Paris...&quot;
+GOAL: &quot;Book a hotel for 3 nights in your budget.&quot;
+SUCCESS: &quot;You see the confirmation page.&quot;
+```
+
+Task progression: Warm-up → Core → Secondary → Edge case → Free exploration
+
+4. Define success metrics:
+
+| Metric | Target |
+|--------|--------|
+| Completion rate | &gt;80% |
+| Time on task | &lt;2× expected |
+| Error rate | &lt;15% |
+| Satisfaction | &gt;4/5 |
+
+5. Prepare moderator guide:
+- Think-aloud instructions
+- Non-leading prompts
+- Post-task questions
+
+6. Reference: See `references/usability-testing-frameworks.md` for full guide
+
+## Workflow 4: Synthesize Research
+
+Situation: You have raw research data (interviews, surveys, observations) and need actionable insights.
+
+1. Code the data. Tag each data point:
+- `[GOAL]` - What they want to achieve
+- `[PAIN]` - What frustrates them
+- `[BEHAVIOR]` - What they actually do
+- `[CONTEXT]` - When/where they use product
+- `[QUOTE]` - Direct user words
+
+2. Cluster similar patterns.
+
+## Key Scripts
+
+### persona_generator.py
+Creates research-backed personas from user data and interviews.
+
+Usage: `python scripts/persona_generator.py [json]`
+
+Features:
+- Analyzes user behavior patterns
+- Identifies persona archetypes
+- Extracts psychographics
+- Generates scenarios
+- Provides design implications
+- Confidence scoring based on sample size</pre>
+</body>
+</html>

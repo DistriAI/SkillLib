@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>chatgpt-apps</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">chatgpt-apps-sdk</a> / chatgpt-apps</p><h1>chatgpt-apps</h1><p class="meta">combined</p><p>The two copies describe different procedures for the same task. The openai/skills copy is a docs-first, archetype-classification workflow that mandates fetching current OpenAI Apps SDK documentation before generating code and focuses on choosing the right upstream example or fallback scaffold. The LeoYeAI copy is a command-driven, end-to-end builder that defines specific slash commands, a fixed project structure, concrete MCP SDK class names, widget URI patterns, and a deployment path to Render. Neither copy is a reproduction of the other; each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/chatgpt-apps/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/chatgpt-apps/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/chatgpt-apps/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/chatgpt-apps/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: chatgpt-apps
+description: Build, scaffold, refactor, test, and deploy ChatGPT Apps SDK applications that combine an MCP server and widget UI. Use when designing tools, registering UI resources, wiring the MCP Apps bridge, applying Apps SDK metadata or CSP settings, or producing a docs-aligned project scaffold.
+---
+
+# ChatGPT Apps
+
+## Overview
+
+Scaffold and build ChatGPT Apps SDK implementations using a docs-first, example-first workflow, then generate code that follows current Apps SDK and MCP Apps bridge patterns.
+
+## Mandatory Docs-First Workflow
+
+1. Invoke the OpenAI docs skill or MCP tools to fetch current Apps SDK documentation before writing code.
+2. Fetch baseline pages: apps-sdk/build/mcp-server, apps-sdk/build/chatgpt-ui, apps-sdk/build/examples, apps-sdk/plan/tools, apps-sdk/reference.
+3. Fetch apps-sdk/quickstart when scaffolding a new app.
+4. Fetch deployment/submission docs when the task includes local testing, hosting, or public launch.
+5. Cite the docs URLs used when explaining design choices.
+6. Prefer current docs guidance over older repo patterns; call out compatibility aliases explicitly.
+7. If doc search fails, fetch canonical pages directly by URL and continue.
+
+## Classify The App
+
+Before choosing examples or scaffolds, classify the request into one primary archetype:
+- tool-only
+- vanilla-widget
+- react-widget
+- interactive-decoupled
+- submission-ready
+
+Use the archetype to decide whether a UI is needed, whether to preserve a split server/ + web/ layout, which upstream example to prefer, and which validation checks matter most.
+
+## Default Starting-Point Order
+
+1. Official OpenAI examples when a close match exists.
+2. Version-matched @modelcontextprotocol/ext-apps examples for a lower-level baseline.
+3. A local Node + vanilla starter scaffold only when no close example fits.
+
+## Implementation Structure
+
+Generate the application with this structure:
+
+```
+{app-name}/
+├── package.json
+├── tsconfig.server.json
+├── setup.sh
+├── START.sh
+├── .env.example
+├── .gitignore
+└── server/
+    └── index.ts
+```
+
+Critical requirements:
+- Use Server class from @modelcontextprotocol/sdk/server/index.js.
+- Use StreamableHTTPServerTransport for session management.
+- Widget URIs: ui://widget/{widget-id}.html.
+- Widget MIME type: text/html+skybridge.
+- Include structuredContent in tool responses.
+- Include _meta with openai/outputTemplate on widget tools.
+
+## Tool Design
+
+Classify each tool:
+- Query (readOnlyHint: true)
+- Mutation (destructiveHint: false)
+- Destructive (destructiveHint: true)
+- Widget (returns UI with _meta)
+- External API (openWorldHint: true)
+
+Use kebab-case naming. Design input schemas with Zod. Register tools in server/index.ts with appropriate _meta annotations.
+
+## Widget Design
+
+Support these patterns: Card Grid, Stats Dashboard, Table, Bar Chart, Detail Widget.
+
+For each widget define: id, name, description, templateUri, invoking, invoked, mockData.
+
+## Testing
+
+1. Run setup: ./setup.sh
+2. Start dev: ./START.sh --dev
+3. Preview widgets: http://localhost:3000/preview
+4. Test MCP connection.
+
+## Deployment
+
+1. Generate Dockerfile and render.yaml.
+2. Deploy to Render.
+3. Configure ChatGPT connector.
+
+## Conflicts
+
+- openai/skills mandates fetching OpenAI docs before any code generation; LeoYeAI/openclaw-master-skills does not require this and instead prescribes a fixed template and deployment path.
+- openai/skills uses archetype classification to choose a starting point; LeoYeAI/openclaw-master-skills uses a command-driven workflow with a fixed project structure.</pre>
+</body>
+</html>

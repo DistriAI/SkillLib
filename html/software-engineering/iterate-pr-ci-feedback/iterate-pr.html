@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iterate-pr</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">iterate-pr-ci-feedback</a> / iterate-pr</p><h1>iterate-pr</h1><p class="meta">combined</p><p>The two copies describe the same PR iteration loop but each contains material steps the other lacks. The getsentry copy defines a full monitor loop, explicit exit conditions, a fallback to raw gh commands, and a bundled reply_to_thread.py script. The sickn33 copy adds a detailed reply protocol (GraphQL mutation, signature, duplicate check), a LOGAF priority scale, and a warning that the supporting scripts are not bundled in that catalog. Crowning one copy would hide the other&#x27;s unique constraints and procedures.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/iterate-pr/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/iterate-pr/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/iterate-pr/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/iterate-pr/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/iterate-pr/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/iterate-pr/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: iterate-pr
+description: Iterate on a PR until actionable CI passes and high/medium review feedback is addressed. Use for PR CI failures, review feedback, or green-check loops; do not wait for human approval, draft status, or merge gates.
+---
+
+# Iterate on PR Until CI Passes
+
+Goal: fix actionable CI failures and high/medium review feedback. Stop and report human approval, draft-readiness, and merge-readiness gates.
+
+Requires:
+- authenticated `gh`
+- `uv`
+- target repository root as cwd
+- skill-root-relative script paths, for example `scripts/fetch_pr_checks.py`
+
+## Bundled Scripts
+
+| Script | Run | Output |
+|--------|-----|--------|
+| `scripts/fetch_pr_checks.py` | `uv run scripts/fetch_pr_checks.py [--pr NUMBER]` | JSON: `pr`, `summary`, `checks`, failure snippets |
+| `scripts/fetch_pr_feedback.py` | `uv run scripts/fetch_pr_feedback.py [--pr NUMBER]` | JSON buckets: `high`, `medium`, `low`, `bot`, `resolved` |
+| `scripts/monitor_pr_checks.py` | `uv run scripts/monitor_pr_checks.py [--pr NUMBER]` | terminal marker plus tab-separated checks |
+| `scripts/reply_to_thread.py` | `uv run scripts/reply_to_thread.py THREAD_ID BODY [...]` | JSON reply results |
+
+Check summary fields include `failed`, `pending`, `actionable_pending`, and `human_gate_pending`.
+
+Monitor markers:
+- `ALL_CHECKS_PASSED`
+- `CHECKS_DONE_WITH_FAILURES`
+- `NO_CHECKS_REGISTERED`
+- `DRAFT_PR_WITH_NO_CHECKS`
+- `CHECKS_BLOCKED_BY_REVIEW_GATE`
+
+## Workflow
+
+### 1. Identify PR
+
+Run:
+```bash
+gh pr view --json number,url,headRefName,isDraft,reviewDecision
+```
+
+Stop when:
+- no PR exists
+- draft PR has no checks after monitor grace period: report `DRAFT_PR_WITH_NO_CHECKS`
+
+Draft rule: inspect existing checks/feedback only. Do not mark ready for review unless asked.
+
+### 2. Handle Feedback
+
+Run `uv run scripts/fetch_pr_feedback.py [--pr NUMBER]`.
+
+| Bucket | Action |
+|--------|--------|
+| `high` | fix |
+| `medium` | fix |
+| `low` | ask user which to address |
+| `bot` | skip informational comments |
+| `resolved` | skip |
+
+Feedback fix checklist:
+- verify root cause
+- search related code
+- fix all instances
+- for `review_bot: true`: fix real issues, explain false positives
+
+Low-priority prompt format:
+```text
+Found 3 low-priority suggestions:
+1. [l] &quot;Consider renaming this variable&quot; - @reviewer in api.py:42
+2. [nit] &quot;Could use a list comprehension&quot; - @reviewer in utils.py:18
+3. [style] &quot;Add a docstring&quot; - @reviewer in models.py:55
+
+Which should I address? (&quot;1,3&quot;, &quot;all&quot;, or &quot;none&quot;)
+```
+
+### 3. Check CI Status
+
+Run `uv run scripts/fetch_pr_checks.py [--pr NUMBER]`.
+
+| State | Action |
+|-------|--------|
+| `failed &gt; 0` and `actionable_pending == 0` | fix failures |
+| `actionable_pending &gt; 0` | wait; poll feedback while waiting |
+| `pending &gt; 0` and `actionable_pending == 0` | report `CHECKS_BLOCKED_BY_REVIEW_GATE` |
+| no checks after grace period | report `NO_CHECKS_REGISTERED` or `DRAFT_PR_WITH_NO_CHECKS` |
+| all actionable checks passed | run post-CI feedback check |
+
+Wait for actionable review bots: sentry, warden, cursor, bugbot, seer, codeql.
+Do not wait for approval, `isDraft`, `REVIEW_REQUIRED`, Codecov, or informational bots.
+
+### 4. Fix CI Failures
+
+For each failure:
+1. read full log: `gh run view &lt;run-id&gt; --log-failed`
+2. trace from assertion/exception/lint rule to source
+3. state the cause before editing: &quot;fails because X, affected by Y&quot;
+4. search related call sites/patterns
+5. fix root cause, not symptom
+6. add focused test coverage when needed
+
+### 5. Verify Locally, Then Commit and Push
+
+Before commit:
+- test fix: rerun specific test
+- lint/type fix: rerun affected checker
+- code fix: rerun covering tests
+- local failure: fix before pushing
+
+```bash
+git add &lt;files&gt;
+git commit -m &quot;fix: &lt;descriptive message&gt;&quot;
+git push
+```
+
+### 6. Monitor CI and Address Feedback
+
+Loop:
+1. run `uv run scripts/fetch_pr_checks.py`
+2. handle table in step 3
+3. while `actionable_pending &gt; 0`, run `uv run scripts/fetch_pr_feedback.py`
+4. fix new high/medium feedback immediately
+5. if changed, verify, commit, push, restart loop
+6. otherwise sleep 30 seconds and repeat
+7. after checks pass, wait 10 seconds, fetch feedback once more
+8. if new high/medium feedback exists, return to step 4
+
+Claude Code optional: run `uv run scripts/monitor_pr_checks.py` through `MonitorTool` with `persistent: false`; set timeout to normal repo CI duration. Restart the monitor after every push.
+
+### 7. Reply to Review Threads
+
+After processing each inline review comment, reply on the PR thread to acknowledge the action taken. Only reply to items with a `thread_id` (inline review comments).
+
+**When to reply:**
+- `high` and `medium` items — whether fixed or determined to be false positives
+- `low` items — whether fixed or declined by the user
+
+**How to reply:** Use the `addPullRequestReviewThreadReply` GraphQL mutation with `pullRequestReviewThreadId` and `body` inputs, or use `scripts/reply_to_thread.py` if available.
+
+**Reply format:**
+- 1-2 sentences: what was changed, why it&#x27;s not an issue, or acknowledgment of declined items
+- End every reply with `\n\n*— Claude Code*`
+- Before replying, check if the thread already has a reply ending with `*- Claude Code*` or `*— Claude Code*` to avoid duplicates on re-loops
+- If the `gh api` call fails, log and continue — do not block the workflow
+
+## Exit Conditions
+
+| Exit | Conditions |
+|------|------------|
+| Success | actionable CI passed; post-CI feedback clean; low-priority choice handled |
+| Ask user | same failure after 2 attempts; feedback unclear; infrastructure issue |
+| Stop | no PR; branch needs rebase; no checks; draft no-checks; only human gates remain |
+
+## Fallback
+
+If scripts fail, use `gh` CLI directly:
+- `gh pr view --json number,url,headRefName,isDraft,reviewDecision`
+- `gh pr checks --json name,state,bucket,description,link`
+- `gh run view &lt;run-id&gt; --log-failed`
+- `gh api repos/{owner}/{repo}/pulls/{number}/comments`
+
+## Conflicts
+
+- sickn33/agentic-awesome-skills states that the supporting scripts are not bundled in the catalog and must be resolved from an external installation, while getsentry/skills lists them as bundled scripts with relative paths.
+- sickn33/agentic-awesome-skills requires replying to every processed review thread with a specific signature and duplicate check, whereas getsentry/skills provides a separate reply_to_thread.py script without mandating a reply on every item.</pre>
+</body>
+</html>

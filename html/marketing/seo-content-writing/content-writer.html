@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>content-writer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">seo-content-writing</a> / content-writer</p><h1>content-writer</h1><p class="meta">combined</p><p>The two copies are not the same procedure. The aaron-he-zhu copy is a self-contained, detailed skill that defines two modes (new/refresh), a specific CORE-EEAT quality bar, a handoff summary format, data-source tiers, and a gated index-push step. The nowork-studio copy is a thin wrapper that delegates to an external WORKFLOW.md file and does not contain the steps itself. Because the nowork-studio copy lacks the concrete steps and the aaron copy lacks the external workflow delegation, crowning one would hide a real alternative implementation. They overlap in intent (SEO content writing) but differ in structure and content.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aaron-he-zhu/aaron-marketing-skills">aaron-he-zhu/aaron-marketing-skills</a></td><td><code>seo-geo/implement/content-writer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/content-writer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aaron-he-zhu/aaron-marketing-skills">aaron-he-zhu/aaron-marketing-skills</a></td><td><code>seo-geo/implement/content-writer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/content-writer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: content-writer
+argument-hint: &quot;[--mode new|refresh] &lt;keyword, topic, or URL to improve&gt;&quot;
+description: &gt;
+  Write SEO-optimized blog posts, landing pages, and content improvements
+  following Google&#x27;s E-E-A-T and Helpful Content guidelines. Handles new content
+  creation from a keyword or topic, and improving existing pages. Use when asked
+  to &quot;write a blog post&quot;, &quot;create a landing page&quot;, &quot;improve this page&quot;, &quot;write
+  content about X&quot;, &quot;content for keyword X&quot;, &quot;draft an article&quot;, &quot;blog post
+  about&quot;, &quot;landing page for&quot;, &quot;service page&quot;, &quot;product page copy&quot;, &quot;rewrite
+  this page&quot;, &quot;make this page rank better&quot;, &quot;content brief&quot;, &quot;how-to guide&quot;,
+  &quot;listicle&quot;, or any content creation or improvement task for a website.
+---
+
+# Content Writer
+
+Writes and updates SEO/GEO content across two modes: **new** drafts net-new pages against a target keyword and search intent; **refresh** diagnoses decay on an existing page, prioritizes the update, and produces a republish plan. Both modes apply the same CORE-EEAT constraints so a draft and a refresh clear the same quality bar before the auditor gate.
+
+## Mode Selector
+
+| Mode | Trigger | Output |
+|------|---------|--------|
+| `new` | &quot;write / draft SEO content&quot;, net-new page against a keyword, no existing URL | Ready-to-use draft (title, meta, H1/H2 structure, snippet block, links) |
+| `refresh` | &quot;update outdated content&quot;, &quot;fix decay&quot;, &quot;refresh for [year]&quot;, an existing URL that lost traffic/rankings | Decay diagnosis, prioritized update plan, republish-date strategy, optional refreshed copy |
+
+**Selecting the mode:** honor an explicit `--mode`. Otherwise infer: an existing URL plus a decline/staleness signal → `refresh`; a topic/keyword with no prior version → `new`. If the request says &quot;refresh&quot; but there is no existing URL, treat it as `new` and note the mismatch once (do not fabricate a prior version).
+
+## Quick Start
+
+```
+# mode: new
+Write an SEO-optimized article about [topic] targeting the keyword [keyword]
+Here&#x27;s my content brief: [brief]. Write SEO content following this outline.
+```
+
+```
+# mode: refresh
+Refresh this article for [current year]: [URL/content]
+Which of my blog posts have lost the most traffic? Refresh the worst one.
+Update this content to outrank [competitor URL]: [your URL]
+```
+
+## Skill Contract
+
+**Expected output**: mode `new` → a ready-to-use draft; mode `refresh` → a scored decay diagnosis plus a prioritized update plan (and optional refreshed copy). Both emit the standard handoff summary for `memory/content/`.
+
+- **Reads**: the brief, target keywords, page intent, entity inputs, `memory/projections/narrative.json`, and `memory/projections/claims.json` (new); those same truth projections plus stable page ref, prior content version/hash, change ref, candidate URL/content, traffic/ranking history, publish/update dates, and competitor examples (refresh).
+- **Writes**: a user-facing content deliverable and, with permission, a dated artifact under `memory/content/content-writer/`; unresolved durable claims are submitted through `registry-events.py` as authorized `operation: propose` events.
+- **Done when**: (new) the draft satisfies target intent with natural keyword use, H1/H2 structure, meta description, one snippet-targetable block, and evidence-safe claims; (refresh) decay drivers and concrete updates are documented; both modes report `page_ref`, `content_version`, `content_sha256`, `change_ref`, `narrative_canon_id`, `narrative_canon_version`, `claims_projection_offset`, and `dependency_status`.
+- **Primary next skill**: content-quality-auditor to gate the draft or refreshed page before publishing.
+
+### Handoff Summary
+
+&gt; Emit the standard shape from skill-contract.md §Handoff Summary Format, including the Narrative/claims dependency tuple.
+
+## Data Sources
+
+Keyless Tier-1 first: ask for the brief, keywords, intent, and competitors (new); ask for traffic data, ranking history, publish dates, candidate URLs, and competitor examples (refresh). Use SEO tool, search console, and analytics when connected — keyed APIs are opt-in Tier-2/3 only, never required.
+
+**Publish-time index push (write channel, gated)**: after a new or refreshed page is actually live, use indexpush.py to tell engines to fetch it now instead of waiting for a recrawl. Dry-run by default; push only URLs that are live and final. Bind the intent to URL, engine, method, and exact `content_sha256`; emit an index receipt only from the returned provider/HTTP response.
+
+## Conflicts
+
+- **nowork-studio/notfair-plugin**: Delegates to an external WORKFLOW.md file rather than containing the procedure inline. If using this repository&#x27;s workflow, read `../../seo/content-writer/WORKFLOW.md` completely and follow it as the active workflow, resolving every relative reference from that file against `../../seo/content-writer/`.
+- **aaron-he-zhu/aaron-marketing-skills**: Contains the full procedure inline with two explicit modes (new/refresh), CORE-EEAT constraints, handoff summary, and index-push step as described above.</pre>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>burpsuite-project-parser</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">burp-project-search</a> / burpsuite-project-parser</p><h1>burpsuite-project-parser</h1><p class="meta">combined</p><p>The trailofbits copy is the more complete and operationally rigorous procedure: it defines the wrapper script&#x27;s exit-code contract, a control-query method to distinguish a genuinely empty result from an unloaded parser, and pipefail/PIPESTATUS handling. The sickn33 copy adds a distinct, material constraint set that the trailofbits copy does not state: a hard 1000-character body truncation rule, a mandatory jq truncation pattern, and a catalog note that the supporting scripts are not bundled and must be resolved from an external installation. Neither copy is a pure reproduction of the other; crowning one would hide either the exit-code/control-query safety procedure or the body-truncation and missing-supporting-material constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/burpsuite-project-parser/skills/burpsuite-project-parser/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/burpsuite-project-parser/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/burpsuite-project-parser/skills/burpsuite-project-parser/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/burpsuite-project-parser/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/burpsuite-project-parser/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/burpsuite-project-parser/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: burpsuite-project-parser
+description: Searches and explores Burp Suite project files (.burp) from the command line. Use when searching response headers or bodies with regex patterns, extracting security audit findings, dumping proxy history or site map data, or analyzing HTTP traffic captured in a Burp project.
+allowed-tools:
+  - Bash
+  - Read
+---
+
+# Burp Project Parser
+
+Search and extract data from Burp Suite project files using the burpsuite-project-file-parser extension.
+
+## When to Use
+
+- Searching response headers or bodies with regex patterns
+- Extracting security audit findings from Burp projects
+- Dumping proxy history or site map data
+- Analyzing HTTP traffic captured in a Burp project file
+
+## Prerequisites
+
+This skill **delegates parsing to Burp Suite Professional** - it does not parse .burp files directly.
+
+**Required:**
+1. **Burp Suite Professional** - Must be installed ([portswigger.net](https://portswigger.net/burp/pro))
+2. **burpsuite-project-file-parser extension** - Provides CLI functionality
+
+**Install the extension:**
+1. Download from [github.com/BuffaloWill/burpsuite-project-file-parser](https://github.com/BuffaloWill/burpsuite-project-file-parser)
+2. In Burp Suite: Extender → Extensions → Add
+3. Select the downloaded JAR file
+
+**Supporting material:** The wrapper script and any other referenced files are external prerequisites, not bundled with this skill. Resolve each path relative to an existing installation, inspect its contents, and verify any applicable license and execution prerequisites. Do not run a command or claim a referenced procedure was followed until its required file exists. Do not fabricate the missing scripts or treat an unrelated file with the same name as equivalent. Independent steps fully documented here can proceed within the user&#x27;s authorized scope; report any dependent step as unavailable.
+
+## Quick Reference
+
+Use the wrapper script:
+```bash
+{baseDir}/scripts/burp-search.sh /path/to/project.burp [FLAGS]
+```
+
+The script uses environment variables for platform compatibility:
+- `BURP_JAVA`: Path to Java executable
+- `BURP_JAR`: Path to burpsuite_pro.jar
+
+**Check the exit code. Empty output is not a clean result.** Burp ignores flags it does not recognise, so without the parser extension it starts normally and drops the query — which looks exactly like a search that matched nothing.
+
+| Exit | Meaning | What to do |
+|------|---------|------------|
+| 0 | Output produced | Proceed |
+| 1 | Bad usage, or a missing file, Java or JAR | Read the message; fix the path |
+| 3 | No output at all | **Do not report this as &quot;nothing found.&quot;** An empty result set and an unloaded extension are indistinguishable from here. Run the control query below to tell them apart |
+| 4 | Output was not JSON | The extension is not loaded and Burp ignored the flags. Install it before trusting any result |
+
+Anything other than 0 means the search result is unverified, and saying &quot;no matching traffic&quot; on the strength of it is a false negative reported as a clean finding.
+
+### Resolving Exit 3: the control query
+
+Exit 3 is the common case — most narrowly-scoped regexes legitimately match nothing — so it needs a resolution you can carry out yourself. You have `Bash` and `Read`; Burp runs headless here, so there is no Extensions tab to open and no GUI to inspect. Re-running the same query just returns 3 again.
+
+Run a **control query** instead: a selector broad enough that it must return rows if the parser is working at all, against the same project file. Use the sub-component filter, not the bare selector — a control is still a query, and the rules above apply to it unchanged.
+
+```bash
+{baseDir}/scripts/burp-search.sh project.burp proxyHistory.request.headers | head -c 2000
+```
+
+`proxyHistory.request.headers` is the right control precisely because it is broad but bounded: it covers every record in the project, at under 1KB each. Bare `proxyHistory` would answer the same question and is banned above for a reason — one record with bodies can be megabytes, and `head -n 1` does not stop that, it delivers exactly one of them in full.
+
+| Control result | What it means | What to do |
+|---|---|---|
+| Rows on stdout | The parser works | Your narrower query genuinely matched nothing. Report that as a result |
+| Exit 3 again | Nothing comes back at all | Either the extension is not loaded, or this project holds no proxy history. Check you named the right project file and that it is non-empty, then ask the user to confirm `burpsuite-project-file-parser` under Burp Suite → Extensions |
+| Exit 4 | Burp started and dropped the flags | The extension is not loaded. Say so; do not report on traffic |
+
+**Run the control before concluding anything about the project&#x27;s traffic.** Assuming the extension is loaded is exactly how an unverified empty result becomes a clean bill of health — and asking the user to check the GUI is a legitimate answer where the control is inconclusive. Guessing is not.
+
+**Through a pipe the exit code is not yours to read.** A pipeline reports the status of its *last* command, and nearly every example here ends in `| jq`, `| head` or `| wc -cl` — so `$?` is `head`&#x27;s 0, not the script&#x27;s 3. Two reliable signals:
+
+- **stderr**, which reaches you regardless of piping. `Error: the parser produced no output.` or `Error: Burp produced output, but not one JSON object` is the answer; no such block means the run was fine.
+- **`set -o pipefail`** when you want the code itself, or read `${PIPESTATUS[0]}`:
+
+```bash
+set -o pipefail
+{baseDir}/scripts/burp-search.sh project.burp auditItems | jq -c &#x27;select(.severity == &quot;High&quot;)&#x27;
+echo &quot;exit: $?&quot;
+```
+
+Non-JSON output never reaches stdout, so a downstream `grep` or `jq` cannot match a Burp startup banner and mistake it for data.
+
+## Sub-Component Filters (USE THESE)
+
+**ALWAYS use sub-component filters instead of full dumps.** Full `proxyHistory` or `siteMap` can return gigabytes of data. Sub-component filters return only what you need.
+
+### Available Filters
+
+| Filter | Returns | Typical Size |
+|--------|---------|--------------|
+| `proxyHistory.request.headers` | Request line + headers only | Small (&lt; 1KB/record) |
+| `proxyHistory.request.body` | Request body only | Variable |
+| `proxyHistory.response.headers` | Status + headers only | Small (&lt; 1KB/record) |
+| `proxyHistory.response.body` | Response body only | **LARGE - avoid** |
+| `siteMap.request.headers` | Same as above for site map | Small |
+| `siteMap.request.body` | | Variable |
+| `siteMap.response.headers` | | Small |
+| `siteMap.response.body` | | **LARGE - avoid** |
+
+### Default Approach
+
+**Start with headers, not bodies:**
+
+```bash
+# GOOD - headers only, safe to retrieve
+{baseDir}/scripts/burp-search.sh project.burp proxyHistory.request.headers | head -c 50000
+{baseDir}/scripts/burp-search.sh project.burp proxyHistory.response.headers | head -c 50000
+
+# BAD - full records include bodies, can be gigabytes
+{baseDir}/scripts/burp-search.sh project.burp proxyHistory  # NEVER DO THIS
+```
+
+**Only fetch bodies for specific URLs after reviewing headers, and ALWAYS truncate:**
+
+```bash
+# 1. First, find interesting URLs from headers
+{baseDir}/scripts/burp-search.sh project.burp proxyHistory.response.headers | \
+  jq -r &#x27;select(.headers | test(&quot;text/html&quot;)) | .url&#x27; | head -n 20
+
+# 2. Then search bodies with targeted regex - MUST truncate body to 1000 chars
+{baseDir}/scripts/burp-search.sh project.burp &quot;responseBody=&#x27;.*specific-pattern.*&#x27;&quot; | \
+  head -n 10 | jq -c &#x27;.body = (.body[:1000] + &quot;...[TRUNCATED]&quot;)&#x27;
+```
+
+**HARD RULE: Body content &gt; 1000 chars must NEVER enter context.** If the user needs full body content, they must view it in Burp Suite&#x27;s UI.
+
+## Regex Search Operations
+
+### Search Response Headers
+```bash
+responseHeader=&#x27;.*regex.*&#x27;
+```
+Searches all response headers. Output: `{&quot;url&quot;:&quot;...&quot;, &quot;header&quot;:&quot;...&quot;}`
+
+Example - find server signatures:
+```bash
+responseHeader=&#x27;.*(nginx|Apache|Servlet).*&#x27; | head -c 50000
+```
+
+### Search Response Bodies
+```bash
+responseBody=&#x27;.*regex.*&#x27;
+```
+**MANDATORY: Always truncate body content to 1000 chars max.** Response bodies can be megabytes each.
+
+```bash
+# REQUIRED format - always truncate .body field
+{baseDir}/scripts/burp-search.sh project.burp &quot;responseBody=&#x27;.*&lt;form.*action.*&#x27;&quot; | \
+  head -n 10 | jq -c &#x27;.body = (.body[:1000] + &quot;...[TRUNCATED]&quot;)&#x27;
+```
+
+**Never retrieve full body content.** If you need to see more of a specific response, ask the user to open it in Burp Suite&#x27;s UI.
+
+## Other Operations
+
+### Extract Audit Items
+```bash
+auditItems
+```
+Returns all security findings. Output includes: name, severity, confidence, host, port, protocol, url.
+
+**Note:** Audit items are small (no bodies) - safe to retrieve with `head -n 100`.
+
+### Dump Proxy History (AVOID)
+```bash
+proxyHistory
+```
+**NEVER use this directly.** Use sub-component filters instead:
+- `proxyHistory.request.headers`
+- `proxyHistory.response.headers`
+
+### Dump Site Map (AVOID)
+```bash
+siteMap
+```
+**NEVER use this directly.** Use sub-component filters instead.
+
+## Output Limits (REQUIRED)
+
+**CRITICAL: Always check result size BEFORE retrieving data.** A broad search can return thousands of records, each potentially megabytes. This will overflow the context window.
+
+### Step 1: Always check size first
+
+```bash
+{baseDir}/scripts/burp-search.sh project.burp proxyHistory.request.headers | wc -cl
+```
+
+If the record count or byte count is large, narrow the query before retrieving content.
+
+## Conflicts
+
+- **sickn33/agentic-awesome-skills** adds a catalog-level note that the supporting scripts are not bundled and must be resolved from an external installation, with a warning not to fabricate missing scripts. The trailofbits copy does not include this note and assumes the scripts are present at {baseDir}/scripts.
+- **sickn33/agentic-awesome-skills** imposes a hard rule that body content &gt; 1000 chars must never enter context and requires a specific jq truncation pattern. The trailofbits copy does not state a 1000-char limit or a mandatory jq truncation pattern.
+- **trailofbits/skills** defines an exit-code contract (0/1/3/4) and a control-query procedure to resolve exit 3, plus pipefail/PIPESTATUS guidance. The sickn33 copy does not include the exit-code table, the control query, or the pipefail guidance.</pre>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>yeet</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">git-pr-automation</a> / yeet</p><h1>yeet</h1><p class="meta">combined</p><p>The two skills share the same core workflow (stage, commit, push, PR) but diverge significantly on naming conventions, PR template handling, and PR body composition. The openai/skills version is more comprehensive, including specific logic for discovering and applying GitHub PR templates, handling existing PRs (updating vs creating), and detailed guidelines for PR title formatting (conventional commits) and body content (preserving images, explaining &#x27;why&#x27;). The Vibe-Skills version uses a different naming convention (prefixing with &#x27;codex/&#x27;) and lacks the template discovery and existing PR logic. Combining them is necessary to capture the robust template handling and PR management from the first, while acknowledging the specific naming preference of the second, though the first is generally superior in completeness. However, since the prompt asks to combine when copies overlap but each has material steps the others lack, and they disagree on naming, a combined instruction is appropriate to reflect the union of capabilities, specifically the template handling which is a major material step in the first copy.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/yeet/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/yeet/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/yeet/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/yeet/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: &quot;yeet&quot;
+description: &quot;Use only when the user explicitly asks to stage, commit, push, and open a GitHub pull request in one flow using the GitHub CLI (`gh`).&quot;
+---
+
+## Prerequisites
+
+- Require GitHub CLI `gh`. Check `gh --version`. If missing, ask the user to install `gh` and stop.
+- Require authenticated `gh` session. Run `gh auth status`. If not authenticated, ask the user to run `gh auth login` (and re-run `gh auth status`) before continuing.
+
+## Naming conventions
+
+- Branch: `{description}` when starting from main/master/default. (Note: Some configurations may prefer a prefix like `codex/{description}`; default to `{description}` unless specified).
+- Commit: `{description}` (terse).
+- PR title: `{description}` summarizing the full diff. (Note: Some configurations may prefer a prefix like `[codex] {description}`; default to `{description}` unless specified).
+
+## PR template discovery
+
+Before creating the PR, resolve the repository root and look for the active GitHub PR template from there:
+
+```shell
+repo_root=&quot;$(git rev-parse --show-toplevel)&quot;
+```
+
+Template candidates, in order:
+
+- `.github/pull_request_template.md`
+- `.github/PULL_REQUEST_TEMPLATE.md`
+- One `*.md` file under `.github/pull_request_template/`
+- One `*.md` file under `.github/PULL_REQUEST_TEMPLATE/`
+
+Use paths as emitted from the repository root, such as `.github/pull_request_template.md`, not `./.github/pull_request_template.md`.
+
+If exactly one template is found, read it before composing the final PR body and pass it to `gh pr create` with `--template &quot;$template&quot;`.
+
+If multiple template files are found, stop before PR creation and ask which template to use. If no template exists, use the fallback body shape in this skill.
+
+## Workflow
+
+- If on main/master/default, create a branch: `git checkout -b &quot;{description}&quot;`
+- Otherwise stay on the current branch.
+- Confirm status, then stage everything: `git status -sb` then `git add -A`.
+- Commit tersely with the description: `git commit -m &quot;{description}&quot;`
+- Run checks if not already. If checks fail due to missing deps/tools, install dependencies and rerun once.
+- Push with tracking: `git push -u origin $(git branch --show-current)`
+- If git push fails due to workflow auth errors, pull from master and retry the push.
+- Discover and read the repository PR template, if any.
+- Check whether the current branch already has a PR: `gh pr view &quot;$(git branch --show-current)&quot; --json number,isDraft,url`
+- If a PR already exists, update that PR in place. Do not create another PR, and do not change whether the existing PR is draft or ready for review.
+- If no PR exists, open a new draft PR:
+  - With one template: `GH_PROMPT_DISABLED=1 GIT_TERMINAL_PROMPT=0 gh pr create --draft --fill --template &quot;$template&quot; --head &quot;$(git branch --show-current)&quot;`
+  - Without a template: `GH_PROMPT_DISABLED=1 GIT_TERMINAL_PROMPT=0 gh pr create --draft --fill --head &quot;$(git branch --show-current)&quot;`
+- Edit the PR title and body so they reflect the actual net change in the diff.
+- Write the PR description to a temp file with real newlines and pass it via `--body-file` or `gh pr edit --body-file` to avoid `\n`-escaped markdown.
+
+## Determining the PR
+
+When updating a PR created earlier in the flow, infer the PR from the current branch when possible:
+
+```shell
+git branch --show-current
+gh pr view &quot;$(git branch --show-current)&quot; --json number --jq &#x27;.number&#x27;
+```
+
+If this finds an existing PR, preserve its current review state. Never convert an existing ready-for-review PR back to draft as part of `yeet`; only new PRs created by this flow should start as draft.
+
+## PR Title
+
+Format: `&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;`
+
+`&lt;scope&gt;` is optional. A scope consist of a noun describing a section of the codebase (component, service or subsytem).
+
+### Example
+
+```
+feat: add hat wobble
+^--^  ^------------^
+|     |
+|     +-&gt; Summary in present tense.
+|
++-------&gt; Type: chore, docs, feat, fix, refactor, style, or test.
+```
+
+More Examples:
+
+- `feat`: (new feature for the user, not a new feature for build script)
+- `fix`: (bug fix for the user, not a fix to a build script)
+- `docs`: (changes to the documentation)
+- `style`: (formatting, missing semi colons, etc; no production code change)
+- `refactor`: (refactoring production code, eg. renaming a variable)
+- `test`: (adding missing tests, refactoring tests; no production code change)
+- `chore`: (updating grunt tasks etc; no production code change)
+
+## PR Body Contents
+
+When invoked, use `gh` to edit the pull request body and title to reflect the contents of the specified PR. Make sure to check the existing pull request body to see if there is key information that should be preserved. For example, NEVER remove an image in the existing pull request body, as the author may have no way to recover it if you remove it.
+
+When a repository PR template exists, adapt the final PR body to that template. Preserve meaningful headings, required checklists, and repo-specific prompts, but replace placeholder text with net-diff-specific content or `N/A` where the template asks for it. Do not discard template sections just because the fallback shape below is shorter.
+
+It is critically important to explain _why_ the change is being made. If the current conversation in which this skill is invoked has discussed the motivation, be sure to capture this in the pull request body.
+
+The body should also explain _what_ changed, but this should appear after the _why_.
+
+Limit discussion to the _net change_ of the commit. It is generally frowned upon to discuss changes that were attempted but later undone in the course of the development of the pull request. When rewriting the pull request body, you may need to eliminate details such as these when they are no longer appropriate / of interest to future readers.
+
+Avoid references to absolute paths on my local disk. When talking about a path that is within the repository, simply use the repo-relative path.
+
+Default to omitting `Verification`. Add it only when you have behavioral evidence worth preserving for reviewers: a reproduced bug, a before/after check, a targeted test that exercises the changed behavior, or a manual scenario with input and observed outcome. Do not use it for generic commands or automated checks that are already part of the CI pipeline.
+
+The PR description must be detailed prose covering the issue, the cause and effect on users, the root cause, the fix, and any tests or checks used to validate.</pre>
+</body>
+</html>

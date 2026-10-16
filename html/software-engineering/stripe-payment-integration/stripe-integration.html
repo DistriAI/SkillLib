@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>stripe-integration</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">stripe-payment-integration</a> / stripe-integration</p><h1>stripe-integration</h1><p class="meta">combined</p><p>The two copies share the same core structure (payment flows, webhooks, subscriptions, customer management, and Python/JS snippets), but the second copy adds material safety and operational constraints that the first lacks: an explicit &#x27;Inputs and safety boundary&#x27; section, server-side authorization requirements, idempotency keys in the code patterns, environment-variable key loading, and a note to inspect the installed SDK/API version. The first copy is a cleaner, more complete procedural guide with more patterns, but it omits these security and idempotency steps. Crowning one would hide the other&#x27;s real alternative approach to safe integration.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/stripe-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/stripe-integration/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/stripe-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/stripe-integration/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/stripe-integration/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-api-platform-builder/skills/stripe-integration/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-saas-launch-revenue/skills/stripe-integration/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-commerce-payments/skills/stripe-integration/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/stripe-integration/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: stripe-integration
+description: Implement Stripe payment processing for robust, PCI-compliant payment flows including checkout, subscriptions, and webhooks. Use when integrating Stripe payments, building subscription systems, or implementing secure checkout flows.
+---
+
+# Stripe Integration
+
+Master Stripe payment processing integration for robust, PCI-compliant payment flows including checkout, subscriptions, webhooks, and refunds.
+
+## Do not use this skill when
+
+- The task is unrelated to stripe integration
+- You need a different domain or tool outside this scope
+
+## Instructions
+
+- Clarify goals, constraints, and required inputs.
+- Apply relevant best practices and validate outcomes.
+- Provide actionable steps and verification.
+- Inspect the installed Stripe SDK and pinned API/webhook version.
+
+## Use this skill when
+
+- Implementing payment processing in web/mobile applications
+- Setting up subscription billing systems
+- Handling one-time payments and recurring charges
+- Processing refunds and disputes
+- Managing customer payment methods
+- Implementing SCA (Strong Customer Authentication) for European payments
+- Building marketplace payment flows with Stripe Connect
+
+## Core Concepts
+
+### 1. Payment Flows
+**Checkout Session (Hosted)**
+- Stripe-hosted payment page
+- Reduced direct card-data handling
+- Fastest implementation
+- Supports one-time and recurring payments
+
+**Payment Intents (Custom UI)**
+- Full control over payment UI
+- Uses Stripe.js/Elements to avoid handling raw card data directly
+- More complex implementation
+- Better customization options
+
+**Setup Intents (Save Payment Methods)**
+- Collect payment method without charging
+- Used for subscriptions and future payments
+- Requires customer confirmation
+
+### 2. Webhooks
+**Critical Events:**
+- `payment_intent.succeeded`: Payment completed
+- `payment_intent.payment_failed`: Payment failed
+- `customer.subscription.updated`: Subscription changed
+- `customer.subscription.deleted`: Subscription canceled
+- `charge.refunded`: Refund processed
+- `invoice.payment_succeeded`: Subscription payment successful
+
+### 3. Subscriptions
+**Components:**
+- **Product**: What you&#x27;re selling
+- **Price**: How much and how often
+- **Subscription**: Customer&#x27;s recurring payment
+- **Invoice**: Generated for each billing cycle
+
+### 4. Customer Management
+- Create and manage customer records
+- Store multiple payment methods
+- Track customer metadata
+- Manage billing details
+
+## Inputs and safety boundary
+
+Use an explicitly authorized Stripe test account/sandbox, server-owned order and customer records, the installed SDK/API version and expected webhook types. Amounts, currencies, price/customer IDs and refund permissions must come from authenticated server policy, not arbitrary client parameters. Checkout/Elements can reduce card-data exposure; they do not establish PCI compliance by themselves.
+
+The snippets are integration sketches. Test secret keys and webhook signing secrets are different; load them from the project secret mechanism and never print them. No live payment, refund, customer update or account configuration is authorized merely by reading this skill.
+
+## Quick Start
+
+```python
+import os
+import stripe
+
+stripe.api_key = os.environ[&quot;STRIPE_SECRET_KEY&quot;]
+
+# Create a checkout session
+session = stripe.checkout.Session.create(
+    payment_method_types=[&#x27;card&#x27;],
+    line_items=[{
+        &#x27;price_data&#x27;: {
+            &#x27;currency&#x27;: &#x27;usd&#x27;,
+            &#x27;product_data&#x27;: {
+                &#x27;name&#x27;: &#x27;Premium Subscription&#x27;,
+            },
+            &#x27;unit_amount&#x27;: 2000,  # $20.00
+            &#x27;recurring&#x27;: {
+                &#x27;interval&#x27;: &#x27;month&#x27;,
+            },
+        },
+        &#x27;quantity&#x27;: 1,
+    }],
+    mode=&#x27;subscription&#x27;,
+    success_url=&#x27;https://yourdomain.com/success?session_id={CHECKOUT_SESSION_ID}&#x27;,
+    cancel_url=&#x27;https://yourdomain.com/cancel&#x27;,
+)
+
+# Redirect user to session.url
+print(session.url)
+```
+
+## Payment Implementation Patterns
+
+### Pattern 1: One-Time Payment (Hosted Checkout)
+```python
+def create_checkout_session(amount, order_attempt_id, currency=&#x27;usd&#x27;):
+    &quot;&quot;&quot;Create a one-time payment checkout session.&quot;&quot;&quot;
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=[&#x27;card&#x27;],
+            line_items=[{
+                &#x27;price_data&#x27;: {
+                    &#x27;currency&#x27;: currency,
+                    &#x27;product_data&#x27;: {
+                        &#x27;name&#x27;: &#x27;Purchase&#x27;,
+                        &#x27;images&#x27;: [&#x27;https://example.com/product.jpg&#x27;],
+                    },
+                    &#x27;unit_amount&#x27;: amount,  # Amount in cents
+                },
+                &#x27;quantity&#x27;: 1,
+            }],
+            mode=&#x27;payment&#x27;,
+            success_url=&#x27;https://yourdomain.com/success?session_id={CHECKOUT_SESSION_ID}&#x27;,
+            cancel_url=&#x27;https://yourdomain.com/cancel&#x27;,
+            metadata={
+                &#x27;order_id&#x27;: &#x27;order_123&#x27;,
+                &#x27;user_id&#x27;: &#x27;user_456&#x27;
+            },
+            idempotency_key=order_attempt_id
+        )
+        return session
+    except stripe.error.StripeError as e:
+        # Handle error
+        print(f&quot;Stripe error: {e.user_message}&quot;)
+        raise
+```
+
+### Pattern 2: Custom Payment Intent Flow
+```python
+def create_payment_intent(amount, order_attempt_id, currency=&#x27;usd&#x27;, customer_id=None):
+    &quot;&quot;&quot;Create a payment intent for custom checkout UI.&quot;&quot;&quot;
+    intent = stripe.PaymentIntent.create(
+        amount=amount,
+        currency=currency,
+        customer=customer_id,
+        automatic_payment_methods={
+            &#x27;enabled&#x27;: True,
+        },
+        metadata={
+            &#x27;integration_check&#x27;: &#x27;accept_a_payment&#x27;
+        },
+        idempotency_key=order_attempt_id
+    )
+    return intent.client_secret  # Only to the authenticated client for this order; never log it
+
+# Frontend (JavaScript)
+&quot;&quot;&quot;
+const stripe = Stripe(&#x27;pk_test_...&#x27;);
+const elements = stripe.elements();
+const cardElement = elements.create(&#x27;card&#x27;);
+cardElement.mount(&#x27;#card-element&#x27;);
+
+const {error, paymentIntent} = await stripe.confirmCardPayment(
+    clientSecret,
+    {
+        payment_method: {
+            card: cardElement,
+            billing_details: {
+                name: &#x27;Customer Name&#x27;
+            }
+        }
+    }
+);
+
+if (error) {
+    // Handle error
+} else if (paymentIntent.status === &#x27;succeeded&#x27;) {
+    // Payment successful
+}
+&quot;&quot;&quot;
+```
+
+### Pattern 3: Subscription Creation
+```python
+def create_subscription(customer_id, price_id):
+    &quot;&quot;&quot;Create a subscription for a customer.&quot;&quot;&quot;
+    try:
+        subscription = stripe.Subscription.create(
+            customer=customer_id,
+            items=[{&#x27;price&#x27;: price_id}],
+            payment_behavior=&#x27;default_incomplete&#x27;,
+            payment_settings={&#x27;save_default_payment_method&#x27;: &#x27;on_subscription&#x27;},
+            expand=[&#x27;latest_invoice.payment_intent&#x27;],
+        )
+
+        return {
+            &#x27;subscription_id&#x27;: subscription.id,
+            &#x27;client_secret&#x27;: subscription.latest_invoice.payment_intent.client_secret
+        }
+    except stripe.error.StripeError as e:
+        # Handle error
+        print(f&quot;Stripe error: {e.user_message}&quot;)
+        raise
+```
+
+## Conflicts
+
+- rmyndharis/antigravity-skills hardcodes the API key as a string literal and omits idempotency keys in code patterns, while sickn33/agentic-awesome-skills loads the key from an environment variable and includes idempotency_key parameters in the same calls.</pre>
+</body>
+</html>

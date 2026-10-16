@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>rag-implementation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">rag-implementation</a> / rag-implementation</p><h1>rag-implementation</h1><p class="meta">combined</p><p>The three copies overlap on the core RAG pipeline (embeddings, vector store, chunking, retrieval, reranking, evaluation), but each contains material steps or constraints the others lack. rmyndharis/antigravity-skills provides a concise 4-step procedure plus safety constraints (redaction, access controls, source-document exposure) and a LangChain quick start. sickn33/agentic-awesome-skills adds a phased workflow with explicit phases for LLM integration, caching, and evaluation, plus quality gates and limitations. LeoYeAI/openclaw-master-skills provides a LangGraph quick start, a 2026 embedding model table, and a different vector database option (pgvector). Crowning one copy would hide the other two&#x27;s unique steps and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/rag-implementation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/rag-implementation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/rag-implementation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/rag-implementation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/rag-implementation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/rag-implementation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/rag-implementation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-agent-mcp-builder/skills/rag-implementation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/rag-implementation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: rag-implementation
+description: Build Retrieval-Augmented Generation (RAG) systems for LLM applications with vector databases and semantic search. Use when implementing knowledge-grounded AI, building document Q&amp;A systems, or integrating LLMs with external knowledge bases.
+---
+
+# RAG Implementation
+
+Master Retrieval-Augmented Generation (RAG) to build LLM applications that provide accurate, grounded responses using external knowledge sources.
+
+## Use this skill when
+
+- Building Q&amp;A systems over proprietary documents
+- Creating chatbots with current, factual information
+- Implementing semantic search with natural language queries
+- Reducing hallucinations with grounded responses
+- Enabling LLMs to access domain-specific knowledge
+- Building documentation assistants
+- Creating research tools with source citation
+
+## Do not use this skill when
+
+- You only need purely generative writing without retrieval
+- The dataset is too small to justify embeddings
+- You cannot store or process the source data safely
+
+## Instructions
+
+1. Define the corpus, update cadence, and evaluation targets.
+2. Choose embedding models and vector store based on scale.
+3. Build ingestion, chunking, and retrieval with reranking.
+4. Integrate the LLM: select provider, design prompt template, implement context injection, and add citation handling.
+5. Implement caching: response caching, embedding cache, TTL, cache invalidation, and hit-rate monitoring.
+6. Evaluate with grounded QA metrics and monitor drift.
+
+## Safety
+
+- Redact sensitive data and enforce access controls.
+- Avoid exposing source documents in responses when restricted.
+
+## Core Components
+
+### 1. Vector Databases
+**Purpose**: Store and retrieve document embeddings efficiently
+
+**Options:**
+- **Pinecone**: Managed, scalable, fast queries
+- **Weaviate**: Open-source, hybrid search
+- **Milvus**: High performance, on-premise
+- **Chroma**: Lightweight, easy to use
+- **Qdrant**: Fast, filtered search
+- **FAISS**: Meta&#x27;s library, local deployment
+- **pgvector**: PostgreSQL extension, SQL integration
+
+### 2. Embeddings
+**Purpose**: Convert text to numerical vectors for similarity search
+
+**Models:**
+- **text-embedding-ada-002** (OpenAI): General purpose, 1536 dims
+- **all-MiniLM-L6-v2** (Sentence Transformers): Fast, lightweight
+- **e5-large-v2**: High quality, multilingual
+- **Instructor**: Task-specific instructions
+- **bge-large-en-v1.5**: SOTA performance
+- **voyage-3-large**: 1024 dims, recommended for Claude apps
+- **voyage-code-3**: 1024 dims, code search
+- **text-embedding-3-large**: 3072 dims, high accuracy
+- **text-embedding-3-small**: 1536 dims, cost-effective
+- **multilingual-e5-large**: 1024 dims, multi-language support
+
+### 3. Retrieval Strategies
+**Approaches:**
+- **Dense Retrieval**: Semantic similarity via embeddings
+- **Sparse Retrieval**: Keyword matching (BM25, TF-IDF)
+- **Hybrid Search**: Combine dense + sparse
+- **Multi-Query**: Generate multiple query variations
+- **HyDE**: Generate hypothetical documents
+
+### 4. Reranking
+**Purpose**: Improve retrieval quality by reordering results
+
+**Methods:**
+- **Cross-Encoders**: BERT-based reranking
+- **Cohere Rerank**: API-based reranking
+- **Maximal Marginal Relevance (MMR)**: Diversity + relevance
+- **LLM-based**: Use LLM to score relevance
+
+## Quick Start
+
+Use either a LangChain RetrievalQA chain or a LangGraph StateGraph depending on your framework preference. Both follow the same pipeline: load documents, split into chunks, create embeddings and vector store, build a retriever, and generate a grounded answer.
+
+## Advanced RAG Patterns
+
+### Pattern 1: Hybrid Search
+Combine BM25 sparse retrieval with dense embedding retrieval using weighted fusion or Reciprocal Rank Fusion.
+
+### Pattern 2: Multi-Query Retrieval
+Generate multiple query variations from a single user query to improve recall.
+
+### Pattern 3: Contextual Compression
+Use an LLM-based compressor to extract only relevant portions of retrieved documents before passing them to the generator.
+
+### Pattern 4: Parent Document Retriever
+Retrieve small child chunks for matching, then return the larger parent chunk for context.
+
+## Document Chunking Strategies
+
+Use recursive character splitting with configurable chunk size and overlap. Tune chunk size and overlap based on document structure and retrieval quality.
+
+## Quality Gates
+
+- [ ] Embedding model selected
+- [ ] Vector DB configured
+- [ ] Chunking implemented
+- [ ] Retrieval working
+- [ ] LLM integrated
+- [ ] Caching configured
+- [ ] Evaluation passing
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

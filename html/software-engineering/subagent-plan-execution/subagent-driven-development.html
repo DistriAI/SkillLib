@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>subagent-driven-development</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">subagent-plan-execution</a> / subagent-driven-development</p><h1>subagent-driven-development</h1><p class="meta">combined</p><p>The copies overlap on the core loop (fresh implementer subagent per task, spec compliance review, code quality review, final whole-branch review, then finishing-a-development-branch), but they disagree on the review architecture and on operational constraints. obra/superpowers uses a single task reviewer that checks spec and quality together, adds a ledger, a 5-round fix cap with model escalation, adjudication of load-bearing findings, and explicit stop conditions. The other three copies use two separate reviewer subagents (spec then quality) and a simpler TodoWrite-based flow. Crowning one would hide a real alternative review strategy and the extra governance steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/subagent-driven-development/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/subagent-driven-development/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/subagent-driven-development/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/subagent-driven-development/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/subagent-driven-development/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/subagent-driven-development/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/subagent-driven-development/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/subagent-driven-development/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/subagent-driven-development/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/subagent-driven-development/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/subagent-driven-development/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Subagent-Driven Development
+
+Execute an implementation plan by dispatching a fresh implementer subagent per task, reviewing each task, and running a final whole-branch review.
+
+## When to Use
+- You have an implementation plan with mostly independent tasks.
+- Execution stays in the current session.
+- If tasks are tightly coupled, use manual execution or brainstorm first.
+- If the partner chose inline execution or no subagent tool is available, use executing-plans.
+
+## Core Principle
+Fresh subagent per task + task review (spec compliance + code quality) + broad final review = high quality, fast iteration.
+
+## Process
+1. Setup: create a worktree, check the ledger, read the plan, and run a pre-flight review.
+2. For each task:
+   a. Dispatch an implementer subagent using ./implementer-prompt.md.
+   b. If the implementer asks questions, answer them and provide context.
+   c. The implementer implements, tests, commits, and self-reviews.
+   d. Review the task:
+      - Option A (single reviewer): dispatch a task reviewer using ./task-reviewer-prompt.md to check both spec compliance and code quality.
+      - Option B (two-stage): dispatch a spec reviewer using ./spec-reviewer-prompt.md, then a code quality reviewer using ./code-quality-reviewer-prompt.md.
+   e. If findings are returned, fix them and re-review. In the obra/superpowers variant, cap fix rounds at 5; for rounds 4-5, use a fresh implementer with a more capable model.
+   f. If a finding conflicts with the plan text, rule on the conflict and record the ruling in the ledger.
+   g. Mark the task complete in the ledger or TodoWrite.
+3. After all tasks: dispatch a final code reviewer for the entire implementation.
+4. If final findings exist, run one fix dispatch and one scoped re-review; adjudicate residuals.
+5. Use superpowers:finishing-a-development-branch.
+
+## Continuous Execution
+Do not pause to check in with your human partner between tasks. Execute all tasks from the plan without stopping.
+
+## Stop Conditions
+Stop and ask only for:
+- An irreversible or destructive operation.
+- A security-sensitive action.
+- A side effect outside this worktree that norms say you ask about first (a merge, a push to a shared branch, a publish).
+- A plan so broken that every path forward is a guess.
+
+## Rulings, Not Stalls
+A running plan does not wait on a human. Conflicts, ambiguities, plan defects, and caps you would have asked to exceed are decided by you. The spec is the binding authority, the plan is its argument, and your judgment settles what neither answers. Record every decision in the ledger as `Ruling: &lt;what you decided&gt; — &lt;why&gt; — &lt;what it costs if wrong&gt;`, and keep going.
+
+## Prompt Templates
+- ./implementer-prompt.md - Dispatch implementer subagent
+- ./task-reviewer-prompt.md - Dispatch task reviewer (spec + quality) [Option A]
+- ./spec-reviewer-prompt.md - Dispatch spec compliance reviewer [Option B]
+- ./code-quality-reviewer-prompt.md - Dispatch code quality reviewer [Option B]
+- ./re-review-prompt.md - Dispatch scoped re-review [Option A]
+
+## Example Workflow
+```
+You: I&#x27;m using Subagent-Driven Development to execute this plan.
+
+[Read plan file once: docs/plans/feature-plan.md]
+[Extract all tasks with full text and context]
+[Create ledger or TodoWrite with all tasks]
+
+Task 1: Hook installation script
+
+[Dispatch implementation subagent with full task text + context]
+
+Implementer: &quot;Before I begin - should the hook be installed at user or system level?&quot;
+
+You: &quot;User level (~/.config/superpowers/hooks/)&quot;
+
+Implementer: &quot;Got it. Implementing now...&quot;
+[Later] Implementer:
+  - Implemented install-hook command
+  - Added tests, 5/5 passing
+  - Self-review: Found I missed --force flag, added it
+  - Committed
+
+[Dispatch task reviewer or spec + quality reviewers]
+Reviewer: ✅ Spec compliant and code quality approved
+
+[Mark task complete]
+
+[Repeat for remaining tasks]
+
+[Dispatch final code reviewer for entire implementation]
+[Use superpowers:finishing-a-development-branch]
+```</pre>
+</body>
+</html>

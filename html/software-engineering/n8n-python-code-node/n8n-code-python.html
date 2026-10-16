@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>n8n-code-python</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">n8n-python-code-node</a> / n8n-code-python</p><h1>n8n-code-python</h1><p class="meta">combined</p><p>The two copies describe different n8n Python runtimes and contradict each other on core facts. The first copy (czlonkowski) targets n8n 2.x native Python (pythonNative), where legacy helpers like _input/_json are gone, only _items/_item exist, and imports are blocked by default. The second copy (sickn33) targets the older Pyodide &#x27;Python (Beta)&#x27; node, where _input/_json/_node are valid and standard library imports like json/datetime/re are available. Because they disagree on the available variables, the import policy, and the node version, crowning one would hide a real alternative for users on the other version.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/czlonkowski/n8n-skills">czlonkowski/n8n-skills</a></td><td><code>skills/n8n-code-python/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/n8n-code-python/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/czlonkowski/n8n-skills">czlonkowski/n8n-skills</a></td><td><code>skills/n8n-code-python/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/n8n-code-python/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/n8n-code-python/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/n8n-code-python/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># n8n Python Code Node
+
+## Determine the Node Version
+1. Check the n8n version and the Code node&#x27;s `language` setting.
+   - If `language` is `&quot;pythonNative&quot;` (n8n 2.x), follow the **Native Python** section.
+   - If the node is labeled &quot;Python (Beta)&quot; or uses Pyodide, follow the **Legacy Pyodide** section.
+
+## Native Python (n8n 2.x, `pythonNative`)
+1. **Variables:** Use only `_items` (Run Once for All Items) or `_item` (Run Once for Each Item). Each is a plain dict with `&quot;json&quot;` and `&quot;pairedItem&quot;` keys. Access via dict syntax: `it[&quot;json&quot;][&quot;field&quot;]`.
+2. **Imports:** Blocked by default. Do not use `import` unless the self-hosted admin has allowlisted modules. Verify with a test node if unsure.
+3. **Sandbox Limits:** `eval`, `exec`, `open`, `class` definitions, and `__class__` access are denied. Use `isinstance`, dict methods, and functions instead of classes.
+4. **No n8n Helpers:** `$(&#x27;Node&#x27;)`, `$jmespath`, Luxon, and `this.helpers.httpRequest` are unavailable. Use JavaScript or other nodes for these tasks.
+5. **Return Shape:** Return a list of dicts (all-items mode) or a single dict (each-item mode). Include `&quot;pairedItem&quot;` if downstream nodes use `$(&#x27;Node&#x27;).item`.
+
+## Legacy Pyodide (Python Beta)
+1. **Variables:** Use `_input`, `_json`, `_node`, `_now`, `_today`, and `_jmespath` as needed.
+2. **Imports:** Standard library modules (`json`, `datetime`, `re`, `base64`, `hashlib`, `urllib.parse`, `math`, `random`, `statistics`) are available. External packages are not.
+3. **Workarounds:** Use the HTTP Request node for HTTP calls, the HTML Extract node for scraping, and JavaScript for advanced date/time or n8n-specific helpers.
+
+## General Guidance
+- Prefer JavaScript or native n8n nodes (Set, Filter, IF, HTTP Request, Crypto, Date &amp; Time) when they can accomplish the task.
+- Use Python only when the user explicitly requests it or when the logic maps well to Python-specific standard library features (e.g., `statistics`).
+- Test-run the node to verify behavior, especially for `pairedItem` handling in native Python.</pre>
+</body>
+</html>

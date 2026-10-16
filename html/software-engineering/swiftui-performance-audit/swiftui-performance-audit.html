@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>swiftui-performance-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">swiftui-performance-audit</a> / swiftui-performance-audit</p><h1>swiftui-performance-audit</h1><p class="meta">combined</p><p>The three copies overlap heavily on the core workflow (classify symptom, code-first review, guide profiling, analyze, remediate, verify), but each has material steps the others lack. Dimillian/Skills and sickn33/agentic-awesome-skills are near-identical and reference external files (references/code-smells.md, references/profiling-intake.md, references/report-template.md) that are not present in the skill text. LeoYeAI/openclaw-master-skills inlines a detailed code-smells catalog with concrete Swift examples and fixes, and adds a workflow decision tree, but omits the external reference files and the explicit intake checklist. Crowning one copy would hide either the external reference structure or the inlined remediation examples, so a combined instruction is needed.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Dimillian/Skills">Dimillian/Skills</a></td><td><code>swiftui-performance-audit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/swiftui-performance-audit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/swiftui-performance-audit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Dimillian/Skills">Dimillian/Skills</a></td><td><code>swiftui-performance-audit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/swiftui-performance-audit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/swiftui-performance-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/swiftui-performance-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/swiftui-performance-audit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># SwiftUI Performance Audit
+
+## Quick start
+
+Use this skill to diagnose SwiftUI performance issues from code first, then request profiling evidence when code review alone cannot explain the symptoms.
+
+## When to Use
+- When the user reports slow rendering, janky scrolling, layout thrash, or high CPU in SwiftUI.
+- When you need a code-first audit plus Instruments guidance if profiling evidence is required.
+
+## Workflow Decision Tree
+
+- If the user provides code, start with &quot;Code-First Review.&quot;
+- If the user only describes symptoms, ask for minimal code/context, then do &quot;Code-First Review.&quot;
+- If code review is inconclusive, go to &quot;Guide the User to Profile&quot; and ask for a trace or screenshots.
+
+## 1. Intake
+
+Collect:
+- Target view or feature code.
+- Symptoms and exact reproduction steps.
+- Data flow: `@State`, `@Binding`, environment dependencies, and observable models.
+- Whether the issue shows up on device or simulator, and whether it was observed in Debug or Release.
+
+Ask the user to classify the issue if possible:
+- CPU spike or battery drain
+- Janky scrolling or dropped frames
+- High memory or image pressure
+- Hangs or unresponsive interactions
+- Excessive or unexpectedly broad view updates
+
+## 2. Code-First Review
+
+Focus on:
+- Invalidation storms from broad observation or environment reads.
+- Unstable identity in lists and `ForEach`.
+- Heavy derived work in `body` or view builders.
+- Layout thrash from complex hierarchies, `GeometryReader`, or preference chains.
+- Large image decode or resize work on the main thread.
+- Animation or transition work applied too broadly.
+
+Provide:
+- Likely root causes with code references.
+- Suggested fixes and refactors.
+- If needed, a minimal repro or instrumentation suggestion.
+
+### Common Code Smells (and Fixes)
+
+Look for these patterns during code review.
+
+#### Expensive formatters in `body`
+
+```swift
+var body: some View {
+    let number = NumberFormatter() // slow allocation
+    let measure = MeasurementFormatter() // slow allocation
+    Text(measure.string(from: .init(value: meters, unit: .meters)))
+}
+```
+
+Prefer cached formatters in a model or a dedicated helper:
+
+```swift
+final class DistanceFormatter {
+    static let shared = DistanceFormatter()
+    let number = NumberFormatter()
+    let measure = MeasurementFormatter()
+}
+```
+
+#### Computed properties that do heavy work
+
+```swift
+var filtered: [Item] {
+    items.filter { $0.isEnabled } // runs on every body eval
+}
+```
+
+Prefer precompute or cache on change:
+
+```swift
+@State private var filtered: [Item] = []
+// update filtered when inputs change
+```
+
+#### Sorting/filtering in `body` or `ForEach`
+
+```swift
+List {
+    ForEach(items.sorted(by: sortRule)) { item in
+        Row(item)
+    }
+}
+```
+
+Prefer sort once before view updates:
+
+```swift
+let sortedItems = items.sorted(by: sortRule)
+```
+
+#### Inline filtering in `ForEach`
+
+```swift
+ForEach(items.filter { $0.isEnabled }) { item in
+    Row(item)
+}
+```
+
+Prefer a prefiltered collection with stable identity.
+
+#### Unstable identity
+
+```swift
+ForEach(items, id: \.self) { item in
+    Row(item)
+}
+```
+
+Avoid `id: \.self` for non-stable values; use a stable ID.
+
+#### Image decoding on the main thread
+
+```swift
+Image(uiImage: UIImage(data: data)!)
+```
+
+Prefer decode/downsample off the main thread and store the result.
+
+#### Broad dependencies in observable models
+
+```swift
+@Observable class Model {
+    var items: [Item] = []
+}
+
+var body: some View {
+    Row(isFavorite: model.items.contains(item))
+}
+```
+
+Prefer granular view models or per-item state to reduce update fan-out.
+
+## 3. Guide the User to Profile
+
+If code review does not explain the issue, ask for runtime evidence:
+- A trace export or screenshots of the SwiftUI timeline and Time Profiler call tree.
+- Device/OS/build configuration.
+- The exact interaction being profiled.
+- Before/after metrics if the user is comparing a change.
+
+Explain how to collect data with Instruments:
+- Use the SwiftUI template in Instruments (Release build).
+- Reproduce the exact interaction (scroll, navigation, animation).
+- Capture SwiftUI timeline and Time Profiler.
+- Export or screenshot the relevant lanes and the call tree.
+
+## 4. Analyze and Diagnose
+
+- Map the evidence to the most likely category: invalidation, identity churn, layout thrash, main-thread work, image cost, or animation cost.
+- Prioritize problems by impact, not by how easy they are to explain.
+- Distinguish code-level suspicion from trace-backed evidence.
+- Call out when profiling is still insufficient and what additional evidence would reduce uncertainty.
+
+## 5. Remediate
+
+Apply targeted fixes:
+- Narrow state scope and reduce broad observation fan-out.
+- Stabilize identities for `ForEach` and lists.
+- Move heavy work out of `body` into derived state updated from inputs, model-layer precomputation, memoized helpers, or background preprocessing. Use `@State` only for view-owned state, not as an ad hoc cache for arbitrary computation.
+- Use `equatable()` only when equality is cheaper than recomputing the subtree and the inputs are truly value-semantic.
+- Downsample images before rendering.
+- Reduce layout complexity or use fixed sizing where possible.
+
+## 6. Verify
+
+Ask the user to re-run the same capture and compare with baseline metrics.
+Summarize the delta (CPU, frame drops, memory peak) if provided.
+
+## Outputs
+
+Provide:
+- A short metrics table (before/after if available).
+- Top issues (ordered by impact).
+- Proposed fixes with estimated effort.
+
+## References
+
+- Profiling intake and collection checklist: `references/profiling-intake.md`
+- Common code smells and remediation patterns: `references/code-smells.md`
+- Audit output template: `references/report-template.md`
+- Add Apple documentation and WWDC resources under `references/` as they are supplied by the user.
+- Optimizing SwiftUI performance with Instruments: `references/optimizing-swiftui-performance-instruments.md`
+- Understanding and improving SwiftUI performance: `references/understanding-improving-swiftui-performance.md`
+- Understanding hangs in your app: `references/understanding-hangs-in-your-app.md`
+- Demystify SwiftUI performance (WWDC23): `references/demystify-swiftui-performance-wwdc23.md`
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

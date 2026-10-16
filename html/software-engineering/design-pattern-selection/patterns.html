@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>patterns</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">design-pattern-selection</a> / patterns</p><h1>patterns</h1><p class="meta">combined</p><p>The two skills share the name &#x27;patterns&#x27; but address completely different domains. The first is a Unity-specific guide for choosing game development patterns (ScriptableObjects, state machines, object pools) and includes a &#x27;Decision Lab&#x27; methodology for comparing implementation trade-offs. The second is a general software architecture reference for distributed systems patterns (CQRS, Event Sourcing, Saga, Circuit Breaker). Neither is a reproduction of the other; they are distinct reference documents for different engineering contexts.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/monopoly/patterns/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/monopoly/patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/monopoly/patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/monopoly/patterns/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Design Pattern Selection
+
+This skill covers two distinct domains of design patterns. Select the relevant section based on the project context.
+
+## 1. Unity / Game Development Patterns
+
+Use this section for Unity C# development.
+
+**Guardrails:**
+- Recommend at most 1-3 patterns.
+- Explain why simpler options are not enough.
+
+**Pattern Guide:**
+- **ScriptableObject**: Use for authored config, shared static data, event channels. Avoid for per-run mutable gameplay state.
+- **C# events / delegates**: Use for one-to-many notifications with clear ownership. Avoid for imperative flows needing ordering or return values.
+- **Global event bus**: Use sparingly for broad decoupled notifications. Avoid as default for coupling.
+- **Interfaces**: Use for multiple implementations or clear dependency boundaries. Avoid adding without a real seam.
+- **State machine**: Use for actors with mutually exclusive states. Avoid when booleans suffice.
+- **Object pool**: Use for frequent spawn/despawn (bullets, VFX). Avoid for rare objects.
+- **Service layer**: Use for cross-scene systems with explicit bootstrap. Avoid hidden singletons.
+- **Generics / attributes**: Use to remove boilerplate with type safety. Avoid if they reduce readability.
+
+**Decision Lab Methodology:**
+For non-trivial decisions, compare 2-3 plausible implementations side-by-side on:
+1. Switch cost (enter/exit state)
+2. Per-frame/query cost
+3. Code complexity
+4. Failure modes
+
+*Example: Pausing AI on 100 enemies*
+- **Field flag**: O(N) writes, N branch tests/frame, lowest complexity, risk of forgotten guards.
+- **enabled = false**: O(N) writes, zero per-frame cost, low complexity, risk of OnEnable/Disable side effects.
+- **Subset list**: O(N) list move, proportional cost to active count, highest complexity, risk of list desync.
+
+*Skip this exercise if N ≤ 10 or state changes once per session.*
+
+**Output Format:**
+- Recommended pattern(s)
+- Why they fit
+- Why not the simpler alternative
+- Minimal implementation boundary
+- Known tradeoffs
+
+## 2. Distributed Systems / Architecture Patterns
+
+Use this section for microservices and distributed system design.
+
+**Key Patterns:**
+- **CQRS**: Separate read/write models. Use when read load &gt;&gt; write load. Trade-off: eventual consistency.
+- **Event Sourcing**: Store state as immutable events. Use for audit trails/compliance. Trade-off: query complexity.
+- **Saga**: Manage distributed transactions via local transactions + compensations. Use for multi-service workflows. Trade-off: debugging complexity.
+- **Circuit Breaker**: Fail fast on downstream errors. Use for external service calls. Trade-off: fallback logic required.
+- **Bulkhead**: Isolate resources (threads/processes) per service. Use to prevent resource starvation. Trade-off: resource overhead.
+- **Strangler Fig**: Incrementally replace monoliths. Use for legacy migration. Trade-off: long-term maintenance of two systems.
+- **Outbox Pattern**: Ensure reliable event publishing. Use for transactional consistency.
+- **Consistent Hashing**: Distribute data across nodes. Use for scalable caching/storage.
+- **Backpressure**: Control data flow to prevent overload. Use for streaming systems.
+- **Leader Election**: Select a single coordinator. Use for stateful services.
+- **Two-Phase Commit**: Atomic commit across resources. Use sparingly due to availability impact.
+
+**Implementation Notes:**
+- For Circuit Breakers: Start with 50% failure rate over 10 requests, 30s open time.
+- For Sagas: Choose Choreography (decentralized) or Orchestration (centralized) based on workflow complexity.
+- For CQRS: Use CDC (e.g., Debezium) to sync write to read models.</pre>
+</body>
+</html>

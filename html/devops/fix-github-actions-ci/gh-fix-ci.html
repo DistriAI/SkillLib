@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gh-fix-ci</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">fix-github-actions-ci</a> / gh-fix-ci</p><h1>gh-fix-ci</h1><p class="meta">combined</p><p>The three copies share the same core workflow (auth, resolve PR, inspect checks, scope external providers, summarize, plan, implement, recheck) and the same bundled script. However, they disagree on the plan skill name (create-plan vs plan) and on how to handle sandboxed authentication (the composio copy adds sandbox_permissions=require_escalated and a dependency on the plan skill). Crowning one copy would hide the sandbox-specific handling and the plan-skill naming difference, so a combined instruction is needed.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/gh-fix-ci/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/gh-fix-ci/SKILL.md</code></td></tr><tr><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>gh-fix-ci/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/gh-fix-ci/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/gh-fix-ci/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>gh-fix-ci/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: gh-fix-ci
+description: Use when a user asks to debug or fix failing GitHub PR checks that run in GitHub Actions; use gh to inspect checks and logs, summarize failure context, draft a fix plan, and implement only after explicit approval. Treat external providers (for example Buildkite) as out of scope and report only the details URL.
+---
+
+# Gh Pr Checks Plan Fix
+
+## Overview
+
+Use gh to locate failing PR checks, fetch GitHub Actions logs for actionable failures, summarize the failure snippet, then propose a fix plan and implement after explicit approval.
+- If a plan-oriented skill (for example `create-plan` or `plan`) is available, use it; otherwise draft a concise plan inline and request approval before implementing.
+
+Prereq: authenticate with the standard GitHub CLI once (for example, run `gh auth login`), then confirm with `gh auth status` (repo + workflow scopes are typically required). If sandboxing blocks `gh auth status`, rerun it with `sandbox_permissions=require_escalated`.
+
+## Inputs
+
+- `repo`: path inside the repo (default `.`)
+- `pr`: PR number or URL (optional; defaults to current branch PR)
+- `gh` authentication for the repo host
+
+## Quick start
+
+- `python &quot;&lt;path-to-skill&gt;/scripts/inspect_pr_checks.py&quot; --repo &quot;.&quot; --pr &quot;&lt;number-or-url&gt;&quot;`
+- Add `--json` if you want machine-friendly output for summarization.
+
+## Workflow
+
+1. Verify gh authentication.
+   - Run `gh auth status` in the repo.
+   - If sandboxed auth status fails, rerun the command with `sandbox_permissions=require_escalated` to allow network/keyring access.
+   - If unauthenticated, ask the user to run `gh auth login` (ensuring repo + workflow scopes) before proceeding.
+2. Resolve the PR.
+   - Prefer the current branch PR: `gh pr view --json number,url`.
+   - If the user provides a PR number or URL, use that directly.
+3. Inspect failing checks (GitHub Actions only).
+   - Preferred: run the bundled script (handles gh field drift and job-log fallbacks):
+     - `python &quot;&lt;path-to-skill&gt;/scripts/inspect_pr_checks.py&quot; --repo &quot;.&quot; --pr &quot;&lt;number-or-url&gt;&quot;`
+     - Add `--json` for machine-friendly output.
+   - Manual fallback:
+     - `gh pr checks &lt;pr&gt; --json name,state,bucket,link,startedAt,completedAt,workflow`
+       - If a field is rejected, rerun with the available fields reported by `gh`.
+     - For each failing check, extract the run id from `detailsUrl` and run:
+       - `gh run view &lt;run_id&gt; --json name,workflowName,conclusion,status,url,event,headBranch,headSha`
+       - `gh run view &lt;run_id&gt; --log`
+     - If the run log says it is still in progress, fetch job logs directly:
+       - `gh api &quot;/repos/&lt;owner&gt;/&lt;repo&gt;/actions/jobs/&lt;job_id&gt;/logs&quot; &gt; &quot;&lt;path&gt;&quot;`
+4. Scope non-GitHub Actions checks.
+   - If `detailsUrl` is not a GitHub Actions run, label it as external and only report the URL.
+   - Do not attempt Buildkite or other providers; keep the workflow lean.
+5. Summarize failures for the user.
+   - Provide the failing check name, run URL (if any), and a concise log snippet.
+   - Call out missing logs explicitly.
+6. Create a plan.
+   - Use the `create-plan` or `plan` skill to draft a concise plan and request approval.
+7. Implement after approval.
+   - Apply the approved plan, summarize diffs/tests, and ask about opening a PR.
+8. Recheck status.
+   - After changes, suggest re-running the relevant tests and `gh pr checks` to confirm.
+
+## Bundled Resources
+
+### scripts/inspect_pr_checks.py
+
+Fetch failing PR checks, pull GitHub Actions logs, and extract a failure snippet. Exits non-zero when failures remain so it can be used in automation.
+
+Usage examples:
+- `python &quot;&lt;path-to-skill&gt;/scripts/inspect_pr_checks.py&quot; --repo &quot;.&quot; --pr &quot;123&quot;`
+- `python &quot;&lt;path-to-skill&gt;/scripts/inspect_pr_checks.py&quot; --repo &quot;.&quot; --pr &quot;https://github.com/org/repo/pull/123&quot; --json`
+- `python &quot;&lt;path-to-skill&gt;/scripts/inspect_pr_checks.py&quot; --repo &quot;.&quot; --max-lines 200 --context 40`</pre>
+</body>
+</html>

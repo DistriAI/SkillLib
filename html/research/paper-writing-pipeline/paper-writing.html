@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>paper-writing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">paper-writing-pipeline</a> / paper-writing</p><h1>paper-writing</h1><p class="meta">combined</p><p>Both copies describe the same five-phase paper-writing pipeline (paper-plan → paper-figure → paper-write → paper-compile → auto-paper-improvement-loop) with the same constants and checkpoints, but they disagree on the reviewer model and the first copy adds a substantial optional style-reference pre-step and an ILLUSTRATION constant that the second copy lacks. The second copy includes more detailed phase-by-phase instructions (e.g., explicit GPT-5.4 review calls, figure scope, compilation attempts) that the first copy truncates. Crowning one would hide the other&#x27;s unique steps and the conflicting reviewer model.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/paper-writing/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/paper-writing/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/paper-writing/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/paper-writing/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex/paper-writing/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex-gemini-review/paper-writing/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/60-regisely-superpapers/skills/paper-writing/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex/paper-writing/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex-gemini-review/paper-writing/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: paper-writing
+description: &quot;Workflow 3: Full paper writing pipeline. Orchestrates paper-plan → paper-figure → paper-write → paper-compile → auto-paper-improvement-loop to go from a narrative report to a polished, submission-ready PDF. Use when user says \&quot;写论文全流程\&quot;, \&quot;write paper pipeline\&quot;, \&quot;从报告到PDF\&quot;, \&quot;paper writing\&quot;, or wants the complete paper generation workflow.&quot;
+argument-hint: &quot;[narrative-report-path-or-topic] [— style-ref: &lt;source&gt;]&quot;
+allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Agent, Skill, mcp__codex__codex, mcp__codex__codex-reply
+---
+
+# Workflow 3: Paper Writing Pipeline
+
+Orchestrate a complete paper writing workflow for: **$ARGUMENTS**
+
+## Overview
+
+This skill chains five sub-skills into a single automated pipeline:
+
+```
+/paper-plan → /paper-figure → /paper-write → /paper-compile → /auto-paper-improvement-loop
+  (outline)     (plots)        (LaTeX)        (build PDF)       (review &amp; polish ×2)
+```
+
+Each phase builds on the previous one&#x27;s output. The final deliverable is a polished, reviewed `paper/` directory with LaTeX source and compiled PDF.
+
+## Constants
+
+- **VENUE = `ICLR`** — Target venue. Options: `ICLR`, `NeurIPS`, `ICML`, `CVPR`, `ACL`, `AAAI`, `ACM`, `IEEE_JOURNAL`, `IEEE_CONF`. Affects style file, page limit, citation format.
+- **MAX_IMPROVEMENT_ROUNDS = 2** — Number of review→fix→recompile rounds in the improvement loop.
+- **REVIEWER_MODEL = `gpt-5.4`** — Model used via Codex MCP for plan review, figure review, writing review, and improvement loop. (Note: wanshuiyin/Auto-claude-code-research-in-sleep uses `gpt-6-astra`; choose per deployment.)
+- **AUTO_PROCEED = true** — Auto-continue between phases. Set `false` to pause and wait for user approval after each phase.
+- **HUMAN_CHECKPOINT = false** — When `true`, the improvement loop pauses after each round&#x27;s review to let you see the score and provide custom modification instructions.
+- **ILLUSTRATION = `figurespec`** — Architecture/illustration generator for Phase 2b: `figurespec` (default), `gemini`, `codex-image2`, `mermaid`, or `false` (skip Phase 2b).
+
+&gt; Override inline: `/paper-writing &quot;NARRATIVE_REPORT.md&quot; — venue: NeurIPS, illustration: gemini, human checkpoint: true`
+
+## Inputs
+
+This pipeline accepts one of:
+
+1. **`NARRATIVE_REPORT.md`** (best) — structured research narrative with claims, experiments, results, figures
+2. **Research direction + experiment results** — the skill will help draft the narrative first
+3. **Existing `PAPER_PLAN.md`** — skip Phase 1, start from Phase 2
+
+## Optional: Style reference (`— style-ref: &lt;source&gt;`, opt-in)
+
+When `— style-ref: &lt;source&gt;` is in `$ARGUMENTS`, run the helper FIRST, before Phase 1:
+
+```bash
+cd &quot;$(git rev-parse --show-toplevel 2&gt;/dev/null || pwd)&quot; || exit 1
+if [ -z &quot;${ARIS_REPO:-}&quot; ] &amp;&amp; [ -f .aris/installed-skills.txt ]; then
+    ARIS_REPO=$(awk -F&#x27;\t&#x27; &#x27;$1==&quot;repo_root&quot;{print $2; exit}&#x27; .aris/installed-skills.txt 2&gt;/dev/null) || true
+fi
+if [ -z &quot;${ARIS_REPO:-}&quot; ] &amp;&amp; [ -f &quot;$HOME/.aris/repo&quot; ]; then
+    ARIS_REPO=$(cat &quot;$HOME/.aris/repo&quot; 2&gt;/dev/null) || true
+fi
+STYLE_HELPER=&quot;.aris/tools/extract_paper_style.py&quot;
+[ -f &quot;$STYLE_HELPER&quot; ] || STYLE_HELPER=&quot;tools/extract_paper_style.py&quot;
+[ -f &quot;$STYLE_HELPER&quot; ] || { [ -n &quot;${ARIS_REPO:-}&quot; ] &amp;&amp; STYLE_HELPER=&quot;$ARIS_REPO/tools/extract_paper_style.py&quot;; }
+[ -f &quot;$STYLE_HELPER&quot; ] || {
+  echo &quot;ERROR: extract_paper_style.py not resolved.&quot; &gt;&amp;2
+  exit 1
+}
+STYLE_STATUS=0
+CACHE=$(python3 &quot;$STYLE_HELPER&quot; --source &quot;&lt;source&gt;&quot;) || STYLE_STATUS=$?
+case &quot;$STYLE_STATUS&quot; in
+  0) ;;
+  2) echo &quot;warning: style-ref skipped (missing optional dep)&quot; &gt;&amp;2 ;;
+  3) echo &quot;error: --style-ref source failed; aborting pipeline&quot; &gt;&amp;2 ; exit 1 ;;
+  *) echo &quot;error: helper failed unexpectedly; aborting pipeline&quot; &gt;&amp;2 ; exit 1 ;;
+esac
+```
+
+Then forward `— style-ref: &lt;source&gt;` only to the writer-side sub-skills: `/paper-plan`, `/paper-write`, and optionally `/paper-illustration`.
+
+Sources accepted: local TeX dir/file, local PDF, arXiv id, http(s) URL. Overleaf URLs/IDs are rejected — clone via `/overleaf-sync setup &lt;id&gt;` first.
+
+## Pipeline
+
+### Phase 1: Paper Plan
+
+Invoke `/paper-plan` to create the structural outline:
+
+```
+/paper-plan &quot;$ARGUMENTS&quot;
+```
+
+**What this does:**
+- Parse NARRATIVE_REPORT.md for claims, evidence, and figure descriptions
+- Build a **Claims-Evidence Matrix**
+- Design section structure (5-8 sections)
+- Plan figure/table placement with data sources
+- Scaffold citation structure
+- REVIEWER_MODEL reviews the plan for completeness
+
+**Output:** `PAPER_PLAN.md` with section plan, figure plan, citation scaffolding.
+
+**Checkpoint:** Present the plan summary to the user.
+
+### Phase 2: Figure Generation
+
+Invoke `/paper-figure` to generate data-driven plots and tables:
+
+```
+/paper-figure &quot;PAPER_PLAN.md&quot;
+```
+
+**What this does:**
+- Read figure plan from PAPER_PLAN.md
+- Generate matplotlib/seaborn plots from JSON/CSV data
+- Generate LaTeX comparison tables
+- Create `figures/latex_includes.tex`
+- REVIEWER_MODEL reviews figure quality and captions
+
+**Output:** `figures/` directory with PDFs, generation scripts, and LaTeX snippets.
+
+&gt; **Scope:** Auto-generates ~60% of figures (data plots, comparison tables). Architecture diagrams, pipeline figures, and qualitative result grids must be created manually.
+
+**Checkpoint:** List generated vs manual figures.
+
+### Phase 3: LaTeX Writing
+
+Invoke `/paper-write` to generate section-by-section LaTeX:
+
+```
+/paper-write &quot;PAPER_PLAN.md&quot;
+```
+
+**What this does:**
+- Write each section following the plan, with proper LaTeX formatting
+- Insert figure/table references from `figures/latex_includes.tex`
+- Build `references.bib` from citation scaffolding
+- Clean stale files from previous section structures
+- Automated bib cleaning (remove uncited entries)
+- De-AI polish (remove &quot;delve&quot;, &quot;pivotal&quot;, &quot;landscape&quot;...)
+- REVIEWER_MODEL reviews each section for quality
+
+**Output:** `paper/` directory with `main.tex`, `sections/*.tex`, `references.bib`, `math_commands.tex`.
+
+**Checkpoint:** Report section completion.
+
+### Phase 4: Compilation
+
+Invoke `/paper-compile` to build the PDF:
+
+```
+/paper-compile &quot;paper/&quot;
+```
+
+**What this does:**
+- `latexmk -pdf` with automatic multi-pass compilation
+- Auto-fix common errors (missing packages, undefined refs, BibTeX syntax)
+- Up to 3 compilation attempts
+- Post-compilation checks: undefined refs, page count, font embedding
+
+**Output:** Compiled PDF in `paper/`.
+
+**Checkpoint:** Report compilation status.
+
+### Phase 5: Auto Paper Improvement Loop
+
+Invoke `/auto-paper-improvement-loop` to review and polish:
+
+```
+/auto-paper-improvement-loop &quot;paper/&quot;
+```
+
+**What this does:**
+- REVIEWER_MODEL reviews the full paper for quality, clarity, and completeness
+- Apply fixes based on review feedback
+- Recompile and re-review
+- Repeat for MAX_IMPROVEMENT_ROUNDS rounds
+
+**Output:** Polished `paper/` directory with final PDF.
+
+**Checkpoint:** Present final score and summary.
+
+## Conflicts
+
+- **REVIEWER_MODEL**: wanshuiyin/Auto-claude-code-research-in-sleep uses `gpt-6-astra`; brycewang-stanford/Auto-Empirical-Research-Skills uses `gpt-5.4`. Choose per deployment.
+- **ILLUSTRATION constant and style-ref pre-step**: Present in wanshuiyin/Auto-claude-code-research-in-sleep; absent in brycewang-stanford/Auto-Empirical-Research-Skills. Include if the deployment supports them.
+- **allowed-tools**: wanshuiyin/Auto-claude-code-research-in-sleep includes `mcp__codex__codex` and `mcp__codex__codex-reply` but not `Agent`; brycewang-stanford/Auto-Empirical-Research-Skills includes `Agent` but not the mcp__codex tools. Include all for maximum compatibility.</pre>
+</body>
+</html>

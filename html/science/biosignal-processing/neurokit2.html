@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>neurokit2</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">biosignal-processing</a> / neurokit2</p><h1>neurokit2</h1><p class="meta">combined</p><p>The copies diverge significantly in scope and rigor. The K-Dense-AI copy is a strict, reproducible research protocol that pins versions (0.2.13), enforces a specific data contract, and includes safety boundaries against medical diagnosis. The other copies (Vibe-Skills, OpenClaw, aipoch) are broader &#x27;toolkit&#x27; guides that list capabilities and provide general code examples without the rigorous version pinning or safety constraints. Combining them is necessary to capture both the rigorous research workflow and the broader functional capabilities (like specific EEG/EMG/EOG functions) that the rigorous copy omits or truncates.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/neurokit2/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/neurokit2/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/neurokit2/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/neurokit2/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/neurokit2/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/neurokit2/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/neurokit2/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/neurokit2/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: neurokit2
+description: Builds and audits reproducible NeuroKit2 research workflows for physiological time-series preprocessing, event/interval analysis, multimodal alignment, variability, and complexity. Use when code imports neurokit2 or needs its current APIs, schemas, and method-aware validation—not for diagnosis or device validation.
+license: MIT
+compatibility: Python 3.10+ and uv; pinned workflows use NeuroKit2 0.2.13.
+---
+
+# NeuroKit2
+
+## Scope and Safety Boundary
+
+Use this skill for method-aware, reproducible biosignal research with NeuroKit2. 
+
+**Do NOT present its output as:**
+- A diagnosis, treatment recommendation, or patient-monitoring decision.
+- Validation or regulatory evidence for a medical device.
+- Proof that a physiological construct is validly measured in a new context.
+
+Validate acquisition hardware, units, and preprocessing for the intended study. Preserve raw data and an auditable exclusion log.
+
+## Reproducible Installation
+
+For reproducible research, pin the version:
+```bash
+uv pip install &quot;neurokit2==0.2.13&quot;
+```
+
+For exploratory work or if specific new features are required, you may install the latest stable version, but record the exact version used:
+```bash
+uv pip install neurokit2
+```
+
+## Required Data Contract
+
+Before processing, record:
+1. Signal identity and sensor/channel configuration.
+2. Native sampling rate (Hz) and physical unit.
+3. Clock, timestamp origin, and synchronization evidence.
+4. Polarity/orientation and acquisition-side filters.
+5. Missing samples, discontinuities, and artifacts.
+6. Event onset format (sample indices or seconds).
+7. Planned preprocessing order and exclusions.
+
+Never infer units from column names.
+
+## Core Workflow
+
+### 1. Inspect Before Transforming
+
+Check for non-monotonic time, duplicate samples, gaps, and non-finite values before filtering.
+
+### 2. Processing Pipelines
+
+Most modalities follow a consistent structure:
+1. `*_process(signal, sampling_rate=...)`: Produces cleaned signal and intermediate channels (peaks, phases) plus an `info` dict.
+2. `*_analyze(processed_signals, sampling_rate=...)`: Computes summary features.
+
+**Key Modalities:**
+
+#### Cardiac (ECG/PPG)
+```python
+import neurokit2 as nk
+
+# ECG Processing
+signals, info = nk.ecg_process(ecg_signal, sampling_rate=1000)
+
+# HRV Analysis (Time, Frequency, Nonlinear)
+hrv = nk.hrv(info[&quot;ECG_R_Peaks&quot;], sampling_rate=1000)
+```
+
+#### Electrodermal Activity (EDA)
+```python
+# EDA Processing (Tonic/Phasic decomposition)
+signals, info = nk.eda_process(eda_signal, sampling_rate=100)
+
+# Sympathetic Nervous System Index
+sympathetic = nk.eda_sympathetic(signals, sampling_rate=100)
+```
+
+#### Respiratory (RSP)
+```python
+# RSP Processing
+signals, info = nk.rsp_process(rsp_signal, sampling_rate=100)
+
+# Respiratory Rate Variability
+rrv = nk.rsp_rrv(signals, sampling_rate=100)
+```
+
+#### EEG (Brain Signals)
+```python
+# Power Analysis
+power = nk.eeg_power(eeg_data, sampling_rate=250, channels=[&#x27;Fz&#x27;, &#x27;Cz&#x27;, &#x27;Pz&#x27;])
+
+# Microstate Analysis
+microstates = nk.microstates_segment(eeg_data, n_microstates=4, method=&#x27;kmod&#x27;)
+```
+
+#### EMG and EOG
+```python
+# EMG Processing
+signals, info = nk.emg_process(emg_signal, sampling_rate=1000)
+
+# EOG Processing
+signals, info = nk.eog_process(eog_signal, sampling_rate=1000)
+```
+
+### 3. Multimodal Integration
+
+Use `bio_process` and `bio_analyze` for consistent multi-signal pipelines:
+
+```python
+bio_signals, bio_info = nk.bio_process(
+    ecg=ecg,
+    rsp=rsp,
+    eda=eda,
+    sampling_rate=1000
+)
+bio_results = nk.bio_analyze(bio_signals, sampling_rate=1000)
+```
+
+### 4. Event-Related Analysis
+
+For stimulus-locked responses:
+
+```python
+# Detect events
+events = nk.events_find(trigger, threshold=0.5)
+
+# Create epochs
+epochs = nk.epochs_create(
+    bio_signals,
+    events,
+    sampling_rate=1000,
+    epochs_start=-0.5,
+    epochs_end=2.0
+)
+
+# Grand average
+grand_average = nk.epochs_average(epochs)
+```
+
+## Schema and Validation
+
+Return columns depend on the NeuroKit2 version and method. Persist the observed schema with package version and parameters:
+
+```python
+observed_schema = {
+    &quot;columns&quot;: list(signals.columns),
+    &quot;info_keys&quot;: sorted(info),
+    &quot;version&quot;: nk.__version__
+}
+```</pre>
+</body>
+</html>

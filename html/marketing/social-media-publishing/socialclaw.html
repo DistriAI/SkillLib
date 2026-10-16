@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>socialclaw</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">social-media-publishing</a> / socialclaw</p><h1>socialclaw</h1><p class="meta">combined</p><p>The two copies describe the same SocialClaw service but provide materially different operational details. The davepoon copy is a concrete CLI reference with specific commands (socialclaw login, accounts connect, assets upload, validate, apply, status, analytics) and uses the SC_API_KEY environment variable. The sickn33 copy is a higher-level workflow guide that uses a different environment variable (SOCIALCLAW_API_KEY), includes a specific npm version (0.1.12), and adds critical safety constraints (explicit user confirmation for state-changing actions) that the first copy lacks. Crowning one would hide either the specific CLI syntax or the safety/compliance constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/socialclaw/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/socialclaw/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/socialclaw/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/socialclaw/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># SocialClaw
+
+SocialClaw is a workspace-scoped social publishing service at `https://getsocialclaw.com` that allows scheduling and publishing posts across 13 platforms (X, LinkedIn, Instagram, Facebook Pages, TikTok, Discord, Telegram, YouTube, Reddit, WordPress, Pinterest) using a single workspace API key.
+
+## Runtime Requirements
+
+- A valid SocialClaw workspace API key.
+- CLI (optional): `npm install -g socialclaw` or `npm install socialclaw@0.1.12`.
+- Active trial or paid plan required for CLI/API execution.
+
+## Configuration
+
+Set your workspace API key in your environment. Note that different documentation sources may use different variable names; verify which one your installed CLI version expects:
+
+```bash
+# Option A (from davepoon/buildwithclaude)
+export SC_API_KEY=&quot;&lt;workspace-key&gt;&quot;
+
+# Option B (from sickn33/agentic-awesome-skills)
+export SOCIALCLAW_API_KEY=&quot;&lt;workspace-key&gt;&quot;
+```
+
+Get your API key at [getsocialclaw.com](https://getsocialclaw.com).
+
+## Workflow
+
+### Step 1: Authenticate
+
+```bash
+socialclaw login --api-key &lt;workspace-key&gt;
+# or
+socialclaw login
+```
+
+### Step 2: Manage Accounts
+
+List connected accounts:
+```bash
+socialclaw accounts list --json
+```
+
+Connect a new account (requires browser OAuth):
+```bash
+socialclaw accounts connect --provider x --open
+```
+
+### Step 3: Create a Campaign
+
+Define your campaign with target platforms, content, and schedule in a JSON file (e.g., `schedule.json`).
+
+### Step 4: Upload Media (Optional)
+
+Upload images or videos to attach to posts:
+```bash
+socialclaw assets upload --file ./image.png --json
+```
+
+### Step 5: Validate Schedule
+
+Confirm platform-specific timing rules are met (e.g., rate limits, posting windows):
+```bash
+socialclaw validate -f schedule.json --json
+```
+
+### Step 6: Publish or Schedule
+
+**Safety Constraint:** Treat every publish, schedule, delete, or account-changing action as state-changing. Show the target platforms, content, media, and timing to the user, then wait for explicit user confirmation before proceeding.
+
+Apply the schedule:
+```bash
+socialclaw apply -f schedule.json --json
+```
+
+Check run status:
+```bash
+socialclaw status --run-id &lt;id&gt; --json
+```
+
+### Step 7: Analytics
+
+Retrieve post performance metrics after publishing:
+```bash
+socialclaw posts list --json
+socialclaw analytics post --post-id &lt;id&gt; --json
+socialclaw workspace health --json
+```
+
+## Limitations
+
+- Requires a valid SocialClaw workspace API key; do not attempt publishing without explicit user-provided credentials.
+- Platform availability, rate limits, analytics fields, and scheduling behavior depend on the upstream SocialClaw service.
+- This skill describes the publishing workflow; it does not replace platform-specific compliance, brand review, or legal approval before posting.
+
+## Links
+
+- GitHub: https://github.com/ndesv21/socialclaw
+- Dashboard: https://getsocialclaw.com/dashboard
+- npm: https://www.npmjs.com/package/socialclaw</pre>
+</body>
+</html>

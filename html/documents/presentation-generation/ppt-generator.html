@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ppt-generator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">presentation-generation</a> / ppt-generator</p><h1>ppt-generator</h1><p class="meta">combined</p><p>The two copies implement fundamentally different PPT generation procedures. The anbeime/skill copy is a seven-role workflow that produces a .pptx file via python-pptx, with structured JSON, layout recommendations, and a generation script. The LeoYeAI copy is a single-file HTML slide deck generator with a strict Jobs-style minimalist vertical design, specific visual specs, and a different output format. Neither is a reproduction of the other; crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/ppt-generator/ppt-generator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ppt-generator/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/ppt-generator/ppt-generator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ppt-generator/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># PPT Generator
+
+## Overview
+Generate high-quality presentations from a user&#x27;s topic or script. Two output modes are available: PPTX (via python-pptx) and HTML (single-file, Jobs-style minimalist vertical deck).
+
+## Mode Selection
+- **PPTX Mode**: Use when the user needs a .pptx file, a multi-role collaborative workflow, or optimization of an existing PPT.
+- **HTML Mode**: Use when the user wants a single HTML file, a Jobs-style minimalist vertical deck, or a tech/minimalist aesthetic.
+
+## PPTX Mode (Seven-Role Workflow)
+
+### Step 1: Theme Analysis
+- Analyze the user&#x27;s topic, target audience, presentation scenario, expected page count (10-20), and style preference.
+- Generate a preliminary outline: cover, table of contents, 3-5 core chapters, key points per chapter, closing page.
+
+### Step 2: Template Design
+- Recommend layout types (TitleSlide, TitleAndContent, TwoColumnText, etc.) and visual style (color scheme, fonts, visual elements).
+- Reference the layout guide for scene-appropriate layouts.
+
+### Step 3: Content Planning
+- Map the outline to specific page layouts.
+- Define core information points per page (3-5 items).
+- Plan information presentation (lists, comparisons, flows).
+
+### Step 4: Text Creation
+- Write concise titles (≤20 characters) and bullet points (≤20 characters each, parallel structure).
+- Follow PPT writing principles: one theme per page, active voice, highlight key data.
+
+### Step 5: Visual Design
+- Recommend image types and positions for each page.
+- Ensure images align with the overall style.
+
+### Step 6: Optimization &amp; Editing
+- Polish language, optimize structure, refine content, and suggest data visualizations.
+
+### Step 7: PPTX Generation
+- Structure all content as JSON (metadata + slides).
+- Run: `python scripts/generate_pptx.py --input ./ppt_data.json --output ./presentation.pptx`
+
+### PPTX Sub-modes
+- **Quick Outline**: Steps 1-2 only.
+- **Content Fill**: Steps 2-6, optional Step 7.
+- **Optimize Existing PPT**: Analyze existing content, apply Steps 1, 2, 5, 6.
+
+## HTML Mode (Jobs-Style Minimalist Vertical Deck)
+
+### Step 1: Read Script
+- Read the user&#x27;s original script without modification.
+
+### Step 2: Refine Script
+- Condense content, enhance impact, adapt for presentation. Output as Markdown.
+
+### Step 3: Generate Titles
+- Create chapter titles (≤12 characters) using contrast, question, assertion, number, or metaphor forms.
+
+### Step 4: Design Slide Structure
+- Plan page order and types. Reference the slide-types guide.
+
+### Step 5: Generate HTML
+- Use the base template to generate a complete HTML file.
+
+### Step 6: Fill Content
+- Add dynamic background light spots, interaction logic, and smooth transition animations.
+
+### HTML Visual Specs
+- Aspect ratio: 9:16 vertical
+- Background: #000000 or #0a0a0a with blurred light spot animation
+- Primary text: #ffffff
+- Secondary text: #9ca3af
+- Chinese font: HarmonyOS Sans SC / Source Han Sans
+- English font: Inter / Roboto
+- Title weight: font-black / font-bold
+- Body weight: font-light / font-normal
+
+### HTML Interaction
+- Keyboard ← → for navigation
+- Bottom progress bar
+- Smooth transition animations
+
+### HTML Tech Stack
+- TailwindCSS (CDN)
+- Vue3 (CDN) for complex pages
+- Single HTML file, directly runnable
+
+### HTML Prohibitions
+- Dense text layout
+- Flashy color schemes
+- Complex charts
+- Horizontal aspect ratio
+- Deviation from minimalist tech style
+
+### HTML Defaults
+- Page count: 8-20 if unspecified
+- Style: Jobs-style minimalist if unspecified
+
+## Conflicts
+- **anbeime/skill::skills/ppt-generator/ppt-generator/SKILL.md** produces a .pptx file via python-pptx with a seven-role workflow; **LeoYeAI/openclaw-master-skills::skills/ppt-generator/SKILL.md** produces a single HTML file with TailwindCSS/Vue3 and a six-step linear flow. These are incompatible output formats and workflows.
+- **anbeime/skill** supports optimizing existing PPTs; **LeoYeAI** only generates new decks from a script.
+- **anbeime/skill** has no fixed visual style; **LeoYeAI** mandates a specific Jobs-style vertical design with fixed colors and fonts.</pre>
+</body>
+</html>

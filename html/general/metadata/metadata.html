@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>metadata</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">metadata</a> / metadata</p><h1>metadata</h1><p class="meta">combined</p><p>The two skills share the name &#x27;metadata&#x27; but address entirely different domains. The first is a marketing/SEO skill for auditing and implementing HTML page metadata (titles, descriptions, canonical, hreflang, Open Graph). The second is a research skill that acts as a router for 24 bibliometric and scholarly metadata tools (CrossRef, ORCID, Zotero, etc.). They do not overlap in procedure, inputs, or outputs, and neither is a reproduction of the other.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/seo/on-page/metadata/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/43-wentorai-research-plugins/skills/literature/metadata/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/seo/on-page/metadata/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/43-wentorai-research-plugins/skills/literature/metadata/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Metadata
+
+This skill covers two distinct domains. Determine the user&#x27;s intent to select the appropriate procedure.
+
+## 1. SEO Page Metadata (Marketing)
+Use when the user requests a page metadata audit, title/description optimization, or implementation of HTML meta tags.
+
+**Procedure:**
+1. **Discover:** Build a page inventory from production navigation, sitemaps, and routes. Identify missing or duplicate metadata.
+2. **Classify:** Determine page type, search intent, and unique value proposition. Apply the &quot;Swap Test&quot; to ensure metadata is page-specific.
+3. **Route:** Delegate specific writing tasks to specialist skills (title-tag, meta-description, open-graph, etc.).
+4. **Localize:** Research locale-specific intent. Do not simply translate source metadata. Verify hreflang and canonical relationships.
+5. **Implement:** Edit the source of truth (CMS fields, layout templates, or code). Ensure internal consistency between title, description, and social tags.
+6. **Validate:** Run build checks and inspect server-rendered HTML for representative URLs. Verify no duplicate or empty tags.
+7. **Verify:** Recheck production URLs post-deployment and monitor Search Console for query/CTR changes.
+
+## 2. Scholarly Metadata &amp; Bibliometrics (Research)
+Use when the user requests DOI resolution, citation analysis, author disambiguation, or reference management.
+
+**Procedure:**
+1. **Identify Need:** Determine if the task involves DOI resolution, citation metrics, author identity, or reference library management.
+2. **Select Tool:** Choose the appropriate sub-skill from the catalog:
+   - **DOI/Metadata:** `crossref-api`, `datacite-api`, `doi-content-negotiation`.
+   - **Citations/Metrics:** `opencitations-api`, `h-index-guide`, `journal-metrics-guide`, `plumx-metrics-api`.
+   - **Author/Org Identity:** `orcid-api`, `ror-organization-api`, `viaf-authority-api`.
+   - **Reference Management:** `zotero-actions-tags-guide`, `zoplicate-dedup-guide`, `sophosia-reference-guide`.
+3. **Execute:** Read the selected sub-skill&#x27;s SKILL.md and follow its specific API or workflow instructions.</pre>
+</body>
+</html>

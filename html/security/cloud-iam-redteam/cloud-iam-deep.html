@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cloud-iam-deep</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">cloud-iam-redteam</a> / cloud-iam-deep</p><h1>cloud-iam-deep</h1><p class="meta">combined</p><p>The two copies overlap in scope (cloud IAM red teaming across AWS, GCP, and Azure) but each contains material steps the other lacks. The uphiago copy is GCP-heavy with concrete Cloud Functions URL enumeration, gcf-sources bucket access, SA-key-to-token generation, and Firebase/Firestore open-access tests. The sickn33 copy is AWS-heavy with credential identification patterns, read-only validation commands, and a detailed IAM privilege-escalation matrix, plus a mandatory authorization gate. Neither is a reproduction of the other; crowning one would hide a real alternative procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/cloud-iam-deep/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cloud-iam-deep/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/cloud-iam-deep/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cloud-iam-deep/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/cloud-iam-deep/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/cloud-iam-deep/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: cloud-iam-deep
+description: Cloud IAM red-team attack chain across AWS, GCP, and Azure
+---
+
+## Authorization Gate
+Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+1. Ask the user to state the exact target URL, IP, account, or resource.
+2. Ask the user to confirm written authorization and the permitted scope.
+3. Show the exact command(s) and explain their expected effect.
+4. Wait for explicit confirmation in the current conversation.
+Without that confirmation, remain read-only and provide defensive guidance only.
+
+## When to Use
+- After finding Firebase API keys, Supabase keys, or GCP SA keys
+- When a target uses serverless (Cloud Functions, Cloud Run)
+- After finding S3 bucket names or MinIO instances
+- A cloud credential surfaces (key, secret, token, JSON file)
+- SSRF chain reaches IMDS / metadata endpoint
+- APK / git-leak reveals embedded cloud key
+- Recon shows public S3/GCS/Azure-blob with permissions you can verify
+- A Kubernetes API or service-account token is exposed
+- Post-RCE on a cloud-hosted instance — pivot to cloud control plane
+
+## Credential Identification
+Identify credential types using patterns:
+- AWS: AKIA[0-9A-Z]{16}, ASIA[0-9A-Z]{16}, AGPA[0-9A-Z]{16}, AIDA[0-9A-Z]{16}, AROA[0-9A-Z]{16}, ANPA[0-9A-Z]{16}, 40-char secret
+- Azure: AccountKey=[A-Za-z0-9+/=]{86}, client_secret + UUID
+- GCP: service_account JSON with private_key
+- K8s: JWT SA token (decode kid claim)
+
+## AWS — Read-Only Validation
+1. Set credentials: export AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+2. Identify identity: aws sts get-caller-identity
+3. Enumerate permissions: aws iam list-users, list-roles, list-policies, list-groups
+4. Check attached policies: aws iam list-attached-user-policies, list-user-policies, list-groups-for-user
+5. Service surface: aws ec2 describe-instances, aws s3 ls, aws lambda list-functions, aws rds describe-db-instances, aws secretsmanager list-secrets, aws ssm describe-parameters
+6. Audit cross-account trust: aws iam list-roles with AssumeRolePolicyDocument query
+
+## AWS Privilege Escalation Patterns
+If you have any of these IAM actions, escalate via the listed technique:
+- iam:CreateAccessKey → Create access key on any user → impersonate
+- iam:CreateLoginProfile / iam:UpdateLoginProfile → Set/reset console password
+- iam:AttachUserPolicy / iam:AttachGroupPolicy / iam:AttachRolePolicy → Attach AdministratorAccess
+- iam:PutUserPolicy / iam:PutGroupPolicy / iam:PutRolePolicy → Inline admin policy
+- iam:AddUserToGroup → Add self to admin group
+- iam:UpdateAssumeRolePolicy + sts:AssumeRole → Modify trust to allow self
+- iam:CreatePolicyVersion / iam:SetDefaultPolicyVersion → Switch to admin version
+- iam:PassRole + ec2:RunInstances / lambda:CreateFunction / cloudformation:CreateStack / glue:CreateDevEndpoint / datapipeline / codestar:CreateProject → Run code as admin role
+- ec2:RunInstances with admin instance profile → Spin instance, exfil creds from IMDS
+
+## GCP — Cloud Functions Enumeration
+1. Enumerate project IDs and regions using patterns: empresa, empresa-app, empresa-prod, empresa-dev, empresa-1, empresa-12345, app-empresa, admin-1a2b3
+2. Test Cloud Functions URLs: https://{REGION}-{PROJECT_ID}.cloudfunctions.net/{FUNCTION_NAME}
+3. Test HTTP methods without auth: GET, POST, PUT, DELETE
+4. Check for reflected CORS on all functions
+
+## GCP — Source Code Buckets
+Access gcf-sources-{PROJECT_NUMBER}-{REGION} and gcf-v2-sources-{PROJECT_NUMBER}-{REGION} with SA key read permission to download function source zips.
+
+## GCP — SA Key to Token Generation
+1. Generate JWT from SA key using RS256 signature
+2. Exchange JWT for access token via token_uri
+3. List IAM policy: cloudresourcemanager.googleapis.com/v1/projects/{project_id}:getIamPolicy
+4. List Storage buckets: storage.googleapis.com/storage/v1/b?project={project_id}
+5. Test Firestore access: firestore.googleapis.com/v1/projects/{project_id}/databases/(default)/documents
+
+## GCP — Firebase Open SignUp
+Test open sign-up: curl identitytoolkit.googleapis.com/v1/accounts:signUp?key=$API_KEY
+
+## GCP — Firestore Public Access Test
+1. Test read: curl firestore.googleapis.com/v1/projects/$PROJECT_ID/databases/(default)/documents/{collection}?key=$API_KEY
+2. Test write: curl PATCH with updateMask.fieldPaths
+
+## Azure
+- Identify storage account keys and Azure AD app credentials
+- Test blob storage access with identified credentials
+- Enumerate RBAC roles and assignments
+
+## Reporting
+Document all findings with evidence, severity, and remediation guidance.</pre>
+</body>
+</html>

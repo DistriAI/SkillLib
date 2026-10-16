@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>brutalism</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">brutalist-ui-implementation</a> / brutalism</p><h1>brutalism</h1><p class="meta">combined</p><p>The two copies describe the same aesthetic but serve different purposes and contain non-overlapping, sometimes conflicting, implementation guidance. The bergside copy is a design-system authoring workflow (tokens, accessibility, QA checklist, output structure) with a specific palette (Darker Grotesque, #DD614C, #DAA144) and spacing scale. The sickn33 copy is a direct implementation guide for Web, SwiftUI, Flutter, and React Native, prescribing system fonts (Courier New, Times New Roman, Comic Sans), raw browser defaults, and a clashing palette (#0000FF, #FF0000, #C0C0C0). Crowning one would hide the other&#x27;s concrete code patterns or the other&#x27;s governance workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/brutalism/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/design-it/brutalism/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/brutalism/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/design-it/brutalism/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/design-it/brutalism/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/design-it/brutalism/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Brutalism Design &amp; Implementation
+
+## 1. Design System Authoring (Guidelines)
+When creating design-system documentation for Brutalism:
+1. **Restate Intent**: Define the aesthetic as raw, anti-design, and inspired by 1950s concrete architecture.
+2. **Define Tokens**: Establish a spacing scale (4/8/12/16/24/32) and color tokens. Note: For a &#x27;raw&#x27; implementation, prefer system defaults; for a &#x27;curated&#x27; system, use tokens like primary=#DD614C.
+3. **Accessibility**: Enforce WCAG 2.2 AA. Ensure keyboard-first interactions and visible focus states.
+4. **Component Rules**: Define states (default, hover, focus-visible, active, disabled, loading, error). Use &#x27;must&#x27; for non-negotiables and &#x27;should&#x27; for recommendations.
+5. **QA Checklist**: Include a code-review checklist for contrast, spacing rhythm, and semantic token usage.
+
+## 2. Direct Implementation (Code)
+When building UI components:
+1. **Web (HTML/CSS)**:
+   - Use standard HTML tags without overriding default appearance.
+   - Use `border: 1px solid #000` for structure.
+   - Use `#0000FF` for links and `#C0C0C0` for button backgrounds.
+   - Use `font-family: monospace` or system defaults.
+2. **SwiftUI**:
+   - Avoid native `ButtonStyle`.
+   - Use `Text` with `.underline()` and `.foregroundColor(.blue)` for links.
+   - Use `.border(Color.black, width: 1)` instead of shadows.
+3. **Flutter**:
+   - Avoid `ElevatedButton`, `Card`, or `AppBar`.
+   - Build UI from raw `Container`s with `Border.all(color: Colors.black)`.
+   - Use `TextDecoration.underline` for interactivity.
+4. **React Native**:
+   - Use `View` with `borderWidth: 2` and `borderColor: &#x27;#000000&#x27;`.
+   - Use `TouchableOpacity` with `activeOpacity={1}`.
+
+## 3. Conflicts &amp; Trade-offs
+- **Fonts**: The design-system copy suggests curated fonts (Darker Grotesque), while the implementation copy mandates system fonts (Courier New). **Resolution**: Use system fonts for maximum &#x27;raw&#x27; authenticity in code; use curated fonts only if the design system explicitly overrides the &#x27;raw&#x27; constraint for brand consistency.
+- **Palette**: The design-system copy uses a muted, curated palette (#DD614C), while the implementation copy uses clashing, raw colors (#0000FF, #FF0000). **Resolution**: Use raw colors for &#x27;Industrial Chic&#x27; or &#x27;Anti-Aesthetic&#x27; goals; use curated tokens for &#x27;Functional Minimalism&#x27; goals.</pre>
+</body>
+</html>

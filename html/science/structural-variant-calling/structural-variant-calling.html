@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>structural-variant-calling</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">structural-variant-calling</a> / structural-variant-calling</p><h1>structural-variant-calling</h1><p class="meta">combined</p><p>The two skills cover the same task but with different depth and scope. The first copy (OpenClaw) is a practical, command-line recipe book for short-read SV calling (Manta, Delly, LUMPY) with specific bash commands for configuration, execution, merging, and filtering. The second copy (GPTomics) is a conceptual and strategic guide that explains the underlying signals (RP, SR, RD, Assembly), maps callers to their signal strengths/blind spots, includes long-read callers (Sniffles2, cuteSV, pbsv), and discusses version compatibility and benchmarking (Truvari). The first copy lacks the theoretical framework and long-read details; the second copy lacks the specific, copy-pasteable command workflows for the short-read tools it mentions. Combining them provides both the &#x27;how&#x27; (commands) and the &#x27;why/when&#x27; (signal logic and caller selection).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/structural-variant-calling/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/structural-variant-calling/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/structural-variant-calling/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/structural-variant-calling/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Structural Variant Calling
+
+## 1. Caller Selection &amp; Signal Logic
+Structural variants (SVs) are inferred from four orthogonal signals: Discordant Pairs (RP), Split Reads (SR), Read Depth (RD), and Local Assembly (AS). Choose callers based on the signals they fuse and your data type.
+
+**Short-Read Callers:**
+- **Manta**: Fuses RP, SR, and targeted Assembly. Best for default germline/somatic calling. Fast and accurate.
+- **Delly**: Fuses RP, SR, and RD (via `delly cnv`). Good for joint calling and somatic filtering.
+- **LUMPY/smoove**: Fuses RP and SR. No assembly or RD. Good for large SVs but misses small insertions.
+- **GRIDSS2/SvABA**: Use genome-wide assembly. Higher precision for complex events.
+
+**Long-Read Callers (ONT/PacBio):**
+- **Sniffles2**: Population-scale, multisample.
+- **cuteSV**: Fast, accurate for all SV types.
+- **pbsv**: Official PacBio caller.
+
+## 2. Short-Read Workflow (Manta Example)
+
+### Configure and Run Manta
+```bash
+# Germline
+configManta.py \
+    --bam sample.bam \
+    --referenceFasta reference.fa \
+    --runDir manta_run
+
+manta_run/runWorkflow.py -j 8
+
+# Somatic
+configManta.py \
+    --tumorBam tumor.bam \
+    --normalBam normal.bam \
+    --referenceFasta reference.fa \
+    --runDir manta_somatic
+
+manta_somatic/runWorkflow.py -j 8
+```
+
+### Run Delly
+```bash
+delly call -g reference.fa -o sv_calls.bcf sample.bam
+bcftools view sv_calls.bcf &gt; sv_calls.vcf
+```
+
+### Run LUMPY (via smoove)
+```bash
+smoove call \
+    --name sample \
+    --fasta reference.fa \
+    --outdir smoove_output \
+    -p 8 \
+    sample.bam
+```
+
+## 3. Merging and Filtering
+
+### Merge Callers
+Use SURVIVOR for position-based merging or Truvari for sequence-aware merging (preferred for benchmarking/complex SVs).
+
+```bash
+# SURVIVOR Example
+SURVIVOR merge vcf_list.txt 1000 2 1 1 0 50 merged_svs.vcf
+```
+
+### Filter
+```bash
+# Quality and Size
+bcftools view -i &#x27;QUAL &gt;= 20 &amp;&amp; ABS(SVLEN) &gt;= 50&#x27; svs.vcf &gt; svs.filtered.vcf
+
+# Type-specific
+bcftools view -i &#x27;SVTYPE=&quot;DEL&quot;&#x27; svs.vcf &gt; deletions.vcf
+```
+
+## 4. Annotation
+Use AnnotSV to annotate genes, DGV, gnomAD-SV, and ClinVar.
+
+```bash
+AnnotSV \
+    -SVinputFile svs.vcf \
+    -genomeBuild GRCh38 \
+    -outputFile annotated_svs
+```
+
+## 5. Version Compatibility
+Verify tool versions before running. Note that flags may change between major versions (e.g., Truvari 4.x uses `--pctseq` instead of `--pctsim`). Always check `--help` for the installed version.</pre>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>venue-templates</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">venue-manuscript-formatting</a> / venue-templates</p><h1>venue-templates</h1><p class="meta">combined</p><p>The three copies overlap on the core task (finding venue rules, selecting LaTeX scaffolds, and checking compliance), but they disagree on scope and workflow. K-Dense-AI/scientific-agent-skills is the most rigorous, emphasizing a verification-first workflow, a mandatory currency rule, and a compliance note, while explicitly warning that bundled files are scaffolds, not official templates. foryourhealth111-pixel/Vibe-Skills and aipoch/medical-research-skills are more catalog-like, listing many venues and helper scripts, but they lack the strict currency verification and the explicit distinction between scaffolds and official templates. Crowning one would hide the real alternative of a verification-first approach versus a template-catalog approach.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/venue-templates/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/venue-templates/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/venue-templates/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/venue-templates/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/venue-templates/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/venue-templates/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: venue-templates
+description: Prepares journal manuscripts, conference papers, research posters, and grant documents using venue-specific formatting guidance and bundled LaTeX scaffolds. Supports selecting an official template, checking current page or anonymity rules, adapting academic writing to a venue, or inspecting a submission PDF.
+license: MIT
+compatibility: Requires Python 3.11+ for helper scripts; LaTeX and Poppler command-line tools are optional for compilation and PDF inspection. Needs network access to verify current venue instructions.
+metadata:
+  version: &quot;1.6&quot;
+  last-reviewed: &quot;2026-10-01&quot;
+  skill-author: K-Dense Inc.
+---
+
+# Venue Templates
+
+Prepare publication and funding documents without treating stale formatting details as authoritative. This skill combines:
+
+- a verification-first workflow for current venue rules;
+- bundled LaTeX scaffolds for a small, explicit set of document types;
+- writing-style and reviewer-expectation guides; and
+- local helpers for discovering, copying, and inspecting templates.
+
+## Mandatory Currency Rule
+
+Venue requirements are time-sensitive. Before giving exact page limits, deadlines, style-file names, anonymity rules, or required sections:
+
+1. Identify the exact venue, year or funding cycle, track, and article or proposal type.
+2. Open the official author instructions, call, solicitation, notice of funding opportunity (NOFO), or policy guide.
+3. Record the source URL and the date checked.
+4. Distinguish initial submission, revision/rebuttal, and camera-ready rules.
+5. Treat bundled files as scaffolds unless this skill explicitly says they are a copy of an official template.
+
+Never infer a current style-file name by changing the year in an old filename. Never present a generic scaffold as an official venue template.
+
+## When to Use
+
+Use this skill for:
+
+- locating official journal or conference author instructions;
+- checking page limits, required sections, anonymity, supplemental-material rules, or citation style;
+- choosing and adapting a bundled LaTeX scaffold;
+- preparing NSF, NIH, DOE, DARPA, or foundation proposal documents;
+- designing a research poster after checking event-specific dimensions;
+- adapting prose to a venue&#x27;s audience and reviewer expectations; or
+- inspecting a PDF&#x27;s page count and embedded fonts.
+
+## Verification-First Workflow
+
+### 1. Resolve the exact target
+
+Ask for or derive:
+
+- venue or funding agency;
+- year/cycle and track;
+- document type, such as research article, short paper, main track, R01, or R21;
+- submission stage; and
+- authoring format, such as LaTeX or Word.
+
+Do not combine rules from similarly named venues or tracks.
+
+### 2. Consult the right reference
+
+| Need | Reference |
+|---|---|
+| Journal submission and official publisher resources | `references/journals_formatting.md` |
+| Conference rules and 2026 verified snapshots | `references/conferences_formatting.md` |
+| Poster sizes, layout, and accessibility | `references/posters_guidelines.md` |
+| NSF, NIH, DOE, DARPA, and foundation proposals | `references/grants_requirements.md` |
+| Cross-venue writing comparison | `references/venue_writing_styles.md` |
+| Nature and Science writing | `references/nature_science_style.md` |
+| Cell Press writing | `references/cell_press_style.md` |
+| Medical journal writing | `references/medical_journal_styles.md` |
+| ML and computer-vision conference writing | `references/ml_conference_style.md` |
+| ACL, EMNLP, CHI, and other CS writing | `references/cs_conference_style.md` |
+| Review criteria and rebuttals | `references/reviewer_expectations.md` |
+
+Reference files summarize rules but do not override the current official source.
+
+### 3. Capture a compliance note
+
+Before editing, write a short note in the working document or task log:
+
+```text
+Target: ICML 2026 main track, initial submission
+Official source: https://icml.cc/Conferences/2026/AuthorInstructions
+Checked: 2026-10-01
+Main-text limit: 8 pages
+References/appendices: additional pages allowed in the same PDF
+Anonymity: required
+Official template: ICML 2026 style package linked by the author instructions
+```
+
+This makes later validation reproducible.
+
+### 4. Start from the official template
+
+For annual conferences and publisher-managed workflows:
+
+1. Download the template from the official source.
+2. Keep its class/style files unchanged.
+3. Add content without overriding margins, font sizes, spacing, or headers.
+4. Use a bundled scaffold only for drafting or when the official source explicitly permits it.
+
+For grants, many components are entered or uploaded separately. Do not submit a combined bundled `.tex` file as if it were an agency-issued form.
+
+### 5. Validate manually and mechanically
+
+Verify at least:
+
+- main-text and total-file page rules;
+- font, margin, line-spacing, and paper-size rules;
+- anonymity and metadata;
+- required sections, statements, checklists, and disclosures;
+- figure/table placement and accessibility;
+- reference and supplemental-material treatment; and
+- source-package and PDF requirements.
+
+The helper counts PDF pages and reads Poppler font-embedding flags. It reports
+nonembedded fonts as failures, but cannot prove margin, font-size, excluded-section,
+or anonymity compliance. A zero exit status means no automated failure was found;
+manual and skipped inspections still require attention.
+
+## Bundled Assets
+
+The repository intentionally bundles only the following templates. Other venues listed in references require an official external template.
+
+### Journal and conference scaffolds
+
+| File | Status |
+|---|---|
+| `assets/journals/nature_article.tex` | Generic Nature-oriented writing scaffold; not an official Nature template |
+| `assets/journals/plos_one.tex` | PLOS ONE-oriented scaffold; compare with the current official PLOS LaTeX package |
+| `assets/journals/neurips_article.tex` | NeurIPS 2026 wrapper; requires the official `neurips_2026.sty` |
+| `assets/journals/elsarticle-template-num.tex` | Elsevier `elsarticle` scaffold; compare with the current official Elsevier template |
+
+### Poster scaffolds
+
+| File | Status |
+|---|---|
+| `assets/posters/beamerposter_academic.tex` | Generic beamerposter scaffold; check event-specific dimensions |
+| `assets/posters/tikzposter_academic.tex` | Generic tikzposter scaffold; check event-specific dimensions |
+| `assets/posters/baposter_academic.tex` | Generic baposter scaffold; check event-specific dimensions |
+
+### Grant scaffolds
+
+| File | Status |
+|---|---|
+| `assets/grants/nsf_proposal_template.tex` | Generic NSF proposal scaffold; not an official NSF form |
+| `assets/grants/nihs_proposal_template.tex` | Generic NIH proposal scaffold; not an official NIH form |
+
+## Helper Scripts
+
+- `scripts/query_template.py`: Query templates and requirements by venue and document type.
+- `scripts/customize_template.py`: Customize templates with metadata (title, authors, affiliations).
+- `scripts/validate_format.py`: Validate compiled PDFs against venue rules (page count, fonts, margins).
+
+## Conflicts
+
+- **K-Dense-AI/scientific-agent-skills** mandates a verification-first workflow and a compliance note before editing, while **foryourhealth111-pixel/Vibe-Skills** and **aipoch/medical-research-skills** do not explicitly require this step.
+- **K-Dense-AI/scientific-agent-skills** explicitly states that bundled files are scaffolds and not official templates, while **foryourhealth111-pixel/Vibe-Skills** and **aipoch/medical-research-skills** present templates as ready-to-use without this caveat.
+- **aipoch/medical-research-skills** specifies Python &gt;=3.10 and TeX Live &gt;=2023, while **K-Dense-AI/scientific-agent-skills** specifies Python 3.11+ and does not specify TeX Live version.
+- **foryourhealth111-pixel/Vibe-Skills** lists a broader range of venues (50+ journals) compared to **K-Dense-AI/scientific-agent-skills**, which focuses on a smaller, explicit set of bundled templates.</pre>
+</body>
+</html>

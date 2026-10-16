@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>survey-design</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">survey-instrument-design</a> / survey-design</p><h1>survey-design</h1><p class="meta">combined</p><p>The two skills overlap on core survey design (question wording, scales, flow, bias), but each contains material steps the other lacks. The first is a product/UX-oriented guide with concrete sampling math, NPS/SUS usage, and analysis/reporting steps. The second is an academic/empirical-research guide with item-specific wording, acquiescence bias, index construction, treatment placement, and demand-effect mitigation. Crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>design-research/skills/survey-design/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/54-scdenney-open-science-skills/skills/survey-design/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>design-research/skills/survey-design/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/54-scdenney-open-science-skills/skills/survey-design/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Survey Design
+
+## 1. Define Purpose and Scope
+- State the decision the survey must inform; every question should map to that decision.
+- Use surveys to quantify prevalence, frequency, or attitude at scale; use qualitative methods to discover unknown problems.
+- Define your analysis plan before writing questions.
+
+## 2. Question Construction
+- One construct per question; avoid double-barreled items.
+- Use neutral, behaviorally grounded language; avoid leading or loaded terms.
+- Prefer item-specific response options over generic agree/disagree when measuring substantive attitudes, to reduce acquiescence bias.
+- Prefer behavioral measures over attitudinal measures when the research question concerns real-world consequences.
+- Use open-ended questions in pilots to generate response categories; reserve them for exploratory or manipulation-check purposes in the main survey.
+- For cross-group comparisons, prefer qualitative response options over exact numeric quantities when context changes the meaning of numbers.
+
+## 3. Scale Design
+- Choose 5- or 7-point scales for attitudinal items; validate that each point is meaningfully labeled.
+- Label all scale points when feasible; always label endpoints.
+- Match scale polarity to the construct: bipolar for constructs with a natural midpoint, unipolar for constructs with a natural zero point.
+- Include a midpoint unless the question is genuinely binary.
+- Keep scale direction consistent across the survey.
+- Use balanced scales with equal positive and negative anchors.
+- For NPS: use the standard 0–10 question; report Promoters, Passives, Detractors, and NPS = %Promoters − %Detractors.
+- For SUS: use the validated 10-question scale verbatim; score 0–100.
+- When combining items into an index, pre-specify construction rules, assess internal consistency (Cronbach&#x27;s alpha, McDonald&#x27;s omega, or composite reliability), and report the method and threshold rationale.
+
+## 4. Survey Flow and Organization
+- Order: screen/demographics (if needed) → behavioral questions → attitudinal/satisfaction questions → open-ended questions.
+- Place general questions before specific ones when measuring broad attitudes; reverse when specific experiences are the construct.
+- Begin with non-sensitive, low-stakes warm-up items to build engagement.
+- If using experimental treatments: place treatments after warm-up items but before primary outcome measures; insert buffer or distractor items between treatment and outcome to reduce demand effects.
+- Randomize the order of thematic blocks when appropriate.
+- Keep surveys under 5 minutes; response quality drops significantly beyond 10–15 questions.
+
+## 5. Sampling and Fielding
+- For a ±5% margin of error at 95% confidence in a large population, target ~385 responses.
+- Ensure the sample matches the demographic profile of the target population.
+- Acknowledge response bias: respondents differ from non-respondents.
+- Pilot test with 3–5 people using cognitive pretesting to reveal confusing questions.
+
+## 6. Analyzing and Reporting Results
+- Report descriptive statistics: mean, median, and full distribution for Likert data.
+- Code open-text responses into themes; report top themes with example quotes.
+- Cross-tabulate by segment when segments differ meaningfully.
+- Report response rate and sample size alongside every finding.
+- Pair survey findings with qualitative research: surveys tell you what and how many; interviews tell you why.
+
+## Conflicts
+- **Owl-Listener/designer-skills** recommends 5-point or 7-point Likert scales with a midpoint as the default for attitudinal items. **brycewang-stanford/Auto-Empirical-Research-Skills** recommends item-specific response options over agree/disagree formats to reduce acquiescence bias and treats scale point count as a trade-off to be validated rather than a fixed convention. Choose the approach that matches your research context: Likert scales for product/UX attitude measurement; item-specific scales for academic or cross-group comparative research.</pre>
+</body>
+</html>

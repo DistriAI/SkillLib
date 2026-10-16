@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gatk-variant-calling</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">gatk-variant-calling</a> / gatk-variant-calling</p><h1>gatk-variant-calling</h1><p class="meta">combined</p><p>The two skills cover the same core GATK HaplotypeCaller workflow but diverge significantly in scope and depth. The first copy (FreedomIntelligence) is a procedural &#x27;how-to&#x27; guide that includes specific commands for VQSR and Hard Filtering, which are often considered part of the &#x27;calling&#x27; pipeline in older best practices. The second copy (GPTomics) is a conceptual and decision-oriented guide that explains the *mechanism* of HaplotypeCaller (local reassembly, PairHMM), provides a decision tree for choosing between tools (HC vs Mutect2 vs DRAGEN), and explicitly excludes filtering depth, pointing to other skills. The first copy lacks the mechanistic explanation and the decision tree for edge cases (ploidy, somatic), while the second copy lacks the specific VQSR/Hard Filter command examples that the first provides. Combining them yields a complete skill that covers both the &#x27;why/when&#x27; (decision tree, mechanism) and the &#x27;how&#x27; (commands for calling and filtering).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/gatk-variant-calling/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/gatk-variant-calling/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/gatk-variant-calling/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/gatk-variant-calling/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: bio-gatk-variant-calling
+description: Comprehensive GATK HaplotypeCaller workflow. Covers the local-reassembly mechanism, decision tree for tool selection (HC vs Mutect2 vs DRAGEN), single-sample and cohort GVCF workflows, and post-calling filtering (VQSR and Hard Filtering). Use when calling germline variants or deciding on the appropriate GATK pipeline.
+tool_type: cli
+primary_tool: gatk
+---
+
+# GATK Variant Calling
+
+GATK HaplotypeCaller is the gold standard for germline variant calling. This skill covers the GATK Best Practices workflow, including mechanism, decision-making, and filtering.
+
+## Prerequisites
+
+BAM files should be preprocessed:
+1. Mark duplicates
+2. Base quality score recalibration (BQSR) - optional but recommended
+
+## Why HaplotypeCaller?
+
+HaplotypeCaller (HC) outperforms pileup callers on indels and complex loci because it performs **local de-novo reassembly** of candidate haplotypes in active regions, rather than genotyping each column independently. It uses a PairHMM to compute read-vs-haplotype likelihoods, integrating over all alignments. This makes it robust to mis-mapped reads near indels.
+
+## Pipeline Decision Tree
+
+Use this tree to select the correct tool and mode:
+
+```
+What is the analysis context?
+├── Single sample, want DRAGEN-like accuracy, open-source -&gt; HaplotypeCaller --dragen-mode
+├── Cohort &lt; ~2000, human -&gt; per-sample -ERC GVCF -&gt; joint genotype -&gt; VQSR/VETS
+├── Cohort &gt; ~2000, human -&gt; ReblockGVCF + GnarlyGenotyper or DeepVariant + GLnexus
+├── Non-human / non-model organism -&gt; hard filtering (no VQSR training resources)
+├── Targeted panel / small exome -&gt; hard filtering (too few variants for VQSR)
+├── Non-diploid / pooled / sex chromosomes / mitochondria -&gt; set --sample-ploidy or use Mutect2
+└── Somatic / mosaic variants -&gt; Mutect2 (not HaplotypeCaller)
+```
+
+## Single-Sample Calling
+
+### Basic HaplotypeCaller
+
+```bash
+gatk HaplotypeCaller \
+    -R reference.fa \
+    -I sample.bam \
+    -O sample.vcf.gz
+```
+
+### With Standard Annotations
+
+```bash
+gatk HaplotypeCaller \
+    -R reference.fa \
+    -I sample.bam \
+    -O sample.vcf.gz \
+    -A Coverage \
+    -A QualByDepth \
+    -A FisherStrand \
+    -A StrandOddsRatio \
+    -A MappingQualityRankSumTest \
+    -A ReadPosRankSumTest
+```
+
+### Target Intervals (Exome/Panel)
+
+```bash
+gatk HaplotypeCaller \
+    -R reference.fa \
+    -I sample.bam \
+    -L targets.interval_list \
+    -O sample.vcf.gz
+```
+
+## GVCF Workflow (Recommended for Cohorts)
+
+The GVCF workflow enables joint genotyping across samples for better variant calls.
+
+### Step 1: Generate GVCFs per Sample
+
+```bash
+gatk HaplotypeCaller \
+    -R reference.fa \
+    -I sample.bam \
+    -O sample.g.vcf.gz \
+    -ERC GVCF
+```
+
+### Step 2: Combine GVCFs
+
+**Option A: GenomicsDBImport (Recommended for large cohorts)**
+
+```bash
+# Create sample map file: sample_map.txt
+gatk GenomicsDBImport \
+    --genomicsdb-workspace-path genomicsdb \
+    --sample-name-map sample_map.txt \
+    -L intervals.interval_list
+```
+
+**Option B: CombineGVCFs (Smaller cohorts)**
+
+```bash
+gatk CombineGVCFs \
+    -R reference.fa \
+    -V sample1.g.vcf.gz \
+    -V sample2.g.vcf.gz \
+    -O cohort.g.vcf.gz
+```
+
+### Step 3: Joint Genotyping
+
+```bash
+# From GenomicsDB
+gatk GenotypeGVCFs \
+    -R reference.fa \
+    -V gendb://genomicsdb \
+    -O cohort.vcf.gz
+
+# From combined GVCF
+gatk GenotypeGVCFs \
+    -R reference.fa \
+    -V cohort.g.vcf.gz \
+    -O cohort.vcf.gz
+```
+
+## Post-Calling Filtering
+
+### Variant Quality Score Recalibration (VQSR)
+
+Machine learning-based filtering using known variant sites. Requires many variants (WGS preferred).
+
+**SNP Recalibration:**
+
+```bash
+gatk VariantRecalibrator \
+    -R reference.fa \
+    -V cohort.vcf.gz \
+    --resource:hapmap,known=false,training=true,truth=true,prior=15.0 hapmap.vcf.gz \
+    --resource:omni,known=false,training=true,truth=false,prior=12.0 omni.vcf.gz \
+    --resource:1000G,known=false,training=true,truth=false,prior=10.0 1000G.vcf.gz \
+    --resource:dbsnp,known=true,training=false,truth=false,prior=2.0 dbsnp.vcf.gz \
+    -an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR \
+    -mode SNP \
+    -O snp.recal \
+    --tranches-file snp.tranches
+
+gatk ApplyVQSR \
+    -R reference.fa \
+    -V cohort.vcf.gz \
+    -O cohort.snp_recal.vcf.gz \
+    --recal-file snp.recal \
+    --tranches-file snp.tranches \
+    --truth-sensitivity-filter-level 99.5 \
+    -mode SNP
+```
+
+**Indel Recalibration:**
+
+```bash
+gatk VariantRecalibrator \
+    -R reference.fa \
+    -V cohort.snp_recal.vcf.gz \
+    --resource:mills,known=false,training=true,truth=true,prior=12.0 Mills.vcf.gz \
+    --resource:dbsnp,known=true,training=false,truth=false,prior=2.0 dbsnp.vcf.gz \
+    -an QD -an MQRankSum -an ReadPosRankSum -an FS -an SOR \
+    -mode INDEL \
+    --max-gaussians 4 \
+    -O indel.recal \
+    --tranches-file indel.tranches
+
+gatk ApplyVQSR \
+    -R reference.fa \
+    -V cohort.snp_recal.vcf.gz \
+    -O cohort.vqsr.vcf.gz \
+    --recal-file indel.recal \
+    --tranches-file indel.tranches \
+    --truth-sensitivity-filter-level 99.0 \
+    -mode INDEL
+```
+
+### Hard Filtering (When VQSR Not Suitable)
+
+For small datasets, exomes, or single samples where VQSR fails.
+
+**Extract SNPs and Indels:**
+
+```bash
+gatk SelectVariants -R reference.fa -V cohort.vcf.gz --select-type-to-include SNP -O snps.vcf.gz
+gatk SelectVariants -R reference.fa -V cohort.vcf.gz --select-type-to-include INDEL -O indels.vcf.gz
+```
+
+**Apply Hard Filters:**
+
+```bash
+# Filter SNPs
+gatk VariantFiltration \
+    -R reference.fa \
+    -V snps.vcf.gz \
+    -O snps.filtered.vcf.gz \
+    --filter-expression &quot;QD &lt; 2.0&quot; --filter-name &quot;QD2&quot; \
+    --filter-expression &quot;FS &gt; 60.0&quot; --filter-name &quot;FS60&quot; \
+    --filter-expression &quot;MQ &lt; 40.0&quot; --filter-name &quot;MQ40&quot; \
+    --filter-expression &quot;MQRankSum &lt; -12.5&quot; --filter-name &quot;MQRankSum-12.5&quot; \
+    --filter-expression &quot;ReadPosRankSum &lt; -8.0&quot; --filter-name &quot;ReadPosRankSum-8&quot; \
+    --filter-expression &quot;SOR &gt; 3.0&quot; --filter-name &quot;SOR3&quot;
+
+# Filter Indels
+gatk VariantFiltration \
+    -R reference.fa \
+    -V indels.vcf.gz \
+    -O indels.filtered.vcf.gz \
+    --filter-expression &quot;QD &lt; 2.0&quot; --filter-name &quot;QD2&quot; \
+    --filter-expression &quot;FS &gt; 200.0&quot; --filter-name &quot;FS200&quot; \
+    --filter-expression &quot;ReadPosRankSum &lt; -20.0&quot; --filter-name &quot;ReadPosRankSum-20&quot; \
+    --filter-expression &quot;SOR &gt; 10.0&quot; --filter-name &quot;SOR10&quot;
+```
+
+## Edge Cases
+
+- **Non-diploid samples:** Use `--sample-ploidy` to adjust for polyploidy or hemizygosity.
+- **Somatic/Mosaic:** Use `gatk Mutect2` instead of HaplotypeCaller.
+- **Mitochondria:** Use `gatk Mutect2` with `--mitochondria-mode` or specific ploidy settings.
+- **Sex Chromosomes:** Handle X/Y/PAR regions carefully, often requiring separate ploidy settings or specialized tools.</pre>
+</body>
+</html>

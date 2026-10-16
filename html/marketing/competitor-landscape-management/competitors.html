@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>competitors</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">competitor-landscape-management</a> / competitors</p><h1>competitors</h1><p class="meta">combined</p><p>The two skills share the name &#x27;competitors&#x27; but solve different problems. The first is a content-marketing skill for writing public SEO pages (alternatives, vs pages) with strict evidence and honesty rules. The second is a founder-facing operational skill for maintaining a local competitive landscape (files, discovery, watch passes, archiving). They overlap only in the general concept of tracking competitors; their steps, file structures, and outputs are distinct, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/competitors/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/startup-superpowers/skills/competitors/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/competitors/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/startup-superpowers/skills/competitors/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Competitors
+
+This skill covers two related but distinct workflows. Choose the path that matches the user&#x27;s intent.
+
+## Path A: Public Competitor &amp; Alternative Pages (SEO / Buyer-Facing)
+
+Use when the user wants to create or audit competitor comparison or alternative pages for search and buyer-facing use.
+
+1. **Load context.** If `.agents/product-marketing.md` (or `.claude/product-marketing.md`, or legacy `product-marketing-context.md`) exists, read it first. Use that context and only ask for information not already covered.
+2. **Never guess the competitor.** If the request doesn&#x27;t name one and the context file doesn&#x27;t identify it, ask and stop.
+3. **Understand the landscape.** Capture your product&#x27;s value proposition, differentiators, ICP, pricing, strengths, and honest weaknesses. Identify direct and indirect competitors, their positioning, and search volume for competitor terms.
+4. **Choose a page format.**
+   - **Singular alternative** (`/alternatives/[competitor]`): validate pain, position you as the alternative, detailed comparison, who should/shouldn&#x27;t switch, migration path, social proof, CTA.
+   - **Plural alternatives** (`/alternatives/[competitor]-alternatives`): common pain points, criteria framework, list of 4-7 real alternatives (you first), comparison table, detailed breakdown, recommendation by use case, CTA.
+   - **You vs [Competitor]** (`/vs/[competitor]`): direct head-to-head comparison.
+   - **Competitor vs Competitor**: neutral comparison of two competitors.
+5. **Apply evidence discipline.**
+   - &quot;Not observed&quot; is not &quot;doesn&#x27;t have.&quot; Use ✗ or &quot;not available&quot; only when docs or a hands-on trial confirm absence.
+   - Date competitor facts with an &quot;as of&quot; date on pricing tables and in the competitor data file.
+   - A single visit is a snapshot; don&#x27;t claim long-term stability without dated history.
+   - State what changed, not why, unless the competitor has said it publicly.
+   - Separate fact from interpretation from recommendation.
+6. **Audit existing pages** when asked: check for outdated claims, missing dates, and unsupported assertions. Update or flag for re-verification.
+
+## Path B: Founder Competitive Landscape Management (Local Files)
+
+Use when the founder wants to discover, update, monitor, or archive competitors for their own project.
+
+1. **Load project context.** Read `startup/core.md` for project name, seed description, audience, problem, solution, ICP, and geography. If the file does not exist, inform the user the project may not be initialized and suggest `/whats-next`.
+2. **Scaffold if needed.** Ensure `startup/competitors/` exists (`mkdir -p startup/competitors`).
+3. **Check for thin files.** A file is thin if its `## Description` is a placeholder or single short sentence, or it is missing `## Core Features`, or it is missing `## Notes` and the description is thin. If thin files exist, ask the user whether to fill them out before continuing. If yes, dispatch a `web-researcher` call covering all thin files, save raw output to `startup/research/{YYYY-MM-DD}-{slug}-research.md`, and write filled content back to each competitor file.
+4. **Infer intent and act.**
+   - **Specific competitor:** load the file, discuss, help update.
+   - **New competitor:** create a file with YAML frontmatter (`type`, `url`, optional `status`, `maturity`, `last_checked`), H1 name, `## Description`, `## Core Features`, `## Notes`.
+   - **Update existing:** read the file, propose changes, get confirmation, write back.
+   - **Landscape summary:** summarize existing competitors grouped by direct/indirect with key differentiators.
+   - **Deeper research:** dispatch `web-researcher` with a focused prompt, update the file, save full output to `startup/research/{YYYY-MM-DD}-{competitor-slug}-research.md`.
+   - **User feedback:** load `references/user-feedback.md`, mine review sites and communities, write a `## What Users Say` section into each competitor file.
+   - **Watch pass:** load `references/watch.md`, re-check each existing competitor for changes, scan for new entrants, refresh files in place with a `## Change Log`, append to `startup/competitor-watch.md`, re-sync the landscape map. Requires at least one non-archived competitor.
+   - **Archive:** set `status: archived` and add `archived_reason` to frontmatter.
+5. **File conventions.**
+   - YAML frontmatter: `type` (direct/indirect), `url`, optional `status` (active/archived), `maturity` (incumbent/scaleup/startup/unknown), `last_checked` (ISO date).
+   - H1: competitor name.
+   - `## Description`: what the company does.
+   - `## Core Features`: key capabilities.
+   - `## Notes`: differentiation, observations, change log.
+
+## Conflicts
+
+- **coreyhaines31/marketingskills** produces public-facing SEO pages with evidence discipline and &#x27;as of&#x27; dating for claims about competitors.
+- **davepoon/buildwithclaude** maintains private local competitor files with frontmatter, watch passes, and archiving; it does not produce public comparison pages.
+
+These are complementary workflows. Use Path A for public content and Path B for internal landscape management.</pre>
+</body>
+</html>

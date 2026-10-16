@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>supply-chain-risk-auditor</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">supply-chain-dependency-audit</a> / supply-chain-risk-auditor</p><h1>supply-chain-risk-auditor</h1><p class="meta">combined</p><p>The two copies describe different procedures for the same task. The trailofbits copy is a deterministic, script-driven audit that forbids manual estimation, enforces a strict &#x27;unassessable is not risk&#x27; epistemology, and produces a rendered report from a collector. The sickn33 copy is a manual, judgment-driven audit that explicitly requires using `gh` to count stars and issues, applies subjective risk criteria (e.g., maintainer anonymity, low popularity), and produces a narrative report with suggested alternatives. They disagree on the core methodology (scripts vs. manual `gh` queries) and the definition of risk (measured criteria vs. qualitative red flags). Crowning one would hide a valid alternative approach to supply chain auditing.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/supply-chain-risk-auditor/skills/supply-chain-risk-auditor/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/supply-chain-risk-auditor/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/supply-chain-risk-auditor/skills/supply-chain-risk-auditor/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/supply-chain-risk-auditor/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/supply-chain-risk-auditor/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/supply-chain-risk-auditor/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: supply-chain-risk-auditor
+description: &quot;Audits a project&#x27;s dependencies for supply-chain risk using either deterministic script-based measurement or manual judgment-based assessment. Use when asked to audit dependencies, assess supply-chain risk, or review a dependency tree.&quot;
+allowed-tools: Read Write Bash Glob Grep
+---
+
+# Supply Chain Risk Auditor
+
+This skill supports two distinct approaches to supply chain risk auditing. Choose the approach based on the user&#x27;s preference or the available tooling.
+
+## Approach A: Deterministic Script-Based Audit (Preferred for Reproducibility)
+
+Use this approach when exact, reproducible measurements are required and the `uv` runtime is available.
+
+1. **Confirm Manifests:** Verify the target directory has `package.json`, `pyproject.toml`, `requirements*.txt`, or `go.mod`. If none exist, stop.
+2. **Check Auth:** Run `gh auth status`. Unauthenticated GitHub limits may cause criteria to be &#x27;unassessable&#x27;.
+3. **Collect Data:** Run the collector script:
+   ```sh
+   uv run {baseDir}/scripts/collect.py &lt;project-dir&gt; --json &lt;out-dir&gt;/findings.json
+   ```
+4. **Render Report:** Run the renderer script:
+   ```sh
+   uv run {baseDir}/scripts/render.py &lt;out-dir&gt;/findings.json --out &lt;out-dir&gt;/report.md
+   ```
+5. **Interpret:** Read `report.md`. Remember that &#x27;unassessable&#x27; is not risk. Add a short narrative for the reader, upgrade paths, and replacement candidates (labeled as judgment).
+
+## Approach B: Manual Judgment-Based Audit (Preferred for Qualitative Risk)
+
+Use this approach when qualitative risk factors (e.g., maintainer anonymity, low popularity) are the primary concern.
+
+1. **Setup:** Create a `.supply-chain-risk-auditor` directory and initialize `results.md` from a template.
+2. **Identify Repos:** Find git repositories for all direct dependencies.
+3. **Evaluate Risk:** For each dependency, use `gh` to query stars, issues, and maintainer info. Assess against these criteria:
+   - **Single Maintainer:** Is it maintained by an individual or small team? Is the maintainer anonymous?
+   - **Unmaintained:** Is the project stale, deprecated, or ignoring security issues?
+   - **Low Popularity:** Are stars/downloads low compared to other dependencies?
+   - **High-Risk Features:** Does it use FFI, deserialization, or third-party code execution?
+   - **Past CVEs:** Are there high/critical severity CVEs?
+   - **No Security Contact:** Is there no `SECURITY.md` or similar?
+4. **Report:** Add high-risk dependencies to the report with justifications. Suggest alternatives for each.
+
+## Conflicts
+- **Data Source:** Approach A forbids manual `gh` queries for metrics; Approach B requires them.
+- **Risk Definition:** Approach A treats missing data as &#x27;unassessable&#x27; (not risk); Approach B treats low popularity or missing security contacts as risk factors.
+- **Output:** Approach A produces a factual, script-rendered report; Approach B produces a narrative report with subjective justifications.</pre>
+</body>
+</html>

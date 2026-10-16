@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>deep-research</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">deep-research</a> / deep-research</p><h1>deep-research</h1><p class="meta">combined</p><p>The four copies define &#x27;deep-research&#x27; as four distinct, non-interchangeable procedures. Imbad0202 is a 13-agent academic pipeline for systematic reviews and meta-analysis. davidondrej is a specific API wrapper for DeepAPI/Perplexity. jezweb is a pre-build product discovery workflow focused on local code exploration and competitor analysis. daymade is a multi-agent coordination system with strict asset contracts and provider lane management. No single copy is the &#x27;original&#x27; that the others reproduce; they are different tools sharing a name. Combining them is necessary to capture the full range of &#x27;deep research&#x27; capabilities (academic, API-based, product discovery, and coordinated multi-agent).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Imbad0202/academic-research-skills">Imbad0202/academic-research-skills</a></td><td><code>deep-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/research-and-web/deep-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/dev-tools/skills/deep-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>deep-research/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Imbad0202/academic-research-skills">Imbad0202/academic-research-skills</a></td><td><code>deep-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/research-and-web/deep-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/dev-tools/skills/deep-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>deep-research/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/HKUSTDial/Supervisor-Skills">HKUSTDial/Supervisor-Skills</a></td><td><code>skills/deep-research/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/deep-research/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/deep-research-skill/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/43-wentorai-research-plugins/skills/research/deep-research/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/deep-research/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/deep-research/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/deep-research/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/24-Imbad0202-academic-research-skills/deep-research/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Deep Research
+
+This skill covers four distinct deep research workflows. Select the appropriate mode based on the user&#x27;s intent.
+
+## Mode 1: Academic Research (Imbad0202)
+
+Use for systematic reviews, meta-analyses, and rigorous academic research.
+
+1. **Routing**: Check for `[direct-mode]` token. Classify intent (explicit, cross-phase, ambiguous).
+2. **Pipeline**: Dispatch to the 13-agent team for research question formulation, literature search, source verification, synthesis, and APA 7.0 report compilation.
+3. **Modes**: Full research, quick brief, paper review, lit-review, fact-check, three-way literature scan, Socratic dialogue, systematic review.
+
+## Mode 2: DeepAPI Research (davidondrej)
+
+Use for quick, cited research reports via the DeepAPI.
+
+1. **API Key**: Read `API_KEY` from environment. Stop if missing.
+2. **Prompt**: Build a self-contained prompt with main question, context, and 3-6 sub-questions.
+3. **Call**: `POST /v1/research/deep` with `Idempotency-Key` and `maxCostUsd` (default 0.70).
+4. **Save**: Extract answer and sources. Save as Markdown with citations.
+5. **Retry**: Handle 402, 429, and 502 errors per protocol.
+
+## Mode 3: Product Discovery (jezweb)
+
+Use for pre-build research on a new product or feature.
+
+1. **Intent**: Ask what, why, constraints, and existing work.
+2. **Local Exploration**: Scan user&#x27;s machine for related projects, CLAUDE.md files, and reusable code.
+3. **Web Research**: Search for product category, competitors, open-source alternatives, and architecture options.
+4. **Ecosystem**: Research plugins, GitHub issues, forums, and app store reviews.
+5. **Competitor Deep-Dive**: Analyze features, pricing, complaints, tech stack, and documentation.
+6. **Brief**: Produce a research brief with recommendations.
+
+## Mode 4: Coordinated Multi-Agent Research (daymade)
+
+Use for high-fidelity, source-traced research reports with strict governance.
+
+1. **Setup**: Read `research-asset-contract.md`. Create/resume a durable project study.
+2. **Plan**: Draft decision questions and provider × mode lanes in `study.json`.
+3. **Dispatch**: Send subagents to investigate. Keep raw search noise in task workspaces.
+4. **Evidence**: Collect evidence packets with locators and excerpts. Open original sources for load-bearing claims.
+5. **Synthesis**: Draft from evidence packets. Run counter-review.
+6. **Verify**: Run `provider_runs.py validate` and `research_assets.py check`. Register the study.</pre>
+</body>
+</html>

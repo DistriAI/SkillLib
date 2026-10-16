@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>senior-data-engineer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">data-pipeline-architecture</a> / senior-data-engineer</p><h1>senior-data-engineer</h1><p class="meta">combined</p><p>The two copies overlap on core data engineering topics (ETL/ELT, streaming, data quality, orchestration) but each contains material steps and constraints the other lacks. The benchflow copy is a more complete, self-contained procedure with specific workflow steps, expected outputs, and inline script invocations. The LeoYeAI copy is a structured catalog that adds a detailed Architecture Decision Framework (Batch vs Streaming, Lambda vs Kappa, Warehouse vs Lakehouse) and trigger phrases, but defers its workflows to external reference files. Crowning one would hide the other&#x27;s unique decision-making framework or its concrete implementation steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/flink-query/environment/skills/senior-data-engineer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/senior-data-engineer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/flink-query/environment/skills/senior-data-engineer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/senior-data-engineer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: senior-data-engineer
+description: World-class data engineering skill for building scalable data pipelines, ETL/ELT systems, real-time streaming, and data infrastructure. Expertise in Python, SQL, Spark, Airflow, dbt, Kafka, Flink, and modern data stack. Includes data modeling, pipeline orchestration, data quality, and DataOps.
+---
+
+# Senior Data Engineer
+
+## Core Capabilities
+- **Batch Pipeline Orchestration**: Design ETL/ELT pipelines with Airflow, dependency resolution, and monitoring.
+- **Real-Time Streaming**: Build event-driven pipelines with Kafka, Flink, and Spark Streaming with exactly-once semantics.
+- **Data Quality Management**: Validate completeness, accuracy, consistency, and timeliness.
+- **Performance Optimization**: Optimize query performance, Spark tuning, and cost analysis.
+
+## Architecture Decision Framework
+
+### Batch vs Streaming
+| Criteria | Batch | Streaming |
+|----------|-------|-----------|
+| **Latency** | Hours to days | Seconds to minutes |
+| **Volume** | Large historical | Continuous streams |
+| **Complexity** | Complex transformations | Simple aggregations |
+
+**Decision Tree:**
+```
+Is real-time insight required?
+├── Yes → Use streaming
+│   └── Is exactly-once semantics needed?
+│       ├── Yes → Kafka + Flink/Spark Structured Streaming
+│       └── No → Kafka + consumer groups
+└── No → Use batch
+    └── Is data volume &gt; 1TB daily?
+        ├── Yes → Spark/Databricks
+        └── No → dbt + warehouse compute
+```
+
+### Lambda vs Kappa
+- **Lambda**: Two codebases (batch + stream). Use for ML training + real-time serving.
+- **Kappa**: Single codebase. Use for event-sourced architectures or fresh starts.
+
+## Key Workflows
+
+### Workflow 1: Build ETL Pipeline
+1. Design pipeline architecture (Lambda, Kappa, or Medallion).
+2. Configure YAML pipeline definition with sources, transformations, and targets.
+3. Generate Airflow DAG using `pipeline_orchestrator.py`.
+4. Define data quality validation rules.
+5. Deploy and configure monitoring/alerting.
+
+**Expected Output:** Production-ready ETL pipeline with 99%+ success rate and automated quality checks.
+
+### Workflow 2: Build Real-Time Streaming Pipeline
+1. Select streaming architecture (Kappa vs Lambda).
+2. Configure streaming pipeline YAML (sources, processing, sinks, quality).
+3. Generate Kafka configurations with `kafka_config_generator.py`.
+4. Generate Flink/Spark job scaffolding with `stream_processor.py`.
+5. Deploy and monitor with `streaming_quality_validator.py`.
+
+**Expected Output:** Streaming pipeline processing 10K+ events/sec with P99 latency &lt; 1s and exactly-once delivery.
+
+## Quick Start Commands
+
+```bash
+# Generate Airflow DAG
+python scripts/pipeline_orchestrator.py --config pipeline_config.yaml --output dags/
+
+# Validate data quality
+python scripts/data_quality_validator.py --input data/sales.csv --output report.html
+
+# Optimize ETL performance
+python scripts/etl_performance_optimizer.py analyze --query queries/daily_aggregation.sql --engine spark --recommend
+```
+
+## Tech Stack
+- **Languages**: Python, SQL, Scala
+- **Orchestration**: Airflow, Prefect, Dagster
+- **Transformation**: dbt, Spark, Flink
+- **Streaming**: Kafka, Kinesis, Pub/Sub
+- **Storage**: S3, GCS, Delta Lake, Iceberg
+- **Warehouses**: Snowflake, BigQuery, Redshift, Databricks
+- **Quality**: Great Expectations, dbt tests, Monte Carlo</pre>
+</body>
+</html>

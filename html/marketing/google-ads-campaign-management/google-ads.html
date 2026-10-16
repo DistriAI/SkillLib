@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>google-ads</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">google-ads-campaign-management</a> / google-ads</p><h1>google-ads</h1><p class="meta">combined</p><p>The two copies describe different procedures for the same skill name. The first is a self-contained strategy guide covering PMF testing, campaign structure, Performance Max asset requirements, keyword strategy, Quality Score, and bidding thresholds. The second is a thin wrapper that mandates reading and following a separate WORKFLOW.md file for operational management (bulk operations, experiments, asset management, change review). Neither copy contains the other&#x27;s material steps, and the second&#x27;s instruction to defer to an external file conflicts with the first&#x27;s direct procedural guidance, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/paid-ads/platforms/google-ads/SKILL.md</code></td></tr><tr><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/google-ads/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/paid-ads/platforms/google-ads/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/google-ads/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Google Ads
+
+## Strategy and Setup (from kostja94/marketing-skills)
+
+### Two Modes
+- **PMF testing**: Pre-PMF; validate idea before building. Budget $47–500; start small. Simple landing page with headline, benefits, problem solved, CTA. Metrics: CTR, sign-up rate, bounce rate. Allow 4–6 weeks for PMax learning phase.
+- **Conversion-driven**: PMF validated; commercialization. Scale; ROAS target. Full funnel; ad-to-page alignment. Metrics: ROAS, CAC, conversion rate.
+
+### Campaign Structure
+- Account → Brand (Search), Non-Brand (Search), Competitor (Search, optional), Retargeting (Display), Performance Max.
+- Naming: `GOOG_[Objective]_[Audience]_[Offer]_[Date]`.
+
+### Performance Max Optimization
+- Run at least 6 weeks for algorithm ramp-up.
+- Asset groups organized by audience intent.
+- Per asset group: ≥5 images (include 1200×1200), ≥5 text assets (4 headlines, 5 descriptions), video when possible.
+- Add remarketing lists and Customer Match signals.
+- Weekly health check: flag brand terms &gt;30% of conversions, unexpected geo conversions, any placement &gt;15% of total spend, asset group performance below &quot;Good.&quot;
+
+### Keyword Strategy
+- Brand: protect brand terms; exclude from non-brand campaigns.
+- Negative keywords: build weekly; add support terms (login, forum, pricing, help).
+- Match types: Broad → Phrase → Exact.
+
+### Quality Score
+- Target ≥6. Improving from 5 to 7 can reduce CPC by 30–50%.
+- Levers: expected CTR, ad relevance, landing page alignment.
+
+### Bidding Strategy
+- &lt;30 conversions/month: Manual CPC.
+- 30–50: Target CPA.
+- 50–100: Target CPA.
+- 100+: Target ROAS.
+
+### Tracking
+- Enhanced Conversions, offline conversion imports, UTM parameters for GA4 cross-check.
+
+## Operational Management (from nowork-studio/notfair-plugin)
+
+Read the canonical workflow file at `&lt;plugin-root&gt;/google-ads/manage/WORKFLOW.md` completely, then follow it as the active workflow. Resolve every relative reference from the canonical file against `&lt;plugin-root&gt;/google-ads/manage/`. If the canonical file cannot be read, stop and report the packaging error; never substitute a similarly named skill from another plugin.
+
+Operational scope includes: performance, keywords, bids, budgets, negatives, campaigns, ads, search terms, QS, location targeting, bulk operations, experiments, asset management, portfolio bidding, offline conversions, change review, and campaign/ad group renaming.
+
+## Conflicts
+- **kostja94/marketing-skills** provides inline strategy and setup steps, while **nowork-studio/notfair-plugin** defers all operational steps to an external WORKFLOW.md. When both are available, use the inline strategy for setup and planning, and the external workflow for day-to-day operational changes.
+- **nowork-studio/notfair-plugin** includes triggers for bulk operations, experiments, and change review that **kostja94/marketing-skills** does not cover. Use the external workflow for those tasks.</pre>
+</body>
+</html>

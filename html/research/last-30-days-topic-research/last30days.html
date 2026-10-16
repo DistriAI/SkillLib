@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>last30days</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">last-30-days-topic-research</a> / last30days</p><h1>last30days</h1><p class="meta">combined</p><p>Both copies implement the same last30days research workflow (parse intent, run a Python research script, then WebSearch, then synthesize), but they disagree on execution mode and include material steps the other lacks. The sickn33 copy uses a background script with TaskOutput and a setup-check/config section, while the LeoYeAI copy mandates a foreground 5-minute run, adds YouTube as a source, requires displaying parsed intent before tool calls, and includes a skill-root discovery loop. Crowning one would hide a real alternative procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/last30days/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/last30days-skill/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/last30days/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/last30days-skill/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/last30days/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/last30days/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: last30days
+description: &quot;Research a topic from the last 30 days on Reddit + X + YouTube + Web, become an expert, and write copy-paste-ready prompts for the user&#x27;s target tool.&quot;
+---
+
+# last30days: Research Any Topic from the Last 30 Days
+
+Research ANY topic across Reddit, X, YouTube, and the web. Surface what people are actually discussing, recommending, and debating right now.
+
+## CRITICAL: Parse User Intent
+
+Before doing anything, parse the user&#x27;s input for:
+
+1. **TOPIC**: What they want to learn about (e.g., &quot;web app mockups&quot;, &quot;Claude Code skills&quot;, &quot;image generation&quot;)
+2. **TARGET TOOL** (if specified): Where they&#x27;ll use the prompts (e.g., &quot;Nano Banana Pro&quot;, &quot;ChatGPT&quot;, &quot;Midjourney&quot;)
+3. **QUERY TYPE**: What kind of research they want:
+   - **PROMPTING** - &quot;X prompts&quot;, &quot;prompting for X&quot;, &quot;X best practices&quot; → User wants to learn techniques and get copy-paste prompts
+   - **RECOMMENDATIONS** - &quot;best X&quot;, &quot;top X&quot;, &quot;what X should I use&quot;, &quot;recommended X&quot; → User wants a LIST of specific things
+   - **NEWS** - &quot;what&#x27;s happening with X&quot;, &quot;X news&quot;, &quot;latest on X&quot; → User wants current events/updates
+   - **GENERAL** - anything else → User wants broad understanding of the topic
+
+Common patterns:
+
+- `[topic] for [tool]` → &quot;web mockups for Nano Banana Pro&quot; → TOOL IS SPECIFIED
+- `[topic] prompts for [tool]` → &quot;UI design prompts for Midjourney&quot; → TOOL IS SPECIFIED
+- Just `[topic]` → &quot;iOS design mockups&quot; → TOOL NOT SPECIFIED, that&#x27;s OK
+- &quot;best [topic]&quot; or &quot;top [topic]&quot; → QUERY_TYPE = RECOMMENDATIONS
+- &quot;what are the best [topic]&quot; → QUERY_TYPE = RECOMMENDATIONS
+
+**IMPORTANT: Do NOT ask about target tool before research.**
+
+- If tool is specified in the query, use it
+- If tool is NOT specified, run research first, then ask AFTER showing results
+
+**Store these variables:**
+
+- `TOPIC = [extracted topic]`
+- `TARGET_TOOL = [extracted tool, or &quot;unknown&quot; if not specified]`
+- `QUERY_TYPE = [RECOMMENDATIONS | NEWS | HOW-TO | GENERAL]`
+
+**DISPLAY your parsing to the user.** Before running any tools, output:
+
+```
+I&#x27;ll research {TOPIC} across Reddit, X, YouTube, and the web to find what&#x27;s been discussed in the last 30 days.
+
+Parsed intent:
+- TOPIC = {TOPIC}
+- TARGET_TOOL = {TARGET_TOOL or &quot;unknown&quot;}
+- QUERY_TYPE = {QUERY_TYPE}
+
+Research typically takes 2-8 minutes (niche topics take longer). Starting now.
+```
+
+If TARGET_TOOL is known, mention it in the intro: &quot;...to find {QUERY_TYPE}-style content for use in {TARGET_TOOL}.&quot;
+
+This text MUST appear before you call any tools. It confirms to the user that you understood their request.
+
+---
+
+## Setup Check
+
+The skill works in three modes based on available API keys:
+
+1. **Full Mode** (both keys): Reddit + X + YouTube + WebSearch - best results with engagement metrics
+2. **Partial Mode** (one key): Reddit-only or X-only + YouTube + WebSearch
+3. **Web-Only Mode** (no keys): WebSearch only - still useful, but no engagement metrics
+
+**API keys are OPTIONAL.** The skill will work without them using WebSearch fallback.
+
+### First-Time Setup (Optional but Recommended)
+
+If the user wants to add API keys for better results:
+
+```bash
+mkdir -p ~/.config/last30days
+cat &gt; ~/.config/last30days/.env &lt;&lt; &#x27;ENVEOF&#x27;
+# last30days API Configuration
+# Both keys are optional - skill works with WebSearch fallback
+
+# For Reddit research (uses OpenAI&#x27;s web_search tool)
+OPENAI_API_KEY=
+
+# For X/Twitter research (uses xAI&#x27;s x_search tool)
+XAI_API_KEY=
+ENVEOF
+
+chmod 600 ~/.config/last30days/.env
+echo &quot;Config created at ~/.config/last30days/.env&quot;
+echo &quot;Edit to add your API keys for enhanced research.&quot;
+```
+
+**DO NOT stop if no keys are configured.** Proceed with web-only mode.
+
+---
+
+## Research Execution
+
+**IMPORTANT: The script handles API key detection automatically.** Run it and check the output to determine mode.
+
+**Step 1: Run the research script (FOREGROUND — do NOT background this)**
+
+**CRITICAL: Run this command in the FOREGROUND with a 5-minute timeout. Do NOT use run_in_background. The full output contains Reddit, X, AND YouTube data that you need to read completely.**
+
+```bash
+# Find skill root — works in repo checkout, Claude Code, or Codex install
+for dir in \
+  &quot;.&quot; \
+  &quot;${CLAUDE_PLUGIN_ROOT:-}&quot; \
+  &quot;$HOME/.claude/skills/last30days&quot; \
+  &quot;$HOME/.agents/skills/last30days&quot; \
+  &quot;$HOME/.codex/skills/last30days&quot;; do
+  [ -n &quot;$dir&quot; ] &amp;&amp; [ -f &quot;$dir/scripts/last30days.py&quot; ] &amp;&amp; SKILL_ROOT=&quot;$dir&quot; &amp;&amp; break
+done
+
+if [ -z &quot;${SKILL_ROOT:-}&quot; ]; then
+  echo &quot;ERROR: Could not find scripts/last30days.py&quot; &gt;&amp;2
+  exit 1
+fi
+
+TOPIC_FILE=&quot;$(mktemp)&quot;
+trap &#x27;rm -f &quot;$TOPIC_FILE&quot;&#x27; EXIT
+cat &lt;&lt;&#x27;LAST30DAYS_TOPIC&#x27; &gt; &quot;$TOPIC_FILE&quot;
+$ARGUMENTS
+LAST30DAYS_TOPIC
+python3 &quot;${SKILL_ROOT}/scripts/last30days.py&quot; &quot;$(cat &quot;$TOPIC_FILE&quot;)&quot; --emit=compact
+```
+
+Use a **timeout of 300000** (5 minutes) on the Bash call. The script typically takes 1-3 minutes.
+
+The script will automatically:
+- Detect available API keys
+- Run Reddit/X/YouTube searches if keys exist
+- Output ALL results including YouTube transcripts
+- Signal if WebSearch is needed
+
+**Read the ENTIRE output.** It contains THREE data sections in this order: Reddit items, X items, and YouTube items. If you miss the YouTube section, you will produce incomplete stats.
+
+**YouTube items in the output look like:** `**{video_id}** (score:N) {channel_name} [N views, N likes]` followed by a title, URL, and optional transcript snippet. Count them and include them in your synthesis and stats block.
+
+**Step 2: Check the output mode**
+
+The script output will indicate the mode:
+
+- **&quot;Mode: both&quot;** or **&quot;Mode: reddit-only&quot;** or **&quot;Mode: x-only&quot;**: Script found results, WebSearch is supplementary
+- **&quot;Mode: web-only&quot;**: No API keys, Claude must do ALL research via WebSearch
+
+**Step 3: Do WebSearch**
+
+For **ALL modes**, do WebSearch to supplement (or provide all data in web-only mode).
+
+Choose search queries based on QUERY_TYPE:
+
+**If RECOMMENDATIONS** (&quot;best X&quot;, &quot;top X&quot;, &quot;what X should I use&quot;):
+
+- Search for: `best {TOPIC} recommendations`
+- Search for: `{TOPIC} list examples`
+- Search for: `most popular {TOPIC}`
+- Goal: Find SPECIFIC NAMES of things, not generic advice
+
+**If NEWS** (&quot;what&#x27;s happening with X&quot;, &quot;X news&quot;):
+
+- Search for: `{TOPIC} news 2026`
+- Search for: `{TOPIC} announcement update`
+- Goal: Find current events and recent developments
+
+**If PROMPTING** (&quot;X prompts&quot;, &quot;prompting for X&quot;):
+
+- Search for: `{TOPIC} prompts examples 2026`
+- Search for: `{TOPIC} techniques tips`
+- Goal: Find prompting techniques and examples to create copy-paste prompts
+
+**If GENERAL** (default):
+
+- Search for: `{TOPIC} 2026`
+- Search for: `{TOPIC} discussion`
+- Goal: Find what people are actually saying
+
+For ALL query types:
+
+- **USE THE USER&#x27;S EXACT TERMINOLOGY** - don&#x27;t substitute or add tech names based on your knowledge
+  - If user says &quot;ChatGPT image prompting&quot;, search for &quot;ChatGPT image prompting&quot;
+  - Do NOT add &quot;DALL-E&quot;, &quot;GPT-4o&quot;, or other terms you think are related
+  - Your knowledge may be outdated - trust the user&#x27;s terminology
+- EXCLUDE reddit.com, x.com, twitter.com (covered by script)
+- INCLUDE: blogs, tutorials, docs, news, GitHub repos
+- **DO NOT output &quot;Sources:&quot; list** - this is noise, we&#x27;ll show stats at the end
+
+---
+
+## Conflicts
+
+- **sickn33/agentic-awesome-skills::plugins/agentic-awesome-skills-claude/skills/last30days/SKILL.md** runs the script in the background and says to use TaskOutput to wait for completion; **LeoYeAI/openclaw-master-skills::skills/last30days-skill/SKILL.md** says to run the script in the FOREGROUND with a 5-minute timeout and explicitly forbids run_in_background.
+- **sickn33/agentic-awesome-skills::plugins/agentic-awesome-skills-claude/skills/last30days/SKILL.md** lists sources as Reddit + X + Web; **LeoYeAI/openclaw-master-skills::skills/last30days-skill/SKILL.md** lists sources as Reddit, X, YouTube, and web, and requires reading the YouTube section of the script output.
+- **sickn33/agentic-awesome-skills::plugins/agentic-awesome-skills-claude/skills/last30days/SKILL.md** includes a Setup Check section with an optional ~/.config/last30days/.env creation step; **LeoYeAI/openclaw-master-skills::skills/last30days-skill/SKILL.md** has no such setup section and instead declares required env/bins in metadata.
+- **LeoYeAI/openclaw-master-skills::skills/last30days-skill/SKILL.md** requires displaying the parsed intent to the user before calling any tools; **sickn33/agentic-awesome-skills::plugins/agentic-awesome-skills-claude/skills/last30days/SKILL.md** does not include this display step.
+- **LeoYeAI/openclaw-master-skills::skills/last30days-skill/SKILL.md** includes a skill-root discovery loop to locate scripts/last30days.py; **sickn33/agentic-awesome-skills::plugins/agentic-awesome-skills-claude/skills/last30days/SKILL.md** hardcodes ~/.claude/skills/last30days/scripts/last30days.py.</pre>
+</body>
+</html>

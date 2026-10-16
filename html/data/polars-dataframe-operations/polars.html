@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>polars</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">polars-dataframe-operations</a> / polars</p><h1>polars</h1><p class="meta">combined</p><p>The copies share a common core (expressions, lazy vs eager, basic I/O, group_by) but diverge significantly in scope and specific guidance. The K-Dense copy is a version-pinned (1.44.2) reference with specific installation commands and detailed mapping strategy explanations. The Vibe-Skills and agentic-awesome-skills copies are nearly identical, focusing on &#x27;in-memory&#x27; use cases and providing a slightly different (simpler) explanation of window function mapping strategies. The brycewang-stanford copy is a &#x27;meta-skill&#x27; that provides a decision tree and a table of reference files rather than inline code examples, and it includes specific version migration notes (e.g., `apply` to `map_elements`). Because the K-Dense copy has unique version-specific details and the brycewang copy has a unique structural approach (decision trees) and migration notes, no single copy is the &#x27;authentic&#x27; procedure that the others merely reproduce. They represent different levels of abstraction and specific constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/polars/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/polars/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/polars/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/17-DAAF-Contribution-Community-daaf/dot-claude/skills/polars/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/polars/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/polars/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/polars/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/17-DAAF-Contribution-Community-daaf/dot-claude/skills/polars/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/polars/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/polars/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/polars/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: polars
+description: High-performance DataFrame library for Python ETL, analytics, and pandas migration. Supports expression-based manipulation, lazy query optimization, parallel execution, and Arrow interoperability.
+---
+
+# Polars
+
+## Overview
+Polars is a columnar DataFrame library for Python and Rust with Arrow interoperability. Use it for efficient data processing, pandas migration, and data pipeline optimization.
+
+## When to Use
+- **In-Memory Performance**: When pandas is too slow but data fits in RAM (1-100GB).
+- **ETL Pipelines**: When building transformations that benefit from lazy evaluation and parallel execution.
+- **Pandas Migration**: When seeking a faster, more expressive alternative to pandas.
+- **Note**: For larger-than-RAM data, consider Dask or Vaex, though Polars supports streaming.
+
+## Installation
+Install the current stable release. Pin versions for reproducibility in production.
+```bash
+uv pip install polars
+# Optional extras for specific integrations:
+uv pip install &quot;polars[excel,database,fsspec,pandas,numpy]&quot;
+```
+
+## Core Concepts
+
+### Expressions
+Expressions are the fundamental building blocks. They describe transformations and are lazy until executed in a context (`select`, `with_columns`, `filter`, `group_by`).
+- Use `pl.col(&quot;column_name&quot;)` to reference columns.
+- Chain methods to build complex transformations.
+
+### Lazy vs Eager
+- **Eager (DataFrame)**: Operations execute immediately. Good for small data or interactive exploration.
+- **Lazy (LazyFrame)**: Operations build a query plan optimized before execution. Use for large datasets, complex pipelines, or when performance is critical.
+  - Benefits: Predicate pushdown, projection pushdown, parallel execution.
+
+## Common Operations
+
+### Select &amp; Filter
+```python
+# Select columns
+df.select(&quot;name&quot;, &quot;age&quot;)
+
+# Filter rows
+df.filter(pl.col(&quot;age&quot;) &gt; 25)
+
+# Multiple conditions
+df.filter(
+    pl.col(&quot;age&quot;) &gt; 25,
+    pl.col(&quot;city&quot;) == &quot;NY&quot;
+)
+```
+
+### With Columns
+Add or modify columns. Computations are parallel.
+```python
+df.with_columns(
+    age_plus_10=pl.col(&quot;age&quot;) + 10,
+    name_upper=pl.col(&quot;name&quot;).str.to_uppercase()
+)
+```
+
+### Group By &amp; Aggregations
+```python
+df.group_by(&quot;city&quot;).agg(
+    pl.col(&quot;age&quot;).mean().alias(&quot;avg_age&quot;),
+    pl.len().alias(&quot;count&quot;)
+)
+```
+
+### Window Functions
+Apply aggregations while preserving row count using `.over()`.
+```python
+df.with_columns(
+    avg_age_by_city=pl.col(&quot;age&quot;).mean().over(&quot;city&quot;),
+    rank_in_city=pl.col(&quot;salary&quot;).rank().over(&quot;city&quot;)
+)
+```
+**Mapping Strategies:**
+- `group_to_rows` (default): Maps results back to rows; scalar aggregates broadcast.
+- `explode`: Changes row layout/count; use in `select`.
+- `join`: Joins grouped values back as lists.
+
+## Data I/O
+Polars supports CSV, Parquet, JSON, Excel, Databases, and Cloud Storage.
+
+**Parquet (Recommended for Performance):**
+```python
+df = pl.read_parquet(&quot;file.parquet&quot;)
+df.write_parquet(&quot;output.parquet&quot;)
+```
+
+**CSV (Lazy for Large Files):**
+```python
+lf = pl.scan_csv(&quot;file.csv&quot;)
+result = lf.filter(...).select(...).collect()
+```
+
+## Version Notes &amp; Migration
+- **1.x Changes**: `apply` renamed to `map_elements`, `groupby` to `group_by`, `melt` to `unpivot`.
+- **Types**: `pl.Utf8` is now `pl.String` (Utf8 is an alias).
+- **Pandas Interop**: Use `pl.from_pandas(df)` and `df.to_pandas()` for conversion.
+
+## Performance Tips
+- Use Lazy evaluation for large data.
+- Avoid row iteration; use vectorized expressions.
+- Use Parquet for storage and I/O.
+- Check query plans with `lf.explain()` to identify bottlenecks.</pre>
+</body>
+</html>

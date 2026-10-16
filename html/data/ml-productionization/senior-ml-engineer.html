@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>senior-ml-engineer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">ml-productionization</a> / senior-ml-engineer</p><h1>senior-ml-engineer</h1><p class="meta">combined</p><p>The two copies overlap on MLOps, model deployment, monitoring, and LLM/RAG integration, but each contains material steps the other lacks. The first copy is a broad role/competency guide with performance targets, security/compliance, team leadership, and generic commands, while the second copy provides concrete operational workflows: a step-by-step deployment sequence with validation thresholds, a Docker template, serving options, MLOps pipeline setup with feature store and retraining triggers, LLM provider abstraction with retry/cost management, and RAG implementation with vector DB selection and chunking. Crowning one would hide the other&#x27;s real alternative content.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/senior-ml-engineer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/senior-ml-engineer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/senior-ml-engineer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/senior-ml-engineer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: senior-ml-engineer
+description: Production ML engineering skill for deploying models, building MLOps pipelines, integrating LLMs, and implementing RAG systems. Covers model serving, feature stores, drift monitoring, cost optimization, and senior-level production responsibilities.
+---
+
+# Senior ML Engineer
+
+Production ML engineering patterns for model deployment, MLOps infrastructure, LLM integration, and RAG systems.
+
+## Model Deployment Workflow
+
+1. Export model to standardized format (ONNX, TorchScript, SavedModel)
+2. Package model with dependencies in Docker container
+3. Deploy to staging environment
+4. Run integration tests against staging
+5. Deploy canary (5% traffic) to production
+6. Monitor latency and error rates for 1 hour
+7. Promote to full production if metrics pass
+8. Validation: p95 latency &lt; 100ms, error rate &lt; 0.1%
+
+### Container Template
+
+```dockerfile
+FROM python:3.11-slim
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY model/ /app/model/
+COPY src/ /app/src/
+
+HEALTHCHECK CMD curl -f http://localhost:8080/health || exit 1
+
+EXPOSE 8080
+CMD [&quot;uvicorn&quot;, &quot;src.server:app&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;--port&quot;, &quot;8080&quot;]
+```
+
+### Serving Options
+
+| Option | Latency | Throughput | Use Case |
+|--------|---------|------------|----------|
+| FastAPI + Uvicorn | Low | Medium | REST APIs, small models |
+| Triton Inference Server | Very Low | Very High | GPU inference, batching |
+| TensorFlow Serving | Low | High | TensorFlow models |
+| TorchServe | Low | High | PyTorch models |
+| Ray Serve | Medium | High | Complex pipelines, multi-model |
+
+## MLOps Pipeline Setup
+
+1. Configure feature store (Feast, Tecton) for training data
+2. Set up experiment tracking (MLflow, Weights &amp; Biases)
+3. Create training pipeline with hyperparameter logging
+4. Register model in model registry with version metadata
+5. Configure staging deployment triggered by registry events
+6. Set up A/B testing infrastructure for model comparison
+7. Enable drift monitoring with alerting
+8. Validation: New models automatically evaluated against baseline
+
+### Retraining Triggers
+
+| Trigger | Detection | Action |
+|---------|-----------|--------|
+| Scheduled | Cron (weekly/monthly) | Full retrain |
+| Performance drop | Accuracy &lt; threshold | Immediate retrain |
+| Data drift | PSI &gt; 0.2 | Evaluate, then retrain |
+| New data volume | X new samples | Incremental update |
+
+## LLM Integration Workflow
+
+1. Create provider abstraction layer for vendor flexibility
+2. Implement retry logic with exponential backoff
+3. Configure fallback to secondary provider
+4. Set up token counting and context truncation
+5. Add response caching for repeated queries
+6. Implement cost tracking per request
+7. Add structured output validation with Pydantic
+8. Validation: Response parses correctly, cost within budget
+
+## RAG System Implementation
+
+1. Choose vector database (Pinecone, Qdrant, Weaviate)
+2. Select embedding model based on quality/cost tradeoff
+3. Implement document chunking strategy
+4. Create ingestion pipeline with metadata extraction
+5. Build retrieval with query embedding
+6. Add reranking for relevance improvement
+7. Format context and send to LLM
+8. Validation: Response references retrieved context, no hallucinations
+
+## Performance Targets
+
+- P50 latency: &lt; 50ms
+- P95 latency: &lt; 100ms
+- P99 latency: &lt; 200ms
+- Throughput: &gt; 1000 requests/second
+- Concurrent users: &gt; 10,000
+- Uptime: 99.9%
+- Error rate: &lt; 0.1%
+
+## Security &amp; Compliance
+
+- Authentication &amp; authorization
+- Data encryption (at rest &amp; in transit)
+- PII handling and anonymization
+- GDPR/CCPA compliance
+- Regular security audits
+- Vulnerability management
+
+## Senior-Level Responsibilities
+
+1. Technical Leadership: Drive architectural decisions, mentor team members, establish best practices, ensure code quality
+2. Strategic Thinking: Align with business goals, evaluate trade-offs, plan for scale, manage technical debt
+3. Collaboration: Work across teams, communicate effectively, build consensus, share knowledge
+4. Innovation: Stay current with research, experiment with new approaches, contribute to community, drive continuous improvement
+5. Production Excellence: Ensure high availability, monitor proactively, optimize performance, respond to incidents
+
+## Common Commands
+
+```bash
+# Development
+python -m pytest tests/ -v --cov
+python -m black src/
+python -m pylint src/
+
+# Training
+python scripts/train.py --config prod.yaml
+python scripts/evaluate.py --model best.pth
+
+# Deployment
+docker build -t service:v1 .
+kubectl apply -f k8s/
+helm upgrade service ./charts/
+
+# Monitoring
+kubectl logs -f deployment/service
+python scripts/health_check.py
+```</pre>
+</body>
+</html>

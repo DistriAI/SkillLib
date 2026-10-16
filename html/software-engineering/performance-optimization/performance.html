@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>performance</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">performance-optimization</a> / performance</p><h1>performance</h1><p class="meta">combined</p><p>The three skills share the name &#x27;performance&#x27; but target fundamentally different systems and workflows. The first is a Unity-specific C# review checklist (GC, Update loops, pooling). The second is a web performance optimization guide focused on Core Web Vitals, resource budgets, and browser tracing. The third is a UI/UX performance skill that enforces specific Web Vitals budgets and relies on a local design system kit. Because they address different domains (game engine vs. web platform vs. UI design system) and contain non-overlapping, material steps (e.g., Unity&#x27;s &#x27;hidden costs&#x27; vs. Web&#x27;s &#x27;Early Hints&#x27; vs. UI&#x27;s &#x27;kit check&#x27;), crowning one would hide the other two valid approaches. They must be combined to preserve the distinct procedures for each context.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/performance/SKILL.md</code></td></tr><tr><td><a href="https://github.com/addyosmani/web-quality-skills">addyosmani/web-quality-skills</a></td><td><code>skills/performance/SKILL.md</code></td></tr><tr><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/performance/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/performance/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/addyosmani/web-quality-skills">addyosmani/web-quality-skills</a></td><td><code>skills/performance/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/performance/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: performance
+description: Optimize performance for Unity, Web, or UI contexts. Use when asked to speed up a site, fix Unity frame drops, or improve UI responsiveness.
+---
+
+# Performance Optimization
+
+This skill covers three distinct performance domains. Identify the target system and follow the corresponding section.
+
+## 1. Unity Performance (Game Engine)
+Use for C# Unity projects. Focus on red flags, not micro-optimizations.
+
+**Check For:**
+- Too many unrelated `Update`/`LateUpdate` loops.
+- Repeated `Find`, `GetComponent`, or `Camera.main` in hot paths.
+- Frequent `Instantiate`/`Destroy` suitable for pooling.
+- Per-frame allocations (LINQ, string formatting, closures).
+- Reflection in runtime hot paths.
+
+**Hidden Costs:**
+- **Write Permission:** Components that *can* mutate state pay serialization costs even if they don&#x27;t. Split rarely-needed writers into separate components.
+- **Correlated RNG:** Seeding N RNGs with `baseSeed + i` creates correlated streams. Hash the index before seeding.
+- **Logging:** `Debug.Log` is not stripped in release builds. Guard log expressions with `if (Debug.isDebugBuild)`.
+
+**Output:** Confirmed red flags, likely red flags, changes worth doing now, and expected gain category.
+
+## 2. Web Performance (Browser/Server)
+Use for web applications. Evidence-led optimization using real-user signals.
+
+**Workflow:**
+1. Establish a field-plus-lab baseline.
+2. Prioritize poor Core Web Vitals.
+3. Use DevTools traces to find causes.
+4. Change only code connected to measured bottlenecks.
+5. Re-run measurements and report before/after values.
+
+**Budgets (Initial Guardrails):**
+- Total page weight: &lt; 1.5 MB
+- JavaScript: &lt; 300 KB
+- CSS: &lt; 100 KB
+- Images (above-fold): &lt; 500 KB
+
+**Critical Rendering Path:**
+- **TTFB:** &lt; 800ms. Use CDN, caching, and compression (Brotli preferred).
+- **Preconnect/Preload:** Preconnect to required origins. Preload only resources whose late discovery is visible in the trace.
+- **JavaScript:** Defer non-essential scripts. Use code splitting for routes and heavy components.
+
+## 3. UI/UX Performance (Design System)
+Use for UI components and design systems. Treat performance as an accessibility concern.
+
+**Prerequisites:**
+- Check for the design system kit: `ls ${CLAUDE_SKILL_DIR}/../../../tokens &gt;/dev/null 2&gt;&amp;1`. If missing, stop and direct user to install.
+
+**Steps:**
+1. Read `workflows/performance.md` for specific targets.
+2. Diagnose against budgets: **LCP ≤ 2.5s**, **INP ≤ 200ms**, **CLS ≤ 0.1** on mid-tier mobile.
+3. **Loading:** Render above-fold first (SSR). Code-split by route. Lazy-load below-fold.
+4. **Layout Shift:** Size skeletons to final dimensions. Reserve media space via `aspect-ratio`. Never inject content above existing.
+5. **Animation:** Only use `transform`/`opacity`. Use `will-change` sparingly. Honor `prefers-reduced-motion`.
+
+**Verification:**
+- Lighthouse/field data meets LCP, INP, and CLS budgets.
+- First interaction remains responsive under slow-4G + 4× CPU throttle.
+- Zero CLS on load; no non-compositor animation in loops.</pre>
+</body>
+</html>

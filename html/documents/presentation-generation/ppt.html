@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ppt</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">presentation-generation</a> / ppt</p><h1>ppt</h1><p class="meta">combined</p><p>The two skills describe fundamentally different technical stacks and workflows for creating presentations. The first skill (LeoYeAI) instructs the agent to generate a single HTML file using the Reveal.js library, focusing on CSS design principles, color palettes, and browser-based rendering. The second skill (aipoch) instructs the agent to use a local Python/JS framework located at a specific Windows path (D:\SKILL\project\ppt) to author slides in JavaScript files and export them to a .pptx file. Because they rely on different tools (Reveal.js vs. local Python/JS exporter) and produce different outputs (HTML vs. PPTX), crowning one would hide a valid alternative approach for users who need PowerPoint files or have the local framework installed.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ppt-skill/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/ppt/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ppt-skill/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/ppt/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Presentation Generation Skill
+
+## Overview
+This skill supports two distinct workflows for creating presentations: generating a web-based HTML deck using Reveal.js, or generating a PowerPoint (.pptx) file using a local Python/JS framework.
+
+## Workflow 1: Reveal.js HTML Deck
+Use this when the user wants a browser-based presentation or does not have the local PPT framework installed.
+
+1. **Design Analysis**: Analyze the topic to determine tone, industry, and brand colors. Declare the design scheme (color palette, fonts, layout strategy) before coding.
+2. **Color Palette**: Select a 3-5 color palette that matches the theme. Avoid generic defaults; use bold or unexpected combinations if appropriate.
+3. **HTML Structure**: Create a single HTML file using Reveal.js CDN links.
+   - Include `reset.css`, `reveal.css`, a theme CSS, and `reveal.js`.
+   - Structure slides using `&lt;div class=&quot;reveal&quot;&gt;&lt;div class=&quot;slides&quot;&gt;&lt;section&gt;...&lt;/section&gt;&lt;/div&gt;&lt;/div&gt;`.
+4. **Styling**: 
+   - Ensure `.reveal` and `.slides` are 100% width/height.
+   - Use flexbox for centering content.
+   - Apply visual hierarchy with font sizes (48-72px titles, 24-32px body).
+   - Use diverse layouts (two-column, full-screen charts) to avoid monotony.
+5. **Initialization**: Initialize Reveal.js with `width: &quot;100%&quot;`, `height: &quot;100%&quot;`, and `margin: 0`.
+
+## Workflow 2: Local PPTX Export
+Use this when the user specifically requests a `.pptx` file and the local framework is available at `D:\SKILL\project\ppt`.
+
+1. **Validation**: Run `python scripts/validate_skill.py --help` to verify the environment.
+2. **Authoring**: Create a JavaScript file in `projects/` (e.g., `demo.js`).
+   - Define `const SLIDES = [...]`.
+   - Each slide object should include `badge`, `title`, `subtitle`, `clickHint`, and `elements`.
+   - Use component types like `comparison`, `timeline`, `stats`, `valueCards`, `quote`, `ending`.
+3. **Preview**: Generate an HTML preview by running `python build_html.py &lt;project_name&gt;`.
+4. **Export**: Convert to PowerPoint by running `python convert_to_pptx.py &lt;project_name&gt;`.
+5. **Output**: The final `.pptx` file will be in the `output/` directory.
+
+## General Design Principles
+- **Content-Driven**: Match colors and fonts to the subject matter.
+- **Visual Variety**: Avoid repeating the same layout on consecutive slides.
+- **Conciseness**: Keep text minimal; use bullets and visual components.
+- **Contrast**: Ensure high contrast between text and background for readability.</pre>
+</body>
+</html>

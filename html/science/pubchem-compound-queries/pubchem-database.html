@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pubchem-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">pubchem-compound-queries</a> / pubchem-database</p><h1>pubchem-database</h1><p class="meta">combined</p><p>The copies overlap heavily on PubChem search, property retrieval, similarity, and substructure workflows, but they disagree on the intended interface and include material steps the others lack. The benchflow and OpenClaw copies are nearly identical inline PubChemPy tutorials, while the aipoch copy wraps the same operations in a scripts/pubchem_ops.py module, adds explicit rate-limit handling, and documents bioactivity retrieval as a first-class operation. Crowning one copy would hide the alternative module-based workflow and the rate-limit constraint.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks-extra/find-topk-similiar-chemicals/environment/skills/pubchem-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/pubchem-database-skill/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pubchem-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks-extra/find-topk-similiar-chemicals/environment/skills/pubchem-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/pubchem-database-skill/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pubchem-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># PubChem Database
+
+## Overview
+
+Use PubChem to search chemical compounds, retrieve physicochemical properties, perform similarity or substructure searches, and access bioactivity data. PubChem contains 110M+ compounds and 270M+ bioactivities.
+
+## When to Use
+
+- Search compounds by name, CID, SMILES, InChI, or molecular formula.
+- Retrieve properties such as molecular weight, LogP, TPSA, and hydrogen-bond descriptors.
+- Find structurally similar compounds or compounds containing a substructure.
+- Access bioactivity or assay data for a compound.
+- Convert between chemical identifier formats.
+- Batch-process compounds for property analysis.
+
+## Dependencies
+
+Install the required Python packages:
+
+```bash
+uv pip install pubchempy requests
+```
+
+## Rate Limiting
+
+Respect PubChem&#x27;s rate limit of no more than 5 requests per second. Add delays or retries when making multiple requests.
+
+## Interface Options
+
+### Option A: Inline PubChemPy
+
+Use PubChemPy directly in Python scripts.
+
+### Option B: Module Wrapper
+
+Use a `scripts/pubchem_ops.py` module exposing `get_properties`, `structure_search`, and `get_bioactivity` functions.
+
+## Core Operations
+
+### 1. Chemical Structure Search
+
+Search by name, CID, SMILES, InChI, or molecular formula.
+
+Inline PubChemPy examples:
+
+```python
+import pubchempy as pcp
+
+# By name
+compounds = pcp.get_compounds(&#x27;aspirin&#x27;, &#x27;name&#x27;)
+
+# By CID
+compound = pcp.Compound.from_cid(2244)
+
+# By SMILES
+compound = pcp.get_compounds(&#x27;CC(=O)OC1=CC=CC=C1C(=O)O&#x27;, &#x27;smiles&#x27;)[0]
+
+# By InChI
+compound = pcp.get_compounds(&#x27;InChI=1S/C9H8O4/...&#x27;, &#x27;inchi&#x27;)[0]
+
+# By formula
+compounds = pcp.get_compounds(&#x27;C9H8O4&#x27;, &#x27;formula&#x27;)
+```
+
+Module wrapper example:
+
+```python
+from scripts.pubchem_ops import get_properties
+
+result = get_properties(query_value=&#x27;Aspirin&#x27;, query_type=&#x27;name&#x27;)
+```
+
+### 2. Property Retrieval
+
+Retrieve molecular properties using PubChemPy or the module wrapper.
+
+Inline PubChemPy:
+
+```python
+import pubchempy as pcp
+
+compound = pcp.get_compounds(&#x27;caffeine&#x27;, &#x27;name&#x27;)[0]
+
+molecular_formula = compound.molecular_formula
+molecular_weight = compound.molecular_weight
+iupac_name = compound.iupac_name
+smiles = compound.canonical_smiles
+inchi = compound.inchi
+xlogp = compound.xlogp
+tpsa = compound.tpsa
+```
+
+Request specific properties:
+
+```python
+properties = pcp.get_properties(
+    [&#x27;MolecularFormula&#x27;, &#x27;MolecularWeight&#x27;, &#x27;CanonicalSMILES&#x27;, &#x27;XLogP&#x27;],
+    &#x27;aspirin&#x27;,
+    &#x27;name&#x27;
+)
+```
+
+Batch retrieval:
+
+```python
+import pandas as pd
+
+compound_names = [&#x27;aspirin&#x27;, &#x27;ibuprofen&#x27;, &#x27;paracetamol&#x27;]
+all_properties = []
+
+for name in compound_names:
+    props = pcp.get_properties(
+        [&#x27;MolecularFormula&#x27;, &#x27;MolecularWeight&#x27;, &#x27;XLogP&#x27;],
+        name,
+        &#x27;name&#x27;
+    )
+    all_properties.extend(props)
+
+df = pd.DataFrame(all_properties)
+```
+
+Module wrapper:
+
+```python
+from scripts.pubchem_ops import get_properties
+
+result = get_properties(query_value=&#x27;Aspirin&#x27;, query_type=&#x27;name&#x27;)
+```
+
+Available properties include MolecularFormula, MolecularWeight, CanonicalSMILES, IsomericSMILES, InChI, InChIKey, IUPACName, XLogP, TPSA, HBondDonorCount, HBondAcceptorCount, RotatableBondCount, Complexity, and Charge.
+
+### 3. Similarity Search
+
+Find structurally similar compounds using Tanimoto similarity.
+
+Inline PubChemPy:
+
+```python
+import pubchempy as pcp
+
+query_compound = pcp.get_compounds(&#x27;gefitinib&#x27;, &#x27;name&#x27;)[0]
+query_smiles = query_compound.canonical_smiles
+
+similar_compounds = pcp.get_compounds(
+    query_smiles,
+    &#x27;smiles&#x27;,
+    searchtype=&#x27;similarity&#x27;,
+    Threshold=85,
+    MaxRecords=50
+)
+```
+
+Similarity searches may be asynchronous for large queries and can take 15-30 seconds.
+
+Module wrapper:
+
+```python
+from scripts.pubchem_ops import structure_search
+
+smiles = &#x27;CC(=O)OC1=CC=CC=C1C(=O)O&#x27;
+result = structure_search(query_value=smiles, search_type=&#x27;similarity&#x27;)
+```
+
+### 4. Substructure Search
+
+Find compounds containing a specific structural motif.
+
+Inline PubChemPy:
+
+```python
+import pubchempy as pcp
+
+pyridine_smiles = &#x27;c1ccncc1&#x27;
+
+matches = pcp.get_compounds(
+    pyridine_smiles,
+    &#x27;smiles&#x27;,
+    searchtype=&#x27;substructure&#x27;,
+    MaxRecords=100
+)
+```
+
+Common substructures:
+- Benzene ring: `c1ccccc1`
+- Pyridine: `c1ccncc1`
+- Phenol: `c1ccc(O)cc1`
+- Carboxylic acid: `C(=O)O`
+
+Module wrapper:
+
+```python
+from scripts.pubchem_ops import structure_search
+
+result = structure_search(query_value=&#x27;c1ccncc1&#x27;, search_type=&#x27;substructure&#x27;)
+```
+
+### 5. Format Conversion
+
+Convert between chemical structure formats.
+
+```python
+import pubchempy as pcp
+
+compound = pcp.get_compounds(&#x27;aspirin&#x27;, &#x27;name&#x27;)[0]
+
+smiles = compound.canonical_smiles
+inchi = compound.inchi
+inchikey = compound.inchikey
+cid = compound.cid
+
+pcp.download(&#x27;SDF&#x27;, &#x27;aspirin&#x27;, &#x27;name&#x27;, &#x27;aspirin.sdf&#x27;, overwrite=True)
+pcp.download(&#x27;JSON&#x27;, &#x27;2244&#x27;, &#x27;cid&#x27;, &#x27;aspirin.json&#x27;, overwrite=True)
+```
+
+### 6. Structure Visualization
+
+Generate 2D structure images.
+
+```python
+import pubchempy as pcp
+
+pcp.download(&#x27;PNG&#x27;, &#x27;caffeine&#x27;, &#x27;name&#x27;, &#x27;caffeine.png&#x27;, overwrite=True)
+```
+
+Or use the PUG-REST URL directly:
+
+```python
+import requests
+
+cid = 2244
+url = f&quot;https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/PNG?image_size=large&quot;
+response = requests.get(url)
+
+with open(&#x27;structure.png&#x27;, &#x27;wb&#x27;) as f:
+    f.write(response.content)
+```
+
+### 7. Synonym Retrieval
+
+Get all known names and synonyms for a compound.
+
+```python
+import pubchempy as pcp
+
+synonyms_data = pcp.get_synonyms(&#x27;aspirin&#x27;, &#x27;name&#x27;)
+
+if synonyms_data:
+    cid = synonyms_data[0][&#x27;CID&#x27;]
+    synonyms = synonyms_data[0][&#x27;Synonym&#x27;]
+
+    print(f&quot;CID {cid} has {len(synonyms)} synonyms:&quot;)
+    for syn in synonyms[:10]:
+        print(f&quot;  - {syn}&quot;)
+```
+
+### 8. Bioactivity Data Access
+
+Retrieve biological activity data for a compound.
+
+Module wrapper:
+
+```python
+from scripts.pubchem_ops import get_bioactivity
+
+result = get_bioactivity(cid=2244)
+```
+
+## Error Handling
+
+- Return a structured error or `None` if a compound is not found.
+- Handle PubChem rate limits by throttling requests to 5 or fewer per second.
+- Verify query format (valid SMILES or InChI) if results are empty.
+- Ensure network access to `pubchem.ncbi.nlm.nih.gov`.
+
+## References
+
+- API documentation: `references/api_reference.md`
+- Primary script: `scripts/pubchem_ops.py`</pre>
+</body>
+</html>

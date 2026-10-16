@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">audit</a> / audit</p><h1>audit</h1><p class="meta">combined</p><p>The two skills share the name &#x27;audit&#x27; but perform completely different tasks. The first skill bootstraps project context by writing AGENTS.md files for AI agents. The second skill performs static security analysis on AI skill bundles to detect malicious patterns. They do not overlap in procedure, and crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/jsmastery-pro/skills">jsmastery-pro/skills</a></td><td><code>skills/audit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/audit-skills/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/jsmastery-pro/skills">jsmastery-pro/skills</a></td><td><code>skills/audit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/audit-skills/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Audit
+
+This skill covers two distinct audit tasks. Determine which one the user needs based on their request.
+
+## Task 1: Project Context Audit (AGENTS.md Bootstrapping)
+
+Use when the user wants to bootstrap or update the AI context files (AGENTS.md) for a project.
+
+### Steps
+1. Determine the project state: greenfield (no code), brownfield undocumented (code, no AGENTS.md), or brownfield partially documented.
+2. For greenfield: ask for coding standards, seed root AGENTS.md from answers plus build approach.
+3. For brownfield undocumented: scan the whole project, write root AGENTS.md and nested area AGENTS.md files.
+4. For brownfield partially documented: check existing docs against the codebase; add only what is missing; never overwrite curated content.
+5. Write knowledge into AGENTS.md. Create CLAUDE.md as a one line pointer that imports AGENTS.md.
+6. Migrate legacy CLAUDE.md content into AGENTS.md with permission.
+7. Use a read only scout subagent for large scans; the main thread does all writing.
+
+## Task 2: Security Audit of AI Skills
+
+Use when the user wants to audit AI skills or bundles for security vulnerabilities.
+
+### Steps
+1. Perform non-intrusive static analysis to identify malicious patterns, data leaks, system stability risks, and obfuscated payloads.
+2. Analyze code for platform-specific security issues across Windows, macOS, Linux/Unix, and Mobile (Android/iOS).
+3. Check for privilege escalation, file locking, script execution, dangerous installs, mobile security issues, information disclosure, service manipulation, obfuscation, and legitimacy.
+4. Generate a security report with a score (0-10), platform target identification, flagged actions, threat analysis, and mitigation recommendations.
+5. Do not execute potentially malicious code during the audit.
+6. Do not modify the code being audited.
+
+## Conflicts
+
+- jsmastery-pro/skills: Writes AGENTS.md files to bootstrap AI context for a project.
+- sickn33/agentic-awesome-skills: Performs static security analysis to identify malicious patterns in AI skills.
+
+These are different tasks. The user must specify which audit they need.</pre>
+</body>
+</html>

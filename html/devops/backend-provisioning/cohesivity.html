@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cohesivity</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">backend-provisioning</a> / cohesivity</p><h1>cohesivity</h1><p class="meta">combined</p><p>The two skills describe the same service (Cohesivity) but have fundamentally different activation logic and security procedures. The first skill (davepoon) is a &#x27;plugin-first&#x27; skill that relies on MCP servers for bootstrap and explicitly forbids manual HTTP calls to the genesis endpoint, while the second skill (sickn33) is a &#x27;direct-API&#x27; skill that provides a specific bash script for manual bootstrap and includes strict privacy/telemetry disclosures and file-permission checks that the first lacks. Because they disagree on the core bootstrap mechanism (MCP vs. direct HTTP) and the second contains critical safety steps (privacy disclosure, gitignore checks, umask) absent from the first, neither is a simple reproduction of the other.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/cohesivity/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cohesivity/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/cohesivity/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cohesivity/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/cohesivity/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/cohesivity/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/cohesivity/skills/cohesivity/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: cohesivity
+description: Provision headless backend services for AI agents through Cohesivity. Use when the user names Cohesivity, a trusted .cohesivity file exists, or the user approves a new backend.
+category: infrastructure-cloud
+---
+
+# Cohesivity
+
+## Overview
+Cohesivity is on-the-fly infrastructure for AI agents. One HTTP API provisions databases, hosting, auth, and more.
+
+## Activation &amp; Consent
+1. **Triggers:** Activate if the user names Cohesivity, a valid `.cohesivity` file exists (after user confirmation of provenance), or the user explicitly approves using Cohesivity for a new backend.
+2. **Privacy Disclosure:** Before bootstrapping, disclose that Cohesivity collects IP, User-Agent, and telemetry for abuse prevention. Do not send regulated data without explicit approval.
+3. **Consent Gates:** Ephemeral bootstrap (72h) is low-cost. Durable state, paid actions, or plan upgrades require explicit user approval.
+
+## Bootstrap Procedure
+**Option A: MCP Available (Preferred for Claude Code)**
+If the Cohesivity MCP is installed, use the `create_tenant` tool. Do not hand-roll HTTP calls.
+
+**Option B: Direct API (Manual)**
+If MCP is unavailable, use the following secure bootstrap script. Ensure `.cohesivity` is in `.gitignore`.
+
+```bash
+umask 077
+if [ -e .cohesivity ]; then echo &#x27;Exists&#x27;; exit 1; fi
+if git rev-parse --is-inside-work-tree &gt;/dev/null 2&gt;&amp;1 &amp;&amp; ! git check-ignore -q .cohesivity; then echo &#x27;Not ignored&#x27;; exit 1; fi
+tmp=&quot;$(mktemp .cohesivity.tmp.XXXXXX)&quot;
+curl --fail --silent --show-error --request POST \
+  --header &#x27;User-Agent: agentic-awesome-skills:claude-code&#x27; \
+  --output &quot;$tmp&quot; https://cohesivity.ai/api/genesis
+# Validate fields: tenant_id, coh_management_key, coh_application_key, expires_at, tenant_lifecycle, runtime_profile
+mv &quot;$tmp&quot; .cohesivity
+```
+
+## Architecture
+- **Control Plane:** `https://cohesivity.ai/api/*` (Auth: `Bearer &lt;coh_management_key&gt;`)
+- **Data Plane:** `https://cohesivity.ai/edge/*` (Auth: `?key=&lt;coh_application_key&gt;`)
+
+## Hard Rules
+- **Secrets:** Never expose `coh_management_key` or `coh_application_key` in client-side code.
+- **User-Agent:** Always send a non-default User-Agent to avoid WAF 403 errors.
+- **Docs:** Fetch live docs at `https://cohesivity.ai/offerings/&lt;name&gt;` for specific resource parameters.</pre>
+</body>
+</html>

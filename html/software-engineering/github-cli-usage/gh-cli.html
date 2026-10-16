@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gh-cli</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">github-cli-usage</a> / gh-cli</p><h1>gh-cli</h1><p class="meta">combined</p><p>The two skills serve different purposes. The trailofbits skill is a behavioral guardrail that enforces the use of the `gh` CLI over unauthenticated HTTP methods (curl/WebFetch) for security and rate-limit reasons. The benchflow skill is a reference manual that documents specific `gh` subcommands, flags, and search syntax. Neither contains the material steps of the other; the first lacks command documentation, and the second lacks the enforcement logic for when to use the tool. Combining them creates a complete skill that both mandates the correct tool usage and provides the necessary reference for executing it.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/gh-cli/skills/gh-cli/SKILL.md</code></td></tr><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks-extra/gh-repo-analytics/environment/skills/gh-cli/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/gh-cli/skills/gh-cli/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks-extra/gh-repo-analytics/environment/skills/gh-cli/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: gh-cli
+description: Enforces authenticated gh CLI workflows and provides a reference for GitHub CLI commands, search syntax, and JSON output.
+---
+
+# gh-cli
+
+## When to Use
+
+- Working with GitHub repositories, pull requests, issues, releases, or raw file URLs.
+- You need authenticated access to private repositories or higher API rate limits.
+- You are about to use `curl`, `wget`, `WebFetch`, or an MCP fetch tool against GitHub.
+
+## When NOT to Use
+
+- The target is not GitHub.
+- Plain local git operations already solve the task.
+
+## Guidance
+
+Prefer the authenticated `gh` CLI over raw HTTP fetches for GitHub content. In particular:
+
+- Prefer `gh repo view`, `gh pr view`, `gh pr list`, `gh issue view`, and `gh api` over unauthenticated `curl` or `wget`.
+- Prefer cloning a repository and reading files locally over fetching `raw.githubusercontent.com` blobs directly.
+- Avoid using GitHub API `/contents/` endpoints as a substitute for cloning and reading repository files.
+
+## Core Commands
+
+Use `gh &lt;command&gt; --help` for more information about a command.
+
+### gh pr
+
+Work with GitHub pull requests.
+
+```
+USAGE
+  gh pr &lt;command&gt; [flags]
+
+CORE COMMANDS
+  checkout:   Check out a pull request in git
+  checks:     Show CI status for a single pull request
+  close:      Close a pull request
+  comment:    Create a new pr comment
+  create:     Create a pull request
+  diff:       View changes in a pull request
+  edit:       Edit a pull request
+  list:       List and filter pull requests in this repository
+  merge:      Merge a pull request
+  ready:      Mark a pull request as ready for review
+  reopen:     Reopen a pull request
+  review:     Add a review to a pull request
+  status:     Show status of relevant pull requests
+  view:       View a pull request
+
+FLAGS
+  -R, --repo [HOST/]OWNER/REPO   Select another repository using the [HOST/]OWNER/REPO format
+
+ARGUMENTS
+  A pull request can be supplied as argument in any of the following formats:
+  - by number, e.g. &quot;123&quot;;
+  - by URL, e.g. &quot;https://github.com/OWNER/REPO/pull/123&quot;; or
+  - by the name of its head branch, e.g. &quot;patch-1&quot; or &quot;OWNER:patch-1&quot;.
+
+EXAMPLES
+  $ gh pr checkout 353
+  $ gh pr create --fill
+  $ gh pr view --web
+```
+
+### gh issue
+
+Work with GitHub issues.
+
+```
+USAGE
+  gh issue &lt;command&gt; [flags]
+
+CORE COMMANDS
+  close:      Close issue
+  comment:    Create a new issue comment
+  create:     Create a new issue
+  delete:     Delete issue
+  edit:       Edit an issue
+  list:       List and filter issues in this repository
+  reopen:     Reopen issue
+  status:     Show status of relevant issues
+  transfer:   Transfer issue to another repository
+  view:       View an issue
+
+FLAGS
+  -R, --repo [HOST/]OWNER/REPO   Select another repository using the [HOST/]OWNER/REPO format
+
+ARGUMENTS
+  An issue can be supplied as argument in any of the following formats:
+  - by number, e.g. &quot;123&quot;; or
+  - by URL, e.g. &quot;https://github.com/OWNER/REPO/issues/123&quot;.
+
+EXAMPLES
+  $ gh issue list
+  $ gh issue create --label bug
+  $ gh issue view --web
+```
+
+### gh repo
+
+Work with GitHub repositories.
+
+```
+USAGE
+  gh repo &lt;command&gt; [flags]
+
+CORE COMMANDS
+  archive:    Archive a repository
+  clone:      Clone a repository locally
+  create:     Create a new repository
+  delete:     Delete a repository
+  edit:       Edit repository settings
+  fork:       Create a fork of a repository
+  list:       List repositories owned by user or organization
+  rename:     Rename a repository
+  sync:       Sync a repository
+  view:       View a repository
+
+ARGUMENTS
+  A repository can be supplied as an argument in any of the following formats:
+  - &quot;OWNER/REPO&quot;
+  - by URL, e.g. &quot;https://github.com/OWNER/REPO&quot;
+
+EXAMPLES
+  $ gh repo create
+  $ gh repo clone cli/cli
+  $ gh repo view --web
+```
+
+## Search Query Syntax
+
+The `--search` flag uses GitHub search syntax.
+
+### Comparison Operators
+
+| Query | Description | Example |
+|-------|-------------|---------|
+| `&gt;n` | Greater than | `stars:&gt;1000` |
+| `&gt;=n` | Greater than or equal | `topics:&gt;=5` |
+| `&lt;n` | Less than | `size:&lt;10000` |
+| `&lt;=n` | Less than or equal | `stars:&lt;=50` |
+
+### Range Queries
+
+| Query | Description | Example |
+|-------|-------------|---------|
+| `n..n` | Between range | `stars:10..50` |
+| `n..*` | Greater than or equal | `stars:10..*` |
+| `*..n` | Less than or equal | `stars:*..10` |
+
+### Date Queries
+
+Date format: `YYYY-MM-DD` (ISO8601).
+
+| Query | Example |
+|-------|---------|
+| `&gt;YYYY-MM-DD` | `created:&gt;2024-04-29` |
+| `&gt;=YYYY-MM-DD` | `created:&gt;=2024-04-01` |
+| `&lt;YYYY-MM-DD` | `pushed:&lt;2024-07-05` |
+| `&lt;=YYYY-MM-DD` | `created:&lt;=2024-07-04` |
+| `YYYY-MM-DD..YYYY-MM-DD` | `created:2024-04-30..2024-07-04` |
+
+### Exclude Results
+
+Prefix qualifier with `-` to exclude:
+
+| Query | Example |
+|-------|---------|
+| `-QUALIFIER` | `stars:&gt;10 -language:javascript` |
+| `NOT` | `hello NOT world` |
+
+### Usernames
+
+| Query | Description |
+|-------|-------------|
+| `author:USERNAME` | Filter by specific user |
+| `author:@me` | Filter by current user |
+| `assignee:@me` | Assigned to current user |
+
+### Queries with Whitespace
+
+Use quotation marks for multi-word values:
+- `label:&quot;bug fix&quot;` — label with space
+- `cats NOT &quot;hello world&quot;` — exclude phrase
+
+## JSON Output
+
+Common fields for `--json`:
+
+**PR**:
+
+```
+additions
+assignees
+author
+baseRefName
+body
+changedFiles
+closed
+closedAt
+comments
+commits
+createdAt
+```</pre>
+</body>
+</html>

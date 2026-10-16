@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>qiskit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">quantum-circuit-execution</a> / qiskit</p><h1>qiskit</h1><p class="meta">combined</p><p>The K-Dense copy is a specific, version-pinned procedure for Qiskit 2.x and IBM Runtime 0.50, including a critical deprecation warning for SamplerV2/EstimatorV2 and a strict 5-step hardware workflow. The sickn33 copy is a broad, version-agnostic catalog that covers a wider range of topics (visualization, algorithms, third-party backends) but lacks the specific API migration details and the strict &#x27;transpile once&#x27; constraint found in the K-Dense copy. Because the K-Dense copy contains material steps and constraints (specific import paths for deprecated primitives, specific version pins) that the other lacks, and the sickn33 copy contains material scope (visualization, algorithm libraries) that the other lacks, crowning one would hide a real alternative or lose critical technical detail.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/qiskit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/qiskit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/qiskit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/qiskit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/qiskit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/qiskit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: qiskit
+description: Builds, simulates, transpiles, and executes quantum circuits with Qiskit and IBM Quantum Runtime. Use for Qiskit 2.x circuits, V2 primitives, target-aware transpilation, local/noisy simulation, IBM QPU execution, and Qiskit ecosystem packages.
+license: Apache-2.0
+metadata:
+  version: &quot;2.3&quot;
+  last-reviewed: &quot;2026-10-01&quot;
+---
+
+# Qiskit
+
+Use current Qiskit 2.x APIs to build circuits, prepare hardware-compatible ISA circuits, and execute them through V2 primitives.
+
+## Choose the Right Path
+
+| Goal | Recommended interface |
+|---|---|
+| Ideal evolution with finite-shot sampling | `qiskit.primitives.StatevectorSampler` |
+| Exact local expectation values | `qiskit.primitives.StatevectorEstimator` |
+| High-performance or noisy simulation | Qiskit Aer |
+| IBM QPU sampling | `qiskit_ibm_runtime.executor_sampler.Sampler` |
+| IBM QPU expectation values and mitigation | `qiskit_ibm_runtime.executor_estimator.Estimator` |
+| Open-system or master-equation dynamics | Prefer QuTiP |
+| Differentiable quantum machine learning | Prefer PennyLane unless Qiskit integration is required |
+
+## Installation
+
+Create an isolated environment and install only the components needed:
+
+```bash
+uv venv --python 3.13
+source .venv/bin/activate
+
+# Core SDK plus plotting support
+uv pip install &quot;qiskit[visualization]==2.5.2&quot;
+
+# Add only when needed
+uv pip install &quot;qiskit-ibm-runtime==0.50.0&quot;
+uv pip install &quot;qiskit-aer==0.17.2&quot;
+```
+
+Do not install `qiskit-terra`; it was superseded by the `qiskit` distribution.
+
+## Core Workflow
+
+Follow this sequence for every hardware-oriented workload:
+
+1. **Map** the problem to a circuit and, for Estimator, one or more observables.
+2. **Optimize** the parameterized circuit once for the selected backend.
+3. **Apply the layout** to every observable.
+4. **Execute** ISA circuits through a V2 primitive using Primitive Unified Blocs (PUBs).
+5. **Analyze** register-aware results, metadata, uncertainty, and resource usage.
+
+Do not bind and retranspile a parameterized circuit inside every optimizer iteration. Transpile the parameterized circuit once, then pass parameter arrays in PUBs.
+
+## Quick Local Sampling
+
+```python
+from qiskit import QuantumCircuit
+from qiskit.primitives import StatevectorSampler
+
+circuit = QuantumCircuit(2)
+circuit.h(0)
+circuit.cx(0, 1)
+circuit.measure_all()  # creates the classical register named &quot;meas&quot;
+
+sampler = StatevectorSampler(seed=7)
+pub_result = sampler.run([circuit], shots=1024).result()[0]
+counts = pub_result.data.meas.get_counts()
+print(counts)
+```
+
+## IBM QPU Sampling
+
+Note: Runtime 0.50 deprecates the top-level `SamplerV2`/`EstimatorV2` implementations. New code imports `Sampler` from `qiskit_ibm_runtime.executor_sampler` and `Estimator` from `qiskit_ibm_runtime.executor_estimator`.
+
+```python
+from qiskit import QuantumCircuit
+from qiskit.transpiler import generate_preset_pass_manager
+from qiskit_ibm_runtime import QiskitRuntimeService
+from qiskit_ibm_runtime.executor_sampler import Sampler
+
+service = QiskitRuntimeService()
+backend = service.least_busy(
+    operational=True,
+    simulator=False,
+    min_num_qubits=2,
+)
+
+circuit = QuantumCircuit(2)
+circuit.h(0)
+circuit.cx(0, 1)
+circuit.measure_all()
+
+# Transpile once
+pm = generate_preset_pass_manager(optimization_level=2, backend=backend)
+transpiled_circuit = pm.run(circuit)
+
+sampler = Sampler(backend=backend)
+pub_result = sampler.run([transpiled_circuit], shots=1024).result()[0]
+```
+
+## Visualization
+
+```python
+from qiskit.visualization import plot_histogram
+
+qc.draw(&#x27;mpl&#x27;)           # Circuit diagram
+plot_histogram(counts)   # Results histogram
+```
+
+## Conflicts
+
+- **K-Dense-AI/scientific-agent-skills** specifies that Runtime 0.50 deprecates top-level `SamplerV2`/`EstimatorV2` and requires importing from `qiskit_ibm_runtime.executor_sampler`/`executor_estimator`. **sickn33/agentic-awesome-skills** does not mention this deprecation, implying standard top-level imports are still primary.
+- **K-Dense-AI/scientific-agent-skills** mandates a 5-step sequence explicitly forbidding retranspilation inside optimizer iterations. **sickn33/agentic-awesome-skills** describes a 4-step workflow without this specific constraint.</pre>
+</body>
+</html>

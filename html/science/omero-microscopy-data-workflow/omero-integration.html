@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>omero-integration</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">omero-microscopy-data-workflow</a> / omero-integration</p><h1>omero-integration</h1><p class="meta">combined</p><p>The K-Dense copy is a hardened, version-pinned operating contract (Python 3.12, IcePy 3.6.5, omero-py 5.22.1, strict credential handling, dry-run-first, and explicit write-approval rules). The Vibe-Skills and OpenClaw copies are near-identical, broader capability catalogs that omit those safety constraints and use looser, older requirements (Python 3.7+, generic install). Because the K-Dense copy would hide the broader capability routing and the other copies would hide the critical safety/version constraints, crowning one would lose material steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/omero-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/omero-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/omero-integration/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/omero-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/omero-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/omero-integration/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: omero-integration
+description: Inspects and automates microscopy data workflows against OMERO.server with omero-py, BlitzGateway, OMERO CLI, tables, annotations, ROIs, rendering, and documented OMERO.web APIs. Use this skill for scoped OMERO inventory, metadata export, import/export planning, or reviewed write workflows.
+license: MIT
+---
+
+# OMERO Integration
+
+Use current OME documentation and the smallest explicit data scope. OMERO data may contain unpublished images, identifiers, annotations, original files, and derived measurements.
+
+## Operating Contract
+
+1. Start with local validation or a dry run. Do not connect until the user has selected the host, group, object type, IDs, and result limit.
+2. Read credentials only from the named OMERO_* variables. Never search parent directories or load .env files.
+3. Never place a password or session key in command arguments, source code, output JSON, logs, tracebacks, or chat.
+4. Default to secure=True.
+5. Bound every list, page, ROI, shape, annotation, table row, pixel plane, and local file scan.
+6. Treat all writes separately: annotation/link creation, rendering-default saves, image creation, imports, script uploads, table writes, ownership or group changes, and deletion require an exact reviewed target.
+7. Close BlitzGateway, table handles, raw stores, thumbnail stores, rendering engines, script clients, and other stateful services in finally blocks or documented context-manager patterns.
+8. Never connect to a real server merely to test examples.
+
+## Choose the Interface
+
+- BlitzGateway (omero-py): primary Python client for object traversal, pixels, annotations, ROIs, rendering, and services.
+- OMERO CLI: sessions, import scanning/import, OME-TIFF or XML export, scripts, and administrative plugins.
+- OMERO.web api and webgateway: the only OMERO.web apps that official documentation calls stable public APIs.
+- OMERO.server scripts: uploaded plugins executed by server infrastructure.
+
+## Install a Reproducible Client
+
+Create a Python 3.12 environment:
+
+```bash
+uv venv --python 3.12 .venv
+source .venv/bin/activate
+```
+
+Install the exact IcePy 3.6.5 wheel matching the interpreter, OS, architecture, and wheel tags, then OMERO.py:
+
+```bash
+uv pip install &quot;/absolute/path/to/zeroc_ice-3.6.5-&lt;matching-tags&gt;.whl&quot;
+uv pip install &quot;omero-py==5.22.1&quot;
+```
+
+Do not substitute Ice 3.7. For import/admin commands only, OMERODIR must point to a compatible extracted OMERO.server directory.
+
+## Core Capabilities
+
+This skill covers eight major capability areas. Each is documented in detail in the references/ directory:
+
+### 1. Connection &amp; Session Management
+**File**: references/connection.md
+
+Establish secure connections to OMERO servers, manage sessions, handle authentication, and work with group contexts.
+
+### 2. Data Access &amp; Retrieval
+**File**: references/data_access.md
+
+Navigate OMERO&#x27;s hierarchical data structure (Projects → Datasets → Images) and screening data (Screens → Plates → Wells).
+
+### 3. Metadata &amp; Annotations
+**File**: references/metadata.md
+
+Create and manage annotations including tags, key-value pairs, file attachments, and comments.
+
+### 4. Image Processing &amp; Rendering
+**File**: references/image_processing.md
+
+Access raw pixel data as NumPy arrays, manipulate rendering settings, create derived images, and manage physical dimensions.
+
+### 5. Regions of Interest (ROIs)
+**File**: references/rois.md
+
+Create, retrieve, and analyze ROIs with various shapes. Extract intensity statistics from ROI regions.
+
+### 6. OMERO Tables
+**File**: references/tables.md
+
+Store and query structured tabular data associated with OMERO objects.
+
+### 7. Scripts &amp; Batch Operations
+**File**: references/scripts.md
+
+Create OMERO.scripts that run server-side for batch processing, automated workflows, and integration with OMERO clients.
+
+### 8. Advanced Features
+**File**: references/advanced.md
+
+Covers permissions, filesets, cross-group queries, delete operations, and other advanced functionality.
+
+## Quick Start
+
+Basic connection pattern:
+
+```python
+from omero.gateway import BlitzGateway
+
+# Connect to OMERO server
+conn = BlitzGateway(username, password, host=host, port=port)
+connected = conn.connect()
+
+if connected:
+    # Perform operations
+    for project in conn.listProjects():
+        print(project.getName())
+
+    # Always close connection
+    conn.close()
+else:
+    print(&quot;Connection failed&quot;)
+```
+
+Recommended pattern with context manager:
+
+```python
+from omero.gateway import BlitzGateway
+
+with BlitzGateway(username, password, host=host, port=port) as conn:
+    # Connection automatically managed
+    for project in conn.listProjects():
+        print(project.getName())
+    # Automatically closed on exit
+```
+
+## Selecting the Right Capability
+
+**For data exploration:**
+- Start with references/connection.md to establish connection
+- Use references/data_access.md to navigate hierarchy
+- Check references/metadata.md for annotation details
+
+**For image analysis:**
+- Use references/image_processing.md for pixel data access
+- Use references/rois.md for region-based analysis
+- Use references/tables.md to store results
+
+**For automation:**
+- Use references/scripts.md for server-side processing
+- Use references/data_access.md for batch data retrieval
+
+**For advanced operations:**
+- Use references/advanced.md for permissions and deletion
+- Check references/connection.md for cross-group queries
+
+## Common Workflows
+
+### Workflow 1: Retrieve and Analyze Images
+
+1. Connect to OMERO server (references/connection.md)
+2. Navigate to dataset (references/data_access.md)
+3. Retrieve images from the dataset
+4. Extract pixel data (references/image_processing.md)
+5. Store results in a table (references/tables.md)
+
+### Workflow 2: Batch Processing
+
+1. Connect to OMERO server (references/connection.md)
+2. Query objects with filters (references/data_access.md)
+3. Create a server-side script (references/scripts.md)
+4. Execute the script and retrieve results
+
+### Workflow 3: ROI Analysis
+
+1. Connect to OMERO server (references/connection.md)
+2. Retrieve target images (references/data_access.md)
+3. Create ROIs on images (references/rois.md)
+4. Extract intensity statistics from ROIs
+5. Store measurements in a table (references/tables.md)
+
+## Conflicts
+
+- K-Dense-AI/scientific-agent-skills requires Python 3.10+ (3.12 recommended) and pins omero-py==5.22.1 with IcePy 3.6.5; foryourhealth111-pixel/Vibe-Skills and FreedomIntelligence/OpenClaw-Medical-Skills state Python 3.7+ and a generic &#x27;uv pip install omero-py&#x27; without version pins.
+- K-Dense-AI/scientific-agent-skills mandates reading credentials only from named OMERO_* variables, never loading .env files, and never placing secrets in arguments/logs; the other two copies do not state these constraints.
+- K-Dense-AI/scientific-agent-skills requires a dry-run/local validation before connecting and explicit approval for any write operation; the other two copies present direct connection and write patterns without these gates.</pre>
+</body>
+</html>

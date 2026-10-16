@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>code-review-excellence</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">code-review</a> / code-review-excellence</p><h1>code-review-excellence</h1><p class="meta">combined</p><p>The first two copies are nearly identical, with the second adding a generic Limitations section. The third copy is a much more detailed, structured procedure (phases, checklists, techniques) that the first two lack. The first two lack the detailed steps in the third, and the third lacks the specific &#x27;Do not use&#x27; and &#x27;Output Format&#x27; sections of the first two. Combining is necessary to capture the full scope of the skill as represented by the different versions.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/code-review-excellence/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/code-review-excellence/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/code-review-excellence/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/code-review-excellence/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/code-review-excellence/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/code-review-excellence/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/code-review-excellence/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/code-review-excellence/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: code-review-excellence
+description: Master effective code review practices to provide constructive feedback, catch bugs early, and foster knowledge sharing while maintaining team morale. Use when reviewing pull requests, establishing review standards, or mentoring developers.
+---
+
+# Code Review Excellence
+
+Transform code reviews from gatekeeping to knowledge sharing through constructive feedback, systematic analysis, and collaborative improvement.
+
+## Use this skill when
+
+- Reviewing pull requests and code changes
+- Establishing code review standards
+- Mentoring developers through review feedback
+- Auditing for correctness, security, or performance
+
+## Do not use this skill when
+
+- There are no code changes to review
+- The task is a design-only discussion without code
+- You need to implement fixes instead of reviewing
+
+## Instructions
+
+- Read context, requirements, and test signals first.
+- Review for correctness, security, performance, and maintainability.
+- Provide actionable feedback with severity and rationale.
+- Ask clarifying questions when intent is unclear.
+- If detailed checklists are required, open `resources/implementation-playbook.md`.
+
+## Review Process
+
+### Phase 1: Context Gathering
+- Read PR description and linked issue.
+- Check PR size and CI/CD status.
+- Understand the business requirement.
+
+### Phase 2: High-Level Review
+- Evaluate architecture and design fit.
+- Check file organization and testing strategy.
+
+### Phase 3: Line-by-Line Review
+- Check logic, security, performance, and maintainability.
+- Use checklists for security, performance, and testing.
+
+### Phase 4: Summary &amp; Decision
+- Summarize key concerns and highlights.
+- Make a clear decision (Approve, Comment, Request Changes).
+
+## Output Format
+
+- High-level summary of findings
+- Issues grouped by severity (blocking, important, minor)
+- Suggestions and questions
+- Test and coverage notes
+
+## Resources
+
+- `resources/implementation-playbook.md` for detailed review patterns and templates.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

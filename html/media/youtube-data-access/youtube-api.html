@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>youtube-api</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">media</a> / <a href="index.html">youtube-data-access</a> / youtube-api</p><h1>youtube-api</h1><p class="meta">combined</p><p>The three copies are not reproductions of one procedure; they are three different YouTube data access backends with different authentication, endpoints, and capabilities. ZeroPointRepo uses TranscriptAPI for transcripts and metadata without Google OAuth. browser-act uses a BrowserAct API key and a Python script to scrape structured metrics. LeoYeAI uses the Maton gateway to proxy the official YouTube Data API v3 with managed OAuth. Choosing one as authentic would hide the other two real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/ZeroPointRepo/youtube-skills">ZeroPointRepo/youtube-skills</a></td><td><code>clawhub/youtube-api/SKILL.md</code></td></tr><tr><td><a href="https://github.com/browser-act/skills">browser-act/skills</a></td><td><code>solutions/video-platforms/youtube-api-skill/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/youtube-api-skill/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/ZeroPointRepo/youtube-skills">ZeroPointRepo/youtube-skills</a></td><td><code>clawhub/youtube-api/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/browser-act/skills">browser-act/skills</a></td><td><code>solutions/video-platforms/youtube-api-skill/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/youtube-api-skill/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/ZeroPointRepo/youtube-skills">ZeroPointRepo/youtube-skills</a></td><td><code>skills/youtube-api/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># YouTube Data Access
+
+This skill provides three alternative backends for accessing YouTube data. Choose the backend that matches the user&#x27;s needs and available credentials.
+
+## Backend Selection
+
+1. **TranscriptAPI (ZeroPointRepo)**: Use when you need transcripts, video metadata, channel info, search, or playlists without Google API quotas or OAuth. Requires `TRANSCRIPT_API_KEY`.
+2. **BrowserAct (browser-act)**: Use when you need automated extraction of detailed video metrics (views, likes, comments, duration) via keyword search and upload date filters. Requires `BROWSERACT_API_KEY` and Python.
+3. **Maton Gateway (LeoYeAI)**: Use when you need the official YouTube Data API v3 with managed OAuth, including playlist management, comments, and subscriptions. Requires `MATON_API_KEY`.
+
+## Backend 1: TranscriptAPI
+
+### Setup
+If `TRANSCRIPT_API_KEY` is not set, guide the user to get a free key at https://transcriptapi.com.
+
+### Required Headers
+Every request needs:
+- `Authorization: Bearer $TRANSCRIPT_API_KEY`
+- `User-Agent: &lt;AgentName&gt;/&lt;version&gt;` (do not omit; Cloudflare blocks bare defaults)
+
+### Endpoints
+Base URL: `https://transcriptapi.com/api/v2/youtube/`
+
+| Endpoint | Method | Cost |
+| --- | --- | --- |
+| `/info?video_url=ID` | GET | free |
+| `/video/metadata?video_url=ID` | GET | 1 |
+| `/transcript?video_url=ID` | GET | 1 |
+| `/search?q=QUERY&amp;type=video` | GET | 1 |
+| `/channel/resolve?input=@handle` | GET | free |
+| `/channel/info?channel=@handle` | GET | 1 |
+| `/channel/latest?channel=@handle` | GET | free |
+| `/channel/videos?channel=@handle` | GET | 1/page |
+| `/channel/search?channel=@handle&amp;q=Q` | GET | 1 |
+| `/channel/playlists?channel=@handle` | GET | 1/page |
+| `/channel/posts?channel=@handle` | GET | 1/page |
+| `/channel/sections?channel=@handle` | GET | 1 |
+| `/playlist/videos?playlist=PL_ID` | GET | 1/page |
+
+### Examples
+
+Search videos:
+```bash
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/search?q=python+tutorial&amp;type=video&amp;limit=10&quot; \
+  -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot; \
+  -H &quot;User-Agent: YourAgent/1.0&quot;
+```
+
+Get transcript:
+```bash
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/transcript?video_url=dQw4w9WgXcQ&amp;format=text&amp;include_timestamp=true&amp;send_metadata=true&quot; \
+  -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot; \
+  -H &quot;User-Agent: YourAgent/1.0&quot;
+```
+
+Check video info (free):
+```bash
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/info?video_url=dQw4w9WgXcQ&quot; \
+  -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot; \
+  -H &quot;User-Agent: YourAgent/1.0&quot;
+```
+
+## Backend 2: BrowserAct
+
+### Setup
+If `BROWSERACT_API_KEY` is not set, ask the user to get a key at https://www.browseract.com/reception/integrations.
+
+### Invocation
+```bash
+python -u ./scripts/youtube_api.py &quot;keywords&quot; &quot;upload_date&quot;
+```
+
+Parameters:
+- `keywords`: Search keywords (string)
+- `upload_date`: `Today`, `This week`, `This month`, `This year` (default: `This week`)
+
+### Monitoring
+The script outputs timestamped status logs. Do not misinterpret ongoing logs as a deadlock. If output stops and no result is returned, retry once.
+
+### Error Handling
+- If output contains `&quot;Invalid authorization&quot;`, do not retry; ask the user to recheck the API key.
+- If the task fails for other reasons, retry once. If the second attempt fails, report the error.
+
+### Output Fields
+`channel_title`, `channel_url`, `subscribers`, `video_title`, `video_url`, `publish_date`, `view_count`, `video_duration`, `comment_count`, `like_count`
+
+## Backend 3: Maton Gateway
+
+### Setup
+If `MATON_API_KEY` is not set, guide the user to get a key at https://maton.ai/settings.
+
+### Base URL
+`https://gateway.maton.ai/youtube/{native-api-path}`
+
+The gateway proxies to `www.googleapis.com` and injects the OAuth token.
+
+### Authentication
+`Authorization: Bearer $MATON_API_KEY`
+
+### Connection Management
+Manage OAuth connections at `https://ctrl.maton.ai`.
+
+List connections:
+```bash
+python &lt;&lt;&#x27;EOF&#x27;
+import urllib.request, os, json
+req = urllib.request.Request(&#x27;https://ctrl.maton.ai/connections?app=youtube&amp;status=ACTIVE&#x27;)
+req.add_header(&#x27;Authorization&#x27;, f&#x27;Bearer {os.environ[&quot;MATON_API_KEY&quot;]}&#x27;)
+print(json.dumps(json.load(urllib.request.urlopen(req)), indent=2))
+EOF
+```
+
+Create connection:
+```bash
+python &lt;&lt;&#x27;EOF&#x27;
+import urllib.request, os, json
+data = json.dumps({&#x27;app&#x27;: &#x27;youtube&#x27;}).encode()
+req = urllib.request.Request(&#x27;https://ctrl.maton.ai/connections&#x27;, data=data, method=&#x27;POST&#x27;)
+req.add_header(&#x27;Authorization&#x27;, f&#x27;Bearer {os.environ[&quot;MATON_API_KEY&quot;]}&#x27;)
+req.add_header(&#x27;Content-Type&#x27;, &#x27;application/json&#x27;)
+print(json.dumps(json.load(urllib.request.urlopen(req)), indent=2))
+EOF
+```
+
+Open the returned `url` in a browser to complete OAuth.
+
+If multiple connections exist, specify one with the `Maton-Connection` header.
+
+### API Reference
+
+Search:
+```bash
+curl -s -X GET &quot;https://gateway.maton.ai/youtube/youtube/v3/search?part=snippet&amp;q=machine+learning&amp;type=video&amp;maxResults=10&amp;order=viewCount&quot; -H &quot;Authorization: Bearer $MATON_API_KEY&quot;
+```
+
+Get video details:
+```bash
+curl -s -X GET &quot;https://gateway.maton.ai/youtube/youtube/v3/videos?part=snippet,statistics,contentDetails&amp;id={videoId}&quot; -H &quot;Authorization: Bearer $MATON_API_KEY&quot;
+```
+
+## Conflicts
+
+- **ZeroPointRepo/youtube-skills** uses `TRANSCRIPT_API_KEY` and `transcriptapi.com` endpoints; **browser-act/skills** uses `BROWSERACT_API_KEY` and a local Python script; **LeoYeAI/openclaw-master-skills** uses `MATON_API_KEY` and `gateway.maton.ai` proxying the YouTube Data API v3.
+- **ZeroPointRepo** and **browser-act** are read-only data extraction; **LeoYeAI** supports OAuth connection management and official API operations like playlist management and comments.
+- **browser-act** requires a Python runtime; **ZeroPointRepo** and **LeoYeAI** examples use curl or urllib without a separate Python script dependency.</pre>
+</body>
+</html>

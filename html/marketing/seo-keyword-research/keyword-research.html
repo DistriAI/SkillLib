@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>keyword-research</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">seo-keyword-research</a> / keyword-research</p><h1>keyword-research</h1><p class="meta">combined</p><p>The four copies overlap on the core task (seed expansion, intent classification, difficulty/volume scoring, and pillar-cluster grouping) but each contains material steps or constraints the others lack, and they disagree on tooling and scoring. aaron-he-zhu adds a strict 8-phase contract, evidence-labeling rules, and keyless local helpers (autocomplete, Firecrawl SERP sampling, Wikipedia attention proxy) plus a GSC striking-distance shortcut. kostja94 adds a detailed manual discovery playbook (alphabet autocomplete, position variants, PAA, competitor reverse, user feedback) and a SERP-overlap clustering method. Ryze-AI-Adgent is tool-specific, requiring the Ryze MCP connector and Google Ads/DataForSEO calls, and mandates CPC in the output. nowork-studio is a thin pointer to an external WORKFLOW.md and explicitly defers calendar work to a different skill. Crowning one copy would hide real alternative procedures and tooling paths.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aaron-he-zhu/aaron-marketing-skills">aaron-he-zhu/aaron-marketing-skills</a></td><td><code>seo-geo/survey/keyword-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/seo/content/keyword-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Ryze-AI-Adgent/open-seo-mcp-skills">Ryze-AI-Adgent/open-seo-mcp-skills</a></td><td><code>skills/keyword-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/keyword-research/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aaron-he-zhu/aaron-marketing-skills">aaron-he-zhu/aaron-marketing-skills</a></td><td><code>seo-geo/survey/keyword-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/seo/content/keyword-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Ryze-AI-Adgent/open-seo-mcp-skills">Ryze-AI-Adgent/open-seo-mcp-skills</a></td><td><code>skills/keyword-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/keyword-research/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/keyword-research/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: keyword-research
+description: Discover, analyze, and prioritize keywords for SEO and GEO content strategies from a seed keyword or niche. Identifies high-value opportunities based on search volume, competition, intent, and business relevance. Generates topic clusters.
+---
+
+# Keyword Research
+
+## 1. Scope &amp; Context
+- Clarify product/service, target audience, business goal, site domain authority (DR), geography, and language.
+- If a project context file (e.g., `contextus.md`) exists, read it and load only relevant modules.
+- Identify available tool access: Google Keyword Planner, Google Trends, SEO tools, Search Console, or MCP connectors.
+
+## 2. Discovery
+- **Seed Expansion**: Start with core, problem, solution, audience, and industry terms.
+- **Manual Methods**:
+  - **Alphabet Autocomplete**: Type seed + space + each letter (a-z, 0-9) to capture long-tail queries with real traffic.
+  - **Position Variants**: Try prefix (`a keyword`), suffix (`keyword a`), and middle (`how to keyword a`) patterns.
+  - **Question Modifiers**: Use `how to`, `what is`, `why`, `vs`, `for beginners`, etc.
+  - **PAA &amp; Related Searches**: Extract high-value signals from Google People Also Ask and Related Searches.
+  - **Competitor Reverse**: Analyze competitor titles, H1s, and URLs to find topics they rank for (positions 4-10 are opportunities).
+  - **User Feedback**: Mine support tickets, reviews, and community forums (Reddit, Quora) for unmet search demand.
+- **Tool-Based Methods** (if available):
+  - **Ryze MCP**: Use `google_ads__generateKeywordIdeas` to collect up to ~200 ideas.
+  - **GSC Striking Distance**: If Search Console is connected, mine query data for terms already ranking in positions 5-20. These are proven demand and the fastest opportunity set.
+  - **Keyless Helpers**: Use local scripts for Google Autocomplete expansion, Firecrawl for live SERP sampling (to see who ranks), and Wikipedia pageviews for topic demand/seasonality proxies.
+
+## 3. Classification &amp; Intent
+- Tag each keyword by intent: Informational, Navigational, Commercial, or Transactional.
+- **Intent Signals**:
+  - Informational: &quot;how,&quot; &quot;what,&quot; &quot;guide,&quot; &quot;tutorial.&quot;
+  - Commercial: &quot;best,&quot; &quot;compare,&quot; &quot;vs,&quot; &quot;review.&quot;
+  - Transactional: &quot;buy,&quot; &quot;price,&quot; &quot;coupon,&quot; &quot;free shipping.&quot;
+- **SERP Check**: Search the term to verify intent. Knowledge cards suggest informational; product lists suggest commercial; brand sites suggest navigational.
+
+## 4. Scoring &amp; Evaluation
+- **Metrics**: Assign search volume, keyword difficulty (1-100), and CPC (if available).
+- **Evidence Labels**: Label every metric as **Measured** (tool/export), **User-provided**, **Calculated**, **Estimated**, **Proxy**, or **Unknown**. Never invent volumes; if data is missing, mark it Unknown with a reason.
+- **Opportunity Score**: Compute `Opportunity = (Volume × Intent Value) / Difficulty`. Use Intent Values: Informational=1, Navigational=1, Commercial=2, Transactional=3.
+- **GEO-Check**: Flag AI-answer-friendly queries (questions, definitions, comparisons, lists, how-tos) for Generative Engine Optimization.
+
+## 5. Clustering &amp; Topical Map
+- Group keywords into pillar (hub) and cluster (spoke) topic hubs.
+- **Clustering Methods**:
+  - **SERP Overlap**: Keywords with overlapping top-ranking pages belong in the same cluster.
+  - **Semantic**: Group by meaning and related concepts.
+  - **Intent-Based**: Separate pages if intent differs within a cluster.
+- For each cluster, identify the target keyword, supporting keywords, total volume, and whether an existing page should be optimized or a new page created.
+
+## 6. Deliverable
+- **Executive Summary**: High-level findings and top opportunities.
+- **Prioritized Plan**: Rank clusters by volume × winnability. Favor clusters where the site already has striking-distance positions (5-20).
+- **Cluster Tables**: One table per cluster showing keyword, volume, CPC, intent, and current position.
+- **Quick Wins / Growth / GEO Opportunities**: Name at least 3 specific opportunities in each category.
+- **Next Steps**: Recommend the next skill (e.g., competitor-analysis or content-strategy) based on the keyword set.
+
+## Conflicts
+- **Ryze-AI-Adgent/open-seo-mcp-skills**: Requires the Ryze MCP connector and mandates CPC in the output. If this connector is not available, use the manual and keyless methods above.
+- **aaron-he-zhu/aaron-marketing-skills**: Enforces strict evidence labeling and an 8-phase announcement structure. If using this skill&#x27;s specific scripts, follow its `NOT_SCORED` rule for missing decision-critical inputs.
+- **kostja94/marketing-skills**: Emphasizes manual discovery and SERP-overlap clustering. Use these methods when tool access is limited.
+- **nowork-studio/notfair-plugin**: Defers to an external WORKFLOW.md. If that file is present, follow it; otherwise, use this combined instruction.</pre>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>statistical-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">statistical-analysis</a> / statistical-analysis</p><h1>statistical-analysis</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the most complete and current procedure, but it contains specific, version-dependent constraints (e.g., Pingouin 0.7.0 API changes, PyMC 6.3.2 xarray output, and a specific `uv` installation workflow) that the other copies lack. The other copies (zLanqing, foryourhealth111, aipoch) provide a more generic, version-agnostic workflow and include a full end-to-end Python example (aipoch) that the K-Dense copy omits. Crowning the K-Dense copy would hide the generic alternative and the runnable example, while crowning the others would hide the critical version-specific warnings.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/statistical-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/statistical-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/statistical-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/statistical-analysis/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/statistical-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/statistical-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/statistical-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/statistical-analysis/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/statistical-analysis/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>metabolomics/statistical-analysis/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Statistical Analysis
+
+## Overview
+Conduct hypothesis tests, regression, correlation, and Bayesian analyses with systematic assumption checking, effect sizes, and APA-style reporting. Define the estimand and sampling units, diagnose model limitations, and report effect estimates with uncertainty.
+
+## When to Use
+- Conducting statistical hypothesis tests (t-tests, ANOVA, chi-square, non-parametric)
+- Performing regression or correlation analyses
+- Running Bayesian statistical analyses
+- Checking statistical assumptions and diagnostics
+- Calculating effect sizes and conducting power analyses
+- Reporting statistical results in APA format
+
+## Installation
+Create a separate environment to avoid conflicts. Recommended versions (as of 2026):
+- Python 3.12+
+- `pingouin==0.7.0` (fixes mixed/repeated-measures corrections)
+- `scipy==1.18.1`
+- `statsmodels==0.15.0`
+- `pymc==6.3.2` (optional, for Bayesian)
+- `arviz==1.3.0` (optional, for Bayesian)
+
+**Version Notes:**
+- Pingouin 0.6+ uses `p_val`, `cohen_d`, `CI95`. `ttest` reports **absolute** Cohen&#x27;s d; calculate signed estimates explicitly.
+- `correction=&#x27;auto&#x27;` in Pingouin chooses Welch based on sample size, not variance. Use `correction=True` for prespecified Welch inference.
+- PyMC 6 returns an xarray `DataTree`. ArviZ 1 uses `ci_prob` in `summary`.
+
+## Analysis Workflow
+1. **Frame the question:** State hypothesis, outcome, predictors, and design (independent vs. paired). Specify target effect and multiplicity family.
+2. **Inspect data:** Check n, mean, SD, missing values, and plot raw data (histograms/box plots) per group.
+3. **Select the test:**
+   - **Independent continuous means:** Prespecified Welch&#x27;s t-test or Welch&#x27;s ANOVA. Use Student&#x27;s t-test/ANOVA only if equal variance is justified.
+   - **Paired means:** Paired t-test on within-person differences.
+   - **Non-normal/Rank:** Mann-Whitney U or Kruskal-Wallis (note: these test distribution/rank contrasts, not just medians).
+   - **Binary:** Chi-square or Fisher&#x27;s exact test.
+   - **Regression:** Linear (continuous outcome) or Logistic (binary outcome).
+4. **Check assumptions:** Use `scripts/assumption_checks.py` for normality, homogeneity of variance, and outliers. Interpret plots alongside the design; do not switch tests automatically at a p-value threshold.
+5. **Run the test:** Always compute the effect size (e.g., Cohen&#x27;s d, r) and confidence interval alongside the p-value.
+6. **Report:** Use APA format including descriptives, exact statistics, effect sizes with CIs, and assumption checks.
+
+## Example Usage
+```python
+import numpy as np
+import pandas as pd
+import pingouin as pg
+from statsmodels.stats.power import tt_ind_solve_power
+
+# 1) Create example dataset
+rng = np.random.default_rng(7)
+n_a, n_b = 50, 52
+group_a = rng.normal(loc=75, scale=9, size=n_a)
+group_b = rng.normal(loc=69, scale=9, size=n_b)
+df = pd.DataFrame({&quot;score&quot;: np.r_[group_a, group_b], &quot;group&quot;: [&quot;A&quot;] * n_a + [&quot;B&quot;] * n_b})
+
+# 2) Assumption checks (if scripts/assumption_checks.py is available)
+# from scripts.assumption_checks import comprehensive_assumption_check
+# assump = comprehensive_assumption_check(data=df, value_col=&quot;score&quot;, group_col=&quot;group&quot;, alpha=0.05)
+
+# 3) Run test + effect size (Welch&#x27;s t-test)
+res = pg.ttest(group_a, group_b, correction=True)
+t_stat = float(res[&quot;T&quot;].iloc[0])
+dfree = float(res[&quot;dof&quot;].iloc[0])
+pval = float(res[&quot;p_val&quot;].iloc[0])
+d = float(res[&quot;cohen_d&quot;].iloc[0])
+ci_low, ci_high = res[&quot;CI95&quot;].iloc[0]
+
+# 4) Power analysis
+n_required = tt_ind_solve_power(effect_size=0.5, alpha=0.05, power=0.80, ratio=1.0, alternative=&quot;two-sided&quot;)
+
+# 5) APA-style reporting
+m_a, sd_a = group_a.mean(), group_a.std(ddof=1)
+m_b, sd_b = group_b.mean(), group_b.std(ddof=1)
+apa = (f&quot;Group A (n = {n_a}, M = {m_a:.2f}, SD = {sd_a:.2f}) and &quot;
+       f&quot;Group B (n = {n_b}, M = {m_b:.2f}, SD = {sd_b:.2f}) differed, &quot;
+       f&quot;t({dfree:.0f}) = {t_stat:.2f}, p = {pval:.3f}, d = {d:.2f}, &quot;
+       f&quot;95% CI [{ci_low:.2f}, {ci_high:.2f}].&quot;)
+print(apa)
+```
+
+## Conflicts
+- **K-Dense-AI/scientific-agent-skills** specifies strict version pins and API changes (e.g., `p_val` vs `p-val`) that other copies do not mention. If using older versions, API calls may differ.
+- **K-Dense-AI/scientific-agent-skills** recommends prespecified Welch&#x27;s t-test as the default for independent means, whereas other copies present a simpler normality-based decision tree (Normal -&gt; Student&#x27;s t-test).</pre>
+</body>
+</html>

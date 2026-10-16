@@ -9,7 +9,6 @@ from pathlib import Path
 
 from skillrepo.sorting.build import (
     IndexedSkill,
-    _clusters,
     _hierarchy,
     _now,
     _occurrence_record,
@@ -20,9 +19,15 @@ from skillrepo.sorting.build import (
 from skillrepo.sorting.config import JudgeConfig, load_judge_config
 from skillrepo.sorting.llm import LLMClient
 from skillrepo.sorting.llm_judge import judge_contents
-from skillrepo.sorting.records import SkillOccurrence, occurrences_from_catalog
 from skillrepo.sorting.retrieve import SkillRetriever
-from skillrepo.sorting.screen import ScreenedCluster, ScreenedCopy, screen_cluster
+from skillrepo.sorting.screen import (
+    SCREEN_PATH,
+    ScreenedCluster,
+    ScreenedCopy,
+    load_screened_clusters,
+    save_skill_screen,
+    screen_catalog,
+)
 from skillrepo.sorting.semantics import classify_skills
 
 
@@ -38,6 +43,7 @@ def build_llm_skill_index(
     progress=None,
     max_clusters: int | None = None,
     config: JudgeConfig | None = None,
+    place: bool = True,
 ) -> dict:
     """Build the index by reading shortlisted skill files and asking the model."""
 
@@ -47,8 +53,22 @@ def build_llm_skill_index(
     client = client or LLMClient(config)
     retriever = retrieve or SkillRetriever(root, submodule_timeout=config.submodule_timeout_seconds)
     cache_dir = root / ".cache" / "judge"
-    occurrences = occurrences_from_catalog(catalog)
-    screened = [screen_cluster(group, versions, max_variants=config.max_variants) for group in _clusters(occurrences)]
+    screen_path = root / SCREEN_PATH
+    report = progress or (lambda _message: None)
+    if screen_path.is_file():
+        screened = load_screened_clusters(screen_path)
+        report(f"Loaded screen {screen_path}")
+    else:
+        document = screen_catalog(
+            catalog,
+            versions,
+            max_variants=config.max_variants,
+            source_catalog=source_catalog,
+        )
+        save_skill_screen(document, screen_path)
+        screened = load_screened_clusters(screen_path)
+        report(f"Wrote screen {screen_path}")
+    occurrences = [item for cluster in screened for item in cluster.occurrences]
     content = [cluster for cluster in screened if cluster.needs_llm]
     if max_clusters is not None:
         deferred = content[max_clusters:]
@@ -56,7 +76,6 @@ def build_llm_skill_index(
     else:
         deferred = []
     singles = [cluster for cluster in screened if not cluster.needs_llm]
-    report = progress or (lambda _message: None)
     report(
         f"Screened {len(content)} overlapping skills "
         f"across {len({copy.occurrence.repository for cluster in content for copy in cluster.content_copies})} repositories"
@@ -100,7 +119,7 @@ def build_llm_skill_index(
             indexed.extend(pool.map(resolve, content))
 
     placements: dict[str, tuple[str, str]] = {}
-    if semantic_inputs:
+    if place and semantic_inputs:
         report(f"Placing {len(semantic_inputs)} skills that the content judge did not locate")
         if classify is None:
             placements = classify_skills(

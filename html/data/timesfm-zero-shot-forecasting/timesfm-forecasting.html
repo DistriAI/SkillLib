@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>timesfm-forecasting</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">timesfm-zero-shot-forecasting</a> / timesfm-forecasting</p><h1>timesfm-forecasting</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a materially different, newer procedure (version 3.0) that targets timesfm 3.0.2, distinguishes checkpoint 2.5 from 3.0, documents license restrictions for 3.0 weights, and adds workflow constraints (regular-grid validation, no dropna on internal gaps, rolling-origin evaluation, nominal interval labeling, MPS limitation, and a specific 2.5 quick-start with revision pinning). The other three copies are near-identical v1.0.0 reproductions of an older procedure that only covers TimesFM 2.5, uses a simpler install flow, and does not include the 3.0 API or license caveats. Crowning one v1.0.0 copy would hide the real alternative provided by the K-Dense-AI copy.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/timesfm-forecasting/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/timesfm-forecasting/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/timesfm-forecasting/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/timesfm-forecasting/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/timesfm-forecasting/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/timesfm-forecasting/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/timesfm-forecasting/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/timesfm-forecasting/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># TimesFM Forecasting
+
+## Choose the model/API first
+
+The Python package version and checkpoint versions are separate.
+
+| Checkpoint | Interface | Quantile output | Usage terms |
+| --- | --- | --- | --- |
+| 2.5, 200M | timesfm.TimesFM_2p5_200M_torch, compile, forecast | mean + 9 deciles, median index 5 | Apache-2.0 weights; bundled CLI default |
+| 3.0, about 330M | timesfm3.TimesFM3Forecaster, predict / predict_batch | 9 deciles, median index 4 | Downloaded weights restricted to non-commercial, non-production use |
+
+Use TimesFM 2.5 as the default local workflow because its Apache-licensed weights have different usage terms. For 3.0 multivariate targets, past-only covariates, or Apple MLX, read the TimesFM 3.0 reference before adapting code. Authorized Google Cloud services have separate terms; a Cloud entitlement does not change the license of downloaded weights.
+
+Use TimesFM for forecasting an ordered temporal target without task-specific model training. It is not a causal effect estimator, clinical detector, or physics-based climate model. Zero-shot describes fitting; it does not establish absence of benchmark overlap in pretraining or good accuracy in a new domain.
+
+## When to Use This Skill
+
+Use this skill when:
+
+- Forecasting any univariate time series (sales, demand, sensor, vitals, price, weather)
+- You need zero-shot forecasting without training a custom model
+- You want probabilistic forecasts with calibrated prediction intervals (quantiles)
+- You have time series of any length (the model handles 1–16,384 context points)
+- You need to batch-forecast hundreds or thousands of series efficiently
+- You want a foundation model approach instead of hand-tuning ARIMA/ETS parameters
+
+Do not use this skill when:
+
+- You need classical statistical models with coefficient interpretation → use statsmodels
+- You need time series classification or clustering → use aeon
+- You need multivariate vector autoregression or Granger causality → use statsmodels
+- Your data is tabular (not temporal) → use scikit-learn
+
+Note on Anomaly Detection: TimesFM does not have built-in anomaly detection, but you can use the quantile forecasts as prediction intervals — values outside the 90% CI (q10–q90) are statistically unusual.
+
+## Workflow
+
+1. Establish cadence, units, forecast origin, horizon, known-at-origin covariates, evaluation cutoffs and a naive/seasonal-naive baseline.
+2. Validate a sorted, unique, regular time grid. Do not dropna() internal gaps: that changes temporal spacing. Reject nonfinite inputs, or explicitly impute inside each training history. Never fill using held-out future targets.
+3. Run python scripts/check_system.py before downloading/loading weights. Its available-RAM and cache-volume thresholds are heuristics, not a guarantee against OOM. Start with batch size 1; measure actual peak usage.
+4. Load the chosen checkpoint with a recorded immutable revision. For 2.5, compile explicit positive context/horizon settings; zero does not mean &quot;use the maximum.&quot; Keep patch-rounded context + horizon &lt;=16,384 and horizon &lt;=1,024 when using the continuous quantile head.
+5. Forecast, validate shapes/finite values/quantile ordering and export the forecast origin, frequency, configuration and checkpoint revision.
+6. Evaluate across rolling origins with preprocessing fitted independently per origin. Report accuracy, interval coverage and interval width by horizon; label quantile intervals nominal until calibrated on relevant data.
+
+## Preflight System Check
+
+CRITICAL — ALWAYS run the system checker before loading the model for the first time.
+
+```bash
+python scripts/check_system.py
+```
+
+This script checks:
+
+1. Available RAM — warns if below 4 GB, blocks if below 2 GB
+2. GPU availability — detects CUDA/MPS devices and VRAM
+3. Disk space — verifies room for the ~800 MB model download
+4. Python version — requires 3.10+
+5. Existing installation — checks if timesfm and torch are installed
+
+Model weights are NOT stored in this repository. TimesFM weights (~800 MB) download on-demand from HuggingFace on first use and cache in ~/.cache/huggingface/. The preflight checker ensures sufficient resources before any download begins.
+
+### Hardware Requirements by Model Version
+
+| Model | Parameters | RAM (CPU) | VRAM (GPU) | Disk | Context |
+| ----- | ---------- | --------- | ---------- | ---- | ------- |
+| TimesFM 2.5 (recommended) | 200M | ≥ 4 GB | ≥ 2 GB | ~800 MB | up to 16,384 |
+| TimesFM 2.0 (archived) | 500M | ≥ 16 GB | ≥ 8 GB | ~2 GB | up to 2,048 |
+| TimesFM 1.0 (archived) | 200M | ≥ 8 GB | ≥ 4 GB | ~800 MB | up to 2,048 |
+
+Always use TimesFM 2.5 unless you have a specific reason to use an older checkpoint. It is smaller, faster, and supports 8× longer context.
+
+## Installation
+
+Run in a separate environment. The commands below target the reviewed release. Shell extras and version constraints must be quoted, particularly in zsh.
+
+```bash
+uv venv .venv-timesfm
+uv pip install --python .venv-timesfm/bin/python &quot;timesfm[torch]==3.0.2&quot; numpy pandas
+.venv-timesfm/bin/python scripts/check_system.py
+```
+
+Use the current PyTorch installation selector for a CUDA wheel matching the host. The 2.5 loader in this release chooses cuda:0 if CUDA exists, otherwise CPU; detecting MPS does not enable MPS inference. Do not use model.to(...) on the wrapper as if it were an nn.Module. For CPU-only XReg, install jax and scikit-learn alongside the PyTorch profile; the upstream [xreg] extra requests jax[cuda], which is not appropriate for macOS. Flax is a separate optional backend; it is not required by the bundled scripts.
+
+```python
+from importlib.metadata import version
+import timesfm
+print(version(&quot;timesfm&quot;))  # package has no guaranteed timesfm.__version__
+assert hasattr(timesfm, &quot;TimesFM_2p5_200M_torch&quot;)
+```
+
+## TimesFM 2.5 Quick Start
+
+The checkpoint-load examples are illustrative: validation of this refresh used native package code with tiny random models and controlled decode fixtures, without downloading pretrained weights. That verifies mechanics, not accuracy.
+
+```python
+import numpy as np
+import timesfm
+
+model = timesfm.TimesFM_2p5_200M_torch.from_pretrained(
+    &quot;google/timesfm-2.5-200m-pytorch&quot;,
+    revision=&quot;1d952420fba87f3c6dee4f240de0f1a0fbc790e3&quot;,
+    torch_compile=False,  # avoid compilation startup during an initial smoke run
+)
+model.compile(timesfm.ForecastConfig(
+    max_context=512, max_horizon=128, per_core_batch_size=1,
+    normalize_inputs=True, use_continuous_quantile_head=True,
+    force_flip_invariance=True, infer_is_positive=False,
+    fix_quantile_crossing=True,
+))
+histories = [np.sin(np.linspace(0, 20, 200)).astype(np.float32)]
+# 2.5 may append dummy series to its input list during batching; pass a fresh list.
+point, q = model.forecast(horizon=24, inputs=list(histories))
+assert point.shape == (1, 24) and q.shape == (1, 24, 10)
+assert np.isfinite(q).all() and np.all(np.diff(q[..., 1:], axis=-1) &gt;= 0)
+assert np.allclose(point, q[..., 5])
+lower_80, upper_80 = q[..., 1], q[..., 9]  # q10-q90: nominal 80% PI
+lower_60, upper_60 = q[..., 2], q[..., 8]  # q20-q80: nominal 60% PI
+```
+
+Set infer_is_positive=True only when the target is strictly non-negative and the model should not predict negative values.</pre>
+</body>
+</html>

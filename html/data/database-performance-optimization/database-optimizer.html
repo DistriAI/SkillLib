@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>database-optimizer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">database-performance-optimization</a> / database-optimizer</p><h1>database-optimizer</h1><p class="meta">combined</p><p>The copies overlap in scope but disagree on the procedure. Jeffallan/claude-skills provides a concrete, executable workflow (baseline EXPLAIN, incremental changes, specific SQL examples, and strict MUST/MUST NOT constraints). The other two copies (rmyndharis and sickn33) are nearly identical generic capability lists that lack a specific workflow, instead offering broad topic coverage (NoSQL, Cloud, N+1) and generic instructions. Crowning one would hide the alternative approach of broad capability mapping vs. specific procedural tuning.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/database-optimizer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/database-optimizer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/database-optimizer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/database-optimizer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/database-optimizer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/database-optimizer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/database-optimizer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/database-optimizer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: database-optimizer
+description: Optimizes database queries and improves performance across PostgreSQL, MySQL, and modern cloud/NoSQL systems. Use for slow queries, execution plans, index design, and scalability.
+---
+
+# Database Optimizer
+
+## When to Use
+- Analyzing slow queries and execution plans.
+- Designing index strategies (B-tree, GIN, BRIN, etc.).
+- Resolving N+1 query issues and optimizing ORM usage.
+- Tuning cloud database configurations (RDS, Aurora, etc.).
+
+## Core Workflow
+1. **Analyze Performance**: Capture baseline metrics. Run `EXPLAIN (ANALYZE, BUFFERS)` (PostgreSQL) or `EXPLAIN FORMAT=JSON` (MySQL) before any changes.
+2. **Identify Bottlenecks**: Look for Seq Scans, stale statistics, low buffer hit rates, or N+1 patterns in application logs.
+3. **Design Solutions**: 
+   - **Indexing**: Create covering or partial indexes. Use `CONCURRENTLY` for PostgreSQL.
+   - **Query Rewriting**: Optimize JOINs, CTEs, and subqueries.
+   - **Caching**: Evaluate multi-tier caching (L1 App, L2 Redis, L3 DB) for read-heavy workloads.
+4. **Implement Changes**: Apply optimizations incrementally. Do not make multiple changes simultaneously.
+5. **Validate Results**: Re-run execution plans. Compare costs and wall-clock time. Ensure write performance and replication lag have not degraded.
+
+## Constraints
+- **MUST**: Capture baseline `EXPLAIN` output before optimizing.
+- **MUST**: Test in non-production first.
+- **MUST NOT**: Create redundant indexes or ignore write amplification.
+- **MUST NOT**: Apply optimizations without a measured baseline.
+
+## Reference Topics
+- **PostgreSQL**: `pg_stat_statements`, `shared_buffers`, `work_mem`.
+- **MySQL**: `performance_schema`, `innodb_buffer_pool_size`.
+- **Cloud**: RDS Performance Insights, Aurora Serverless scaling.
+- **NoSQL**: MongoDB aggregation pipelines, DynamoDB GSI/LSI.
+
+## Output Format
+1. Baseline metrics (query time, cost, buffer hit ratio).
+2. Identified bottlenecks with EXPLAIN evidence.
+3. Optimization strategy (SQL/config changes).
+4. Validation queries and results.
+5. Monitoring recommendations.</pre>
+</body>
+</html>

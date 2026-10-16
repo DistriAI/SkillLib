@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>get-available-resources</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">resource-aware-planning</a> / get-available-resources</p><h1>get-available-resources</h1><p class="meta">combined</p><p>The two copies describe the same detector but with materially different contracts. The K-Dense copy is a conservative, redacted, process-scoped inventory that forbids stress tests, hides host identifiers, treats unknowns as unknown, and separates host, cgroup, scheduler, and accelerator facts. The Vibe-Skills copy is a proactive, host-level inventory that writes a default JSON file, reports hostnames/paths/OS details, and emits strategic recommendations (worker counts, library choices, memory/disk strategies) that the K-Dense copy explicitly avoids. Because each contains steps and constraints the other lacks, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/get-available-resources/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/get-available-resources/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/get-available-resources/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/get-available-resources/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: get-available-resources
+description: Detects host inventory and effective CPU, memory, disk, scheduler, container, and accelerator limits for resource-aware planning. Produces a redacted JSON snapshot and, when requested, conservative planning helpers without stress tests or assuming visible host hardware is usable.
+license: MIT
+compatibility: Python 3.11+ on Linux, macOS, or Windows; standard library by default, optional psutil 7.2.2; accelerator management CLIs are optional read-only probes.
+metadata:
+  version: &quot;1.5&quot;
+  last-reviewed: &quot;2026-10-01&quot;
+  skill-author: K-Dense Inc.
+---
+
+# Get Available Resources
+
+Build a conservative picture of resources available to the current process. Keep host inventory, process affinity, cgroup/container limits, scheduler allocation, and accelerator runtime usability separate.
+
+## Safety contract
+
+- Run detection when the user requests it or a specific workload needs resource planning. Do not persist a fingerprint for every scientific task.
+- Use stdout by default. Persist only when the user chooses an explicit generic local filename.
+- Do not run stress tests, benchmarks, large allocations, write probes, device resets, driver installation, or clock/power changes.
+- Do not dump the environment. Read only the named Slurm and accelerator variables implemented by the detector.
+- Do not report hostnames, absolute paths, cgroup paths, job IDs, device UUIDs, PCI addresses, or raw visibility-variable values.
+- Treat a missing observation as unknown. Never convert unknown to unknown to unlimited.
+- Never infer that a visible host CPU, memory pool, or GPU is usable inside a scheduler allocation or container.
+
+## Quick start
+
+Run from this skill directory.
+
+### Ephemeral stdout snapshot
+
+```bash
+python scripts/detect_resources.py
+```
+
+The command emits only JSON to stdout. Redirect it only when ordinary shell permissions are acceptable.
+
+### Explicit private file
+
+```bash
+python scripts/detect_resources.py --output resource-snapshot.json
+```
+
+Explicit output is restricted to one `.json` filename in the current directory, uses mode 0600 on POSIX, rejects symlinks and path traversal, and refuses overwrite unless `--force` is supplied. Forced output also rejects hard links and non-regular files. Windows privacy additionally depends on the directory ACL.
+
+### Optional psutil enhancement
+
+The standard-library detector works without installation. For broader cross-platform physical-core, affinity, available-memory, swap, and disk coverage:
+
+```bash
+uv run --no-project --with &quot;psutil==7.2.2&quot; python scripts/detect_resources.py
+```
+
+The import is lazy. Failure to import psutil becomes a warning, not a fatal error.
+
+### Skip management-tool probes
+
+```bash
+python scripts/detect_resources.py --skip-accelerators
+```
+
+Use this when accelerator discovery latency is undesirable. The detector still summarizes the presence and state of allowlisted visibility variables without returning their values.
+
+## Required interpretation
+
+### CPU
+
+Read these as different facts:
+
+- `cpu.host.logical`: system-visible scheduling units.
+- `cpu.host.physical`: physical topology, or null; never inferred from logical count.
+- `cpu.process.affinity_logical`: current affinity-set size when supported.
+- `cpu.cgroup_v2.cpuset_logical`: effective cgroup cpuset size.
+- `cpu.cgroup_v2.quota_cores`: finite `cpu.max` capacity, possibly fractional.
+- `scheduler.allocation.cpu_per_process`: bounded Slurm per-task interpretation when scope is clear.
+- `cpu.effective.capacity_cores`: minimum positive observed constraint.
+- `cpu.effective.worker_ceiling`: conservative floor for CPU process workers.
+
+A quota of 1.5 is CPU-time capacity, not 1.5 physical cores. Affinity and cpusets constrain placement; quota constrains bandwidth.
+
+### Memory
+
+Keep these separate:
+
+- host total/available memory;
+- current cgroup usage, hard `memory.max`, and remaining hierarchical capacity;
+- `memory.high`, which is a pressure/throttle boundary rather than a hard cap;
+- scheduler memory allocation and its scope; and
+- conservative effective hard limit and available estimate.
+
+On Apple silicon, `memory.model` is `unified_cpu_gpu`. Do not add integrated GPU memory to RAM or describe it as separate VRAM.
+
+### Accelerators
+
+Each device is a backend candidate:
+
+- NVIDIA GPU → CUDA candidate;
+- AMD GPU → ROCm candidate;
+- Apple integrated GPU → Metal candidate.
+
+Management-query visibility does not establish:
+
+1. scheduler/container permission;
+2. device-node access;
+3. driver/runtime compatibility;
+4. framework package compatibility; or
+5. operator/data-type support.
+
+Therefore `runtime_usable_devices` remains null and each device says `runtime_compatibility: not_tested`. Visibility/allocation counts constrain the observed management records, not the number of framework devices. MIG and AMD partition enumeration can differ. AMD `reported_total_bytes` is a device-reported memory pool; its relationship to host RAM is not established, so it is never added to the RAM budget.
+
+### Disk
+
+`capacity_bytes`, filesystem `free_bytes`, user-available blocks, and a non-writing permission check are distinct. Filesystem or project quotas can still be stricter. The absolute working path is always redacted.
+
+The disk snapshot covers the working filesystem only, matching psutil&#x27;s path-specific semantics. If scratch, caches, and final outputs use different filesystems, inspect each from its target directory and label the reports by role. Budget temporary and final copies that coexist; free space on the input filesystem does not establish space on the output filesystem.
+
+### Scheduler and container
+
+Slurm variables describe allocation scope, but enforcement depends on the scheduler and container runtime. Treat scheduler-reported values as upper bounds, not guarantees.
+
+## Conflicts
+
+- K-Dense-AI/scientific-agent-skills: &#x27;Do not persist a fingerprint for every scientific task&#x27; and &#x27;Use stdout by default&#x27;; foryourhealth111-pixel/Vibe-Skills: &#x27;Use this skill proactively before any computationally intensive task&#x27; and &#x27;generates a .claude_resources.json file in the current working directory&#x27;.
+- K-Dense-AI/scientific-agent-skills: &#x27;Do not report hostnames, absolute paths, cgroup paths, job IDs, device UUIDs, PCI addresses, or raw visibility-variable values&#x27;; foryourhealth111-pixel/Vibe-Skills: reports OS release, machine, and working-directory disk details in the JSON output.
+- K-Dense-AI/scientific-agent-skills: &#x27;Do not run stress tests, benchmarks, large allocations, write probes, device resets, driver installation, or clock/power changes&#x27; and &#x27;Treat a missing observation as unknown. Never convert unknown to unlimited&#x27;; foryourhealth111-pixel/Vibe-Skills: makes strategic recommendations such as &#x27;suggested_workers&#x27; and &#x27;strategy&#x27; fields that infer usable capacity from host-level observations.
+- K-Dense-AI/scientific-agent-skills: &#x27;runtime_usable_devices remains null and each device says runtime_compatibility: not_tested&#x27;; foryourhealth111-pixel/Vibe-Skills: &#x27;gpu_acceleration.available: true&#x27; and &#x27;suggested_libraries&#x27; based on detected backends.</pre>
+</body>
+</html>

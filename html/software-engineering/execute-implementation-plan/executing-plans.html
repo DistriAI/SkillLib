@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>executing-plans</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">execute-implementation-plan</a> / executing-plans</p><h1>executing-plans</h1><p class="meta">combined</p><p>The four copies describe the same high-level task (execute a written plan with verification and logging) but disagree on the core execution model. obra/superpowers mandates continuous inline execution with a ledger and a single final review; mohitagw15856 mandates a visible execution log with a three-tier divergence classification and a plan-feedback note; sickn33 and LeoYeAI mandate batch execution with review checkpoints between batches. Because these are mutually exclusive workflows (continuous vs batched, ledger vs execution log, final review vs per-batch review), crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/executing-plans/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-method/skills/executing-plans/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/executing-plans/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/executing-plans/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/executing-plans/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-method/skills/executing-plans/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/executing-plans/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/executing-plans/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/executing-plans/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/executing-plans/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/executing-plans/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/executing-plans/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Executing Plans
+
+## When to Use
+- You have a written implementation plan to execute.
+- The plan has verifiable steps and a completion test.
+
+## Setup
+1. Read the plan file and the associated spec.
+2. Review critically: identify questions, concerns, or stale assumptions.
+3. If concerns exist, raise them with your human partner before starting.
+4. Set up an isolated workspace (e.g., git worktree) if the plan requires it.
+5. Initialize a visible execution log (ledger or step-by-step log).
+
+## Execution Model
+Choose the execution cadence based on user preference or project contract:
+- **Continuous (Inline):** Execute all tasks without pausing. Use a ledger to track state. Perform one final whole-branch review at the end.
+- **Batched:** Execute tasks in batches (default: 3 tasks or user-specified size). Report progress and verification output after each batch. Wait for feedback before continuing.
+
+## Per-Task Process
+1. Mark the task as in-progress.
+2. Execute each step exactly as written in the plan.
+3. Run every specified verification. Record the result.
+4. If reality disagrees with the plan, classify the divergence:
+   - **Detail:** Intent holds, mechanics differ. Note in log, continue.
+   - **Deviation:** Approach must change. Amend plan visibly, state why, continue.
+   - **Invalidation:** Goal or stop condition hit. STOP. Report to human. Replan.
+5. Commit as specified in the plan.
+6. Mark the task as complete in the log.
+
+## Stop Conditions
+Stop and ask for help when:
+- An irreversible or destructive operation is required.
+- A security-sensitive action is required.
+- A side effect outside the worktree (merge, push, publish) is required.
+- A blocker prevents progress (missing dependency, unclear instruction, repeated verification failure).
+- The plan is fundamentally broken.
+
+## Completion
+1. Run the plan&#x27;s DONE test.
+2. If using continuous execution: perform a final whole-branch review. Fix critical/important issues with RED→GREEN cycles. Ledger minor issues.
+3. If using batched execution: confirm all batches are approved.
+4. Write a plan feedback note: what the plan got wrong, which estimates were off, which risks fired.
+5. Use the finishing-a-development-branch skill (or equivalent) to complete the work.
+
+## Conflicts
+- **obra/superpowers** mandates continuous execution with a final review; **sickn33** and **LeoYeAI** mandate batched execution with per-batch reviews. **mohitagw15856** mandates scheduled checkpoints and a specific divergence classification. The combined instruction allows the user to choose the cadence, but requires the divergence classification and feedback note from all models.</pre>
+</body>
+</html>

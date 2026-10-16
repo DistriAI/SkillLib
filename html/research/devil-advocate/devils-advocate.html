@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>devils-advocate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">devil-advocate</a> / devils-advocate</p><h1>devils-advocate</h1><p class="meta">combined</p><p>The two copies share the name but perform different tasks. The daymade copy is a structured, evidence-anchored stress test of an investment or business thesis (assumption decomposition, counter-evidence retrieval, risk flags, falsification signals, JSON + narrative outputs). The brycewang copy is a pedagogical review of a slide deck (ordering, prerequisites, cognitive load, notation conflicts, 5-7 challenges). They overlap only in the general idea of &#x27;challenging a work product,&#x27; so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>daymade-financial/devils-advocate/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/devils-advocate/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>daymade-financial/devils-advocate/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/devils-advocate/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/14-luischanci-claude-code-research-starter/dot-claude/skills/devils-advocate/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/28-maxwell2732-paper-replicate-agent-demo/dot-claude/skills/devils-advocate/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Devil&#x27;s Advocate
+
+Use this skill to critically challenge a work product. Choose the track that matches the input.
+
+## Track A: Thesis / Argument Stress Test
+
+Use when the user provides a thesis, investment memo, research conclusion, or business decision and asks for a pressure test, bear case, red team, or blind-spot check.
+
+### Step 0 · Input Confirmation
+1. **Thesis**: Normalize to &quot;X will because Y Z&quot; and confirm with the user. If running in a sub-agent without a user, mark it &quot;unconfirmed&quot; and continue.
+2. **Evidence materials**: List of file paths, directories, or URLs. Verify readability; report unreadable items.
+3. **Purpose**: Self-check before a meeting, or evaluating someone else&#x27;s plan. This sets the tone of the narrative layer.
+
+### Step 1 · Decompose Assumptions
+- Split the thesis into **explicit assertions** and **implicit assumptions**, numbered A1, A2, …
+- Tag each with **type** (factual / predictive / mechanistic) and **load-bearing** status (would the conclusion materially change if this were false?).
+- Non-load-bearing assumptions are deferred to an appendix; they do not enter counter-evidence retrieval.
+- In single-context mode, retrieve counter-evidence for at most the top 8 load-bearing assumptions by importance; in fan-out mode, retrieve for all.
+
+### Step 2 · Retrieve Counter-Evidence per Assumption
+For each assumption ask:
+1. What in the materials directly weakens, contradicts, or introduces uncertainty?
+2. If this assumption were true, what evidence should be present in the materials but is absent?
+
+Source credibility order: official filings / primary data → expert interviews / call transcripts → analyst / broker reports → authoritative media → aggregators / social media (leads only, not anchors).
+
+Hard rules:
+- Every counter-argument must cite: source file/URL + location (page/line/section) + verbatim excerpt.
+- If no counter-evidence is found, write &quot;No counter-evidence found in the given materials&quot; and leave citations empty. Note that this means &quot;materials do not cover it,&quot; not &quot;assumption is true.&quot;
+- Assign each piece of evidence to the single assumption it most directly refutes; cross-reference by ID if needed.
+
+### Step 3 · Structured Findings (Audit Layer)
+Write `da_findings.json` (or user-specified path) with this shape:
+
+```json
+{
+  &quot;run_metadata&quot;: {
+    &quot;thesis_normalized&quot;: &quot;…&quot;,
+    &quot;materials&quot;: [&quot;…&quot;],
+    &quot;coverage&quot;: &quot;Enumerated N / Retrieved M / Not retrieved K / Deferred J&quot;
+  },
+  &quot;findings&quot;: [
+    {
+      &quot;assumption_id&quot;: &quot;A1&quot;,
+      &quot;assumption&quot;: &quot;…&quot;,
+      &quot;type&quot;: &quot;factual | predictive | mechanistic&quot;,
+      &quot;counter_argument&quot;: &quot;…&quot;,
+      &quot;citations&quot;: [{&quot;doc&quot;: &quot;…&quot;, &quot;loc&quot;: &quot;…&quot;, &quot;excerpt&quot;: &quot;…&quot;}],
+      &quot;rebuttal&quot;: &quot;… | null&quot;,
+      &quot;missing_evidence&quot;: &quot;… | null&quot;,
+      &quot;base_rate&quot;: &quot;… | null&quot;,
+      &quot;risk_flag&quot;: &quot;High | Medium | Low&quot;,
+      &quot;signpost&quot;: &quot;…&quot;
+    }
+  ],
+  &quot;deferred_assumptions&quot;: [&quot;…&quot;]
+}
+```
+
+- `risk_flag` measures the counter-argument&#x27;s lethality to the thesis, not probability. High = core conclusion fails; Medium = magnitude/timeline significantly impaired; Low = marginal correction. If more than half are High, re-rank and re-assign.
+- `base_rate` is filled only when the given materials support a reference class; otherwise null. Do not fabricate or retrieve externally.
+
+### Step 4 · Narrative Report (Delivery Layer)
+Write `da_report.md` and deliver in chat:
+- Open with a coverage statement (materials, assumptions retrieved vs. not, material bias) and the 2-3 most damaging counter-arguments. Do not render an overall verdict.
+- Group by theme following the thesis&#x27;s reasoning chain, not by A1/A2 order. Use inline [n] citations.
+- Each argument 2-3 sentences, institutional analyst tone: factual, restrained, no exclamation marks or rhetorical questions.
+- End with: References (with assumption IDs), Surviving assumptions (no counter-evidence found; note &quot;not found ≠ true&quot;), Coverage appendix (deferred and un-retrieved assumptions).
+
+### Step 5 · Falsification Signal List
+For each High/Medium assumption, one line: what to watch, where to look, what reading is an alarm. In no-materials mode, cover all load-bearing assumptions.
+
+### Red Lines
+- Do not judge the thesis as overall right/wrong or give buy/sell advice.
+- Counter-evidence strength is bounded by the evidence: if materials only support &quot;introduces uncertainty,&quot; do not write &quot;falsifies.&quot;
+- Tone: factually neutral throughout.
+- Coverage honesty: state what was and was not retrieved.
+
+### Fan-out Mode (main session only)
+1. Main session completes Steps 0-1.
+2. Dispatch a sub-agent per assumption (or 2-3 assumptions) with: assumption text, material paths, the two questions from Step 2, the JSON schema and risk_flag anchors from Step 3, and the verbatim-citation / no-fabrication rules. Each sub-agent writes `da_findings_A&lt;id&gt;.json` and returns a summary.
+3. Main session merges into `da_findings.json`, deduplicating evidence by assigning it to the higher-risk assumption.
+
+## Track B: Slide Deck / Lecture Pedagogical Review
+
+Use when the user provides a lecture file or slide deck and asks for a design challenge, pedagogical review, or devil&#x27;s-advocate pass on presentation quality.
+
+### Setup
+1. Read the target lecture file.
+2. Read the knowledge base in `.claude/rules/` for notation conventions and narrative arc.
+3. If applicable, read adjacent lectures for narrative continuity.
+
+### Generate 5-7 Challenges from These Categories
+1. **Ordering**: &quot;Could students understand this better if we showed X before Y?&quot;
+2. **Prerequisites**: &quot;Do students have the background for this notation at this point?&quot;
+3. **Gaps**: &quot;Should we include an intuitive example before this formal proof?&quot;
+4. **Alternative Presentation**: &quot;Here are 2 other ways to visualize/present this concept.&quot;
+5. **Notation Conflict**: &quot;This symbol conflicts with earlier lecture usage.&quot;
+6. **Cognitive Load**: &quot;This slide has too many new symbols. Can we split?&quot;
+7. **Book Vision**: &quot;If this becomes a book chapter, does this section stand alone?&quot;
+
+### Output Format
+
+```markdown
+# Devil&#x27;s Advocate: [Lecture Title]
+
+## Challenges
+
+### Challenge 1: [Category] — [Short title]
+**Question:** [The specific pedagogical question]
+**Why it matters:** [What could go wrong]
+**Suggested resolution:** [Specific action]
+**Slides affected:** [Numbers or titles]
+**Severity:** [High / Medium / Low]
+
+[Repeat for 5-7 challenges]
+
+## Summary Verdict
+**Strengths:** [2-3 things done well]
+**Critical changes:** [0-2 changes before teaching]
+**Suggested improvements:** [2-3 nice-to-have changes]
+```
+
+### Principles
+- Be specific: reference exact slides and notation.
+- Be constructive: every challenge has a suggested resolution.
+- Be honest: if the deck is good, say so.
+- Prioritize: notation conflicts &gt; missed metaphors.
+- Think like a student: where do they get lost?
+
+## Conflicts
+
+- **daymade/claude-code-skills** defines the task as an evidence-anchored thesis stress test with assumption decomposition, counter-evidence retrieval, risk flags, base rates, falsification signals, and dual JSON + narrative outputs. It does not address slide decks or pedagogical design.
+- **brycewang-stanford/Auto-Empirical-Research-Skills** defines the task as a pedagogical review of a slide deck with 5-7 challenges across ordering, prerequisites, gaps, alternative presentation, notation conflicts, cognitive load, and book vision. It does not perform evidence retrieval, assumption decomposition, or produce JSON findings.</pre>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>remotion-create</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">media</a> / <a href="index.html">remotion-video-scaffold</a> / remotion-create</p><h1>remotion-create</h1><p class="meta">combined</p><p>The remotion-dev/skills copy is the upstream procedure, but the sickn33 copy adds explicit preview-server and render steps that the upstream copy omits, and the two copies disagree on when the preview is opened and on the scope of the multi-scene guidance. Crowning the upstream copy would hide the render/preview workflow, while crowning the mirror would lose the upstream&#x27;s timeline-of-clips and pre-edit preview constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/remotion-dev/skills">remotion-dev/skills</a></td><td><code>skills/remotion-create/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/remotion-create/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/remotion-dev/skills">remotion-dev/skills</a></td><td><code>skills/remotion-create/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/remotion-create/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/remotion-create/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/remotion-create/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: remotion-create
+description: Create a new Remotion video
+version: 4.0.535
+---
+
+These are instructions for making a new Remotion project and composition.
+If this is not the next task, see Remotion Best Practices.
+
+## Scaffold a project
+
+If a project already exists, skip this.
+Ensure Node.js and Git is installed, and the current folder is appropriate for starting a new project.
+
+Inspect the current folder, including hidden files, before choosing where to scaffold.
+
+### Empty folder
+
+If it is empty, or contains only disposable operating-system metadata such as `.DS_Store`, create the project directly in the current folder.
+Remove only those disposable metadata files first, since `create-video` rejects non-empty folders.
+Do not treat all hidden files as disposable: files such as `.env` and directories such as `.git` are meaningful contents.
+
+Scaffold in existing folder:
+
+```bash
+npx create-video@latest --yes --blank --no-tailwind .
+npm i
+```
+
+### Non-empty folder
+
+If the current folder contains meaningful contents and no project already exists, scaffold into a new subfolder.
+Replace `my-video` with a suitable project name.
+
+```bash
+npx create-video@latest --yes --blank --no-tailwind my-video
+cd my-video
+npm i
+```
+
+## Open the preview before building the video
+
+As soon as the project can run, open Remotion Studio in the browser before writing or changing the composition. For a new project, do this immediately after scaffolding and installing dependencies. For an existing project, do it before editing the video. Keep Studio running while you work so the user can see changes as they appear and steer the result.
+
+If the preview server is not already running, start it with:
+
+```bash
+npx remotion studio --no-open
+```
+
+This will start a long-running process and print the server URL for the preview. If the server is already started, it will print the URL. If an in-harness browser is available, open it there. You can visit a specific composition by navigating to `/[composition-id]`, for example `http://localhost:3000/MapAnimation`.
+
+## Designing a video
+
+Keep the scaffold and add React Markup.
+Follow Remotion React Markup Best Practices and [Video Layout Rules](video-layout.md) for video-first layout and text sizing guidance.
+
+Before writing the root that registers `&lt;Composition&gt;` or `&lt;Still&gt;` elements, follow Compositions and stills.
+
+## Is this a timeline of clips?
+
+If the video arranges multiple video or audio clips on a timeline, follow Video editing before writing the timeline. Give every clip that should be edited independently its own authored JSX node.
+
+## Is this a multi-scene video?
+
+If this is a video with multiple subsequent scenes, follow guidance at Multi-scene videos.
+
+## Interactivity Best Practices
+
+By structuring the React Markup following Remotion Interactivity Best Practices, you allow the user to make edits in the Studio which write back to code.
+
+## TailwindCSS
+
+If Tailwind is requested, see [tailwind.md](tailwind.md) for using TailwindCSS in Remotion.
+
+## Render the video
+
+Only render if the user explicitly asks for it.
+
+```bash
+npx remotion render
+```
+
+For more options, see Rendering.
+
+## Follow-up
+
+The video creation process has finished.
+For follow-up prompts, use Remotion Best Practices.</pre>
+</body>
+</html>

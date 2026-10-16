@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-auth-bypass</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">auth-bypass-hunt</a> / hunt-auth-bypass</p><h1>hunt-auth-bypass</h1><p class="meta">combined</p><p>The two copies share the same core hunting methodology (Crown Jewel Targets, Attack Surface Signals, and the 8-step Step-by-Step Hunting Methodology), but each contains material steps the other lacks. The uphiago copy includes a detailed Legacy-Protocol Matrix for probing legacy endpoints (WordPress XMLRPC, REST, SharePoint, etc.) that is absent from the sickn33 copy. The sickn33 copy includes a mandatory authorization confirmation gate and a specific SSH certificate-authority trust forgery technique that are absent from the uphiago copy. Crowning one would hide these real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-auth-bypass/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-auth-bypass/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-auth-bypass/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-auth-bypass/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-auth-bypass/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-auth-bypass/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-auth-bypass
+description: Hunting skill for auth bypass vulnerabilities. Built from 12 public bug bounty reports across SAML XSW / parser-differential, SAML signature stripping, SAML domain enforcement bypass, partner-portal cross-IdP assertion reuse, WordPress XMLRPC bypassing SSO, JWT alg-confusion, JWT signature-validation skip, and token-audience confusion.
+version: 1.1.0
+license: MIT
+category: security
+risk: offensive
+tags: [auth, bypass, hunt, redteam]
+---
+
+&gt; **⚠️ AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## Crown Jewel Targets
+
+Auth bypass is consistently one of the highest-paying vulnerability classes in bug bounty because it directly violates the most fundamental security control. High-value targets include:
+
+- **SSO/SAML implementations** at enterprise SaaS companies (Slack, Okta, OneLogin integrations) — payouts regularly in the $5K–$25K+ range
+- **Admin panels and partner/internal portals** — subdomain-separated admin surfaces like `partners.shopify.com`, `admin.company.com`
+- **Third-party auth plugin integrations** — WordPress plugins (OneLogin, WP-SAML-Auth), Drupal SSO modules, any CMS with pluggable auth
+- **XMLRPC endpoints** on WordPress — often forgotten, bypasses standard WP auth flows entirely
+- **OAuth callback flows** — state parameter mishandling, redirect_uri mismatches
+- **API authentication layers** — especially where auth was bolted on after the fact
+
+**Asset priority:** Targets with federated identity (SAML, OAuth, OIDC) connected to large user populations. Partner/reseller portals are particularly juicy because they often have elevated permissions and less security scrutiny than the main product.
+
+### SSH certificate-authority trust forgery (Git-hosting / enterprise platforms)
+When an org or instance registers an SSH certificate authority, cert `principals` may not be bound server-side to the requesting identity — a member can mint a cert asserting another user&#x27;s principal and authenticate as them (e.g. modify another user&#x27;s resource given only its URL). Add SSH-CA trust to the auth-surface list on Git-hosting targets; niche/platform-specific.
+
+## Attack Surface Signals
+
+**URL patterns to hunt:**
+```
+/xmlrpc.php
+/wp-login.php
+/saml/
+/sso/
+/auth/saml/callback
+/oauth/callback
+/partners.*
+/admin.*
+/?wc-api=
+/api/v*/auth
+/login?redirect=
+/accounts/login
+```
+
+**Response headers signaling SSO:**
+```
+X-Frame-Options: SAMEORIGIN (common on SSO portals)
+Set-Cookie: SAMLResponse=
+Location: https://idp.company.com/saml
+WWW-Authenticate: Bearer realm=&quot;partners&quot;
+```
+
+**JS patterns indicating federated auth:**
+```javascript
+// Look for in page source
+samlRequest
+RelayState
+SAMLResponse
+onelogin
+shibboleth
+okta
+passport.js authenticate
+```
+
+**Tech stack signals:**
+- WordPress + any SSO plugin → check XMLRPC separately
+- Shopify Partner API exposure → cross-tenant privilege escalation risk
+- Any app advertising &quot;SSO enabled&quot; or &quot;Login with [Enterprise IdP]&quot;
+- Separate subdomains for admin/partner that share session cookies with main domain
+- Applications using `SimpleSAMLphp`, `ruby-saml`, `python-saml`
+
+**Burp passive scan triggers:**
+- `SAMLResponse` in any POST body
+- `openid_connect` or `id_token` in responses
+- Cookie domains set to `.company.com` (wildcard)
+
+## Step-by-Step Hunting Methodology
+
+1. **Map all authentication entry points**
+   - spider the target for every login surface: main login, admin login, API login, partner portal, mobile API endpoints
+   - check `robots.txt`, JS files, and the wayback machine for forgotten endpoints like `/xmlrpc.php`
+
+2. **Identify the auth mechanism per entry point**
+   - Is it forms-based, SAML, OAuth, API key, session token?
+   - For WordPress: always probe `/xmlrpc.php` even if the main login is SSO-protected
+
+3. **Test XMLRPC independently of SSO**
+   - If site uses SSO (e.g., OneLogin), manually POST to `/xmlrpc.php`
+   - XMLRPC uses WordPress-native credentials, not SSO — test with `system.listMethods` first, then `wp.getUsersBlogs`
+
+4. **Enumerate SAML implementation**
+   - Capture a valid SAMLResponse via Burp
+   - Decode the Base64 payload, inspect the XML
+   - Test signature stripping, comment injection, and XML wrapping attacks
+   - Test if SP validates the signature at all (send unsigned assertion)
+
+5. **Test cross-portal session/token reuse**
+   - Log into `partners.shopify.com` type portals
+   - Attempt to use the issued token/cookie against the main admin portal
+   - Look for shared cookie domains, shared JWT secrets, or API tokens that work across contexts
+
+6. **Fuzz auth parameters**
+   - Null/empty passwords, `password[]=array`, SQL in username field
+   - Try `admin`/`admin`, `test`/`test` on staging subdomains
+   - Modify `role`, `is_admin`, `user_type` in JWTs (none algorithm, weak secret)
+
+7. **Check redirect and state parameters**
+   - Does removing `state` from OAuth break anything?
+   - Can you change `redirect_uri` to an open redirect target?
+   - Does the `RelayState` in SAML get validated?
+
+8. **Verify impact by escalating privileges**
+   - Don&#x27;t stop at login — prove you can access admin functions, other users&#x27; data, or sensitive configuration
+   - Screenshot the highest-privilege action you can perform
+
+## Legacy-Protocol Matrix (Probe These First on Any Custom-Branded Login)
+
+When a target has a custom, branded login UI (e.g. `customlogin.aspx`, `/auth/signin`, `/account/login`), **always probe the platform&#x27;s legacy protocol endpoints with native credentials** in parallel. These endpoints frequently outlive the custom UI&#x27;s protections and accept native credentials with NO rate limit, NO MFA challenge, NO CAPTCHA, NO anti-automation. This is the WordPress XMLRPC pattern generalised across CMS / portal / framework stacks.
+
+| Target tech | Legacy endpoint(s) to probe | Native-cred bypass surface |
+|---|---|---|
+| **WordPress** | `/xmlrpc.php` (`system.listMethods`, `wp.getUsersBlogs`, `system.multicall`) | Native WP user/pass; bypasses SSO, MFA, IP-allow rules on `/wp-login.php` |
+| **WordPress (REST)** | `/?rest_route=/wp/v2/users`, `/wp-json/wp/v2/users` | User enumeration anonymously even when login page is hardened |
+| **SharePoint (any version)** | `/_vti_bin/owssvr.dll`, `/_layouts/15/user.aspx` | Native AD/NTLM credentials; bypasses modern auth flows |</pre>
+</body>
+</html>

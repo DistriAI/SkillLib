@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>systematic-debugging</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">root-cause-debugging</a> / systematic-debugging</p><h1>systematic-debugging</h1><p class="meta">combined</p><p>The four copies share the same four-phase skeleton, but they disagree on the core principle and on the multi-component instrumentation step. obra/superpowers and LeoYeAI/openclaw-master-skills enforce a strict &#x27;no fixes without root cause&#x27; rule and use a four-layer diagnostic example that logs environment state and performs a live codesign. foryourhealth111-pixel/Vibe-Skills adds a routing boundary that excludes TDD and report packaging. sickn33/agentic-awesome-skills explicitly permits emergency mitigation/rollback during an incident and changes the instrumentation to redact secrets and use read-only artifact verification. Because the sickn33 copy relaxes the &#x27;Iron Law&#x27; and the others do not, crowning one copy would hide a real alternative for incident response.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/systematic-debugging/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/systematic-debugging/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/systematic-debugging/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/systematic-debugging/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/systematic-debugging/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/systematic-debugging/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/systematic-debugging/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/systematic-debugging/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/systematic-debugging/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/systematic-debugging/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-qa-test-automation/skills/systematic-debugging/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-essentials/skills/systematic-debugging/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/systematic-debugging/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Systematic Debugging
+
+## Overview
+
+**Core principle:** ALWAYS find root cause before attempting fixes. Symptom fixes are failure.
+
+**Violating the letter of this process is violating the spirit of debugging.**
+
+## The Iron Law
+
+```
+NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
+```
+
+If you haven&#x27;t completed Phase 1, you cannot propose fixes.
+
+**Exception:** During an active incident, an authorized rollback or containment action may restore service while root-cause work continues. Label any emergency mitigation explicitly and preserve evidence for the later root-cause investigation.
+
+## When to Use
+
+Use for ANY technical issue:
+- Test failures
+- Bugs in production
+- Unexpected behavior
+- Performance problems
+- Build failures
+- Integration issues
+
+**Use this ESPECIALLY when:**
+- Under time pressure (emergencies make guessing tempting)
+- &quot;Just one quick fix&quot; seems obvious
+- You&#x27;ve already tried multiple fixes
+- Previous fix didn&#x27;t work
+- You don&#x27;t fully understand the issue
+
+**Don&#x27;t skip when:**
+- Issue seems simple (simple bugs have root causes too)
+- You&#x27;re in a hurry (rushing guarantees rework)
+- Manager wants it fixed NOW (systematic is faster than thrashing)
+
+## Routing Boundary
+
+Use this skill when something is already broken and needs root-cause investigation.
+
+Do not use it for nearby but different problems:
+- TDD owns &quot;write failing tests first&quot; and new behavior developed through RED -&gt; GREEN -&gt; REFACTOR.
+- Test-report packaging owns packaging existing test and coverage output into a report.
+- Verification-before-completion owns final evidence before declaring work complete.
+
+## The Four Phases
+
+You MUST complete each phase before proceeding to the next.
+
+### Phase 1: Root Cause Investigation
+
+**BEFORE attempting ANY fix:**
+
+1. **Read Error Messages Carefully**
+   - Don&#x27;t skip past errors or warnings
+   - They often contain the exact solution
+   - Read stack traces completely
+   - Note line numbers, file paths, error codes
+
+2. **Reproduce Consistently**
+   - Can you trigger it reliably?
+   - What are the exact steps?
+   - Does it happen every time?
+   - If not reproducible → gather more data, don&#x27;t guess
+
+3. **Check Recent Changes**
+   - What changed that could cause this?
+   - Git diff, recent commits
+   - New dependencies, config changes
+   - Environmental differences
+
+4. **Gather Evidence in Multi-Component Systems**
+
+   **WHEN system has multiple components (CI → build → signing, API → service → database):**
+
+   **BEFORE proposing fixes, add diagnostic instrumentation:**
+   ```
+   For EACH component boundary:
+     - Log what data enters component
+     - Log what data exits component
+     - Verify environment/config propagation
+     - Check state at each layer
+     - Redact secrets and private payloads before logging
+
+   Run once to gather evidence showing WHERE it breaks
+   THEN analyze evidence to identify failing component
+   THEN investigate that specific component
+   ```
+
+   **Example (multi-layer system):**
+   ```bash
+   # In each relevant process, report presence only; never dump secret values.
+   if [ -n &quot;${IDENTITY:-}&quot; ]; then
+     echo &#x27;IDENTITY is set&#x27;
+   else
+     echo &#x27;IDENTITY is absent or empty&#x27;
+   fi
+
+   # Read-only validation of an already-built artifact, when available.
+   codesign --verify --verbose=2 &quot;$APP&quot;
+   ```
+
+   **Interpretation:** Compare presence checks at the actual workflow/build boundaries. Artifact verification does not itself prove that the correct signing identity propagated.
+
+5. **Trace Data Flow**
+
+   **WHEN error is deep in call stack:**
+
+   See `root-cause-tracing.md` in this directory for the complete backward tracing technique.
+
+   **Quick version:**
+   - Where does bad value originate?
+   - What called this with bad value?
+   - Keep tracing up until you find the source
+   - Fix at source, not at symptom
+
+### Phase 2: Pattern Analysis
+
+**Find the pattern before fixing:**
+
+1. **Find Working Examples**
+   - Locate similar working code in same codebase
+   - What works that&#x27;s similar to what&#x27;s broken?
+
+2. **Compare Against References**
+   - If implementing pattern, read reference implementation COMPLETELY
+   - Don&#x27;t skim - read every line
+   - Understand the pattern fully before applying
+
+3. **Identify Differences**
+   - What&#x27;s different between working and broken?
+   - List every difference, however small
+   - Don&#x27;t assume &quot;that can&#x27;t matter&quot;
+
+4. **Understand Dependencies**
+   - What other components does this need?
+   - What settings, config, environment?
+   - What assumptions does it make?
+
+### Phase 3: Hypothesis and Testing
+
+**Scientific method:**
+
+1. **Form Single Hypothesis**
+   - State clearly: &quot;I think X is the root cause because Y&quot;
+   - Write it down
+   - Be specific, not vague
+
+2. **Test Minimally**
+   - Make the SMALLEST possible change to test hypothesis
+   - One variable at a time
+   - Don&#x27;t fix multiple things at once
+
+3. **Verify Before Continuing**
+   - Did it work? Yes → Phase 4
+   - Didn&#x27;t work? Form NEW hypothesis
+   - DON&#x27;T add more fixes on top
+
+4. **When You Don&#x27;t Know**
+   - Say &quot;I don&#x27;t understand X&quot;
+   - Don&#x27;t pretend to know
+   - Ask for help
+   - Research more
+
+### Phase 4: Implementation
+
+**Fix the root cause, not the symptom:**
+
+1. **Create Failing Test Case**
+   - Simplest possible reproduction
+   - Automated test if possible
+   - One-off test script if no framework
+   - MUST have before fixing
+   - Use `test-driven-development` for a focused behavioral regression when appropriate
+
+2. **Implement Single Fix**
+   - Address the root cause identified
+   - ONE change at a time
+   - No &quot;while I&#x27;m here&quot; improvements
+   - No bundled refactoring
+
+3. **Verify Fix**
+   - Test passes now?
+   - No other tests broken?
+   - Issue actually resolved?
+
+4. **If Fix Doesn&#x27;t Work**
+   - STOP
+   - Count: How many fixes have you tried?
+   - If &lt; 3: Return to Phase 1, re-analyze with new information
+   - **If ≥ 3: STOP and question the architecture (step 5 below)**
+   - DON&#x27;T attempt Fix #4 without architectural discussion
+
+5. **If 3+ Fixes Failed: Question Architecture**
+
+   **Pattern indicating architectural problem:**
+   - Each fix reveals new shared state/coupling/problem in different place
+   - Fixes require &quot;massive refactoring&quot; to implement
+   - Each fix creates new symptoms elsewhere
+
+   **STOP and question fundamentals:**
+   - Is this pattern fundamentally sound?
+   - Are we &quot;sticking with it through sheer inertia&quot;?
+   - Should we refactor architecture vs. continue</pre>
+</body>
+</html>

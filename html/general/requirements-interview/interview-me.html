@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>interview-me</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">requirements-interview</a> / interview-me</p><h1>interview-me</h1><p class="meta">combined</p><p>The copies overlap on the core mechanic (one-question-at-a-time interviewing before building), but they are not interchangeable. The addyosmani and sickn33 copies are near-identical and focus on general software/product intent extraction with a confidence score and &#x27;want vs. should want&#x27; probing. The mohitagw15856 copy is a PM-focused variant that adds a specific question sequence (moment of use, success, constraints, prior art, non-goals), a &#x27;forks not open fields&#x27; technique, and an assumption ledger. The brycewang-stanford copy is a domain-specific research variant that uses a fixed 6-phase structure (Big Picture, Theory, Data, Identification, Results, Contribution) and outputs a formal Research Specification document. Because the research copy has material steps and a different output format that the others lack, and the PM copy has a different question sequence and ledger, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/addyosmani/agent-skills">addyosmani/agent-skills</a></td><td><code>skills/interview-me/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-method/skills/interview-me/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/interview-me/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/interview-me/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/addyosmani/agent-skills">addyosmani/agent-skills</a></td><td><code>skills/interview-me/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-method/skills/interview-me/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/interview-me/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/interview-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/interview-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/interview-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/41-sticerd-eee-sewage-econometrics-check/skills/interview-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/14-luischanci-claude-code-research-starter/dot-claude/skills/interview-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/28-maxwell2732-paper-replicate-agent-demo/dot-claude/skills/interview-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/interview-me/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Interview Me
+
+## Overview
+Extract the user&#x27;s actual intent before any plan, spec, or code exists. Use this when a request is underspecified, conventional, or when the user explicitly asks to be interviewed.
+
+## When to Use
+- The ask is missing who, why, success criteria, or binding constraints.
+- The request is vague (&quot;build me X&quot;).
+- The user says &quot;interview me&quot; or &quot;grill me&quot;.
+
+**Do not use** for unambiguous tasks, mechanical operations, or when you already have ≥95% confidence.
+
+## Process
+
+### 1. Hypothesize
+Write a one-sentence hypothesis of what the user wants and a confidence score (0-100%). If below 70%, note what is missing.
+
+### 2. Ask One Question at a Time
+Ask a single focused question per turn. Attach a guess to each question to surface your assumptions. Wait for the user&#x27;s response before proceeding.
+
+**Question Sequencing (General):**
+1. **Moment of Use:** Who uses this and what are they doing?
+2. **Success:** What does success look like? What would make you send it back?
+3. **Constraints:** What are the binding limits (time, cost, format)?
+4. **Non-Goals:** What are we explicitly NOT doing?
+
+**Question Sequencing (Research Domain):**
+If the task is academic research, use these phases instead:
+1. Big Picture (Phenomenon/Puzzle)
+2. Theoretical Motivation
+3. Data and Setting
+4. Identification Strategy
+5. Expected Results
+6. Contribution
+
+### 3. Probe for Real Intent
+Listen for &quot;should want&quot; answers (buzzwords, best-practice deferrals). If heard, ask: &quot;If you didn&#x27;t have to justify this to anyone, what would you actually want?&quot;
+
+### 4. Restate and Confirm
+When confidence is high, restate the intent in 5-8 lines using the user&#x27;s language. Get explicit confirmation.
+
+**Output Format (General):**
+- Outcome: ...
+- User: ...
+- Why now: ...
+- Constraints: ...
+- Non-goals: ...
+
+**Output Format (Research):**
+Produce a Research Specification Document including Research Question, Motivation, Hypothesis, Empirical Strategy, Data, Expected Results, and Contribution.
+
+### 5. Ledger Assumptions
+List any unresolved items as explicit assumptions. Do not silently guess.
+
+## Conflicts
+- **brycewang-stanford/Auto-Empirical-Research-Skills** uses a fixed research phase structure and specific document output, conflicting with the general flexible process of the other copies.
+- **mohitagw15856/pm-claude-skills** prescribes a specific PM question sequence and assumption ledger, which the addyosmani/sickn33 copies omit.</pre>
+</body>
+</html>

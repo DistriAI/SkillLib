@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>typescript-advanced-types</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">typescript-advanced-types</a> / typescript-advanced-types</p><h1>typescript-advanced-types</h1><p class="meta">combined</p><p>The first two copies are thin wrappers that point to a resources/implementation-playbook.md file and contain no concrete type-system steps. The third copy (LeoYeAI/openclaw-master-skills) contains the actual instructional content: detailed sections on generics, conditional types, mapped types, template literal types, and utility types with code examples. Because the first two copies lack the substantive steps and the third copy lacks the &#x27;Do not use&#x27; and &#x27;Limitations&#x27; guardrails present in the others, crowning one would hide either the real procedure or the safety constraints. They overlap in scope but each has material the others lack.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/typescript-advanced-types/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/typescript-advanced-types/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/typescript-advanced-types/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/typescript-advanced-types/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/typescript-advanced-types/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/typescript-advanced-types/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/typescript-advanced-types/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/typescript-advanced-types/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: typescript-advanced-types
+description: Master TypeScript&#x27;s advanced type system including generics, conditional types, mapped types, template literals, and utility types for building type-safe applications. Use when implementing complex type logic, creating reusable type utilities, or ensuring compile-time type safety in TypeScript projects.
+---
+
+# TypeScript Advanced Types
+
+Comprehensive guidance for mastering TypeScript&#x27;s advanced type system including generics, conditional types, mapped types, template literal types, and utility types for building robust, type-safe applications.
+
+## Use this skill when
+
+- Building type-safe libraries or frameworks
+- Creating reusable generic components
+- Implementing complex type inference logic
+- Designing type-safe API clients
+- Building form validation systems
+- Creating strongly-typed configuration objects
+- Implementing type-safe state management
+- Migrating JavaScript codebases to TypeScript
+
+## Do not use this skill when
+
+- The task is unrelated to typescript advanced types
+- You need a different domain or tool outside this scope
+
+## Instructions
+
+- Clarify goals, constraints, and required inputs.
+- Apply relevant best practices and validate outcomes.
+- Provide actionable steps and verification.
+- If detailed examples are required, open `resources/implementation-playbook.md`.
+
+## Core Concepts
+
+### 1. Generics
+
+**Purpose:** Create reusable, type-flexible components while maintaining type safety.
+
+**Basic Generic Function:**
+
+```typescript
+function identity&lt;T&gt;(value: T): T {
+  return value;
+}
+
+const num = identity&lt;number&gt;(42); // Type: number
+const str = identity&lt;string&gt;(&quot;hello&quot;); // Type: string
+const auto = identity(true); // Type inferred: boolean
+```
+
+**Generic Constraints:**
+
+```typescript
+interface HasLength {
+  length: number;
+}
+
+function logLength&lt;T extends HasLength&gt;(item: T): T {
+  console.log(item.length);
+  return item;
+}
+
+logLength(&quot;hello&quot;); // OK: string has length
+logLength([1, 2, 3]); // OK: array has length
+logLength({ length: 10 }); // OK: object has length
+// logLength(42);             // Error: number has no length
+```
+
+**Multiple Type Parameters:**
+
+```typescript
+function merge&lt;T, U&gt;(obj1: T, obj2: U): T &amp; U {
+  return { ...obj1, ...obj2 };
+}
+
+const merged = merge({ name: &quot;John&quot; }, { age: 30 });
+// Type: { name: string } &amp; { age: number }
+```
+
+### 2. Conditional Types
+
+**Purpose:** Create types that depend on conditions, enabling sophisticated type logic.
+
+**Basic Conditional Type:**
+
+```typescript
+type IsString&lt;T&gt; = T extends string ? true : false;
+
+type A = IsString&lt;string&gt;; // true
+type B = IsString&lt;number&gt;; // false
+```
+
+**Extracting Return Types:**
+
+```typescript
+type ReturnType&lt;T&gt; = T extends (...args: any[]) =&gt; infer R ? R : never;
+
+function getUser() {
+  return { id: 1, name: &quot;John&quot; };
+}
+
+type User = ReturnType&lt;typeof getUser&gt;;
+// Type: { id: number; name: string; }
+```
+
+**Distributive Conditional Types:**
+
+```typescript
+type ToArray&lt;T&gt; = T extends any ? T[] : never;
+
+type StrOrNumArray = ToArray&lt;string | number&gt;;
+// Type: string[] | number[]
+```
+
+**Nested Conditions:**
+
+```typescript
+type TypeName&lt;T&gt; = T extends string
+  ? &quot;string&quot;
+  : T extends number
+    ? &quot;number&quot;
+    : T extends boolean
+      ? &quot;boolean&quot;
+      : T extends undefined
+        ? &quot;undefined&quot;
+        : T extends Function
+          ? &quot;function&quot;
+          : &quot;object&quot;;
+
+type T1 = TypeName&lt;string&gt;; // &quot;string&quot;
+type T2 = TypeName&lt;() =&gt; void&gt;; // &quot;function&quot;
+```
+
+### 3. Mapped Types
+
+**Purpose:** Transform existing types by iterating over their properties.
+
+**Basic Mapped Type:**
+
+```typescript
+type Readonly&lt;T&gt; = {
+  readonly [P in keyof T]: T[P];
+};
+
+interface User {
+  id: number;
+  name: string;
+}
+
+type ReadonlyUser = Readonly&lt;User&gt;;
+// Type: { readonly id: number; readonly name: string; }
+```
+
+**Optional Properties:**
+
+```typescript
+type Partial&lt;T&gt; = {
+  [P in keyof T]?: T[P];
+};
+
+type PartialUser = Partial&lt;User&gt;;
+// Type: { id?: number; name?: string; }
+```
+
+**Key Remapping:**
+
+```typescript
+type Getters&lt;T&gt; = {
+  [K in keyof T as `get${Capitalize&lt;string &amp; K&gt;}`]: () =&gt; T[K];
+};
+
+interface Person {
+  name: string;
+  age: number;
+}
+
+type PersonGetters = Getters&lt;Person&gt;;
+// Type: { getName: () =&gt; string; getAge: () =&gt; number; }
+```
+
+**Filtering Properties:**
+
+```typescript
+type PickByType&lt;T, U&gt; = {
+  [K in keyof T as T[K] extends U ? K : never]: T[K];
+};
+
+interface Mixed {
+  id: number;
+  name: string;
+  age: number;
+  active: boolean;
+}
+
+type OnlyNumbers = PickByType&lt;Mixed, number&gt;;
+// Type: { id: number; age: number; }
+```
+
+### 4. Template Literal Types
+
+**Purpose:** Create string-based types with pattern matching and transformation.
+
+**Basic Template Literal:**
+
+```typescript
+type EventName = &quot;click&quot; | &quot;focus&quot; | &quot;blur&quot;;
+type EventHandler = `on${Capitalize&lt;EventName&gt;}`;
+// Type: &quot;onClick&quot; | &quot;onFocus&quot; | &quot;onBlur&quot;
+```
+
+**String Manipulation:**
+
+```typescript
+type UppercaseGreeting = Uppercase&lt;&quot;hello&quot;&gt;; // &quot;HELLO&quot;
+type LowercaseGreeting = Lowercase&lt;&quot;HELLO&quot;&gt;; // &quot;hello&quot;
+type CapitalizedName = Capitalize&lt;&quot;john&quot;&gt;; // &quot;John&quot;
+type UncapitalizedName = Uncapitalize&lt;&quot;John&quot;&gt;; // &quot;john&quot;
+```
+
+**Path Building:**
+
+```typescript
+type Path&lt;T&gt; = T extends object
+  ? {
+      [K in keyof T]: K extends string ? `${K}` | `${K}.${Path&lt;T[K]&gt;}` : never;
+    }[keyof T]
+  : never;
+
+interface Config {
+  server: {
+    host: string;
+    port: number;
+  };
+  database: {
+    url: string;
+  };
+}
+
+type ConfigPath = Path&lt;Config&gt;;
+// Type: &quot;server&quot; | &quot;database&quot; | &quot;server.host&quot; | &quot;server.port&quot; | &quot;database.url&quot;
+```
+
+### 5. Utility Types
+
+**Built-in Utility Types:**
+
+```typescript
+// Partial&lt;T&gt; - Make all properties optional
+type PartialUser = Partial&lt;User&gt;;
+
+// Required&lt;T&gt; - Make all properties required
+type RequiredUser = Required&lt;PartialUser&gt;;
+
+// Readonly&lt;T&gt; - Make all properties readonly
+type ReadonlyUser = Readonly&lt;User&gt;;
+
+// Pick&lt;T, K&gt; - Select specific properties
+type UserName = Pick&lt;User, &quot;name&quot; | &quot;email&quot;&gt;;
+
+// Omit&lt;T, K&gt; - Remove specific properties
+type UserWithoutPassword = Omit&lt;User, &quot;password&quot;&gt;;
+
+// Exclude&lt;T, U&gt; - Exclude types from union
+type T1 = Exclude&lt;&quot;a&quot; | &quot;b&quot; | &quot;c&quot;, &quot;a&quot;&gt;; // &quot;b&quot; | &quot;c&quot;
+
+// Extract&lt;T, U&gt; - Extract types from union
+type T2 = Extract&lt;&quot;a&quot; | &quot;b&quot; | &quot;c&quot;, &quot;a&quot; | &quot;b&quot;&gt;; // &quot;a&quot; | &quot;b&quot;
+
+// NonNullable&lt;T&gt; - Exclude null and undefined
+type T3 = NonNullable&lt;string | null | undefined&gt;; // string
+
+// Record&lt;K, T&gt; - Create object type with keys K and values T
+type T4 = Record&lt;string, number&gt;;
+```
+
+## Resources
+
+- `resources/implementation-playbook.md` for detailed patterns and examples.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

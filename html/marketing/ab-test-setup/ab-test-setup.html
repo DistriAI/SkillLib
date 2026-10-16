@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ab-test-setup</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">ab-test-setup</a> / ab-test-setup</p><h1>ab-test-setup</h1><p class="meta">combined</p><p>The LeoYeAI copies (openclaw-marketing-skills and openclaw-master-skills) are nearly identical, providing a comprehensive guide with specific sample size tables, traffic allocation strategies, and implementation details (client vs. server-side). The sickn33 copy is a more rigorous, gate-based procedure that adds critical steps missing from the LeoYeAI versions, specifically a detailed &#x27;Tracking Verification&#x27; checklist (event firing, variant attribution, de-duplication, randomization checks) and &#x27;Refusal Conditions&#x27; for when a test cannot be validly run. Because the sickn33 version contains material safety and verification steps that the LeoYeAI versions lack, and the LeoYeAI versions contain specific reference data (sample size tables) that the sickn33 version omits, crowning one would hide a real alternative approach to the task.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/ab-test-setup/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ab-test-setup/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ab-test-setup/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/ab-test-setup/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ab-test-setup/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ab-test-setup/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/ab-test-setup/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-ai-product-evaluation-ops/skills/ab-test-setup/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-data-analytics/skills/ab-test-setup/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-marketing-seo-growth/skills/ab-test-setup/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/ab-test-setup/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/ab-test-setup/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># A/B Test Setup
+
+## 1. Initial Assessment &amp; Context
+1. Check for product marketing context (e.g., `.agents/product-marketing-context.md`) if available.
+2. Understand Test Context, Current State (baseline rate, traffic volume), and Constraints.
+
+## 2. Hypothesis Lock (Hard Gate)
+Before designing variants, define a specific hypothesis:
+- **Structure**: Because [observation], we believe [change] will cause [outcome] for [audience].
+- **Requirements**: Must include target audience, primary metric, expected direction, and Minimum Detectable Effect (MDE).
+- **Refusal Condition**: If baseline rate is unknown or traffic is insufficient to detect the MDE, refuse to proceed.
+
+## 3. Test Design
+1. **Test Type**: Choose the simplest valid test (A/B, A/B/n, MVT, or Split URL). Default to A/B.
+2. **Metrics**:
+   - **Primary**: Single metric tied to business value.
+   - **Secondary**: Contextual metrics.
+   - **Guardrail**: Metrics that must not degrade.
+3. **Sample Size**: Calculate required sample size per variant based on baseline, MDE, alpha (0.05), and power (80%).
+   - *Reference*: Use calculators or tables (e.g., 1% baseline, 10% lift requires ~150k/variant).
+4. **Traffic Allocation**: Decide split (50/50 standard, 90/10 conservative).
+
+## 4. Tracking Verification (Mandatory)
+Before launch, verify:
+1. **Event Firing**: Confirm events arrive in analytics with expected latency.
+2. **Variant Attribution**: Ensure variant ID is attached to all relevant events.
+3. **De-duplication**: Confirm reloading does not double-count events.
+4. **Randomization**: Check for sample-ratio mismatch and assignment stability.
+5. **Guardrails**: Ensure guardrail metrics have working dashboards/alerts.
+
+## 5. Execution Readiness Gate
+Proceed only if:
+- Hypothesis is locked.
+- Primary metric is frozen.
+- Sample size is calculated.
+- Tracking is verified.
+- QA is completed.
+
+## 6. Running the Test
+- **DO**: Monitor technical health, document external factors.
+- **DON&#x27;T**: Peek at results, change variants, add new traffic sources, or redefine success criteria.
+
+## 7. Analysis &amp; Documentation
+1. Check if sample size was reached.
+2. Evaluate statistical significance (p &lt; 0.05) and effect size.
+3. Review guardrail metrics.
+4. Document hypothesis, results, decision, and learnings in a shared location.</pre>
+</body>
+</html>

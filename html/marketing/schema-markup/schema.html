@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>schema</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">schema-markup</a> / schema</p><h1>schema</h1><p class="meta">combined</p><p>Both copies describe the same task (implementing schema.org/JSON-LD for search), but they contain material, non-overlapping steps and constraints. The coreyhaines31 copy is a focused implementation guide with a specific product-marketing context check, a strict &#x27;check Google feature support first&#x27; gate, and explicit retirement dates for FAQPage, HowTo, and WebSite SearchAction. The kostja94 copy adds a multi-engine support matrix (Google vs. Bing vs. AI), a detailed mapping of schema types to SERP features, and a Generative Engine Optimization (GEO) section. Because the first copy lacks the multi-engine/GEO strategy and the second lacks the specific product-context check and the precise &#x27;retired feature&#x27; implementation guardrails, crowning one would hide a real alternative approach to the same task.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/schema/SKILL.md</code></td></tr><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/seo/on-page/schema/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/schema/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/seo/on-page/schema/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: schema
+description: When the user wants to add, fix, or optimize schema markup and structured data on their site. Use for JSON-LD, rich snippets, schema.org, FAQ, product, review, breadcrumb, or AI search visibility.
+metadata:
+  version: 2.1.0
+---
+
+# Schema Markup &amp; Structured Data
+
+You are an expert in structured data. Your goal is to implement schema.org markup that helps search engines and AI systems understand content.
+
+## Initial Assessment
+
+1. **Check Context**: If `.agents/product-marketing.md` (or legacy equivalents) exists, read it first. Use that context to avoid redundant questions.
+2. **Page Type &amp; Goals**: Identify the page type, current schema state, and target rich results or AI visibility goals.
+3. **Engine Support Check**: 
+   - **Google**: Check the [Google Search Gallery](https://developers.google.com/search/docs/appearance/structured-data/search-gallery) for current eligibility.
+   - **Bing/AI**: Note that Bing and AI engines (Perplexity, etc.) may use Schema.org types even if Google does not display rich results for them.
+
+## Core Principles
+
+- **Accuracy First**: Schema must match visible content. Do not markup non-existent content.
+- **JSON-LD Preferred**: Use JSON-LD in `&lt;head&gt;` or end of `&lt;body&gt;`.
+- **Feature Eligibility**: Schema.org validity does not equal Google rich result eligibility. 
+  - **Retired Google Features**: HowTo (retired Sep 2023), FAQPage (retired/restricted May 2026), and WebSite SearchAction (retired Nov 2024). Do not recommend these for Google rich results, but they may still be useful for Bing or AI understanding.
+
+## Implementation Guide
+
+### Common Types &amp; Requirements
+| Type | Required Properties | Notes |
+|------|---------------------|-------|
+| Organization | name, url | Use for Knowledge Panels |
+| Article | headline, image, datePublished, author | ISO 8601 dates |
+| Product | name, image, offers | Include price and availability |
+| BreadcrumbList | itemListElement | Use for path display |
+| FAQPage | mainEntity | Use for AI visibility; check Google eligibility first |
+
+### Multi-Engine &amp; GEO Strategy
+- **GEO**: Use Organization, Person, and Article schema to help AI systems (ChatGPT, Gemini) cite your content.
+- **@graph**: Combine multiple types (e.g., Organization + BreadcrumbList) using `@graph`.
+
+## Validation
+
+1. **Google Rich Results Test**: Verify Google-specific eligibility.
+2. **Schema.org Validator**: Check for general syntax errors.
+3. **Search Console**: Monitor for errors in supported features.
+
+## Implementation by Platform
+
+- **Static**: Add JSON-LD to HTML templates/partials.
+- **Dynamic (Next.js/React)**: Use server-side rendering to inject JSON-LD.
+- **CMS**: Use plugins like Yoast or Rank Math, but verify they don&#x27;t inject retired types for Google.</pre>
+</body>
+</html>

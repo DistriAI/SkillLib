@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>vue-best-practices</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">vue-component-development</a> / vue-best-practices</p><h1>vue-best-practices</h1><p class="meta">combined</p><p>The two copies are different generations of the same skill. The first (v18) is a high-level workflow that mandates reading specific reference files (reactivity.md, sfc.md, etc.) and planning component boundaries before coding. The second (v17) is a detailed index of specific &#x27;gotchas&#x27; and performance optimizations (e.g., ref-value-access, computed-no-side-effects) with its own set of reference files. The v18 copy lacks the granular troubleshooting index of v17, while v17 lacks the explicit architectural planning workflow of v18. Combining them provides both the structural workflow and the detailed technical reference list.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/vuejs-ai/skills">vuejs-ai/skills</a></td><td><code>skills/vue-best-practices/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/vue-best-practices/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/vuejs-ai/skills">vuejs-ai/skills</a></td><td><code>skills/vue-best-practices/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/vue-best-practices/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: vue-best-practices
+description: MUST be used for Vue.js tasks. Strongly recommends Composition API with &lt;script setup&gt; and TypeScript as the standard approach. Covers Vue 3, SSR, Volar, vue-tsc. Load for any Vue, .vue files, Vue Router, Pinia, or Vite with Vue work. ALWAYS use Composition API unless the project explicitly requires Options API.
+license: MIT
+metadata:
+  author: github.com/vuejs-ai
+  version: &quot;18.0.0&quot;
+---
+
+# Vue Best Practices Workflow
+
+Use this skill as an instruction set. Follow the workflow in order unless the user explicitly asks for a different order.
+
+## Core Principles
+- **Keep state predictable:** one source of truth, derive everything else.
+- **Make data flow explicit:** Props down, Events up for most cases.
+- **Favor small, focused components:** easier to test, reuse, and maintain.
+- **Avoid unnecessary re-renders:** use computed properties and watchers wisely.
+- **Readability counts:** write clear, self-documenting code.
+
+## 1) Confirm architecture before coding (required)
+
+- Default stack: Vue 3 + Composition API + `&lt;script setup lang=&quot;ts&quot;&gt;`.
+- If the project explicitly uses Options API, load `vue-options-api-best-practices` skill if available.
+- If the project explicitly uses JSX, load `vue-jsx-best-practices` skill if available.
+
+### 1.1 Must-read core references (required)
+
+- Before implementing any Vue task, make sure to read and apply these core references:
+  - `references/reactivity.md`
+  - `references/sfc.md`
+  - `references/component-data-flow.md`
+  - `references/composables.md`
+- Keep these references in active working context for the entire task, not only when a specific issue appears.
+
+### 1.2 Plan component boundaries before coding (required)
+
+Create a brief component map before implementation for any non-trivial feature.
+
+- Define each component&#x27;s single responsibility in one sentence.
+- Keep entry/root and route-level view components as composition surfaces by default.
+- Move feature UI and feature logic out of entry/root/view components unless the task is intentionally a tiny single-file demo.
+- Define props/emits contracts for each child component in the map.
+- Prefer a feature folder layout (`components/&lt;feature&gt;/...`, `composables/use&lt;Feature&gt;.ts`) when adding more than one component.
+
+## 2) Apply essential Vue foundations (required)
+
+These are essential, must-know foundations. Apply all of them in every Vue task using the core references already loaded in section `1.1`.
+
+### Reactivity
+- Must-read reference from `1.1`: [reactivity](references/reactivity.md)
+- Keep source state minimal (`ref`/`reactive`), derive everything possible with `computed`.
+- Use watchers for side effects if needed.
+- Avoid recomputing expensive logic in templates.
+
+### SFC structure and template safety
+- Must-read reference from `1.1`: [sfc](references/sfc.md)
+- Keep SFC sections in this order: `&lt;script&gt;` → `&lt;template&gt;` → `&lt;style&gt;`.
+- Keep SFC responsibilities focused; split large components.
+- Keep templates declarative; move branching/derivation to script.
+- Apply Vue template safety rules (`v-html`, list rendering, conditional rendering choices).
+
+### Keep components focused
+Split a component when it has **more than one clear responsibility** (e.g. data orchestration + UI, or multiple independent UI sections).
+
+- Prefer **smaller components + composables** over one “mega component”
+- Move **UI sections** into child components (props in, events out).
+- Move **state/side effects** into composables (`useXxx()`).
+
+Apply objective split triggers. Split the component if **any** condition is true:
+
+- It owns both orchestration/state and substantial presentational markup for multiple sections.
+- It has 3+ distinct UI sections (for example: form, filters, list, footer/status).
+- A template block is repeated or could become reusable (item rows, cards, list entries).
+
+Entry/root and route view rule:
+
+- Keep entry/root and route view components thin: app shell/layout, provider wiring, and feature composition.
+- Do not place full feature implementations in entry/root/view components when those features contain independent parts.
+- For CRUD/list features (todo, table, catalog, inbox), split at least into:
+  - feature container component
+  - input/form component
+  - list (and/or item) component
+  - footer/actions or filter/status component
+- Allow a single-file implementation only for very small throwaway demos; if chosen, explicitly justify why splitting is unnecessary.
+
+### Component data flow
+- Must-read reference from `1.1`: [component-data-flow](references/component-data-flow.md)
+- Use props down, events up as the primary model.
+- Use `v-model` only for true two-way component contracts.
+- Use provide/inject only for deep-tree dependencies or shared context.
+- Keep contracts explicit and typed with `defineProps`, `defineEmits`, and `InjectionKey` as needed.
+
+### Composables
+- Must-read reference from `1.1`: [composables](references/composables.md)
+- Extract logic into composables when it is reused, stateful, or side-effect heavy.
+- Keep composable APIs small, typed, and predictable.
+- Separate feature logic from presentational components.
+
+## 3) Troubleshooting and Optimization Index
+
+Use the following index to address specific gotchas and performance issues. Load the matching reference only when the requirement or issue exists.
+
+### Reactivity
+- Accessing ref() values without .value in scripts → See [ref-value-access](reference/ref-value-access.md)
+- Destructuring reactive() objects, losing reactivity → See [reactive-destructuring](reference/reactive-destructuring.md)
+- Choosing between ref() and reactive() for state → See [prefer-ref-over-reactive](reference/prefer-ref-over-reactive.md)
+- Accessing refs inside arrays and collections → See [refs-in-collections-need-value](reference/refs-in-collections-need-value.md)
+- Large objects or external library data overhead → See [shallow-ref-for-performance](reference/shallow-ref-for-performance.md)
+- Using nested refs in template expressions → See [template-ref-unwrapping-top-level](reference/template-ref-unwrapping-top-level.md)
+- Comparing reactive objects with === operator → See [reactivity-proxy-identity-hazard](reference/reactivity-proxy-identity-hazard.md)
+- Library instances breaking in reactive state → See [reactivity-markraw-for-non-reactive](reference/reactivity-markraw-for-non-reactive.md)
+- Expecting watchers to fire for each state change → See [reactivity-same-tick-batching](reference/reactivity-same-tick-batching.md)
+- Integrating external state management libraries → See [reactivity-external-state-integration](reference/reactivity-external-state-integration.md)
+- Deriving state with watchEffect instead of computed → See [reactivity-computed-over-watcheffect-mutations](reference/reactivity-computed-over-watcheffect-mutations.md)
+
+### Computed
+- Computed getter is making API calls or mutations → See [computed-no-side-effects](reference/computed-no-side-effects.md)
+- Mutating computed values causes lost changes unexpectedly → See [computed-return-value-readonly](reference/computed-return-value-readonly.md)
+- Computed property doesn&#x27;t update when expected → See [computed-conditional-dependencies](reference/computed-conditional-dependencies.md)
+- Sorting or reversing arrays destroys original data → See [computed-array-mutation](reference/computed-array-mutation.md)
+- Expensive operations running too frequently every render → See [computed-vs-methods-caching](reference/computed-vs-methods-caching.md)
+- Trying to pass arguments to computed properties → See [computed-no-parameters](reference/computed-no-parameters.md)
+- Complex conditions bloating inline class bindings → See [computed-properties-for-class-logic](reference/computed-properties-for-class-logic.md)
+
+### Watchers
+- Need to watch a reactive object property → See [watch-reactive-property-getter](reference/watch-reactive-property-getter.md)
+- Large nested data structures causing performance issues → See [watch-deep-performance](reference/watch-deep-performance.md)
+- Dependencies accessed after await not tracking → See [watcheffect-async-dependency-tracking](reference/watcheffect-async-dependency-tracking.md)
+- Need to access updated DOM in watchers → See [watch-flush-timing](reference/watch-flush-timing.md)
+- Uncertain whether to use watch or watchEffect → See [watch-vs-watcheffect](reference/watch-vs-watcheffect.md)
+- Duplicating initial calls and watch callbacks → See [watch-immediate-option](reference/watch-immediate-option.md)
+- Can&#x27;t compare old and new values correctly → See [watch-deep-same-object-reference](reference/watch-deep-same-object-reference.md)
+- Template refs appearing null or stale → See [watcheffect-flush-post-for-refs](reference/watcheffect-flush-post-for-refs.md)
+
+### Components
+- Prop values being changed from a child component → See [props-are-read-only](reference/props-are-read-only.md)
+- Grandparent can&#x27;t listen to grandchild emitted events → See [component-events-dont-bubble](reference/component-events-dont-bubble.md)
+- Distinguishing Vue components from native elements → See [component-naming-pascalcase](reference/component-naming-pascalcase.md)
+- Recursive component needs to reference itself → See [self-referencing-component-name](reference/self-referencing-component-name.md)
+- Bundle includes components that aren&#x27;t used → See [prefer-local-component-registration](reference/prefer-local-component-registration.md)
+- Tight coupling through component ref access → See [prefer-props-emit-over-component-refs](reference/prefer-props-emit-over-component-refs.md)
+
+### Props &amp; Emits
+- Boolean prop not parsing as expected → See [prop-boolean-casting-order](reference/prop-boolean-casting-order.md)
+- Composable doesn&#x27;t update when props change → See [prop-composable-reactivity-loss](reference/prop-composable-reactivity-loss.md)
+- Destructured props not updating watchers → See [prop-destructured-watch-getter](reference/prop-destructured-watch-getter.md)
+- Prop validation needs component instance data → See [prop-validation-before-instance](reference/prop-validation-before-instance.md)
+- Event name inconsistency in templates and scripts → See [emit-kebab-case-in-templates](reference/emit-kebab-case-in-templates.md)
+- Event payloads need validation during development → See [emit-validation-for-complex-payloads](reference/emit-validation-for-complex-payloads.md)
+
+### Templates
+- Rendering untrusted user content as HTML → See [v-html-xss-security](reference/v-html-xss-security.md)
+- Filtering or conditionally hiding list items → See [no-v-if-with-v-for](reference/no-v-if-with-v-for.md)
+- Functions in templates modifying data unexpectedly → See [template-functions-no-side-effects](reference/template-functions-no-side-effects.md)
+- Performance issues with filtered or sorted lists → See [v-for-use-computed](reference/v-for-use-computed.md)
+
+## 4) Consider optional features only when requirements call for them
+
+### 4.1 Standard optional features
+
+Do not add these by default. Load the matching reference only when the requirement exists.
+
+- Slots: parent needs to control child content/layout -&gt; [component-slots](references/component-slots.md)
+- Fallthrough attributes: wrapper/base components must forward attrs/events safely -&gt; [component-fallthrough-attrs](references/component-fallthrough-attrs.md)
+- Built-in component `&lt;KeepAlive&gt;` for stateful view caching -&gt; [component-keep-alive](references/component-keep-alive.md)
+- Built-in component `&lt;Teleport&gt;` for overlays/portals -&gt; [component-teleport](references/component-teleport.md)
+- Built-in component `&lt;Suspense&gt;` for async subtree fallback boundaries -&gt; [component-suspense](references/component-suspense.md)
+- Animations: transitions and animations -&gt; [component-animations](references/component-animations.md)</pre>
+</body>
+</html>

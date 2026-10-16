@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>literature-review</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">systematic-literature-review</a> / literature-review</p><h1>literature-review</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the upstream, versioned source (v1.11) and contains the most rigorous, current methodology (PRISMA 2020, records/reports/studies distinction, explicit limitations of web search). The other copies are reproductions or variants that either omit these critical constraints (zLanqing, foryourhealth111) or add conflicting procedural requirements (aipoch&#x27;s &#x27;When NOT to Use&#x27; and specific skill integrations like gget/bioservices). Because the copies disagree on whether AI schematics are mandatory (K-Dense says optional, others say mandatory) and on the specific tools to use for database access, crowning one would hide real alternatives and conflicting constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/literature-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/literature-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/literature-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/literature-review/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/literature-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/literature-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/literature-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/literature-review/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-research/skills/literature-review/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/54-scdenney-open-science-skills/skills/literature-review/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/literature-review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/03-K-Dense-AI-claude-scientific-skills/literature-review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/04-K-Dense-AI-claude-scientific-writer/literature-review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/literature-review/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: literature-review
+description: Conducts systematic, scoping, and narrative literature reviews using PubMed, arXiv, bioRxiv, Semantic Scholar, and other appropriate sources. Use for research synthesis, reproducible literature searches, screening, citation checking, or preparing Markdown and PDF reviews.
+allowed-tools: Read Write Edit Bash
+license: MIT
+metadata:
+  skill-author: K-Dense Inc.
+---
+
+# Literature Review
+
+## Overview
+
+Conduct systematic, comprehensive literature reviews following rigorous academic methodology. Search multiple literature databases, synthesize findings thematically, verify all citations for accuracy, and generate professional output documents in markdown and PDF formats.
+
+Use discipline-appropriate bibliographic databases for the reproducible search, with **parallel-web** (`parallel-cli search`) for scoping and supplementary discovery. Ranked web results and extracted excerpts cannot establish exhaustive coverage or substitute for full-text assessment.
+
+## When to Use This Skill
+
+Use this skill when:
+- Conducting a systematic literature review for research or publication
+- Synthesizing current knowledge on a specific topic across multiple sources
+- Performing meta-analysis or scoping reviews
+- Writing the literature review section of a research paper or thesis
+- Investigating the state of the art in a research domain
+- Identifying research gaps and future directions
+- Requiring verified citations and professional formatting
+
+## When NOT to Use This Skill
+
+Do NOT use this skill when:
+- Only a simple keyword search is needed (use gget or PubMed directly)
+- The task is citation management/formatting only (use reference-style-sync)
+- The user needs a single paper summary (use gget or direct reading)
+- The task is bibliometric analysis only (use citation-chasing-mapping)
+
+## Figures and PRISMA reporting
+
+For systematic reviews, use the appropriate [PRISMA 2020 flow template](https://www.prisma-statement.org/prisma-2020-flow-diagram) and reconciled screening counts. Distinguish records, reports, and studies, including reports not retrieved and reasons for full-text exclusions.
+
+Conceptual schematics are optional. If used, the bundled generator needs `OPENROUTER_API_KEY` and creates a PNG draft:
+
+```bash
+python scripts/generate_schematic.py &quot;Conceptual evidence map&quot; -o figures/evidence_map.png --doc-type journal --iterations 2
+```
+
+Inspect labels, counts, arrows, and accessibility yourself. Do not fabricate study counts in an image prompt.
+
+## Core Workflow
+
+A literature review runs in seven phases:
+
+1. **Planning and scoping** — the question, inclusion and exclusion criteria, and scope.
+2. **Systematic literature search** — multi-database searching with recorded queries.
+3. **Screening and selection** — title/abstract then full-text screening with counts kept for the PRISMA flow.
+4. **Data extraction and quality assessment** — structured extraction and risk-of-bias or quality appraisal.
+5. **Synthesis and analysis** — thematic or quantitative synthesis across studies.
+6. **Citation verification** — every citation checked against the actual source.
+7. **Document generation** — assembling the review with a complete bibliography.
+
+Record every search string and date as you go: a review that cannot reproduce its own search is not systematic.
+
+## Best Practices
+
+### Search Strategy
+1. **Pilot the question**: Optionally use `parallel-cli search` for scoping, then test database queries against known eligible reports.
+2. **Choose complementary sources**: Justify database and registry coverage for the question.
+3. **Include preprint servers**: Captures latest unpublished findings.
+4. **Document everything**: Search strings, dates, result counts for reproducibility.
+5. **Test and refine**: Run pilot searches, review results, adjust search terms.
+6. **Preserve all eligible records**: Citation counts can order exploratory reading but must not determine eligibility.
+7. **Verify retrieved content**: Extraction can be incomplete; obtain the actual full report, or record it as not retrieved.
+
+### Records, Reports, and Studies
+1. **Deduplicate records, then link reports**: DOI/title deduplication removes repeated search hits; it does not identify every paper from the same study.
+2. **Keep a study-to-report map**: Link preprints, journal articles, protocols, and follow-up reports using trial IDs, cohort descriptions, sites, and recruitment dates.</pre>
+</body>
+</html>

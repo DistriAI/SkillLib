@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>property-based-testing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">property-based-testing</a> / property-based-testing</p><h1>property-based-testing</h1><p class="meta">combined</p><p>The two skills cover the same domain but with distinct, non-overlapping material. The first (trailofbits) is a high-level strategic guide focusing on property selection, strength ordering, avoiding tautologies/vacuity, and a decision framework for when to use PBT. It references external files for implementation details. The second (Vibe-Skills) is a low-level implementation guide providing specific code examples, installation commands, and generator syntax for fast-check (TypeScript) and Hypothesis (Python). Neither contains the other&#x27;s core value: the first lacks the concrete code syntax, and the second lacks the strategic decision-making framework and property strength hierarchy. Combining them creates a complete skill that covers both the &#x27;when/what&#x27; and the &#x27;how&#x27;.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/property-based-testing/skills/property-based-testing/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/property-based-testing/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/property-based-testing/skills/property-based-testing/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/property-based-testing/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: property-based-testing
+description: &quot;Writes, reviews, and debugs property-based tests using Hypothesis, fast-check, proptest, jqwik, rapid, and Echidna/Medusa. Use when tests should cover a whole input domain instead of hand-picked examples: encode/decode pairs, parsers, normalizers, validators, numeric types, comparators, data structures, and smart-contract invariants. Also use when adding cases to existing PBT suites or debugging shrunk counterexamples.&quot;
+---
+
+# Property-Based Testing
+
+## 1. Strategic Assessment
+
+An example test asserts one point. A property asserts a rule over the whole input domain. This trade is worth making when the code has an algebraic shape (inverse, invariant, oracle). If the code has no such shape, use example tests.
+
+**Check for buried properties:**
+- Calculations wrapped in I/O
+- Strings built by concatenation
+- In-place mutations
+
+If a property is buried, refactor to expose a seam before concluding PBT is not applicable.
+
+**Property Strength Ordering (Weakest to Strongest):**
+1. No crash
+2. Type preservation
+3. Invariant
+4. Idempotence
+5. Roundtrip / Oracle
+
+*Rule:* Assert the strongest property the code supports. &quot;No crash&quot; alone rarely justifies the dependency.
+
+## 2. Property Catalog
+
+| Property | Formula | Where it applies |
+|---|---|---|
+| Roundtrip | `decode(encode(x)) == x` | Serialization, conversion pairs |
+| Inverse | `f(g(x)) == x` | encrypt/decrypt, compress/decompress |
+| Oracle | `new(x) == reference(x)` | Optimization, refactoring |
+| Idempotence | `f(f(x)) == f(x)` | Normalization, formatting, sorting |
+| Invariant | Holds before and after | Any transformation, contract state |
+| Easy to verify | `is_sorted(sort(x))` | Complex algorithms with cheap checkers |
+| Commutativity | `f(a, b) == f(b, a)` | Binary and set operations |
+| Associativity | `f(f(a,b), c) == f(a, f(b,c))` | Combining operations |
+| Identity | `f(x, e) == x` | Operations with a neutral element |
+
+## 3. Common Pitfalls
+
+- **Tautology:** `assert add(a, b) == a + b` restates the implementation. Pick a property that constrains the function without recomputing it. *Exception:* `f(x) == f(x)` is a valid determinism property for non-pure functions (e.g., serializers over dicts, hashing).
+- **Vacuity:** `assume()` that filters out nearly every input passes without exercising anything. Push constraints into the strategy/generator so valid inputs are produced directly.
+
+## 4. Implementation: TypeScript/JavaScript (fast-check)
+
+### Installation
+```bash
+npm install -D fast-check
+# or
+bun add -d fast-check
+```
+
+### Basic Structure
+```typescript
+import { test } from &#x27;vitest&#x27;
+import * as fc from &#x27;fast-check&#x27;
+
+test(&#x27;reverse twice returns original&#x27;, () =&gt; {
+  fc.assert(
+    fc.property(
+      fc.array(fc.integer()),
+      (arr) =&gt; {
+        expect(reverse(reverse(arr))).toEqual(arr)
+      }
+    )
+  )
+})
+```
+
+### Key Generators
+- **Numbers:** `fc.integer()`, `fc.nat()`, `fc.float()`, `fc.double()`
+- **Strings:** `fc.string()`, `fc.hexaString()`, `fc.emailAddress()`
+- **Collections:** `fc.array()`, `fc.set()`, `fc.record()`
+- **Complex:** `fc.tuple()`, `fc.oneof()`, `fc.option()`, `fc.chain()`
+
+### Custom Generators
+```typescript
+const userArbitrary = fc.record({
+  id: fc.nat(),
+  name: fc.string({ minLength: 1 }),
+  email: fc.emailAddress(),
+  roles: fc.array(fc.constantFrom(&#x27;admin&#x27;, &#x27;user&#x27;), { minLength: 1 })
+})
+```
+
+## 5. Implementation: Python (Hypothesis)
+
+### Installation
+```bash
+pip install hypothesis
+```
+
+### Basic Structure
+```python
+from hypothesis import given, strategies as st
+
+def test_reverse_twice(arr):
+    assert reverse(reverse(arr)) == arr
+
+@given(st.lists(st.integers()))
+def test_reverse_property(arr):
+    assert reverse(reverse(arr)) == arr
+```
+
+### Key Strategies
+- **Numbers:** `st.integers()`, `st.floats()`, `st.decimals()`
+- **Strings:** `st.text()`, `st.from_regex()`
+- **Collections:** `st.lists()`, `st.dictionaries()`, `st.tuples()`
+- **Complex:** `st.builds()`, `st.one_of()`, `st.just()`
+
+## 6. Debugging Failures
+
+When a property test fails:
+1. **Shrinking:** The library minimizes the failing input. Review the minimal counterexample.
+2. **Diagnosis:** Determine if the failure is a wrong property (tautology/vacuity) or a genuine bug.
+3. **Fix:** Either correct the property assertion or fix the code bug.
+
+## 7. Library Selection
+
+- **TypeScript/JavaScript:** fast-check
+- **Python:** Hypothesis
+- **Rust:** proptest
+- **Java:** jqwik
+- **Solidity:** Echidna or Medusa
+
+If the project does not already use a PBT library, adding one is a dependency decision. Offer it once with the specific property you would write, and take the answer either way.</pre>
+</body>
+</html>

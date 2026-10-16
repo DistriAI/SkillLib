@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>avoid-ai-writing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">remove-ai-writing-patterns</a> / avoid-ai-writing</p><h1>avoid-ai-writing</h1><p class="meta">combined</p><p>The two copies overlap in purpose (audit and rewrite prose to remove AI-isms) but each contains material steps and constraints the other lacks. The first copy defines a 21-category detection taxonomy, a four-section output format (issues, rewrite, what changed, second-pass audit), and explicit limitations (audit-only mode, preserve technical terms, no code detection). The second copy provides a concrete, tiered replacement table (Tier 1/2/3), specific formatting rules with numeric thresholds (em dash hard max, bold limits, emoji exceptions), and a three-step workflow (audit, rewrite, diff summary). Neither copy is a strict reproduction of the other, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/avoid-ai-writing/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/avoid-ai-writing/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/avoid-ai-writing/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/avoid-ai-writing/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/avoid-ai-writing/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/avoid-ai-writing/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Avoid AI Writing — Audit &amp; Rewrite
+
+Detect and fix AI writing patterns (&quot;AI-isms&quot;) that make text sound machine-generated. Preserve meaning, evidence, factual claims, uncertainty, attributed quotations, code, identifiers, and the writer&#x27;s voice.
+
+## When to Use
+
+- When asked to &quot;remove AI-isms,&quot; &quot;clean up AI writing,&quot; or &quot;make this sound less like AI&quot;
+- After drafting content with AI and before publishing
+- When auditing documentation, blog posts, marketing copy, or internal communications for AI tells
+
+## Workflow
+
+1. **Audit**: Identify every AI-ism present, citing the specific text. Use the detection categories and tiered word list below.
+2. **Rewrite**: Return a clean version with all AI-isms removed. Apply the formatting and word-replacement rules.
+3. **Diff summary**: Briefly list what you changed and why.
+4. **Second-pass audit**: Re-read the rewrite to catch any surviving tells. (If the user requested audit-only, skip steps 2–4 and report findings without rewriting.)
+
+## Detection Categories
+
+Cover these 21 pattern categories:
+
+1. Formatting issues (em dashes, bold overuse, emoji headers, bullet-heavy sections)
+2. Sentence structure problems (hedging, hollow intensifiers, rule of three)
+3. Word/phrase replacements (see tiered table below)
+4. Template phrases
+5. Transition phrases
+6. Structural issues
+7. Significance inflation
+8. Copula avoidance
+9. Synonym cycling
+10. Vague attributions
+11. Filler phrases
+12. Generic conclusions
+13. Chatbot artifacts
+14. Notability name-dropping
+15. Superficial -ing analyses
+16. Promotional language
+17. Formulaic challenges
+18. False ranges
+19. Inline-header lists
+20. Title case headings
+21. Cutoff disclaimers
+
+## Formatting Rules
+
+- **Em dashes (— and --)**: Replace with commas, periods, parentheses, or rewrite as two sentences. Target: zero. Hard max: one per 1,000 words. Applies to headings and section titles too. Catch both Unicode em dash (—) and double-hyphen substitute (--).
+- **Bold overuse**: Strip bold from most phrases. One bolded phrase per major section at most, or none. If something&#x27;s important enough to bold, restructure the sentence to lead with it instead.
+- **Emoji in headers**: Remove entirely. Exception: social posts may use one or two emoji sparingly — at the end of a line, never mid-sentence.
+- **Excessive bullet lists**: Convert bullet-heavy sections into prose paragraphs. Bullets only for genuinely list-like content (feature comparisons, step-by-step instructions, API parameters).
+
+## Sentence Structure Rules
+
+- **&quot;It&#x27;s not X — it&#x27;s Y&quot; / &quot;This isn&#x27;t about X, it&#x27;s about Y&quot;**: Rewrite as a direct positive statement. Max one per piece, and only if it serves the argument.
+- **Hollow intensifiers**: Cut `genuine`, `real` (as in &quot;a real improvement&quot;), `truly`, `quite frankly`, `to be honest`, `let&#x27;s be clear`, `it&#x27;s worth noting that`. Just state the fact.
+- **Hedging**: Cut `perhaps`, `could potentially`, `it&#x27;s important to note that`, `to be clear`. Make the point directly.
+- **Missing bridge sentences**: Each paragraph should connect to the last. If paragraphs could be rearranged without the reader noticing, add connective tissue.
+- **Compulsive rule of three**: Vary groupings. Use two items, four items, or a full sentence instead of triads. Max one &quot;adjective, adjective, and adjective&quot; pattern per piece.
+
+## Word/Phrase Replacement Tiers
+
+Words are organized into three tiers based on how reliably they signal AI-generated text. This tiered approach reduces false positives on words that are fine in isolation but suspicious in clusters.
+
+- **Tier 1 — Always flag.** These words appear 5–20x more often in AI text than human text. Replace on sight.
+- **Tier 2 — Flag in clusters.** Individually fine, but two or more in the same paragraph is a strong AI signal. Flag when they appear together.
+- **Tier 3 — Flag by density.** Common words that AI simply overuses. Only flag when they make up a noticeable fraction of the text (roughly 3%+ of total words).
+
+### Tier 1 — Always replace
+
+| Replace | With |
+|---|---|
+| delve / delve into | explore, dig into, look at |
+| landscape (metaphor) | field, space, industry, world |
+| tapestry | (describe the actual complexity) |
+| realm | area, field, domain |
+| paradigm | model, approach, framework |
+| embark | start, begin |
+| beacon | (rewrite entirely) |
+| testament to | shows, proves, demonstrates |
+| robust | strong, reliable, solid |
+| comprehensive | thorough, complete, full |
+| cutting-edge | latest, newest, advanced |
+| leverage (verb) | use |
+| pivotal | important, key, critical |
+| underscores | highlights, shows |
+| meticulous / meticulously | careful, detailed, precise |
+| seamless / seamlessly | smooth, easy, without friction |
+| game-changer / game-changing | describe what specifically changed and why it matters |
+| utilize | use |
+| watershed moment | turning point, shift (or describe what changed) |
+| marking a pivotal moment | (state what happened) |
+| the future looks bright | (cut — say something specific or nothing) |
+| only time will tell | (cut — say something specific or nothing) |
+| nestled | is located, sits, is in |
+| vibrant | (describe what makes it active, or cut) |
+| thriving | growing, active (or cite a number) |
+| despite challenges… continues to thrive | (name the challenge and the response, or cut) |
+| showcasing | showing, demonstrating (or cut the clause) |
+| deep dive / dive into | look at, examine, explore |
+| unpack / unpacking | explain, break down, walk through |
+| bustling | busy, active (or cite what makes it busy) |
+| intricate / intricacies | complex, detailed (or name the specific complexity) |
+| complexities | (name the actual complexities, or use &quot;problems&quot; / &quot;details&quot;) |
+| ever-evolving | changing, growing (or describe how) |
+| enduring | lasting, long-running (or cite how long) |
+| daunting | hard, difficult, challenging |
+| holistic / holistically | complete, full, whole (or describe what&#x27;s included) |
+| actionable | practical, useful, concrete |
+| impactful | effective, significant (or describe the impact) |
+| learnings | lessons, findings, takeaways |
+| thought leader / thought leadership | expert, authority (or describe their actual contribution) |
+| best practices | what works, proven methods, standard approach |
+| at its core | (cut — just state the thing) |
+| synergy / synergies | (describe the actual combined effect) |
+| interplay | relationship, connection, interaction |
+
+## Limitations
+
+- These are editorial heuristics, not proof of AI authorship.
+- For audit-only requests, report findings without rewriting.
+- Avoid replacing a precise technical term merely because it appears on a word list.
+- Does not detect AI-generated code, only prose.
+- Pattern matching is guideline-based, not absolute — some flagged words are fine in context.
+- The replacement table suggests alternatives but the best choice depends on context.
+- Cannot verify factual claims or find real citations to replace vague attributions.</pre>
+</body>
+</html>

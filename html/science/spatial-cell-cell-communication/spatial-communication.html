@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-communication</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">spatial-cell-cell-communication</a> / spatial-communication</p><h1>spatial-communication</h1><p class="meta">combined</p><p>The two skills cover the same task (spatial cell-cell communication) but with different depths and emphases. The first copy (OpenClaw) provides a complete, executable Python workflow using Squidpy, including code for filtering, visualization (heatmaps, networks), and custom databases. The second copy (GPTomics) provides a critical methodological framework, emphasizing the limitations of co-expression vs. signaling, the impact of segmentation spillover, and a decision table for choosing between space-blind (Squidpy) and distance-aware (COMMOT) methods. The first copy lacks the critical caveats and method selection logic of the second, while the second copy lacks the detailed implementation code for visualization and custom analysis found in the first. Combining them yields a skill that is both methodologically rigorous and practically executable.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-communication/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-communication/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-communication/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-communication/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: bio-spatial-transcriptomics-spatial-communication
+description: Analyze cell-cell communication in spatial transcriptomics using Squidpy and COMMOT. Includes method selection based on spatial modeling, critical interpretation of co-expression vs. signaling, and full Python workflows for visualization.
+tool_type: python
+primary_tool: squidpy
+---
+
+# Spatial Cell-Cell Communication
+
+## 1. Method Selection &amp; Critical Interpretation
+
+Before running analysis, select the appropriate method based on spatial modeling needs:
+
+| Method | Spatial Mechanism | Best When | Caution |
+|--------|-------------------|-----------|---------|
+| `squidpy.gr.ligrec` | None (Space-blind) | Fast baseline, large datasets | Does not model distance; permutes cluster labels. |
+| `commot.tl.spatial_communication` | Optimal Transport (Distance-aware) | When spatial proximity is critical | Slower; requires distance matrix. |
+
+**Governing Principle:**
+- **Co-expression is not communication:** Results are hypotheses of ligand-receptor co-expression, not validated signaling.
+- **Spillover Artifact:** In imaging data, segmentation spillover can fabricate short-range hits. Validate segmentation quality.
+- **Database Impact:** The choice of L-R database (CellPhoneDB, CellChatDB) drives results as much as the algorithm. Report the database version.
+
+## 2. Required Imports
+
+```python
+import squidpy as sq
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import networkx as nx
+# import commot as cm # If using distance-aware analysis
+```
+
+## 3. Ligand-Receptor Analysis (Squidpy)
+
+```python
+# Load data
+adata = sc.read_h5ad(&#x27;clustered_spatial.h5ad&#x27;)
+
+# Build spatial neighbors
+sq.gr.spatial_neighbors(adata, coord_type=&#x27;generic&#x27;, n_neighs=6)
+
+# Run ligand-receptor analysis
+sq.gr.ligrec(
+    adata,
+    cluster_key=&#x27;cell_type&#x27;,
+    n_perms=100,
+    threshold=0.01,
+    copy=False,
+)
+```
+
+## 4. Access and Filter Results
+
+```python
+ligrec_results = adata.uns[&#x27;cell_type_ligrec&#x27;]
+means = ligrec_results[&#x27;means&#x27;]
+pvalues = ligrec_results[&#x27;pvalues&#x27;]
+
+# Filter significant interactions
+pval_threshold = 0.05
+interactions = []
+for source_target in pvalues.index:
+    for lr_pair in pvalues.columns:
+        pval = pvalues.loc[source_target, lr_pair]
+        mean_expr = means.loc[source_target, lr_pair]
+        if pval &lt; pval_threshold and not np.isnan(mean_expr):
+            source, target = source_target
+            ligand, receptor = lr_pair
+            interactions.append({
+                &#x27;source&#x27;: source,
+                &#x27;target&#x27;: target,
+                &#x27;ligand&#x27;: ligand,
+                &#x27;receptor&#x27;: receptor,
+                &#x27;mean&#x27;: mean_expr,
+                &#x27;pvalue&#x27;: pval,
+            })
+
+interactions_df = pd.DataFrame(interactions)
+```
+
+## 5. Visualization
+
+### Dot Plot
+```python
+sq.pl.ligrec(
+    adata,
+    cluster_key=&#x27;cell_type&#x27;,
+    source_groups=[&#x27;Macrophage&#x27;, &#x27;T_cell&#x27;],
+    target_groups=[&#x27;Epithelial&#x27;, &#x27;Fibroblast&#x27;],
+    pvalue_threshold=0.05,
+    remove_empty_interactions=True,
+)
+```
+
+### Interaction Heatmap
+```python
+def count_interactions_per_pair(pvalues, threshold=0.05):
+    counts = {}
+    for source_target in pvalues.index:
+        sig_count = (pvalues.loc[source_target] &lt; threshold).sum()
+        counts[source_target] = sig_count
+    return counts
+
+counts = count_interactions_per_pair(pvalues)
+cell_types = adata.obs[&#x27;cell_type&#x27;].unique()
+count_matrix = pd.DataFrame(0, index=cell_types, columns=cell_types)
+for (source, target), count in counts.items():
+    count_matrix.loc[source, target] = count
+
+plt.figure(figsize=(8, 8))
+plt.imshow(count_matrix.values, cmap=&#x27;Reds&#x27;)
+plt.xticks(range(len(cell_types)), cell_types, rotation=45, ha=&#x27;right&#x27;)
+plt.yticks(range(len(cell_types)), cell_types)
+plt.colorbar(label=&#x27;Number of significant interactions&#x27;)
+plt.title(&#x27;Cell-cell communication strength&#x27;)
+plt.tight_layout()
+plt.savefig(&#x27;interaction_heatmap.png&#x27;, dpi=150)
+```
+
+### Network Visualization
+```python
+G = nx.DiGraph()
+for ct in adata.obs[&#x27;cell_type&#x27;].unique():
+    G.add_node(ct)
+
+for _, row in interactions_df.iterrows():
+    if G.has_edge(row[&#x27;source&#x27;], row[&#x27;target&#x27;]):
+        G[row[&#x27;source&#x27;]][row[&#x27;target&#x27;]][&#x27;weight&#x27;] += 1
+    else:
+        G.add_edge(row[&#x27;source&#x27;], row[&#x27;target&#x27;], weight=1)
+
+pos = nx.spring_layout(G, k=2, seed=42)
+weights = [G[u][v][&#x27;weight&#x27;] for u, v in G.edges()]
+
+plt.figure(figsize=(10, 10))
+nx.draw_networkx_nodes(G, pos, node_size=1000, node_color=&#x27;lightblue&#x27;)
+nx.draw_networkx_labels(G, pos, font_size=10)
+nx.draw_networkx_edges(G, pos, width=[w/max(weights)*5 for w in weights],
+                        edge_color=&#x27;gray&#x27;, arrows=True, arrowsize=20)
+plt.title(&#x27;Cell-cell communication network&#x27;)
+plt.axis(&#x27;off&#x27;)
+plt.savefig(&#x27;communication_network.png&#x27;, dpi=150)
+```
+
+## 6. Custom Ligand-Receptor Database
+
+```python
+custom_pairs = pd.DataFrame({
+    &#x27;ligand&#x27;: [&#x27;GENE1&#x27;, &#x27;GENE2&#x27;],
+    &#x27;receptor&#x27;: [&#x27;GENE3&#x27;, &#x27;GENE4&#x27;],
+})
+
+sq.gr.ligrec(
+    adata,
+    cluster_key=&#x27;cell_type&#x27;,
+    interactions=custom_pairs,
+    n_perms=100,
+)
+```</pre>
+</body>
+</html>

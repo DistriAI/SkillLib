@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pufferlib</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">rl-environment-training</a> / pufferlib</p><h1>pufferlib</h1><p class="meta">combined</p><p>The two skills cover the same library but target fundamentally different versions and workflows. The first skill (K-Dense-AI) is a version-aware, security-focused guide that distinguishes between the native 5.0 C/CUDA build, the 3.0.0 PyPI release, and a pinned 4.0 source, emphasizing safe defaults, provenance verification, and synthetic CPU-only checks. The second skill (Vibe-Skills) is a practical, high-performance guide focused on the 3.0/4.0 era Python API, providing concrete code examples for PuffeRL training, PufferEnv development, and vectorization. They disagree on the primary API (native C vs Python/Gymnasium) and the recommended entry points (safe synthetic checks vs direct training loops). Combining them is necessary to provide a complete picture that includes both the security/provenance constraints of the first and the practical implementation details of the second.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pufferlib/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pufferlib/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pufferlib/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pufferlib/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: pufferlib
+description: Version-aware guidance for PufferLib reinforcement-learning environments, covering safe provenance checks, native 5.0 C/CUDA builds, and Python 3.0/4.0 training workflows.
+license: MIT
+---
+
+# PufferLib
+
+## 1. Version Selection and Provenance
+
+Before choosing an API, identify the target version profile:
+
+| Profile | Status | Main Use | Installation |
+|---|---|---|---|
+| Native 5.0 | Current default | C/CUDA environments, native trainer | Source build (C/CUDA toolchain required) |
+| PyPI 3.0.0 | Latest PyPI | Python/Gymnasium/PettingZoo, Torch PuffeRL | `uv add pufferlib==3.0.0` (sdist only) |
+| Pinned 4.0 | Historical | C Ocean interface, Torch fallback | Git pin to specific commit |
+
+**Safe Defaults:**
+1. Verify official source, immutable revision, and checksums.
+2. Sandbox native builds and first execution.
+3. Do not import arbitrary environments by dotted path; use allowlisted built-ins.
+4. Cap steps, environments, and memory.
+5. Keep training and evaluation seeds separate.
+
+## 2. Installation
+
+### For PyPI 3.0.0 (Python API)
+```bash
+uv venv --python 3.11
+uv add --exact --no-sync &quot;pufferlib==3.0.0&quot;
+uv lock
+uv sync --frozen
+```
+*Note: Requires NumPy &lt;2 and Gymnasium &lt;=0.29.1.*
+
+### For Native 5.0
+Build from source using the C/CUDA toolchain. The CLI is `./puffer train` after building the environment.
+
+## 3. Environment Development (Python API)
+
+Use the `PufferEnv` API for custom environments.
+
+```python
+import numpy as np
+from pufferlib import PufferEnv
+
+class MyEnvironment(PufferEnv):
+    def __init__(self, buf=None):
+        super().__init__(buf)
+        self.observation_space = self.make_space((4,))
+        self.action_space = self.make_discrete(4)
+        self.reset()
+
+    def reset(self):
+        return np.zeros(4, dtype=np.float32)
+
+    def step(self, action):
+        obs = self._get_observation()
+        reward = self._compute_reward()
+        done = self._is_done()
+        info = {}
+        return obs, reward, done, info
+```
+
+*For 5.0 Native, refer to the C Ocean interface documentation.*
+
+## 4. Training (PuffeRL)
+
+### Python Training Loop (3.0/4.0)
+```python
+import pufferlib
+from pufferlib import PuffeRL
+
+env = pufferlib.make(&#x27;procgen-coinrun&#x27;, num_envs=256)
+trainer = PuffeRL(
+    env=env,
+    policy=my_policy,
+    device=&#x27;cuda&#x27;,
+    learning_rate=3e-4,
+    batch_size=32768
+)
+
+for iteration in range(num_iterations):
+    trainer.evaluate()
+    trainer.train()
+    trainer.mean_and_log()
+```
+
+### CLI Training (3.0/4.0)
+```bash
+puffer train procgen-coinrun --train.device cuda --train.learning-rate 3e-4
+```
+
+## 5. Vectorization and Performance
+
+- **Python Envs:** 100k-500k steps/sec.
+- **C Envs:** 100M+ steps/sec.
+- **Optimizations:** Use shared memory buffers, busy-wait flags, and surplus environments for async returns.
+
+## 6. Safety and Checkpoints
+
+- Hash checkpoint bytes before loading.
+- Never pass W&amp;B or Neptune credentials via CLI or environment variables.
+- Default logging to local/none; external logging requires explicit opt-in.</pre>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>plotly</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">interactive-visualization</a> / plotly</p><h1>plotly</h1><p class="meta">combined</p><p>The first two copies (Vibe-Skills and agentic-awesome-skills) are nearly identical, providing a standard, general-purpose guide to Plotly with code examples for Express and Graph Objects. The third copy (medical-research-skills) adds specific version constraints and a generic &#x27;checklist-driven&#x27; execution model. The fourth copy (Auto-Empirical-Research-Skills) is distinct: it mandates a &#x27;file-first&#x27; execution protocol for research pipelines (writing scripts to specific directories before execution) and explicitly forbids the use of Kaleido for static image export due to environment constraints, recommending plotnine instead. This creates a conflict with the other copies, which recommend installing Kaleido for static exports. Because the fourth copy contains a critical environmental constraint and workflow protocol that the others lack, and the others contain general code examples the fourth copy omits in favor of reference files, they must be combined to provide a complete and non-contradictory instruction set.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/plotly/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/plotly/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/plotly/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/17-DAAF-Contribution-Community-daaf/dot-claude/skills/plotly/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/plotly/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/plotly/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/plotly/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/17-DAAF-Contribution-Community-daaf/dot-claude/skills/plotly/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/plotly/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/plotly/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/plotly/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: plotly
+description: Interactive scientific and statistical data visualization library for Python. Use when creating charts, plots, or visualizations including scatter plots, line charts, bar charts, heatmaps, 3D plots, geographic maps, statistical distributions, financial charts, and dashboards. Supports both quick visualizations (Plotly Express) and fine-grained customization (graph objects). Outputs interactive HTML or static images (PNG, PDF, SVG).
+---
+
+# Plotly
+
+Python graphing library for creating interactive, publication-quality visualizations with 40+ chart types.
+
+## When to Use
+- You need interactive charts with hover, zoom, pan, or web embedding.
+- You are building dashboards, exploratory analysis notebooks, or presentations that benefit from rich interaction.
+- You want to choose between Plotly Express and Graph Objects for the same visualization task.
+- **Research Workflows:** If operating within a strict research pipeline (e.g., DAAF), follow the File-First Execution Protocol below.
+
+## Quick Start
+
+Install Plotly:
+```bash
+uv pip install plotly
+```
+
+Basic usage with Plotly Express (high-level API):
+```python
+import plotly.express as px
+import pandas as pd
+
+df = pd.DataFrame({
+    &#x27;x&#x27;: [1, 2, 3, 4],
+    &#x27;y&#x27;: [10, 11, 12, 13]
+})
+
+fig = px.scatter(df, x=&#x27;x&#x27;, y=&#x27;y&#x27;, title=&#x27;My First Plot&#x27;)
+fig.show()
+```
+
+## Choosing Between APIs
+
+### Use Plotly Express (px)
+For quick, standard visualizations with sensible defaults:
+- Working with pandas DataFrames
+- Creating common chart types (scatter, line, bar, histogram, etc.)
+- Need automatic color encoding and legends
+- Want minimal code (1-5 lines)
+
+### Use Graph Objects (go)
+For fine-grained control and custom visualizations:
+- Chart types not in Plotly Express (3D mesh, isosurface, complex financial charts)
+- Building complex multi-trace figures from scratch
+- Need precise control over individual components
+- Creating specialized visualizations with custom shapes and annotations
+
+**Note:** Plotly Express returns graph objects Figure, so you can combine approaches:
+```python
+fig = px.scatter(df, x=&#x27;x&#x27;, y=&#x27;y&#x27;)
+fig.update_layout(title=&#x27;Custom Title&#x27;)  # Use go methods on px figure
+fig.add_hline(y=10)                     # Add shapes
+```
+
+## Core Capabilities
+
+### 1. Chart Types
+Plotly supports 40+ chart types organized into categories:
+- **Basic:** scatter, line, bar, pie, area, bubble
+- **Statistical:** histogram, box plot, violin, distribution, error bars
+- **Scientific:** heatmap, contour, ternary, image display
+- **Financial:** candlestick, OHLC, waterfall, funnel, time series
+- **Maps:** scatter maps, choropleth, density maps
+- **3D:** scatter3d, surface, mesh, cone, volume
+- **Specialized:** sunburst, treemap, sankey, parallel coordinates, gauge
+
+### 2. Layouts and Styling
+- **Subplots:** Use `make_subplots` for multi-plot figures with shared axes.
+- **Templates:** Apply coordinated styling (e.g., `plotly_dark`, `ggplot2`).
+- **Customization:** Control colors, fonts, axes, legends, margins, and annotations.
+
+### 3. Interactivity
+- Hover tooltips, pan/zoom, legend toggling.
+- Box/lasso selection.
+- Rangesliders for time series.
+- Buttons, dropdowns, and animations.
+
+### 4. Export Options
+
+**Interactive HTML:**
+```python
+fig.write_html(&#x27;chart.html&#x27;)                       # Full standalone
+fig.write_html(&#x27;chart.html&#x27;, include_plotlyjs=&#x27;cdn&#x27;)  # Smaller file
+```
+
+**Static Images:**
+*Conflict Resolution:* 
+- **General Use:** Install Kaleido (`uv pip install kaleido`) and use `fig.write_image(&#x27;chart.png&#x27;)` for PNG, PDF, or SVG.
+- **Research/DAAF Environments:** Kaleido may be unavailable due to heavy dependencies. In these contexts, **do not** attempt static image export with Plotly. Use `plotnine` or other static libraries for publication figures, and restrict Plotly to HTML output.
+
+## Common Workflows
+
+### Scientific Data Visualization
+```python
+# Scatter plot with trendline
+fig = px.scatter(df, x=&#x27;temperature&#x27;, y=&#x27;yield&#x27;, trendline=&#x27;ols&#x27;)
+
+# Heatmap from matrix
+fig = px.imshow(correlation_matrix, text_auto=True, color_continuous_scale=&#x27;RdBu&#x27;)
+```
+
+### Statistical Analysis
+```python
+# Distribution comparison
+fig = px.histogram(df, x=&#x27;values&#x27;, color=&#x27;group&#x27;, marginal=&#x27;box&#x27;, nbins=30)
+
+# Box plot with all points
+fig = px.box(df, x=&#x27;category&#x27;, y=&#x27;value&#x27;, points=&#x27;all&#x27;)
+```
+
+### Time Series and Financial
+```python
+# Time series with rangeslider
+fig = px.line(df, x=&#x27;date&#x27;, y=&#x27;price&#x27;)
+fig.update_xaxes(rangeslider_visible=True)
+```
+
+## File-First Execution in Research Workflows
+
+**Important:** In data research pipelines (e.g., DAAF), all visualizations are generated through **script files**, not interactively, to ensure auditability and reproducibility.
+
+**The Pattern:**
+1. Write plot code FIRST to `scripts/stage8_analysis/{step}_{plot-name}.py`.
+2. Execute via Bash with automatic output capture wrapper script.
+3. Validation results get automatically embedded in scripts as comments.
+4. If failed, create versioned copy for fixes.
+
+*Note: This protocol applies only to specific research environments. For general use, direct execution or notebook cells are acceptable.*
+
+## Dependencies
+- `plotly&gt;=5.0`
+- `pandas&gt;=1.5` (recommended)
+- `kaleido&gt;=0.2` (optional, for static export in general environments)
+- `dash&gt;=2.0` (optional, for web apps)</pre>
+</body>
+</html>

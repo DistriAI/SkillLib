@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>fxmacrodata</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">macro-fx-data-lookup</a> / fxmacrodata</p><h1>fxmacrodata</h1><p class="meta">combined</p><p>The two copies describe the same service but prescribe different integration paths and tool surfaces. The davepoon copy is an MCP-server skill (Streamable HTTP at mcp.fxmacrodata.com/mcp, tools like data_catalogue, indicator_query, release_calendar, forex, rate_differentials, rate_curve, cot_data, commodities, market_sessions, and multi-step research tools). The sickn33 copy is a REST-API skill (base https://api.fxmacrodata.com/v1, X-API-Key header, endpoints like /data_catalogue/{currency}, /announcements/{currency}/{indicator}, /calendar/{currency}, /cot/{currency}, /forex/{base}/{quote}, /rate_differentials/{base}/{quote}, with detailed query parameters and response shapes). They agree on the 22-currency scope, the USD keyless tier with 15-minute delay and 90-day window, the need to discover slugs via a catalogue, and the instruction not to report subscription-gated data as missing. They disagree on transport, authentication header, endpoint/tool names, and available capabilities (e.g., rate_curve and market_sessions appear only in the MCP copy; detailed REST query parameters and response fields appear only in the REST copy). Crowning one would hide a real alternative integration.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/fxmacrodata/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/fxmacrodata/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/fxmacrodata/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/fxmacrodata/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/fxmacrodata/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/fxmacrodata/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: fxmacrodata
+category: finance
+description: &quot;Look up official macroeconomic releases, central-bank policy rates, release calendars, FX rates and CFTC positioning for 22 currencies via FXMacroData. Use when the answer should come from the published number rather than news coverage. Supports both an MCP server and a REST API.&quot;
+---
+
+# FXMacroData
+
+Official-source macro and FX data for AUD, BRL, CAD, CHF, CNH, CNY, DKK, EUR, GBP, HUF, ILS, JPY, KRW, MYR, NGN, NOK, NZD, PEN, SEK, THB, TWD and USD. Each series carries its publisher, source URL and release time.
+
+## When to Use
+
+- Official macro figures: CPI, core inflation, GDP, unemployment, payrolls, retail sales, confidence, trade balance, bond yields.
+- Release calendars: when the next CPI, payrolls, GDP or central-bank decision is due.
+- Policy-rate comparisons or yield differentials between two currencies.
+- Daily FX reference rates or CFTC Commitments of Traders positioning.
+- Do not use for intraday tick data, equities, crypto, or order execution.
+
+## Access and Authentication
+
+- USD data works without an API key: each release becomes readable 15 minutes after publication and covers the most recent 90 days. A fair-use allowance of about 100 requests/day applies to keyless USD.
+- Other currencies, FX rates, real-time releases, full history, and COT for non-USD currencies need a key from FXMacroData.
+- Without a key, subscription-gated results mean the data exists but needs a key. Say so plainly and answer the USD equivalent if that helps; do not describe it as missing.
+- If a USD result reports a withheld release, the number has been published and will be readable within 15 minutes.
+
+### MCP Server (Streamable HTTP)
+
+Remote server at https://mcp.fxmacrodata.com/mcp. Nothing to install.
+
+Without a key:
+
+```bash
+claude mcp add --transport http fxmacrodata https://mcp.fxmacrodata.com/mcp
+```
+
+With a key, set FXMACRODATA_API_KEY in your environment and send it as a bearer token:
+
+```bash
+claude mcp add --transport http fxmacrodata https://mcp.fxmacrodata.com/mcp --header &quot;Authorization: Bearer ${FXMACRODATA_API_KEY}&quot;
+```
+
+Or in .mcp.json:
+
+```json
+{
+  &quot;mcpServers&quot;: {
+    &quot;fxmacrodata&quot;: {
+      &quot;type&quot;: &quot;http&quot;,
+      &quot;url&quot;: &quot;https://mcp.fxmacrodata.com/mcp&quot;,
+      &quot;headers&quot;: {
+        &quot;Authorization&quot;: &quot;Bearer ${FXMACRODATA_API_KEY}&quot;
+      }
+    }
+  }
+}
+```
+
+MCP tools:
+
+- data_catalogue - indicator slugs available for a currency, with coverage dates. Call it first; slugs differ by currency.
+- indicator_query - latest value and history for one indicator, each row with its release timestamp and the official source URL.
+- latest_announcements - the most recent print of every indicator for a currency.
+- release_calendar - scheduled releases, with confirmed times where the publisher has announced them.
+- forex - FX rate history for a pair (key required).
+- rate_differentials and rate_curve - policy-rate gaps between two currencies and government yield curves.
+- cot_data, commodities, market_sessions - CFTC positioning, metals and energy prices, and which FX sessions are open.
+- The server also exposes multi-step research tools (macro_briefing_task, pair_intel_task and others).
+
+### REST API
+
+Base URL: https://api.fxmacrodata.com/v1
+
+Authentication is optional. If the user has a key, read it from the FXMACRODATA_API_KEY environment variable and send it in the X-API-Key header. Never put the key in the URL or print it in output.
+
+Without a key:
+- USD indicators, the USD release calendar, the USD data catalogue and USD COT data work.
+- USD announcement data is delayed by 15 minutes. Each response includes a freemium_delay object with the cutoff time and withheld_count.
+- History is limited to the most recent 90 days. The freemium_window object shows the applied cutoff date, and requested_start_date shows the start date actually used.
+- Every other currency, /forex, /rate_differentials and /commodities need a key. Without one they return HTTP 401 with &quot;code&quot;: &quot;api_key_required&quot;.
+
+Endpoints:
+
+| Endpoint | Purpose | Keyless |
+|----------|---------|---------|
+| GET /data_catalogue/{currency} | Every indicator slug for a currency, with name, unit, frequency, source and coverage | Yes (all currencies) |
+| GET /announcements/{currency}/{indicator} | Release history for one indicator, most recent first | USD only |
+| GET /announcements/{currency}/latest | Latest value of every indicator for a currency | USD only |
+| GET /calendar/{currency} | Upcoming scheduled releases with UTC timestamps | USD only |
+| GET /cot/{currency} | Weekly CFTC COT positioning (AUD, CAD, CHF, EUR, GBP, JPY, MXN, NZD, USD, XAU) | USD only |
+| GET /forex/{base}/{quote} | Daily FX reference rates | No |
+| GET /rate_differentials/{base}/{quote} | Aligned rate spread between two currencies in percentage points and basis points | No |
+
+Currency codes and indicator slugs are lowercase in paths (usd, policy_rate).
+
+Common query parameters:
+
+| Parameter | Endpoints | Notes |
+|-----------|-----------|-------|
+| start_date, end_date | announcements, calendar, cot, forex, rate_differentials | YYYY-MM-DD, inclusive |
+| limit, offset, page | announcements, cot, forex, rate_differentials | Rows are most recent first. Default limit is 20 |
+| timezone | calendar | IANA name such as Europe/London; adds an announcement_datetime_requested_timezone field |
+| indicator | calendar | Filter the calendar to one slug |
+| revisions | announcements | latest, first, final or all, where supported |
+| measure | rate_differentials | auto, policy_rate, risk_free_rate, gov_bond_2y, gov_bond_10y |
+
+Response shape:
+
+Announcement responses carry metadata (source, source_url, source_series_name, seasonal_adjustment, pagination) and a data array. Each row has:
+- date: the reference period the value belongs to.
+- val: the value, plus previous_value and change_from_previous when the prior observation is in range.
+- announcement_datetime: Unix seconds (UTC) when the figure was published; announcement_datetime_local gives the publisher&#x27;s local time.
+- revisions: earlier vintages of the same observation, where available.
+
+## How to Use
+
+1. Call data_catalogue (MCP) or GET /data_catalogue/{currency} (REST) for the currency to get the exact indicator slug (for example inflation, core_inflation, policy_rate, unemployment). Slugs differ from common names; US CPI is inflation, not cpi, and payrolls is non_farm_payrolls.
+2. Use indicator_query (MCP) or GET /announcements/{currency}/{indicator} (REST) with that slug for the latest print and history, or release_calendar (MCP) / GET /calendar/{currency} (REST) for what is coming up.
+3. Report the value with its period, release time and the publisher (for example &quot;Bureau of Labor Statistics, via FXMacroData&quot;), and link the source_url.
+4. Keep released values and forecasts apart. Released prints come from indicator_query or /announcements; forecasts are a separate tool and are labelled with how they were produced.
+
+Example:
+
+User: &quot;Has the Fed moved rates this year?&quot;
+
+Output: the policy-rate history for USD since January with each decision date, the current level, and the date of the next scheduled decision from the calendar.
+
+## Tips
+
+- Keep calls narrow: one currency and indicator per call, and use limit on history.
+- If the server or API isn&#x27;t configured, tell the user to add it with the command above.
+- An unknown slug returns HTTP 404 with a suggestion (REST) or an error (MCP); check the catalogue again.
+
+## Conflicts
+
+- davepoon/buildwithclaude uses the MCP server at https://mcp.fxmacrodata.com/mcp with Bearer authentication and MCP tools; sickn33/agentic-awesome-skills uses the REST API at https://api.fxmacrodata.com/v1 with X-API-Key authentication and REST endpoints. Choose the integration path that matches the user&#x27;s environment.
+- davepoon/buildwithclaude lists rate_curve, market_sessions, commodities, and multi-step research tools; sickn33/agentic-awesome-skills does not. If the user needs yield curves, market sessions, or multi-step research, use the MCP server.
+- sickn33/agentic-awesome-skills documents detailed REST query parameters and response field names; davepoon/buildwithclaude does not. Use the REST documentation when calling the REST API.
+- davepoon/buildwithclaude states a fair-use allowance of about 100 requests/day for keyless USD; sickn33/agentic-awesome-skills does not state a daily request cap. Treat the 100 requests/day figure as the keyless USD limit.</pre>
+</body>
+</html>

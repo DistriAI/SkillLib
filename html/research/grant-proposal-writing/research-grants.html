@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>research-grants</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">grant-proposal-writing</a> / research-grants</p><h1>research-grants</h1><p class="meta">combined</p><p>The copies share the same core agency overviews and use cases, but they disagree on critical procedural constraints. The K-Dense-AI copy (v1.5) explicitly treats figures as optional and includes a strict NIH policy warning against AI-substantial authorship, requiring a compliance matrix. The brycewang-stanford copy mandates figures as a hard requirement. The aipoch copy adds specific local script dependencies (compliance_checker.py, budget_calculator.py) and a reference-driven drafting workflow. The foryourhealth111-pixel copy explicitly rejects the mandatory figure requirement. Because these copies contain conflicting instructions on whether figures are required and different levels of procedural detail (compliance matrices vs. local scripts), crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/research-grants/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/research-grants/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Protocol Design/research-grants/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/03-K-Dense-AI-claude-scientific-skills/research-grants/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/research-grants/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/research-grants/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Protocol Design/research-grants/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/03-K-Dense-AI-claude-scientific-skills/research-grants/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/research-grants/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/04-K-Dense-AI-claude-scientific-writer/research-grants/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Research Grant Writing
+
+## Overview
+Develop competitive funding proposals for NSF, NIH, DOE, DARPA, and NSTC. Grants must demonstrate scientific rigor, innovation, feasibility, and broader impact.
+
+## 1. Establish the Governing Opportunity
+- Record agency, opportunity ID, due date, eligibility, and submission stage.
+- Verify current notices and the original solicitation.
+- **NIH Policy Warning:** For NIH, use this skill for requirements, critique, and consistency checks. NIH policy excludes applications substantially developed by AI. Preserve applicant ownership of substantive science.
+
+## 2. Compliance and Structure
+- Build a requirement-to-source-to-draft-location gap matrix.
+- **NSF:** 15-page limit, Intellectual Merit + Broader Impacts.
+- **NIH:** 1-page Specific Aims, 12-page Research Strategy (R01).
+- **DARPA:** High-risk/high-reward, phased execution, transition pathways.
+- **NSTC:** CM03 form, bilingual abstract, research architecture diagram.
+
+## 3. Visual Elements
+- **Requirement:** Include 1-3 figures (timelines, workflows, conceptual frameworks).
+- **Method:** Use the `scientific-schematics` skill or local tools (matplotlib, Illustrator).
+- **Disclosure:** If using AI generation, ensure sensitive data is not transmitted to third-party APIs.
+
+## 4. Drafting and Review
+- Draft core sections (Aims, Significance, Approach, Budget).
+- Use local scripts (e.g., `compliance_checker.py`) if available in the repository for format checks.
+- Ensure budget justifications align with the workplan and agency constraints (e.g., NIH modular budgets).</pre>
+</body>
+</html>

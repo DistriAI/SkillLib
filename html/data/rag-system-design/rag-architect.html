@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>rag-architect</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">rag-system-design</a> / rag-architect</p><h1>rag-architect</h1><p class="meta">combined</p><p>The two copies overlap on the RAG lifecycle (chunking, embeddings, vector stores, retrieval, evaluation) but each contains material the other lacks. Jeffallan/claude-skills provides a concrete, executable implementation path with Python examples, checkpoints, hybrid search, reranking, and evaluation code. LeoYeAI/openclaw-master-skills provides a broader reference catalog of chunking strategies, embedding model trade-offs, and vector database comparisons, but lacks the end-to-end implementation steps and validation checkpoints. Crowning one would hide either the practical pipeline or the selection guidance.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/rag-architect/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/rag-architect/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/rag-architect/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/rag-architect/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: rag-architect
+description: Designs and implements production-grade RAG systems by chunking documents, generating embeddings, configuring vector stores, building hybrid search pipelines, applying reranking, and evaluating retrieval quality.
+---
+
+# RAG Architect
+
+## Core Workflow
+
+1. **Requirements Analysis** — Identify retrieval needs, latency constraints, accuracy requirements, and scale.
+2. **Vector Store Design** — Select database, schema design, indexing strategy, sharding approach.
+3. **Chunking Strategy** — Document splitting, overlap, semantic boundaries, metadata enrichment.
+4. **Retrieval Pipeline** — Embedding selection, query transformation, hybrid search, reranking.
+5. **Evaluation &amp; Iteration** — Metrics tracking, retrieval debugging, continuous optimization.
+
+For each step, validate before moving on.
+
+## Chunking Strategies
+
+- **Fixed-Size**: Character or token-based splitting with 10-20% overlap. Best for uniform documents.
+- **Sentence-Based**: Split at sentence boundaries, group until size threshold. Best for narrative text.
+- **Paragraph-Based**: Respect document structure, merge small paragraphs, split large ones. Best for structured documents.
+- **Semantic**: Use topic modeling or embedding similarity to detect topic shifts. Best for long-form content.
+- **Recursive**: Try larger chunks first, recursively split if needed. Best for mixed content types.
+- **Document-Aware**: Handle file-type-specific structures, preserve metadata, process tables and images. Best for multi-format collections.
+
+## Embedding Model Selection
+
+- **128-256 dimensions**: Fast retrieval, lower memory, simple domains.
+- **512-768 dimensions**: Balanced performance, most applications.
+- **1024-1536 dimensions**: High quality, complex domains, higher cost.
+- **2048+ dimensions**: Maximum quality, specialized use cases.
+
+Model categories: general purpose, code, scientific, multilingual.
+
+## Vector Database Selection
+
+- **Pinecone**: Managed service, auto-scaling, metadata filtering, hybrid search. Best for production managed deployments.
+- **Weaviate**: Open source, GraphQL API, multi-modal search, HNSW indexing. Best for complex data types.
+- **Qdrant**: Rust-based, high performance, payload filtering, distributed deployment. Best for high-performance requirements.
+- **Chroma**: Embedded, SQLite-based, easy local development. Best for prototyping and small deployments.
+- **pgvector**: SQL integration, ACID compliance, joins with relational data. Best when using PostgreSQL.
+
+## Implementation Examples
+
+### 1. Chunking Documents
+
+```python
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=800,
+    chunk_overlap=100,
+    separators=[&quot;\n\n&quot;, &quot;\n&quot;, &quot;. &quot;, &quot; &quot;],
+)
+
+chunks = splitter.create_documents(
+    texts=[doc.page_content for doc in raw_docs],
+    metadatas=[{&quot;source&quot;: doc.metadata[&quot;source&quot;], &quot;timestamp&quot;: doc.metadata.get(&quot;timestamp&quot;)} for doc in raw_docs],
+)
+```
+
+**Checkpoint:** `assert all(c.metadata.get(&quot;source&quot;) for c in chunks), &quot;Missing source metadata&quot;`
+
+### 2. Generating Embeddings &amp; Indexing
+
+```python
+from openai import OpenAI
+import qdrant_client
+from qdrant_client.models import VectorParams, Distance, PointStruct
+
+client = OpenAI()
+qdrant = qdrant_client.QdrantClient(&quot;localhost&quot;, port=6333)
+
+qdrant.recreate_collection(
+    collection_name=&quot;knowledge_base&quot;,
+    vectors_config=VectorParams(size=1536, distance=Distance.COSINE),
+)
+
+def embed_chunks(chunks: list[str], model: str = &quot;text-embedding-3-small&quot;) -&gt; list[list[float]]:
+    response = client.embeddings.create(input=chunks, model=model)
+    return [r.embedding for r in response.data]
+
+import hashlib, uuid
+
+points = []
+for i, chunk in enumerate(chunks):
+    doc_id = str(uuid.UUID(hashlib.md5(chunk.page_content.encode()).hexdigest()))
+    embedding = embed_chunks([chunk.page_content])[0]
+    points.append(PointStruct(id=doc_id, vector=embedding, payload=chunk.metadata))
+
+qdrant.upsert(collection_name=&quot;knowledge_base&quot;, points=points)
+```
+
+**Checkpoint:** `assert qdrant.count(&quot;knowledge_base&quot;).count == len(set(p.id for p in points)), &quot;Deduplication failed&quot;`
+
+### 3. Hybrid Search (Vector + BM25)
+
+```python
+from qdrant_client.models import Filter, FieldCondition, MatchValue
+from rank_bm25 import BM25Okapi
+
+def hybrid_search(query: str, tenant_id: str, top_k: int = 20) -&gt; list:
+    query_embedding = embed_chunks([query])[0]
+    tenant_filter = Filter(must=[FieldCondition(key=&quot;tenant_id&quot;, match=MatchValue(value=tenant_id))])
+    dense_results = qdrant.search(
+        collection_name=&quot;knowledge_base&quot;,
+        query_vector=query_embedding,
+        query_filter=tenant_filter,
+        limit=top_k,
+    )
+
+    corpus = [r.payload.get(&quot;text&quot;, &quot;&quot;) for r in dense_results]
+    bm25 = BM25Okapi([doc.split() for doc in corpus])
+    bm25_scores = bm25.get_scores(query.split())
+
+    ranked = sorted(
+        zip(dense_results, bm25_scores),
+        key=lambda x: 0.6 * x[0].score + 0.4 * x[1],
+        reverse=True,
+    )
+    return [r for r, _ in ranked[:top_k]]
+```
+
+**Checkpoint:** `assert len(hybrid_search(&quot;test query&quot;, tenant_id=&quot;demo&quot;)) &gt; 0, &quot;Hybrid search returned no results&quot;`
+
+### 4. Reranking Top-K Results
+
+Load provider API keys from environment variables or a secrets manager; never commit them to source code.
+
+```python
+import os
+import cohere
+
+co = cohere.Client(os.environ[&quot;COHERE_API_KEY&quot;])
+
+def rerank(query: str, results: list, top_n: int = 5) -&gt; list:
+    docs = [r.payload.get(&quot;text&quot;, &quot;&quot;) for r in results]
+    reranked = co.rerank(query=query, documents=docs, top_n=top_n, model=&quot;rerank-english-v3.0&quot;)
+    return [results[r.index] for r in reranked.results]
+```
+
+### 5. Retrieval Evaluation
+
+Run precision@k, recall@k, and MRR against a labeled evaluation set.
+
+```python
+from ragas import evaluate
+from ragas.metrics import context_precision, context_recall, faithfulness, answer_relevancy
+from datasets import Dataset
+
+eval_dataset = Dataset.from_dict({
+    &quot;question&quot;: [&quot;...&quot;],
+    &quot;ground_truth&quot;: [&quot;...&quot;],
+    &quot;contexts&quot;: [[&quot;...&quot;]],
+    &quot;answer&quot;: [&quot;...&quot;],
+})
+
+results = evaluate(
+    dataset=eval_dataset,
+    metrics=[context_precision, context_recall, faithfulness, answer_relevancy],
+)
+```
+
+**Checkpoint:** Review evaluation results and iterate on chunking, embedding, or retrieval parameters as needed.</pre>
+</body>
+</html>

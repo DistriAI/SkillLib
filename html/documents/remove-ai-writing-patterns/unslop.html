@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>unslop</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">remove-ai-writing-patterns</a> / unslop</p><h1>unslop</h1><p class="meta">combined</p><p>The two copies describe different procedures for the same goal. The first is a manual editing skill that instructs the agent to scan, rewrite, add voice, and self-audit against a long list of AI tells. The second is a CLI-based skill that installs and pipes text through the `unslop` command for deterministic post-processing. They overlap in intent but each contains material steps the other lacks (manual pattern list vs CLI pipeline/CI integration), so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/michaelshimeles/skills">michaelshimeles/skills</a></td><td><code>unslop/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/unslop/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/michaelshimeles/skills">michaelshimeles/skills</a></td><td><code>unslop/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/unslop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/unslop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/unslop/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Unslop
+
+Remove AI writing patterns from text before publishing, committing, or sending.
+
+## Option A: Manual Editing (Agent-Driven)
+
+1. Scan the text for AI patterns (puffery, AI vocabulary, em dashes, chatbot phrases, etc.).
+2. Rewrite to preserve meaning while matching the intended tone.
+3. Add human voice: have opinions, vary rhythm, acknowledge complexity, use first person where appropriate, and be specific.
+4. Self-audit: ask &quot;What makes this obviously AI generated?&quot; and fix remaining tells.
+
+## Option B: CLI Post-Processing (Deterministic)
+
+1. Install the tool: `pipx install unslop` or `uv tool install unslop`.
+2. Pipe text through the CLI: `cat draft.md | unslop --stdin --deterministic &gt; clean.md`.
+3. Use `--deterministic` for reproducible output in CI or commit hooks.
+4. Review the output, as automated cleanup may occasionally alter meaning.
+
+## Conflicts
+
+- **michaelshimeles/skills** prescribes a manual, agent-driven editing process with a detailed pattern list.
+- **sickn33/agentic-awesome-skills** prescribes a CLI-based, deterministic post-processing pipeline.
+
+Choose Option A for nuanced, voice-driven edits. Choose Option B for automated, reproducible cleanup in pipelines.</pre>
+</body>
+</html>

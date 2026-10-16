@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>rowan</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">rowan-cloud-chemistry-workflows</a> / rowan</p><h1>rowan</h1><p class="meta">combined</p><p>The K-Dense copy is the most complete and technically precise procedure (version-pinned install, input-format rules, core submit/wait/retrieve pattern, and a broad set of workflows). The Vibe-Skills and aipoch copies overlap heavily on installation, authentication, and the pKa/conformer/docking/cofolding examples, but they also add material constraints and steps the K-Dense copy lacks: an explicit routing boundary (use only for explicit Rowan context), a web-interface pointer (labs.rowansci.com), and a generic checklist-driven execution model with references/ assets. Because each copy has steps or constraints the others lack, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/rowan/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/rowan/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/rowan/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/rowan/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/rowan/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/rowan/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Rowan: Cloud-Native Molecular-Modeling and Drug-Design Workflows
+
+## Routing Boundary
+
+Use this skill only for explicit Rowan context, including Rowan, rowan-python, labs.rowansci.com, the Rowan API, or a Rowan-specific chemistry workflow. Do not use it for generic chemistry, RDKit, PubChem, ChEMBL, docking, pKa, conformer search, quantum chemistry, molecular machine learning, Boltz, or Chai-1 unless explicit Rowan context is present.
+
+## Overview
+
+Rowan is a cloud-native workflow platform for molecular simulation, medicinal chemistry, and structure-based design. Its Python API exposes a unified interface for small-molecule modeling, property prediction, docking, molecular dynamics, and AI structure workflows. Use Rowan when you want to run medicinal-chemistry or molecular-design workflows programmatically without maintaining local HPC infrastructure, GPU provisioning, or a collection of separate modeling tools. The service manages hosted compute and results; available workflows depend on the account. Results can be viewed in the web interface at labs.rowansci.com.
+
+## When to Use Rowan
+
+**Rowan is a good fit for:**
+- Quantum chemistry, semiempirical methods, or neural network potentials
+- Batch property prediction (pKa, descriptors, permeability, solubility)
+- Conformer and tautomer ensemble generation
+- Docking workflows (single-ligand, analogue series, pose refinement)
+- Protein-ligand cofolding and MSA generation
+- Multi-step chemistry pipelines (e.g., tautomer search → docking → pose analysis)
+- Batch medicinal-chemistry campaigns where you need consistent, scalable infrastructure
+
+**Rowan is not the right fit for:**
+- Simple molecular I/O (use RDKit directly)
+- Methods or element/charge regimes outside the selected engine&#x27;s documented support
+
+## Installation
+
+```bash
+uv pip install &quot;rowan-python==3.2.0&quot;
+# Lock dependencies in your own environment; do not install the unrelated &quot;rowan&quot; package.
+```
+
+## Authentication and Account Access
+
+Set an API key via environment variable (recommended):
+
+```bash
+export ROWAN_API_KEY=&quot;your_api_key_here&quot;
+```
+
+Or set directly in Python:
+
+```python
+import rowan
+rowan.api_key = &quot;your_api_key_here&quot;
+```
+
+Verify authentication:
+
+```python
+import rowan
+user = rowan.whoami()
+print(f&quot;User: {user.email}&quot;)
+print(f&quot;Credits available: {user.credits_available_string()}&quot;)
+print(user.enabled_workflows)
+```
+
+## Molecule Input Formats
+
+Use SMILES for topology-based methods and real 3D structures for geometry-based methods. SMARTS is a substructure-query language, not a general workflow molecule input; convert InChI with a chemistry toolkit before passing a supported input. Record stereochemistry, charge, protonation state, and the original identifier. Canonicalization alone does not resolve these scientific choices.
+
+### SMILES strings versus molecule objects
+
+- pKa: `starling` and `chemprop_nevolianis2025` require a SMILES string; `gxtb_wagen2026` (default) and `aimnet2_wagen2024` require coordinates.
+- Conformer search: SMILES works with OpenConf (default) or ETKDG; CREST/MCMM require a 3D molecule.
+- Membrane permeability: `gnn-mtl` requires SMILES; `pypermm` requires a 3D molecule.
+- ADMET, LogP, macropKa, and solubility are SMILES-based; pose-analysis MD needs ligand SMILES **and a protein complex containing its bound pose**.
+- Descriptors, tautomers, docking, analogue docking, BDE, NMR, and Fukui need a `rowan.Molecule`, `stjames.Molecule`, or RDKit molecule with a conformer. `Chem.MolFromSmiles()` alone has no coordinates. Generate them explicitly with `rowan.Molecule.from_smiles()` or import an existing geometry. For analogue docking, preserve the reference pose in the receptor&#x27;s coordinate frame.
+
+**Tip:** Use RDKit to validate SMILES before submission:
+
+```python
+from rdkit import Chem
+smiles = &quot;CCO&quot;
+mol = Chem.MolFromSmiles(smiles)
+if mol is None:
+    raise ValueError(f&quot;Invalid SMILES: {smiles}&quot;)
+```
+
+## Core Usage Pattern
+
+Most Rowan tasks follow the same three-step pattern:
+
+1. **Submit** a workflow
+2. **Wait** for completion (with optional streaming)
+3. **Retrieve** typed results with convenience properties
+
+```python
+import rowan
+
+# 1. Submit
+workflow = rowan.submit_pka_workflow(
+    initial_molecule=mol,
+    name=&quot;phenol pKa calculation&quot;
+)
+
+# 2. Wait
+workflow.wait_for_result()
+workflow.fetch_latest(in_place=True)
+
+# 3. Retrieve
+print(f&quot;Strongest acid pKa: {workflow.data[&#x27;strongest_acid&#x27;]}&quot;)
+```
+
+## Core Workflows
+
+### 1. pKa Prediction
+
+```python
+import rowan
+import stjames
+
+mol = stjames.Molecule.from_smiles(&quot;c1ccccc1O&quot;)  # Phenol
+
+workflow = rowan.submit_pka_workflow(
+    initial_molecule=mol,
+    name=&quot;phenol pKa calculation&quot;
+)
+
+workflow.wait_for_result()
+workflow.fetch_latest(in_place=True)
+
+print(f&quot;Strongest acid pKa: {workflow.data[&#x27;strongest_acid&#x27;]}&quot;)  # ~10.17
+```
+
+### 2. Conformer Search
+
+```python
+import rowan
+import stjames
+
+mol = stjames.Molecule.from_smiles(&quot;CCCC&quot;)  # Butane
+
+workflow = rowan.submit_conformer_search_workflow(
+    initial_molecule=mol,
+    name=&quot;butane conformer search&quot;
+)
+
+workflow.wait_for_result()
+workflow.fetch_latest(in_place=True)
+
+conformers = workflow.data[&#x27;conformers&#x27;]
+for i, conf in enumerate(conformers):
+    print(f&quot;Conformer {i}: Energy = {conf[&#x27;energy&#x27;]:.4f} Hartree&quot;)
+```
+
+### 3. Geometry Optimization
+
+```python
+import rowan
+import stjames
+
+mol = stjames.Molecule.from_smiles(&quot;CC(=O)O&quot;)  # Acetic acid
+
+workflow = rowan.submit_basic_calculation_workflow(
+    initial_molecule=mol,
+    name=&quot;acetic acid optimization&quot;,
+    workflow_type=&quot;optimization&quot;
+)
+
+workflow.wait_for_result()
+workflow.fetch_latest(in_place=True)
+
+optimized_mol = workflow.data[&#x27;final_molecule&#x27;]
+print(f&quot;Final energy: {optimized_mol.energy} Hartree&quot;)
+```
+
+### 4. Protein-Ligand Docking
+
+```python
+import rowan
+import stjames
+
+protein = rowan.create_protein_from_pdb_id(
+    name=&quot;EGFR kinase&quot;,
+    code=&quot;1M17&quot;
+)
+
+pocket = {
+    &quot;center&quot;: [10.0, 20.0, 30.0],
+    &quot;size&quot;: [20.0, 20.0, 20.0]
+}
+
+workflow = rowan.submit_docking_workflow(
+    protein=protein.uuid,
+    pocket=pocket,
+    initial_molecule=stjames.Molecule.from_smiles(&quot;Cc1ccc(NC(=O)c2ccc(CN3CCN(C)CC3)cc2)cc1&quot;),
+    name=&quot;EGFR docking&quot;
+)
+
+workflow.wait_for_result()
+workflow.fetch_latest(in_place=True)
+
+docking_score = workflow.data[&#x27;docking_score&#x27;]
+print(f&quot;Docking score: {docking_score}&quot;)
+```
+
+### 5. Protein Cofolding (AI Structure Prediction)
+
+```python
+import rowan
+
+protein_seq = &quot;MENFQKVEKIGEGTYGVVYKARNKLTGEVVALKKIRLDTETEGVPSTAIREISLLKELNHPNIVKLLDVIHTENKLYLVFEFLHQDLKKFMDASALTGIPLPLIKSYLFQLLQGLAFCHSHRVLHRDLKPQNLLINTEGAIKLADFGLARAFGVPVRTYTHEVVTLWYRAPEILLGCKYYSTAVDIWSLGCIFAEMVTRRALFPGDSEIDQLFRIFRTLGTPDEVVWPGVTSMPDYKPSFPKWARQDFSKVVPPLDEDGRSLLSQMLHYDPNKRISAKAALAHPFFQDVTKPVPHLRL&quot;
+ligand = &quot;CCC(C)CN=C1NCC2(CCCOC2)CN1&quot;
+
+workflow = rowan.submit_protein_cofolding_workflow(
+    initial_protein_sequences=[protein_seq],
+    initial_smiles_list=[ligand],
+    name=&quot;kinase-ligand cofolding&quot;,
+    model=&quot;chai_1r&quot;  # or &quot;boltz_1x&quot;, &quot;boltz_2&quot;
+)
+
+workflow.wait_for_result()
+workflow.fetch_latest(in_place=True)
+
+print(f&quot;Predicted TM Score: {workflow.data[&#x27;ptm_score&#x27;]}&quot;)
+```
+
+## Execution Checklist
+
+1. Read the skill instructions and collect the required inputs.
+2. Follow the documented workflow exactly.
+3. Use packaged references/assets from this folder when the task needs templates or rules.
+4. Return a structured result tied to the requested deliverable.
+
+## Conflicts
+
+- **K-Dense-AI/scientific-agent-skills** pins `rowan-python==3.2.0` and requires Python 3.12+; **foryourhealth111-pixel/Vibe-Skills** and **aipoch/medical-research-skills** do not pin a version, and aipoch states Python 3.10+.
+- **K-Dense-AI/scientific-agent-skills** provides detailed input-format rules and a core three-step pattern; the other two copies omit these and instead include a routing boundary and a generic checklist-driven execution model.
+- **K-Dense-AI/scientific-agent-skills** does not mention labs.rowansci.com as a results interface; the other two copies do.
+- **K-Dense-AI/scientific-agent-skills** lists skill-author as Rowan Science; **foryourhealth111-pixel/Vibe-Skills** lists K-Dense Inc.; **aipoch/medical-research-skills** lists AIPOCH.</pre>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ui</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">unity-ui-routing</a> / ui</p><h1>ui</h1><p class="meta">combined</p><p>The three copies describe three different procedures for the same &#x27;ui&#x27; skill name. The Unity-Technologies copy is a router that decides between UI Toolkit, uGUI, and IMGUI. The Besty0728 copy is a concrete UGUI execution module with specific API calls and hallucination guards. The sickn33 copy is a generic, low-content wrapper for a web UI design skill. Because they overlap in the broad &#x27;UI&#x27; domain but contain material, non-reproducible steps and constraints specific to each (routing logic vs. API execution vs. design review), crowning one would hide the others&#x27; real functionality.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Unity-Technologies/skills">Unity-Technologies/skills</a></td><td><code>skills/ui/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/ui/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ui-skills/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Unity-Technologies/skills">Unity-Technologies/skills</a></td><td><code>skills/ui/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/ui/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ui-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/ui-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/ui-skills/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: ui
+description: Handles Unity UI requests by routing to the correct framework (UI Toolkit, uGUI, IMGUI) or providing design guidance for web interfaces.
+---
+
+## 1. Determine Context
+- If the request is for a **Unity project**, proceed to Step 2.
+- If the request is for a **web interface** or general design review, use the design constraints from the `ui-skills` source (ibelick/ui-skills) to identify high-impact design problems.
+
+## 2. Unity Framework Routing
+- **UI Toolkit**: Route to `ui-uitk` if the user mentions `.uxml`, `.uss`, `UIDocument`, or `CreateGUI`.
+- **uGUI**: Route to `ui-ugui` if the user mentions `Canvas`, `RectTransform`, or `.prefab` UI. If no framework is specified for a new runtime UI, default to uGUI.
+- **IMGUI**: Route to `ui-imgui` only if the project exclusively uses `OnGUI`/`OnInspectorGUI` or the user explicitly requests it.
+
+## 3. UGUI Execution (if routed to uGUI)
+- **Batch-first**: Use `ui_create_batch` for 2+ elements.
+- **Avoid Hallucinations**: Do not use `ui_add_canvas` (use `ui_create_canvas`), `ui_create_label` (use `ui_create_text`), or `ui_create_checkbox` (use `ui_create_toggle`).
+- **Workflow**: Create elements first, then use `ui_set_rect` or `ui_set_anchor` for placement. Use `ui_layout_children` for responsive layouts.
+
+## 4. Common Guidelines
+- **Scope Discipline**: Do only what is requested. Do not add scripts unless explicitly asked.
+- **Project Patterns**: Search existing files to match naming conventions and file organization before applying defaults.
+- **Figma**: If a Figma URL is provided for Unity, inform the user that automated import is not available and ask for a description or screenshot.</pre>
+</body>
+</html>

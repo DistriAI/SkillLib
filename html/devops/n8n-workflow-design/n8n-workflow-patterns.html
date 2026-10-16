@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>n8n-workflow-patterns</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">n8n-workflow-design</a> / n8n-workflow-patterns</p><h1>n8n-workflow-patterns</h1><p class="meta">combined</p><p>The sickn33 copy is a bulk mirror that reproduces the core structure of the czlonkowski skill but omits its 6th pattern (Batch Processing) and its detailed &#x27;Workflow lifecycle&#x27; validation gates. Conversely, the sickn33 copy includes &#x27;Data Flow Patterns&#x27; (Linear, Branching, Parallel, Loop) and a &#x27;Common Gotchas&#x27; section (Webhook data structure, execution order, etc.) that are absent from the czlonkowski text. Because each copy contains material steps and constraints the other lacks, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/czlonkowski/n8n-skills">czlonkowski/n8n-skills</a></td><td><code>skills/n8n-workflow-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/n8n-workflow-patterns/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/czlonkowski/n8n-skills">czlonkowski/n8n-skills</a></td><td><code>skills/n8n-workflow-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/n8n-workflow-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/n8n-workflow-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-automation-builder/skills/n8n-workflow-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/n8n-workflow-patterns/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: n8n-workflow-patterns
+description: Proven workflow architectural patterns from real n8n workflows. Use when building new workflows, designing workflow structure, choosing workflow patterns, planning workflow architecture, or asking about webhook processing, HTTP API integration, database operations, AI agent workflows, batch processing, or scheduled tasks.
+---
+
+# n8n Workflow Patterns
+
+Proven architectural patterns for building n8n workflows.
+
+## The 6 Core Patterns
+
+1. **Webhook Processing** (Most Common)
+   - Receive HTTP requests → Process → Output
+   - Pattern: Webhook → Validate → Transform → Respond/Notify
+
+2. **HTTP API Integration**
+   - Fetch from REST APIs → Transform → Store/Use
+   - Pattern: Trigger → HTTP Request → Transform → Action → Error Handler
+
+3. **Database Operations**
+   - Read/Write/Sync database data
+   - Pattern: Schedule → Query → Transform → Write → Verify
+
+4. **AI Agent Workflow**
+   - AI agents with tools and memory
+   - Pattern: Trigger → AI Agent (Model + Tools + Memory) → Output
+
+5. **Scheduled Tasks**
+   - Recurring automation workflows
+   - Pattern: Schedule → Fetch → Process → Deliver → Log
+
+6. **Batch Processing**
+   - Process large datasets in chunks with API rate limits
+   - Pattern: Prepare → SplitInBatches → Process per batch → Accumulate → Aggregate
+
+## Pattern Selection Guide
+
+**Webhook Processing** - Use when receiving data from external systems, building integrations, or needing instant response.
+**HTTP API Integration** - Use when fetching data from external APIs, synchronizing services, or building data pipelines.
+**Database Operations** - Use when syncing databases, running scheduled queries, or ETL.
+**AI Agent Workflow** - Use when building conversational AI or multi-step reasoning with tools.
+**Scheduled Tasks** - Use for recurring reports, periodic fetching, or maintenance.
+**Batch Processing** - Use when processing large datasets exceeding API limits or nested loops.
+
+## Common Workflow Components
+
+1. **Triggers**: Webhook, Schedule, Manual, Polling.
+2. **Data Sources**: HTTP Request, Database nodes, Service nodes, Code.
+3. **Transformation**: Set, Code, IF/Switch, Merge. (Tip: Use `{{ $jmespath($json, &quot;…&quot;) }}` for nested slices to replace Split/Filter/Aggregate chains.)
+4. **Outputs**: HTTP Request, Database, Communication, Storage.
+5. **Error Handling**: Error Trigger, IF, Stop and Error, Continue On Fail.
+
+## Data Flow Patterns
+
+- **Linear**: Trigger → Transform → Action → End
+- **Branching**: Trigger → IF → [True/False Paths]
+- **Parallel**: Trigger → [Branch 1/2] → Merge
+- **Loop**: Trigger → Split in Batches → Process → Loop
+- **Error Handler**: Main Flow → [Success] / [Error Trigger → Handler]
+
+## Workflow Creation Checklist
+
+### Planning Phase
+- [ ] Identify the pattern
+- [ ] List required nodes
+- [ ] Understand data flow
+- [ ] Plan error handling strategy
+
+### Implementation Phase
+- [ ] Create workflow with appropriate trigger
+- [ ] Add data source nodes
+- [ ] Configure authentication/credentials
+- [ ] Add transformation nodes
+- [ ] Add output/action nodes
+- [ ] Configure error handling
+
+### Validation Phase
+- [ ] Validate each node configuration
+- [ ] Validate complete workflow
+- [ ] Test with sample data
+- [ ] Handle edge cases
+
+### Deployment Phase
+- [ ] Review workflow settings
+- [ ] Activate workflow
+- [ ] Monitor first executions
+- [ ] Document workflow purpose
+
+## Workflow Lifecycle: Validate, Verify, Test Before Activating
+
+Validation passing is necessary, not sufficient. A workflow can validate clean and still drop items or pick the wrong Merge input.
+
+1. **Validate**: Run `validate_workflow` on the full JSON.
+2. **Verify**: Check logic and data shapes.
+3. **Test**: Run with sample data.
+4. **Activate**: Only after passing all gates.
+
+## Common Gotchas
+
+1. **Webhook Data Structure**: Data is nested under `$json.body` (e.g., `{{$json.body.email}}`).
+2. **Multiple Input Items**: Use &quot;Execute Once&quot; mode or `{{$json[0].field}}` to process only the first item.
+3. **Authentication Issues**: Configure credentials in the &quot;Credentials&quot; section, not parameters. Test before activation.
+4. **Node Execution Order**: Check workflow settings. v1 (Connection-based) is recommended over v0 (Top-to-bottom).
+5. **Expression Errors**: Check syntax and variable scope.</pre>
+</body>
+</html>

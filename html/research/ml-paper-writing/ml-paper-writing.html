@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ml-paper-writing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">ml-paper-writing</a> / ml-paper-writing</p><h1>ml-paper-writing</h1><p class="meta">combined</p><p>The two copies share the same core philosophy, citation-verification rules, and repository-exploration workflow, but they disagree on the canonical citation authority and add different structural guidance. The Orchestra-Research copy is the upstream source (v1.2.0) and includes a pointer to a separate systems-paper-writing skill, while the brycewang-stanford copy (v1.0.0) adds a &#x27;Default operating order&#x27; that designates references/citation-workflow.md as the canonical citation authority and explicitly demotes Google Scholar. Because the copies overlap but each contains material steps or constraints the other lacks, and they disagree on the verification authority, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Orchestra-Research/AI-Research-SKILLs">Orchestra-Research/AI-Research-SKILLs</a></td><td><code>20-ml-paper-writing/ml-paper-writing/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/ml-paper-writing/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Orchestra-Research/AI-Research-SKILLs">Orchestra-Research/AI-Research-SKILLs</a></td><td><code>20-ml-paper-writing/ml-paper-writing/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/ml-paper-writing/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/07-Orchestra-Research-AI-Research-SKILLs/ml-paper-writing/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/43-wentorai-research-plugins/skills/writing/composition/ml-paper-writing/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: ml-paper-writing
+description: Write publication-ready ML/AI papers for NeurIPS, ICML, ICLR, ACL, AAAI, COLM. Use when drafting papers from research repos, structuring arguments, verifying citations, or preparing camera-ready submissions. For systems venues (OSDI, NSDI, ASPLOS, SOSP), use systems-paper-writing instead.
+version: 1.2.0
+author: Orchestra Research
+license: MIT
+tags: [Academic Writing, NeurIPS, ICML, ICLR, ACL, AAAI, COLM, LaTeX, Paper Writing, Citations, Research]
+dependencies: [semanticscholar, arxiv, habanero, requests]
+---
+
+# ML Paper Writing for Top AI Conferences
+
+Expert-level guidance for writing publication-ready papers targeting **NeurIPS, ICML, ICLR, ACL, AAAI, COLM**. This skill combines writing philosophy from top researchers (Nanda, Farquhar, Karpathy, Lipton, Steinhardt) with practical tools: LaTeX templates, citation verification APIs, and conference checklists.
+
+**For systems venues (OSDI, NSDI, ASPLOS, SOSP)**, use the [systems-paper-writing](../systems-paper-writing/) skill, which provides paragraph-level structural blueprints, writing patterns, venue-specific checklists, and LaTeX templates for systems conferences.
+
+## Default operating order
+
+Use this skill in the following order unless the task is unusually narrow:
+1. lock the operating mode from `references/OPERATING-MODES.md`,
+2. understand the repo or draft context,
+3. use `references/citation-workflow.md` as the **canonical citation authority**,
+4. load venue- or template-specific references only after the main writing path is clear.
+
+Google Scholar may still help with manual discovery, but it is **not** the canonical verification authority in this skill. Default verification should use programmatic sources such as Semantic Scholar, CrossRef, and arXiv.
+
+## Core Philosophy: Collaborative Writing
+
+**Paper writing is collaborative, but Claude should be proactive in delivering drafts.**
+
+The typical workflow starts with a research repository containing code, results, and experimental artifacts. Claude&#x27;s role is to:
+
+1. **Understand the project** by exploring the repo, results, and existing documentation
+2. **Deliver a complete first draft** when confident about the contribution
+3. **Search literature** using web search and APIs to find relevant citations
+4. **Refine through feedback cycles** when the scientist provides input
+5. **Ask for clarification** only when genuinely uncertain about key decisions
+
+**Key Principle**: Be proactive. If the repo and results are clear, deliver a full draft. Don&#x27;t block waiting for feedback on every section—scientists are busy. Produce something concrete they can react to, then iterate based on their response.
+
+---
+
+## ⚠️ CRITICAL: Never Hallucinate Citations
+
+**This is the most important rule in academic writing with AI assistance.**
+
+### The Problem
+AI-generated citations have a **~40% error rate**. Hallucinated references—papers that don&#x27;t exist, wrong authors, incorrect years, fabricated DOIs—are a serious form of academic misconduct that can result in desk rejection or retraction.
+
+### The Rule
+**NEVER generate BibTeX entries from memory. ALWAYS fetch programmatically.**
+
+| Action | ✅ Correct | ❌ Wrong |
+|--------|-----------|----------|
+| Adding a citation | Search API → verify → fetch BibTeX | Write BibTeX from memory |
+| Uncertain about a paper | Mark as `[CITATION NEEDED]` | Guess the reference |
+| Can&#x27;t find exact paper | Note: &quot;placeholder - verify&quot; | Invent similar-sounding paper |
+
+### When You Can&#x27;t Verify a Citation
+
+If you cannot programmatically verify a citation, you MUST:
+
+```latex
+% EXPLICIT PLACEHOLDER - requires human verification
+\cite{PLACEHOLDER_author2024_verify_this}  % TODO: Verify this citation exists
+```
+
+**Always tell the scientist**: &quot;I&#x27;ve marked [X] citations as placeholders that need verification. I could not confirm these papers exist.&quot;
+
+### Recommended: Install Exa MCP for Paper Search
+
+For the best paper search experience, install **Exa MCP** which provides real-time academic search:
+
+**Claude Code:**
+```bash
+claude mcp add exa -- npx -y mcp-remote &quot;https://mcp.exa.ai/mcp&quot;
+```
+
+**Cursor / VS Code** (add to MCP settings):
+```json
+{
+  &quot;mcpServers&quot;: {
+    &quot;exa&quot;: {
+      &quot;type&quot;: &quot;http&quot;,
+      &quot;url&quot;: &quot;https://mcp.exa.ai/mcp&quot;
+    }
+  }
+}
+```
+
+Exa MCP enables searches like:
+- &quot;Find papers on RLHF for language models published after 2023&quot;
+- &quot;Search for transformer architecture papers by Vaswani&quot;
+- &quot;Get recent work on sparse autoencoders for interpretability&quot;
+
+Then verify results with Semantic Scholar API and fetch BibTeX via DOI.
+
+---
+
+## Workflow 0: Starting from a Research Repository
+
+When beginning paper writing, start by understanding the project:
+
+```
+Project Understanding:
+- [ ] Step 1: Explore the repository structure
+- [ ] Step 2: Read README, existing docs, and key results
+- [ ] Step 3: Identify the main contribution with the scientist
+- [ ] Step 4: Find papers already cited in the codebase
+- [ ] Step 5: Search for additional relevant literature
+- [ ] Step 6: Outline the paper structure together
+- [ ] Step 7: Draft sections iteratively with feedback
+```
+
+**Step 1: Explore the Repository**
+
+```bash
+# Understand project structure
+ls -la
+find . -name &quot;*.py&quot; | head -20
+find . -name &quot;*.md&quot; -o -name &quot;*.txt&quot; | xargs grep -l -i &quot;result\|conclusion\|finding&quot;
+```
+
+Look for:
+- `README.md` - Project overview and claims
+- `results/`, `outputs/`, `experiments/` - Key findings
+- `configs/` - Experimental settings
+- Existing `.bib` files or citation references
+- Any draft documents or notes
+
+**Step 2: Identify Existing Citations**
+
+Check for papers already referenced in the codebase:
+
+```bash
+# Find existing citations
+grep -r &quot;arxiv\|doi\|cite&quot; --include=&quot;*.md&quot; --include=&quot;*.bib&quot; --include=&quot;*.py&quot;
+find . -name &quot;*.bib&quot;
+```
+
+These are high-signal starting points for Related Work—the scientist has already deemed them relevant.
+
+**Step 3: Clarify the Contribution**
+
+Before writing, explicitly confirm with the scientist:
+
+&gt; &quot;Based on my understanding of the repo, the main contribution appears to be [X].
+&gt; The key results show [Y]. Is this the framing you want for the paper,
+&gt; or should we emphasize different aspects?&quot;
+
+**Never assume the narrative—always verify with the human.**
+
+**Step 4: Search for Additional Literature**
+
+Use web search to find relevant papers:
+
+```
+Search queries to try:
+- &quot;[main technique] + [application domain]&quot;
+- &quot;[baseline method] comparison&quot;
+- &quot;[problem name] state-of-the-art&quot;
+- Author names from existing citations
+```
+
+Then verify and retrieve BibTeX using the citation workflow below.
+
+**Step 5: Deliver a First Draft**
+
+Produce a complete first draft when the repo and results are clear. Do not block waiting for feedback on every section.
+
+## Conflicts
+
+- **brycewang-stanford/Auto-Empirical-Research-Skills** adds a &#x27;Default operating order&#x27; that names `references/citation-workflow.md` as the canonical citation authority and states Google Scholar is not the canonical verification authority; **Orchestra-Research/AI-Research-SKILLs** does not include this operating order or this explicit demotion of Google Scholar.
+- **Orchestra-Research/AI-Research-SKILLs** includes a pointer to a separate `systems-paper-writing` skill for systems venues; **brycewang-stanford/Auto-Empirical-Research-Skills** does not include this pointer.
+- **Orchestra-Research/AI-Research-SKILLs** is version 1.2.0; **brycewang-stanford/Auto-Empirical-Research-Skills** is version 1.0.0.</pre>
+</body>
+</html>

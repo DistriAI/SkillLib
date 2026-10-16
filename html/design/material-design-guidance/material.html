@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>material</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">material-design-guidance</a> / material</p><h1>material</h1><p class="meta">combined</p><p>The two copies use the same skill name for completely different tasks. The first is a Unity engine skill for editing material and shader properties via a specific API (material_create, material_set_color, etc.). The second is a web design skill for authoring Material Design system guidelines (tokens, accessibility, component rules). They do not overlap in procedure, parameters, or domain, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/material/SKILL.md</code></td></tr><tr><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/material/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/material/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/material/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: material
+description: Handles both Unity material asset manipulation and Material Design system guideline authoring.
+---
+
+# Material Skill
+
+This skill covers two distinct domains. Determine the user&#x27;s intent to select the correct procedure.
+
+## 1. Unity Material Manipulation
+Use this section when the user wants to edit 3D material properties in Unity (Built-in/URP/HDRP).
+
+### Operating Mode
+- **Approval**: Mutating skills require user grant.
+- **Query**: `material_get_properties` and `material_get_keywords` run without grant.
+
+### Key Procedures
+- **Create Material**: Use `material_create` with `name` and optional `shaderName`/`savePath`.
+- **Set Color**: Use `material_set_color` with `r`, `g`, `b`, `a` in range 0-1. Note: This edits the material asset, not just the object instance.
+- **Set Properties**: Use `material_set_float`, `material_set_int`, `material_set_vector`, or `material_set_keyword`.
+- **Batch Operations**: Use `*_batch` variants for 2+ objects.
+
+### Guardrails
+- Do not use non-existent skills like `material_set_metallic`; use `material_set_float` with `propertyName=&quot;_Metallic&quot;`.
+- Targeting a GameObject edits the shared material asset. To avoid side effects, create a new material, set properties, then assign it.
+
+## 2. Material Design System Authoring
+Use this section when the user wants to create or review Material Design guidelines for web/mobile UI.
+
+### Workflow
+1. Restate design intent.
+2. Define tokens (color, typography, spacing) and foundations.
+3. Specify component anatomy, states (default, hover, focus, active, disabled), and interaction behavior.
+4. Include accessibility acceptance criteria (WCAG 2.2 AA).
+5. Add anti-patterns and migration notes.
+6. End with a QA checklist.
+
+### Quality Gates
+- Anchor rules to tokens or thresholds, not ambiguous adjectives.
+- Prioritize accessibility over aesthetics when conflicts arise.
+- Use &quot;must&quot; for non-negotiable rules and &quot;should&quot; for recommendations.</pre>
+</body>
+</html>

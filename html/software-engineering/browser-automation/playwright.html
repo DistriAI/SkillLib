@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>playwright</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">browser-automation</a> / playwright</p><h1>playwright</h1><p class="meta">combined</p><p>The copies describe three different Playwright automation procedures. The first two are identical and drive a real browser via a terminal CLI wrapper (playwright-cli) with snapshot-based element refs. The third writes custom Playwright JavaScript to /tmp and executes it via a local run.js, with dev-server detection. The fourth is a general Playwright/MCP/scraper guide focused on selectors, scraping, and MCP server setup. Crowning one would hide the CLI-first, script-execution, and MCP/scraping alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/playwright/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/playwright/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/playwright-skill/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/playwright/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/playwright/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/playwright/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/playwright-skill/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/playwright/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/playwright-skill/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-accessibility-inclusive-ux/skills/playwright-skill/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-qa-test-automation/skills/playwright-skill/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/playwright-skill/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Playwright Browser Automation
+
+Choose the approach that matches the task and environment.
+
+## Approach A: CLI-first automation (playwright-cli)
+
+Use when the task requires terminal-driven browser automation with stable element refs.
+
+1. Check for npx: `command -v npx &gt;/dev/null 2&gt;&amp;1`. If missing, install Node.js/npm.
+2. Set the wrapper path: `export PWCLI=&quot;$CODEX_HOME/skills/playwright/scripts/playwright_cli.sh&quot;`.
+3. Open the page: `&quot;$PWCLI&quot; open &lt;url&gt; --headed`.
+4. Snapshot to get element refs: `&quot;$PWCLI&quot; snapshot`.
+5. Interact using refs from the latest snapshot (click, fill, type, press).
+6. Re-snapshot after navigation, modals, or significant DOM changes.
+7. Capture artifacts (screenshot, pdf, traces) when useful.
+
+## Approach B: Custom Playwright scripts
+
+Use when the task requires custom logic, multi-viewport testing, or complex flows.
+
+1. Detect dev servers for localhost testing: `cd $SKILL_DIR &amp;&amp; node -e &quot;require(&#x27;./lib/helpers&#x27;).detectDevServers().then(s =&gt; console.log(JSON.stringify(s)))&quot;`.
+2. Write the script to `/tmp/playwright-test-*.js` with parameterized URLs.
+3. Use `headless: false` by default for visible debugging.
+4. Execute via: `cd $SKILL_DIR &amp;&amp; node run.js /tmp/playwright-test-*.js`.
+5. Clean up temporary files.
+
+## Approach C: General Playwright/MCP/Scraping
+
+Use for scraping, E2E testing, or MCP integration.
+
+1. Prefer role selectors (`getByRole`) over CSS selectors.
+2. Never use `waitForTimeout()`; wait for specific conditions.
+3. Always close the browser to prevent memory leaks.
+4. Use `storageState` to persist auth sessions.
+5. For MCP, install `@playwright/mcp` and use the provided tools.
+
+## Conflicts
+
+- openai/skills and foryourhealth111-pixel/Vibe-Skills mandate CLI-first automation with snapshot refs.
+- sickn33/agentic-awesome-skills mandates custom JS scripts executed via run.js.
+- LeoYeAI/openclaw-master-skills mandates a general Playwright/MCP approach with selector priority.</pre>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gitops-workflow</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">gitops-argocd-flux</a> / gitops-workflow</p><h1>gitops-workflow</h1><p class="meta">combined</p><p>The two copies are nearly identical, but the sickn33 copy changes the Flux installation step from a direct curl-pipe-to-bash to a safer download-and-inspect procedure (and adds a brew alternative). This is a material safety constraint that the rmyndharis copy lacks, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/gitops-workflow/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/gitops-workflow/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/gitops-workflow/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/gitops-workflow/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/gitops-workflow/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/gitops-workflow/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: gitops-workflow
+description: Implement GitOps workflows with ArgoCD and Flux for automated, declarative Kubernetes deployments with continuous reconciliation. Use when implementing GitOps practices, automating Kubernetes deployments, or setting up declarative infrastructure management.
+---
+
+# GitOps Workflow
+
+Complete guide to implementing GitOps workflows with ArgoCD and Flux for automated Kubernetes deployments.
+
+## Purpose
+
+Implement declarative, Git-based continuous delivery for Kubernetes using ArgoCD or Flux CD, following OpenGitOps principles.
+
+## Use this skill when
+
+- Set up GitOps for Kubernetes clusters
+- Automate application deployments from Git
+- Implement progressive delivery strategies
+- Manage multi-cluster deployments
+- Configure automated sync policies
+- Set up secret management in GitOps
+
+## Do not use this skill when
+
+- You need a one-off manual deployment
+- You cannot manage cluster access or repo permissions
+- You are not deploying to Kubernetes
+
+## Instructions
+
+1. Define repo layout and desired-state conventions.
+2. Install ArgoCD or Flux and connect clusters.
+3. Configure sync policies, environments, and promotion flow.
+4. Validate rollbacks and secret handling.
+
+## Safety
+
+- Avoid auto-sync to production without approvals.
+- Keep secrets out of Git and use sealed or external secret managers.
+
+## OpenGitOps Principles
+
+1. **Declarative** - Entire system described declaratively
+2. **Versioned and Immutable** - Desired state stored in Git
+3. **Pulled Automatically** - Software agents pull desired state
+4. **Continuously Reconciled** - Agents reconcile actual vs desired state
+
+## ArgoCD Setup
+
+### 1. Installation
+
+```bash
+# Create namespace
+kubectl create namespace argocd
+
+# Install ArgoCD
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# Get admin password
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath=&quot;{.data.password}&quot; | base64 -d
+```
+
+**Reference:** See `references/argocd-setup.md` for detailed setup
+
+### 2. Repository Structure
+
+```
+gitops-repo/
+├── apps/
+│   ├── production/
+│   │   ├── app1/
+│   │   │   ├── kustomization.yaml
+│   │   │   └── deployment.yaml
+│   │   └── app2/
+│   └── staging/
+├── infrastructure/
+│   ├── ingress-nginx/
+│   ├── cert-manager/
+│   └── monitoring/
+└── argocd/
+    ├── applications/
+    └── projects/
+```
+
+### 3. Create Application
+
+```yaml
+# argocd/applications/my-app.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: my-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/org/gitops-repo
+    targetRevision: main
+    path: apps/production/my-app
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+```
+
+### 4. App of Apps Pattern
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: applications
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/org/gitops-repo
+    targetRevision: main
+    path: argocd/applications
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated: {}
+```
+
+## Flux CD Setup
+
+### 1. Installation
+
+```bash
+# Install Flux CLI
+brew install fluxcd/tap/flux
+
+# Alternative: download the official installer, inspect it, then execute it
+tmpdir=&quot;$(mktemp -d)&quot;
+trap &#x27;rm -rf &quot;$tmpdir&quot;&#x27; EXIT
+curl -fsSLo &quot;$tmpdir/flux-install.sh&quot; https://fluxcd.io/install.sh
+cat &quot;$tmpdir/flux-install.sh&quot;  # review the full installer before sudo
+sudo bash &quot;$tmpdir/flux-install.sh&quot;
+
+# Bootstrap Flux
+flux bootstrap github \
+  --owner=org \
+  --repository=gitops-repo \
+  --branch=main \
+  --path=clusters/production \
+  --personal
+```
+
+### 2. Create GitRepository
+
+```yaml
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: my-app
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: https://github.com/org/my-app
+  ref:
+    branch: main
+```
+
+### 3. Create Kustomization
+
+```yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: my-app
+  namespace: flux-system
+spec:
+  interval: 5m
+  path: ./deploy
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: my-app
+```
+
+## Sync Policies
+
+### Auto-Sync Configuration
+
+**ArgoCD:**
+```yaml
+syncPolicy:
+  automated:
+    prune: true      # Delete resources not in Git
+    selfHeal: true   # Reconcile manual changes
+    allowEmpty: false
+  retry:
+    limit: 5
+    backoff:
+      duration: 5s
+      factor: 2
+      maxDuration: 3m
+```
+
+**Flux:**
+```yaml
+spec:
+  interval: 1m
+  prune: true
+  wait: true
+  timeout: 5m
+```
+
+**Reference:** See `references/sync-policies.md`
+
+## Progressive Delivery
+
+### Canary Deployment with ArgoCD Rollouts
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: my-app
+spec:
+  replicas: 5
+  strategy:
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {duration: 1m}
+      - setWeight: 50
+      - pause: {duration: 2m}
+      - setWeight: 100
+```
+
+### Blue-Green Deployment
+
+```yaml
+strategy:
+  blueGreen:
+    activeService: my-app
+    previewService: my-app-preview
+    autoPromotionEnabled: false
+```
+
+## Secret Management
+
+### External Secrets Operator
+
+```yaml
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: db-credentials
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: aws-secrets-manager
+    kind: SecretStore
+  target:
+    name: db-credentials
+  data:
+  - secretKey: password
+    remoteRef:
+      key: prod/db/password
+```
+
+### Sealed Secrets
+
+```bash
+# Encrypt secret
+kubeseal --format yaml &lt; secret.yaml &gt; sealed-secret.yaml
+
+# Commit sealed-secret.yaml to Git
+```
+
+## Best Practices
+
+1. **Use separate repos or branches** for different environments
+2. **Implement RBAC** for Git repositories
+3. **Enable notifications** for sync failures
+4. **Use health checks** for custom resources
+5. **Implement approval gates** for production
+6. **Keep secrets out of Git** (use External Secrets)
+7. **Use App of Apps pattern** for organization
+8. **Tag releases** for easy rollback
+9. **Monitor sync status** with alerts
+10. **Test changes** in staging first
+
+## Conflicts
+
+- sickn33/agentic-awesome-skills::plugins/agentic-awesome-skills-claude/skills/gitops-workflow/SKILL.md installs Flux by downloading the installer to a temp directory, inspecting it, and then executing it (with a brew alternative), whereas rmyndharis/antigravity-skills::skills/gitops-workflow/SKILL.md installs Flux by piping the installer directly to bash.</pre>
+</body>
+</html>

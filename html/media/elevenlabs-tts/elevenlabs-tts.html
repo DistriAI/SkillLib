@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>elevenlabs-tts</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">media</a> / <a href="index.html">elevenlabs-tts</a> / elevenlabs-tts</p><h1>elevenlabs-tts</h1><p class="meta">combined</p><p>The two copies overlap on the core task (calling the ElevenLabs TTS endpoint with an API key and voice settings), but each contains material steps the other lacks. The MengTo copy defines a local profile system, a helper script, voice search, output directory rules, and a dry-run/list-voices workflow. The benchflow copy provides a concrete Python example, a list of popular voice IDs, and explicit long-text chunking/concatenation steps. Neither is a strict reproduction of the other, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/MengTo/Skills">MengTo/Skills</a></td><td><code>agent-skills/codex/elevenlabs-tts/SKILL.md</code></td></tr><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks-extra/pg-essay-to-audiobook/environment/skills/elevenlabs-tts/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/MengTo/Skills">MengTo/Skills</a></td><td><code>agent-skills/codex/elevenlabs-tts/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks-extra/pg-essay-to-audiobook/environment/skills/elevenlabs-tts/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: elevenlabs-tts
+description: Generate ElevenLabs text-to-speech audio from scripts or inline text using local voice profiles or direct voice IDs. Use when the user asks for ElevenLabs, text-to-speech, TTS, narration, voiceover, speech audio, or voice generation.
+---
+
+# ElevenLabs TTS
+
+Use this skill for ElevenLabs text-to-speech generation. Keep the skill reusable and non-personal:
+
+- Do not store API keys, voice names, voice ids, emails, account names, customer names, or personal defaults in the skill.
+- Read `ELEVENLABS_API_KEY` from the process environment or the nearest `.env`.
+- Read account-specific voice profiles from local JSON config outside this skill when available.
+- Generate audio with request-level settings. Do not mutate saved ElevenLabs account or voice settings unless the user explicitly asks.
+
+## Authentication
+
+The API key is available as environment variable:
+```bash
+ELEVENLABS_API_KEY
+```
+
+Include in request header:
+```
+xi-api-key: $ELEVENLABS_API_KEY
+```
+
+## Local Profiles
+
+Prefer one of these config sources, in order:
+
+1. `--config /path/to/profiles.json`
+2. `ELEVENLABS_TTS_CONFIG=/path/to/profiles.json`
+3. `local/elevenlabs/profiles.json`
+
+Project-local profile files are also fine when they are gitignored, for example `config/local/elevenlabs-tts.json`.
+
+The helper script expects this shape:
+
+```json
+{
+  &quot;default_profile&quot;: &quot;default&quot;,
+  &quot;profiles&quot;: {
+    &quot;default&quot;: {
+      &quot;voice_name&quot;: &quot;Voice name from the local account&quot;,
+      &quot;voice_id&quot;: &quot;optional-direct-voice-id&quot;,
+      &quot;voice_id_env&quot;: &quot;OPTIONAL_ENV_VAR_WITH_VOICE_ID&quot;,
+      &quot;model_id&quot;: &quot;eleven_multilingual_v2&quot;,
+      &quot;output_format&quot;: &quot;mp3_44100_128&quot;,
+      &quot;voice_settings&quot;: {
+        &quot;stability&quot;: 0.5,
+        &quot;similarity_boost&quot;: 1.0,
+        &quot;style&quot;: 0.0,
+        &quot;speed&quot;: 1.0,
+        &quot;use_speaker_boost&quot;: true
+      },
+      &quot;output_dir&quot;: &quot;outputs/voiceovers&quot;,
+      &quot;emails&quot;: []
+    }
+  }
+}
+```
+
+Fields like `emails`, owners, aliases, and notes are for local routing/context only. The script ignores unknown metadata fields.
+
+## Popular Voice IDs
+
+When no local profile is available, you may use these well-known voice IDs:
+
+- `21m00Tcm4TlvDq8ikWAM` - Rachel (female, calm)
+- `EXAVITQu4vr4xnSDxMaL` - Bella (female, soft)
+- `ErXwobaYiN019PkySvjV` - Antoni (male, warm)
+- `TxGEqnHWrfWFTfGW9XjX` - Josh (male, deep)
+
+## Workflow
+
+1. Choose the profile from `--profile`, `ELEVENLABS_TTS_PROFILE`, or `default_profile`.
+2. Prefer the helper script:
+   `python3 &lt;skill-root&gt;/scripts/generate_voice.py --text-file script.txt --profile default --output output.mp3`
+3. If the profile has `voice_id`, use it. If it has `voice_id_env`, read that env var. Otherwise search ElevenLabs by `voice_name`.
+4. Use profile `model_id`, `output_format`, and `voice_settings` unless the user overrides them for this generation.
+5. Put generated audio in the requested destination. If no destination is given, use the profile `output_dir`, then `outputs/voiceovers/`.
+6. Report the output path and any important warnings. Do not print secrets.
+
+## Helper Script
+
+The bundled script supports:
+
+- `--text &quot;...&quot;` for inline text
+- `--text-file path.txt` for script files
+- stdin when neither `--text` nor `--text-file` is provided
+- `--profile name` to select a local profile
+- `--config path.json` to select a local profile file
+- `--voice-id`, `--voice-name`, `--model-id`, `--output-format`, and `--settings-json` for one-off overrides
+- `--output path.mp3` to choose the output file
+- `--dry-run` to print the resolved request payload without calling the text-to-speech endpoint
+- `--list-voices` to list matching ElevenLabs voices without generating audio
+
+## API Endpoints
+
+Use the current ElevenLabs endpoints:
+
+- Voice search: `GET https://api.elevenlabs.io/v2/voices`
+- Speech generation: `POST https://api.elevenlabs.io/v1/text-to-speech/:voice_id?output_format=...`
+
+Send the API key as `xi-api-key`.
+
+**Request Body:**
+```json
+{
+  &quot;text&quot;: &quot;Your text here&quot;,
+  &quot;model_id&quot;: &quot;eleven_turbo_v2_5&quot;,
+  &quot;voice_settings&quot;: {
+    &quot;stability&quot;: 0.5,
+    &quot;similarity_boost&quot;: 0.5
+  }
+}
+```
+
+**Response:** Audio bytes (mp3 format by default)
+
+## Python Example
+
+```python
+import os
+import requests
+
+ELEVENLABS_API_KEY = os.environ.get(&quot;ELEVENLABS_API_KEY&quot;)
+VOICE_ID = &quot;21m00Tcm4TlvDq8ikWAM&quot;  # Rachel
+
+def text_to_speech(text, output_path):
+    url = f&quot;https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}&quot;
+
+    headers = {
+        &quot;xi-api-key&quot;: ELEVENLABS_API_KEY,
+        &quot;Content-Type&quot;: &quot;application/json&quot;
+    }
+
+    data = {
+        &quot;text&quot;: text,
+        &quot;model_id&quot;: &quot;eleven_turbo_v2_5&quot;,
+        &quot;voice_settings&quot;: {
+            &quot;stability&quot;: 0.5,
+            &quot;similarity_boost&quot;: 0.75
+        }
+    }
+
+    response = requests.post(url, json=data, headers=headers)
+
+    if response.status_code == 200:
+        with open(output_path, &quot;wb&quot;) as f:
+            f.write(response.content)
+        return True
+    else:
+        print(f&quot;Error: {response.status_code} - {response.text}&quot;)
+        return False
+```
+
+## Handling Long Text
+
+ElevenLabs has a ~5000 character limit per request. For long documents:
+
+1. Split text into chunks at sentence boundaries
+2. Generate audio for each chunk
+3. Concatenate using ffmpeg or pydub:
+
+```bash
+# Create file list
+echo &quot;file &#x27;chunk1.mp3&#x27;&quot; &gt; files.txt
+echo &quot;file &#x27;chunk2.mp3&#x27;&quot; &gt;&gt; files.txt
+
+# Concatenate
+ffmpeg -f concat -safe 0 -i files.txt -c copy output.mp3
+```
+
+## Best Practices
+
+- Split at sentence boundaries to avoid cutting words
+- Check rate limits (varies by subscription tier)
+- Cache generated audio to avoid redundant API calls
+
+## Conflicts
+
+- MengTo/Skills::agent-skills/codex/elevenlabs-tts/SKILL.md says to read account-specific voice profiles from local JSON config outside the skill and to search ElevenLabs by voice_name when no voice_id is provided; benchflow-ai/skillsbench::tasks-extra/pg-essay-to-audiobook/environment/skills/elevenlabs-tts/SKILL.md instead hard-codes popular voice IDs in the skill and does not describe a local profile system.
+- MengTo/Skills::agent-skills/codex/elevenlabs-tts/SKILL.md uses model_id eleven_multilingual_v2 and output_format mp3_44100_128 in its example profile; benchflow-ai/skillsbench::tasks-extra/pg-essay-to-audiobook/environment/skills/elevenlabs-tts/SKILL.md uses model_id eleven_turbo_v2_5 and does not specify an output_format parameter.
+- MengTo/Skills::agent-skills/codex/elevenlabs-tts/SKILL.md says to use the current endpoint POST https://api.elevenlabs.io/v1/text-to-speech/:voice_id?output_format=...; benchflow-ai/skillsbench::tasks-extra/pg-essay-to-audiobook/environment/skills/elevenlabs-tts/SKILL.md uses POST https://api.elevenlabs.io/v1/text-to-speech/{voice_id} without the output_format query parameter.</pre>
+</body>
+</html>

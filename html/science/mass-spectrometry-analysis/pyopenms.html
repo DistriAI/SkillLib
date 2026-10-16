@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pyopenms</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">mass-spectrometry-analysis</a> / pyopenms</p><h1>pyopenms</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a distinct, high-fidelity implementation that ships a suite of parameterized CLI scripts (e.g., `detect_features_metabo.py`, `align_link_quantify.py`) and provides specific installation constraints (Python 3.11+, pyOpenMS 3.6.0). The other three copies (Vibe-Skills, medical-research-skills, and OpenClaw-Medical-Skills) are largely identical or near-identical generic API guides that lack these scripts and instead point to `references/` files. Because the K-Dense copy provides a different, more operational procedure (running scripts vs. writing API code) and the others provide a different, more conceptual procedure (API exploration), crowning one would hide the alternative approach. The Vibe-Skills and OpenClaw copies are effectively duplicates of each other, while the medical-research-skills copy is a simplified variant of the same API-focused approach.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pyopenms/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pyopenms/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/pyopenms-skill/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pyopenms/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pyopenms/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pyopenms/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/pyopenms-skill/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pyopenms/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># PyOpenMS
+
+## Overview
+PyOpenMS provides Python bindings to the OpenMS library for computational mass spectrometry. It supports proteomics and metabolomics workflows including file handling, signal processing, feature detection, and identification.
+
+## Installation
+Use `uv` to manage the environment. Ensure Python 3.11+ is available.
+```bash
+uv venv --python 3.13
+uv pip install &quot;pyopenms==3.6.0&quot; pandas numpy matplotlib
+```
+Verify installation:
+```python
+import pyopenms as ms
+print(ms.__version__)
+```
+
+## Workflow Options
+
+### Option A: Script-Based (Recommended for Standard Pipelines)
+If the skill directory contains a `scripts/` folder, prefer running these parameterized CLI tools over writing new code.
+
+1. **Inspect &amp; Convert**:
+   - `python scripts/inspect_ms_data.py &lt;input.mzML&gt;`: Summarize data.
+   - `python scripts/convert_format.py &lt;input.mzML&gt; --out &lt;output.mzXML&gt;`: Convert formats.
+2. **Feature Detection &amp; Quantification**:
+   - `python scripts/detect_features_metabo.py &lt;input.mzML&gt; --out-csv features.csv`: Untargeted metabolomics.
+   - `python scripts/align_link_quantify.py &lt;s1.mzML&gt; &lt;s2.mzML&gt; --out-prefix study`: Multi-sample quantification.
+3. **Identification**:
+   - `python scripts/process_identifications.py &lt;search.idXML&gt; --fasta db.fasta --fdr 0.01`: Post-process search results.
+
+### Option B: API-Based (For Custom Workflows)
+Use the Python API when no script fits the specific requirement.
+
+1. **File I/O**:
+   ```python
+   import pyopenms as ms
+   exp = ms.MSExperiment()
+   ms.MzMLFile().load(&quot;data.mzML&quot;, exp)
+   ```
+2. **Signal Processing**:
+   ```python
+   gaussian = ms.GaussFilter()
+   params = gaussian.getParameters()
+   params.setValue(&quot;gaussian_width&quot;, 0.1)
+   gaussian.setParameters(params)
+   gaussian.filterExperiment(exp)
+   ```
+3. **Feature Detection**:
+   ```python
+   ff = ms.FeatureFinder()
+   # Configure parameters and run
+   ```
+4. **Data Structures**:
+   - `MSExperiment`: Collection of spectra.
+   - `FeatureMap`: Collection of detected features.
+   - `PeptideIdentification`: Search results.
+
+## Conflicts
+- **Installation**: K-Dense-AI specifies `pyopenms==3.6.0` and Python 3.13; Vibe-Skills uses `uv uv pip install pyopenms` (typo) without version pinning. Use the K-Dense-AI version for stability.
+- **Execution**: K-Dense-AI prioritizes CLI scripts; Vibe-Skills prioritizes API code. Use scripts for standard tasks and API for custom logic.</pre>
+</body>
+</html>

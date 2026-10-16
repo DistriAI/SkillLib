@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-data-io</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">spatial-transcriptomics-data-loading</a> / spatial-data-io</p><h1>spatial-data-io</h1><p class="meta">combined</p><p>The two skills cover the same task but with different depth and scope. The first copy (OpenClaw) is a practical, code-heavy recipe book for loading specific platforms (Visium, Xenium, MERFISH, Slide-seq, CosMx, Stereo-seq) using Squidpy and SpatialData, including creating data from scratch and subsetting. The second copy (GPTomics) is a conceptual guide that emphasizes the distinction between imaging/in-situ (molecule tables) and sequencing/capture (spot matrices) platforms, warns about coordinate frame mismatches, and provides a decision framework for choosing the right reader. The GPTomics version contains critical conceptual constraints (e.g., &#x27;molecule table is source of truth&#x27;, &#x27;Visium has no molecule table&#x27;) and version compatibility checks that the OpenClaw version lacks. Conversely, the OpenClaw version has specific code examples for creating AnnData from scratch and subsetting by region that are not present in the GPTomics version. Combining them yields a more robust skill that handles both the &#x27;what to load&#x27; decision logic and the &#x27;how to load&#x27; implementation details.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-data-io/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-data-io/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-data-io/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-data-io/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: bio-spatial-transcriptomics-spatial-data-io
+description: Load spatial transcriptomics data from Visium, Xenium, MERFISH, Slide-seq, and other platforms using Squidpy and SpatialData. Decide between imaging (molecule table) and sequencing (spot matrix) platforms, verify versions, and access spatial coordinates.
+tool_type: python
+primary_tool: spatialdata
+---
+
+# Spatial Data I/O
+
+## Version Compatibility
+
+Reference examples tested with: spatialdata 0.2+, spatialdata-io 0.1.5+, squidpy 1.4+, scanpy 1.10+, anndata 0.10+.
+
+Before using code patterns, verify installed versions match. If code throws ImportError, AttributeError, or TypeError, introspect the installed package and adapt the example to match the actual API.
+
+## Platform Class Decision
+
+1. **Imaging/In-situ (Xenium, MERFISH, CosMx):**
+   - Primary objects: Molecule table (source of truth) + Segmentation-derived cell matrix.
+   - Use `spatialdata_io.{xenium, merscope, cosmx}`.
+   - Note: The cell matrix inherits segmentation errors; the molecule table allows re-segmentation.
+2. **Sequencing/Capture (Visium, Slide-seq, Stereo-seq):**
+   - Primary objects: Spot/bin matrix + coordinates + image.
+   - No molecule table exists.
+   - Use `squidpy.read.visium` or `spatialdata_io.{visium, curio, stereoseq}`.
+
+## Required Imports
+
+```python
+import squidpy as sq
+import scanpy as sc
+import anndata as ad
+import spatialdata as sd
+import spatialdata_io as sdio
+import numpy as np
+import pandas as pd
+```
+
+## Load Data
+
+### 10X Visium
+```python
+# Standard method
+adata = sq.read.visium(&#x27;path/to/spaceranger/output/&#x27;)
+
+# Or with SpatialData
+sdata = sdio.visium(&#x27;path/to/spaceranger/output/&#x27;)
+```
+
+### 10X Xenium
+```python
+# SpatialData (Recommended for access to molecule table)
+sdata = sdio.xenium(&#x27;path/to/xenium/output/&#x27;)
+
+# Or Squidpy
+adata = sq.read.xenium(&#x27;path/to/xenium/output/&#x27;)
+```
+
+### MERFISH (Vizgen MERSCOPE)
+```python
+sdata = sdio.merscope(&#x27;path/to/merscope/output/&#x27;)
+# Or AnnData
+adata = sq.read.vizgen(&#x27;path/to/vizgen/output/&#x27;, counts_file=&#x27;cell_by_gene.csv&#x27;, meta_file=&#x27;cell_metadata.csv&#x27;)
+```
+
+### Slide-seq
+```python
+adata = sq.read.slideseq(&#x27;beads.csv&#x27;, coordinates_file=&#x27;coords.csv&#x27;)
+```
+
+### CosMx
+```python
+sdata = sdio.cosmx(&#x27;path/to/cosmx/output/&#x27;)
+```
+
+### Stereo-seq
+```python
+sdata = sdio.stereoseq(&#x27;path/to/stereoseq/output/&#x27;)
+```
+
+## Access Spatial Data
+
+### Coordinates
+```python
+# From AnnData
+coords = adata.obsm[&#x27;spatial&#x27;]
+
+# From SpatialData
+# Access via sdata.shapes or sdata.points depending on platform
+```
+
+### Images
+```python
+# From AnnData
+library_id = list(adata.uns[&#x27;spatial&#x27;].keys())[0]
+hires_img = adata.uns[&#x27;spatial&#x27;][library_id][&#x27;images&#x27;][&#x27;hires&#x27;]
+scalef = adata.uns[&#x27;spatial&#x27;][library_id][&#x27;scalefactors&#x27;]
+```
+
+## Create Spatial AnnData from Scratch
+
+```python
+X = np.random.poisson(5, size=(1000, 500))
+spatial_coords = np.random.rand(1000, 2) * 1000
+
+adata = ad.AnnData(X)
+adata.obs_names = [f&#x27;spot_{i}&#x27; for i in range(1000)]
+adata.var_names = [f&#x27;gene_{i}&#x27; for i in range(500)]
+adata.obsm[&#x27;spatial&#x27;] = spatial_coords
+
+adata.uns[&#x27;spatial&#x27;] = {
+    &#x27;library_id&#x27;: {
+        &#x27;scalefactors&#x27;: {&#x27;tissue_hires_scalef&#x27;: 1.0, &#x27;spot_diameter_fullres&#x27;: 50},
+    }
+}
+```
+
+## Subset by Spatial Region
+
+```python
+x_min, x_max = 1000, 2000
+y_min, y_max = 1500, 2500
+
+coords = adata.obsm[&#x27;spatial&#x27;]
+in_region = (coords[:, 0] &gt;= x_min) &amp; (coords[:, 0] &lt;= x_max) &amp; (coords[:, 1] &gt;= y_min) &amp; (coords[:, 1] &lt;= y_max)
+
+adata_region = adata[in_region].copy()
+```</pre>
+</body>
+</html>

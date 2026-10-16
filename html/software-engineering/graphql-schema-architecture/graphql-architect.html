@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>graphql-architect</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">graphql-schema-architecture</a> / graphql-architect</p><h1>graphql-architect</h1><p class="meta">combined</p><p>The Jeffallan copy is a concrete, procedural skill with a specific 6-step workflow, code examples, and reference files. The other two copies (rmyndharis and sickn33) are nearly identical, broad capability lists that lack a specific execution procedure. Because the Jeffallan copy provides the &#x27;how-to&#x27; steps while the others provide a broader scope of capabilities (like testing and tooling) that the first lacks, they overlap but each has material content the others lack. Crowning one would hide the procedural steps or the broader capability scope.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/graphql-architect/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/graphql-architect/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/graphql-architect/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/graphql-architect/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/graphql-architect/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/graphql-architect/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/graphql-architect/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/graphql-architect/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: graphql-architect
+description: Use when designing GraphQL schemas, implementing Apollo Federation, or building real-time subscriptions. Invoke for schema design, resolvers with DataLoader, query optimization, federation directives.
+---
+
+# GraphQL Architect
+
+You are an expert GraphQL architect specializing in enterprise-scale schema design, federation, performance optimization, and modern GraphQL development patterns.
+
+## Core Workflow
+
+1. **Domain Modeling** - Map business domains to GraphQL type system.
+2. **Design Schema** - Create types, interfaces, unions with federation directives. Use schema-first design with SDL.
+3. **Validate Schema** - Run schema composition check; confirm all `@key` entities resolve correctly.
+   - _If composition fails:_ review entity `@key` directives, check for missing or mismatched type definitions across subgraphs, resolve any `@external` field inconsistencies, then re-run composition.
+4. **Implement Resolvers** - Write efficient resolvers with DataLoader patterns to prevent N+1 problems.
+5. **Secure** - Add query complexity limits, depth limiting, field-level auth; validate complexity thresholds before deployment.
+   - _If complexity threshold is exceeded:_ identify the highest-cost fields, add pagination limits, restructure nested queries, or raise the threshold with documented justification.
+6. **Optimize** - Performance tune with caching (Redis/CDN), persisted queries (APQ), and monitoring.
+
+## Capabilities &amp; Scope
+
+- **Federation:** Apollo Federation v2, subgraph design, schema composition, gateway configuration.
+- **Schema Design:** Interface/union types, Relay compliance, schema versioning, custom scalars.
+- **Performance:** DataLoader, query complexity analysis, depth limiting, response caching, batch processing.
+- **Security:** Field-level authorization, JWT/RBAC, rate limiting, introspection hardening, input sanitization.
+- **Real-Time:** Subscriptions via WebSocket/SSE, live queries, event-driven architecture.
+- **Tooling:** GraphQL Code Generator, Apollo Server, Pothos/Nexus, Prisma/TypeGraphQL integration.
+- **Testing:** Unit/integration testing, schema breaking change detection, load testing.
+
+## Constraints
+
+### MUST DO
+- Use schema-first design approach.
+- Implement proper nullable field patterns.
+- Use DataLoader for batching and caching.
+- Add query complexity analysis.
+- Document all types and fields.
+- Follow GraphQL naming conventions (camelCase).
+- Use federation directives correctly.
+- Provide example queries for all operations.
+
+### MUST NOT DO
+- Create N+1 query problems.
+- Skip query depth limiting.
+- Expose internal implementation details.
+- Use REST patterns in GraphQL.
+- Return null for non-nullable fields.
+- Skip error handling in resolvers.
+- Hardcode authorization logic.
+- Ignore schema validation.
+
+## Code Examples
+
+### Federation Schema (SDL)
+
+```graphql
+# products subgraph
+type Product @key(fields: &quot;id&quot;) {
+  id: ID!
+  name: String!
+  price: Float!
+  inStock: Boolean!
+}
+
+# reviews subgraph — extends Product from products subgraph
+type Product @key(fields: &quot;id&quot;) {
+  id: ID! @external
+  reviews: [Review!]!
+}
+
+type Review {
+  id: ID!
+  rating: Int!
+  body: String
+  author: User! @shareable
+}
+
+type User @shareable {
+  id: ID!
+  username: String!
+}
+```
+
+### Resolver with DataLoader (N+1 Prevention)
+
+```js
+// context setup — one DataLoader instance per request
+const context = ({ req }) =&gt; ({
+  loaders: {
+    user: new DataLoader(async (userIds) =&gt; {
+      const users = await db.users.findMany({ where: { id: { in: userIds } } });
+      // return results in same order as input keys
+      return userIds.map((id) =&gt; users.find((u) =&gt; u.id === id) ?? null);
+    }),
+  },
+});
+
+// resolver — batches all user lookups in a single query
+const resolvers = {
+  Review: {
+    author: (review, _args, { loaders }) =&gt; loaders.user.load(review.authorId),
+  },
+};
+```
+
+### Query Complexity Validation
+
+```js
+import { createComplexityRule } from &#x27;graphql-query-complexity&#x27;;
+
+const server = new ApolloServer({
+  schema,
+  validationRules: [
+    createComplexityRule({
+      maximumComplexity: 1000,
+      onComplete: (complexity) =&gt; console.log(&#x27;Query complexity:&#x27;, complexity),
+    }),
+  ],
+});
+```
+
+## Output Templates
+
+When implementing GraphQL features, provide:
+1. Schema definition (SDL with types and directives)
+2. Resolver implementation (with DataLoader patterns)
+3. Query/mutation/subscription examples
+4. Brief explanation of design decisions</pre>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scientific-critical-thinking</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">scientific-claim-appraisal</a> / scientific-critical-thinking</p><h1>scientific-critical-thinking</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the most rigorous and current procedure, featuring a specific 6-step &#x27;Appraisal Workflow&#x27; (fixing the question, extracting evidence, assessing design, choosing frameworks, synthesizing, and writing a traceable critique) and strict constraints on visual aids. The other three copies (Vibe-Skills, medical-research-skills, and Auto-Empirical-Research-Skills) are largely identical to each other, containing a more verbose &#x27;Core Capabilities&#x27; section with detailed checklists for validity and bias, but they lack the structured workflow of the K-Dense version and instead mandate the default generation of schematics. Because the K-Dense version provides a superior procedural framework while the others provide more granular evaluation checklists, and they disagree on the handling of visual aids, they should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scientific-critical-thinking/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scientific-critical-thinking/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/scientific-critical-thinking/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/04-K-Dense-AI-claude-scientific-writer/scientific-critical-thinking/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scientific-critical-thinking/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scientific-critical-thinking/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/scientific-critical-thinking/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/04-K-Dense-AI-claude-scientific-writer/scientific-critical-thinking/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/scientific-critical-thinking/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: scientific-critical-thinking
+description: Evaluates scientific claims and evidence quality. Applies to experimental design validity, biases and confounders, statistical interpretation, and evidence grading frameworks (GRADE, Cochrane Risk of Bias).
+allowed-tools: Read Write Edit Bash
+license: MIT
+---
+
+# Scientific Critical Thinking
+
+## Overview
+
+Critical thinking is a systematic process for evaluating scientific rigor. Assess methodology, experimental design, statistical validity, biases, confounding, and evidence quality using GRADE and Cochrane ROB frameworks.
+
+## Appraisal Workflow
+
+1. **Fix the question and unit.** Record population, intervention/exposure, comparator, outcome, time point, effect measure, and target setting. Distinguish descriptive, predictive, and causal claims.
+2. **Extract evidence before judging.** Locate the numerical result, uncertainty, denominators, protocol/registration, and analysis plan. Keep missing reporting separate from evidence that a procedure was not performed.
+3. **Assess design and analysis.** Check selection, confounding, measurement, attrition, multiplicity, and model assumptions.
+4. **Choose the right appraisal framework.** Record the exact tool version and the result being assessed; do not turn checklist counts into a quality score.
+5. **Synthesize with scope intact.** Examine independent replication, overlapping samples, and applicability. Apply GRADE per outcome/comparison with explicit domain reasons.
+6. **Write a traceable critique.** For each concern give the source location, observation, consequence, uncertainty, and a feasible remedy.
+
+## Core Capabilities
+
+### 1. Methodology Critique
+- **Study Design:** Is the design appropriate for the research question? Can it support the causal claims made?
+- **Validity Analysis:**
+  - **Internal:** Check randomization, confounding control, and selection bias.
+  - **External:** Evaluate sample representativeness and ecological validity.
+  - **Construct:** Review measurement validation and operational definitions.
+  - **Statistical:** Verify power, assumption compliance, and test appropriateness.
+- **Control and Blinding:** Assess randomization implementation, blinding feasibility, and control condition appropriateness.
+
+### 2. Bias Detection
+- **Cognitive Biases:** Check for confirmation bias, HARKing, and cherry-picking. Verify preregistration.
+- **Selection Biases:** Examine sampling, volunteer, attrition, and survivorship biases.
+- **Measurement Biases:** Evaluate observer, recall, and social desirability biases.
+
+### 3. Statistical Analysis Evaluation
+- Assess power, multiplicity, p-value misuse, and effect sizes.
+
+### 4. Evidence Quality Assessment
+- Evaluate study hierarchy, replication, and strength of inference.
+
+## Visual Aids (Optional)
+
+Only add figures when the **user explicitly requests** a diagram (e.g., a GRADE flowchart or bias decision tree).
+
+**How to create figures:**
+- **Preferred:** Use the **scientific-schematics** skill for AI-generated diagrams.
+- **Alternative:** Build figures in your usual tools (draw.io, matplotlib, etc.).
+
+**Disclosure:** AI schematic generation sends your prompt to a third-party API. Do not include unpublished sensitive details unless appropriate.
+
+## Conflicts
+- **K-Dense-AI/scientific-agent-skills vs. foryourhealth111-pixel/Vibe-Skills:** K-Dense-AI requires explicit user request for diagrams, while Vibe-Skills recommends generating them by default for new documents.</pre>
+</body>
+</html>

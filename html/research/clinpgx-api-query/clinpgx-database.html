@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clinpgx-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">clinpgx-api-query</a> / clinpgx-database</p><h1>clinpgx-database</h1><p class="meta">combined</p><p>The copies overlap heavily on the ClinPGx REST API endpoints and rate limits, but they disagree on the execution model and add different material steps. The Vibe-Skills and OpenClaw copies are near-identical, providing a detailed API reference with inline Python examples. The aipoch copy is a wrapper that mandates a specific packaged script (scripts/query_clinpgx.py), a different dependency version (requests&gt;=2.31.0), and a specific retry/backoff implementation. Because the aipoch copy provides a distinct, more robust execution path (script-based with retries) while the others provide a direct API reference, crowning one would hide the alternative implementation strategy.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/clinpgx-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/clinpgx-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/clinpgx-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/clinpgx-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/clinpgx-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/clinpgx-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># ClinPGx Database Access
+
+## Overview
+ClinPGx is a comprehensive pharmacogenomics resource (successor to PharmGKB) providing gene-drug interactions, CPIC guidelines, and allele data.
+
+## Setup
+1. Install dependencies: `pip install &quot;requests&gt;=2.31.0&quot;`
+2. Set base URL: `https://api.clinpgx.org/v1/`
+3. Respect rate limits: Max 2 requests/second.
+
+## Execution Strategy
+Choose one of the following approaches:
+
+### Option A: Direct API Queries (Reference)
+Use `requests` to query specific endpoints:
+- **Genes**: `GET /gene/{symbol}` or `GET /gene?q={query}`
+- **Drugs**: `GET /chemical/{id}` or `GET /chemical?name={name}`
+- **Gene-Drug Pairs**: `GET /geneDrugPair?gene={gene}&amp;drug={drug}`
+- **Guidelines**: `GET /guideline/{id}` or `GET /guideline?source=CPIC`
+- **Alleles**: `GET /allele/{allele}` or `GET /allele?gene={gene}`
+
+### Option B: Packaged Script (Robust)
+If using the `aipoch/medical-research-skills` package:
+1. Navigate to the skill folder.
+2. Run `python scripts/query_clinpgx.py`.
+3. This script includes built-in exponential backoff for HTTP 429 errors and session management.
+
+## Key Data Points
+- **Pharmacogenes**: CYP450 (CYP2D6, CYP2C19), Transporters (SLCO1B1), HLA genes.
+- **Guidelines**: CPIC, DPWG, FDA labels.
+- **Allele Info**: Functional status, population frequencies, defining variants.
+
+## Conflicts
+- **Repository**: `aipoch/medical-research-skills` requires the use of a specific script and pinned dependencies, while `foryourhealth111-pixel/Vibe-Skills` and `FreedomIntelligence/OpenClaw-Medical-Skills` provide direct API usage examples without a script wrapper.</pre>
+</body>
+</html>

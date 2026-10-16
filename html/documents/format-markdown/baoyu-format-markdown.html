@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>baoyu-format-markdown</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">format-markdown</a> / baoyu-format-markdown</p><h1>baoyu-format-markdown</h1><p class="meta">combined</p><p>Both copies implement the same baoyu-format-markdown workflow (detect content type, analyze, format, run typography scripts), but each contains material steps the other lacks. The JimLiu copy adds a detailed reader-perspective analysis saved to an analysis file, a user-input tool selection rule, and an XDG config path. The anbeime copy adds explicit frontmatter creation, slug/featureImage handling, a title generation/selection flow, and a more granular step numbering. Crowning one would hide these real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/JimLiu/baoyu-skills">JimLiu/baoyu-skills</a></td><td><code>skills/baoyu-format-markdown/SKILL.md</code></td></tr><tr><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/content-creation-publisher/baoyu-format-markdown/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/JimLiu/baoyu-skills">JimLiu/baoyu-skills</a></td><td><code>skills/baoyu-format-markdown/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/content-creation-publisher/baoyu-format-markdown/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: baoyu-format-markdown
+description: Formats plain text or markdown files with frontmatter, titles, summaries, headings, bold, lists, and code blocks. Use when user asks to &quot;format markdown&quot;, &quot;beautify article&quot;, &quot;add formatting&quot;, or improve article layout. Outputs to {filename}-formatted.md.
+---
+
+# Markdown Formatter
+
+Transforms plain text or markdown into well-structured, reader-friendly markdown. The goal is to help readers quickly grasp key points, highlights, and structure — without changing any original content.
+
+**Core principle**: Only adjust formatting and fix obvious typos. Never add, delete, or rewrite content.
+
+## User Input Tools
+
+When this skill prompts the user, follow this tool-selection rule (priority order):
+
+1. **Prefer built-in user-input tools** exposed by the current agent runtime — e.g., `AskUserQuestion`, `request_user_input`, `clarify`, `ask_user`, or any equivalent.
+2. **Fallback**: if no such tool exists, emit a numbered plain-text message and ask the user to reply with the chosen number/answer for each question.
+3. **Batching**: if the tool supports multiple questions per call, combine all applicable questions into a single call; if only single-question, ask them one at a time in priority order.
+
+## Script Directory
+
+Scripts in `scripts/` subdirectory. `{baseDir}` = this SKILL.md&#x27;s directory path. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing bun. Replace `{baseDir}` and `${BUN_X}` with actual values.
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/main.ts` | Main entry point with CLI options (uses remark-cjk-friendly for CJK emphasis) |
+| `scripts/quotes.ts` | Replace ASCII quotes with fullwidth quotes |
+| `scripts/autocorrect.ts` | Add CJK/English spacing via autocorrect |
+
+## Preferences (EXTEND.md)
+
+Check EXTEND.md in priority order — the first one found wins:
+
+| Priority | Path | Scope |
+|----------|------|-------|
+| 1 | `.baoyu-skills/baoyu-format-markdown/EXTEND.md` | Project |
+| 2 | `${XDG_CONFIG_HOME:-$HOME/.config}/baoyu-skills/baoyu-format-markdown/EXTEND.md` | XDG |
+| 3 | `$HOME/.baoyu-skills/baoyu-format-markdown/EXTEND.md` | User home |
+
+If none found, use defaults — no first-time setup required for this skill.
+
+**EXTEND.md supports**:
+
+| Setting | Values | Default | Description |
+|---------|--------|---------|-------------|
+| `auto_select` | `true`/`false` | `false` | Skip both title and summary selection, auto-pick best |
+| `auto_select_title` | `true`/`false` | `false` | Skip title selection only |
+| `auto_select_summary` | `true`/`false` | `false` | Skip summary selection only |
+| Other | — | — | Default formatting options, typography preferences, summary length preferences |
+
+## Workflow
+
+### Step 1: Read &amp; Detect Content Type
+
+Read the user-specified file, then detect content type:
+
+| Indicator | Classification |
+|-----------|----------------|
+| Has `---` YAML frontmatter | Markdown |
+| Has `#`, `##`, `###` headings | Markdown |
+| Has `**bold**`, `*italic*`, lists, code blocks, blockquotes | Markdown |
+| None of above | Plain text |
+
+**If Markdown detected, use `AskUserQuestion` to ask:**
+
+```
+Detected existing markdown formatting. What would you like to do?
+
+1. Optimize formatting (Recommended)
+   - Analyze content, improve headings, bold, lists for readability
+   - Run typography script (spacing, emphasis fixes)
+   - Output: {filename}-formatted.md
+
+2. Keep original formatting
+   - Preserve existing markdown structure
+   - Run typography script only
+   - Output: {filename}-formatted.md
+
+3. Typography fixes only
+   - Run typography script on original file in-place
+   - No copy created, modifies original file directly
+```
+
+**Based on user choice:**
+- **Optimize**: Continue to Step 2 (full workflow)
+- **Keep original**: Skip to Step 6, copy file then run Step 7
+- **Typography only**: Skip to Step 7, run on original file directly
+
+### Step 2: Analyze Content (Reader&#x27;s Perspective)
+
+Read the entire content carefully. Think from a reader&#x27;s perspective: what would help them quickly understand and remember the key information?
+
+Produce an analysis covering these dimensions:
+
+**2.1 Highlights &amp; Key Insights**
+- Core arguments or conclusions the author makes
+- Surprising facts, data points, or counterintuitive claims
+- Memorable quotes or well-phrased sentences (golden quotes)
+
+**2.2 Structure Assessment**
+- Does the content have a clear logical flow? What is it?
+- Are there natural section boundaries that lack headings?
+- Are there long walls of text that could benefit from visual breaks?
+
+**2.3 Reader-Important Information**
+- Actionable advice or takeaways
+- Definitions, explanations of key concepts
+- Lists or enumerations buried in prose
+- Comparisons or contrasts that would be clearer as tables
+
+**2.4 Formatting Issues**
+- Missing or inconsistent heading hierarchy
+- Paragraphs that mix multiple topics
+- Parallel items written as prose instead of lists
+- Code, commands, or technical terms not marked as code
+- Obvious typos or formatting errors
+
+**Save analysis to file**: `{original-filename}-analysis.md`
+
+The analysis file serves as the blueprint for Step 3. Use this format:
+
+```markdown
+# Content Analysis: {filename}
+
+## Highlights &amp; Key Insights
+- [list findings]
+
+## Structure Assessment
+- Current flow: [describe]
+- Suggested sections: [list heading candidates with brief rationale]
+
+## Reader-Important Information
+- [list actionable items, key concepts, buried lists, potential tables]
+
+## Formatting Issues
+- [list issues found]
+```
+
+### Step 3: Check/Create Frontmatter
+
+Check for YAML frontmatter (`---` block). Create if missing.
+
+**Meta field handling:**
+
+| Field | Processing |
+|-------|------------|
+| `title` | See Step 4 |
+| `slug` | Infer from file path (e.g., `posts/2026/01/10/vibe-coding/` → `vibe-coding`) or generate from title |
+| `summary` | Generate engaging summary (100-150 characters) |
+| `featureImage` | Check if `imgs/cover.png` exists in same directory; if so, use relative path |
+
+### Step 4: Title Handling
+
+**Logic:**
+1. If frontmatter already has `title` → use it, no H1 in body
+2. If first line is H1 → extract to frontmatter `title`, remove H1 from body
+3. If neither exists → generate candidate titles
+
+**Title generation flow:**
+
+1. Generate 3 candidate titles based on content
+2. Use `AskUserQuestion` tool:
+
+```
+Select a title:
+
+1. [Title A] (Recommended)
+2. [Title B]
+3. [Title C]
+```
+
+3. If no selection within a few seconds, use recommended (option 1)
+
+**Title principles:**
+- Concise, max 20 characters
+- Captures core message
+- Engaging, sparks reading interest
+- Accurate, avoids clickbait
+
+**Important:** Once title is in frontmatter, body should NOT have H1 (avoid duplication)
+
+### Step 5: Format Processing
+
+**Formatting rules:**
+
+| Element | Format |
+|---------|--------|
+| Titles | Use `#`, `##`, `###` hierarchy |
+| Key points | Use `**bold**` |
+| Parallel items | Convert to `-` unordered or `1.` ordered lists |
+| Code/commands | Use `` `inline` `` or ` ```block``` ` |
+| Quotes/sayings | Use `&gt; ` blockquotes |
+
+Apply formatting based on the analysis from Step 2. Create a new file `{filename}-formatted.md` with the formatted content.
+
+### Step 6: Copy File (Keep Original Mode)
+
+If user chose &quot;Keep original formatting&quot;, copy the original file to `{filename}-formatted.md` without modifying content.
+
+### Step 7: Run Typography Script
+
+Run the typography script on the target file:
+
+```bash
+${BUN_X} {baseDir}/scripts/main.ts &lt;target-file&gt;
+```
+
+This applies CJK/English spacing, quote normalization, and emphasis fixes.</pre>
+</body>
+</html>

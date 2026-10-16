@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cellxgene-census</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">cellxgene-census-query</a> / cellxgene-census</p><h1>cellxgene-census</h1><p class="meta">combined</p><p>The three copies overlap heavily on the core Census workflow (open_soma, get_obs/get_anndata, axis_query, is_primary_data filtering, and scanpy integration), but they disagree on versioning, scale, and ML installation. K-Dense-AI pins cellxgene-census 1.18.0, uses the 2025-11-08 LTS build, and installs tiledbsoma-ml for PyTorch; aipoch and FreedomIntelligence use older/unpinned versions, the 2023-07-25 example build, and the [experimental] extra. K-Dense also adds spatial support, presence-matrix checks, and a reference to eight workflow patterns, while aipoch provides a complete runnable script and FreedomIntelligence provides more detailed inline patterns. Crowning one copy would hide the alternative versioning and ML setup choices.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/cellxgene-census/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/cellxgene-census/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/cellxgene-census/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/cellxgene-census/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/cellxgene-census/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/cellxgene-census/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: cellxgene-census
+description: Query the CZ CELLxGENE Census for versioned single-cell and spatial transcriptomics data. Use for population-scale expression, metadata, embeddings, spatial data, and reference atlas comparisons.
+license: MIT
+---
+
+# CZ CELLxGENE Census
+
+## When to Use
+- Cross-tissue, cross-disease, or cross-cell-type expression comparisons.
+- Reference atlas lookups to contextualize your own single-cell data.
+- Population-scale metadata exploration and cell counts.
+- Large-scale expression statistics requiring out-of-core iteration.
+- Model training on curated atlas data.
+
+## Installation
+
+Pin the SDK version for reproducibility. The K-Dense copy pins 1.18.0; other copies use latest. Choose the version that matches your environment.
+
+```bash
+uv pip install &quot;cellxgene-census==1.18.0&quot;
+```
+
+For spatial workflows:
+```bash
+uv pip install &quot;cellxgene-census[spatial]==1.18.0&quot;
+```
+
+For PyTorch model training, the K-Dense copy uses tiledbsoma-ml; the aipoch and FreedomIntelligence copies use the [experimental] extra. The experimental loaders are absent from 1.18.0, so use tiledbsoma-ml with that version.
+
+```bash
+uv pip install &quot;cellxgene-census==1.18.0&quot; tiledbsoma-ml
+```
+
+## Core Workflow
+
+### 1. Open the Census
+Always use a context manager and pin the census version.\n
+```python
+import cellxgene_census
+
+# Resolve the stable build once and record it
+version = cellxgene_census.get_census_version_description(&quot;stable&quot;)[&quot;release_build&quot;]
+
+with cellxgene_census.open_soma(census_version=version) as census:
+    # Work with census data
+```
+
+### 2. Explore Census Information
+
+```python
+summary = census[&quot;census_info&quot;][&quot;summary&quot;].read().concat().to_pandas()
+print(f&quot;Total cells: {summary[&#x27;total_cell_count&#x27;].iloc[0]:,}&quot;)
+
+datasets = census[&quot;census_info&quot;][&quot;datasets&quot;].read().concat().to_pandas()
+```
+
+### 3. Query Cell and Gene Metadata
+Always filter for primary data unless analyzing duplicates.
+
+```python
+obs = cellxgene_census.get_obs(
+    census, &quot;homo_sapiens&quot;,
+    value_filter=&quot;tissue_general == &#x27;brain&#x27; and is_primary_data == True&quot;,
+    column_names=[&quot;cell_type&quot;, &quot;tissue_general&quot;, &quot;disease&quot;, &quot;donor_id&quot;],
+)
+
+genes = cellxgene_census.get_var(
+    census, &quot;homo_sapiens&quot;,
+    value_filter=&quot;feature_name in [&#x27;CD4&#x27;, &#x27;CD8A&#x27;]&quot;,
+    column_names=[&quot;soma_joinid&quot;, &quot;feature_id&quot;, &quot;feature_name&quot;],
+)
+```
+
+### 4. Small/Medium Expression Queries
+Use get_anndata when the result fits in memory.
+
+```python
+adata = cellxgene_census.get_anndata(
+    census=census,
+    organism=&quot;Homo sapiens&quot;,
+    obs_value_filter=&quot;cell_type == &#x27;T cell&#x27; and disease == &#x27;COVID-19&#x27; and is_primary_data == True&quot;,
+    var_value_filter=&quot;feature_name in [&#x27;CD4&#x27;, &#x27;CD8A&#x27;, &#x27;FOXP3&#x27;]&quot;,
+    obs_column_names=[&quot;cell_type&quot;, &quot;tissue_general&quot;, &quot;disease&quot;, &quot;donor_id&quot;, &quot;sex&quot;],
+)
+```
+
+### 5. Large-Scale Out-of-Core Queries
+Use axis_query and iterate over batches when the matrix will not fit in memory.
+
+```python
+import tiledbsoma as soma
+
+query = census[&quot;census_data&quot;][&quot;homo_sapiens&quot;].axis_query(
+    measurement_name=&quot;RNA&quot;,
+    obs_query=soma.AxisQuery(
+        value_filter=&quot;tissue_general == &#x27;brain&#x27; and is_primary_data == True&quot;
+    ),
+    var_query=soma.AxisQuery(
+        value_filter=&quot;feature_name in [&#x27;FOXP2&#x27;, &#x27;TBR1&#x27;, &#x27;SATB2&#x27;]&quot;
+    ),
+)
+
+n = 0
+s = 0.0
+for batch in query.X(&quot;raw&quot;).tables():
+    values = batch[&quot;soma_data&quot;].to_numpy(zero_copy_only=False)
+    n += values.size
+    s += float(values.sum())
+
+mean_expr = s / n if n else float(&quot;nan&quot;)
+```
+
+### 6. Gene Presence Checks
+For gene-specific queries, verify which datasets measured the genes.
+
+```python
+presence = cellxgene_census.get_presence_matrix(census, &quot;homo_sapiens&quot;)
+gene_presence = presence[:, genes[&quot;soma_joinid&quot;].to_numpy()]
+```
+
+### 7. Spatial Census Data
+Install the spatial extra and use the spatial assay access patterns.
+
+### 8. Integration with Scanpy
+Hand a Census AnnData slice to a standard Scanpy workflow.
+
+## Best Practices
+- Always pin census_version for reproducibility.
+- Always include is_primary_data == True unless analyzing duplicates.
+- Use tissue_general for broader groupings and tissue for specific tissues.
+- Select only needed metadata columns to minimize data transfer.
+- Estimate query size before loading; cell count alone is not a memory estimate.
+- Gene symbols are not necessarily unique; keep feature_id as the canonical identifier.
+
+## Conflicts
+- K-Dense-AI/scientific-agent-skills pins cellxgene-census==1.18.0 and the 2025-11-08 LTS build; aipoch/medical-research-skills and FreedomIntelligence/OpenClaw-Medical-Skills use unpinned/latest installs and the 2023-07-25 example build.
+- K-Dense-AI/scientific-agent-skills installs tiledbsoma-ml for PyTorch ML workflows; aipoch/medical-research-skills and FreedomIntelligence/OpenClaw-Medical-Skills install cellxgene-census[experimental].
+- K-Dense-AI/scientific-agent-skills reports 217+ million cells and 1,845 datasets; aipoch/medical-research-skills and FreedomIntelligence/OpenClaw-Medical-Skills report 61+ million cells.</pre>
+</body>
+</html>

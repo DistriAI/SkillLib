@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>peer-review</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">manuscript-peer-review</a> / peer-review</p><h1>peer-review</h1><p class="meta">combined</p><p>The copies overlap on the core task of structured scientific peer review, but they disagree on the procedure and contain material steps the others lack. The K-Dense-AI copy is the only one that enforces a mandatory safety boundary, authorization gate, and local-only processing before reading unpublished content, and it provides specific bundled CLI scripts for intake validation and reporting-guideline selection. The Vibe-Skills and brycewang-stanford copies are nearly identical to each other and add a &#x27;Visual Enhancement&#x27; step requiring the generation of scientific schematics, which the K-Dense copy explicitly forbids (no image pipelines). The aipoch copy provides a distinct, simpler workflow focused on pre-submission checks and a specific &#x27;Major vs. Minor&#x27; issue triage template that the others do not use. Crowning one copy would hide the safety-critical constraints of the first or the visual/template-specific steps of the others.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/peer-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/peer-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/peer-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/04-K-Dense-AI-claude-scientific-writer/peer-review/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/peer-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/peer-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/peer-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/04-K-Dense-AI-claude-scientific-writer/peer-review/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/peer-review/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Peer Review
+
+## 1. Safety and Authorization (Mandatory)
+Before reading or analyzing unpublished content:
+1. Confirm the user is authorized by the publisher, editor, or author.
+2. Check the target venue’s review, confidentiality, and AI/tool policies.
+3. Record conflicts of interest and competence limits.
+4. Default to local-only processing. Do not send unpublished content to external services or image generators without specific authorization.
+
+## 2. Intake and Scope
+1. Establish the submission type, stage, and target venue.
+2. Identify available materials (manuscript, supplements, data/code).
+3. Record missing material that prevents assessment.
+
+## 3. Initial Assessment
+1. Read the abstract and full text to form an overall impression.
+2. Identify the research question, claimed contributions, and novelty.
+3. Provide a brief summary (2-3 sentences) of the manuscript&#x27;s essence.
+
+## 4. Detailed Section-by-Section Review
+Evaluate each section using these criteria:
+- **Abstract/Title:** Accuracy, clarity, and completeness.
+- **Introduction:** Context, rationale, novelty, and literature coverage.
+- **Methods:** Reproducibility, rigor, ethics, and statistical appropriateness. Verify sample sizes, randomization, and controls.
+- **Results:** Logical presentation, statistical reporting (effect sizes, CIs), and objectivity.
+- **Discussion:** Interpretation, alignment with results, and acknowledgment of limitations.
+
+## 5. Reporting Guidelines and Evidence Mapping
+1. Select the appropriate reporting guideline (e.g., CONSORT, STROBE) for the study design.
+2. Map central claims to supporting evidence (figures, tables, citations).
+3. Check for alignment between claims and results.
+
+## 6. Issue Organization and Triage
+Classify findings into:
+- **Major Issues:** Validity threats, methodological flaws, unsupported claims, or ethical gaps. For each, provide: Why it matters, Suggested fix, and Expected impact.
+- **Minor Issues:** Clarity, formatting, citations, or language improvements. For each, provide: Suggested fix.
+
+## 7. Recommendation
+1. Provide a decision (Accept / Minor Revision / Major Revision / Reject).
+2. Explain the rationale based on novelty, rigor, and evidence strength.
+3. List the top 3-5 changes that would most improve the manuscript.
+
+## 8. Visual Enhancement (Optional/Authorized)
+If the venue policy and authorization permit, and the user requests it:
+- Generate scientific schematics to visualize workflows, decision trees, or complex concepts.
+- Ensure diagrams are publication-quality and accessible.</pre>
+</body>
+</html>

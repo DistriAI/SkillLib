@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>idea-discovery</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">idea-discovery-pipeline</a> / idea-discovery</p><h1>idea-discovery</h1><p class="meta">combined</p><p>Both copies describe the same five-phase idea discovery pipeline (research-lit, idea-creator, novelty-check, research-review, research-refine-pipeline) with the same pilot constants and checkpoint concept. However, they disagree on the reviewer model (gpt-6-astra vs gpt-5.4), the AUTO_PROCEED semantics (non-blocking same-turn continuation vs proceed-after-silence), and the output directory (idea-stage/ vs project root). The wanshuiyin copy adds a RESUMABLE evidence gate with run_state.py and idea_discovery_gate.py, while the brycewang copy adds an explicit Phase 0 research brief loader and a Phase 0.5 reference paper summary procedure. Crowning one copy would hide the other&#x27;s real steps and conflicting parameters, so the catalog should combine them and surface the conflicts.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/idea-discovery/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/idea-discovery/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/idea-discovery/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/idea-discovery/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex/idea-discovery/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex-gemini-review/idea-discovery/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex/idea-discovery/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex-gemini-review/idea-discovery/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Idea Discovery Pipeline
+
+Orchestrate a complete idea discovery workflow for: **$ARGUMENTS**
+
+## Pipeline
+
+```
+/research-lit → /idea-creator → /novelty-check → /research-review → /research-refine-pipeline
+  (survey)      (brainstorm)    (verify novel)    (critical feedback)  (refine method + plan experiments)
+```
+
+Final deliverables: a validated `IDEA_REPORT.md` with ranked ideas, plus `refine-logs/FINAL_PROPOSAL.md` and `refine-logs/EXPERIMENT_PLAN.md` for the top idea.
+
+## Constants
+
+- PILOT_MAX_HOURS = 2
+- PILOT_TIMEOUT_HOURS = 3
+- MAX_PILOT_IDEAS = 3
+- MAX_TOTAL_GPU_HOURS = 8
+- AUTO_PROCEED = true
+- REVIEWER_MODEL = gpt-6-astra (wanshuiyin) / gpt-5.4 (brycewang) — see Conflicts
+- ARXIV_DOWNLOAD = false
+- COMPACT = false
+- REF_PAPER = false
+- OUTPUT_DIR = idea-stage/ (wanshuiyin) / project root (brycewang) — see Conflicts
+- RESUMABLE = true (wanshuiyin only)
+
+## Checkpoint Rule
+
+Resolve AUTO_PROCEED once before Phase 0.
+
+- AUTO_PROCEED=true (wanshuiyin): non-blocking. State the result and selected next action, then continue in the same turn. Do not end the turn at a checkpoint.
+- AUTO_PROCEED=true (brycewang): present results; if the user does not respond, proceed with the best option.
+- AUTO_PROCEED=false: present options, ask the user, and end the turn. Resume only after an explicit reply.
+
+## Phase 0: Load Research Brief (brycewang)
+
+1. Look for `RESEARCH_BRIEF.md` in the project root or the path in `$ARGUMENTS`.
+2. If found, extract problem statement, constraints, prior attempts, domain knowledge, non-goals, and existing results.
+3. Use the brief as primary context; merge with `$ARGUMENTS` (brief takes priority for details).
+4. If no brief exists, proceed with `$ARGUMENTS` as the research direction.
+
+## Phase 0.5: Reference Paper Summary (when REF_PAPER is set)
+
+Skip if REF_PAPER is false.
+
+1. If arXiv URL: invoke `/arxiv &quot;ARXIV_ID&quot; — download` and read the first 5 pages.
+2. If local PDF: read the first 5 pages.
+3. If other URL: fetch via WebFetch.
+4. Generate `REF_PAPER_SUMMARY.md` with sections: Title, Authors, Venue, What They Did, Key Results, Limitations &amp; Open Questions, Potential Improvement Directions, Codebase (if base repo is set).
+5. Present a checkpoint summary to the user.
+
+## Phase 1: Literature Survey
+
+Invoke `/research-lit &quot;$ARGUMENTS&quot;`.
+
+- Search arXiv, Google Scholar, Semantic Scholar.
+- Build a landscape map: sub-directions, approaches, open problems.
+- Identify structural gaps and recurring limitations.
+- Output a literature summary.
+
+Checkpoint: present the landscape summary and ask for confirmation or direction adjustment.
+
+## Phase 2: Idea Generation
+
+Invoke `/idea-creator` using the literature summary and any REF_PAPER_SUMMARY.md as context.
+
+- Generate candidate ideas.
+- Rank by novelty, feasibility, and impact.
+- Output ranked ideas to `IDEA_REPORT.md#ranked-ideas`.
+
+Checkpoint: present ranked ideas.
+
+## Phase 3: Novelty Check
+
+Invoke `/novelty-check` on the top ideas.
+
+- Verify each idea is not already published.
+- Record verification results in `IDEA_REPORT.md#novelty-verification`.
+
+Checkpoint: present novelty results.
+
+## Phase 4: External Critical Review
+
+Invoke `/research-review` using REVIEWER_MODEL via Codex MCP.
+
+- Obtain critical feedback on the top ideas.
+- Record feedback in `IDEA_REPORT.md#external-critical-review`.
+
+Checkpoint: present review feedback.
+
+## Phase 5: Refine and Plan Experiments
+
+Invoke `/research-refine-pipeline` on the top idea.
+
+- Refine the method.
+- Produce `refine-logs/FINAL_PROPOSAL.md` and `refine-logs/EXPERIMENT_PLAN.md`.
+- Run pilot experiments within the GPU budget constants.
+
+## Resumable Evidence Gate (wanshuiyin only)
+
+When RESUMABLE=true:
+
+1. Resolve `run_state.py` and `idea_discovery_gate.py` via `.aris/tools/` → `tools/` → `$ARIS_REPO/tools/` → `~/.aris/repo/tools/`.
+2. Derive `&lt;run_id&gt;` from the direction slug and date.
+3. Start the state record with `--executor &lt;actual-model&gt;`.
+4. For each phase, mark `running` on entry and `done --artifact &lt;path&gt;` after the artifact is present.
+5. Artifact locators:
+   - research-lit: `idea-stage/IDEA_REPORT.md#literature-landscape`
+   - idea-creator: `idea-stage/IDEA_REPORT.md#ranked-ideas`
+   - novelty-check: `idea-stage/IDEA_REPORT.md#novelty-verification`
+   - research-review: `idea-stage/IDEA_REPORT.md#external-critical-review`
+   - research-refine-pipeline: `refine-logs/FINAL_PROPOSAL.md`
+6. If either helper is unavailable, the final report is BLOCKED.
+
+## Conflicts
+
+- **REVIEWER_MODEL**: wanshuiyin/Auto-claude-code-research-in-sleep uses `gpt-6-astra`; brycewang-stanford/Auto-Empirical-Research-Skills uses `gpt-5.4`. Choose the model available in your environment.
+- **AUTO_PROCEED=true semantics**: wanshuiyin treats it as non-blocking same-turn continuation; brycewang treats it as proceed-after-silence. The wanshuiyin rule is stricter and avoids ending the turn at a checkpoint.
+- **OUTPUT_DIR**: wanshuiyin writes to `idea-stage/`; brycewang writes to the project root. Use `idea-stage/` for consistency with the evidence gate artifact locators.
+- **RESUMABLE evidence gate**: present only in wanshuiyin. Include it if you need resumable, auditable runs; omit it for a simpler pipeline.
+- **Phase 0 research brief loader and Phase 0.5 template**: present only in brycewang. Include them to support structured briefs and reference paper summaries.
+
+## Notes
+
+- Override defaults by appending flags, e.g., `/idea-discovery &quot;topic&quot; — ref paper: https://arxiv.org/abs/2406.04329` or `— compact: true`.
+- When COMPACT=true, write `IDEA_CANDIDATES.md` (top 3-5 ideas) at the end of the workflow for downstream skills.
+- When RENDER_HTML=true (wanshuiyin), render `IDEA_REPORT.md` to HTML via `/render-html` with `--no-review` at workflow end.</pre>
+</body>
+</html>

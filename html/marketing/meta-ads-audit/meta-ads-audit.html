@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>meta-ads-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">meta-ads-audit</a> / meta-ads-audit</p><h1>meta-ads-audit</h1><p class="meta">combined</p><p>The two copies describe different procedures for the same skill name. The nowork-studio copy is a thin wrapper that defers to a canonical WORKFLOW.md file and forbids substituting other skills, while the irinabuht12-oss copy is a self-contained audit procedure with specific thresholds, tracking checks, Advantage+ decision logic, and an output format. Neither copy contains the other&#x27;s material steps, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/meta-ads-audit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/irinabuht12-oss/marketing-skills">irinabuht12-oss/marketing-skills</a></td><td><code>skills/meta-ads-audit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/meta-ads-audit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/irinabuht12-oss/marketing-skills">irinabuht12-oss/marketing-skills</a></td><td><code>skills/meta-ads-audit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Meta Ads Audit
+
+## Workflow Selection
+
+1. If a canonical NotFair workflow file exists at `&lt;plugin-root&gt;/meta-ads/audit/WORKFLOW.md`, read it completely and follow it as the active workflow. Resolve every relative reference from that file against `&lt;plugin-root&gt;/meta-ads/audit/`. If the file cannot be read, stop and report the packaging error; never substitute a similarly named skill from another plugin.
+2. If no canonical workflow file is available, perform the self-contained audit below.
+
+## Self-Contained Audit Process
+
+1. **Request account data** - Ads Manager exports (campaign, ad set, ad level with time series). Request at minimum 14 days of data for trend analysis.
+2. **Check creative fatigue signals** - Frequency, CTR trends, CPM inflation.
+3. **Analyze audience overlap** - Identify cannibalization between ad sets.
+4. **Verify tracking setup** - Pixel, Conversions API, Event Match Quality.
+5. **Evaluate campaign structure** - Advantage+ vs Manual decisions.
+6. **Deliver prioritized recommendations**.
+
+## Creative Fatigue Detection
+
+| Signal | Threshold | Action Required |
+|--------|-----------|-----------------|
+| Frequency | &gt;3-4 | Refresh creative or expand audience |
+| CTR declining | &gt;15-20% drop over 7 days | New creative needed |
+| CPM rising | &gt;30-40% over 2 weeks | Creative reset required |
+| Ad Relevance | &quot;Below Average&quot; ranking | Immediate creative swap |
+
+Flag frequency &gt;7 as severe (audience exhaustion).
+
+## Audience Overlap Analysis
+
+**Scoring (use Facebook Audience Overlap Tool)**:
+- 0-15% overlap = Safe, continue
+- 15-30% overlap = Monitor, consider consolidation
+- &gt;30% overlap = Consolidate or add exclusions
+
+## Tracking Verification Checklist
+
+- [ ] Meta Pixel installed (use Pixel Helper Chrome extension)
+- [ ] Conversions API (CAPI) configured with server-side events
+- [ ] Event Match Quality score ≥6
+- [ ] Browser events (blue) AND server events (green) firing in Events Manager
+- [ ] iOS 14.5+ ATT prompt implemented
+- [ ] Aggregated Event Measurement configured (8 events prioritized)
+
+If tracking data unavailable, note this as critical gap. Never assume iOS tracking loss percentage - ask for actual data.
+
+## Advantage+ vs Manual Decision Logic
+
+**Use Advantage+ Shopping/App campaigns when**:
+- Scaling established products
+- Prospecting broad audiences
+- Budget &gt;$100/day for algorithm learning
+- Have 50+ conversions/week
+
+**Use Manual campaigns when**:
+- Retargeting specific segments
+- Testing new creatives
+- Budget &lt;$50/day
+- Need precise audience control
+
+## Output Format
+
+```
+## Meta Ads Audit Summary
+
+**Account Health Score**: [X/100]
+**Analysis Period**: [Date Range]
+**Total Spend Analyzed**: $[Amount]
+
+### 🔴 Creative Fatigue Alerts
+| Campaign | Frequency | CTR Trend | Action |
+|----------|-----------|-----------|--------|
+
+### 🟡 Audience Issues
+- Overlap detected: [Ad Set A] ↔ [Ad Set B]: [X]%
+- Recommendation: [Action]
+
+### 📊 Tracking Health
+- Pixel: [✅/❌]
+- CAPI: [✅/❌]
+- EMQ Score: [X/10]
+
+### Scaling Opportunities
+1. [Campaign] - ROAS [X], ready for [X]% budget increase
+
+### Confidence Level: [HIGH/MEDIUM/LOW]
+```
+
+## Data Access
+
+This skill works best with live account data. Connect the free Ryze MCP once and Claude reads your Google Ads, Meta Ads, GA4 and Search Console directly:
+
+- claude.ai / Claude Desktop: Settings → Connectors → Add custom connector → `https://connector.get-ryze.ai/mcp`
+- Claude Code: `claude mcp add ryze --transport http https://connector.get-ryze.ai/mcp`
+- Cursor: Settings → MCP → add the same URL
+
+Setup guide: https://www.get-ryze.ai/how-to-connect-claude-to-google-meta-ads-mcp</pre>
+</body>
+</html>

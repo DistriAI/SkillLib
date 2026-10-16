@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ontology-mapper</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">ontology-mapping</a> / ontology-mapper</p><h1>ontology-mapper</h1><p class="meta">combined</p><p>The two skills share the name &#x27;ontology-mapper&#x27; but target completely different domains and procedures. The first maps construction data to building ontologies (IFC, COBie, Uniclass) using a Python class-based approach. The second maps materials science data (crystal structures, space groups) to scientific ontologies (CMSO, ASMO) using a script-based CLI approach. They do not overlap in content, inputs, or outputs, so crowning one would hide a distinct, valid alternative for a different domain.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ontology-mapper/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/ontology-mapper/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ontology-mapper/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/ontology-mapper/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Ontology Mapper
+
+## Overview
+
+This skill maps domain-specific data to standard ontologies. The specific domain and target ontologies depend on the context:
+
+- **Construction Domain**: Maps construction data to IFC, COBie, Uniclass, OmniClass, MasterFormat, and UniFormat.
+- **Materials Science Domain**: Maps materials science terms, crystal structures, and sample descriptions to ontologies like CMSO and ASMO.
+
+## Workflow
+
+1. **Identify Domain**: Determine whether the input data is construction-related or materials-science-related.
+2. **Select Target Ontology**: Choose the appropriate standard ontology for the domain.
+3. **Map Concepts**: 
+   - For construction: Use the `OntologyMapper` class to map fields to ontology concepts.
+   - For materials science: Use the appropriate script (`concept_mapper.py`, `crystal_mapper.py`, or `sample_annotator.py`) to map terms or parameters.
+4. **Validate**: Check for validation warnings and unmapped fields.
+5. **Report**: Generate a mapping report with coverage and confidence levels.
+
+## Conflicts
+
+- **LeoYeAI/openclaw-master-skills**: Focuses on construction ontologies (IFC, COBie, etc.) and uses a Python class-based approach.
+- **FreedomIntelligence/OpenClaw-Medical-Skills**: Focuses on materials science ontologies (CMSO, ASMO) and uses a script-based CLI approach.
+
+## Notes
+
+- The construction skill requires `python3` and uses a dataclass-based model.
+- The materials science skill requires `python3.8+` and uses standard library only, with external JSON config files for ontology mappings.</pre>
+</body>
+</html>

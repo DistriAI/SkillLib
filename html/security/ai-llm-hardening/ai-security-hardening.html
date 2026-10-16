@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ai-security-hardening</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">ai-llm-hardening</a> / ai-security-hardening</p><h1>ai-security-hardening</h1><p class="meta">combined</p><p>The second copy is a mirror of the first (it cites BagelHole as the source) but adds material constraints the first lacks: it explicitly warns that regex injection detectors are not a security boundary, requires server-side tool/data authorization independent of model text, and notes that the in-process rate limiter is not distributed and must be replaced in multi-worker production. The first copy presents the same code without those caveats. Crowning the first would hide the safer operational guidance, so the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>security/ai/ai-security-hardening/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ai-security-hardening/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>security/ai/ai-security-hardening/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ai-security-hardening/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/ai-security-hardening/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/ai-security-hardening/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: ai-security-hardening
+description: Harden AI/LLM deployments against prompt injection, data exfiltration, model theft, and supply chain attacks. Covers input validation, output filtering, access control, model API security, and compliance controls for production AI systems.
+license: MIT
+metadata:
+  author: devops-skills
+  version: &quot;1.0&quot;
+---
+
+# AI Security Hardening
+
+Secure LLM and AI systems against prompt injection, jailbreaks, data leakage, and supply chain threats in production environments.
+
+## When to Use This Skill
+
+Use this skill when:
+- Deploying an LLM-powered application handling sensitive user data
+- Protecting against prompt injection attacks in AI agents
+- Implementing output filtering and content moderation
+- Securing model weights and API endpoints from theft
+- Achieving SOC2 or ISO 27001 compliance for AI systems
+
+## AI-Specific Threat Model
+
+```
+Threat                    Risk                          Control
+─────────────────────────────────────────────────────────────────────
+Prompt injection          System prompt override         Input sanitization, separate context
+Data exfiltration         PII in model outputs           Output filtering, DLP scanning
+Jailbreaking             Policy bypass                  Content moderation, guardrails
+Model theft               Weight extraction via API      Rate limiting, access controls
+Training data poisoning   Backdoored fine-tuned model    Dataset validation, provenance
+Supply chain attack       Malicious model weights        Signature verification, scanning
+Insecure output           XSS/SQLi from LLM response     Output encoding, parameterized queries
+```
+
+## Prompt-injection indicators and authorization boundaries
+
+Regex indicators have false positives and bypasses. They do not establish a prompt-injection security boundary. Keep untrusted content separate, enforce server-side tool/data authorization independent of model text, minimize accessible secrets and require approval for scoped side effects. The examples below are illustrative detectors, not proof an input or output is safe.
+
+```python
+import re
+from typing import Optional
+
+INJECTION_PATTERNS = [
+    r&quot;ignore\s+(all\s+)?(previous|prior|above)\s+instructions&quot;,
+    r&quot;you\s+are\s+now\s+&quot;,
+    r&quot;new\s+instructions?:&quot;,
+    r&quot;system\s+prompt&quot;,
+    r&quot;forget\s+everything&quot;,
+    r&quot;act\s+as\s+&quot;,
+    r&quot;jailbreak&quot;,
+    r&quot;dan\s+mode&quot;,
+    r&quot;&lt;\s*system\s*&gt;&quot;,
+    r&quot;\[INST\]&quot;,
+]
+
+def detect_prompt_injection(user_input: str) -&gt; tuple[bool, Optional[str]]:
+    &quot;&quot;&quot;Return (is_suspicious, matched_pattern).&quot;&quot;&quot;
+    normalized = user_input.lower().strip()
+    for pattern in INJECTION_PATTERNS:
+        if re.search(pattern, normalized, re.IGNORECASE):
+            return True, pattern
+    return False, None
+
+def sanitize_user_input(user_input: str, max_length: int = 4000) -&gt; str:
+    &quot;&quot;&quot;Sanitize input before passing to LLM.&quot;&quot;&quot;
+    # Truncate
+    user_input = user_input[:max_length]
+
+    # Remove null bytes and control characters
+    user_input = re.sub(r&#x27;[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]&#x27;, &#x27;&#x27;, user_input)
+
+    # Check for injection
+    suspicious, pattern = detect_prompt_injection(user_input)
+    if suspicious:
+        raise ValueError(f&quot;Potential prompt injection detected: {pattern}&quot;)
+
+    return user_input
+```
+
+## Guardrails with NeMo Guardrails
+
+```python
+# guardrails.yaml
+from nemoguardrails import RailsConfig, LLMRails
+
+config = RailsConfig.from_path(&quot;./guardrails-config&quot;)
+rails = LLMRails(config)
+
+async def safe_llm_call(user_message: str) -&gt; str:
+    response = await rails.generate_async(
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_message}]
+    )
+    return response[&quot;content&quot;]
+```
+
+```yaml
+# guardrails-config/config.yml
+models:
+  - type: main
+    engine: openai
+    model: gpt-4o-mini
+
+rails:
+  input:
+    flows:
+      - check jailbreak
+      - check sensitive data
+  output:
+    flows:
+      - check output for PII
+      - check output for harmful content
+```
+
+## Output Filtering &amp; PII Scrubbing
+
+```python
+import re
+from presidio_analyzer import AnalyzerEngine
+from presidio_anonymizer import AnonymizerEngine
+
+analyzer = AnalyzerEngine()
+anonymizer = AnonymizerEngine()
+
+PII_ENTITIES = [&quot;PERSON&quot;, &quot;EMAIL_ADDRESS&quot;, &quot;PHONE_NUMBER&quot;, &quot;CREDIT_CARD&quot;,
+                &quot;US_SSN&quot;, &quot;IBAN_CODE&quot;, &quot;IP_ADDRESS&quot;, &quot;LOCATION&quot;]
+
+def scrub_pii_from_output(text: str) -&gt; str:
+    &quot;&quot;&quot;Remove PII from LLM output before returning to user.&quot;&quot;&quot;
+    results = analyzer.analyze(text=text, entities=PII_ENTITIES, language=&quot;en&quot;)
+    if not results:
+        return text
+    anonymized = anonymizer.anonymize(text=text, analyzer_results=results)
+    return anonymized.text
+
+def has_no_known_output_indicators(output: str) -&gt; bool:
+    &quot;&quot;&quot;No known regex match; does not prove SQL, HTML or command safety.&quot;&quot;&quot;
+    dangerous_patterns = [
+        r&quot;&lt;\s*script\s*&gt;&quot;,         # XSS
+        r&quot;javascript:&quot;,             # XSS
+        r&quot;;\s*(DROP|DELETE|INSERT)&quot;,# SQLi
+        r&quot;\$\{.*\}&quot;,               # template injection
+        r&quot;`.*`&quot;,                   # command injection in some contexts
+    ]
+    for pattern in dangerous_patterns:
+        if re.search(pattern, output, re.IGNORECASE):
+            return False
+    return True
+```
+
+## API Security for LLM Endpoints
+
+Schematic example: bind SECRET_KEY, TOKEN_ISSUER and TOKEN_AUDIENCE to a verified trusted configuration. Require explicit scopes and tenant authorization before any model/tool call. The in-process rate map is not a distributed limiter; bound storage and use a shared limiter for multi-worker production. Validate the full request schema and size before indexing messages. Undefined project functions are prerequisites, not bundled.
+
+```python
+from fastapi import FastAPI, HTTPException, Depends, Request
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+import jwt
+import time
+from collections import defaultdict
+
+app = FastAPI()
+security = HTTPBearer()
+
+# Rate limiting (per API key) — in-process only; replace with shared limiter in production
+request_counts = defaultdict(list)
+
+def rate_limit(api_key: str, max_requests: int = 100, window_seconds: int = 60):
+    now = time.time()
+    requests = request_counts[api_key]
+    # Remove old requests outside window
+    request_counts[api_key] = [t for t in requests if now - t &lt; window_seconds]
+    if len(request_counts[api_key]) &gt;= max_requests:
+        raise HTTPException(status_code=429, detail=&quot;Rate limit exceeded&quot;)
+    request_counts[api_key].append(now)
+
+async def verify_token(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+) -&gt; dict:
+    try:
+        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[&quot;HS256&quot;])
+        rate_limit(payload[&quot;sub&quot;])
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail=&quot;Token expired&quot;)
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail=&quot;Invalid token&quot;)
+```</pre>
+</body>
+</html>

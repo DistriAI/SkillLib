@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-domains</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">spatial-domain-detection</a> / spatial-domains</p><h1>spatial-domains</h1><p class="meta">combined</p><p>The two skills cover the same task but with different depth and scope. The first copy (OpenClaw) is a practical, code-heavy recipe for Squidpy/Scanpy, including a specific combined-graph implementation, a custom smoothing function, and marker/annotation steps. The second copy (GPTomics) is a conceptual and methodological guide that distinguishes domains from niches, provides a decision matrix for choosing between BayesSpace, BASS, STAGATE, GraphST, SpaGCN, and BANKSY, and emphasizes the &#x27;spatial-weight&#x27; knob and biological choice of k. The first copy lacks the method-selection logic and the domain/niche distinction, while the second copy lacks the specific Python implementation for combined graphs and the custom smoothing code. Combining them provides both the &#x27;how to choose&#x27; and the &#x27;how to code&#x27; aspects.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-domains/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-domains/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-domains/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-domains/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Spatial Domain Detection
+
+## 1. Conceptual Framework
+- **Domain vs. Niche vs. Cell Type**: A spatial domain is a contiguous tissue region (e.g., cortical layer) containing many cell types. It is distinct from a cell type (single-cell identity) and a niche (local cell-type composition). Ensure the biological question matches domain segmentation.
+- **Key Decision**: The primary parameter is the **spatial weight** (e.g., BANKSY lambda, BayesSpace smoothing). Too much weight causes over-smoothing (blobs); too little causes salt-and-pepper noise.
+- **Number of Domains (k)**: Treat k as a biological choice. Justify k and show sensitivity to k±1. Do not rely solely on silhouette scores for selection.
+
+## 2. Method Selection
+Choose a method based on tissue geometry and data type:
+- **BayesSpace**: Best for Visium laminar/continuous tissue; provides sub-spot enhancement.
+- **STAGATE**: Graph attention; good for continuous tissue and high-res data (Slide-seq/Stereo-seq).
+- **GraphST**: Self-supervised; good for low-res Visium and integration.
+- **BANKSY**: Neighbor-augmented; flexible spatial weight.
+- **SpaGCN**: Use if H&amp;E histology is available and informative.
+
+## 3. Implementation (Squidpy/Scanpy)
+
+### Standard Clustering (Baseline)
+```python
+sc.pp.neighbors(adata, n_neighbors=15, n_pcs=30)
+sc.tl.leiden(adata, resolution=0.5, key_added=&#x27;leiden&#x27;)
+sq.pl.spatial_scatter(adata, color=&#x27;leiden&#x27;, size=1.3)
+```
+
+### Spatial-Aware Clustering
+```python
+sq.gr.spatial_neighbors(adata, coord_type=&#x27;generic&#x27;, n_neighs=6)
+sc.tl.leiden(adata, resolution=0.5, key_added=&#x27;spatial_leiden&#x27;, neighbors_key=&#x27;spatial_neighbors&#x27;)
+sq.pl.spatial_scatter(adata, color=&#x27;spatial_leiden&#x27;, size=1.3)
+```
+
+### Combined Expression + Spatial Graph
+```python
+from scipy.sparse import csr_matrix
+from sklearn.preprocessing import normalize
+
+sq.gr.spatial_neighbors(adata, coord_type=&#x27;generic&#x27;, n_neighs=6)
+sc.pp.neighbors(adata, n_neighbors=15, n_pcs=30)
+
+spatial_weight = 0.3
+spatial_conn = adata.obsp[&#x27;spatial_connectivities&#x27;]
+expr_conn = adata.obsp[&#x27;connectivities&#x27;]
+
+spatial_norm = normalize(spatial_conn, norm=&#x27;l1&#x27;, axis=1)
+expr_norm = normalize(expr_conn, norm=&#x27;l1&#x27;, axis=1)
+
+combined = spatial_weight * spatial_norm + (1 - spatial_weight) * expr_norm
+adata.obsp[&#x27;combined_connectivities&#x27;] = csr_matrix(combined)
+
+sc.tl.leiden(adata, resolution=0.5, key_added=&#x27;combined_leiden&#x27;, adjacency=adata.obsp[&#x27;combined_connectivities&#x27;])
+```
+
+### STAGATE
+```python
+import STAGATE
+STAGATE.Cal_Spatial_Net(adata, rad_cutoff=150)
+STAGATE.Stats_Spatial_Net(adata)
+adata = STAGATE.train_STAGATE(adata, alpha=0)
+sc.pp.neighbors(adata, use_rep=&#x27;STAGATE&#x27;)
+sc.tl.leiden(adata, resolution=0.5, key_added=&#x27;stagate_leiden&#x27;)
+```
+
+## 4. Refinement and Evaluation
+
+### Smooth Domain Boundaries
+```python
+def smooth_domains(adata, cluster_key, n_iter=1):
+    conn = adata.obsp[&#x27;spatial_connectivities&#x27;]
+    labels = adata.obs[cluster_key].values
+    categories = adata.obs[cluster_key].cat.categories
+    for _ in range(n_iter):
+        new_labels = []
+        for i in range(adata.n_obs):
+            neighbors = conn[i].nonzero()[1]
+            if len(neighbors) &gt; 0:
+                neighbor_labels = labels[neighbors]
+                unique, counts = np.unique(neighbor_labels, return_counts=True)
+                new_labels.append(unique[counts.argmax()])
+            else:
+                new_labels.append(labels[i])
+        labels = np.array(new_labels)
+    adata.obs[f&#x27;{cluster_key}_smoothed&#x27;] = pd.Categorical(labels, categories=categories)
+
+smooth_domains(adata, &#x27;spatial_leiden&#x27;, n_iter=2)
+```
+
+### Evaluate Quality
+- **Spatial Coherence**: Use silhouette score on spatial coordinates as a sanity check, but prioritize biological validation and k-sensitivity.
+- **Marker Genes**: Use `sc.tl.rank_genes_groups` to identify markers for each domain.
+- **Comparison**: Use Adjusted Rand Index (ARI) to compare different clustering methods.
+
+## 5. Annotation
+- Manually annotate domains based on marker genes and histology.
+- Report the chosen k and the spatial weight used.</pre>
+</body>
+</html>

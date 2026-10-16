@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>geopandas</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">geospatial-vector-analysis</a> / geopandas</p><h1>geopandas</h1><p class="meta">combined</p><p>The four copies cover the same library but diverge on scope, version, and safety. K-Dense-AI is a strict, version-pinned (1.2.0) audit workflow with local CLI tools and a heavy privacy/safety contract. brycewang-stanford targets 1.1.3, includes PySAL/spatial statistics, and uses a decision-tree reference structure. foryourhealth111 and aipoch are general usage guides with standard installation and code examples. Because K-Dense&#x27;s strict audit steps and brycewang&#x27;s spatial statistics focus are material steps missing from the others, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/geopandas/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/geopandas/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/geopandas/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/17-DAAF-Contribution-Community-daaf/dot-claude/skills/geopandas/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/geopandas/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/geopandas/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/geopandas/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/17-DAAF-Contribution-Community-daaf/dot-claude/skills/geopandas/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/geopandas/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># GeoPandas
+
+## Environment Setup
+- **Standard**: `uv pip install geopandas` (plus optional `pyarrow`, `folium`, `mapclassify`).
+- **Strict/Audit**: Use Python 3.12+ with pinned versions (e.g., `geopandas==1.2.0`, `shapely==2.1.2`) and local audit tools if provenance is critical.
+
+## Core Workflow
+1. **Load Data**: Use `gpd.read_file` for vector formats (GeoJSON, GPKG, SHP). Use `use_arrow=True` for performance if `pyarrow` is installed.
+2. **CRS Management**: 
+   - Check `gdf.crs`.
+   - Use `set_crs` only if metadata is missing and known.
+   - Use `to_crs` to transform coordinates. Always reproject to a local/equal-area CRS before calculating area or distance.
+3. **Spatial Analysis**:
+   - **Joins**: Use `gpd.sjoin` for predicate-based joins and `gpd.sjoin_nearest` for proximity.
+   - **Overlay**: Use `gpd.overlay` for intersection/union/difference.
+   - **Statistics**: For spatial autocorrelation or regression, load PySAL references.
+4. **Visualization**: Use `.plot()` for static maps or `.explore()` for interactive folium maps.
+
+## Safety &amp; Correctness
+- **Provenance**: Record source hashes and CRS for every derived artifact.
+- **Privacy**: Generalize coordinates and avoid publishing exact addresses or small-area joins.
+- **Validation**: Check for invalid geometries and ensure CRS units match the operation (e.g., meters for buffer).</pre>
+</body>
+</html>

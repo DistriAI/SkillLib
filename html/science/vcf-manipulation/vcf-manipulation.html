@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>vcf-manipulation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">vcf-manipulation</a> / vcf-manipulation</p><h1>vcf-manipulation</h1><p class="meta">combined</p><p>The two copies cover the same bcftools operations but differ in scope and critical constraints. The first copy is a concise command reference for merge, concat, sort, isec, and subsetting. The second copy is a more rigorous guide that adds version compatibility checks, a mandatory normalization step before combining, a detailed decision matrix for merge vs concat vs isec, and a specific warning that bcftools merge is not joint genotyping (the 0/0 fabrication trap). Because the second copy contains material steps and constraints (normalization, version checks, merge trap) that the first lacks, and the first provides a cleaner quick-reference structure, crowning one would hide the other&#x27;s valuable procedural safeguards.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/vcf-manipulation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/vcf-manipulation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/vcf-manipulation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/vcf-manipulation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># VCF Manipulation
+
+Merge, concat, sort, intersect, and subset VCF files using bcftools.
+
+## Version Compatibility
+
+Reference examples tested with: bcftools 1.19+. Before using code patterns, verify installed versions match. If versions differ, introspect the installed package and adapt the example to match the actual API.
+
+## The Governing Principle: Normalize Before Combining
+
+Every combine operation keys on the `(CHROM, POS, REF, ALT)` tuple. An indel that is not left-aligned + parsimonious, an un-split multiallelic, or an un-decomposed MNP is a structurally valid VCF line carrying a different tuple for the same biological event. The combine then silently mis-joins: isec reports false discordance, merge emits duplicate rows, and dedup misses the duplicate.
+
+**Decision:** Normalize (left-align + parsimony against the SAME reference, split multiallelics) every input before any merge/concat-dedup/isec/annotate. The canonical incantation is `bcftools norm -m-any -f ref.fa`.
+
+## Operation Selection
+
+| Operation | Inputs differ in | Produces | Use Case |
+|-----------|------------------|----------|----------|
+| `bcftools merge` | **samples** (same sites) | one multi-sample VCF | Combine samples from multiple VCFs |
+| `bcftools concat` | **regions** (same samples) | one VCF spanning all regions | Combine regions from multiple VCFs |
+| `bcftools isec` | neither (set membership) | per-input private/shared partition | Compare/intersect call sets |
+| `bcftools sort` | order | sorted VCF | Sort unsorted VCF |
+| `bcftools view` | subset | subset VCF | Extract samples or regions |
+
+## The Merge Trap: `bcftools merge` is not Joint Genotyping
+
+When merging single-sample VCFs, a site called in sample A but absent from sample B is ambiguous. `bcftools merge` fills B&#x27;s genotype with `./.` by default, and `--missing-to-ref` overrides it to `0/0`. Both are guesses because merge has no evidence for the unseen site. `--missing-to-ref` fabricates hom-ref genotypes and inflates the reference-allele count.
+
+**Decision:** To build a multi-sample callset with correct hom-ref-vs-no-data resolution, joint-genotype gVCFs. Reserve `bcftools merge` for combining already-jointly-genotyped cohorts, or samples that share a target with known coverage.
+
+## bcftools merge
+
+Combine multiple VCF files with **different samples** at the same positions.
+
+### Basic Merge
+
+```bash
+bcftools merge sample1.vcf.gz sample2.vcf.gz -Oz -o merged.vcf.gz
+```
+
+### Merge from File List
+
+```bash
+# files.txt: one VCF path per line
+bcftools merge -l files.txt -Oz -o merged.vcf.gz
+```
+
+### Handle Missing Genotypes
+
+```bash
+# Output missing genotypes as ./. (default)
+bcftools merge sample1.vcf.gz sample2.vcf.gz -Oz -o merged.vcf.gz
+
+# Output missing as reference (0/0) - USE WITH CAUTION
+bcftools merge --missing-to-ref sample1.vcf.gz sample2.vcf.gz -Oz -o merged.vcf.gz
+```
+
+### Force Sample Names
+
+When sample names conflict:
+
+```bash
+bcftools merge --force-samples sample1.vcf.gz sample2.vcf.gz -Oz -o merged.vcf.gz
+```
+
+## bcftools concat
+
+Combine VCF files with **same samples** from different regions.
+
+### Concatenate Chromosomes
+
+```bash
+bcftools concat chr1.vcf.gz chr2.vcf.gz chr3.vcf.gz -Oz -o genome.vcf.gz
+```
+
+### From File List
+
+```bash
+# files.txt: one VCF path per line (in order)
+bcftools concat -f files.txt -Oz -o concatenated.vcf.gz
+```
+
+### Allow Overlapping Regions
+
+```bash
+bcftools concat -a chr1_part1.vcf.gz chr1_part2.vcf.gz -Oz -o chr1.vcf.gz
+```
+
+### Remove Duplicates
+
+```bash
+bcftools concat -a -d all file1.vcf.gz file2.vcf.gz -Oz -o merged.vcf.gz
+```
+
+Options for `-d`:
+- `snps` - Remove duplicate SNPs
+- `indels` - Remove duplicate indels
+- `both` - Remove duplicate SNPs and indels
+- `all` - Remove all duplicates
+- `exact` - Remove exact duplicates only
+
+## bcftools sort
+
+Sort VCF by chromosome and position.
+
+### Basic Sort
+
+```bash
+bcftools sort input.vcf -Oz -o sorted.vcf.gz
+```
+
+### With Temporary Directory
+
+For large files:
+
+```bash
+bcftools sort -T /tmp input.vcf.gz -Oz -o sorted.vcf.gz
+```
+
+## bcftools isec
+
+Intersect and compare VCF files.
+
+### Find Shared Variants
+
+```bash
+bcftools isec -p output_dir sample1.vcf.gz sample2.vcf.gz
+```
+
+Creates:
+- `0000.vcf` - Private to sample1
+- `0001.vcf` - Private to sample2
+- `0002.vcf` - Shared (sample1 records)
+- `0003.vcf` - Shared (sample2 records)
+
+### Intersection Only
+
+```bash
+bcftools isec -p output_dir -n=2 sample1.vcf.gz sample2.vcf.gz
+# Only outputs variants present in exactly 2 files
+```
+
+### Comparison Options
+
+| Flag | Description |
+|------|-------------|
+| `-n=2` | Present in exactly 2 files |
+| `-n+2` | Present in 2 or more files |
+| `-n-2` | Present in fewer than 2 files |
+| `-n~11` | Boolean: file1 AND file2 |
+| `-n~10` | Boolean: file1 AND NOT file2 |
+
+### Complement Mode
+
+```bash
+# Variants in file1 not in file2
+bcftools isec -C sample1.vcf.gz sample2.vcf.gz -Oz -o unique.vcf.gz
+```
+
+## Subsetting VCF Files
+
+### Extract Samples
+
+```bash
+bcftools view -s sample1,sample2 input.vcf.gz -Oz -o subset.vcf.gz
+```
+
+### Exclude Samples
+
+```bash
+bcftools view -s ^sample3 input.vcf.gz -Oz -o without_sample3.vcf.gz
+```
+
+### From Sample List File
+
+```bash
+# samples.txt: one sample name per line
+bcftools view -S samples.txt input.vcf.gz -Oz -o subset.vcf.gz
+```
+
+### Extract Region
+
+```bash
+bcftools view -r chr1:1000000-2000000 input.vcf.gz -Oz -o region.vcf.gz
+```
+
+### Extract Multiple Regions
+
+```bash
+bcftools view -R regions.bed input.vcf.gz -Oz -o targets.vcf.gz
+```
+
+## Renaming Samples
+
+### Multiple Samples
+
+```bash
+# rename.txt format: old_name new_name
+cat &gt; rename.txt &lt;&lt; EOF
+sample1 patient_001
+sample2 patient_002
+sample3 patient_003
+EOF
+
+bcftools reheader -s rename.txt input.vcf.gz -o renamed.vcf.gz
+```
+
+## Splitting VCF Files
+
+### Split by Sample
+
+```bash
+for sample in $(bcftools query -l input.vcf.gz); do
+    bcftools view -s &quot;$sample&quot; input.vcf.gz -Oz -o &quot;${sample}.vcf.gz&quot;
+done
+```
+
+### Split by Chromosome
+
+```bash
+for chr in $(bcftools view -h input.vcf.gz | grep &quot;^##contig&quot; | sed &#x27;s/.*ID=\([^,]*\).*/\1/&#x27;); do
+    bcftools view -r &quot;$chr&quot; input.vcf.gz -Oz -o &quot;${chr}.vcf.gz&quot;
+done
+```
+
+### Split Multiallelic Sites
+
+```bash
+bcftools norm -m-any input.vcf.gz -Oz -o split.vcf.gz
+```</pre>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>deploy</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">deploy</a> / deploy</p><h1>deploy</h1><p class="meta">combined</p><p>The three copies are unrelated procedures that share only the generic name &#x27;deploy&#x27;. The Azure skill executes IaC against Azure with preflight sub-agents, approval gates, and health checks. The Power Platform skill builds and pushes a code app to Power Platform. The research skill renders Quarto slides and syncs them to docs/ for GitHub Pages. None is a reproduction of the others, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/microsoft/azure-skills">microsoft/azure-skills</a></td><td><code>skills/azure-app-onboard/deploy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/code-apps/skills/deploy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/deploy/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/microsoft/azure-skills">microsoft/azure-skills</a></td><td><code>skills/azure-app-onboard/deploy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/code-apps/skills/deploy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/deploy/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/28-maxwell2732-paper-replicate-agent-demo/dot-claude/skills/deploy/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/mobile-apps/skills/deploy/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Deploy
+
+This skill covers three distinct deployment targets. Select the section that matches the current project.
+
+## Azure IaC Deployment
+
+1. Dispatch the preflight sub-agent using the complete template from subagent-preflight.md. Do not summarize or rewrite the template.
+2. Read prepare-plan.json and scaffold-manifest.json from the session directory. Check validationResult.
+3. Run preflight checks: auth, mandatory what-if preview, RBAC, and resource group validation per deploy-checklist.md.
+4. Present cost and resource summary for user approval.
+5. Write deploy-result.json skeleton with status in-progress before any az command.
+6. Generate portal link and auto-open in browser. Auto-generate all @secure() parameters; never ask user for passwords. On retry, reuse secrets from deploy-secrets.env or Key Vault.
+7. Execute az deployment sub create.
+8. Deploy application code for every service in prepare-plan.json.services[].
+9. Health-check each endpoint (max 3 iterations). For multi-service apps, inspect response body for error patterns. For every App Service/Functions app, disable SCM basic publishing credentials and verify.
+10. Return control to the azure-app-onboard orchestrator.
+
+## Power Platform Code App Deployment
+
+1. Check memory-bank.md in the project root for project name and environment.
+2. Run npm run build. If build fails with TS6133, remove unused import and retry. For other TypeScript errors, report and stop. Verify dist/ exists with index.html.
+3. Ask user for explicit confirmation before deploying.
+4. Resolve the CLI binary per cli-binary.md. Run pa app push (or power-apps push on power-apps-only projects).
+5. Capture app URL from output. If deploy fails, report error and stop. For auth errors, run pa auth logout and retry. For environment mismatch, update environmentId in power.config.json.
+6. Update memory-bank.md with last deployed timestamp and app URL.
+
+## Quarto Slides to GitHub Pages
+
+1. Run ./scripts/sync_to_docs.sh with the lecture argument if provided, or without argument to sync all lectures.
+2. Verify HTML files exist in docs/slides/.
+3. Verify _files/ directories were copied for RevealJS assets.
+4. Verify docs/Figures/ was synced from Figures/.
+5. If applicable, grep rendered HTML for interactive widget count and confirm it matches expected.
+6. If applicable, check that all referenced TikZ SVG files exist in docs/Figures/LectureN/.
+7. Open the rendered HTML in a browser for visual verification.
+8. Report results to the user.</pre>
+</body>
+</html>

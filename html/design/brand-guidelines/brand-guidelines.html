@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>brand-guidelines</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">brand-guidelines</a> / brand-guidelines</p><h1>brand-guidelines</h1><p class="meta">combined</p><p>The copies are not reproductions of one procedure. Three copies (anthropics/skills, davepoon/buildwithclaude, Prat011/awesome-llm-skills) are identical Anthropic visual-identity skills that specify brand colors, typography, and python-pptx application. The getsentry/skills copy is a completely different skill that specifies Sentry copywriting tone, UI text rules, and anti-patterns. Crowning one would hide a real alternative: visual styling versus copywriting.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/brand-guidelines/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/brand-guidelines/SKILL.md</code></td></tr><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/brand-guidelines/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>brand-guidelines/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/brand-guidelines/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/brand-guidelines/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/brand-guidelines/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>brand-guidelines/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-design/skills/brand-guidelines/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/brand-guidelines/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/brand-guidelines/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>brand-guidelines/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>brand-guidelines/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/brand-guidelines/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/brand-guidelines/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/brand-guidelines/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: brand-guidelines
+description: Apply brand standards to artifacts. Use the visual styling path for Anthropic look-and-feel and the copywriting path for Sentry user-facing text.
+---
+
+# Brand Guidelines
+
+Choose the path that matches the artifact.
+
+## Path A: Anthropic Visual Styling
+
+Use when applying Anthropic&#x27;s look-and-feel to visual artifacts such as slides or documents.
+
+### Colors
+
+Main colors:
+- Dark: `#141413` - Primary text and dark backgrounds
+- Light: `#faf9f5` - Light backgrounds and text on dark
+- Mid Gray: `#b0aea5` - Secondary elements
+- Light Gray: `#e8e6dc` - Subtle backgrounds
+
+Accent colors:
+- Orange: `#d97757` - Primary accent
+- Blue: `#6a9bcc` - Secondary accent
+- Green: `#788c5d` - Tertiary accent
+
+### Typography
+
+- Headings: Poppins (with Arial fallback)
+- Body text: Lora (with Georgia fallback)
+- Pre-install Poppins and Lora for best results; fall back to Arial/Georgia if unavailable.
+
+### Application
+
+- Apply Poppins to headings 24pt and larger.
+- Apply Lora to body text.
+- Use accent colors for non-text shapes, cycling through orange, blue, and green.
+- Use RGB color values for precise brand matching.
+- When using python-pptx, apply colors via the RGBColor class.
+
+## Path B: Sentry Copywriting
+
+Use when writing user-facing copy such as UI text, error messages, empty states, onboarding flows, 404 pages, documentation, or marketing copy.
+
+### Tone Selection
+
+- Use Plain Speech for product UI, documentation, error messages, settings pages, transactional emails, and help text.
+- Use Sentry Voice for 404 pages, empty states, onboarding flows, loading states, &quot;What&#x27;s New&quot; announcements, and marketing copy.
+- Default to Plain Speech unless the context specifically calls for personality.
+
+### Plain Speech Rules
+
+1. Be concise.
+2. Be direct.
+3. Use active voice.
+4. Avoid jargon.
+5. Be specific.
+
+### Sentry Voice Principles
+
+1. Empathetic snark: direct frustration at the situation, never the user.
+2. Self-aware: acknowledge the absurdity of software.
+3. Fun but functional: personality should enhance, not obscure meaning.
+4. Earned moments: only use when users have time to appreciate it.
+
+Do not use Sentry Voice in error messages, settings pages, documentation, or billing/payment flows.
+
+### General Copy Rules
+
+- Use American English spelling.
+- Use Title Case for headings and page titles.
+- Use sentence case for body text, buttons, and labels.
+- No exclamation marks in UI text except celebratory moments.
+- No periods in short UI labels or button text.
+- Use periods in complete sentences and help text.
+- No ALL CAPS except for acronyms.
+
+### UI Element Guidelines
+
+- Buttons: use action verbs, be specific, max 2-3 words, no periods or exclamation marks.
+- Error messages: say what happened, say why if helpful, say what to do next.
+- Empty states: explain what would normally be here, provide a clear action, Sentry Voice is appropriate.
+- Confirmation dialogs: make the action clear, explain consequences if destructive, use specific button labels.
+- Tooltips and help text: keep under 2 sentences, explain the why, link to docs for complex topics.
+
+### Anti-Patterns
+
+Avoid robot speak, passive voice, unnecessary words, hedging, double negatives, and marketing speak in UI.
+
+## Conflicts
+
+- getsentry/skills defines a copywriting skill, while anthropics/skills, davepoon/buildwithclaude, and Prat011/awesome-llm-skills define a visual styling skill. The combined instruction preserves both paths without merging their parameters.</pre>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>constant-time-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">constant-time-crypto-review</a> / constant-time-analysis</p><h1>constant-time-analysis</h1><p class="meta">combined</p><p>The trailofbits copy is the more complete and authoritative procedure, but the sickn33 copy adds material constraints and setup steps that the first lacks, so crowning one would hide a real alternative. The trailofbits copy mandates --warnings, explains why the default run is quiet about the most common bug, and gives detailed cross-architecture/optimization-level guidance including a table of when strength reduction fails. The sickn33 copy adds a prerequisites table, macOS PATH setup for keg-only Java/.NET, and a decision flowchart, but it presents --warnings as optional and omits the critical warning about default runs missing early-exit comparisons. These are complementary, not merely redundant.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/constant-time-analysis/skills/constant-time-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/constant-time-analysis/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/constant-time-analysis/skills/constant-time-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/constant-time-analysis/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/constant-time-analysis/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/constant-time-analysis/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Constant-Time Analysis
+
+Compile the code, inspect the emitted assembly or bytecode for variable-time instructions, then decide which of the flagged operations actually touch secrets. The compilation step is mechanical; the triage step is the work.
+
+## When to Use
+
+- Implementing or reviewing a signature, encryption, KEM, or key derivation routine
+- Code applies `/` or `%` to a value derived from a key, plaintext, nonce, or token
+- The user mentions &quot;constant-time&quot;, &quot;timing attack&quot;, &quot;side-channel&quot;, or &quot;KyberSlash&quot;
+- Reviewing functions named `sign`, `verify`, `encrypt`, `decrypt`, `derive_key`
+
+## When NOT to Use
+
+- **Measuring** timing variance on a running binary — use the `constant-time-testing` skill, which covers dudect and statistical approaches. This skill inspects compiler output statically and never executes the code under test.
+- Non-cryptographic code, or crypto code where every input is public
+- High-level API usage where a vetted library owns the constant-time guarantees
+- Cache and other microarchitectural side channels — the assembly view cannot see them
+
+## Language Routing
+
+Read the guide for the target language before interpreting any findings; each one lists that language&#x27;s dangerous instructions and the idiomatic constant-time replacements.
+
+| Guide | Languages |
+| ----- | --------- |
+| references/compiled.md | C, C++, Go, Rust |
+| references/swift.md | Swift |
+| references/vm-compiled.md | Java, C# |
+| references/kotlin.md | Kotlin |
+| references/php.md | PHP |
+| references/javascript.md | JavaScript, TypeScript |
+| references/python.md | Python |
+| references/ruby.md | Ruby |
+
+## Prerequisites
+
+| Language | Requirements |
+| -------- | ------------ |
+| C, C++, Go, Rust | Compiler in PATH (`gcc`/`clang`, `go`, `rustc`) |
+| Swift | Xcode or Swift toolchain (`swiftc` in PATH) |
+| Java | JDK with `javac` and `javap` in PATH |
+| Kotlin | Kotlin compiler (`kotlinc`) + JDK (`javap`) in PATH |
+| C# | .NET SDK + `ilspycmd` (`dotnet tool install -g ilspycmd`) |
+| PHP | PHP with VLD extension or OPcache |
+| JavaScript/TypeScript | Node.js in PATH |
+| Python | Python 3.x in PATH |
+| Ruby | Ruby with `--dump=insns` support |
+
+**macOS users**: Homebrew installs Java and .NET as &quot;keg-only&quot;. You must add them to your PATH:
+
+```bash
+# For Java (add to ~/.zshrc)
+export PATH=&quot;/opt/homebrew/opt/openjdk@21/bin:$PATH&quot;
+
+# For .NET tools (add to ~/.zshrc)
+export PATH=&quot;$HOME/.dotnet/tools:$PATH&quot;
+```
+
+## Running the Analyzer
+
+The analyzer takes one file and detects the language from its extension. **Always pass `--warnings`:**
+
+```bash
+uv run {baseDir}/ct_analyzer/analyzer.py --warnings &lt;source_file&gt;
+```
+
+Without it the analyzer reports only error-severity findings, which means division, modulo and weak RNG. Four detector families are warning severity and stay silent: secret-dependent branches, early-exit comparison (`memcmp`, `strcmp`, `.equals`, `==`), table lookups indexed by a secret, and variable-time encoding. Early-exit comparison of an authentication tag is the most common timing bug in real code — Lucky Thirteen was exactly that — so a default run is quiet about the finding you are most likely to have.
+
+| Flag | Effect |
+| ---- | ------ |
+| `--warnings` | Add the four warning-severity families above. Pass it every time |
+| `--func &lt;regex&gt;` | Restrict output to function names matching the regex |
+| `--json` | Machine-readable output |
+| `--github` | GitHub Actions annotations |
+| `--arch &lt;target&gt;` | Target architecture (`x86_64`, `arm64`, `riscv64`, ...) — native languages only |
+| `--opt-level &lt;level&gt;` | Optimization level (`O0` through `O3`, `Os`, `Oz`) — native languages only |
+| `--compiler &lt;name&gt;` | Override compiler choice (`gcc`, `clang`, `go`, `rustc`, `swiftc`) |
+
+Narrow a large file to the routines that handle secrets with a regex, for example `--func &#x27;sign|verify&#x27;`.
+
+**Run natively compiled code (C, C++, Go, Rust, Swift) at more than one `--arch` and `--opt-level`.** Division timing and branch lowering are architecture- and optimization-dependent: x86_64 `IDIV` and arm64 `SDIV` differ, and a `cmov` at `-O2` can become a branch at `-O0`. A single clean run proves one configuration safe, not the code.
+
+**How `--arch` crosses depends on the toolchain.** clang crosses with `--target` and needs no second compiler, but any source that includes libc headers also needs that target&#x27;s C library headers — `libc6-dev-riscv64-cross` and friends — or it fails with `bits/libc-header-start.h file not found`. Go cross-builds through `GOARCH`, though `go tool objdump` has no riscv64 disassembler. A GNU cross toolchain is a *separate binary*, so gcc needs it named explicitly — `--compiler x86_64-linux-gnu-gcc`, `--compiler riscv64-linux-gnu-gcc` — and nothing is substituted for you, so the report always names the binary that ran. rustc needs the target&#x27;s standard library (`rustup target add`), and Swift on Linux targets only the host. Compare against the toolchain that builds your product, not whichever cross build a distribution packages.
+
+**Re-run the whole sweep on the fix, across compilers, targets and every level including `Os` and `Oz`.** Any fix that works by handing the compiler a constant divisor to strength-reduce is a fix only where the compiler chooses to cooperate, and that choice varies more than it looks. Replacing `key_coef / (2 * gamma2)` with a `#define`d divisor still emits a real divide here:
+
+| Toolchain | Levels that emit a division |
+| --------- | --------------------------- |
+| gcc riscv64 | `O0` through `Oz` — every level |
+| gcc arm64, gcc x86_64 | `Os`, `Oz` |
+| clang arm64 | `O0`, `Oz` |
+
+Strength reduction is an optimizer courtesy, not a language guarantee. Prefer an explicit multiply-shift, and verify it against the original expression over the full input range rather than on sampled values — an off-by-a-power-of-two reciprocal matches for millions of inputs before it diverges.
+
+Java, Kotlin, and C# compile to JVM/CIL bytecode. The analyzer reads that bytecode, so `--arch` and `--opt-level` do not apply and the JIT may still introduce variable-time native code the analyzer cannot see.</pre>
+</body>
+</html>

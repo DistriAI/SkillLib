@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>app-clips</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">ios-app-clips</a> / app-clips</p><h1>app-clips</h1><p class="meta">combined</p><p>The two skills cover the same topic but from different angles. The first (appeeky/aso-skills) is an ASO/marketing-oriented guide focused on discovery, card design, conversion metrics, and high-level best practices. The second (dpearson2699/swift-ios-skills) is a technical implementation guide focused on Xcode target setup, entitlements, URL routing, data handoff, and specific validation checkpoints. Neither is a reproduction of the other; they are complementary. Combining them provides a complete workflow from strategy to implementation.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/app-clips/SKILL.md</code></td></tr><tr><td><a href="https://github.com/dpearson2699/swift-ios-skills">dpearson2699/swift-ios-skills</a></td><td><code>skills/app-clips/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/app-clips/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/dpearson2699/swift-ios-skills">dpearson2699/swift-ios-skills</a></td><td><code>skills/app-clips/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># App Clips: Strategy and Implementation
+
+## 1. Strategy and Discovery
+- **Core Value:** Identify the minimum experience that demonstrates your app&#x27;s core value (e.g., pay for parking, view menu).
+- **Discovery Channels:** App Clips appear in App Store search, Smart App Banners, QR/NFC codes, Safari, Messages, and Maps.
+- **Card Design:**
+  - Title: Max 18 chars (clear action, e.g., &quot;Order Coffee&quot;).
+  - Subtitle: Max 13 chars (reinforce value, e.g., &quot;Skip the line&quot;).
+  - Header Image: 3000x2000px (show outcome, not UI).
+- **ASO Implication:** App Clip cards inherit main app metadata; optimize your main listing to improve Clip discoverability.
+
+## 2. Technical Setup
+- **Target Configuration:**
+  - Create a new App Clip target in Xcode.
+  - Bundle ID must be prefixed by the full app&#x27;s bundle ID (e.g., `com.example.MyApp.Clip`).
+  - Verify entitlements:
+    - App Clip: `com.apple.developer.on-demand-install-capable`
+    - App Clip: `com.apple.developer.parent-application-identifiers`
+    - Full App: `com.apple.developer.associated-appclip-app-identifiers`
+- **Size Limit:** Keep the App Clip binary under 15MB. Use Xcode size reports to identify bloat.
+
+## 3. Invocation and Routing
+- **URL Scheme:** Configure associated domains (`appclips:yourdomain.com`) on both targets.
+- **AASA File:** Host an AASA file with the App Clip app identifier.
+- **Routing:**
+  - Use `NSUserActivityTypeBrowsingWeb` for web-based invocations.
+  - SwiftUI: `.onContinueUserActivity(NSUserActivityTypeBrowsingWeb)`.
+  - UIKit: Handle `connectionOptions.userActivities` in `scene(_:willConnectTo:options:)` and `scene(_:continue:)`.
+- **App Store Connect:** Configure the default experience and any advanced experiences (location, campaign) with specific URLs.
+
+## 4. Data and Handoff
+- **Authentication:** Use Sign in with Apple or Apple Pay. Avoid custom sign-up flows.
+- **Data Handoff:** Use App Groups for non-secret state. Use Keychain (iOS 15.4+ one-way rule) or Sign in with Apple for secure data migration to the full app.
+- **Promotion:** Show `SKOverlay` after the user has experienced value, not immediately.
+
+## 5. Validation Checklist
+- [ ] App Clip target is under 15MB.
+- [ ] Entitlements are correctly assigned to both targets.
+- [ ] URL routing works for both App Clip and full app (cold launch and continuation).
+- [ ] AASA file is live and associated domains are configured.
+- [ ] App Store Connect experiences are configured with correct metadata.
+- [ ] Data handoff to full app is tested.
+- [ ] `SKOverlay` is shown post-value.</pre>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hipaa-compliance</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">hipaa-phi-compliance</a> / hipaa-compliance</p><h1>hipaa-compliance</h1><p class="meta">combined</p><p>The first two copies are the same framework-level HIPAA skill (one is a mirror of the other), while the third is a distinct, application-level skill for a specific recovery-coach codebase. The framework copies provide regulatory mappings and cloud encryption/access checklists, but they lack the concrete code patterns, audit logging utilities, data sanitization rules, session security parameters, and break-glass procedures found in the third copy. Conversely, the third copy lacks the comprehensive regulatory framework and multi-cloud encryption checklists. Combining them is necessary to capture both the regulatory framework and the specific implementation constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>compliance/frameworks/hipaa-compliance/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hipaa-compliance/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/hipaa-compliance/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>compliance/frameworks/hipaa-compliance/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hipaa-compliance/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/hipaa-compliance/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hipaa-compliance/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hipaa-compliance/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># HIPAA Compliance
+
+Implement HIPAA Security, Privacy, and Breach Notification Rule requirements for systems handling ePHI.
+
+## Regulatory Framework
+
+### Security Rule Safeguards
+- **Administrative**: Conduct risk analysis, implement risk management, apply sanction policies, review system activity, manage workforce security, and maintain contingency plans (backup, disaster recovery, emergency mode).
+- **Physical**: Implement facility access controls, workstation use/security, and device/media controls.
+- **Technical**: Enforce unique user identification, emergency access procedures, audit controls, integrity mechanisms, person/entity authentication, and transmission security.
+
+### Privacy &amp; Breach Rules
+- **Minimum Necessary**: Limit PHI use/disclosure to the minimum necessary.
+- **Individual Rights**: Support access, amendment, accounting of disclosures, and restrictions.
+- **Breach Notification**: Notify individuals within 60 days; notify HHS annually (&lt;500 records) or within 60 days (500+); notify media if 500+ individuals in a state/jurisdiction are affected.
+
+## Technical Implementation Checklist
+
+### Encryption
+- **At Rest**: Use AES-256. Enable encryption for all data stores (RDS, S3, EBS, DynamoDB, Azure SQL, Storage, Cloud SQL, BigQuery, etc.) using customer-managed keys (KMS/CMK/CMEK).
+- **In Transit**: Enforce TLS 1.2+ on all load balancers, API gateways, and database connections. Use mTLS for internal service-to-service communication. Encrypt email containing PHI.
+- **Key Management**: Use customer-managed keys, enable annual rotation, restrict access to authorized roles, and audit key usage.
+
+### Access Control
+- **Identity**: Enforce MFA for all users accessing PHI. Use unique user accounts (no shared credentials) and federated identity (SSO).
+- **Roles**: Apply least privilege. Separate data access from administration. Require just-in-time approval for privileged access.
+- **Sessions**: Enforce 15-minute idle timeout. Implement re-authentication for sensitive operations.
+
+## Application-Specific Implementation (Code-Level)
+
+### Audit Logging
+- **When to Log**: All PHI views, modifications, deletions, exports, admin actions, failed authentications, and security events.
+- **How to Log**: Use dedicated audit utilities (e.g., `logPHIAccess`, `logPHIModification`).
+- **Sanitization**: Never log PHI content (e.g., journal text, chat messages). Log only metadata (IDs, word counts, timestamps). Auto-redact fields like `password`, `token`, `content`, `message`.
+
+### Session Security Parameters
+- **Timeout**: 15 minutes of inactivity.
+- **Max Session**: 8 hours absolute maximum.
+- **Lockout**: 5 failed login attempts trigger a 30-minute ban.
+- **Passwords**: Minimum 12 characters, mixed case, numbers, and special characters.
+
+### Emergency Access (Break Glass)
+- Require written justification for emergency access.
+- Create a permanent, enhanced audit record.
+- Trigger an alert to the compliance officer.
+- Review access within 24 hours.
+
+### Audit Log Retention
+- **Minimum**: 6 years.
+- **Format**: Raw logs for 1 year, compressed thereafter.
+- **Storage**: Secure database table (e.g., `audit_log`).
+- **Export**: Encrypted exports for compliance audits.
+
+## Compliance Checklist
+- [ ] All PHI access is audit logged.
+- [ ] No PHI content in logs (only IDs and metadata).
+- [ ] Data access requires authentication and MFA.
+- [ ] Admin access has a separate audit trail.
+- [ ] Failed access attempts are logged.
+- [ ] Data export includes an audit entry.
+- [ ] Sensitive fields are encrypted at rest and in transit.
+- [ ] Session timeout and lockout policies are enforced.
+- [ ] Break-glass access procedures are documented and tested.</pre>
+</body>
+</html>

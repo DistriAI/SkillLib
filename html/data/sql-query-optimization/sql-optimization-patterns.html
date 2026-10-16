@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sql-optimization-patterns</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">sql-query-optimization</a> / sql-optimization-patterns</p><h1>sql-optimization-patterns</h1><p class="meta">combined</p><p>The two copies share the same high-level scope and resource pointer, but the second copy adds material safety and verification constraints that the first lacks. The first copy is a generic wrapper that defers to a playbook, while the second copy specifies read-only starts, authorization for DDL, result-set comparison before performance comparison, and the side-effect risks of EXPLAIN ANALYZE. Crowning the first copy would hide these real operational constraints, and crowning the second would lose the first&#x27;s broader framing. They overlap but each has steps the other lacks, so they should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/sql-optimization-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/sql-optimization-patterns/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/sql-optimization-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/sql-optimization-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/sql-optimization-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-data-analytics/skills/sql-optimization-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-python-api-builder/skills/sql-optimization-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/sql-optimization-patterns/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: sql-optimization-patterns
+description: Master SQL query optimization, indexing strategies, and EXPLAIN analysis to dramatically improve database performance and eliminate slow queries. Use when debugging slow queries, designing database schemas, or optimizing application performance.
+---
+
+# SQL Optimization Patterns
+
+Transform slow database queries into lightning-fast operations through systematic optimization, proper indexing, and query plan analysis.
+
+## Use this skill when
+
+- Debugging slow-running queries
+- Designing performant database schemas
+- Optimizing application response times
+- Reducing database load and costs
+- Improving scalability for growing datasets
+- Analyzing EXPLAIN query plans
+- Implementing efficient indexes
+- Resolving N+1 query problems
+
+## Do not use this skill when
+
+- The task is unrelated to sql optimization patterns
+- You need a different domain or tool outside this scope
+
+## Instructions
+
+- Clarify goals, constraints, and required inputs.
+- Confirm database engine/version, query parameters, expected rows, data distribution and the permitted environment. Start read-only; obtain authorization before DDL, data changes, configuration changes or maintenance.
+- Compare result sets before comparing performance. EXPLAIN ANALYZE executes the statement: use approved representative data, account for functions and triggers, and do not assume a transaction rollback undoes every side effect.
+- Record the observed plan, timing conditions and correctness checks. Indexes and query rewrites are hypotheses, not universal speed improvements.
+- Apply relevant best practices and validate outcomes.
+- Provide actionable steps and verification.
+- If detailed examples are required, open `resources/implementation-playbook.md`.
+
+## Resources
+
+- `resources/implementation-playbook.md` for detailed patterns and examples.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+## Worked example
+
+The playbook includes an executable SQLite batch-loading example with bound values and an empty-input case. The repository test exercises it alongside pagination ties and aggregation equivalence. SQLite correctness checks do not establish PostgreSQL performance or production safety.</pre>
+</body>
+</html>

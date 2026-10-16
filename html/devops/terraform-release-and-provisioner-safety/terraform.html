@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>terraform</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">terraform-release-and-provisioner-safety</a> / terraform</p><h1>terraform</h1><p class="meta">combined</p><p>The two copies address different Terraform tasks. The daymade copy is a release-safety and provisioner-troubleshooting procedure (canonical release entry, environment parity, saved-plan binding, provisioner side effects, and incident-derived symptom patterns). The sickn33 copy is a general IaC best-practices guide (count vs for_each, module patterns, CI/CD, and security scanning). They overlap only in the broad domain of Terraform, and neither contains the other&#x27;s material steps, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>terraform-skill/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/terraform-skill/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>terraform-skill/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/terraform-skill/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/terraform-skill/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/terraform-skill/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: terraform
+---
+# Terraform Skill
+
+## Scope
+Use this skill for Terraform/OpenTofu work, including release safety, provisioner design, environment isolation, and general IaC best practices.
+
+## Release and Provisioner Safety
+1. Route the task: for releases, shared gateways, saved plans, or production promotion, read the release-safety and pre-deploy validation references before approval or mutation.
+2. Use the repository&#x27;s canonical release entry. When shared-gateway publication requires standard CI, initiate that CI within existing authorization. Do not substitute a local Terraform apply, root SSH/SCP, helper, or console write.
+3. Prefer provider resources, image baking, cloud-init, or configuration management over provisioners. When a provisioner is necessary, make its artifact, target, lock, validation, and readback explicit.
+4. Inventory every resource or recovery tool that can write the target runtime.
+5. Give staging and production one required-key schema; let values differ but never let a key be required in one environment and optional or absent in another.
+6. Validate the exact candidate bytes, Compose-rendered environment, and immutable runtime image before the first live write or restart.
+7. Treat a saved plan as an executable artifact. Bind it to reviewed source/artifact identity and apply that exact file.
+8. Honor the user&#x27;s production authorization at the last reversible point.
+9. Stop after the requested result is verified; do not expand scope into unrelated hardening.
+
+## Provisioner Troubleshooting
+- If `terraform plan` says &quot;No changes&quot; but the site is down, probe the affected hostname, inspect loaded routes and live files, compare deployed source/artifact hashes with live hashes, and reconstruct each writer&#x27;s candidate file set and delete/exclude scope.
+- Use the repository&#x27;s canonical release entry and its plan/apply wrapper for recovery; verify the candidate against the current live baseline before replacement.
+
+## General IaC Best Practices
+- Use `count` for boolean conditions or simple numeric replication; use `for_each` for stable addressing, key-based reference, or multiple named resources.
+- Run static security scanning with Trivy and Checkov.
+- Do not store secrets in variables, use default VPCs, skip encryption, or open security groups to 0.0.0.0/0.
+- Use secrets managers, dedicated VPCs, encryption at rest, and least-privilege security groups.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

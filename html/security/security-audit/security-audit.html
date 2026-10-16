@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>security-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">security-audit</a> / security-audit</p><h1>security-audit</h1><p class="meta">combined</p><p>The two copies describe different procedures. The davepoon copy is a single-agent audit that delegates to a Centinela QA agent, runs a SIGN IN checklist, checks OWASP A01-A10, scans for secrets and CVEs, optionally checks Solidity contracts, and writes a report to docs/reviews/security-audit-{date}.md. The sickn33 copy is a multi-phase workflow bundle that orchestrates many separate skills (scanning-tools, shodan-reconnaissance, vulnerability-scanner, sql-injection-testing, xss-html-injection, burp-suite-testing, api-fuzzing-bug-bounty, pentest-commands, metasploit-framework, etc.) across reconnaissance, scanning, web app testing, API testing, penetration testing, hardening, and reporting. Neither copy is a shortened or wrapped version of the other; each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/agent-triforce/skills/security-audit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/security-audit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/agent-triforce/skills/security-audit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/security-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/security-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/security-audit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: security-audit
+description: Security audit procedure combining a single-agent deep audit and a multi-phase workflow bundle.
+category: quality-security
+---
+
+# Security Audit
+
+## When to Use
+- Before a release to verify security posture
+- After significant code changes touching authentication, authorization, or data handling
+- Periodic security review of the codebase
+- When adding new dependencies or external integrations
+- Performing security audits on web applications, APIs, or infrastructure
+- Conducting penetration tests or compliance security assessments
+
+## Procedure
+
+### Option A: Single-Agent Deep Audit (Centinela QA)
+1. Run the SIGN IN checklist.
+2. Perform OWASP Top 10 systematic check (A01-A10).
+3. Scan for hardcoded secrets, API keys, tokens, and connection strings.
+4. Audit dependencies for known CVEs.
+5. If Solidity is present, check smart contracts for reentrancy, overflow, and access control.
+6. Run Security Verification and Quality Verification checklists (TIME OUT).
+7. Issue verdict (APPROVED or CHANGES REQUIRED) and write report to docs/reviews/security-audit-{date}.md.
+8. Prepare findings handoff to Dev agent.
+- If no scope is specified, audit the entire src/ directory.
+- Critical findings trigger the Non-Normal emergency checklist.
+- The agent will never attempt to fix vulnerabilities; only document them.
+
+### Option B: Multi-Phase Workflow Bundle
+Phase 1: Reconnaissance
+- Invoke scanning-tools, shodan-reconnaissance, top-web-vulnerabilities.
+- Identify target scope, gather intelligence, map attack surface, identify technologies, document findings.
+
+Phase 2: Vulnerability Scanning
+- Invoke vulnerability-scanner, security-scanning-security-sast, security-scanning-security-dependencies.
+- Run automated scanners, perform static analysis, scan dependencies, identify misconfigurations, document vulnerabilities.
+
+Phase 3: Web Application Testing
+- Invoke top-web-vulnerabilities, sql-injection-testing, xss-html-injection, broken-authentication, idor-testing, file-path-traversal, burp-suite-testing.
+- Test injection flaws, authentication mechanisms, session management, access controls, input validation, security headers.
+
+Phase 4: API Security Testing
+- Invoke api-fuzzing-bug-bounty, api-security-best-practices.
+- Enumerate API endpoints, test authentication/authorization, rate limiting, input validation, error handling, document API vulnerabilities.
+
+Phase 5: Penetration Testing
+- Invoke pentest-commands, pentest-checklist, ethical-hacking-methodology, metasploit-framework.
+- Plan penetration test, execute attack scenarios, exploit vulnerabilities, document proof of concept, assess impact.
+
+Phase 6: Security Hardening
+- Invoke security-scanning-security-hardening, auth-implementation-patterns, api-security-best-practices.
+- Implement security controls, configure security headers, set up authentication, implement authorization, configure logging, apply patches.
+
+Phase 7: Reporting
+- Invoke reporting-standards.
+- Document findings, assess risk levels, provide remediation steps, create executive summary, generate technical report.
+
+## Security Testing Checklist
+### OWASP Top 10
+- [ ] Injection (SQL, NoSQL, OS, LDAP)
+- [ ] Broken Authentication
+- [ ] Sensitive Data Exposure
+- [ ] XML External Entities (XXE)
+- [ ] Broken Access Control
+- [ ] Security Misconfiguration
+- [ ] Cross-Site Scripting (XSS)
+- [ ] Insecure Deserialization
+- [ ] Using Components with Known Vulnerabilities
+- [ ] Insufficient Logging &amp; Monitoring
+
+### API Security
+- [ ] Authentication mechanisms
+- [ ] Authorization checks
+- [ ] Rate limiting
+- [ ] Input validation
+- [ ] Error handling
+- [ ] Security headers
+
+## Quality Gates
+- [ ] All planned tests executed
+- [ ] Vulnerabilities documented
+- [ ] Proof of concepts captured
+- [ ] Risk assessments completed
+- [ ] Remediation steps provided
+- [ ] Report generated
+
+## Conflicts
+- davepoon/buildwithclaude delegates to a single Centinela QA agent, runs a SIGN IN checklist, writes to docs/reviews/security-audit-{date}.md, and never fixes vulnerabilities. sickn33/agentic-awesome-skills orchestrates many separate skills across 7 phases including penetration testing and hardening, and does not specify a fixed report path or a single QA agent.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

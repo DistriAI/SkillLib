@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-deconvolution</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">spatial-transcriptomics-deconvolution</a> / spatial-deconvolution</p><h1>spatial-deconvolution</h1><p class="meta">combined</p><p>The two skills cover the same task but have materially different scope and constraints. The OpenClaw copy is a direct execution recipe for cell2location, Tangram, and RCTD with specific code and parameters. The GPTomics copy is a decision framework that adds a critical &#x27;resolution fork&#x27; (deconvolve vs. segment), emphasizes reference quality over method choice, and includes version compatibility checks and compositional data handling. Crowning one would hide the other&#x27;s essential guidance: the OpenClaw copy lacks the platform-specific decision logic, while the GPTomics copy lacks the concrete, runnable code for the primary tools.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-deconvolution/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-deconvolution/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-deconvolution/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-deconvolution/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: bio-spatial-transcriptomics-spatial-deconvolution
+description: Estimate cell type composition in spatial transcriptomics spots using reference-based deconvolution. Use cell2location, RCTD, SPOTlight, or Tangram to infer cell type proportions from scRNA-seq references. Use when estimating cell type composition in spatial spots.
+tool_type: python
+primary_tool: cell2location
+---
+
+# Spatial Deconvolution
+
+Estimate cell type composition in spatial spots using scRNA-seq references.
+
+## Version Compatibility
+
+Reference examples tested with: cell2location 0.1.4+, scvi-tools 1.0+, scanpy 1.10+, anndata 0.10+, numpy 1.26+.
+
+Before using code patterns, verify installed versions match. If versions differ, introspect the installed package and adapt the example to match the actual API.
+
+## The Resolution Fork
+
+Deconvolution recovers the cell-type composition of a MIXTURE. Determine if your data contains mixtures before choosing a method:
+- **DECONVOLVE**: Visium, GeoMx, and other multi-cell capture arrays.
+- **SEGMENT**: Xenium, MERFISH, CosMx. These are single-cell data. Do NOT deconvolve; use segmentation and annotation instead.
+- **AMBIGUOUS**: Visium HD, Stereo-seq, Slide-seqV2. Consider cell reconstruction or deconvolution depending on available morphology.
+
+## Required Imports
+
+```python
+import scanpy as sc
+import anndata as ad
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+```
+
+## Using cell2location
+
+```python
+import cell2location
+from cell2location.utils.filtering import filter_genes
+from cell2location.models import RegressionModel
+
+# Load reference scRNA-seq
+adata_ref = sc.read_h5ad(&#x27;reference_scrna.h5ad&#x27;)
+adata_ref.obs[&#x27;cell_type&#x27;] = adata_ref.obs[&#x27;cell_type&#x27;].astype(&#x27;category&#x27;)
+
+# Load spatial data
+adata_vis = sc.read_h5ad(&#x27;spatial_data.h5ad&#x27;)
+
+# Find shared genes
+intersect = np.intersect1d(adata_vis.var_names, adata_ref.var_names)
+adata_ref = adata_ref[:, intersect].copy()
+adata_vis = adata_vis[:, intersect].copy()
+```
+
+## Train Reference Signature Model
+
+```python
+# Select genes for deconvolution
+selected = filter_genes(adata_ref, cell_count_cutoff=5, cell_percentage_cutoff2=0.03,
+                        nonz_mean_cutoff=1.12)
+adata_ref = adata_ref[:, selected].copy()
+
+# Prepare reference
+cell2location.models.RegressionModel.setup_anndata(
+    adata_ref,
+    labels_key=&#x27;cell_type&#x27;,
+)
+
+# Train reference model
+mod = RegressionModel(adata_ref)
+mod.train(max_epochs=250, use_gpu=True)
+
+# Export reference signatures
+adata_ref = mod.export_posterior(adata_ref, sample_kwargs={&#x27;num_samples&#x27;: 1000})
+ref_sig = adata_ref.varm[&#x27;means_per_cluster_mu_fg&#x27;]
+```
+
+## Run Spatial Deconvolution
+
+```python
+# Ensure spatial data has same genes
+adata_vis = adata_vis[:, adata_ref.var_names].copy()
+
+# Setup spatial data
+cell2location.models.Cell2location.setup_anndata(adata_vis)
+
+# Train deconvolution model
+mod_spatial = cell2location.models.Cell2location(
+    adata_vis,
+    cell_state_df=ref_sig,
+    N_cells_per_location=10,  # Expected cells per spot
+    detection_alpha=20,
+)
+mod_spatial.train(max_epochs=30000, use_gpu=True)
+
+# Export results
+adata_vis = mod_spatial.export_posterior(adata_vis, sample_kwargs={&#x27;num_samples&#x27;: 1000})
+```
+
+## Access Deconvolution Results
+
+```python
+# Cell type abundances stored in obsm
+abundances = adata_vis.obsm[&#x27;q05_cell_abundance_w_sf&#x27;]
+
+# Convert to proportions
+proportions = abundances / abundances.sum(axis=1, keepdims=True)
+adata_vis.obsm[&#x27;cell_type_proportions&#x27;] = proportions
+
+# Add dominant cell type
+cell_types = adata_ref.obs[&#x27;cell_type&#x27;].cat.categories
+adata_vis.obs[&#x27;dominant_cell_type&#x27;] = cell_types[proportions.argmax(axis=1)]
+```
+
+## Using Tangram (Alternative)
+
+```python
+import tangram as tg
+
+# Load data
+adata_sc = sc.read_h5ad(&#x27;reference_scrna.h5ad&#x27;)
+adata_sp = sc.read_h5ad(&#x27;spatial_data.h5ad&#x27;)
+
+# Preprocess
+sc.pp.normalize_total(adata_sc)
+sc.pp.log1p(adata_sc)
+
+# Find marker genes
+sc.tl.rank_genes_groups(adata_sc, groupby=&#x27;cell_type&#x27;, method=&#x27;wilcoxon&#x27;)
+markers = sc.get.rank_genes_groups_df(adata_sc, group=None)
+markers = markers[markers[&#x27;pvals_adj&#x27;] &lt; 0.01].groupby(&#x27;group&#x27;).head(100)
+marker_genes = markers[&#x27;names&#x27;].unique().tolist()
+
+# Prepare for Tangram
+tg.pp_adatas(adata_sc, adata_sp, genes=marker_genes)
+
+# Map single cells to spatial locations
+ad_map = tg.map_cells_to_space(
+    adata_sc,
+    adata_sp,
+    mode=&#x27;clusters&#x27;,
+    cluster_label=&#x27;cell_type&#x27;,
+    device=&#x27;cuda:0&#x27;,
+)
+
+# Get cell type proportions
+tg.project_cell_annotations(ad_map, adata_sp, annotation=&#x27;cell_type&#x27;)
+```
+
+## Using RCTD (via R)
+
+```python
+# RCTD runs in R; use rpy2 for integration
+import rpy2.robjects as ro
+from rpy2.robjects import pandas2ri
+pandas2ri.activate()
+
+# Save data for R
+adata_vis.write_h5ad(&#x27;spatial_for_rctd.h5ad&#x27;)
+adata_ref.write_h5ad(&#x27;reference_for_rctd.h5ad&#x27;)
+
+# R code for RCTD
+r_code = &#x27;&#x27;&#x27;
+library(spacexr)
+library(Seurat)
+
+# Load data (convert from h5ad first)
+# ... R-specific loading code ...
+
+# Create RCTD object
+rctd &lt;- create.RCTD(puck, reference, max_cores=4)
+rctd &lt;- run_RCTD(rctd, doublet_mode=&#x27;full&#x27;)
+
+# Get results
+results &lt;- rctd@results
+weights &lt;- normalize_weights(results$weights)
+&#x27;&#x27;&#x27;
+```
+
+## Visualize Cell Type Proportions
+
+```python
+# Plot cell type abundances spatially
+cell_types_to_plot = [&#x27;T_cell&#x27;, &#x27;Macrophage&#x27;, &#x27;Epithelial&#x27;, &#x27;Fibroblast&#x27;]
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 12))
+for ax, ct in zip(axes.flatten(), cell_types_to_plot):
+    ct_idx = list(adata_ref.obs[&#x27;cell_type&#x27;].cat.categories).index(ct)
+    adata_vis.obs[f&#x27;{ct}_proportion&#x27;] = proportions[:, ct_idx]
+    sc.pl.spatial(adata_vis, color=f&#x27;{ct}_proportion&#x27;, ax=ax, show=False,
+                  title=ct, cmap=&#x27;Reds&#x27;, vmin=0, vmax=1)
+plt.tight_layout()
+plt.savefig(&#x27;cell_type_proportions.png&#x27;, dpi=150)
+```</pre>
+</body>
+</html>

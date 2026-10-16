@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>glycoengineering</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">glycoprotein-glycosite-engineering</a> / glycoengineering</p><h1>glycoengineering</h1><p class="meta">combined</p><p>The K-Dense copy is the more rigorous, production-oriented procedure: it separates motif, prediction, occupancy, and structure; requires topology and curated evidence; warns against excluding Pro in O-GalNAc; and ships a tested helper module with explicit coordinate and mutation semantics. The OpenClaw copy adds material steps and constraints the K-Dense copy lacks: a broader use-case list (vaccine glycan shielding, drug-target engagement, stability), inline reference implementations for sequon scanning and mutation, and a heuristic O-GalNAc hotspot function with a Proline-adjacency parameter. The two also disagree on O-GalNAc Proline handling and on the scope of prediction services, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/glycoengineering/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/glycoengineering/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/glycoengineering/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/glycoengineering/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Glycoengineering
+
+## When to use
+Use for canonical N-glycosylation candidate analysis, O-GalNAc candidate triage, antibody Fc glycoform comparison, structural glycan shielding, vaccine antigen design, biosimilar characterization, and drug-target engagement analysis. Keep four kinds of result separate: sequence motif, prediction, experimentally supported occupancy, and glycan structure/composition. None alone establishes all the others.
+
+This workflow focuses on eukaryotic secretory-pathway N-glycosylation and mucin-type O-GalNAc. O-GlcNAc, O-mannose, O-fucose and other O-linked modifications require appropriate evidence and predictors; S/T enrichment does not identify the type.
+
+## Workflow
+1. Record the protein accession, isoform/version, exact sequence, expression host, signal peptide/transmembrane topology and construct boundaries. Preserve a mapping from submitted sequence coordinates to mature protein, PDB chain/residue identifiers and antibody numbering where relevant.
+2. Scan canonical N-X-[S/T] candidates with X not Pro. Retain overlaps: `NNST` has candidates starting at 1 and 2. A missing canonical motif does not rule out unusual N-glycosylation; a present motif does not establish occupancy.
+3. Prioritize secreted/luminal/extracellular regions using topology and curated evidence. Sequence-only results in a cytoplasmic region are not evidence of secretory-pathway glycosylation.
+4. For O-GalNAc, use S/T density only as a descriptive feature, then inspect a suitable predictor and cell/transferase context. Do not exclude SP/TP motifs: adjacent Pro can be favorable, depending on the GalNAc-transferase and context. See the GalNAc-T substrate study (https://doi.org/10.1093/glycob/cwu089).
+5. Propose explicitly numbered mutations, list every changed residue and rescan the full product for lost/created overlapping motifs. Evaluate structural and expression effects independently of glycosylation.
+6. Validate occupancy and glycoforms experimentally, with localization evidence, glycan composition/structure confidence, and the biological assay required by the engineering objective. For biosimilar comparisons, match sample handling, analytical coverage and quantification before comparing glycan percentages.
+
+## Local sequence analysis
+Use the standard-library helper `scripts/glycoengineering_tools.py` from the K-Dense skill, or the inline reference implementations from the OpenClaw skill. Import the helper with the skill&#x27;s `scripts/` directory on `PYTHONPATH`, or run Python from that directory. It accepts raw canonical 20-amino-acid sequences, normalizes whitespace/case, and rejects FASTA headers, gaps, unknown residues and empty input. Parse FASTA records first; do not remove unknown residues because that changes coordinates. Coordinates are 1-based in the normalized submitted sequence.
+
+Key functions:
+- `normalize_sequence`: normalize whitespace and case.
+- `find_n_glycosylation_sequons`: return 1-based positions of N-X-[S/T] with X not Pro, retaining overlaps.
+- `eliminate_glycosite`: require a complete canonical sequon and a one-residue replacement other than N.
+- `add_glycosite`: can alter up to three residues; retains an existing S/T at +2; requires explicit Proline substitution if needed.
+- `find_st_rich_sites`: return S/T-rich positions using a positive odd integer window; terminal windows shorten and their denominator is the actual window length.
+
+Neither function predicts a mutant&#x27;s fold, glycan occupancy, function or tolerability. An N-to-Q substitution can change protein behavior even without a glycan effect.
+
+For batch analysis, keep identifiers and normalized sequence lengths, and report N-sequon positions and S/T-rich positions per protein.
+
+## Prediction services
+Use the official forms for NetNGlyc, NetOGlyc, and GlycoSHIELD, which accept FASTA and return web results. This skill does not provide a stable submission API or job-polling endpoint. Saving a CGI URL is not a submitted job. Preserve the output, input, and any job identifiers. For GlycoSHIELD, a separate source installation, glycan libraries, and GROMACS for SASA analysis are required.
+
+## Conflicts
+- FreedomIntelligence/OpenClaw-Medical-Skills::skills/glycoengineering/SKILL.md includes a `disallow_proline_next` parameter in its O-GalNAc hotspot heuristic, implying adjacent Proline can be unfavorable, whereas K-Dense-AI/scientific-agent-skills::skills/glycoengineering/SKILL.md explicitly states not to exclude SP/TP motifs because adjacent Proline can be favorable depending on GalNAc-transferase and context. Follow the K-Dense guidance: do not exclude SP/TP motifs by default; evaluate Proline context with the specific GalNAc-transferase and cell type.
+- K-Dense-AI/scientific-agent-skills::skills/glycoengineering/SKILL.md limits the workflow to eukaryotic secretory-pathway N-glycosylation and mucin-type O-GalNAc, while FreedomIntelligence/OpenClaw-Medical-Skills::skills/glycoengineering/SKILL.md frames the skill more broadly for vaccine design, drug-target analysis, and general therapeutic protein optimization. When the task falls outside secretory-pathway N-glycosylation or mucin-type O-GalNAc, use appropriate evidence and predictors for the specific modification type.</pre>
+</body>
+</html>

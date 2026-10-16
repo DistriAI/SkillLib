@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>umap-learn</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">umap-dimensionality-reduction</a> / umap-learn</p><h1>umap-learn</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the more rigorous, upstream-aligned procedure: it pins a verified release, adds interpretation caveats, and corrects the min_dist semantics. The Vibe-Skills and OpenClaw copies are near-identical mirrors that omit those caveats and include a parameter-tuning example block plus a fuller metric list. Because the K-Dense copy would hide the tuning examples and metric list, and the mirror copies would hide the version pin and interpretation caveats, crowning one would lose material steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/umap-learn/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/umap-learn/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/umap-learn/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/umap-learn/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/umap-learn/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/umap-learn/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: umap-learn
+description: Applies UMAP-learn to nonlinear dimensionality reduction, 2D/3D embeddings, clustering preprocessing, supervised or semi-supervised UMAP, DensMAP, AlignedUMAP, and Parametric UMAP workflows.
+---
+
+# UMAP-Learn
+
+## Overview
+
+UMAP (Uniform Manifold Approximation and Projection) is a dimensionality reduction technique for visualization and general non-linear dimensionality reduction. Apply this skill for fast, scalable embeddings that approximate neighborhood structure, supervised learning, and clustering preprocessing.
+
+Before interpreting an embedding, check finite coordinates, neighborhood retention, sensitivity to seeds/parameters, and domain evidence in the original space. UMAP axes, island areas, and gaps between clusters have no calibrated physical or probabilistic meaning. Keep predictive test data outside preprocessing and embedding fits.
+
+## Quick Start
+
+### Installation
+
+Pin to a verified release:
+
+```bash
+uv pip install umap-learn==0.5.12
+```
+
+### Basic Usage
+
+UMAP uses the scikit-learn estimator interface, but its geometry and supervised behavior differ from PCA and t-SNE. In snippets below, `data` is a finite samples-by-features array and labels must follow the same row order.
+
+```python
+import umap
+from sklearn.preprocessing import StandardScaler
+
+# Scale continuous features when their units should carry equal weight
+scaled_data = StandardScaler().fit_transform(data)
+
+# Method 1: Single step (fit and transform)
+embedding = umap.UMAP(random_state=42, n_jobs=1).fit_transform(scaled_data)
+
+# Method 2: Separate steps (for reusing trained model)
+reducer = umap.UMAP(random_state=42)
+reducer.fit(scaled_data)
+embedding = reducer.embedding_  # Access the trained embedding
+```
+
+**Preprocessing requirement:** Match preprocessing to the metric. For numeric Euclidean-style metrics, decide whether scaling is scientifically appropriate; it changes the feature weighting. Fit preprocessing on training data only for predictive work. Use `StandardScaler(with_mean=False)` for sparse matrices to avoid densifying them. For cosine, binary, precomputed-distance, or mixed-feature workflows, choose preprocessing that matches the metric instead of blindly standardizing every column.
+
+### Typical Workflow
+
+```python
+import umap
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+
+# 1. Preprocess data
+scaler = StandardScaler()
+scaled_data = scaler.fit_transform(raw_data)
+
+# 2. Create and fit UMAP
+reducer = umap.UMAP(
+    n_neighbors=15,
+    min_dist=0.1,
+    n_components=2,
+    metric=&#x27;euclidean&#x27;,
+    random_state=42
+)
+embedding = reducer.fit_transform(scaled_data)
+
+# 3. Visualize
+plt.scatter(embedding[:, 0], embedding[:, 1], c=labels, cmap=&#x27;Spectral&#x27;, s=5)
+plt.colorbar()
+plt.title(&#x27;UMAP Embedding&#x27;)
+plt.show()
+```
+
+## Parameter Tuning Guide
+
+UMAP has four primary parameters that control the embedding behavior.
+
+### n_neighbors (default: 15)
+
+**Purpose:** Balances local versus global structure in the embedding.
+
+**How it works:** Controls the size of the local neighborhood UMAP examines when learning manifold structure.
+
+**Effects by value:**
+- **Low values (2-5):** Emphasizes fine local detail but may fragment data into disconnected components
+- **Medium values (15-20):** Balanced view of both local structure and global relationships (recommended starting point)
+- **High values (50-200):** Prioritizes broad topological structure at the expense of fine-grained details
+
+**Recommendation:** Start with 15, keep it below the number of fitted samples, and compare several values. Larger neighborhoods do not make inter-cluster distances quantitatively reliable.
+
+### min_dist (default: 0.1)
+
+**Purpose:** Controls how tightly points cluster in the low-dimensional space.
+
+**How it works:** Adjusts the attraction curve and typical packing in the embedding; it is not a hard lower bound on pairwise distances. Require `0 &lt;= min_dist &lt;= spread`.
+
+**Effects by value:**
+- **Low values (0.0-0.1):** Creates clumped embeddings useful for clustering; reveals fine topological details
+- **High values (0.5-0.99):** Encourages looser packing; does not certify preservation of global distances
+
+**Recommendation:** Use 0.0 for clustering applications, 0.1-0.3 for visualization, 0.5+ for loose structure.
+
+### n_components (default: 2)
+
+**Purpose:** Determines the dimensionality of the embedded output space.
+
+**Key feature:** Unlike t-SNE, UMAP scales well in the embedding dimension, enabling use beyond visualization.
+
+**Common uses:**
+- **2-3 dimensions:** Visualization
+- **5-10 dimensions:** Clustering preprocessing (may retain more useful structure than 2D; does not guarantee density preservation)
+- **10-50 dimensions:** Feature engineering for downstream ML models
+
+**Recommendation:** Use 2 for visualization, 5-10 for clustering, higher for ML pipelines.
+
+### metric (default: &#x27;euclidean&#x27;)
+
+**Purpose:** Specifies how distance is calculated between input data points.
+
+**Supported metrics:**
+- **Minkowski variants:** euclidean, manhattan, chebyshev
+- **Spatial metrics:** canberra, braycurtis, haversine
+- **Correlation metrics:** cosine, correlation (good for text/document embeddings)
+- **Binary data metrics:** hamming, jaccard, dice, russellrao, kulsinski, rogerstanimoto, sokalmichener, sokalsneath, yule
+- **Custom metrics:** User-defined distance functions via Numba
+
+**Recommendation:** Use euclidean for numeric data, cosine for text/document vectors, hamming for binary data.
+
+### Parameter Tuning Example
+
+```python
+# For visualization with emphasis on local structure
+umap.UMAP(n_neighbors=15, min_dist=0.1, n_components=2, metric=&#x27;euclidean&#x27;)
+
+# For clustering preprocessing
+umap.UMAP(n_neighbors=30, min_dist=0.0, n_components=10, metric=&#x27;euclidean&#x27;)
+
+# For document embeddings
+umap.UMAP(n_neighbors=15, min_dist=0.1, n_components=2, metric=&#x27;cosine&#x27;)
+
+# For preserving global structure
+umap.UMAP(n_neighbors=100, min_dist=0.5, n_components=2, metric=&#x27;euclidean&#x27;)
+```
+
+## Supervised and Semi-Supervised Dimension Reduction
+
+UMAP supports incorporating label information to guide the embedding process, enabling class separation while preserving internal structure.
+
+### Supervised UMAP
+
+Pass target labels via the `y` parameter when fitting:
+
+```python
+# Supervised dimension reduction
+embedding = umap.UMAP().fit_transform(data, y=labels)
+```
+
+**Key benefits:**
+- Achieves cleanly separated classes
+- Preserves internal structure within each class
+- Maintains global relationships between classes
+
+**When to use:** When you have labeled data and want to separate known classes while keeping meaningful point embeddings.
+
+### Semi-Supervised UMAP
+
+For partial labels, mark unlabeled points with `-1` following scikit-learn convention:
+
+```python
+# Create semi-supervised labels
+semi_labels = labels.copy()
+semi_labels[unlabeled_indices] = -1
+
+# Fit with partial labels
+embedding = umap.UMAP().fit_transform(data, y=semi_labels)
+```
+
+**When to use:** When labeling is expensive or only a subset of points are labeled.</pre>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nodejs-backend-patterns</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">nodejs-backend-patterns</a> / nodejs-backend-patterns</p><h1>nodejs-backend-patterns</h1><p class="meta">combined</p><p>The three copies share the same high-level scope and use-case list, but they diverge in how they deliver the skill. The first and second copies are thin wrappers that point to a resources/implementation-playbook.md file and provide only generic instructions. The third copy (LeoYeAI/openclaw-master-skills) contains substantial, concrete implementation details including Express and Fastify setup code, layered architecture structure, and controller/service layer examples. Because the third copy contains material steps and code examples that the others lack, while the others contain a resource reference that the third lacks, crowning one would hide a real alternative approach to the skill.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/nodejs-backend-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/nodejs-backend-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/nodejs-backend-patterns/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/nodejs-backend-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/nodejs-backend-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/nodejs-backend-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/nodejs-backend-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/nodejs-backend-patterns/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: nodejs-backend-patterns
+description: Build production-ready Node.js backend services with Express/Fastify, implementing middleware patterns, error handling, authentication, database integration, and API design best practices. Use when creating Node.js servers, REST APIs, GraphQL backends, or microservices architectures.
+---
+
+# Node.js Backend Patterns
+
+Comprehensive guidance for building scalable, maintainable, and production-ready Node.js backend applications with modern frameworks, architectural patterns, and best practices.
+
+## Use this skill when
+
+- Building REST APIs or GraphQL servers
+- Creating microservices with Node.js
+- Implementing authentication and authorization
+- Designing scalable backend architectures
+- Setting up middleware and error handling
+- Integrating databases (SQL and NoSQL)
+- Building real-time applications with WebSockets
+- Implementing background job processing
+
+## Do not use this skill when
+
+- The task is unrelated to node.js backend patterns
+- You need a different domain or tool outside this scope
+
+## Instructions
+
+- Clarify goals, constraints, and required inputs.
+- Apply relevant best practices and validate outcomes.
+- Provide actionable steps and verification.
+- If detailed examples are required, open `resources/implementation-playbook.md`.
+
+## Core Frameworks
+
+### Express.js - Minimalist Framework
+
+**Basic Setup:**
+
+```typescript
+import express, { Request, Response, NextFunction } from &quot;express&quot;;
+import helmet from &quot;helmet&quot;;
+import cors from &quot;cors&quot;;
+import compression from &quot;compression&quot;;
+
+const app = express();
+
+// Security middleware
+app.use(helmet());
+app.use(cors({ origin: process.env.ALLOWED_ORIGINS?.split(&quot;,&quot;) }));
+app.use(compression());
+
+// Body parsing
+app.use(express.json({ limit: &quot;10mb&quot; }));
+app.use(express.urlencoded({ extended: true, limit: &quot;10mb&quot; }));
+
+// Request logging
+app.use((req: Request, res: Response, next: NextFunction) =&gt; {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =&gt; {
+  console.log(`Server running on port ${PORT}`);
+});
+```
+
+### Fastify - High Performance Framework
+
+**Basic Setup:**
+
+```typescript
+import Fastify from &quot;fastify&quot;;
+import helmet from &quot;@fastify/helmet&quot;;
+import cors from &quot;@fastify/cors&quot;;
+import compress from &quot;@fastify/compress&quot;;
+
+const fastify = Fastify({
+  logger: {
+    level: process.env.LOG_LEVEL || &quot;info&quot;,
+    transport: {
+      target: &quot;pino-pretty&quot;,
+      options: { colorize: true },
+    },
+  },
+});
+
+// Plugins
+await fastify.register(helmet);
+await fastify.register(cors, { origin: true });
+await fastify.register(compress);
+
+// Type-safe routes with schema validation
+fastify.post&lt;{
+  Body: { name: string; email: string };
+  Reply: { id: string; name: string };
+}&gt;(
+  &quot;/users&quot;,
+  {
+    schema: {
+      body: {
+        type: &quot;object&quot;,
+        required: [&quot;name&quot;, &quot;email&quot;],
+        properties: {
+          name: { type: &quot;string&quot;, minLength: 1 },
+          email: { type: &quot;string&quot;, format: &quot;email&quot; },
+        },
+      },
+    },
+  },
+  async (request, reply) =&gt; {
+    const { name, email } = request.body;
+    return { id: &quot;123&quot;, name };
+  },
+);
+
+await fastify.listen({ port: 3000, host: &quot;0.0.0.0&quot; });
+```
+
+## Architectural Patterns
+
+### Pattern 1: Layered Architecture
+
+**Structure:**
+
+```
+src/
+├── controllers/     # Handle HTTP requests/responses
+├── services/        # Business logic
+├── repositories/    # Data access layer
+├── models/          # Data models
+├── middleware/      # Express/Fastify middleware
+├── routes/          # Route definitions
+├── utils/           # Helper functions
+├── config/          # Configuration
+└── types/           # TypeScript types
+```
+
+**Controller Layer:**
+
+```typescript
+// controllers/user.controller.ts
+import { Request, Response, NextFunction } from &quot;express&quot;;
+import { UserService } from &quot;../services/user.service&quot;;
+import { CreateUserDTO, UpdateUserDTO } from &quot;../types/user.types&quot;;
+
+export class UserController {
+  constructor(private userService: UserService) {}
+
+  async createUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userData: CreateUserDTO = req.body;
+      const user = await this.userService.createUser(userData);
+      res.status(201).json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const user = await this.userService.getUserById(id);
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const updates: UpdateUserDTO = req.body;
+      const user = await this.userService.updateUser(id, updates);
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      await this.userService.deleteUser(id);
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+```
+
+**Service Layer:**
+
+```typescript
+// services/user.service.ts
+import { UserRepository } from &quot;../repositories/user.repository&quot;;
+import { CreateUserDTO, UpdateUserDTO, User } from &quot;../types/user.types&quot;;
+import { NotFoundError, ValidationError } from &quot;../utils/errors&quot;;
+import bcrypt from &quot;bcrypt&quot;;
+
+export class UserService {
+  constructor(private userRepository: UserRepository) {}
+
+  async createUser(userData: CreateUserDTO): Promise&lt;User&gt; {
+    // Validation
+    const existingUser = await this.userRepository.findByEmail(userData.email);
+    if (existingUser) {
+      throw new ValidationError(&quot;Email already exists&quot;);
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+    // Create user
+    const user = await this.userRepository.create({
+      ...userData,
+      password: hashedPassword,
+    });
+
+    // Remove password from response
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword as User;
+  }
+
+  async getUserById(id: string): Promise&lt;User&gt; {
+    const user = await this.userRepository.findById(id);
+    if (!user) {
+      throw new NotFoundError(&quot;User not found&quot;);
+    }
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword as User;
+  }
+
+  async updateUser(id: string, updates: UpdateUserDTO): Promise&lt;User&gt; {
+    const user = await this.userRepository.findById(id);
+    if (!user) {
+      throw new NotFoundError(&quot;User not found&quot;);
+    }
+    const updatedUser = await this.userRepository.update(id, updates);
+    const { password, ...userWithoutPassword } = updatedUser;
+    return userWithoutPassword as User;
+  }
+
+  async deleteUser(id: string): Promise&lt;void&gt; {
+    const user = await this.userRepository.findById(id);
+    if (!user) {
+      throw new NotFoundError(&quot;User not found&quot;);
+    }
+    await this.userRepository.delete(id);
+  }
+}
+```
+
+## Resources
+
+- `resources/implementation-playbook.md` for detailed patterns and examples.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

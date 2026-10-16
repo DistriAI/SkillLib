@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>brandkit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">brand-kit-generation</a> / brandkit</p><h1>brandkit</h1><p class="meta">combined</p><p>The two skills share the name &#x27;brandkit&#x27; but define fundamentally different procedures. The first (Leonxlnx) is an image-generation skill that produces a single visual brand-guidelines board (a &#x27;brand world&#x27; in one image) using art-direction principles, grid layouts, and logo concepting. The second (plugin87) is a code/token-generation skill that produces a structured design-token system (DTCG JSON, CSS variables, OKLCH colors) with automated WCAG verification scripts. They do not overlap in output format, tools, or steps; one is for visual presentation, the other for engineering foundations. Combining them is necessary to capture both the visual identity board and the underlying token system, as neither is a reproduction of the other.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Leonxlnx/taste-skill">Leonxlnx/taste-skill</a></td><td><code>skills/brandkit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/brandkit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Leonxlnx/taste-skill">Leonxlnx/taste-skill</a></td><td><code>skills/brandkit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/brandkit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Brand Kit Skill
+
+This skill covers two complementary aspects of brand creation: the visual identity board and the underlying design token system.
+
+## Part 1: Visual Identity Board (Image Generation)
+
+**Goal:** Generate a premium brand-kit image that feels like a serious identity studio output.
+
+1. **Brand Intake:** Determine if this is a new identity or an extension. Ask for missing details (logo, colors, mood) only if not provided.
+2. **Strategy:** Infer the brand&#x27;s core metaphor, audience, and visual world.
+3. **Generation:** Create a single image (default 3x3 grid, 4:3 or 16:10 aspect ratio) featuring:
+   - Dark charcoal canvas with clean grid panels.
+   - Logo marks, UI mockups, and typography samples.
+   - Minimal text, strong negative space, and cinematic atmosphere.
+   - Consistent gutters and connected panels.
+4. **Output:** Provide the generated image and explain any dimension limitations.
+
+## Part 2: Design Token System (Code Generation)
+
+**Goal:** Stand up a verified, themeable token foundation.
+
+1. **Check Prerequisites:** Verify the kit directory exists (`ls ${CLAUDE_SKILL_DIR}/../../../tokens`). If missing, instruct the user to run `npx ux-ui-agent-skills init`.
+2. **Brief Inference:** Identify industry, audience, mood, and motion depth.
+3. **Primitives:** Generate OKLCH color ramps (11 shades) and neutral ramps. Ensure 500 shade ≥ 4.5:1 contrast on white.
+4. **Semantic Layer:** Map roles (action, text, surface, border, feedback) to primitives. Design dark mode overrides explicitly.
+5. **Scales:** Define type scale (Major Third), spacing (4px), radius, and motion tokens.
+6. **Emit:** Write DTCG JSON files and a single `theme.css` with `[data-theme=&quot;dark&quot;]` overrides.
+7. **Verification:** Run `validate_tokens.py`, `validate_contrast.py` (WCAG AA light/dark), and `validate_theme_refs.py`.
+
+## Conflicts
+- **Leonxlnx/taste-skill** focuses on visual image generation for presentation.
+- **plugin87/ux-ui-agent-skills** focuses on code-based token generation for engineering.
+- Use Part 1 for visual mockups and Part 2 for implementation-ready design systems.</pre>
+</body>
+</html>

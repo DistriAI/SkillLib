@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>design-system</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">design-system-creation</a> / design-system</p><h1>design-system</h1><p class="meta">combined</p><p>The three skills share the name &#x27;design-system&#x27; but perform fundamentally different tasks. The first (microsoft) is a generator for a specific mobile stack (Expo/Tamagui) that creates a brand spec, tokens, and an HTML gallery. The second (jezweb) is an extractor that reverse-engineers a design system from an existing website or screenshot into a DESIGN.md file. The third (sickn33) is a set of mechanical implementation invariants (performance, FOUT prevention, token architecture) for frontend code. Because they cover generation, extraction, and implementation rules respectively, no single copy is the &#x27;original&#x27; that the others reproduce; they are distinct tools for different stages of the design process.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/mobile-apps/skills/design-system/SKILL.md</code></td></tr><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/frontend/skills/design-system/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/design-system/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/mobile-apps/skills/design-system/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/frontend/skills/design-system/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/design-system/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Design System
+
+This skill covers three distinct aspects of design system work: generation, extraction, and implementation invariants.
+
+## 1. Generation (Mobile/Expo)
+Use this when creating a new brand system for an Expo/React Native app.
+- **Artifacts**: `brand/design-system.md` (spec), `brand/tokens.ts` (Tamagui tokens), `brand/design-system.html` (gallery).
+- **Inputs**: Brand docs, logos, URLs, or Figma links.
+- **Modes**: Standalone, refresh, reskin, or dark-mode addition.
+
+## 2. Extraction (Web)
+Use this when reverse-engineering a design system from an existing source.
+- **Sources**: Live URL (via Playwright), local HTML, screenshot, or Google Stitch project.
+- **Process**: 
+  1. Identify source.
+  2. Extract raw data (HTML/CSS, screenshots).
+  3. Analyze tokens (colors, typography, components, spacing).
+  4. Synthesize into a semantic `DESIGN.md`.
+
+## 3. Implementation Invariants
+Use these rules when building components or pages to ensure quality.
+- **Token Architecture**: Map all colors to primitives (Foreground, Background, Border, Brand, Semantic). Never hardcode hex.
+- **Typography**: Clear hierarchy via size, weight, and letter-spacing. Use monospace with `tabular-nums` only for aligned data.
+- **Loading Order**: Prioritize above-the-fold content. Self-host WOFF2 fonts. Preload critical assets. Lazy-load below-the-fold.
+- **FOUT Prevention**: Never use `font-display: swap` for critical text. Gate visibility on `document.fonts.ready` with a safety timeout.
+- **Graceful Loading**: Avoid ugly intermediate states for slow-loading content (images, video, WebGL). Use placeholders and progressive enhancement.</pre>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ai-analyzer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">ai-health-analysis</a> / ai-analyzer</p><h1>ai-analyzer</h1><p class="meta">combined</p><p>The two copies share the same core structure, data sources, algorithms, and safety rules, but they disagree on critical operational details. The sickn33 copy is a heavily modified, safety-hardened version that explicitly disclaims clinical validation, adds a &#x27;Supporting material availability&#x27; section noting missing scripts, and changes Step 6 (Risk Prediction) to require model verification before calculating probabilities. It also changes Step 9 to only save history upon user confirmation. The FreedomIntelligence copy is the &#x27;original&#x27; or less cautious version that assumes the scripts exist, calculates 10-year probabilities directly, and automatically updates history. Because the sickn33 copy contains material constraints (missing file checks, model verification) that the other lacks, and they disagree on the execution of risk prediction and history logging, crowning one would hide a real alternative implementation.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ai-analyzer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/ai-analyzer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ai-analyzer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/ai-analyzer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/ai-analyzer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/ai-analyzer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: ai-analyzer
+description: AI-driven comprehensive health analysis system integrating multi-dimensional health data, identifying anomaly patterns, organizing risk factors, and providing general health information. Supports intelligent Q&amp;A and AI health report generation.
+allowed-tools: Read, Grep, Glob, Write
+risk: critical
+source: community
+---
+
+# AI Health Analyzer
+
+Used to organize provided health data, describe trends, and prepare questions for doctor discussion. This is not a clinically validated prediction system.
+
+## When to Use
+- User wants AI-driven health analysis across multiple health datasets or lifestyle signals.
+- Need anomaly detection, risk factor identification, or personalized recommendations based on health inputs.
+- Need generated health reports or question-answering over health metrics and trends.
+
+## Input and Evidence Boundaries
+- Statistical anomalies do not equal medical anomalies.
+- CUSUM, Z-score, and correlation require sufficient, comparable samples; correlation does not prove causation.
+- Nutritional intake below reference levels does not directly prove deficiency; sleep questionnaires do not diagnose sleep disorders.
+- Emergency symptoms should be handled according to local emergency procedures; do not delay medical care for report generation.
+
+## Core Features
+1. **Intelligent Health Analysis**: Multi-dimensional data integration (basic metrics, lifestyle, mental health, medical history), anomaly pattern recognition (CUSUM, Z-score), correlation analysis (Pearson, Spearman), trend prediction.
+2. **Health Risk Prediction**: Hypertension (Framingham), Diabetes (ADA), Cardiovascular (ACC/AHA ASCVD), Nutritional Deficiency (RDA), Sleep Disorder (PSQI).
+3. **Personalized Advice Engine**: Based on static profile (age, sex, BMI, activity). Levels: 1 (General), 2 (Reference), 3 (Medical, requires doctor confirmation).
+4. **Natural Language Interaction**: Intelligent Q&amp;A, context understanding, intent recognition.
+5. **AI Health Report Generation**: Comprehensive reports, quick summaries, risk assessment, trend analysis, HTML interactive reports (ECharts, Tailwind CSS).
+
+## Execution Steps
+
+### Step 1: Read AI Configuration
+Read `data/ai-config.json` and `data/ai-history.json`. Check if AI features are enabled and verify data source configuration.
+
+### Step 2: Read User Profile
+Read `data/profile.json` to get basic info: age, sex, height, weight, BMI.
+
+### Step 3: Read Health Data
+Read relevant data based on configuration:
+- Basic metrics: `data/index.json`
+- Lifestyle: `data-example/fitness-tracker.json`, `data-example/sleep-tracker.json`, `data-example/nutrition-tracker.json`
+- Mental Health: `data-example/mental-health-tracker.json`
+- Medical History: `data/medications.json`, `data/allergies.json` (if exist)
+
+### Step 4: Data Integration and Preprocessing
+Integrate all data sources, perform data cleaning, time alignment, and missing value handling.
+
+### Step 5: Multi-dimensional Analysis
+- **Correlation**: Calculate associations (e.g., sleep↔mood, exercise↔weight).
+- **Trend**: Use linear regression, moving averages to identify trend direction.
+- **Anomaly Detection**: Use CUSUM, Z-score to detect outliers and change points.
+
+### Step 6: Risk Prediction
+**Conflict Resolution**: Verify specific model version, necessary inputs, applicable population, and time range. 
+- If verified: Calculate risk using the specified model (e.g., Framingham for 10-year CVD risk).
+- If not verified: Only describe risk factors; do not calculate disease probabilities.
+- Note: ADA questionnaire score is not a personal 10-year incidence probability.
+
+### Step 7: Generate Personalized Advice
+Generate three-level advice:
+- **Level 1**: General advice (based on standard guidelines).
+- **Level 2**: Reference advice (based on personal data).
+- **Level 3**: Medical advice (requires doctor confirmation, includes disclaimer).
+
+### Step 8: Generate Analysis Report
+- **Text Report**: Overall assessment, risk factors, key trends, correlation findings, personalized advice.
+- **HTML Report**: 
+  - **Check**: Verify if `scripts/generate_ai_report.py` exists in the installation.
+  - **If exists**: Call script to generate interactive report with ECharts.
+  - **If missing**: Report that the HTML generation script is unavailable; do not fabricate the script. Provide text report only.
+
+### Step 9: Update AI History
+**Conflict Resolution**: Only save results if the user explicitly requests to keep records and confirms a private target. Do not automatically write to `data/ai-history.json` without user consent.
+
+## Data Sources
+| Data Source | File Path | Content |
+|-------------|-----------|---------|
+| User Profile | `data/profile.json` | Age, sex, height, weight, BMI |
+| Medical Records | `data/index.json` | Biochemical indicators, imaging |
+| Fitness Tracker | `data-example/fitness-tracker.json` | Type, duration, intensity, MET |
+| Sleep Tracker | `data-example/sleep-tracker.json` | Duration, quality, PSQI |
+| Nutrition Tracker | `data-example/nutrition-tracker.json` | Diet records, nutrients, RDA |
+| Mental Health | `data-example/mental-health-tracker.json` | PHQ-9, GAD-7 |
+| Medications | `data/medications.json` | Name, dose, usage, adherence |
+| Allergies | `data/allergies.json` | Allergens, severity |
+
+## Algorithms
+- **Correlation**: Pearson (continuous), Spearman (ordinal).
+- **Anomaly Detection**: CUSUM (change points), Z-score (|z| &gt; 2), IQR.
+- **Risk Prediction**: Framingham, ADA, ASCVD Calculator.
+
+## Safety and Compliance
+- **Must Follow**:
+  - ❌ No medical diagnosis.
+  - ❌ No specific dosage advice.
+  - ❌ No life/death prognosis.
+  - ❌ Do not replace doctor&#x27;s advice.
+  - ✅ All analysis must be marked &quot;For reference only&quot;.
+  - ✅ Level 3 advice must include disclaimer.
+  - ✅ High-risk predictions must suggest consulting a doctor.
+- **Privacy Protection**:
+  - Only read user-authorized data; missing records do not equal normal or zero values.
+  - Local files may enter host model context; ensure explicit authorization for external data transfer if applicable.
+  - Escape untrusted text in HTML; avoid remote scripts, trackers, and public health reports.
+
+## Related Commands
+- `/ai analyze` - AI comprehensive analysis
+- `/ai predict [risk_type]` - Health risk prediction
+- `/ai chat [query]` - Natural language Q&amp;A
+- `/ai report generate [type]` - Generate AI health report
+- `/ai status` - Check AI feature status
+
+## Technical Implementation
+- **Tools**: Read, Grep, Glob, Write.
+- **Performance**: Incremental reading, data caching, lazy calculation.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for professional medical advice.</pre>
+</body>
+</html>

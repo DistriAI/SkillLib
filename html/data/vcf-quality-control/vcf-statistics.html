@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>vcf-statistics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">vcf-quality-control</a> / vcf-statistics</p><h1>vcf-statistics</h1><p class="meta">combined</p><p>The two skills cover the same task (VCF statistics and QC) but with different emphases and non-overlapping material. The OpenClaw copy is a broad command reference (bcftools stats, gtcheck, query, cyvcf2) with specific expected Ti/Tv ranges and plotting steps. The GPTomics copy is a decision-oriented QC guide that adds a governing principle (cohort-relative interpretation, order of operations, identity as a graph problem), a detailed decision table for interpreting deviations, version compatibility notes, and additional tools (vcftools, somalier, peddy, KING). Neither is a strict reproduction of the other; crowning one would hide the other&#x27;s unique interpretive framework and tooling.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/vcf-statistics/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/vcf-statistics/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/vcf-statistics/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/vcf-statistics/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># VCF Statistics and Quality Control
+
+## Version Compatibility
+Reference examples tested with: bcftools 1.19+, vcftools 0.1.16+, somalier 0.2.19+, peddy 0.4.8+, cyvcf2 0.30+, numpy 1.26+.
+
+Before using code patterns, verify installed versions match. If versions differ:
+- Python: `pip show &lt;package&gt;` then `help(module.function)` to check signatures
+- CLI: `&lt;tool&gt; --version` then `&lt;tool&gt; --help` to confirm flags
+
+Note: `bcftools gtcheck` was rewritten around bcftools 1.10; the old `-G/--GTs-only` flag is gone. Modern gtcheck cross-checks all samples in one file when `-g` is omitted, and uses `-E/--error-probability`. Verify flags against the installed build.
+
+## The Governing Principle
+No QC metric has a universal pass value. Each metric&#x27;s expected range depends on the assay (WGS vs WES), the sample&#x27;s ancestry, and the cohort it sits in. QC is not threshold-checking but reading a deviation for its mechanistic meaning and acting on it.
+
+1. Always compare a sample against a matched cohort (same assay, same inferred ancestry), never against an absolute number.
+2. Order of operations matters: apply genotype-level filters (set `./.` where GQ/DP/allele-balance fail) BEFORE computing cohort missingness, call rate, or HWE.
+3. Sample-identity QC is a graph problem: build the all-pairs relatedness matrix and reconcile it against the declared pedigree/manifest BEFORE any association or burden analysis.
+
+## QC Metric Decision Table
+
+| Metric | Expected (WGS) | Expected (WES) | A deviation MEANS | Action |
+|--------|---------------|---------------|-------------------|--------|
+| Ti/Tv (overall) | ~2.0-2.1 | ~3.0-3.3 | Low -&gt; false-positive transversions; high -&gt; over-filtering | Tighten site filters if low; check filter for transversion bias if high |
+| Ti/Tv (novel only) | near overall | near overall | Novel Ti/Tv well below known-site value -&gt; FP contamination | Raise stringency |
+| Het/hom ratio | ancestry-dependent | same | High vs same-ancestry cohort -&gt; contamination; low -&gt; inbreeding/ROH | Stratify by ancestry first |
+| Novel fraction (vs dbSNP) | low for common | same | Novel COMMON variants -&gt; almost always artifacts | Investigate common novels |
+| Call rate (per sample) | &gt;95-98% | &gt;95-98% | Low -&gt; low-coverage/low-quality sample | Drop worst samples, then recompute |
+| Call rate (per variant) | &gt;95-99% | &gt;95-99% | Low -&gt; hard-to-genotype region | Drop worst variants after sample QC |
+| Het allele-balance | centered on 0.5 | 0.5 | Shifted away from 0.5 -&gt; contamination signature | Confirm with VerifyBamID2 or CHARR |
+| Excess-het / HWE | in equilibrium | same | EXCESS het -&gt; mapping artifact; het DEFICIT -&gt; often real | Filter on excess het only, within ancestry |
+| Relatedness (kinship) | matches manifest | matches manifest | Unexpected high kinship -&gt; sample swap/duplicate | Reconcile with KING/somalier/peddy |
+
+## bcftools stats
+
+### Basic Statistics
+```bash
+bcftools stats input.vcf.gz &gt; stats.txt
+bcftools stats -s - input.vcf.gz &gt; per_sample.txt
+bcftools stats file1.vcf.gz file2.vcf.gz &gt; cmp.txt
+```
+
+### View Key Metrics
+```bash
+bcftools stats input.vcf.gz | grep &quot;^SN&quot;
+bcftools stats input.vcf.gz | grep &quot;^TSTV&quot;
+```
+
+Output sections:
+- `SN` - Summary numbers
+- `TSTV` - Transitions/transversions
+- `SiS` - Singleton stats
+- `AF` - Allele frequency distribution
+- `QUAL` - Quality distribution
+- `IDD` - Indel distribution
+- `ST` - Substitution types
+- `DP` - Depth distribution
+
+### Region-Specific Stats
+```bash
+bcftools stats -r chr1:1000000-2000000 input.vcf.gz &gt; region_stats.txt
+bcftools stats -R exome.bed input.vcf.gz &gt; exome_stats.txt
+```
+
+### Plotting Statistics
+```bash
+bcftools stats input.vcf.gz &gt; stats.txt
+plot-vcfstats -p output_dir stats.txt
+```
+
+## bcftools gtcheck
+
+### Check Sample Identity
+```bash
+bcftools gtcheck -g reference.vcf.gz query.vcf.gz
+```
+
+### Detect Sample Swaps
+```bash
+bcftools gtcheck input.vcf.gz &gt; relatedness.txt
+```
+
+### Check Against Reference Panel
+```bash
+bcftools gtcheck -g 1000genomes.vcf.gz unknown_sample.vcf.gz
+```
+
+## Quick Statistics with Query
+
+### Count Variants
+```bash
+bcftools view -H input.vcf.gz | wc -l
+bcftools view -v snps -H input.vcf.gz | wc -l
+bcftools view -v indels -H input.vcf.gz | wc -l
+bcftools view -f PASS -H input.vcf.gz | wc -l
+```
+
+### Quality and Depth Distribution
+```bash
+bcftools query -f &#x27;%QUAL\n&#x27; input.vcf.gz | awk &#x27;{sum+=$1; count++} END {print &quot;Mean QUAL:&quot;, sum/count}&#x27;
+bcftools query -f &#x27;%INFO/DP\n&#x27; input.vcf.gz | awk &#x27;{sum+=$1; count++} END {print &quot;Mean DP:&quot;, sum/count}&#x27;
+```
+
+### Allele Frequency Spectrum
+```bash
+bcftools query -f &#x27;%INFO/AF\n&#x27; input.vcf.gz | awk &#x27;{
+    if($1&lt;0.01) rare++
+    else if($1&lt;0.05) low++
+    else if($1&lt;0.5) common++
+    else freq++
+} END {
+    print &quot;Rare (&lt;1%):&quot;, rare
+    print &quot;Low (1-5%):&quot;, low
+    print &quot;Common (5-50%):&quot;, common
+    print &quot;Frequent (&gt;50%):&quot;, freq
+}&#x27;
+```
+
+## Sample Statistics
+
+### List and Count Samples
+```bash
+bcftools query -l input.vcf.gz
+bcftools query -l input.vcf.gz | wc -l
+```
+
+### Per-Sample Variant Counts
+```bash
+for sample in $(bcftools query -l input.vcf.gz); do
+    count=$(bcftools view -s &quot;$sample&quot; -H input.vcf.gz | bcftools view -c 1 -H | wc -l)
+    echo &quot;$sample: $count&quot;
+done
+```
+
+### Missing Genotypes per Sample
+```bash
+bcftools stats -s - input.vcf.gz | grep &quot;^PSC&quot;
+```
+
+## cyvcf2 Statistics
+
+### Basic Counts
+```python
+from cyvcf2 import VCF
+
+stats = {&#x27;snps&#x27;: 0, &#x27;indels&#x27;: 0, &#x27;other&#x27;: 0}
+
+for variant in VCF(&#x27;input.vcf.gz&#x27;):
+    if variant.is_snp:
+        stats[&#x27;snps&#x27;] += 1
+    elif variant.is_indel:
+        stats[&#x27;indels&#x27;] += 1
+    else:
+        stats[&#x27;other&#x27;] += 1
+
+print(f&#x27;SNPs: {stats[&quot;snps&quot;]}&#x27;)
+print(f&#x27;Indels: {stats[&quot;indels&quot;]}&#x27;)
+print(f&#x27;Other: {stats[&quot;other&quot;]}&#x27;)
+```
+
+### Quality Statistics
+```python
+from cyvcf2 import VCF
+import numpy as np
+
+quals = []
+for variant in VCF(&#x27;input.vcf.gz&#x27;):
+    if variant.QUAL:
+        quals.append(variant.QUAL)
+
+quals = np.array(quals)
+print(f&#x27;Mean QUAL: {np.mean(quals):.1f}&#x27;)
+print(f&#x27;Median QUAL: {np.median(quals):.1f}&#x27;)
+print(f&#x27;Min QUAL: {np.min(quals):.1f}&#x27;)
+print(f&#x27;Max QUAL: {np.max(quals):.1f}&#x27;)
+```</pre>
+</body>
+</html>

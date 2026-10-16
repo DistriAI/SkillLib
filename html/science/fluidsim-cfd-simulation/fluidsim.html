@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>fluidsim</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">fluidsim-cfd-simulation</a> / fluidsim</p><h1>fluidsim</h1><p class="meta">combined</p><p>The two skills cover the same domain (FluidSim CFD) but diverge significantly in procedure, safety constraints, and technical accuracy. The first skill (K-Dense-AI) is a rigorous, safety-focused workflow that mandates explicit resource planning, pilot runs, and specific version pins (0.9.0), while explicitly correcting API field names (e.g., `cfl_coef` vs `CFL`). The second skill (Vibe-Skills) is a general-purpose guide that includes a broader solver list (shallow water, stratified) and a simpler 5-step workflow, but it contains a likely API error (using `CFL` instead of `cfl_coef` for 0.9.0) and lacks the strict HPC safety checks. Because the first skill&#x27;s safety constraints are critical for HPC usage and the second skill provides broader solver context, neither is a pure reproduction of the other. Combining them allows for a robust workflow that includes the safety checks of the first and the solver breadth of the second, while resolving the API conflict in favor of the version-specific correction in the first.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/fluidsim/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/fluidsim/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/fluidsim/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/fluidsim/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: fluidsim
+description: Plans, configures, runs, and analyzes FluidSim CFD simulations with HPC safety checks and broad solver support.
+license: MIT
+---
+
+# FluidSim
+
+Use FluidSim (targeting 0.9.0) for pseudospectral CFD. This skill covers Navier-Stokes (2D/3D), shallow water, and stratified flows.
+
+## Safety &amp; Validity
+- Do not treat a completed run or stable time step as evidence of convergence.
+- Always verify physical assumptions, units, and boundary conditions before execution.
+- Never submit MPI jobs automatically; always prepare a site-specific script for manual review.
+
+## Installation
+Prefer a project lock for reproducibility:
+```bash
+uv init --python 3.12
+uv add &quot;fluidsim[fft]==0.9.0&quot; &quot;fluidfft==0.4.5&quot; &quot;pyFFTW==0.15.1&quot;
+uv lock
+uv sync --frozen
+```
+
+## Workflow
+1. **Define Problem**: State equations, geometry, boundaries, and acceptance criteria.
+2. **Select Solver**: Choose from `ns2d`, `ns3d`, `sw1l`, or `ns2d.strat` based on physics.
+3. **Configure Parameters**: 
+   - Use `Simul.create_default_params()`.
+   - Set resolution (`params.oper.nx`), domain (`params.oper.Lx`), and physics (`params.nu_2`).
+   - **Critical**: Use `params.time_stepping.cfl_coef` (not `CFL`) for adaptive time stepping in 0.9.0.
+   - Set `params.time_stepping.USE_CFL = True` and `params.time_stepping.deltat0`.
+4. **Resource Planning**: Estimate CPU, RAM, and disk. Create a strict JSON plan with bounds.
+5. **Pilot Run**: Run a tiny serial pilot (e.g., 32x32 grid). Inspect budgets, divergence, and spectral tails.
+6. **Refine**: Adjust grid and time step independently. Check conservation residuals.
+7. **Production Run**: Prepare MPI script. Submit manually.
+8. **Analysis**: 
+   - Plot fields: `sim.output.phys_fields.plot(&quot;vorticity&quot;)`.
+   - Plot spectra: `sim.output.spectra.plot1d()`.
+   - Load previous runs: `from fluidsim import load_sim_for_plot`.
+
+## Solver Selection Guide
+- **2D Turbulence**: `fluidsim.solvers.ns2d.solver.Simul`
+- **3D Turbulence**: `fluidsim.solvers.ns3d.solver.Simul`
+- **Shallow Water**: `fluidsim.solvers.sw1l.solver.Simul` (set `params.f` for Coriolis)
+- **Stratified**: `fluidsim.solvers.ns2d.strat.solver.Simul` (set `params.N` for Brunt-Väisälä)
+
+## API Notes (0.9.0)
+- `ParamContainer` rejects undeclared attributes.
+- Output files default to `state_phys_t*.nc` and `spectra1D.h5`.
+- `params.output.sub_directory` is relative to `FLUIDSIM_PATH`.</pre>
+</body>
+</html>

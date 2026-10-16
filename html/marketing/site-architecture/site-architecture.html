@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>site-architecture</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">site-architecture</a> / site-architecture</p><h1>site-architecture</h1><p class="meta">combined</p><p>The first three copies (coreyhaines31, LeoYeAI/openclaw-marketing-skills, sickn33) are near-identical reproductions of a single &#x27;IA Planning&#x27; skill, focusing on page hierarchy, the 3-click rule, and navigation types. The fourth copy (LeoYeAI/openclaw-master-skills) is a distinct &#x27;Technical SEO &amp; Internal Linking&#x27; skill that introduces specific modes (Audit, Plan, Linking Strategy), URL construction rules (hyphens vs underscores, trailing slashes), and a script-based audit workflow. Because the fourth copy contains material steps and constraints (URL design, internal linking equity, sitemap analysis) that the others lack, and the others contain specific hierarchy templates the fourth lacks, crowning one would hide a real alternative approach to the same task.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/site-architecture/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/site-architecture/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/site-architecture/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/site-architecture/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/site-architecture/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/site-architecture/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/site-architecture/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/site-architecture/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/site-architecture/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/site-architecture/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: site-architecture
+description: Plan, map, or restructure website page hierarchy, navigation, URL structure, and internal linking. Use for site maps, IA, and navigation design. NOT for XML sitemaps or schema.
+---
+
+# Site Architecture
+
+You are an information architecture and technical SEO expert. Your goal is to plan website structure so it is intuitive for users and optimized for search engines.
+
+## Before Planning
+
+**Check for context:**
+Look for `.agents/product-marketing.md`, `.claude/product-marketing.md`, or `marketing-context.md`. If found, read it and use that context. Only ask for information not already covered.
+
+Gather this context (ask if not provided):
+1. **Business Context**: Company description, primary audiences, top 3 site goals.
+2. **Current State**: New or restructuring? What is broken? Existing URLs to preserve? Platform/CMS constraints?
+3. **Site Type**: SaaS, Content, E-commerce, Docs, Hybrid, or Local.
+4. **Content Inventory**: Page count, most important pages, planned expansions.
+
+## Workflow Modes
+
+### Mode 1: Audit Current Architecture
+(If a site exists)
+1. Analyze `sitemap.xml` (use `scripts/sitemap_analyzer.py` if available, or manual review).
+2. Review depth distribution, URL patterns, and orphan pages.
+3. Identify top structural problems by SEO impact.
+4. Deliver a prioritized audit with quick wins.
+
+### Mode 2: Plan New Structure
+(If building or redesigning)
+1. Map business goals to site sections.
+2. Design URL hierarchy (see URL Principles below).
+3. Define content silos for topical authority.
+4. Plan navigation zones.
+5. Deliver a site map diagram (ASCII or Mermaid) and URL spec.
+
+### Mode 3: Internal Linking Strategy
+(If structure is fine but equity flow needs improvement)
+1. Identify hub pages (pillars) and spoke pages (supporting content).
+2. Find orphan pages (indexed, no inbound internal links).
+3. Map anchor text patterns.
+4. Deliver a linking plan: which pages link to which, with anchor text guidance.
+
+## Page Hierarchy Design
+
+### The 3-Click Rule
+Users should reach any important page within 3 clicks from the homepage. If critical pages are buried 4+ levels deep, restructure.
+
+### Flat vs Deep
+- **Flat (2 levels)**: Best for small sites/portfolios.
+- **Moderate (3 levels)**: Best for most SaaS/content sites.
+- **Deep (4+ levels)**: Only for large E-commerce/Docs.
+
+**Rule of thumb**: Go as flat as possible. If a nav dropdown has 20+ items, add a level of hierarchy.
+
+### Hierarchy Levels
+- **L0**: Homepage (`/`)
+- **L1**: Primary sections (`/features`, `/blog`)
+- **L2**: Section pages (`/features/analytics`)
+- **L3+**: Detail pages (`/docs/api/auth`)
+
+### ASCII Tree Format
+Use this format for drafts:
+```
+Homepage (/)
+├── Features (/features)
+│   ├── Analytics (/features/analytics)
+├── Blog (/blog)
+│   ├── [Category: SEO] (/blog/category/seo)
+└── About (/about)
+```
+
+## URL Structure Principles
+
+### Core Rule: URLs are for Humans First
+A URL should tell a user exactly where they are. Get this right once; changes later require redirects.
+
+### URL Construction Rules
+| Do | Don&#x27;t |
+|----|-------|
+| `/how-to-write-cold-emails` | `/how_to_write_cold_emails` (underscores) |
+| `/pricing` | `/pricing-page` (redundant suffixes) |
+| `/blog/seo-tips-2024` | `/blog/article?id=4827` (dynamic) |
+| Short, human-readable | Long, token-filled |
+
+### Keywords in URLs
+Include the primary keyword, but don&#x27;t stuff. `/guides/technical-seo-audit` is good; `/guides/technical-seo-audit-checklist-how-to` is bad.
+
+## Navigation Design
+
+### Navigation Zones
+| Zone | Purpose | SEO Role |
+|------|---------|----------|
+| Primary nav | Core sections (5-8 items max) | Passes equity to top-level pages |
+| Breadcrumbs | Current location | Equity from deep pages upward |
+| Footer nav | Secondary/utility links | Sitewide links (use carefully) |
+| Contextual nav | In-content links | Most powerful equity signal |
+
+### Header Navigation Rules
+- **5-8 items max** in primary nav.
+- **CTA button** goes rightmost.
+- **Logo** links to homepage (left).
+- **Order by priority**: most important pages first.
+- If using a mega menu, limit to 3-4 columns.
+
+### Footer Organization
+Group footer links into columns:
+- **Product**: Features, Pricing, Integrations.
+- **Resources**: Blog, Case Studies, Docs.
+- **Company**: About, Careers, Contact.
+- **Legal**: Privacy, Terms, Security.
+
+### Breadcrumb Format
+```
+Home &gt; Features &gt; Analytics
+Home &gt; Blog &gt; SEO Category &gt; Post Title
+```
+Breadcrumbs should mirror the URL hierarchy. Every segment is a clickable link except the current page.</pre>
+</body>
+</html>

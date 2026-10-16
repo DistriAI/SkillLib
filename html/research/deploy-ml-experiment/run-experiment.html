@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>run-experiment</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">deploy-ml-experiment</a> / run-experiment</p><h1>run-experiment</h1><p class="meta">combined</p><p>The two copies share the same core workflow (detect environment, pre-flight GPU check, sync code, optional W&amp;B, deploy, verify), but the wanshuiyin/Auto-claude-code-research-in-sleep copy adds a Modal serverless path, an environment contract with spec-hash warm-reuse and a seeded kernel witness, and ordered pip install phases. The brycewang-stanford/Auto-Empirical-Research-Skills copy is a shorter mirror that omits Modal and the env contract, and uses a simpler requirements.txt install. Crowning one would hide the Modal and env-contract steps, so the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/run-experiment/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/run-experiment/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/run-experiment/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/run-experiment/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex/run-experiment/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex/run-experiment/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: run-experiment
+description: Deploy and run ML experiments on local, remote, Vast.ai, or Modal serverless GPU. Use when user says &quot;run experiment&quot;, &quot;deploy to server&quot;, &quot;跑实验&quot;, or needs to launch training jobs.
+argument-hint: &quot;[experiment-description]&quot;
+allowed-tools: Bash(*), Read, Grep, Glob, Edit, Write, Skill(serverless-modal), Agent
+---
+
+# Run Experiment
+
+Deploy and run ML experiment: $ARGUMENTS
+
+## Workflow
+
+### Step 1: Detect Environment
+
+Read the project&#x27;s `CLAUDE.md` to determine the experiment environment:
+
+- **Local GPU** (`gpu: local`): Look for local CUDA/MPS setup info
+- **Remote server** (`gpu: remote`): Look for SSH alias, conda env, code directory
+- **Vast.ai** (`gpu: vast`): Check for `vast-instances.json` at project root — if a running instance exists, use it. Also check `CLAUDE.md` for a `## Vast.ai` section.
+- **Modal** (`gpu: modal`): Serverless GPU via Modal. No SSH, no Docker, auto scale-to-zero. Delegate to `/serverless-modal`.
+
+**Modal detection:** If `CLAUDE.md` has `gpu: modal` or a `## Modal` section, the entire deployment is handled by `/serverless-modal`. Jump to **Step 4: Deploy (Modal)** — Steps 2-3 are not needed (Modal handles code sync and GPU allocation automatically).
+
+**Environment contract** (`../shared-references/compute-env-contract.md`): before building or trusting any environment, read the provider&#x27;s env ledger (`.aris/compute/&lt;provider&gt;.md`) — an unchanged spec hash means warm-reuse, a changed one means rebuild. New env → write the declarative spec first, render it for this provider&#x27;s shape, and never declare it ready on import-success alone: run the seeded kernel witness, and after any rebuild/doc edit run the agent-follows-doc pass (a fresh subagent executes the documented invocation verbatim and reports doc-vs-reality divergence).
+
+**Vast.ai detection priority:**
+1. If `CLAUDE.md` has `gpu: vast` or a `## Vast.ai` section:
+   - If `vast-instances.json` exists and has a running instance → use that instance
+   - If no running instance → call `/vast-gpu provision` which analyzes the task, presents cost-optimized GPU options, and rents the user&#x27;s choice
+2. If no server info is found in `CLAUDE.md`, ask the user.
+
+### Step 2: Pre-flight Check
+
+Check GPU availability on the target machine:
+
+**Remote (SSH):**
+```bash
+ssh &lt;server&gt; nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv,noheader
+```
+
+**Remote (Vast.ai):**
+```bash
+ssh -p &lt;PORT&gt; root@&lt;HOST&gt; nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv,noheader
+```
+(Read `ssh_host` and `ssh_port` from `vast-instances.json`, or run `vastai ssh-url &lt;INSTANCE_ID&gt;` which returns `ssh://root@HOST:PORT`)
+
+**Local:**
+```bash
+nvidia-smi --query-gpu=index,memory.used,memory.total --format=csv,noheader
+# or for Mac MPS:
+python -c &quot;import torch; print(&#x27;MPS available:&#x27;, torch.backends.mps.is_available())&quot;
+```
+
+Free GPU = memory.used &lt; 500 MiB.
+
+### Step 3: Sync Code (Remote Only)
+
+Check the project&#x27;s `CLAUDE.md` for a `code_sync` setting. If not specified, default to `rsync`.
+
+#### Option A: rsync (default)
+
+Only sync necessary files — NOT data, checkpoints, or large files:
+```bash
+rsync -avz --include=&#x27;*.py&#x27; --exclude=&#x27;*&#x27; &lt;local_src&gt;/ &lt;server&gt;:&lt;remote_dst&gt;/
+```
+
+#### Option B: git (when `code_sync: git` is set in CLAUDE.md)
+
+Push local changes to remote repo, then pull on the server:
+```bash
+# 1. Push from local
+git add -A &amp;&amp; git commit -m &quot;sync: experiment deployment&quot; &amp;&amp; git push
+
+# 2. Pull on server
+ssh &lt;server&gt; &quot;cd &lt;remote_dst&gt; &amp;&amp; git pull&quot;
+```
+
+Benefits: version-tracked, multi-server sync with one push, no rsync include/exclude rules needed.
+
+#### Option C: Vast.ai instance
+
+Sync code to the vast.ai instance (always rsync, code dir is `/workspace/project/`):
+```bash
+rsync -avz -e &quot;ssh -p &lt;PORT&gt;&quot; \
+  --include=&#x27;*.py&#x27; --include=&#x27;*.yaml&#x27; --include=&#x27;*.yml&#x27; --include=&#x27;*.json&#x27; \
+  --include=&#x27;*.txt&#x27; --include=&#x27;*.sh&#x27; --include=&#x27;*/&#x27; \
+  --exclude=&#x27;*.pt&#x27; --exclude=&#x27;*.pth&#x27; --exclude=&#x27;*.ckpt&#x27; \
+  --exclude=&#x27;__pycache__&#x27; --exclude=&#x27;.git&#x27; --exclude=&#x27;data/&#x27; \
+  --exclude=&#x27;wandb/&#x27; --exclude=&#x27;outputs/&#x27; \
+  ./ root@&lt;HOST&gt;:/workspace/project/
+```
+
+Install dependencies per the env contract (ordered phases — pins first, one `pip install` per phase; see `../shared-references/compute-env-contract.md`):
+```bash
+ssh -p &lt;PORT&gt; root@&lt;HOST&gt; &quot;pip install -q torch==&lt;pinned&gt;&quot;       # phase 1: pins
+ssh -p &lt;PORT&gt; root@&lt;HOST&gt; &quot;pip install -q &lt;remaining packages&gt;&quot;  # phase 2+
+```
+Legacy fallback — `requirements.txt` only, no env spec: install as one phase, and treat any version fight as the signal to convert to ordered phases:
+```bash
+scp -P &lt;PORT&gt; requirements.txt root@&lt;HOST&gt;:/workspace/
+ssh -p &lt;PORT&gt; root@&lt;HOST&gt; &quot;pip install -q -r /workspace/requirements.txt&quot;
+```
+
+### Step 3.5: W&amp;B Integration (when `wandb: true` in CLAUDE.md)
+
+**Skip this step entirely if `wandb` is not set or is `false` in CLAUDE.md.**
+
+Before deploying, ensure the experiment scripts have W&amp;B logging:
+
+1. **Check if wandb is already in the script** — look for `import wandb` or `wandb.init`. If present, skip to Step 4.
+
+2. **If not present, add W&amp;B logging** to the training script:
+   ```python
+   import wandb
+   wandb.init(project=WANDB_PROJECT, name=EXP_NAME, config={...hyperparams...})
+
+   # Inside training loop:
+   wandb.log({&quot;train/loss&quot;: loss, &quot;train/lr&quot;: lr, &quot;step&quot;: step})
+
+   # After eval:
+   wandb.log({&quot;eval/loss&quot;: eval_loss, &quot;eval/ppl&quot;: ppl, &quot;eval/accuracy&quot;: acc})
+
+   # At end:
+   wandb.finish()
+   ```
+
+3. **Metrics to log** (add whichever apply to the experiment):
+   - `train/loss` — training loss per step
+   - `train/lr` — learning rate
+   - `eval/loss`, `eval/ppl`, `eval/accuracy` — eval metrics per epoch
+   - `gpu/memory_used` — GPU memory (via `torch.cuda.max_memory_allocated()`)
+   - `speed/samples_per_sec` — throughput
+   - Any custom metrics the experiment already computes
+
+4. **Verify wandb login on the target machine:**
+   ```bash
+   ssh &lt;server&gt; &quot;wandb status&quot;  # should show logged in
+   # If not logged in:
+   ssh &lt;server&gt; &quot;wandb login &lt;WANDB_API_KEY&gt;&quot;
+   ```
+
+&gt; The W&amp;B project name and API key come from `CLAUDE.md` (see example below). The experiment name is auto-generated from the script name + timestamp.
+
+### Step 4: Deploy
+
+#### Remote (via SSH + screen)
+
+For each experiment, create a dedicated screen session with GPU binding:
+```bash
+ssh &lt;server&gt; &quot;screen -dmS &lt;exp_name&gt; bash -c &#x27;\
+  eval \&quot;\$(&lt;conda_path&gt;/conda shell.bash hook)\&quot; &amp;&amp; \
+  conda activate &lt;env&gt; &amp;&amp; \
+  CUDA_VISIBLE_DEVICES=&lt;gpu_id&gt; python &lt;script&gt; &lt;args&gt; 2&gt;&amp;1 | tee &lt;log_file&gt;&#x27;&quot;
+```
+
+#### Vast.ai instance
+
+No conda needed — the Docker image has the environment. Use `/workspace/project/` as working dir:
+```bash
+ssh -p &lt;PORT&gt; root@&lt;HOST&gt; &quot;screen -dmS &lt;exp_name&gt; bash -c &#x27;\
+  cd /workspace/project &amp;&amp; \
+  CUDA_VISIBLE_DEVICES=&lt;gpu_id&gt; python &lt;script&gt; &lt;args&gt; 2&gt;&amp;1 | tee /workspace/&lt;log_file&gt;&#x27;&quot;
+```
+
+After launching, update the `experiment` field in `vast-instances.json` for this instance.
+
+#### Local
+
+```bash
+# Linux with CUDA
+CUDA_VISIBLE_DEVICES=&lt;gpu_id&gt; python &lt;script&gt; &lt;args&gt; 2&gt;&amp;1 | tee &lt;log_file&gt;
+
+# Mac with MPS (PyTorch uses MPS automatically)
+python &lt;script&gt; &lt;args&gt; 2&gt;&amp;1 | tee &lt;log_file&gt;
+```
+
+For local long-running jobs, use `run_in_background: true` to keep the conversation responsive.
+
+#### Modal
+
+Delegate to `/serverless-modal`. Modal handles code sync, GPU allocation, and scale-to-zero automatically.
+
+### Step 5: Verify Launch
+
+**Remote (SSH):**
+```bash
+ssh &lt;server&gt; &quot;screen -ls&quot;
+```
+
+**Remote (Vast.ai):**
+```bash
+ssh -p &lt;PORT&gt; root@&lt;HOST&gt; &quot;screen -ls&quot;
+```
+
+**Local:**
+Check the process is running and the log file is being written.
+
+**Modal:**
+Verify via the Modal dashboard or the `/serverless-modal` skill&#x27;s status command.
+
+## Conflicts
+
+- wanshuiyin/Auto-claude-code-research-in-sleep includes a Modal serverless path and delegates to /serverless-modal, while brycewang-stanford/Auto-Empirical-Research-Skills has no Modal support.
+- wanshuiyin/Auto-claude-code-research-in-sleep requires reading a compute env contract and running a seeded kernel witness before trusting the environment, while brycewang-stanford/Auto-Empirical-Research-Skills has no env contract step.
+- wanshuiyin/Auto-claude-code-research-in-sleep installs dependencies in ordered pip phases (pins first), while brycewang-stanford/Auto-Empirical-Research-Skills installs from requirements.txt as a single phase.</pre>
+</body>
+</html>

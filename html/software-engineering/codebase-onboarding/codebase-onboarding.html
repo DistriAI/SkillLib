@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>codebase-onboarding</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">codebase-onboarding</a> / codebase-onboarding</p><h1>codebase-onboarding</h1><p class="meta">combined</p><p>The two skills define fundamentally different procedures for onboarding to a codebase. The first skill (sickn33) is a wrapper for a specific external tool (Ontoly) and relies on graph-based evidence, MCP capabilities, and a specific output contract involving node IDs and graph hashes. It explicitly forbids searching repository files until the tool fails. The second skill (LeoYeAI) is a manual, shell-based analysis workflow that uses standard Unix commands (find, grep, git log) to gather facts and then generates comprehensive Markdown documentation (README, architecture diagrams, setup guides). They do not overlap in their core methodology; one is tool-dependent and abstract, the other is command-driven and concrete. Combining them is necessary to capture both the tool-based graph approach and the manual shell-based documentation approach.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/codebase-onboarding/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/codebase-onboarding/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/codebase-onboarding/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/codebase-onboarding/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/codebase-onboarding/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/codebase-onboarding/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: codebase-onboarding
+description: Onboard a developer to a repository using either Ontoly graph summaries or manual shell-based analysis.
+---
+
+# Codebase Onboarding
+
+This skill provides two distinct workflows for onboarding to a codebase. Choose the appropriate workflow based on available tooling and user preference.
+
+## Workflow A: Ontoly Graph-Based Onboarding
+
+**Use when:** The Ontoly CLI is installed and the user prefers graph-based evidence or architecture summaries.
+
+### Required Workflow
+1. **Check Prerequisites:** Ensure Ontoly CLI (v1.3.3+) is available.
+2. **Invoke Capabilities:** Use the following Ontoly capabilities in order:
+   - `ExplainArchitecture`
+   - `FindEntrypoints`
+   - `GraphStatistics`
+   - `FindFeatureOwner`
+   - `EvidencePack`
+3. **Output Contract:** Return the following:
+   - Answer or plan
+   - Capabilities invoked
+   - Graph evidence (node IDs, edge types, source spans, graph hash)
+   - Confidence level (high, medium, low)
+   - Fallback reason if repository files were inspected
+4. **Boundaries:** Do not implement business logic in the skill. Do not search repository files directly until Ontoly cannot answer or evidence must be confirmed.
+
+## Workflow B: Manual Shell-Based Documentation
+
+**Use when:** Ontoly is not available, or the user wants a comprehensive Markdown documentation set generated from raw repository facts.
+
+### Step 1: Gather Facts
+Run the following commands to analyze the codebase:
+
+```bash
+# Project overview
+cat package.json | jq &#x27;{name, version, scripts, dependencies: (.dependencies | keys), devDependencies: (.devDependencies | keys)}&#x27;
+
+# Directory structure (top 2 levels)
+find . -maxdepth 2 -not -path &#x27;*/node_modules/*&#x27; -not -path &#x27;*/.git/*&#x27; -not -path &#x27;*/.next/*&#x27; | sort | head -60
+
+# Largest files (often core modules)
+find src/ -name &quot;*.ts&quot; -not -path &quot;*/test*&quot; -exec wc -l {} + | sort -rn | head -20
+
+# All routes (Next.js App Router)
+find app/ -name &quot;route.ts&quot; -o -name &quot;page.tsx&quot; | sort
+
+# All routes (Express)
+grep -rn &quot;router\.\(get\|post\|put\|patch\|delete\)&quot; src/routes/ --include=&quot;*.ts&quot;
+
+# Recent major changes
+git log --oneline --since=&quot;90 days ago&quot; | grep -E &quot;feat|refactor|breaking&quot;
+
+# Top contributors
+git shortlog -sn --no-merges | head -10
+
+# Test coverage summary
+pnpm test:ci --coverage 2&gt;&amp;1 | tail -20
+```
+
+### Step 2: Generate Documentation
+Create a comprehensive `README.md` or onboarding document including:
+1. **Overview:** One-sentence description, problem solved, and current state.
+2. **Quick Start:** Prerequisites table, step-by-step setup (clone, install, infra, env, db, dev server), and verification checklist.
+3. **Architecture:** System overview diagram (ASCII or Mermaid), tech stack table with rationale.
+4. **Key Files:** Table mapping important paths to their purpose.
+5. **Common Developer Tasks:** Step-by-step guides for frequent tasks (e.g., adding an API endpoint, running migrations).
+6. **Debugging Guide:** Common errors, log locations, and useful queries.
+7. **Contribution Guidelines:** Branch strategy, PR process, and code style.
+
+### Audience Awareness
+Tailor the depth of the documentation to the target audience:
+- **Junior:** More detailed explanations, more hand-holding in setup.
+- **Senior:** Focus on architecture decisions and key file maps.
+- **Contractor:** Focus on quick start and common tasks.
+
+## Conflicts
+- **sickn33/agentic-awesome-skills** mandates the use of Ontoly and forbids direct file search until the tool fails.
+- **LeoYeAI/openclaw-master-skills** mandates direct file search via shell commands and does not use Ontoly.
+- **Resolution:** The user must select one workflow. If Ontoly is available and preferred, use Workflow A. Otherwise, use Workflow B.</pre>
+</body>
+</html>

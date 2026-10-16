@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>anndata</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">anndata-io-manipulation</a> / anndata</p><h1>anndata</h1><p class="meta">combined</p><p>The K-Dense copy is the most current and technically precise, containing specific 0.13.4 API changes (e.g., `anndata.io` module, removal of `AnnData.concatenate`, Zarr v3 defaults) that the other two lack. However, the aipoch and FreedomIntelligence copies provide a more complete &#x27;runnable&#x27; example workflow (including `ad.concat` and `strings_to_categoricals`) and a clearer &#x27;When to Use&#x27; section that the K-Dense copy truncates or omits in its quick start. Because the K-Dense copy is the only one with the critical version-specific API constraints, but the others have better pedagogical examples, crowning one would hide either the version safety or the workflow completeness.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/anndata/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/anndata/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/anndata/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/anndata/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/anndata/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/anndata/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: anndata
+description: Handles annotated matrices in single-cell analysis, .h5ad and Zarr files, and integration with the scverse ecosystem.
+license: MIT
+---
+
+# AnnData
+
+## When to Use
+Use this skill when:
+- Creating, reading, or writing AnnData objects.
+- Working with h5ad, zarr, or other genomics data formats.
+- Managing large datasets with sparse matrices or backed mode.
+- Concatenating multiple datasets or experimental batches.
+- Integrating with scanpy, scvi-tools, or other scverse ecosystem tools.
+
+## Installation
+Targets AnnData 0.13.4+ (Python 3.12+).
+
+```bash
+uv pip install &quot;anndata==0.13.4&quot;
+# For lazy I/O and dask-backed operations
+uv pip install &quot;anndata[dask,lazy]==0.13.4&quot;
+```
+
+## API Notes (0.13+)
+- Use `anndata.io` for non-native `read_*` and `write_*` helpers. Top-level `anndata.read_h5ad` and `anndata.read_zarr` remain supported.
+- Use `ad.concat`; `AnnData.concatenate()` was removed in 0.13.
+- In 0.13, `.X` is also `layers[None]`. Use `key is not None` when selecting named layers.
+- Zarr v3 is the default.
+
+## Quick Start
+
+### Creating an AnnData object
+```python
+import anndata as ad
+import numpy as np
+import pandas as pd
+from scipy.sparse import csr_matrix
+
+X = np.random.rand(100, 2000)
+obs = pd.DataFrame({
+    &#x27;cell_type&#x27;: [&#x27;T cell&#x27;, &#x27;B cell&#x27;] * 50,
+    &#x27;sample&#x27;: [&#x27;A&#x27;, &#x27;B&#x27;] * 50
+}, index=[f&#x27;cell_{i}&#x27; for i in range(100)])
+
+var = pd.DataFrame({
+    &#x27;gene_name&#x27;: [f&#x27;Gene_{i}&#x27; for i in range(2000)]
+}, index=[f&#x27;ENSG{i:05d}&#x27; for i in range(2000)])
+
+adata = ad.AnnData(X=X, obs=obs, var=var)
+adata.strings_to_categoricals()
+```
+
+### Reading and Writing
+```python
+# Native formats
+adata = ad.read_h5ad(&#x27;data.h5ad&#x27;)
+adata.write_h5ad(&#x27;output.h5ad&#x27;, compression=&#x27;gzip&#x27;)
+
+# Other formats (prefer anndata.io)
+from anndata.io import read_csv, read_loom
+adata = read_csv(&#x27;data.csv&#x27;)
+```
+
+### Backed Mode
+```python
+source = ad.read_h5ad(&#x27;large_data.h5ad&#x27;, backed=&#x27;r&#x27;)
+try:
+    subset = source[:100, :].to_memory()
+finally:
+    source.file.close()
+```
+
+### Concatenation
+```python
+combined = ad.concat(
+    [adata1, adata2],
+    axis=0,
+    join=&#x27;inner&#x27;,
+    label=&#x27;batch&#x27;,
+    keys=[&#x27;A&#x27;, &#x27;B&#x27;]
+)
+```
+
+## Core Capabilities
+1. **Data Structure**: X, obs, var, layers, obsm, varm, obsp, varp, uns, raw.
+2. **I/O Operations**: h5ad, zarr, CSV, MTX, Loom, 10X (via scanpy).
+3. **Concatenation**: `ad.concat` with join/merge strategies.
+4. **Manipulation**: Subsetting, transposition, copying, type conversions.
+5. **Best Practices**: Sparse matrices, categoricals, backed mode for large data.</pre>
+</body>
+</html>

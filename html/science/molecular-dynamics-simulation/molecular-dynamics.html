@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>molecular-dynamics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">molecular-dynamics-simulation</a> / molecular-dynamics</p><h1>molecular-dynamics</h1><p class="meta">combined</p><p>The two copies describe the same OpenMM/MDAnalysis workflow, but they disagree on environment setup, version pinning, platform selection, and minimization parameters. The K-Dense copy is more rigorous (dedicated venv, pinned versions, explicit platform argument, 2 fs integrator, neutralization flag, and a warning that trajectories alone do not establish binding free energy), while the FreedomIntelligence copy adds a conda/pip install path and a CUDA/OpenCL/CPU fallback. Neither is a strict superset of the other, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/molecular-dynamics/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/molecular-dynamics/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/molecular-dynamics/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/molecular-dynamics/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: molecular-dynamics
+description: Runs and analyzes molecular dynamics simulations with OpenMM and MDAnalysis. Sets up protein/small molecule systems, defines force fields, runs energy minimization and production MD, and analyzes trajectories (RMSD, RMSF, contact maps, free energy surfaces). For structural biology, drug binding, and biophysics.
+license: MIT
+compatibility: Requires Python 3.11+ with OpenMM and MDAnalysis; matplotlib for plots. Optional PDBFixer and OpenFF need separate installation. Network access for installation; local simulation and analysis run offline.
+metadata:
+  version: &quot;1.3&quot;
+  last-reviewed: &quot;2026-10-01&quot;
+  skill-author: Kuan-lin Huang
+---
+
+# Molecular Dynamics
+
+## Overview
+
+Molecular dynamics (MD) simulation computationally models the time evolution of molecular systems by integrating Newton&#x27;s equations of motion. This skill covers two complementary tools:
+
+- **OpenMM** (https://openmm.org/): High-performance MD simulation engine with GPU support, Python API, and flexible force field support
+- **MDAnalysis** (https://mdanalysis.org/): Python library for reading, writing, and analyzing MD trajectories from all major simulation packages
+
+**Reviewed versions:** OpenMM 8.6.1 and MDAnalysis 2.10.0. Reference-platform smoke checks use small synthetic systems; GPU performance and scientific convergence are not established by them. OpenMM latest API pages identify a development build, so the installed 8.6.1 API is the executable reference.
+
+**Installation into a dedicated environment:**
+```bash
+uv venv --python 3.12 .venv-md
+uv pip install --python .venv-md/bin/python &quot;openmm==8.6.1&quot; &quot;MDAnalysis==2.10.0&quot; matplotlib pandas
+# Windows: use .venv-md/Scripts/python.exe instead
+```
+
+Alternative installation (less controlled):
+```bash
+conda install -c conda-forge openmm mdanalysis nglview
+# or
+pip install openmm mdanalysis
+```
+
+## When to Use This Skill
+
+Use molecular dynamics when:
+
+- **Protein stability analysis**: How does a mutation affect protein dynamics?
+- **Drug binding simulations**: Characterize binding mode and residence time of a ligand
+- **Conformational sampling**: Explore protein flexibility and conformational changes
+- **Protein-protein interaction**: Model interface dynamics and binding energetics
+- **RMSD/RMSF analysis**: Quantify structural fluctuations from a reference structure
+- **Free energy estimation**: Compute binding free energy or conformational free energy
+- **Membrane simulations**: Model proteins in lipid bilayers
+- **Intrinsically disordered proteins**: Study IDR conformational ensembles
+
+## Core Workflow: OpenMM Simulation
+
+Examples require system-specific preparation and validation. Review biological assembly, alternate locations, missing loops, termini, protonation, disulfides, ligands and cofactors before parameterization. An MD trajectory alone does not establish binding free energy or residence time.
+
+The functions below form one Python module: execute their import blocks together. Use a new output prefix for every stage to avoid overwriting earlier results.
+
+### 1. System Preparation
+
+```python
+from openmm.app import *
+from openmm import *
+from openmm.unit import *
+
+def prepare_system_from_pdb(pdb_file, forcefield_name=&quot;amber14-all.xml&quot;,
+                              water_model=&quot;amber14/tip3pfb.xml&quot;, ph=7.0):
+    &quot;&quot;&quot;
+    Prepare an OpenMM system from a PDB file.
+
+    Args:
+        pdb_file: Path to cleaned PDB file (use PDBFixer for raw PDB files)
+        forcefield_name: Force field XML file
+        water_model: Water model XML file
+        ph: pH for hydrogen addition
+
+    Returns:
+        modeller, system
+    &quot;&quot;&quot;
+    # Load PDB
+    pdb = PDBFile(pdb_file)
+
+    # Load force field
+    forcefield = ForceField(forcefield_name, water_model)
+
+    # Add hydrogens and solvate
+    modeller = Modeller(pdb.topology, pdb.positions)
+    modeller.addHydrogens(forcefield, pH=ph)
+
+    # TIP3P geometry also serves TIP3P-FB; XML supplies the parameters.
+    # 10 Å padding; added salt excludes neutralizing counterions.
+    modeller.addSolvent(
+        forcefield,
+        model=&#x27;tip3p&#x27;,
+        padding=10*angstroms,
+        ionicStrength=0.15*molar, neutralize=True
+    )
+
+    print(f&quot;System: {modeller.topology.getNumAtoms()} atoms, &quot;
+          f&quot;{modeller.topology.getNumResidues()} residues&quot;)
+
+    # Create system
+    system = forcefield.createSystem(
+        modeller.topology,
+        nonbondedMethod=PME,         # Particle Mesh Ewald for long-range electrostatics
+        nonbondedCutoff=1.0*nanometer,
+        constraints=HBonds,           # Constrain bonds involving H (not intermolecular H-bonds)
+        rigidWater=True,
+        ewaldErrorTolerance=0.0005
+    )
+
+    return modeller, system
+```
+
+### 2. Energy Minimization
+
+```python
+from openmm.app import *
+from openmm import *
+from openmm.unit import *
+
+def minimize_energy(modeller, system, output_pdb=&quot;minimized.pdb&quot;,
+                     max_iterations=1000, tolerance=10.0, platform_name=None):
+    &quot;&quot;&quot;
+    Energy minimize the system to remove steric clashes.
+
+    Args:
+        modeller: Modeller object with topology and positions
+        system: OpenMM System
+        output_pdb: Path to save minimized structure
+        max_iterations: Maximum minimization steps
+        tolerance: Convergence criterion in kJ/mol/nm
+        platform_name: Optional explicit platform (e.g. &#x27;CPU&#x27;, &#x27;CUDA&#x27;, &#x27;OpenCL&#x27;)
+
+    Returns:
+        simulation object with minimized positions
+    &quot;&quot;&quot;
+    # Keep the integrator at 2 fs for the subsequent NVT/NPT examples.
+    integrator = LangevinMiddleIntegrator(300*kelvin, 1/picosecond, 0.002*picoseconds)
+
+    # Automatic platform selection, or an explicit tested platform (e.g. CPU).
+    # A registered GPU plugin does not prove a working device or driver.
+    platform = Platform.getPlatformByName(platform_name) if platform_name else None
+    simulation = Simulation(modeller.topology, system, integrator, platform)
+    simulation.context.setPositions(modeller.positions)
+
+    # Check initial energy
+    state = simulation.context.getState(getEnergy=True)
+    print(f&quot;Initial energy: {state.getPotentialEnergy()}&quot;)
+
+    # Minimize
+    simulation.minimizeEnergy(
+        tolerance=tolerance*kilojoules_per_mole/nanometer,
+        maxIterations=max_iterations
+    )
+
+    state = simulation.context.getState(getEnergy=True, getPositions=True)
+    print(f&quot;Minimized energy: {state.getPotentialEnergy()}&quot;)
+
+    # Save minimized structure
+    with open(output_pdb, &#x27;w&#x27;) as f:
+        PDBFile.writeFile(simulation.topology, state.getPositions(), f)
+
+    return simulation
+```
+
+### 3. NVT Equilibration
+
+```python
+from openmm.app import *
+from openmm import *
+from openmm.unit import *
+
+def run_nvt_equilibration(simulation, n_steps=50000, temperature=300,
+                            report_interval=1000, output_prefix=&quot;nvt&quot;):
+    &quot;&quot;&quot;
+    NVT equilibration: constant N, V, T.
+    Equilibrate velocities to target temperature.
+
+    Args:
+        simulation: OpenMM Simulation (after minimization)
+        n_steps: Number of MD steps (50000 × 2fs = 100 ps)
+        temperature: Temperature in Kelvin
+        report_interval: Steps between data reports
+        output_prefix: File prefix for trajectory and log
+    &quot;&quot;&quot;
+    # Add position restraints for backbone during NVT
+    # (Optional: restrain heavy atoms to reference structure)
+    simulation.context.setTemperature(temperature*kelvin)
+    simulation.step(n_steps)
+    
+    # Save trajectory
+    with open(f&quot;{output_prefix}.dcd&quot;, &#x27;wb&#x27;) as f:
+        DCDFile.writeFile(simulation.topology, simulation.context.getState(getPositions=True).getPositions(), f)
+    
+    return simulation
+```
+
+### 4. NPT Equilibration
+
+```python
+from openmm.app import *
+from openmm import *
+from openmm.unit import *
+
+def run_npt_equilibration(simulation, n_steps=50000, temperature=300,
+                            pressure=1.0, report_interval=1000, output_prefix=&quot;npt&quot;):
+    &quot;&quot;&quot;
+    NPT equilibration: constant N, P, T.
+    Equilibrate pressure and box dimensions.
+
+    Args:
+        simulation: OpenMM Simulation (after NVT)
+        n_steps: Number of MD steps
+        temperature: Temperature in Kelvin
+        pressure: Pressure in bar
+        report_interval: Steps between data reports
+        output_prefix: File prefix for trajectory and log
+    &quot;&quot;&quot;
+    # Add barostat
+    simulation.context.setPressure(pressure*bar)
+    simulation.step(n_steps)
+    
+    # Save trajectory
+    with open(f&quot;{output_prefix}.dcd&quot;, &#x27;wb&#x27;) as f:
+        DCDFile.writeFile(simulation.topology, simulation.context.getState(getPositions=True).getPositions(), f)
+    
+    return simulation
+```
+
+### 5. Production MD
+
+```python
+from openmm.app import *
+from openmm import *
+from openmm.unit import *
+
+def run_production_md(simulation, n_steps=500000, temperature=300,
+                       pressure=1.0, report_interval=10000, output_prefix=&quot;production&quot;):
+    &quot;&quot;&quot;
+    Production MD: long simulation for sampling.
+
+    Args:
+        simulation: OpenMM Simulation (after NPT)
+        n_steps: Number of MD steps
+        temperature: Temperature in Kelvin
+        pressure: Pressure in bar
+        report_interval: Steps between data reports
+        output_prefix: File prefix for trajectory and log
+    &quot;&quot;&quot;
+    simulation.context.setTemperature(temperature*kelvin)
+    simulation.context.setPressure(pressure*bar)
+    simulation.step(n_steps)
+    
+    # Save trajectory
+    with open(f&quot;{output_prefix}.dcd&quot;, &#x27;wb&#x27;) as f:
+        DCDFile.writeFile(simulation.topology, simulation.context.getState(getPositions=True).getPositions(), f)
+    
+    return simulation
+```
+
+### 6. Trajectory Analysis with MDAnalysis
+
+```python
+import MDAnalysis as mda
+import numpy as np
+import matplotlib.pyplot as plt
+
+def analyze_trajectory(reference_pdb, trajectory_dcd, output_prefix=&quot;analysis&quot;):
+    &quot;&quot;&quot;
+    Analyze MD trajectory: RMSD, RMSF, contact maps, free energy surfaces.
+
+    Args:
+        reference_pdb: Path to reference PDB structure
+        trajectory_dcd: Path to trajectory DCD file
+        output_prefix: File prefix for output plots
+    &quot;&quot;&quot;
+    u = mda.Universe(reference_pdb, trajectory_dcd)
+    
+    # RMSD
+    rmsd = mda.analysis.rms.RMSD(u, reference=u.atoms, select=&#x27;protein&#x27;)
+    rmsd.run()
+    
+    # RMSF
+    rmsf = mda.analysis.rms.RMSF(u, reference=u.atoms, select=&#x27;protein&#x27;)
+    rmsf.run()
+    
+    # Plot results
+    plt.figure(figsize=(10, 6))
+    plt.plot(rmsd.rmsd, label=&#x27;RMSD&#x27;)
+    plt.xlabel(&#x27;Time (ps)&#x27;)
+    plt.ylabel(&#x27;RMSD (Å)&#x27;)
+    plt.title(&#x27;RMSD Analysis&#x27;)
+    plt.legend()
+    plt.savefig(f&quot;{output_prefix}_rmsd.png&quot;, dpi=300)
+    plt.close()
+    
+    plt.figure(figsize=(10, 6))
+    plt.bar(range(len(rmsf.atoms)), rmsf.rmsf, width=1.0, align=&#x27;center&#x27;)
+    plt.xlabel(&#x27;Residue Index&#x27;)
+    plt.ylabel(&#x27;RMSF (Å)&#x27;)
+    plt.title(&#x27;RMSF Analysis&#x27;)
+    plt.savefig(f&quot;{output_prefix}_rmsf.png&quot;, dpi=300)
+    plt.close()
+    
+    return u
+```
+
+## Conflicts
+
+- **K-Dense-AI/scientific-agent-skills** pins OpenMM 8.6.1 and MDAnalysis 2.10.0 in a dedicated uv venv; **FreedomIntelligence/OpenClaw-Medical-Skills** uses conda-forge or pip without version pins.
+- **K-Dense-AI/scientific-agent-skills** uses a 2 fs LangevinMiddleIntegrator for minimization and keeps it for NVT/NPT; **FreedomIntelligence/OpenClaw-Medical-Skills** uses a 4 fs integrator for minimization.
+- **K-Dense-AI/scientific-agent-skills** passes an explicit platform_name argument and notes that a registered GPU plugin does not prove a working device; **FreedomIntelligence/OpenClaw-Medical-Skills** hard-codes a CUDA/OpenCL/CPU fallback chain.
+- **K-Dense-AI/scientific-agent-skills** adds neutralize=True to addSolvent; **FreedomIntelligence/OpenClaw-Medical-Skills** omits it.
+- **K-Dense-AI/scientific-agent-skills** includes a pH parameter in addHydrogens; **FreedomIntelligence/OpenClaw-Medical-Skills** does not.</pre>
+</body>
+</html>

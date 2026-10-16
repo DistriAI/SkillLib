@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>shadcn-ui</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">shadcn-ui-integration</a> / shadcn-ui</p><h1>shadcn-ui</h1><p class="meta">combined</p><p>The three copies overlap on the core idea that shadcn/ui is a copy-into-project component collection, but each adds material steps the others lack. The google-labs copy is the only one that documents MCP-based component discovery, registry tools, and the create/init configuration options. The jezweb copy is the only one that enforces a dependency-ordered installation sequence, documents specific runtime gotchas (Radix Select empty strings, RHF null values, Lucide tree-shaking, Dialog width breakpoints), and requires semantic token usage. The LeoYeAI copy is the only one that provides a comprehensive component category reference and a complete react-hook-form + zod form pattern. Crowning one would hide real alternatives, so the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/google-labs-code/stitch-skills">google-labs-code/stitch-skills</a></td><td><code>plugins/stitch-build/skills/shadcn-ui/SKILL.md</code></td></tr><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/frontend/skills/shadcn-ui/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/shadcn-ui/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/google-labs-code/stitch-skills">google-labs-code/stitch-skills</a></td><td><code>plugins/stitch-build/skills/shadcn-ui/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/frontend/skills/shadcn-ui/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/shadcn-ui/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># shadcn/ui Component Integration
+
+## Core Principle
+shadcn/ui is not a component library. It is a collection of reusable components you copy into your project. You own the code, can customize freely, and update selectively.
+
+## Prerequisites
+- React 18+, Tailwind CSS 3.0+
+- A configured components.json (run npx shadcn@latest init for existing projects or npx shadcn@latest create for new projects)
+- The cn() utility in lib/utils.ts using clsx and tailwind-merge
+- If using semantic theme tokens, ensure CSS variables and ThemeProvider are set up before adding components
+
+## Component Discovery
+- Use shadcn MCP tools (list_components, get_component_metadata, get_component_demo) to explore the catalog
+- For custom registries, use get_project_registries, list_items_in_registries, view_items_in_registries, and search_items_in_registries
+- Refer to the component category tables below to select the right components for your use case
+
+## Installation
+Install foundation components first, then feature components in dependency order.
+
+### Foundation
+```bash
+npx shadcn@latest add button
+npx shadcn@latest add input label
+npx shadcn@latest add card
+```
+
+### Feature Components (as needed)
+```bash
+# Forms
+npx shadcn@latest add form textarea select checkbox switch
+# Feedback
+npx shadcn@latest add toast alert badge
+# Overlay
+npx shadcn@latest add dialog sheet popover dropdown-menu
+# Data Display
+npx shadcn@latest add table tabs separator avatar
+# Navigation
+npx shadcn@latest add navigation-menu command
+```
+
+### External Dependencies
+Install separately as required:
+- Form: react-hook-form, zod, @hookform/resolvers
+- Toast: sonner
+- Data Table: @tanstack/react-table
+- Command: cmdk
+- Date Picker: date-fns (optional)
+
+## Component Categories
+- Layout &amp; Navigation: sidebar, navigation-menu, breadcrumb, tabs, separator, sheet, resizable
+- Forms &amp; Input: form, input, textarea, select, combobox, checkbox, radio-group, switch, slider, date-picker, toggle
+- Feedback &amp; Overlay: dialog, alert-dialog, sheet, toast, alert, tooltip, popover, hover-card, skeleton, progress
+- Data Display: table, data-table, card, badge, avatar, accordion, carousel, scroll-area
+- Actions: button, dropdown-menu, context-menu, menubar, command
+
+## Form Pattern (react-hook-form + zod)
+Use the Form component with zodResolver. Define a zod schema, infer types, and render fields with FormField, FormItem, FormLabel, FormControl, and FormMessage. Call form.reset() on success and show toast notifications.
+
+## Customization
+- Edit component files in components/ui/ to add variants via class-variance-authority
+- Use semantic CSS tokens (bg-primary, bg-card, etc.) rather than raw Tailwind colors
+- Create wrapper components in components/ (not components/ui/) for composed patterns
+- Override theme variables in app/globals.css under @layer base for :root and .dark
+
+## Known Gotchas
+- Radix Select: never use empty string values; use a sentinel like &quot;__any__&quot; and map back
+- React Hook Form: do not spread {...field} into Input; pass value, onChange, onBlur, name, and ref individually to avoid null values
+- Lucide Icons: do not use dynamic imports for icons; use an explicit icon map to prevent tree-shaking issues in production
+- Dialog Width: use the same breakpoint prefix as the default (e.g., sm:max-w-6xl) to override the default sm:max-w-lg
+
+## Workflow
+1. Assess the UI patterns needed (forms, data tables, navigation, modals, settings)
+2. Install foundation components, then feature components for the identified needs
+3. Build working patterns by combining components (contact form, data table, modal CRUD, navigation, settings page)
+4. Customize with project-specific variants and semantic tokens</pre>
+</body>
+</html>

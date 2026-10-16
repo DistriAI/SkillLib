@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>reddit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">reddit-content-and-api</a> / reddit</p><h1>reddit</h1><p class="meta">combined</p><p>The three copies cover different, non-overlapping procedures. The first is a copywriting guide for creating Reddit posts and comments. The second is a read-only API client for retrieving posts, comments, and user data. The third is a full-featured client that includes posting, replying, and moderation capabilities via OAuth. No single copy contains the steps or constraints of the others, so crowning one would hide the other two distinct use cases.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/platforms/reddit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ReScienceLab/opc-skills">ReScienceLab/opc-skills</a></td><td><code>skills/reddit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/reddit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/platforms/reddit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ReScienceLab/opc-skills">ReScienceLab/opc-skills</a></td><td><code>skills/reddit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/reddit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: reddit
+description: Create Reddit content, retrieve data via API, and manage posts/comments with moderation.
+---
+
+# Reddit Skill
+
+This skill covers three distinct workflows: creating marketing copy, retrieving data via the public API, and managing content via authenticated actions.
+
+## 1. Content Creation (Marketing)
+Use this section when generating publish-ready posts or comments.
+
+### Core Rules
+- **90/10 Principle**: 90% value, 10% promotional.
+- **Self-Promotion**: Max 1 in 6 posts promotional.
+- **Subreddit Rules**: Always check the sidebar before posting.
+- **Flair**: Required by many subs; wrong flair leads to removal.
+
+### Post Structure
+- **Title**: Concise, specific, accurate. Match subreddit format (e.g., [Discussion]).
+- **Body**: Value-first, casual tone, open-ended questions for engagement.
+- **Formatting**: Use Markdown (bold, lists, links).
+
+### Output Format
+1. Title (subreddit-appropriate)
+2. Body (value-driven, formatted)
+3. Suggested flair
+4. Reminder: &quot;Verify rules before posting&quot;
+
+## 2. Data Retrieval (Read-Only API)
+Use this section to fetch posts, comments, and user info. No API key is required.
+
+### Python Scripts (ReScienceLab)
+Run from the skill directory:
+- **Subreddit Posts**: `python3 scripts/get_posts.py &lt;subreddit&gt; --limit 20 --sort hot`
+- **Search Posts**: `python3 scripts/search_posts.py &quot;query&quot; --subreddit &lt;sub&gt; --limit 10`
+- **Subreddit Info**: `python3 scripts/get_subreddit.py &lt;subreddit&gt;`
+- **Post &amp; Comments**: `python3 scripts/get_post.py &lt;post_id&gt; --comments 50`
+- **User Profile**: `python3 scripts/get_user.py &lt;username&gt; --posts 10`
+
+### Node.js Scripts (LeoYeAI)
+- **Hot Posts**: `node {baseDir}/scripts/reddit.mjs posts &lt;subreddit&gt;`
+- **Search**: `node {baseDir}/scripts/reddit.mjs search &lt;subreddit&gt; &quot;query&quot;`
+- **Comments**: `node {baseDir}/scripts/reddit.mjs comments &lt;post_id&gt;`
+
+## 3. Posting &amp; Moderation (Authenticated)
+Use this section to submit posts, reply, or moderate. Requires OAuth setup.
+
+### Setup
+1. Create a script app at https://www.reddit.com/prefs/apps.
+2. Set redirect URI to `http://localhost:8080`.
+3. Export environment variables: `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, `REDDIT_USERNAME`, `REDDIT_PASSWORD`.
+
+### Actions (Node.js)
+- **Submit Post**: `node {baseDir}/scripts/reddit.mjs submit &lt;subreddit&gt; --title &quot;Title&quot; --text &quot;Body&quot;`
+- **Reply**: `node {baseDir}/scripts/reddit.mjs reply &lt;thing_id&gt; &quot;Reply text&quot;`
+- **Moderation**: `node {baseDir}/scripts/reddit.mjs mod remove &lt;thing_id&gt;` (also supports approve, sticky, lock, queue).
+
+## Conflicts
+- **Repository**: kostja94/marketing-skills vs. ReScienceLab/opc-skills vs. LeoYeAI/openclaw-master-skills
+- **Step**: The first copy is a writing guide, while the other two are API clients. The second is read-only Python, while the third is a read/write Node.js CLI. Use the appropriate section based on the task (writing vs. reading vs. managing).</pre>
+</body>
+</html>

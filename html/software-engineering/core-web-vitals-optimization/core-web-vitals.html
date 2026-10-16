@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>core-web-vitals</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">core-web-vitals-optimization</a> / core-web-vitals</p><h1>core-web-vitals</h1><p class="meta">combined</p><p>Both copies cover the same three metrics and thresholds, but each contains material steps the other lacks. The first copy is a technical-SEO triage skill with an initial assessment workflow, a cause/fix matrix for LCP/INP/CLS, a tools table, and an output format. The second copy is a measurement-first engineering skill that requires field data (CrUX p75) and browser traces before claiming a failure, includes concrete code patterns for render-blocking CSS, LCP image discovery, SSR, and the Speculation Rules API, and adds a re-measurement rule. Crowning one would hide the other&#x27;s real alternative approach (SEO triage vs. evidence-driven lab/field workflow).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/seo/technical/core-web-vitals/SKILL.md</code></td></tr><tr><td><a href="https://github.com/addyosmani/web-quality-skills">addyosmani/web-quality-skills</a></td><td><code>skills/core-web-vitals/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/seo/technical/core-web-vitals/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/addyosmani/web-quality-skills">addyosmani/web-quality-skills</a></td><td><code>skills/core-web-vitals/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: core-web-vitals
+description: Optimize Core Web Vitals (LCP, INP, CLS) using field and lab evidence. Use when the user wants to fix LCP, INP, or CLS, mentions Core Web Vitals, page speed, page performance, or page experience.
+metadata:
+  version: 2.1
+---
+
+# Core Web Vitals Optimization
+
+Guides optimization of Core Web Vitals (CWV)—Google&#x27;s user experience metrics that affect search ranking. CWV are confirmed ranking factors for mobile and desktop.
+
+**When invoking**: On first use, if helpful, open with 1–2 sentences on what this skill covers and why it matters, then provide the main output. On subsequent use or when the user asks to skip, go directly to the main output.
+
+## Scope
+
+- **LCP** (Largest Contentful Paint): Loading performance; time to render largest content element
+- **INP** (Interaction to Next Paint): Responsiveness; replaced FID on March 12, 2024
+- **CLS** (Cumulative Layout Shift): Visual stability; unexpected layout shifts
+
+## Target Thresholds (75th percentile, field data)
+
+| Metric | Target | Good | Needs Improvement | Poor |
+|--------|--------|------|-------------------|------|
+| **LCP** | ≤2.5s | ≤2.5s | 2.5–4.0s | &gt;4.0s |
+| **INP** | ≤200ms | ≤200ms | 200–500ms | &gt;500ms |
+| **CLS** | &lt;0.1 | ≤0.1 | 0.1–0.25 | &gt;0.25 |
+
+Google measures at the 75th percentile—75% of page visits must meet &quot;Good&quot; thresholds.
+
+## Measure Before Optimizing
+
+When a runnable URL is available, follow this sequence:
+
+1. Check page-level CrUX p75 data, with a clearly labeled origin fallback when page data is unavailable.
+2. Record a browser performance trace under stated conditions. With Chrome DevTools MCP, trace summaries can include CrUX alongside the observed lab metrics.
+3. Analyze only the insights associated with the failing metric, then inspect the implicated code and resources.
+4. Re-run equivalent lab measurements after the fix. Do not claim an immediate field improvement; CrUX and first-party RUM need new user visits.
+
+If only source code is available, identify likely causes but do not claim that LCP, INP, or CLS is failing without runtime evidence.
+
+## Initial Assessment
+
+Project context: Read root `contextus.md` when present and load only the modules relevant to this task. Without Contextus, use available project material or user-provided facts and ask for missing information; do not create a parallel context system.
+
+Identify:
+1. **Tools**: GSC Core Web Vitals report, PageSpeed Insights, Chrome DevTools
+2. **Metrics**: Which metric is failing (LCP, INP, CLS)
+3. **Page type**: Hero, article, product, list—LCP candidate differs
+
+## LCP Optimization
+
+LCP measures the time until the largest content element (image, video, or text block) is visible. LCP candidates: hero image, large text block, video poster, background image, `&lt;svg&gt;` element. Ensure above-fold images use `loading=&quot;eager&quot;` (default); never lazy-load LCP.
+
+### Common LCP Issues and Fixes
+
+**1. Slow server response (TTFB &gt; 800ms)**
+- Fix: CDN, caching, optimized backend, edge rendering
+
+**2. Render-blocking resources**
+- Defer non-critical CSS/JS; inline critical CSS (&lt; 14KB)
+- Example: inline critical above-fold CSS, preload the rest with `onload` swap
+
+**3. Slow resource load times**
+- Prefer a discoverable `&lt;img&gt;` with `fetchpriority=&quot;high&quot;`
+- Add `&lt;link rel=&quot;preload&quot;&gt;` only when the trace shows the resource would otherwise be discovered late; duplicate or speculative preloads can compete for bandwidth
+
+**4. Client-side rendering delays**
+- Use SSR, SSG, or streaming to send HTML with content in the initial response
+
+**5. Make navigations instant with the Speculation Rules API**
+
+For sites with predictable same-origin journeys, prerendering a likely next page can make a successful subsequent navigation much faster. Treat this as a measured navigation optimization, not a substitute for fixing the current page&#x27;s LCP.
+
+```html
+&lt;script type=&quot;speculationrules&quot;&gt;
+{
+  &quot;prerender&quot;: [{
+    &quot;where&quot;: { &quot;href_matches&quot;: &quot;/*&quot; },
+    &quot;eagerness&quot;: &quot;moderate&quot;
+  }]
+}
+&lt;/script&gt;
+```
+
+| `eagerness` | Trigger |
+|-------------|---------|
+| `conservative` | Pointer or touch down |
+| `moderate` | Desktop: 200ms hover, or earlier pointer down; mobile: viewport heuristics |
+| `eager` | Chrome 143+: desktop 10ms hover; mobile 50ms after the anchor enters the viewport |
+| `immediate` | As soon as the rules are observed |
+
+Start conservatively and measure prediction hit rate, transferred bytes, server load, and navigation improvement before expanding the rules. Recheck Chrome&#x27;s maintained eagerness documentation before hardcoding timing-sensitive behavior.
+
+Caveats:
+- **Bandwidth/CPU cost.** Each prerender is roughly a full page load. Scope `where` carefully and avoid `immediate` outside small sites.
+- **Side effects fire early.** Analytics, ads, and any code that runs on load will fire when the prerender starts. Gate side effects on the `prerenderingchange` event or `document.prerendering`.
+- **Chromium-only.** Safari and Firefox ignore the script—it&#x27;s a progressive enhancement, never a regression.
+
+### LCP Optimization Checklist
+
+- [ ] TTFB &lt; 800ms (use CDN, edge caching)
+- [ ] LCP resource is discoverable in initial HTML and prioritized; preload only if the trace shows late discovery
+- [ ] LCP image optimized (WebP/AVIF, correct size)
+- [ ] Critical CSS inlined (&lt; 14KB)
+- [ ] No render-blocking JavaScript in `&lt;head&gt;`
+- [ ] Fonts don&#x27;t block text rendering (font-display: swap)
+- [ ] LCP element in initial HTML (not JS-rendered)
+- [ ] Speculation Rules added for likely-next navigations (moderate eagerness)
+
+### LCP Element Identification
+
+```javascript
+new PerformanceObserver((list) =&gt; {
+  const entries = list.getEntries();
+  const lastEntry = entries[entries.length - 1];
+  console.log(&#x27;LCP element:&#x27;, lastEntry.element);
+}).observe({ type: &#x27;largest-contentful-paint&#x27;, buffered: true });
+```
+
+This snippet diagnoses the current page session. It is not field data.
+
+## INP Optimization
+
+INP measures responsiveness—time from user interaction to next paint. Replaced FID on March 12, 2024.
+
+| Cause | Fix |
+|-------|-----|
+| **Long-running JS** | Break tasks &gt;50ms; use `requestIdleCallback`; Web Workers |
+| **Heavy event handlers** | Debounce/throttle; defer non-critical work |
+| **Main thread blocking** | Reduce third-party scripts; defer non-critical JS |
+| **Layout thrashing** | Batch DOM reads/writes; avoid forced reflows |
+
+## CLS Optimization
+
+CLS measures unexpected layout shifts.
+
+| Cause | Fix |
+|-------|-----|
+| **Images without dimensions** | Always set `width` and `height` attributes |
+| **Dynamic content** | Reserve space for ads, embeds; use `min-height` |
+| **Web fonts** | `font-display: optional` or `swap`; preload critical fonts |
+| **Animations** | Use `transform` instead of `top`/`left`/`width` |
+
+Reserve space: For images, ads, embeds—define dimensions before load. Avoid inserting content above existing content without reserved space.
+
+## Tools &amp; Monitoring
+
+| Tool | Use |
+|------|-----|
+| **GSC** | Core Web Vitals report; URL grouping; field data |
+| **PageSpeed Insights** | Lab + field data; mobile + desktop |
+| **Chrome DevTools** | Performance panel; LCP element; layout shift overlay |
+
+## Output Format
+
+- **Current state**: Which metrics fail (LCP, INP, CLS) with field and lab evidence
+- **Prioritized fixes**: By impact
+- **References**: [Web Vitals](https://web.dev/vitals/), [Page Experience](https://developers.google.com/search/docs/appearance/page-experience)
+
+## Related Skills
+
+- **image-optimization**: LCP image optimization; WebP; lazy loading (below-fold only)
+- **google-search-console**: CWV report; field data monitoring
+- **mobile-friendly**: Mobile-first indexing; mobile CWV targets
+- **rendering-strategies**: SSR/SSG for LCP; content in initial HTML
+- **site-crawlability**: Redirect chains waste crawl; fix for performance</pre>
+</body>
+</html>

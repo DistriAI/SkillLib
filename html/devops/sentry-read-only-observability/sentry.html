@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sentry</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">sentry-read-only-observability</a> / sentry</p><h1>sentry</h1><p class="meta">combined</p><p>Both copies describe the same read-only Sentry observability task and share output formatting, PII redaction, and golden test inputs. However, they disagree on the execution mechanism: the openai/skills copy uses the official `sentry` CLI with auto-detection and AI-powered explain/plan commands, while the Vibe-Skills copy uses a bundled Python script with explicit org/project arguments and a fixed set of API endpoints. Crowning one would hide a real alternative for environments where the CLI is unavailable or where a deterministic script is preferred.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/sentry/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/sentry/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/sentry/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/sentry/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: &quot;sentry&quot;
+description: &quot;Use when the user asks to inspect Sentry issues or events, summarize recent production errors, or pull basic Sentry health data; perform read-only queries using the Sentry CLI or a bundled API script.&quot;
+---
+
+# Sentry (Read-only Observability)
+
+## Quick start
+
+- If not already authenticated, ask the user to either:
+  - Run `sentry auth login` or set `SENTRY_AUTH_TOKEN` as an env var (CLI path), or
+  - Create a read-only Sentry auth token (scopes: `project:read`, `event:read`, `org:read`) at https://sentry.io/settings/account/api/auth-tokens/ and set `SENTRY_AUTH_TOKEN` as an env var (script path).
+- Never ask the user to paste the full token in chat. Ask them to set it locally and confirm when ready.
+- Defaults: time range `24h`, environment `production`/`prod`, limit 20.
+- Always use `--json` (CLI) or JSON output (script) when processing output programmatically.
+
+If the CLI is not installed and the script path is not available, give the user these steps:
+1. Install the Sentry CLI: `curl https://cli.sentry.dev/install -fsS | bash`
+2. Authenticate: `sentry auth login`
+3. Confirm authentication: `sentry auth status`
+
+## Execution paths
+
+### Path A: Sentry CLI (preferred when available)
+
+Use the `sentry` CLI for all queries. It handles authentication, org/project detection, pagination, and retries automatically.
+
+- The CLI auto-detects org/project from DSNs in `.env` files, source code, config defaults, and directory names. Only specify `&lt;org&gt;/&lt;project&gt;` if auto-detection fails or picks the wrong target.
+- Use `sentry schema &lt;resource&gt;` to discover API endpoints quickly.
+
+#### 1) List issues (ordered by most recent)
+
+```bash
+sentry issue list \
+  --query &quot;is:unresolved environment:production&quot; \
+  --period 24h \
+  --limit 20 \
+  --json --fields shortId,title,priority,level,status
+```
+
+If auto-detection doesn&#x27;t resolve org/project, pass them explicitly:
+```bash
+sentry issue list {your-org}/{your-project} \
+  --query &quot;is:unresolved environment:production&quot; \
+  --period 24h \
+  --limit 20 \
+  --json
+```
+
+#### 2) Resolve an issue short ID to issue detail
+
+```bash
+sentry issue view {ABC-123} --json
+```
+
+Use the short ID format (e.g., `ABC-123`), not the numeric ID.
+
+#### 3) Issue detail
+
+```bash
+sentry issue view {ABC-123}
+```
+
+#### 4) Issue events
+
+```bash
+sentry issue events {ABC-123} --limit 20 --json
+```
+
+#### 5) Event detail
+
+```bash
+sentry event view {your-org}/{your-project}/{event_id} --json
+```
+
+#### 6) AI-powered root cause analysis
+
+```bash
+sentry issue explain {ABC-123}
+```
+
+#### 7) AI-powered fix plan
+
+```bash
+sentry issue plan {ABC-123}
+```
+
+#### Fallback: arbitrary API access
+
+For endpoints not covered by dedicated CLI commands, use `sentry api`:
+```bash
+sentry api /api/0/organizations/{your-org}/ --method GET
+```
+
+### Path B: Bundled Python script (when CLI is unavailable)
+
+Use `scripts/sentry_api.py` for deterministic API calls. It handles pagination and retries once on transient errors.
+
+Set the script path once:
+```bash
+export CODEX_HOME=&quot;${CODEX_HOME:-$HOME/.codex}&quot;
+export SENTRY_API=&quot;$CODEX_HOME/skills/sentry/scripts/sentry_api.py&quot;
+```
+
+#### 1) List issues (ordered by most recent)
+
+```bash
+python3 &quot;$SENTRY_API&quot; \
+  list-issues \
+  --org {your-org} \
+  --project {your-project} \
+  --environment prod \
+  --time-range 24h \
+  --limit 20 \
+  --query &quot;is:unresolved&quot;
+```
+
+#### 2) Resolve an issue short ID to issue ID
+
+```bash
+python3 &quot;$SENTRY_API&quot; \
+  list-issues \
+  --org {your-org} \
+  --project {your-project} \
+  --query &quot;ABC-123&quot; \
+  --limit 1
+```
+
+Use the returned `id` for issue detail or events.
+
+#### 3) Issue detail
+
+```bash
+python3 &quot;$SENTRY_API&quot; \
+  issue-detail \
+  1234567890
+```
+
+#### 4) Issue events
+
+```bash
+python3 &quot;$SENTRY_API&quot; \
+  issue-events \
+  1234567890 \
+  --limit 20
+```
+
+#### 5) Event detail (no stack traces by default)
+
+```bash
+python3 &quot;$SENTRY_API&quot; \
+  event-detail \
+  --org {your-org} \
+  --project {your-project} \
+  abcdef1234567890
+```
+
+#### API endpoints used by the script (GET only)
+
+- List issues: `/api/0/projects/{org_slug}/{project_slug}/issues/`
+- Issue detail: `/api/0/issues/{issue_id}/`
+- Events for issue: `/api/0/issues/{issue_id}/events/`
+- Event detail: `/api/0/projects/{org_slug}/{project_slug}/events/{event_id}/`
+
+## Inputs and defaults
+
+- `org_slug`, `project_slug`: auto-detected by the CLI (Path A) or passed explicitly (Path B). Default to `{your-org}`/`{your-project}`.
+- `time_range`: default `24h`.
+- `environment`: default `production`/`prod`.
+- `limit`: default 20. Path B caps at 50 with pagination.
+- `search_query`: optional, uses Sentry search syntax (e.g., `is:unresolved`, `assigned:me`).
+- `issue_short_id`: use directly with CLI `sentry issue view`; resolve via list-issues query first in Path B.
+
+## Output formatting rules
+
+- Issue list: show title, short_id, status, first_seen, last_seen, count, environments, top_tags; order by most recent.
+- Event detail: include culprit, timestamp, environment, release, url.
+- If no results, state explicitly.
+- Redact PII in output (emails, IPs). Do not print raw stack traces.
+- Never echo auth tokens.
+
+## Golden test inputs
+
+- Org: `{your-org}`
+- Project: `{your-project}`
+- Issue short ID: `{ABC-123}`
+
+Example prompt: &quot;List the top 10 open issues for prod in the last 24h.&quot;
+Expected: ordered list with titles, short IDs, counts, last seen.
+
+## Conflicts
+
+- openai/skills uses the `sentry` CLI with auto-detection and AI-powered explain/plan commands; foryourhealth111-pixel/Vibe-Skills uses a bundled Python script with explicit org/project arguments and no AI commands.
+- openai/skills allows fallback to `sentry api` for arbitrary endpoints; Vibe-Skills restricts to four specific GET endpoints.
+- Vibe-Skills caps limit at 50 with pagination; openai/skills does not mention a max limit.</pre>
+</body>
+</html>

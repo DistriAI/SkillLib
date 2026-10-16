@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>adaptyv</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">protein-experiment-api</a> / adaptyv</p><h1>adaptyv</h1><p class="meta">combined</p><p>The K-Dense copy is a detailed, version-pinned guide for the official Adaptyv Foundry API and SDK, while the other three copies describe a different, older alpha/beta platform using a Lambda URL, raw requests, and a different submission payload. They disagree on the base URL, authentication setup, SDK usage, and experiment submission format, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/adaptyv/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/adaptyv/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/adaptyv/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/adaptyv/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/adaptyv/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/adaptyv/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/adaptyv/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/adaptyv/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Adaptyv Protein Experiment API
+
+Use this skill to submit protein sequences for wet-lab validation via the Adaptyv cloud laboratory.
+
+## 1. Determine the Platform Version
+- **Official Foundry API (Recommended):** Use if you have access to the official Adaptyv Foundry platform and the `adaptyv-sdk`.
+- **Legacy Alpha/Beta API:** Use if you are using the older Lambda URL endpoint and raw `requests`.
+
+## 2. Authentication
+- **Foundry:** Create a bearer token in Foundry under Organization → Settings → Tokens. Set `ADAPTYV_API_KEY` in your environment.
+- **Legacy:** Contact support@adaptyvbio.com to request API access. Set `ADAPTYV_API_KEY` in your environment.
+
+## 3. Submission Workflow
+
+### Option A: Official Foundry SDK (Python 3.11+)
+1. Install the SDK: `uv pip install &quot;git+https://github.com/adaptyvbio/adaptyv-sdk.git@&lt;commit&gt;&quot;`
+2. Initialize `FoundryClient` with `api_key` and `base_url` (`https://devs.adaptyvbio.com/api/v1`).
+3. List targets to find the correct `target_id`.
+4. Create an experiment spec with `experiment_type`, `method`, `target_id`, `sequences`, and `n_replicates`.
+5. Call `client.experiments.cost_estimate(spec)` to review costs.
+6. Call `client.experiments.create(name=..., experiment_spec=spec)` to create a draft.
+7. Call `client.experiments.submit(experiment_id)` to start the lab process.
+8. Poll `client.experiments.get_quote(experiment_id)` and confirm with `client.experiments.confirm_quote(experiment_id)`.
+
+### Option B: Legacy Raw API
+1. Install dependencies: `uv pip install requests python-dotenv`
+2. Set `BASE_URL` to `https://kq5jp7qj7wdqklhsxmovkzn4l40obksv.lambda-url.eu-central-1.on.aws`.
+3. POST to `/experiments` with a JSON body containing `sequences` (FASTA-like), `experiment_type`, and optional `webhook_url`.
+4. Store the returned `experiment_id` for status tracking.
+
+## 4. Sequence Optimization (Pre-submission)
+- Use tools like NetSolP, SoluProt, SolubleMPNN, and ESM to filter or redesign sequences for solubility and expression before submission.
+
+## 5. Retrieval
+- Results are typically delivered in ~21 days. Use the platform&#x27;s status endpoints or webhooks to track progress.</pre>
+</body>
+</html>

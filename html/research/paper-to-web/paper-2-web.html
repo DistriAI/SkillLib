@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>paper-2-web</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">paper-to-web</a> / paper-2-web</p><h1>paper-2-web</h1><p class="meta">combined</p><p>The copies overlap heavily on the Paper2All pipeline (Paper2Web, Paper2Video, Paper2Poster) and the core installation/usage commands. However, they disagree on a critical boundary: the Vibe-Skills copy explicitly states the skill does not generate new scientific diagrams, while the other two copies include a mandatory section for generating scientific schematics using a separate skill. Additionally, the aipoch copy is a generic wrapper that lacks the specific implementation details found in the other two. Because the &#x27;schematic generation&#x27; step is a material difference that changes the workflow (and conflicts with the boundary of the first copy), crowning one would hide a real alternative procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/paper-2-web/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/paper-2-web/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/paper-2-web/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/paper-2-web/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/paper-2-web/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/paper-2-web/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: paper-2-web
+description: Use when converting academic papers into dissemination assets such as Paper2Web websites, Paper2Video video abstracts, or Paper2Poster conference posters from LaTeX or PDF sources.
+allowed-tools: Read Write Edit Bash
+---
+
+# Paper2All: Academic Paper Transformation Pipeline
+
+## Overview
+
+This skill enables the transformation of academic papers into multiple promotional and presentation formats using the Paper2All autonomous pipeline. The system converts research papers (LaTeX or PDF) into three primary outputs:
+
+1. **Paper2Web**: Interactive, explorable academic homepages with layout-aware design
+2. **Paper2Video**: Professional presentation videos with narration, slides, and optional talking-head
+3. **Paper2Poster**: Print-ready conference posters with professional layouts
+
+## When to Use This Skill
+
+Use this skill when:
+- Creating conference materials (posters, videos, websites).
+- Promoting research or preprints.
+- Generating video abstracts or presentation videos.
+- Creating promotional materials for social media or lab websites.
+
+## Boundary
+
+This skill owns the transformation of an existing paper into dissemination assets. It reuses provided figures and paper assets. 
+
+**Conflicts**: 
+- `foryourhealth111-pixel/Vibe-Skills` states this skill does **not** generate new scientific diagrams.
+- `FreedomIntelligence/OpenClaw-Medical-Skills` and `aipoch/medical-research-skills` instruct to **always** consider adding scientific diagrams using the `scientific-schematics` skill.
+
+## Core Capabilities
+
+### 1. Paper2Web
+Converts papers into layout-aware, interactive academic homepages.
+- Responsive, multi-section layouts.
+- Interactive figures, tables, and citations.
+- Automatic logo discovery.
+
+### 2. Paper2Video
+Generates professional presentation videos.
+- Automated slide generation.
+- Speech synthesis and synchronized cursor movements.
+- Optional talking-head video (requires GPU).
+
+### 3. Paper2Poster
+Creates print-ready academic posters.
+- Custom dimensions and professional templates.
+- QR code generation.
+- High-resolution output (300+ DPI).
+
+## Quick Start
+
+### Prerequisites
+
+1. **Install Paper2All**:
+   ```bash
+   git clone https://github.com/YuhangChen1/Paper2All.git
+   cd Paper2All
+   conda create -n paper2all python=3.11
+   conda activate paper2all
+   pip install -r requirements.txt
+   ```
+
+2. **Configure API Keys** (create `.env` file):
+   ```
+   OPENAI_API_KEY=your_openai_api_key_here
+   # Optional: GOOGLE_API_KEY and GOOGLE_CSE_ID for logo search
+   ```
+
+3. **Install System Dependencies**:
+   - LibreOffice
+   - Poppler utilities
+   - NVIDIA GPU (optional, for talking-head videos)
+
+### Basic Usage
+
+**Generate All Components**:
+```bash
+python pipeline_all.py \
+  --input-dir &quot;path/to/paper&quot; \
+  --output-dir &quot;path/to/output&quot; \
+  --model-choice 1
+```
+
+**Generate Website Only**:
+```bash
+python pipeline_all.py \
+  --input-dir &quot;path/to/paper&quot; \
+  --output-dir &quot;path/to/output&quot; \
+  --model-choice 1 \
+  --generate-website
+```
+
+**Generate Video**:
+```bash
+python pipeline_light.py \
+  --model_name_t gpt-4.1 \
+  --model_name_v gpt-4.1 \
+  --result_dir &quot;path/to/output&quot; \
+  --paper_latex_root &quot;path/to/paper&quot;
+```
+
+## Visual Enhancement (Optional/Conflicting)
+
+If following the `FreedomIntelligence` or `aipoch` variants, consider adding scientific diagrams:
+- Use the **scientific-schematics** skill to generate AI-driven publication-grade figures.
+- Describe the diagram in natural language.
+- Run: `python scripts/generate_schematic.py &quot;your diagram description&quot; -o figures/output.png`
+
+If following the `Vibe-Skills` variant, do **not** generate new diagrams; reuse existing paper assets only.</pre>
+</body>
+</html>

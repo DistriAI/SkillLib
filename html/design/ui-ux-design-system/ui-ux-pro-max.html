@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ui-ux-pro-max</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">ui-ux-design-system</a> / ui-ux-pro-max</p><h1>ui-ux-pro-max</h1><p class="meta">combined</p><p>The three copies overlap on the core task (turning a UI request into a design system and implementation guidance) but each contains material steps or constraints the others lack. The first copy provides a detailed priority-based rule table and a specific CLI workflow with a fixed script path. The second copy adds a triage step, a different deliverable structure, and a different script (design_system.py) with different output standards. The third copy adds a persistence workflow (--persist), a different script path variable, an additional stack (jetpack-compose), and explicit safety rules. Because they disagree on the primary script, path, and workflow, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ui-ux-pro-max/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ui-ux-pro-max/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/ui-ux-pro-max/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ui-ux-pro-max/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ui-ux-pro-max/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/ui-ux-pro-max/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/ui-ux-pro-max/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-design-studio/skills/ui-ux-pro-max/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/ui-ux-pro-max/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: ui-ux-pro-max
+description: &quot;Comprehensive design guide for web and mobile applications. Use when designing new UI components or pages, choosing color palettes and typography, or reviewing code for UX issues.&quot;
+---
+
+# UI/UX Pro Max - Design Intelligence
+
+Comprehensive design guide for web and mobile applications. Contains 50+ styles, 97 color palettes, 57 font pairings, 99 UX guidelines, and 25 chart types across 9 technology stacks.
+
+## When to Use
+Reference these guidelines when:
+- Designing new UI components or pages
+- Choosing color palettes and typography
+- Reviewing code for UX issues
+- Building landing pages or dashboards
+- Implementing accessibility requirements
+
+## Core Workflow
+
+### 1. Triage and Infer Request Shape
+Extract key information from user request:
+- **Product type**: SaaS, e-commerce, portfolio, dashboard, landing page, etc.
+- **Style keywords**: minimal, playful, professional, elegant, dark mode, etc.
+- **Industry**: healthcare, fintech, gaming, education, etc.
+- **Target platform**: web / iOS / Android / desktop
+- **Stack**: React, Vue, Next.js, or default to `html-tailwind`
+
+If the user&#x27;s request is vague, ask only what is necessary to avoid wrong work (e.g., accessibility level, brand vibe).
+
+### 2. Generate Design System (REQUIRED)
+**Always start with `--design-system`** to get comprehensive recommendations with reasoning:
+
+```bash
+python3 &lt;script_path&gt; &quot;&lt;product_type&gt; &lt;industry&gt; &lt;keywords&gt;&quot; --design-system [-p &quot;Project Name&quot;]
+```
+
+This command:
+1. Searches 5 domains in parallel (product, style, color, landing, typography)
+2. Applies reasoning rules to select best matches
+3. Returns complete design system: pattern, style, colors, typography, effects
+4. Includes anti-patterns to avoid
+
+If the work spans multiple turns or pages, persist the design system:
+
+```bash
+python3 &lt;script_path&gt; &quot;&lt;query&gt;&quot; --design-system --persist -p &quot;Project Name&quot;
+python3 &lt;script_path&gt; &quot;&lt;query&gt;&quot; --design-system --persist -p &quot;Project Name&quot; --page &quot;dashboard&quot;
+```
+
+### 3. Supplement with Detailed Searches (as needed)
+After getting the design system, use domain searches to get additional details:
+
+```bash
+python3 &lt;script_path&gt; &quot;&lt;keyword&gt;&quot; --domain &lt;domain&gt; [-n &lt;max_results&gt;]
+```
+
+**Supported domains:** `product`, `style`, `color`, `typography`, `landing`, `chart`, `ux`
+
+### 4. Stack Guidelines (Default: html-tailwind)
+Get implementation-specific best practices. If user doesn&#x27;t specify a stack, **default to `html-tailwind`**.
+
+```bash
+python3 &lt;script_path&gt; &quot;&lt;keyword&gt;&quot; --stack html-tailwind
+```
+
+**Available stacks:** `html-tailwind`, `react`, `nextjs`, `vue`, `svelte`, `swiftui`, `react-native`, `flutter`, `shadcn`, `jetpack-compose`
+
+### 5. Synthesize Before Implementation
+After gathering the design system, convert it into:
+- layout structure,
+- component rules,
+- visual tokens,
+- interaction rules,
+- accessibility constraints,
+- implementation notes for the chosen stack.
+
+Do not dump raw search output into the final answer. Use it to justify a coherent design direction.
+
+## Rule Categories by Priority
+
+| Priority | Category | Impact | Domain |
+|----------|----------|--------|--------|
+| 1 | Accessibility | CRITICAL | `ux` |
+| 2 | Touch &amp; Interaction | CRITICAL | `ux` |
+| 3 | Performance | HIGH | `ux` |
+| 4 | Layout &amp; Responsive | HIGH | `ux` |
+| 5 | Typography &amp; Color | MEDIUM | `typography`, `color` |
+| 6 | Animation | MEDIUM | `ux` |
+| 7 | Style Selection | MEDIUM | `style`, `product` |
+| 8 | Charts &amp; Data | LOW | `chart` |
+
+## Safety Rules
+
+- Do not hardcode a design language without connecting it to the product type.
+- Do not use emoji as primary UI iconography.
+- Do not weaken text contrast for visual flair.
+- Do not scale interactive cards on hover if it destabilizes layout.
+- Do not use animation that violates `prefers-reduced-motion`.
+- Do not invent unsupported helper scripts or datasets; use the bundled `search.py` and `data/ui-reasoning.csv` only.
+
+## Output Standards
+- Default to ASCII-only tokens/variables unless the project already uses Unicode.
+- Include: spacing scale, type scale, 2-3 font pair options, color tokens, component states.
+- Always cover: empty/loading/error, keyboard navigation, focus states, contrast.</pre>
+</body>
+</html>

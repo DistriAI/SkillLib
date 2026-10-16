@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>security-reviewer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">code-security-audit</a> / security-reviewer</p><h1>security-reviewer</h1><p class="meta">combined</p><p>Both copies define a security-reviewer skill, but they are not the same procedure. The Jeffallan copy is a full audit workflow with explicit tool commands (semgrep, bandit, gitleaks, npm audit, trivy), CVSS severity, written authorization and rules of engagement, a reference-guide table, and a report template. The Vibe-Skills copy is a routing-focused, OWASP-oriented checklist with a different severity scale (CRITICAL/HIGH/MEDIUM/LOW), a high-risk pattern audit, and pairing guidance with other skills. Each has material steps the other lacks, and they disagree on severity taxonomy and on whether active testing/authorization is in scope, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/security-reviewer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/security-reviewer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/security-reviewer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/security-reviewer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Security Reviewer
+
+Use this skill when the task is explicitly a security audit, vulnerability review, OWASP review, secret-leak check, auth/authz review, or infrastructure security review. Do not use it as the default owner for ordinary maintainability review; if security is only one item in a general PR review, a general code-reviewer can flag it, but explicit security-audit wording should route here.
+
+## When to Use
+- Code review and SAST scanning
+- Vulnerability scanning and dependency audits
+- Secrets scanning and credential detection
+- Penetration testing and reconnaissance (only with written authorization)
+- Infrastructure and cloud security audits
+- DevSecOps pipelines and compliance automation
+
+## Routing Boundary
+Use this skill when security is the main question:
+- OWASP/security audit/security review
+- secret leak, token exposure, unsafe logging
+- auth bypass, authorization gaps, session/token handling
+- injection, XSS, SSRF, unsafe file upload or command execution
+
+## Core Workflow
+
+1. **Scope** — Map attack surface and critical paths. Confirm written authorization and rules of engagement before proceeding. Verify written scope authorization before any active testing.
+2. **Initial Scan** — Locate auth, API endpoints, DB queries, file handling, and external calls. Check for hardcoded secrets and unsafe config defaults.
+3. **Automated Scan** — Run SAST, dependency, and secrets tools. Example commands:
+   - `semgrep --config=auto .`
+   - `bandit -r ./src`
+   - `gitleaks detect --source=.`
+   - `npm audit --audit-level=moderate`
+   - `trivy fs .`
+4. **OWASP-Oriented Checks**
+   - Injection: parameterized queries, sanitized inputs.
+   - AuthZ/AuthN: enforce authorization per route, secure session/token handling.
+   - Data exposure: secrets/PII protection and safe logging.
+   - XSS/SSRF: output encoding, URL allowlist, no blind fetch of user URLs.
+   - Dependency risk: audit vulnerable dependencies.
+5. **High-Risk Pattern Audit**
+   - Hardcoded secrets/tokens
+   - Command execution with user input
+   - SQL string concatenation
+   - Missing auth check
+   - Missing rate limiting on sensitive endpoints
+   - Unsafe crypto/password handling
+6. **Manual Review** — Manual review of auth, input handling, and crypto. Tools miss context — manual review is mandatory.
+7. **Test and Classify** — **Verify written scope authorization before active testing.** Validate findings, rate severity using CVSS (Critical/High/Medium/Low/Info) or the simplified scale (CRITICAL/HIGH/MEDIUM/LOW). Confirm exploitability with proof-of-concept only; do not exceed it.
+8. **Report** — Confirm findings with stakeholder before finalizing. Document with location, impact, and remediation. Report critical findings immediately.
+
+## Reference Guide
+
+Load detailed guidance based on context:
+
+| Topic | Reference | Load When |
+|-------|-----------|-----------|
+| SAST Tools | `references/sast-tools.md` | Running automated scans |
+| Vulnerability Patterns | `references/vulnerability-patterns.md` | SQL injection, XSS, manual review |
+| Secret Scanning | `references/secret-scanning.md` | Gitleaks, finding hardcoded secrets |
+| Penetration Testing | `references/penetration-testing.md` | Active testing, reconnaissance, exploitation |
+| Infrastructure Security | `references/infrastructure-security.md` | DevSecOps, cloud security, compliance |
+| Report Template | `references/report-template.md` | Writing security report |
+
+## Constraints
+
+### MUST DO
+- Check authentication/authorization first
+- Run automated tools before manual review
+- Provide specific file/line locations
+- Include remediation for each finding
+- Rate severity consistently
+- Check for secrets in code
+- Verify scope and authorization before active testing
+- Document all testing activities
+- Follow rules of engagement
+- Report critical findings immediately
+
+### MUST NOT DO
+- Skip manual review (tools miss things)
+- Test on production systems without authorization
+- Ignore &quot;low&quot; severity issues
+- Assume frameworks handle everything
+- Share detailed exploits publicly
+- Exploit beyond proof of concept
+- Cause service disruption or data loss
+- Test outside defined scope
+
+## Output Templates
+
+1. Executive summary with risk assessment
+2. Findings table with severity counts
+3. Detailed findings with location, impact, and remediation
+4. Prioritized recommendations
+
+### Example Finding Entry
+
+```
+ID: FIND-001
+Severity: High (CVSS 8.1)
+Title: SQL Injection in user search endpoint
+File: src/api/users.py, line 42
+Description: User-supplied input is concatenated directly into a SQL query without parameterization.
+Impact: An attacker can read, modify, or delete database contents.
+Remediation: Use parameterized queries or an ORM. Replace `cursor.execute(f&quot;SELECT * FROM users WHERE name=&#x27;{name}&#x27;&quot;)`
+             with `cursor.execute(&quot;SELECT * FROM users WHERE name=%s&quot;, (name,))`.
+References: CWE-89, OWASP A03:2021
+```
+
+## Vibe Integration
+
+- Security gate skill usable at any grade.
+- Pair with `security-best-practices` for language/framework-specific guidance.
+- Pair with `code-reviewer` for combined correctness + security review.
+
+## Knowledge Reference
+
+OWASP Top 10, CWE, Semgrep, Bandit, ESLint Security, gosec, npm audit, gitleaks, trufflehog, CVSS scoring, nmap, Burp Suite, sqlmap, Trivy, Checkov, HashiCorp Vault, AWS Security Hub, CIS benchmarks, SOC2, ISO27001</pre>
+</body>
+</html>

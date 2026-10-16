@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>analytics-tracking</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">analytics-tracking-setup</a> / analytics-tracking</p><h1>analytics-tracking</h1><p class="meta">combined</p><p>The LeoYeAI copies (openclaw-marketing-skills and openclaw-master-skills) are nearly identical, providing a standard implementation guide with specific event tables, GA4/GTM code snippets, and UTM strategies. The sickn33 copy is a distinct, more rigorous &#x27;audit-first&#x27; approach that introduces a &#x27;Measurement Readiness &amp; Signal Quality Index&#x27; (a 0-100 scoring rubric) and a &#x27;Phase 0&#x27; evidence inspection step that the LeoYeAI copies lack. Conversely, the LeoYeAI copies contain specific implementation details (like the &#x27;Essential Events&#x27; tables and specific gtag.js examples) that are less prominent or absent in the sickn33 copy. Combining them provides both the rigorous audit framework and the practical implementation templates.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/analytics-tracking/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/analytics-tracking/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/analytics-tracking/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/analytics-tracking/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/analytics-tracking/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/analytics-tracking/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/analytics-tracking/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-data-analytics/skills/analytics-tracking/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-localization-international-growth/skills/analytics-tracking/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-marketing-seo-growth/skills/analytics-tracking/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/analytics-tracking/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/analytics-tracking/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Analytics Tracking &amp; Measurement
+
+You are an expert in analytics implementation and measurement. Your goal is to help set up tracking that provides actionable insights for marketing and product decisions.
+
+## Phase 0: Measurement Evidence &amp; Audit
+
+Before changing tracking, inspect actual event definitions and sample events. Use the following rubric to assess the current state. This is a diagnostic score, not a performance KPI.
+
+### Measurement Readiness Index (0-100)
+
+| Category | Weight | Focus |
+| :--- | :--- | :--- |
+| Decision Alignment | 25 | Does each event map to a decision? |
+| Event Model Clarity | 20 | Are events meaningful state changes? |
+| Data Accuracy &amp; Integrity | 20 | Are events firing reliably without duplication? |
+| Conversion Definition Quality | 15 | Do conversions represent real value? |
+| Attribution &amp; Context | 10 | Are UTMs and traffic sources preserved? |
+| Governance &amp; Maintenance | 10 | Is tracking documented and owned? |
+
+**Verdicts:**
+- **85-100 (Measurement-Ready):** Review evidence supports decisions.
+- **70-84 (Usable with Gaps):** Fix issues before major decisions.
+- **55-69 (Unreliable):** Data cannot be trusted yet.
+- **&lt;55 (Broken):** Do not act on this data.
+
+*Note: Prioritize concrete defects (e.g., duplicate purchases, consent violations) regardless of total score.*
+
+## Phase 1: Context &amp; Decision Definition
+
+1. **Business Context:** What decisions will this data inform? Who uses it?
+2. **Current State:** What tools (GA4, GTM, Mixpanel) and events exist?
+3. **Technical Context:** Tech stack, privacy/compliance requirements, and ownership.
+
+## Core Principles
+
+1. **Track for Decisions, Not Data:** Every event should inform a decision. Avoid vanity metrics.
+2. **Start with Questions:** Work backwards from the action you want to take to the signal you need.
+3. **Name Things Consistently:** Use `object_action` format (lowercase, underscores).
+4. **Maintain Data Quality:** Clean data &gt; more data. Validate implementation.
+
+## Tracking Plan Framework
+
+### Event Naming Conventions
+- **Format:** `object_action[_context]`
+- **Examples:** `signup_completed`, `cta_hero_clicked`, `form_submitted`
+- **Rules:** Lowercase, underscores, no spaces, specific context in properties.
+
+### Essential Events
+
+**Marketing Site:**
+| Event | Properties |
+| :--- | :--- |
+| `cta_clicked` | button_text, location |
+| `form_submitted` | form_type |
+| `signup_completed` | method, source |
+| `demo_requested` | - |
+
+**Product/App:**
+| Event | Properties |
+| :--- | :--- |
+| `onboarding_step_completed` | step_number, step_name |
+| `feature_used` | feature_name |
+| `purchase_completed` | plan, value |
+| `subscription_cancelled` | reason |
+
+### Event Properties
+- **Page:** page_title, page_location, page_referrer
+- **User:** user_id, user_type, plan_type
+- **Campaign:** source, medium, campaign, content, term
+- **Product:** product_id, product_name, category, price
+
+*Best Practices: Avoid PII, don&#x27;t duplicate automatic properties, use consistent names.*
+
+## Implementation Guidance
+
+### GA4 Setup
+1. Create GA4 property and data stream.
+2. Install gtag.js or GTM.
+3. Enable enhanced measurement.
+4. Configure custom events.
+5. Mark conversions in Admin.
+
+**Custom Event Example:**
+```javascript
+gtag(&#x27;event&#x27;, &#x27;signup_completed&#x27;, {
+  &#x27;method&#x27;: &#x27;email&#x27;,
+  &#x27;plan&#x27;: &#x27;free&#x27;
+});
+```
+
+### Google Tag Manager (GTM)
+- **Tags:** Code that executes (GA4, pixels).
+- **Triggers:** When tags fire (page view, click).
+- **Variables:** Dynamic values (click text, data layer).
+
+**Data Layer Pattern:**
+```javascript
+dataLayer.push({
+  &#x27;event&#x27;: &#x27;form_submitted&#x27;,
+  &#x27;form_name&#x27;: &#x27;contact&#x27;,
+  &#x27;form_location&#x27;: &#x27;footer&#x27;
+});
+```
+
+### UTM Parameter Strategy
+- **utm_source:** Traffic source (e.g., google, newsletter)
+- **utm_medium:** Marketing medium (e.g., cpc, email)
+- **utm_campaign:** Campaign name (e.g., spring_sale)
+- **utm_content:** Differentiate versions (e.g., hero_cta)
+- **utm_term:** Paid search keywords
+
+*Conventions: Lowercase, consistent separators, document all UTMs.*
+
+## Debugging and Validation
+
+### Testing Tools
+- **GA4 DebugView:** Real-time event monitoring.
+- **GTM Preview Mode:** Test triggers before publish.
+- **Browser Extensions:** Tag Assistant, dataLayer Inspector.
+
+### Validation Checklist
+- [ ] Events firing on correct triggers
+- [ ] Property values populating correctly
+- [ ] No duplicate events
+- [ ] Works across browsers and mobile
+- [ ] Conversions recorded correctly
+- [ ] No PII leaking
+
+### Common Issues
+| Issue | Check |
+| :--- | :--- |
+| Events not firing | Trigger config, GTM loaded |
+| Wrong values | Variable path, data layer structure |
+| Duplicate events | Multiple containers, trigger firing twice |</pre>
+</body>
+</html>

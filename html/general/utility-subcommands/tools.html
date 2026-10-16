@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>tools</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">utility-subcommands</a> / tools</p><h1>tools</h1><p class="meta">combined</p><p>The two copies are unrelated. The first is a deprecated compatibility stub that redirects Tool Page construction to a different repository (kostja94/pagina) and contains no executable steps. The second is a full utility skill defining subcommands (commit, compile, validate-bib, journal, context, deploy, learn, upgrade) for an empirical research project. They do not reproduce, shorten, or wrap each other; they overlap only in the generic name &#x27;tools&#x27;. Crowning one would hide the other&#x27;s distinct purpose.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/pages/content/tools/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/16-hsantanna88-clo-author/dot-claude/skills/tools/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/pages/content/tools/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/16-hsantanna88-clo-author/dot-claude/skills/tools/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: tools
+description: Utility commands and compatibility redirects. Use subcommands for project maintenance or follow redirects for moved skills.
+argument-hint: &quot;[subcommand: commit | compile | validate-bib | journal | context | deploy | learn | upgrade | redirect] [args]&quot;
+allowed-tools: Read,Grep,Glob,Write,Edit,Bash,Task
+---
+
+# Tools
+
+Utility subcommands for project maintenance and infrastructure, plus compatibility redirects.
+
+**Input:** `$ARGUMENTS` — subcommand followed by any arguments.
+
+## Subcommands
+
+### `/tools commit [message]` — Git Commit
+Stage changes, create commit, optionally create PR and merge.
+- Run git status to identify changes
+- Stage relevant files (never stage .env or credentials)
+- Create commit with descriptive message
+- If quality score available and &gt;= 80, note in commit
+
+### `/tools compile [file]` — LaTeX Compilation
+3-pass XeLaTeX + bibtex compilation.
+
+For papers:
+```bash
+cd Paper &amp;&amp; TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode [file]
+BIBINPUTS=..:$BIBINPUTS bibtex [file_base]
+TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode [file]
+TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode [file]
+```
+
+For talks:
+```bash
+cd Talks &amp;&amp; TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode [file]
+```
+
+### `/tools validate-bib` — Bibliography Validation
+Cross-reference all \cite{} keys in paper and talk files against Bibliography_base.bib.
+Report: missing entries, unused entries, duplicate keys.
+
+### `/tools journal` — Research Journal
+Regenerate the research journal timeline from quality reports and git history.
+Shows chronological record of agent actions, phase transitions, scores, decisions.
+
+### `/tools context` — Context Status
+Show current context status and session health.
+Check context usage, whether auto-compact is approaching, what state will be preserved.
+
+### `/tools deploy` — Deploy Guide Site
+Render Quarto guide site and publish to GitHub Pages.
+```bash
+cd guide &amp;&amp; quarto publish gh-pages --no-browser
+```
+
+### `/tools learn` — Extract Learnings
+Extract reusable knowledge from the current session. Auto-memory handles corrections automatically; this is for multi-step workflows worth turning into a full skill.
+
+### `/tools upgrade` — Upgrade Clo-Author Infrastructure
+Upgrade an existing project to the latest clo-author architecture.
+
+**What it does:**
+1. Clone the latest clo-author release into a temp directory
+2. Save the user&#x27;s filled-in domain-profile.md and any custom journal profiles
+3. Delete the old `.claude/` directory
+4. Copy the new `.claude/` in
+5. Restore the user&#x27;s domain-profile.md and custom journal profiles
+6. Optionally copy new `templates/`
+7. Report what changed
+
+**Workflow:**
+```
+Step 1: DOWNLOAD
+  - Clone latest clo-author into /tmp/clo-author-upgrade
+  - Or: gh release download --repo hugosantanna/clo-author
+
+Step 2: PRESERVE USER CUSTOMIZATIONS
+  - Save .claude/references/domain-profile.md if filled in (not just placeholders)
+  - Save any custom journal profiles the user added to journal-profiles.md
+  - Save .claude/settings.json (user&#x27;s permissions and hooks)
+  - Save .claude/settings.local.json if it exists
+
+Step 3: REPLACE
+  - Delete old .claude/ entirely
+  - Copy new .claude/ from the downloaded release
+  - Restore saved customizations from Step 2
+
+Step 4: DO NOT TOUCH
+  - paper/, scripts/, data/, explorations/, quality_reports/
+  - CLAUDE.md, Bibliography_base.bib, README.md, .gitignore
+  - Any other user content
+
+Step 5: REPORT
+  - List what was updated (new agents, skills, rules)
+  - List what was preserved (domain profile, settings, custom profiles)
+  - Clean up temp directory
+```
+
+**No git merge. No upstream remote. No conflicts.** Just delete and replace `.claude/`.
+
+### `/tools redirect` — Compatibility Redirects
+For deprecated skills that have moved:
+- Tool Page construction has moved to Pagina. Install and use page-builder to build a new Tool Page.
+```bash
+npx skills add kostja94/pagina --skill page-builder
+```
+
+## Principles
+- **Each subcommand is lightweight.** No multi-agent orchestration needed.
+- **Compile always uses 3-pass.** Ensures references and citations resolve.
+- **validate-bib catches drift.** Run before commits to catch broken citations.
+- **Upgrade preserves content.** Infrastructure changes, your paper doesn&#x27;t.
+- **Redirects are passive.** They contain no executable steps and point to the successor skill.</pre>
+</body>
+</html>

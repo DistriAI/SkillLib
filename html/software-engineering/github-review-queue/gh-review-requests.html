@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gh-review-requests</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">github-review-queue</a> / gh-review-requests</p><h1>gh-review-requests</h1><p class="meta">combined</p><p>The first copy (getsentry/skills) provides a specific, executable procedure using a bundled Python script (`fetch_review_requests.py`) and `uv`, which is the primary method for the original skill. The second copy (sickn33/agentic-awesome-skills) explicitly states that the script is not bundled and provides a manual `gh api` fallback as the primary method, adding safety constraints (e.g., verifying origin, not marking as read) that the first copy lacks. Because the first copy relies on a script that the second copy says is missing, and the second copy adds operational safety steps, crowning one would hide the alternative manual procedure or the specific tooling dependency.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/gh-review-requests/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/gh-review-requests/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/gh-review-requests/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/gh-review-requests/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/gh-review-requests/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/gh-review-requests/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: gh-review-requests
+description: Fetch unread GitHub notifications for open PRs where review is requested from a specified team or opened by a team member.
+allowed-tools: Bash
+---
+
+# GitHub Review Requests
+
+Fetch unread `review_requested` notifications for open (unmerged) PRs, filtered by a GitHub team.
+
+**Requires**: GitHub CLI (`gh`) authenticated.
+
+## Step 1: Identify the Team
+
+If the user has not specified a team, ask:
+
+&gt; Which GitHub team should I filter by? (e.g. `streaming-platform`)
+
+Accept either a team slug or a display name. Resolve the slug against the authenticated organization&#x27;s actual teams to ensure accuracy.
+
+## Step 2: Fetch Review Requests
+
+### Method A: Bundled Script (if available)
+
+If the `scripts/fetch_review_requests.py` script is present in the environment, use it with `uv`:
+
+```bash
+uv run scripts/fetch_review_requests.py --org &lt;org&gt; --teams &lt;team-slug&gt;
+```
+
+### Method B: Manual API (Fallback or Primary)
+
+If the script is not available, or to verify results, use the GitHub API directly:
+
+1. Fetch notifications:
+   ```bash
+   gh api notifications --paginate
+   ```
+2. Filter for unread `review_requested` notifications where the subject is a pull request.
+3. For each candidate PR:
+   - Verify the PR is open and not merged: `gh api repos/{repo}/pulls/{number}`
+   - Check requested reviewers: `gh api repos/{repo}/pulls/{number}/requested_reviewers`
+   - Check team membership of the author: `gh api orgs/{org}/teams/{slug}/members`
+
+**Safety Constraints**:
+- Do not mark notifications as read.
+- Do not submit reviews.
+- Report incomplete pagination or permission errors as &quot;incomplete&quot;, not zero.
+
+## Step 3: Present Results
+
+Display results as a markdown table with full URLs:
+
+| # | Title | URL | Reason |
+|---|-------|-----|--------|
+| 1 | feat(kafka): add workflow to restart a broker | https://github.com/getsentry/ops/pull/19144 | opened by: evanh |
+
+If `total` is 0, say: &quot;No unread review requests found for that team.&quot;</pre>
+</body>
+</html>

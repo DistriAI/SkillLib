@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>auto-review-loop</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">autonomous-review-loop</a> / auto-review-loop</p><h1>auto-review-loop</h1><p class="meta">combined</p><p>The two copies implement the same review-fix-rereview loop but disagree on the stop condition, reviewer backend, and state persistence. The wanshuiyin copy is the more evolved procedure (Copilot-native reviewer, explicit AND stop condition, difficulty levels, output directory, HTML rendering, and a warning against external timers), while the brycewang copy adds a concrete REVIEW_STATE.json persistence and resume protocol that the wanshuiyin copy does not contain. Crowning one would hide a real alternative: the brycewang copy&#x27;s state recovery is a material step absent from the other, and the wanshuiyin copy&#x27;s reviewer routing and stop-condition correction are absent from the other.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/auto-review-loop/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/auto-review-loop/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/auto-review-loop/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/auto-review-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex/auto-review-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex-claude-review/auto-review-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex-gemini-review/auto-review-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex/auto-review-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex-claude-review/auto-review-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex-gemini-review/auto-review-loop/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: auto-review-loop
+description: Autonomous multi-round research review loop. Reviews via a configurable backend (Copilot-native, Codex, or manual), implements fixes, and re-reviews until a policy-approved positive assessment or max rounds is reached. Supports state persistence for context-compaction recovery.
+argument-hint: &quot;[topic-or-scope]&quot;
+allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, Skill, Task, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
+---
+
+# Auto Review Loop: Autonomous Research Improvement
+
+&gt; Do not wrap this skill in /loop, /schedule, or CronCreate. It already loops internally and the reviewer carries round-to-round memory in one threadId. An external timer resets reviewer memory each tick.
+
+Autonomously iterate: review → implement fixes → re-review, until an independent reviewer gives a policy-approved positive assessment or MAX_ROUNDS is reached.
+
+## Context: $ARGUMENTS
+
+## Constants
+
+- MAX_ROUNDS = 4
+- POSITIVE_THRESHOLD: score &gt;= 6/10 AND verdict in {&quot;ready&quot;, &quot;almost&quot;} — both must hold.
+- REVIEW_DOC: review-stage/AUTO_REVIEW.md (cumulative log). Fall back to ./AUTO_REVIEW.md for legacy projects.
+- REVIEWER_MODEL = gpt-6-astra — Default model for the Codex backend. Must be an OpenAI model.
+- REVIEWER_BACKEND — With no reviewer directive, start as auto; Step -1 runs a two-call native marker/challenge probe. A bound Copilot CLI root session uses copilot-native; an unbound host keeps codex. Explicit directives (codex, oracle-pro, agy, manual, copilot) bypass the probe.
+- OUTPUT_DIR = review-stage/ — All review-stage outputs go here. Create if missing.
+- HUMAN_CHECKPOINT = false — When true, pause after each round&#x27;s review and present score + weaknesses. User can approve, customize, skip, or stop.
+- COMPACT = false — When true, read EXPERIMENT_LOG.md and findings.md instead of full logs; append key findings to findings.md after each round.
+- REVIEWER_DIFFICULTY = medium — medium (default), hard (adds Reviewer Memory + Debate Protocol), nightmare (adds direct repo read + Adversarial Verification).
+- RENDER_HTML = true — When true, auto-render AUTO_REVIEW.md to HTML on loop termination via /render-html with --no-review.
+
+&gt; Nightmare + Manual incompatibility: If REVIEWER_BACKEND = manual and REVIEWER_DIFFICULTY = nightmare, STOP with an error message.
+
+## State Persistence (Compact Recovery)
+
+Long-running loops may hit the context window limit. Persist state to REVIEW_STATE.json after each round:
+
+```json
+{
+  &quot;round&quot;: 2,
+  &quot;threadId&quot;: &quot;019cd392-...&quot;,
+  &quot;status&quot;: &quot;in_progress&quot;,
+  &quot;last_score&quot;: 5.0,
+  &quot;last_verdict&quot;: &quot;not ready&quot;,
+  &quot;pending_experiments&quot;: [&quot;screen_name_1&quot;],
+  &quot;timestamp&quot;: &quot;2026-03-13T21:00:00&quot;
+}
+```
+
+Write this file at the end of every Phase E. Overwrite each time. On completion, set status to completed.
+
+## Workflow
+
+### Initialization
+
+1. Check for REVIEW_STATE.json:
+   - Missing or status=completed: fresh start.
+   - status=in_progress and timestamp older than 24 hours: fresh start (delete file).
+   - status=in_progress and timestamp within 24 hours: resume. Read state, read AUTO_REVIEW.md, check pending experiments, resume from next round.
+2. Read project narrative documents, memory files, and prior review documents. When COMPACT=true and compact files exist, read findings.md + EXPERIMENT_LOG.md instead.
+3. Read recent experiment results.
+4. Identify current weaknesses and open TODOs.
+5. Initialize round counter = 1 (unless recovered).
+6. Create/update AUTO_REVIEW.md with header and timestamp.
+
+### Loop (repeat up to MAX_ROUNDS)
+
+#### Phase A: Review
+
+Branch on REVIEWER_BACKEND. For codex, send comprehensive context via mcp__codex__codex with model_reasoning_effort xhigh. Prompt the reviewer to act as a senior ML reviewer, score 1-10, list critical weaknesses ranked by severity, specify minimum fixes, and state readiness. For round 2+, use mcp__codex__codex-reply with the saved threadId.
+
+#### Phase B: Parse Assessment
+
+Save the FULL raw response verbatim. Extract score, verdict, and action items.
+
+STOP CONDITION: If score &gt;= 6 AND verdict in {ready, almost} → stop loop, document final state.
+
+#### Human Checkpoint (if enabled)
+
+If HUMAN_CHECKPOINT=true, present review results and wait for user input. Parse approval, custom instructions, skip, or stop.
+
+#### Phase C: Implement Fixes
+
+Implement the approved fixes. Update code, experiments, and documentation.
+
+#### Phase D: Verify
+
+Verify that fixes address the identified weaknesses.
+
+#### Phase E: Document and Persist
+
+Append the round&#x27;s review, fixes, and verification to AUTO_REVIEW.md. Write REVIEW_STATE.json. If RENDER_HTML=true and loop is terminating, render to HTML.
+
+## Conflicts
+
+- wanshuiyin/Auto-claude-code-research-in-sleep uses AND for the stop condition; brycewang-stanford/Auto-Empirical-Research-Skills uses OR. The AND form is used here as it is the more conservative and explicitly corrected condition.
+- wanshuiyin/Auto-claude-code-research-in-sleep uses gpt-6-astra and a backend probe; brycewang-stanford/Auto-Empirical-Research-Skills uses gpt-5.4 with no probe. The probe and gpt-6-astra are used here as they are the more evolved configuration.
+- brycewang-stanford/Auto-Empirical-Research-Skills includes REVIEW_STATE.json persistence; wanshuiyin/Auto-claude-code-research-in-sleep does not. The persistence protocol is included here as it is a material step absent from the other copy.</pre>
+</body>
+</html>

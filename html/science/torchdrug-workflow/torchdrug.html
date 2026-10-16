@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>torchdrug</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">torchdrug-workflow</a> / torchdrug</p><h1>torchdrug</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a version-pinned, environment-aware procedure (TorchDrug 0.2.1, Python 3.7-3.10, PyTorch 1.8-2.0, specific wheel pins, ClinTox/Engine workflow, and explicit Apple Silicon/CPU constraints). The other two copies are near-identical, broader capability catalogs that use a generic installation command and a manual PyTorch training loop instead of the Engine, and they omit the version guard and dependency pinning. Because the K-Dense copy contains material steps the others lack (version guard, pinned installation, Engine-based training, dataset cache repair) and the others contain a broader capability overview and a manual training loop that the K-Dense copy does not emphasize, crowning one would hide a real alternative. The two non-K-Dense copies are effectively duplicates of each other.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/torchdrug/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/torchdrug/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/torchdrug/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/torchdrug/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/torchdrug/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/torchdrug/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: torchdrug
+description: Builds and troubleshoots TorchDrug workflows for molecular graphs, property prediction, self-supervised pretraining, molecule generation, retrosynthesis, protein representation learning, and knowledge graph reasoning. Use when code imports torchdrug or needs its datasets, models, tasks, or Engine.
+---
+
+# TorchDrug
+
+TorchDrug is a PyTorch-based graph learning stack for drug discovery and molecular science. It supports molecular property prediction, protein modeling, knowledge graph reasoning, molecular generation, retrosynthesis, and graph neural network training on 40+ datasets.
+
+## Version Guard
+
+Before generating or debugging code, inspect the environment:
+
+```bash
+python --version
+python -c &quot;import torch; print(torch.__version__)&quot;
+python -c &quot;import torchdrug; print(torchdrug.__version__)&quot;
+```
+
+The supported matrix for TorchDrug 0.2.1 is:
+- Python 3.7 through 3.10
+- PyTorch 1.8 through 2.0
+- Linux, Windows, or macOS
+- Apple Silicon: PyTorch 1.13 or later, CPU only; no MPS support
+
+If the project uses Python 3.11+ or PyTorch 2.1+, create a compatible environment or explicitly test a source build. Do not present such combinations as supported.
+
+## Installation
+
+Prefer a dedicated Python 3.10 environment and pin the TorchDrug release:
+
+```bash
+uv venv --python 3.10
+source .venv/bin/activate
+uv pip install &quot;torch==2.0.0&quot; &quot;numpy==1.26.4&quot; &quot;setuptools&lt;81&quot; wheel
+```
+
+Install `torch-scatter` and `torch-cluster` wheels matched to the exact PyTorch and CUDA pair, following the official installation page. For a CPU-only PyTorch 2.0 environment:
+
+```bash
+uv pip install --only-binary :all: &quot;torch-scatter==2.1.2&quot; &quot;torch-cluster==1.6.3&quot; \
+  --find-links &quot;https://data.pyg.org/whl/torch-2.0.0+cpu.html&quot;
+uv pip install &quot;torchdrug==0.2.1&quot; &quot;numpy==1.26.4&quot; &quot;scipy==1.13.1&quot; \
+  &quot;rdkit-pypi==2022.9.5&quot; &quot;fair-esm==2.0.0&quot; &quot;decorator==5.1.1&quot;
+```
+
+Do not copy a CUDA wheel URL between environments. Match the PyTorch version, CUDA build, Python ABI, and platform. On Apple Silicon, build `torch-scatter` and `torch-cluster` from source with `--no-build-isolation` after installing PyTorch. Use the **fair-esm** distribution, which imports as `esm`. Do not install both RDKit distributions into one environment.
+
+## Canonical Property-Prediction Workflow
+
+Use the documented ClinTox → GIN → `PropertyPrediction` → `Engine` pattern:
+
+```python
+import torch
+from torchdrug import core, datasets, models, tasks
+
+dataset = datasets.ClinTox(&quot;~/molecule-datasets/&quot;)
+lengths = [int(0.8 * len(dataset)), int(0.1 * len(dataset))]
+lengths.append(len(dataset) - sum(lengths))
+train_set, valid_set, test_set = torch.utils.data.random_split(
+    dataset, lengths, generator=torch.Generator().manual_seed(1)
+)
+
+model = models.GIN(
+    input_dim=dataset.node_feature_dim,
+    hidden_dims=[256, 256, 256, 256],
+    short_cut=True,
+    batch_norm=True,
+    concat_hidden=True,
+)
+task = tasks.PropertyPrediction(
+    model,
+    task=dataset.tasks,
+    criterion=&quot;bce&quot;,
+    metric=(&quot;auprc&quot;, &quot;auroc&quot;),
+)
+
+optimizer = torch.optim.Adam(task.parameters(), lr=1e-3)
+solver = core.Engine(
+    task,
+    train_set,
+    valid_set,
+    test_set,
+    optimizer,
+    batch_size=1024,
+)
+solver.train(num_epoch=100)
+solver.evaluate(&quot;valid&quot;)
+```
+
+Add `gpus=[0]` only when a supported CUDA device is available. Omit `gpus` for CPU execution.
+
+For binary classification, `task.predict(batch)` returns logits; apply `torch.sigmoid` when probabilities are needed. In 0.2.1, normalized regression predictions are returned on the original target scale.
+
+## Core Capabilities
+
+### Molecular Property Prediction
+- Datasets: ClinTox, BBBP, Tox21, QM9, and other documented molecule datasets.
+- Models: GIN, GAT, SchNet; use `edge_input_dim` when edge features are supplied.
+- Task: `tasks.PropertyPrediction`.
+
+### Self-Supervised Molecular Pretraining
+- InfoGraph: `models.InfoGraph(gin_model, separate_model=False)` wrapped by `tasks.Unsupervised`.
+- Attribute masking: `tasks.AttributeMasking`.
+
+### Protein Modeling
+- Datasets: EnzymeCommission, GeneOntology, PDBBind, and other protein datasets.
+- Sequence models: ESM, ProteinBERT, ProteinLSTM.
+- Structure models: GearNet, SchNet.
+
+### Knowledge Graph Reasoning
+- Datasets: FB15k, WN18, Hetionet.
+- Embedding models: TransE, RotatE, ComplEx.
+- Task: `tasks.KnowledgeGraphCompletion`.
+
+### Molecular Generation
+- Strategies: unconditional, conditional, scaffold-based.
+- Models: GCPN, GraphAutoregressiveFlow, autoregressive generation.
+
+### Retrosynthesis
+- Dataset: USPTO-50k.
+- Tasks: CenterIdentification, SynthonCompletion, end-to-end Retrosynthesis pipeline.
+
+### Graph Neural Network Models
+- General GNNs: GCN, GAT, GIN, RGCN, MPNN.
+- 3D-aware: SchNet, GearNet.
+- Protein-specific: ESM, ProteinBERT, GearNet.
+- Knowledge graph: TransE, RotatE, ComplEx.</pre>
+</body>
+</html>

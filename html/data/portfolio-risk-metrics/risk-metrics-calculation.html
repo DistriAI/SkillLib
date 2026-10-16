@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>risk-metrics-calculation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">portfolio-risk-metrics</a> / risk-metrics-calculation</p><h1>risk-metrics-calculation</h1><p class="meta">combined</p><p>The first two copies are nearly identical high-level instructions that point to a resource file, while the third copy contains the actual implementation logic, including a Python class for calculating VaR, CVaR, Sharpe, Sortino, and drawdowns. The first two lack the specific calculation steps, and the third lacks the explicit &#x27;Do not use&#x27; and &#x27;Limitations&#x27; sections found in the others. Combining them provides both the procedural guardrails and the technical implementation.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/risk-metrics-calculation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/risk-metrics-calculation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/risk-metrics-calculation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/risk-metrics-calculation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/risk-metrics-calculation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/risk-metrics-calculation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/risk-metrics-calculation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/risk-metrics-calculation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: risk-metrics-calculation
+description: Calculate portfolio risk metrics including VaR, CVaR, Sharpe, Sortino, and drawdown analysis. Use when measuring portfolio risk, implementing risk limits, or building risk monitoring systems.
+---
+
+# Risk Metrics Calculation
+
+Comprehensive risk measurement toolkit for portfolio management, including Value at Risk, Expected Shortfall, and drawdown analysis.
+
+## Use this skill when
+
+- Measuring portfolio risk
+- Implementing risk limits
+- Building risk dashboards
+- Calculating risk-adjusted returns
+- Setting position sizes
+- Regulatory reporting
+
+## Do not use this skill when
+
+- The task is unrelated to risk metrics calculation
+- You need a different domain or tool outside this scope
+
+## Instructions
+
+1. Clarify goals, constraints, and required inputs.
+2. Apply relevant best practices and validate outcomes.
+3. Provide actionable steps and verification.
+4. If detailed examples are required, open `resources/implementation-playbook.md`.
+
+## Core Concepts
+
+### 1. Risk Metric Categories
+
+| Category          | Metrics         | Use Case             |
+| ----------------- | --------------- | -------------------- |
+| **Volatility**    | Std Dev, Beta   | General risk         |
+| **Tail Risk**     | VaR, CVaR       | Extreme losses       |
+| **Drawdown**      | Max DD, Calmar  | Capital preservation |
+| **Risk-Adjusted** | Sharpe, Sortino | Performance          |
+
+### 2. Time Horizons
+
+```
+Intraday:   Minute/hourly VaR for day traders
+Daily:      Standard risk reporting
+Weekly:     Rebalancing decisions
+Monthly:    Performance attribution
+Annual:     Strategic allocation
+```
+
+## Implementation
+
+### Pattern 1: Core Risk Metrics
+
+```python
+import numpy as np
+import pandas as pd
+from scipy import stats
+from typing import Dict, Optional, Tuple
+
+class RiskMetrics:
+    &quot;&quot;&quot;Core risk metric calculations.&quot;&quot;&quot;
+
+    def __init__(self, returns: pd.Series, rf_rate: float = 0.02):
+        &quot;&quot;&quot;
+        Args:
+            returns: Series of periodic returns
+            rf_rate: Annual risk-free rate
+        &quot;&quot;&quot;
+        self.returns = returns
+        self.rf_rate = rf_rate
+        self.ann_factor = 252  # Trading days per year
+
+    # Volatility Metrics
+    def volatility(self, annualized: bool = True) -&gt; float:
+        &quot;&quot;&quot;Standard deviation of returns.&quot;&quot;&quot;
+        vol = self.returns.std()
+        if annualized:
+            vol *= np.sqrt(self.ann_factor)
+        return vol
+
+    def downside_deviation(self, threshold: float = 0, annualized: bool = True) -&gt; float:
+        &quot;&quot;&quot;Standard deviation of returns below threshold.&quot;&quot;&quot;
+        downside = self.returns[self.returns &lt; threshold]
+        if len(downside) == 0:
+            return 0.0
+        dd = downside.std()
+        if annualized:
+            dd *= np.sqrt(self.ann_factor)
+        return dd
+
+    def beta(self, market_returns: pd.Series) -&gt; float:
+        &quot;&quot;&quot;Beta relative to market.&quot;&quot;&quot;
+        aligned = pd.concat([self.returns, market_returns], axis=1).dropna()
+        if len(aligned) &lt; 2:
+            return np.nan
+        cov = np.cov(aligned.iloc[:, 0], aligned.iloc[:, 1])
+        return cov[0, 1] / cov[1, 1] if cov[1, 1] != 0 else 0
+
+    # Value at Risk
+    def var_historical(self, confidence: float = 0.95) -&gt; float:
+        &quot;&quot;&quot;Historical VaR at confidence level.&quot;&quot;&quot;
+        return -np.percentile(self.returns, (1 - confidence) * 100)
+
+    def var_parametric(self, confidence: float = 0.95) -&gt; float:
+        &quot;&quot;&quot;Parametric VaR assuming normal distribution.&quot;&quot;&quot;
+        z_score = stats.norm.ppf(confidence)
+        return self.returns.mean() - z_score * self.returns.std()
+
+    def var_cornish_fisher(self, confidence: float = 0.95) -&gt; float:
+        &quot;&quot;&quot;VaR with Cornish-Fisher expansion for non-normality.&quot;&quot;&quot;
+        z = stats.norm.ppf(confidence)
+        s = stats.skew(self.returns)  # Skewness
+        k = stats.kurtosis(self.returns)  # Excess kurtosis
+
+        # Cornish-Fisher expansion
+        z_cf = (z + (z**2 - 1) * s / 6 +
+                (z**3 - 3*z) * k / 24 -
+                (2*z**3 - 5*z) * s**2 / 36)
+
+        return -(self.returns.mean() + z_cf * self.returns.std())
+
+    # Conditional VaR (Expected Shortfall)
+    def cvar(self, confidence: float = 0.95) -&gt; float:
+        &quot;&quot;&quot;Expected Shortfall / CVaR / Average VaR.&quot;&quot;&quot;
+        var = self.var_historical(confidence)
+        return -self.returns[self.returns &lt;= -var].mean()
+
+    # Drawdown Analysis
+    def drawdowns(self) -&gt; pd.Series:
+        &quot;&quot;&quot;Calculate drawdown series.&quot;&quot;&quot;
+        cumulative = (1 + self.returns).cumprod()
+        running_max = cumulative.cummax()
+        return (cumulative - running_max) / running_max
+
+    def max_drawdown(self) -&gt; float:
+        &quot;&quot;&quot;Maximum drawdown.&quot;&quot;&quot;
+        return self.drawdowns().min()
+
+    def avg_drawdown(self) -&gt; float:
+        &quot;&quot;&quot;Average drawdown.&quot;&quot;&quot;
+        dd = self.drawdowns()
+        return dd[dd &lt; 0].mean() if (dd &lt; 0).any() else 0
+
+    def drawdown_duration(self) -&gt; Dict[str, int]:
+        &quot;&quot;&quot;Drawdown duration statistics.&quot;&quot;&quot;
+        dd = self.drawdowns()
+        in_drawdown = dd &lt; 0
+
+        # Find drawdown periods
+        drawdown_starts = in_drawdown &amp; ~in_drawdown.shift(1).fillna(False)
+        drawdown_ends = ~in_drawdown &amp; in_drawdown.shift(1).fillna(False)
+
+        durations = []
+        current_duration = 0
+
+        for i in range(len(dd)):
+            if in_drawdown.iloc[i]:
+                current_duration += 1
+            elif current_duration &gt; 0:
+                durations.append(current_duration)
+                current_duration = 0
+
+        if current_duration &gt; 0:
+            durations.append(current_duration)
+
+        return {
+            &quot;max_duration&quot;: max(durations) if durations else 0,
+            &quot;avg_duration&quot;: np.mean(durations) if durations else 0,
+            &quot;current_duration&quot;: current_duration
+        }
+
+    # Risk-Adjusted Returns
+    def sharpe_ratio(self) -&gt; float:
+        &quot;&quot;&quot;Annualized Sharpe ratio.&quot;&quot;&quot;
+        excess_return = self.returns.mean() * self.ann_factor - self.rf_rate
+        vol = self.volatility(annualized=True)
+        return excess_return / vol if vol &gt; 0 else 0
+
+    def sortino_ratio(self) -&gt; float:
+        &quot;&quot;&quot;Sortino ratio using downside deviation.&quot;&quot;&quot;
+        excess_return = self.returns.mean() * self.ann_factor - self.rf_rate
+        dd = self.downside_deviation(threshold=0, annualized=True)
+        return excess_return / dd if dd &gt; 0 else 0
+
+    def calmar_ratio(
+[truncated]
+```
+
+## Resources
+
+- `resources/implementation-playbook.md` for detailed patterns and examples.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

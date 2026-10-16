@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>localization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">localization</a> / localization</p><h1>localization</h1><p class="meta">combined</p><p>The three copies address three different products and workflows: Unity engine localization, web/product localization strategy, and App Store listing localization. They overlap only in the generic idea of adding language support, but each contains material steps and constraints the others lack (Unity package installation and table refresh, web URL/hreflang/coverage gates, and App Store metadata/keyword rules). Crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Unity-Technologies/skills">Unity-Technologies/skills</a></td><td><code>skills/localization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/strategies/commercial/localization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/localization/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Unity-Technologies/skills">Unity-Technologies/skills</a></td><td><code>skills/localization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/strategies/commercial/localization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/localization/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Localization
+
+Use this skill when the user asks to add languages, translate UI text, or set up multilingual support. First identify the target surface: Unity app, web/product site, or App Store listing. Then follow the matching section below.
+
+## 1. Unity Localization
+
+1. Verify the `com.unity.localization` package is installed by reading `Packages/packages-lock.json`. If missing, install it with `UnityEditor.PackageManager.Client.Add(&quot;com.unity.localization&quot;)` and poll the lock file in a later call until the id appears.
+2. Confirm the `Unity.Localization` assemblies are loaded before using Localization APIs.
+3. Find or create `LocalizationSettings` under `Assets/Localization/LocalizationSettings.asset`, assign it to `LocalizationEditorSettings.ActiveLocalizationSettings`, and ensure required locales exist.
+4. When populating String or Asset tables, match locales by `Locale.Identifier.Code` explicitly. For Asset Tables, use the asset GUID as the shared id.
+5. After modifying tables, call `EditorUtility.SetDirty` on the collection and shared data, raise the Unity 6+ collection-modified event, and call `AssetDatabase.SaveAssets()`.
+6. For UI, use fully qualified `UnityEngine.UI` types, avoid duplicate canvas instances, and use the Localization Scene Controls window for editor preview. For runtime switching, set `LocalizationSettings.SelectedLocale` and configure a startup locale selector on the settings asset. Do not hand-roll locale state.
+
+## 2. Web/Product Localization Strategy
+
+1. Establish the current state from the production site, route/CMS inventory, navigation, sitemap, source repository, analytics, and search data. A sitemap alone is not a complete page inventory.
+2. Decide whether a locale should launch by separating language support, locale support, and market entry. Do not create country-specific copies without a maintained user or market distinction.
+3. Define a coverage model with states such as `source-current`, `translation-draft`, `localized-ready`, `outdated`, and `not-applicable`. Apply stricter release gates to core product, pricing, checkout, legal, and high-intent pages.
+4. Choose a stable, crawlable URL architecture. Ensure the URL, rendered language, `&lt;html lang&gt;`, navigation, metadata, and structured data describe the same locale. Keep canonical, hreflang, sitemap, internal links, and redirects consistent.
+5. Coordinate content production by locking the source version, using target-market keyword research, producing translated copy with glossary and style review, and adapting examples, pricing, dates, units, imagery, and compliance only when verified.
+6. Migrate existing locale URLs by capturing the current inventory, freezing the target URL policy, mapping old URLs to equivalent new locale URLs, and adding permanent redirects where needed.
+
+## 3. App Store Listing Localization
+
+1. Read `app-marketing-context.md` if present, ask for the App ID, and determine whether the app itself is localized or only the store listing.
+2. Prioritize markets using market size, competition, effort, revenue potential, and strategic fit. Use the provided Tier 1 and Tier 2 market lists as a starting point.
+3. Localize metadata per market: title, subtitle, keyword field, description, promotional text, What&#x27;s New, screenshots, and app preview video.
+4. Do not translate English keywords directly. Run keyword research for each target market separately and use local search terms and competitor metadata.
+5. Apply cultural adaptation to screenshots, colors, imagery, tone, features, social proof, and pricing.
+6. Launch and monitor keyword rankings and conversion rates by country, then iterate based on performance data.
+
+## Conflicts
+
+- Unity-Technologies/skills treats localization as Unity engine configuration and runtime locale switching.
+- kostja94/marketing-skills treats localization as web/product URL, hreflang, and coverage strategy.
+- appeeky/aso-skills treats localization as App Store listing metadata and market expansion.
+
+Do not mix these workflows unless the user explicitly asks for a multi-surface localization plan.</pre>
+</body>
+</html>

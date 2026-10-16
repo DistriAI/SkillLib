@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hmdb-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">hmdb-metabolite-lookup</a> / hmdb-database</p><h1>hmdb-database</h1><p class="meta">combined</p><p>The two copies cover the same HMDB task but with materially different procedures. The aipoch copy is a local, scriptable pipeline that downloads the HMDB XML dump and parses it with a Python HMDBParser using xml.etree.ElementTree, with an optional pandas dependency and a reference file for field mapping. The FreedomIntelligence copy is a broader reference that emphasizes the web interface, spectral searches, downloadable formats (XML, SDF, FASTA, TXT, CSV/TSV), licensing/citation requirements, lack of a public REST API, R/Bioconductor hmdbQuery, and common research workflows. Neither copy is a strict reproduction of the other; crowning one would hide the alternative access path and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/hmdb-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/hmdb-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/hmdb-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/hmdb-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hmdb-database
+description: Access the Human Metabolome Database (HMDB) to search metabolites by name, ID, or structure and extract chemical, biological, clinical, and spectral fields for metabolomics research, biomarker discovery, or automated HMDB data mining.
+---
+
+# HMDB Database
+
+## When to Use
+- You need to look up a metabolite by common name, synonym, or HMDB ID.
+- You need to extract standardized chemical, biological, clinical, or spectral fields for downstream analysis.
+- You want to build a local, scriptable pipeline to mine HMDB data instead of manually browsing the website.
+- You need to map HMDB identifiers to external resources such as KEGG, PubChem, ChEBI, MetaCyc, PDB, UniProt, or GenBank.
+- You are preparing metabolomics datasets and need pathway, enzyme, transporter, or concentration annotations.
+
+## Access Options
+
+### 1. Web Interface
+- Use https://www.hmdb.ca/ for interactive searches.
+- Text searches: metabolite name, synonym, HMDB ID, disease association, pathway involvement, or specimen type.
+- Structure searches: use ChemQuery for structure/substructure, molecular weight, SMILES, or InChI.
+- Spectral searches: LC-MS, GC-MS, or NMR spectral matching for metabolite identification.
+- Advanced searches: combine multiple criteria and filter by biological location or specimen type.
+
+### 2. Downloadable Datasets
+- Download bulk data from https://www.hmdb.ca/downloads.
+- Available formats include XML, SDF, FASTA, TXT, and CSV/TSV.
+- Use XML for comprehensive field extraction.
+- Use SDF for structure-based cheminformatics workflows.
+- Use CSV/TSV for tabular analysis pipelines.
+- Check the dataset version date before use.
+- Free for academic and non-commercial research; commercial use requires explicit permission.
+- Cite the HMDB publication when using the data.
+
+### 3. Programmatic Access
+- HMDB does not provide a public REST API.
+- For API access, contact the HMDB development team.
+- For R-based queries, use the Bioconductor hmdbQuery package.
+- For local Python pipelines, parse downloaded XML or CSV files.
+
+## Local Python XML Pipeline
+
+### Dependencies
+- Python &gt;= 3.9
+- Standard library xml.etree.ElementTree
+- Optional: pandas &gt;= 1.5 for tabular outputs
+
+### Steps
+1. Download the HMDB metabolite XML dataset from https://www.hmdb.ca/downloads.
+2. Save the file locally, for example as data/hmdb_metabolites.xml.
+3. Use a parser such as HMDBParser to load the XML file.
+4. Search by metabolite name, synonym, or HMDB ID.
+5. Extract chemical fields such as formula, molecular weight, InChI, and SMILES where available.
+6. Extract biological fields such as pathways, enzymes, transporters, and subcellular locations.
+7. Extract clinical fields such as disease associations, biomarker information, and biofluid concentration ranges.
+8. Extract external identifiers for cross-database mapping.
+9. Optionally structure results into tabular outputs for downstream analysis.
+
+### Example
+```python
+from scripts.hmdb_parser import HMDBParser
+
+def main():
+    xml_path = &quot;data/hmdb_metabolites.xml&quot;
+    parser = HMDBParser(xml_path)
+    results = parser.search(&quot;Caffeine&quot;)
+    if not results:
+        print(&quot;No results found.&quot;)
+        return
+    first = results[0]
+    print(&quot;Top match:&quot;)
+    print(first)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+```
+
+## Common Research Workflows
+
+### Metabolite Identification in Untargeted Metabolomics
+1. Obtain experimental MS or NMR spectra from samples.
+2. Use HMDB spectral search tools to match against reference spectra.
+3. Verify candidates by checking molecular weight, retention time, and MS-MS fragmentation.
+4. Review biological plausibility, including expected specimen type and known pathways.
+
+### Biomarker Discovery
+1. Search HMDB for metabolites associated with the disease of interest.
+2. Review concentration ranges in normal versus disease states.
+3. Identify metabolites with strong differential abundance.
+4. Examine pathway context and biological mechanisms.
+5. Cross-reference with literature via PubMed links.
+
+### Pathway Analysis
+1. Identify metabolites of interest from experimental data.
+2. Look up HMDB entries for each metabolite.
+3. Extract pathway associations and enzymatic reactions.
+4. Use linked pathway resources for pathway diagrams.
+5. Identify pathway enrichment for biological interpretation.
+
+### Database Integration
+1. Download HMDB data in XML or CSV format.
+2. Parse and extract relevant fields for a local database.
+3. Link with external IDs such as KEGG, PubChem, and ChEBI for cross-database queries.
+4. Build local tools or pipelines incorporating HMDB references.
+
+## Conflicts
+- aipoch/medical-research-skills presents the local Python XML parser as the primary workflow.
+- FreedomIntelligence/OpenClaw-Medical-Skills presents web-based search, spectral search, multiple download formats, and R/Bioconductor access as the primary workflow, and explicitly notes that HMDB has no public REST API.</pre>
+</body>
+</html>

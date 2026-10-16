@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>knowledge-graph</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">knowledge-graph-construction</a> / knowledge-graph</p><h1>knowledge-graph</h1><p class="meta">combined</p><p>The two copies are not reproductions of the same procedure. The first is a concrete, self-contained skill for building a knowledge graph from a list of concepts and exporting it to Mermaid. The second is a meta-skill (an index) that routes to nine different knowledge-graph-related skills, including ontology design, citation networks, and specific engines like Graphiti and OpenSPG. Neither contains the material steps of the other, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/scholargraph/knowledge-graph/skill.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/43-wentorai-research-plugins/skills/tools/knowledge-graph/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/scholargraph/knowledge-graph/skill.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/43-wentorai-research-plugins/skills/tools/knowledge-graph/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Knowledge Graph Builder
+
+## Overview
+
+This skill covers two approaches to knowledge graph tasks: a direct builder for concept networks and a meta-index for specialized research graph tools.
+
+## 1. Direct Concept Graph Builder
+
+Use this when you have a list of concepts and need to visualize their relationships.
+
+### Steps
+1. **Identify Concepts**: Define the list of concepts to include (e.g., `[&#x27;transformer&#x27;, &#x27;attention&#x27;, &#x27;BERT&#x27;, &#x27;GPT&#x27;]`).
+2. **Build Graph**: Use the `KnowledgeGraph` builder to automatically identify relationships and hierarchy.
+   ```typescript
+   import KnowledgeGraph from &#x27;./scripts/graph&#x27;;
+   const builder = new KnowledgeGraph();
+   const graph = await builder.build([&#x27;transformer&#x27;, &#x27;attention&#x27;, &#x27;BERT&#x27;, &#x27;GPT&#x27;]);
+   ```
+3. **Export/Visualize**: Convert the graph to a Mermaid diagram for display.
+   ```typescript
+   const mermaidCode = builder.toMermaid(graph);
+   ```
+4. **Navigate**: Use path discovery to find connections between specific nodes.
+   ```typescript
+   const path = builder.findPath(graph, &#x27;attention&#x27;, &#x27;GPT&#x27;);
+   ```
+
+## 2. Specialized Research Graph Index
+
+Use this when the task involves specific research workflows, ontologies, or citation analysis.
+
+### Steps
+1. **Select Sub-skill**: Choose the appropriate tool from the following list based on the user&#x27;s need:
+   - **Citation Analysis**: `citation-network-builder`
+   - **Concept Mapping**: `concept-map-generator`
+   - **AI Agent Graphs**: `graphiti-guide`
+   - **RAG Systems**: `knowledge-graph-construction` or `rag-methodology-guide`
+   - **Ontology Design**: `ontology-design-guide`
+   - **Specific Engines**: `openspg-guide` (Ant Group SPG/KAG)
+   - **Reference Syncing**: `notero-zotero-notion-guide` or `zotero-markdb-connect-guide`
+2. **Read Documentation**: `read` the `SKILL.md` of the selected sub-skill to follow its specific procedure.
+
+## Conflicts
+
+- **brycewang-stanford/Auto-Empirical-Research-Skills**: This repository treats &#x27;knowledge-graph&#x27; as a category of 9 distinct skills, requiring a selection step before any construction can occur. It does not provide a direct builder script.
+- **LeoYeAI/openclaw-master-skills**: This repository provides a direct, code-based builder for concept graphs without referencing external sub-skills or ontology design tools.</pre>
+</body>
+</html>

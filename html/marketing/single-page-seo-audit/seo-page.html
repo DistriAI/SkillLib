@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>seo-page</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">single-page-seo-audit</a> / seo-page</p><h1>seo-page</h1><p class="meta">combined</p><p>The two copies overlap in scope (single-page SEO audit) but each contains material steps the other lacks. The nowork-studio copy is a thin pointer to an external WORKFLOW.md and emphasizes GSC data, search intent, and internal linking depth, but it does not define the audit checklist or output format. The sickn33 copy provides a detailed, self-contained checklist (on-page, content quality, technical, schema, images, Core Web Vitals heuristics), a scored output format, error handling, and optional DataForSEO integration, but it does not mention GSC or search intent. Crowning one would hide a real alternative: the first is a workflow wrapper with GSC/intent focus, the second is a concrete audit procedure. They do not directly conflict on parameters, but they disagree on what the skill is (a pointer vs. a full procedure).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/seo-page/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/seo-page/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/seo-page/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/seo-page/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/seo-page/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/seo-page/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: seo-page
+argument-hint: &quot;&lt;URL of the page to analyze, e.g. https://example.com/blog/my-post&gt;&quot;
+description: &gt;
+  Single-page SEO audit: content quality under Google&#x27;s E-E-A-T framework and
+  Helpful Content guidelines, on-page factors, search intent, technical signals and
+  readability. Pulls GSC data for the page, crawls the live HTML, checks metadata,
+  schema, internal linking and depth, and produces a scored report with fixes. Use
+  whenever the user wants to analyze a specific page or URL, not the whole site.
+---
+
+# Single Page SEO Audit
+
+## When to Use
+- Use when the user provides a single URL for detailed on-page SEO review.
+- Use when auditing one page rather than an entire site.
+- Use when checking metadata, content, schema, images, and page-level technical signals together.
+
+## Workflow
+1. Resolve the target URL from the user&#x27;s input.
+2. If GSC data is available for the page, pull impressions, clicks, CTR, and average position to inform search intent and performance context.
+3. Crawl the live HTML of the page.
+4. Analyze the page using the checklist below.
+5. Produce a scored report with prioritized fixes.
+
+## What to Analyze
+
+### On-Page SEO
+- Title tag: 50-60 characters, includes primary keyword, unique
+- Meta description: 150-160 characters, compelling, includes keyword
+- H1: exactly one, matches page intent, includes keyword
+- H2-H6: logical hierarchy (no skipped levels), descriptive
+- URL: short, descriptive, hyphenated, no parameters
+- Internal links: sufficient, relevant anchor text, no orphan pages; check internal linking depth
+- External links: to authoritative sources, reasonable count
+
+### Content Quality
+- Word count vs page type minimums
+- Readability: Flesch Reading Ease score, grade level
+- Keyword density: natural (1-3%), semantic variations present
+- E-E-A-T signals: author bio, credentials, first-hand experience markers
+- Content freshness: publication date, last updated date
+- Search intent alignment: does the content match the likely intent for the target query?
+
+### Technical Elements
+- Canonical tag: present, self-referencing or correct
+- Meta robots: index/follow unless intentionally blocked
+- Open Graph: og:title, og:description, og:image, og:url
+- Twitter Card: twitter:card, twitter:title, twitter:description
+- Hreflang: if multi-language, correct implementation
+
+### Schema Markup
+- Detect all types (JSON-LD preferred)
+- Validate required properties
+- Identify missing opportunities
+- NEVER recommend HowTo (deprecated) or FAQ (restricted to gov/health)
+
+### Images
+- Alt text: present, descriptive, includes keywords where natural
+- File size: flag &gt;200KB (warning), &gt;500KB (critical)
+- Format: recommend WebP/AVIF over JPEG/PNG
+- Dimensions: width/height set for CLS prevention
+- Lazy loading: loading=&quot;lazy&quot; on below-fold images
+
+### Core Web Vitals (reference only, not measurable from HTML alone)
+- Flag potential LCP issues (huge hero images, render-blocking resources)
+- Flag potential INP issues (heavy JS, no async/defer)
+- Flag potential CLS issues (missing image dimensions, injected content)
+
+## Output
+
+### Page Score Card
+```
+Overall Score: XX/100
+
+On-Page SEO:     XX/100  ████████░░
+Content Quality: XX/100  ██████████
+Technical:       XX/100  ███████░░░
+Schema:          XX/100  █████░░░░░
+Images:          XX/100  ████████░░
+```
+
+### Issues Found
+Organized by priority: Critical -&gt; High -&gt; Medium -&gt; Low
+
+### Recommendations
+Specific, actionable improvements with expected impact
+
+### Schema Suggestions
+Ready-to-use JSON-LD code for detected opportunities
+
+## DataForSEO Integration (Optional)
+If DataForSEO MCP tools are available, use `serp_organic_live_advanced` for real SERP positions and `backlinks_summary` for backlink data and spam scores.
+
+## Error Handling
+
+| Scenario | Action |
+|----------|--------|
+| URL unreachable (DNS failure, connection refused) | Report the error clearly. Do not guess page content. Suggest the user verify the URL and try again. |
+| Page requires authentication (401/403) | Report that the page is behind authentication. Suggest the user provide the rendered HTML directly or a publicly accessible URL. |
+| JavaScript-rendered content (empty body in HTML) | Note that key content may be rendered client-side. Analyze the available HTML and flag that results may be incomplete. Suggest using a browser-rendered snapshot if available. |
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

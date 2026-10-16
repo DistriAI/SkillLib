@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>baoyu-post-to-x</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">post-to-x</a> / baoyu-post-to-x</p><h1>baoyu-post-to-x</h1><p class="meta">combined</p><p>The two copies describe the same task but diverge on how the browser is controlled. JimLiu/baoyu-skills is the more complete, upstream-style skill: it defines three distinct execution modes (Codex Chrome plugin, Chrome Computer Use, CDP script), a required mode-selection rule, and detailed recovery/permission steps for the Chrome plugin path. anbeime/skill is a shorter, CDP-only variant that adds an EXTEND.md preferences mechanism and explicit per-script CLI examples, but it omits the Chrome plugin and Computer Use paths entirely. Because each copy contains material steps the other lacks, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/JimLiu/baoyu-skills">JimLiu/baoyu-skills</a></td><td><code>skills/baoyu-post-to-x/SKILL.md</code></td></tr><tr><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/content-creation-publisher/baoyu-post-to-x/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/JimLiu/baoyu-skills">JimLiu/baoyu-skills</a></td><td><code>skills/baoyu-post-to-x/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/content-creation-publisher/baoyu-post-to-x/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: baoyu-post-to-x
+description: Posts content and articles to X (Twitter). Supports regular posts with images/videos, quote tweets, and X Articles (long-form Markdown). Use when user asks to &quot;post to X&quot;, &quot;tweet&quot;, &quot;publish to Twitter&quot;, or &quot;share on X&quot;.
+---
+
+# Post to X (Twitter)
+
+Posts text, images, videos, quote tweets, and long-form articles to X via a real Chrome browser.
+
+## Script Directory
+
+All scripts are in the `scripts/` subdirectory of this skill.
+
+1. Determine this SKILL.md file&#x27;s directory path as `{baseDir}`.
+2. Script path = `{baseDir}/scripts/&lt;script-name&gt;.ts`.
+3. Resolve `${BUN_X}` runtime: if `bun` is installed use `bun`; if `npx` is available use `npx -y bun`; otherwise suggest installing bun.
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/x-browser.ts` | Regular posts (text + images) |
+| `scripts/x-video.ts` | Video posts (text + video) |
+| `scripts/x-quote.ts` | Quote tweet with comment |
+| `scripts/x-article.ts` | Long-form article publishing (Markdown) |
+| `scripts/md-to-html.ts` | Markdown to HTML conversion |
+| `scripts/copy-to-clipboard.ts` | Copy content to clipboard |
+| `scripts/paste-from-clipboard.ts` | Send real paste keystroke |
+| `scripts/check-paste-permissions.ts` | Verify environment and permissions |
+
+## Preferences (EXTEND.md)
+
+Check for EXTEND.md in this priority order:
+
+```bash
+test -f .baoyu-skills/baoyu-post-to-x/EXTEND.md &amp;&amp; echo &quot;project&quot;
+test -f &quot;$HOME/.baoyu-skills/baoyu-post-to-x/EXTEND.md&quot; &amp;&amp; echo &quot;user&quot;
+```
+
+If found, read and apply settings (default Chrome profile, auto-submit preference). If not found, use defaults.
+
+## Prerequisites
+
+- Google Chrome or Chromium
+- `bun` runtime
+- First run: log in to X manually (session saved)
+
+## Execution Mode Selection (Required)
+
+Choose exactly one mode before interacting with X:
+
+1. If the user explicitly asks for the Codex Chrome plugin, `@chrome`, the Chrome extension, or &quot;Codex 自带的 Chrome 插件&quot;, use **Codex Chrome Plugin Mode**. Do not call Computer Use first.
+2. If the user explicitly asks for Chrome Computer Use, use **Chrome Computer Use Mode**. Do not fall back to CDP, Playwright, the in-app Browser, or the Chrome plugin without telling the user and getting approval.
+3. If the user explicitly asks for CDP/script mode, use **CDP Script Mode**.
+4. Otherwise, prefer **Chrome Computer Use Mode**. For Markdown X Articles with local content images, use the tested X editor flow: insert each body image from the toolbar (`Insert` -&gt; `Media` -&gt; dialog icon button `Add photos or video`) at its placeholder, then delete the placeholder text. Use CDP Script Mode only when the selected browser-control mode is unavailable or the UI upload/selection flow is unreliable.
+
+Never use the in-app Browser for X publishing workflows.
+
+## Codex Chrome Plugin Mode
+
+Use this mode whenever the user requests the Codex Chrome plugin, `@chrome`, or the Chrome Extension path.
+
+**Setup**
+1. Load the `chrome:Chrome` skill before browser work.
+2. Use `tool_search` for `node_repl js` if the Node REPL `js` tool is not already visible.
+3. Initialize the Chrome browser client exactly as the Chrome skill specifies, then run a lightweight call such as `browser.user.openTabs()` to verify the extension connection.
+4. If the first lightweight call fails, wait 2 seconds and retry once. If it still fails, follow the Chrome skill&#x27;s extension checks and recovery steps. If checks pass but communication still fails, ask the user before opening a new Chrome window. Do not switch to Computer Use or CDP silently.
+
+**General rules**
+- Use the Chrome plugin&#x27;s `browser.tabs.*`, `tab.playwright.*`, `tab.cua.*`, and file chooser APIs for X UI actions.
+- Shell commands are allowed for Markdown preprocessing and rich-HTML clipboard preparation. For X Article body images, do not rely on image clipboard paste; use the editor&#x27;s `Insert` -&gt; `Media` upload flow.
+- If a file upload fails with `Not allowed`, tell the user: `To enable file upload, go to chrome://extensions in Chrome, click Details under the Codex extension, and enable &quot;Allow access to file URLs.&quot; See https://developers.openai.com/codex/app/chrome-extension#upload-files for details.`
+- If the Chrome plugin reports `native pipe is closed`, retry the lightweight browser call once after 2 seconds, then run the Chrome skill health checks. If Chrome is running, the extension is enabled, and the native host manifest is correct, ask permission to open a new Chrome window and retry. Do not keep sending browser actions through the broken pipe.
+- Never click `Publish`, `Post`, or any externally visible submit action without explicit final confirmation from the user in the current conversation.
+
+**X Articles**
+1. Convert Markdown and keep the image map:
+   ```bash
+   ${BUN_X} {baseDir}/scripts/md-to-html.ts article.md --save-html /tmp/x-article-body.html &gt; /tmp/x-article.json
+   ```
+2. Read the JSON output for `title`, `coverImage`, and `contentImages` (`placeholder` to `localPath`).
+3. Open or create the article draft at `https://x.com/compose/articles`.
+4. Upload the cover with the Chrome plugin file chooser flow. If upload is blocked by extension permissions, stop and report the error.
+
+## Chrome Computer Use Mode
+
+Use `mcp__computer_use__.*` against the visible Google Chrome UI. Follow the same preview-before-submit rule and the X Article image insertion flow described above.
+
+## CDP Script Mode
+
+Use the bundled TypeScript scripts via CDP. This is the fallback mode when the selected browser-control mode is unavailable or the user explicitly requests CDP/script mode.
+
+### Regular Posts
+
+Text + up to 4 images.
+
+```bash
+${BUN_X} {baseDir}/scripts/x-browser.ts &quot;Hello!&quot; --image ./photo.png          # Preview
+${BUN_X} {baseDir}/scripts/x-browser.ts &quot;Hello!&quot; --image ./photo.png --submit  # Post
+```
+
+| Parameter | Description |
+|-----------|-------------|
+| `&lt;text&gt;` | Post content (positional) |
+| `--image &lt;path&gt;` | Image file (repeatable, max 4) |
+| `--submit` | Post (default: preview) |
+| `--profile &lt;dir&gt;` | Custom Chrome profile |
+
+### Video Posts
+
+Text + video file.
+
+```bash
+${BUN_X} {baseDir}/scripts/x-video.ts &quot;Check this out!&quot; --video ./clip.mp4          # Preview
+${BUN_X} {baseDir}/scripts/x-video.ts &quot;Amazing content&quot; --video ./demo.mp4 --submit  # Post
+```
+
+| Parameter | Description |
+|-----------|-------------|
+| `&lt;text&gt;` | Post content (positional) |
+| `--video &lt;path&gt;` | Video file (MP4, MOV, WebM) |
+| `--submit` | Post (default: preview) |
+| `--profile &lt;dir&gt;` | Custom Chrome profile |
+
+Limits: Regular 140s max, Premium 60min. Processing: 30-60s.
+
+### Quote Tweets
+
+Quote an existing tweet with comment.
+
+```bash
+${BUN_X} {baseDir}/scripts/x-quote.ts https://x.com/user/status/123 &quot;Great insight!&quot;          # Preview
+${BUN_X} {baseDir}/scripts/x-quote.ts https://x.com/user/status/123 &quot;I agree!&quot; --submit       # Post
+```
+
+| Parameter | Description |
+|-----------|-------------|
+| `&lt;tweet-url&gt;` | URL to quote (positional) |
+| `&lt;comment&gt;` | Comment text (positional, optional) |
+| `--submit` | Post (default: preview) |
+| `--profile &lt;dir&gt;` | Custom Chrome profile |
+
+### X Articles
+
+Long-form Markdown articles (requires X Premium).
+
+```bash
+${BUN_X} {baseDir}/scripts/x-article.ts article.md                        # Preview
+${BUN_X} {baseDir}/scripts/x-article.ts article.md --cover ./cover.jpg    # With cover
+${BUN_X} {baseDir}/scripts/x-article.ts article.md --submit               # Publish
+```
+
+| Parameter | Description |
+|-----------|-------------|
+| `&lt;markdown&gt;` | Markdown file (positional) |
+| `--cover &lt;path&gt;` | Cover image |
+| `--title &lt;text&gt;` | Override title |
+| `--submit` | Publish (default: preview) |
+
+Frontmatter: `title`, `cover_image` supported in YAML front matter.
+
+## Notes
+
+- First run: manual login required (session persists)
+- Always preview before `--submit`
+- Cross-platform: macOS, Linux, Windows
+
+## References
+
+- **Regular Posts**: See `references/regular-posts.md` for manual workflow, troubleshooting, and technical details
+- **X Articles**: See `references/articles.md` for long-form article publishing guide</pre>
+</body>
+</html>

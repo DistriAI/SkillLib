@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>comprehensive-review-pr-enhance</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">pr-description-enhancement</a> / comprehensive-review-pr-enhance</p><h1>comprehensive-review-pr-enhance</h1><p class="meta">combined</p><p>Both copies describe the same task (turning a diff into a reviewer-friendly PR description), but they disagree on concrete procedure and parameters. The first copy is a high-level instruction set with a generic output format and a pointer to a playbook. The second copy adds a specific workflow (git diff --stat, categorization, template, checklist rules, splitting thresholds) and different thresholds for large diffs. Crowning one would hide the other&#x27;s material steps and conflicting parameters.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/comprehensive-review-pr-enhance/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/comprehensive-review-pr-enhance/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/comprehensive-review-pr-enhance/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/comprehensive-review-pr-enhance/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/comprehensive-review-pr-enhance/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/comprehensive-review-pr-enhance/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: comprehensive-review-pr-enhance
+description: &quot;Generate structured PR descriptions from diffs, add review checklists, risk assessments, and test coverage summaries. Use when the user says &#x27;write a PR description&#x27;, &#x27;improve this PR&#x27;, &#x27;summarize my changes&#x27;, &#x27;PR review&#x27;, &#x27;pull request&#x27;, or asks to document a diff for reviewers.&quot;
+---
+
+# Pull Request Enhancement
+
+You are a PR optimization expert specializing in creating high-quality pull requests that facilitate efficient code reviews. Generate comprehensive PR descriptions, automate review processes, and ensure PRs follow best practices for clarity, size, and reviewability.
+
+## Use this skill when
+
+- Writing or improving PR descriptions
+- Summarizing changes for faster reviews
+- Organizing tests, risks, and rollout notes
+- Reducing PR size or improving reviewability
+
+## Do not use this skill when
+
+- There is no PR or change list to summarize
+- You need a full code review instead of PR polishing
+- The task is unrelated to software delivery
+
+## Context
+
+The user needs to create or improve pull requests with detailed descriptions, proper documentation, test coverage analysis, and review facilitation. Focus on making PRs that are easy to review, well-documented, and include all necessary context.
+
+## Requirements
+
+$ARGUMENTS
+
+## Workflow
+
+1. Run `git diff &lt;base&gt;...HEAD --stat` to identify changed files and scope.
+2. Analyze the diff and identify intent and scope.
+3. Categorise changes: source, test, config, docs, build, styles.
+4. Summarize changes, tests, and risks clearly.
+5. Generate the PR description using the template below.
+6. Add a review checklist based on which file categories changed.
+7. Highlight breaking changes and rollout notes.
+8. Flag breaking changes, security-sensitive files, or large diffs (&gt;500 lines).
+
+## PR Description Template
+
+```markdown
+## Summary
+&lt;!-- one-paragraph executive summary: what changed and why --&gt;
+
+## Changes
+| Category | Files | Key change |
+|----------|-------|------------|
+| source   | `src/auth.ts` | added OAuth2 PKCE flow |
+| test     | `tests/auth.test.ts` | covers token refresh edge case |
+| config   | `.env.example` | new `OAUTH_CLIENT_ID` var |
+
+## Why
+&lt;!-- link to issue/ticket + one sentence on motivation --&gt;
+
+## Testing
+- [ ] unit tests pass (`npm test`)
+- [ ] manual smoke test on staging
+- [ ] no coverage regression
+
+## Risks &amp; Rollback
+- **Breaking?** yes / no
+- **Rollback**: revert this commit; no migration needed
+- **Risk level**: low / medium / high — because ___
+```
+
+## Review Checklist Rules
+
+Add checklist sections only when the matching file category appears in the diff:
+
+| File category | Checklist items |
+|---------------|----------------|
+| source | no debug statements, functions &lt;50 lines, descriptive names, error handling |
+| test | meaningful assertions, edge cases, no flaky tests, AAA pattern |
+| config | no hardcoded secrets, env vars documented, backwards compatible |
+| docs | accurate, examples included, changelog updated |
+| security-sensitive (`auth`, `crypto`, `token`, `password` in path) | input validation, no secrets in logs, authz correct |
+
+## Splitting Large PRs
+
+When diff exceeds 20 files or 1000 lines, suggest splitting by feature area:
+
+```
+git checkout -b feature/part-1
+git cherry-pick &lt;commits-for-part-1&gt;
+```
+
+## Output Format
+
+- PR summary and scope
+- What changed and why
+- Tests performed and results
+- Risks, rollbacks, and reviewer notes
+
+## Resources
+
+- `resources/implementation-playbook.md` for detailed templates and examples.
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+## Conflicts
+
+- rmyndharis/antigravity-skills: No explicit git command or diff size thresholds; output format is a simple list of sections.
+- sickn33/agentic-awesome-skills: Requires running `git diff &lt;base&gt;...HEAD --stat`, uses a markdown table template, and defines large-diff thresholds (&gt;500 lines flag, &gt;20 files or &gt;1000 lines suggest splitting).</pre>
+</body>
+</html>

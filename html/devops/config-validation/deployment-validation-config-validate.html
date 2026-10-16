@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>deployment-validation-config-validate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">config-validation</a> / deployment-validation-config-validate</p><h1>deployment-validation-config-validate</h1><p class="meta">combined</p><p>The first copy is a self-contained, executable procedure with concrete Python and TypeScript code for analyzing config files, detecting secrets, and validating schemas. The second copy is a thin wrapper that defers to an external &#x27;detailed-guide.md&#x27; and adds risk/limitation metadata but contains no executable steps. Because the second copy lacks the actual procedure and the first lacks the second&#x27;s explicit risk/limitation framing, crowning one would hide a real alternative (the external guide) or omit the executable steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/deployment-validation-config-validate/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/deployment-validation-config-validate/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/deployment-validation-config-validate/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/deployment-validation-config-validate/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/deployment-validation-config-validate/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/deployment-validation-config-validate/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: deployment-validation-config-validate
+description: &quot;Validate application configuration with schemas, environment checks, and runtime tests. Use when preventing configuration errors, checking deployment settings, or detecting configuration drift.&quot;
+risk: critical
+source: community
+---
+
+# Configuration Validation
+
+You are a configuration management expert specializing in validating, testing, and ensuring the correctness of application configurations. Create comprehensive validation schemas, implement configuration testing strategies, and ensure configurations are secure, consistent, and error-free across all environments.
+
+## Use this skill when
+
+- Working on configuration validation tasks or workflows
+- Needing guidance, best practices, or checklists for configuration validation
+
+## Do not use this skill when
+
+- The task is unrelated to configuration validation
+- You need a different domain or tool outside this scope
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+## Instructions
+
+### 1. Configuration Analysis
+
+Analyze existing configuration structure and identify validation needs:
+
+```python
+import os
+import yaml
+import json
+from pathlib import Path
+from typing import Dict, List, Any
+
+class ConfigurationAnalyzer:
+    def analyze_project(self, project_path: str) -&gt; Dict[str, Any]:
+        analysis = {
+            &#x27;config_files&#x27;: self._find_config_files(project_path),
+            &#x27;security_issues&#x27;: self._check_security_issues(project_path),
+            &#x27;consistency_issues&#x27;: self._check_consistency(project_path),
+            &#x27;recommendations&#x27;: []
+        }
+        return analysis
+
+    def _find_config_files(self, project_path: str) -&gt; List[Dict]:
+        config_patterns = [
+            &#x27;**/*.json&#x27;, &#x27;**/*.yaml&#x27;, &#x27;**/*.yml&#x27;, &#x27;**/*.toml&#x27;,
+            &#x27;**/*.ini&#x27;, &#x27;**/*.env*&#x27;, &#x27;**/config.js&#x27;
+        ]
+
+        config_files = []
+        for pattern in config_patterns:
+            for file_path in Path(project_path).glob(pattern):
+                if not self._should_ignore(file_path):
+                    config_files.append({
+                        &#x27;path&#x27;: str(file_path),
+                        &#x27;type&#x27;: self._detect_config_type(file_path),
+                        &#x27;environment&#x27;: self._detect_environment(file_path)
+                    })
+        return config_files
+
+    def _check_security_issues(self, project_path: str) -&gt; List[Dict]:
+        issues = []
+        secret_patterns = [
+            r&#x27;(api[_-]?key|apikey)&#x27;,
+            r&#x27;(secret|password|passwd)&#x27;,
+            r&#x27;(token|auth)&#x27;,
+            r&#x27;(aws[_-]?access)&#x27;
+        ]
+
+        for config_file in self._find_config_files(project_path):
+            content = Path(config_file[&#x27;path&#x27;]).read_text()
+            for pattern in secret_patterns:
+                if re.search(pattern, content, re.IGNORECASE):
+                    if self._looks_like_real_secret(content, pattern):
+                        issues.append({
+                            &#x27;file&#x27;: config_file[&#x27;path&#x27;],
+                            &#x27;type&#x27;: &#x27;potential_secret&#x27;,
+                            &#x27;severity&#x27;: &#x27;high&#x27;
+                        })
+        return issues
+```
+
+### 2. Schema Validation
+
+Implement configuration schema validation with JSON Schema:
+
+```typescript
+import Ajv from &#x27;ajv&#x27;;
+import ajvFormats from &#x27;ajv-formats&#x27;;
+import { JSONSchema7 } from &#x27;json-schema&#x27;;
+
+interface ValidationResult {
+  valid: boolean;
+  errors?: Array&lt;{
+    path: string;
+    message: string;
+    keyword: string;
+  }&gt;;
+}
+
+export class ConfigValidator {
+  private ajv: Ajv;
+
+  constructor() {
+    this.ajv = new Ajv({
+      allErrors: true,
+      strict: false,
+      coerceTypes: true
+    });
+    ajvFormats(this.ajv);
+    this.addCustomFormats();
+  }
+
+  private addCustomFormats() {
+    this.ajv.addFormat(&#x27;url-https&#x27;, {
+      type: &#x27;string&#x27;,
+      validate: (data: string) =&gt; {
+        try {
+          return new URL(data).protocol === &#x27;https:&#x27;;
+        } catch { return false; }
+      }
+    });
+
+    this.ajv.addFormat(&#x27;port&#x27;, {
+      type: &#x27;number&#x27;,
+      validate: (data: number) =&gt; data &gt;= 1 &amp;&amp; data &lt;= 65535
+    });
+
+    this.ajv.addFormat(&#x27;duration&#x27;, {
+      type: &#x27;string&#x27;,
+      validate: /^\d+[smhd]$/
+    });
+  }
+
+  validate(configData: any, schemaName: string): ValidationResult {
+    const validate = this.ajv.getSchema(schemaName);
+    if (!validate) throw new Error(`Schema &#x27;${schemaName}&#x27; not found`);
+
+    const valid = validate(configData);
+
+    if (!valid &amp;&amp; validate.errors) {
+      return {
+        valid: false,
+        errors: validate.errors.map(error =&gt; ({
+          path: error.instancePath || &#x27;/&#x27;,
+          message: error.message || &#x27;Validation error&#x27;,
+          keyword: error.keyword
+        }))
+      };
+    }
+    return { valid: true };
+  }
+}
+
+// Example schema
+export const schemas = {
+  database: {
+    type: &#x27;object&#x27;,
+    properties: {
+      host: { type: &#x27;string&#x27;, format: &#x27;hostname&#x27; },
+      port: { type: &#x27;integer&#x27;, format: &#x27;port&#x27; },
+      database: { type: &#x27;string&#x27;, minLength: 1 },
+      user: { type: &#x27;string&#x27;, minLength: 1 },
+      password: { type: &#x27;string&#x27;, minLength: 8 },
+      ssl: {
+        type: &#x27;object&#x27;,
+        properties: {
+          enabled: { type: &#x27;boolean&#x27; }
+        },
+        required: [&#x27;enabled&#x27;]
+      }
+    },
+    required: [&#x27;host&#x27;, &#x27;port&#x27;, &#x27;database&#x27;, &#x27;user&#x27;, &#x27;password&#x27;]
+  }
+};
+```
+
+### 3. Environment-Specific Validation
+
+```python
+from typing import Dict, List, Any
+
+class EnvironmentValidator:
+    def __init__(self):
+        self.environments = [&#x27;development&#x27;, &#x27;staging&#x27;, &#x27;production&#x27;]
+        self.environment_rules = {
+            &#x27;development&#x27;: {
+                &#x27;allow_debug&#x27;: True,
+                &#x27;require_https&#x27;: False,
+                &#x27;min_password_length&#x27;: 8
+            },
+            &#x27;production&#x27;: {
+                &#x27;allow_debug&#x27;: False,
+                &#x27;require_https&#x27;: True,
+                &#x27;min_password_length&#x27;: 12
+            }
+        }
+```
+
+## Conflicts
+
+- **sickn33/agentic-awesome-skills**: This copy instructs the agent to read an external `references/detailed-guide.md` before executing and treats its safety, prerequisites, and validation requirements as mandatory. The rmyndharis/antigravity-skills copy contains no such external reference and instead embeds the full procedure inline. If the external guide is unavailable, the inline procedure above should be used as the authoritative source.
+- **sickn33/agentic-awesome-skills**: This copy adds a `risk: critical` metadata field and a `Limitations` section requiring the agent to stop and ask for clarification if inputs, permissions, safety boundaries, or success criteria are missing. The rmyndharis/antigravity-skills copy has no risk field and no explicit stop-and-ask limitation. The combined instruction retains the risk field and limitations from the sickn33 copy.</pre>
+</body>
+</html>

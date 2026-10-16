@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>chembl-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">chembl-query</a> / chembl-database</p><h1>chembl-database</h1><p class="meta">combined</p><p>The three copies overlap heavily on the core ChEMBL Python client usage, but each has material steps or constraints the others lack. The Vibe-Skills and OpenClaw copies are near-identical and include structure-based similarity/substructure search examples, a drug_indication endpoint, and a pandas export section. The aipoch copy adds a complete runnable main() example, explicit pagination/slicing guidance, a note that not all bioactivity records contain all fields, and references to an API reference file and a CLI wrapper script. Crowning one copy would hide the aipoch-specific operational guidance and the Vibe/OpenClaw-specific structure-search and drug-indication steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/chembl-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/chembl-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/chembl-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/chembl-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/chembl-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/chembl-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># ChEMBL Database
+
+## Overview
+
+ChEMBL is a manually curated database of bioactive molecules maintained by the European Bioinformatics Institute (EBI), containing over 2 million compounds, 19 million bioactivity measurements, 13,000+ drug targets, and data on approved drugs and clinical candidates. Access and query this data programmatically using the ChEMBL Python client for drug discovery and medicinal chemistry research.
+
+## When to Use This Skill
+
+Use this skill when you need to:
+
+- Find candidate compounds by name or synonym and retrieve their ChEMBL records.
+- Filter molecules by physicochemical properties (e.g., molecular weight, LogP) to narrow down drug-like candidates.
+- Look up targets (proteins/complexes) and connect them to ligands and known bioactivity measurements.
+- Retrieve bioactivity data (e.g., IC50, Ki, EC50) for specific compound-target interactions to support SAR or benchmarking.
+- Identify approved drugs and fetch mechanism-of-action information for target validation or competitive landscape analysis.
+- Perform structure-based similarity or substructure searches where supported by the API/client.
+
+## Installation and Setup
+
+### Python Client
+
+The ChEMBL Python client is required for programmatic access:
+
+```bash
+uv pip install chembl_webresource_client
+```
+
+### Basic Usage Pattern
+
+```python
+from chembl_webresource_client.new_client import new_client
+
+# Access different endpoints
+molecule = new_client.molecule
+target = new_client.target
+activity = new_client.activity
+drug = new_client.drug
+mechanism = new_client.mechanism
+```
+
+## Core Capabilities
+
+### 1. Molecule Queries
+
+**Retrieve by ChEMBL ID:**
+```python
+molecule = new_client.molecule
+aspirin = molecule.get(&#x27;CHEMBL25&#x27;)
+```
+
+**Search by name:**
+```python
+results = molecule.filter(pref_name__icontains=&#x27;aspirin&#x27;)
+```
+
+**Filter by properties:**
+```python
+# Find small molecules (MW &lt;= 500) with favorable LogP
+results = molecule.filter(
+    molecule_properties__mw_freebase__lte=500,
+    molecule_properties__alogp__lte=5
+)
+```
+
+### 2. Target Queries
+
+**Retrieve target information:**
+```python
+target = new_client.target
+egfr = target.get(&#x27;CHEMBL203&#x27;)
+```
+
+**Search for specific target types:**
+```python
+# Find all kinase targets
+kinases = target.filter(
+    target_type=&#x27;SINGLE PROTEIN&#x27;,
+    pref_name__icontains=&#x27;kinase&#x27;
+)
+```
+
+### 3. Bioactivity Data
+
+**Query activities for a target:**
+```python
+activity = new_client.activity
+# Find potent EGFR inhibitors
+results = activity.filter(
+    target_chembl_id=&#x27;CHEMBL203&#x27;,
+    standard_type=&#x27;IC50&#x27;,
+    standard_value__lte=100,
+    standard_units=&#x27;nM&#x27;
+)
+```
+
+**Get all activities for a compound:**
+```python
+compound_activities = activity.filter(
+    molecule_chembl_id=&#x27;CHEMBL25&#x27;,
+    pchembl_value__isnull=False
+)
+```
+
+Note: Not all bioactivity records contain all fields. Code should handle missing keys such as standard_type, standard_value, and standard_units.
+
+### 4. Structure-Based Searches
+
+Structure-based search support depends on the API endpoint and client capabilities. When enabled, it is typically performed by passing a SMILES string to the appropriate structure/compound endpoint or filter.
+
+**Similarity search (where supported):**
+```python
+similarity = new_client.similarity
+# Find compounds similar to aspirin
+similar = similarity.filter(
+    smiles=&#x27;CC(=O)Oc1ccccc1C(=O)O&#x27;,
+    similarity=85  # 85% similarity threshold
+)
+```
+
+**Substructure search (where supported):**
+```python
+substructure = new_client.substructure
+# Find compounds containing benzene ring
+results = substructure.filter(smiles=&#x27;c1ccccc1&#x27;)
+```
+
+### 5. Drug Information
+
+**Retrieve drug data:**
+```python
+drug = new_client.drug
+drug_info = drug.get(&#x27;CHEMBL25&#x27;)
+```
+
+**Get mechanisms of action:**
+```python
+mechanism = new_client.mechanism
+mechanisms = mechanism.filter(molecule_chembl_id=&#x27;CHEMBL25&#x27;)
+```
+
+**Query drug indications (where supported):**
+```python
+drug_indication = new_client.drug_indication
+indications = drug_indication.filter(molecule_chembl_id=&#x27;CHEMBL25&#x27;)
+```
+
+## Query Workflow
+
+### Workflow 1: Finding Inhibitors for a Target
+
+1. **Identify the target** by searching by name:
+   ```python
+   targets = new_client.target.filter(pref_name__icontains=&#x27;EGFR&#x27;)
+   target_id = targets[0][&#x27;target_chembl_id&#x27;]
+   ```
+
+2. **Query bioactivity data** for that target:
+   ```python
+   activities = new_client.activity.filter(
+       target_chembl_id=target_id,
+       standard_type=&#x27;IC50&#x27;,
+       standard_value__lte=100
+   )
+   ```
+
+3. **Extract compound IDs** and retrieve details:
+   ```python
+   compound_ids = [act[&#x27;molecule_chembl_id&#x27;] for act in activities]
+   compounds = [new_client.molecule.get(cid) for cid in compound_ids]
+   ```
+
+### Workflow 2: Analyzing a Known Drug
+
+1. **Get drug information**:
+   ```python
+   drug_info = new_client.drug.get(&#x27;CHEMBL1234&#x27;)
+   ```
+
+2. **Retrieve mechanisms**:
+   ```python
+   mechanisms = new_client.mechanism.filter(molecule_chembl_id=&#x27;CHEMBL1234&#x27;)
+   ```
+
+3. **Find all bioactivities**:
+   ```python
+   activities = new_client.activity.filter(molecule_chembl_id=&#x27;CHEMBL1234&#x27;)
+   ```
+
+### Workflow 3: Structure-Activity Relationship (SAR) Study
+
+1. **Find similar compounds** (where structure search is supported):
+   ```python
+   similar = new_client.similarity.filter(smiles=&#x27;query_smiles&#x27;, similarity=80)
+   ```
+
+2. **Get activities for each compound**:
+   ```python
+   for compound in similar:
+       activities = new_client.activity.filter(
+           molecule_chembl_id=compound[&#x27;molecule_chembl_id&#x27;]
+       )
+   ```
+
+3. **Analyze property-activity relationships** using molecular properties from results.
+
+## Filter Operators
+
+ChEMBL supports Django-style query filters:
+
+- `__exact` - Exact match
+- `__iexact` - Case-insensitive exact match
+- `__contains` / `__icontains` - Substring matching
+- `__startswith` / `__endswith` - Prefix/suffix matching
+- `__gt`, `__gte`, `__lt`, `__lte` - Numeric comparisons
+- `__range` - Value in range
+- `__in` - Value in list
+- `__isnull` - Null/not null check
+
+## Pagination and Slicing
+
+Results are iterable and can be sliced (e.g., `[:5]`) to limit network calls and output size.
+
+## Data Export and Analysis
+
+Convert results to a pandas DataFrame for analysis:
+
+```python
+import pandas as pd
+
+activities = new_client.activity.filter(target_chembl_id=&#x27;CHEMBL203&#x27;)
+df = pd.DataFrame(list(activities))
+
+# Analyze results
+print(df[&#x27;standard_type&#x27;].value_counts())
+```
+
+## Conflicts
+
+- **aipoch/medical-research-skills** states that structure-based search support depends on the API endpoint and client capabilities and defers to `references/api_reference.md`, while **foryourhealth111-pixel/Vibe-Skills** and **FreedomIntelligence/OpenClaw-Medical-Skills** present concrete similarity and substructure filter examples as standard capabilities.
+- **foryourhealth111-pixel/Vibe-Skills** and **FreedomIntelligence/OpenClaw-Medical-Skills** include a `drug_indication` endpoint and a pandas DataFrame export section that **aipoch/medical-research-skills** does not include.
+- **aipoch/medical-research-skills** includes explicit pagination/slicing guidance and a note that not all bioactivity records contain all fields, which the other two copies omit.</pre>
+</body>
+</html>

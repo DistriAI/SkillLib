@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pdf-extract</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">pdf-to-markdown-extraction</a> / pdf-extract</p><h1>pdf-extract</h1><p class="meta">combined</p><p>The two skills share the name &#x27;pdf-extract&#x27; but implement fundamentally different procedures. The first (LeoYeAI) is a thin wrapper around the `pdftotext` binary (poppler-utils) for simple text extraction. The second (aipoch) is a complex Python-based workflow using `pdfplumber` and `pymupdf` that extracts text and images, normalizes paragraphs, and outputs a structured Markdown file with per-page headings and image links. They use different dependencies, different commands, and produce different outputs (plain text vs. structured Markdown with images). Crowning one would hide the other&#x27;s specific utility (e.g., image extraction and Markdown structuring vs. simple text dumping).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/pdf-extract/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/pdf-extract/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/pdf-extract/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/pdf-extract/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: pdf-extract
+description: &quot;Extract text and/or images from PDF files. Use pdftotext for simple text extraction or the Python script for structured Markdown with images.&quot;
+---
+
+# PDF Extract
+
+This skill provides two methods for extracting content from PDFs. Choose the method based on your output requirements.
+
+## Method 1: Simple Text Extraction (pdftotext)
+
+Use this when you only need plain text and do not require page structure or images.
+
+**Dependencies:**
+- `poppler-utils` (provides `pdftotext`)
+
+**Install:**
+```bash
+sudo dnf install poppler-utils
+# or: sudo apt-get install poppler-utils
+```
+
+**Usage:**
+```bash
+# Extract all text
+pdftotext &quot;document.pdf&quot; -
+
+# Extract specific pages
+pdftotext -f 1 -l 5 &quot;document.pdf&quot; -
+```
+
+## Method 2: Structured Markdown with Images (Python)
+
+Use this when you need to preserve page structure, extract images (tables/figures), and generate a Markdown file for LLM processing or PPT creation.
+
+**Dependencies:**
+- `pdfplumber`
+- `pymupdf`
+- `pytesseract` (optional, for OCR filtering)
+
+**Install:**
+```bash
+pip install pdfplumber pymupdf pytesseract
+```
+
+**Usage:**
+```bash
+python scripts/extract_pdf.py \
+  --input input.pdf \
+  --output output.md \
+  --image-dir images \
+  --image-mode segment \
+  --filter-text on \
+  --text-threshold 0.25
+```
+
+**Key Options:**
+- `--image-mode`: `segment` (default, blocks), `embedded` (raw images), or `page` (full page render).
+- `--filter-text`: Removes text-heavy images via OCR.
+- `--filter-match`: Removes images that match extracted page text.
+
+**Output:**
+- A Markdown file with `# &lt;filename&gt;` and `## Page XX` headings.
+- Normalized text paragraphs.
+- Image links corresponding to the selected mode.
+
+## Validation
+
+Before running, ensure the input PDF exists and is readable.
+- For Method 1: Verify `pdftotext` is in PATH.
+- For Method 2: Run `python scripts/extract_pdf.py --help` to verify the script and dependencies are available.</pre>
+</body>
+</html>

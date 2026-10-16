@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>latex-posters</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">latex-research-poster</a> / latex-posters</p><h1>latex-posters</h1><p class="meta">combined</p><p>The four copies overlap on the core task (beamerposter/tikzposter/baposter, 300-800 words, 2-3 columns, figure integration, and PDF preflight), but each contains material steps or constraints the others lack. K-Dense provides a tested compilation and Poppler inspection workflow plus an optional OpenRouter schematic helper; Vibe-Skills adds explicit typography, color, and standard poster-size guidance; aipoch frames the skill as a writing package with a refusal/recovery contract and hard density constraints; FreedomIntelligence mandates AI-generated visuals with strict prompt limits and overflow-prevention rules. Crowning one copy would hide these real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/latex-posters/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/latex-posters/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/latex-posters/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/latex-posters/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/latex-posters/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/latex-posters/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/latex-posters/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/latex-posters/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># LaTeX Research Posters
+
+Create a conference-sized PDF from scientific content, editable LaTeX, and verified figures. Use for new posters, paper-to-poster adaptation, institutional templates, and poster compilation or print preflight.
+
+## 1. Establish content and output requirements
+- Record exact paper width, height, orientation, venue rules, and printer requirements.
+- Choose 1-3 main messages and the results needed to support them.
+- Use a starting budget of 300-800 words with 3-5 figures; adjust to audience and space.
+- Preserve study design, sample sizes, units, effect sizes, uncertainty, limitations, and data provenance.
+- Include relevant citations, contact, and acknowledgments.
+- Use actual analysis outputs for plots and original research images for evidence. Do not use an image model to invent numerical charts, microscopy, spectra, or results.
+
+## 2. Choose the poster package
+- Use beamerposter when Beamer blocks or institutional Beamer themes fit the project.
+- Use tikzposter when TikZ styling and automatically stacked blocks are useful.
+- Use baposter when a supplied project uses its named, relative-positioned boxes.
+- If the user does not specify a package, default to tikzposter for modern research posters, switch to beamerposter for formal thesis-defense aesthetics, and switch to baposter when content is block-heavy and highly modular.
+
+## 3. Prepare and review figures
+- Prefer vector PDF for numerical plots, TikZ for precise diagrams, and suitable PNG/JPEG for photographs or conceptual artwork.
+- Convert SVG to PDF before ordinary `\includegraphics`; SVG is not a directly supported pdfLaTeX image format.
+- Optional AI schematics can help explain a concept. Generate them only when useful; there is no required AI-image quota.
+- Keep titles, citations, numerical values, and QR codes editable in LaTeX or a deterministic plotting tool. Use official logo assets.
+- If using AI-generated visuals, enforce strict prompt limits: maximum 3-4 elements per graphic, maximum 10 words total, no complex workflows with 5+ steps, no multi-level nested diagrams, all text giant bold (80pt+ for labels, 120pt+ for key numbers), high contrast only, mandatory 50% white space minimum, thick lines only (5px+ minimum), large icons (200px+ minimum), and one single message per graphic.
+- Inspect every figure before assembly: relationships, labels, units, colors, license, and accuracy. Check actual placed size, pixel dimensions, and raster PPI.
+
+## 4. Create the layout
+- Copy one of the three template files from `assets/` into the project: `beamerposter_template.tex`, `tikzposter_template.tex`, or `baposter_template.tex`.
+- Use 2-3 columns as a starting layout. Keep sufficient page margins and gaps between blocks.
+- Figure widths must fit the containing box; `0.85\linewidth` is a reasonable starting point, not a universal maximum.
+- Body text around 24-36 pt at final print size is a starting range. Font commands vary with class and scale; verify the actual rendered sizes rather than assuming that `\Large` is always a fixed size.
+- Limit content sections to a maximum of 5-6 major blocks for A0 posters to prevent overflow.
+- Set safe margins in LaTeX to prevent content from touching page boundaries.
+
+## 5. Compile and inspect the actual PDF
+Run these from the poster project directory:
+
+```bash
+pdflatex -interaction=nonstopmode -halt-on-error poster.tex
+pdflatex -interaction=nonstopmode -halt-on-error poster.tex
+pdfinfo poster.pdf
+pdffonts poster.pdf
+pdfimages -list poster.pdf
+pdftoppm -scale-to 2000 -singlefile -png poster.pdf poster-preview
+rg -n &#x27;Overfull|Underfull|Warning|undefined&#x27; poster.log
+```
+
+- Use LuaLaTeX/XeLaTeX if a project needs `fontspec` and installed OpenType fonts; changing engines still requires compilation and visual verification.
+- Run BibTeX or Biber only when citations require it.
+- Check for overfull hbox warnings and visual overflow at 100% zoom.
+- Verify that no text or content is cut off at edges.
+
+## 6. Final quality checklist
+- Package choice is explicit.
+- Section order is clear.
+- Word budget is realistic (300-800 words for A0).
+- Figure plan is readable with one message per figure.
+- No fake script requirement appears.
+- No impossible density request is accepted.
+- All figures are verified for accuracy, labels, units, and license.
+- PDF compiles without overfull or underfull warnings.
+- Visual inspection confirms no content overflow at page boundaries.
+
+## Conflicts
+- K-Dense-AI/scientific-agent-skills treats AI schematics as optional and warns against inventing numerical charts, while FreedomIntelligence/OpenClaw-Medical-Skills mandates generating all major visual elements with AI and targets 60-70% AI-generated area.
+- K-Dense-AI/scientific-agent-skills and foryourhealth111-pixel/Vibe-Skills give body text around 24-36 pt, while FreedomIntelligence/OpenClaw-Medical-Skills requires 80pt+ labels and 120pt+ key numbers inside AI-generated graphics.
+- aipoch/medical-research-skills limits major content blocks to 5-6 and includes a refusal contract, while the other copies do not impose the same hard block limit or refusal format.</pre>
+</body>
+</html>

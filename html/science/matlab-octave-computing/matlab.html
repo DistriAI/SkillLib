@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>matlab</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">matlab-octave-computing</a> / matlab</p><h1>matlab</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a distinct, more rigorous procedure focused on review, migration, safety, and provenance, while the other two copies are near-identical quick-reference guides for writing MATLAB/Octave scripts. The K-Dense copy adds material steps (clarify target, static inventory, safety boundary, execution plan, provenance) and constraints (license gate, no untrusted execution) that the others lack. The other two copies add a routing boundary (foryourhealth111) and a broader set of code examples (zLanqing/foryourhealth111) that the K-Dense copy does not include. Crowning one would hide a real alternative workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/matlab/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/matlab/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/matlab/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/matlab/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/matlab/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/matlab/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># MATLAB and GNU Octave
+
+## Routing
+Use this skill only when the user explicitly asks for MATLAB, Octave, Simulink, `.m` scripts, or MATLAB-specific tooling. Do not use it for generic NumPy, Python matrix work, or Jupyter notebooks unless MATLAB or Octave is explicit.
+
+## Product and License Gate
+- MATLAB is proprietary. Do not assume MATLAB, toolboxes, or add-ons are installed or licensed.
+- MATLAB Runtime is not MATLAB; it cannot run arbitrary source or host MATLAB Engine for Python.
+- GNU Octave is free software under GPLv3+. Octave packages are not MATLAB toolboxes.
+- Ask which runtime, release, platform, installed products, and license context the user has. Treat availability as unknown until confirmed.
+
+## Safety Boundary
+Never run an untrusted `.m`, `.mlx`, MEX binary, MAT file, or generated artifact without inspection and explicit approval. Treat `eval`, `system`, `py.*`, MEX, `load`, and object deserialization as execution surfaces. Do not use Python pickle for exchange.
+
+## Default Workflow
+1. Clarify target: record MATLAB release or Octave version, OS/architecture, required products, expected inputs/outputs, numerical tolerances, and whether execution is authorized.
+2. Inventory statically: scan `.m` files, opaque artifacts, project paths, and MAT headers before any runtime loads them.
+3. Choose code form: prefer functions with an `arguments` block for automation. Use scripts only for controlled orchestration.
+4. Make semantics explicit: record shapes, classes, units, missing-value rules, indexing, RNG algorithm/seed, tolerances, and output formats.
+5. Test without hidden state: keep fixtures synthetic, paths project-local, and tests independent of base-workspace residue.
+6. Plan execution: generate an argv plan, review startup/path effects and licenses, and launch only after explicit approval.
+7. Capture provenance: hash named inputs/code and record release, products, RNG policy, tolerances, and command plan.
+
+## Quick Start
+
+**Running MATLAB scripts:**
+```bash
+matlab -nodisplay -nosplash -r &quot;run(&#x27;script.m&#x27;); exit;&quot;
+```
+
+**Running Octave scripts:**
+```bash
+octave script.m
+```
+
+**Install GNU Octave:**
+```bash
+# macOS
+brew install octave
+# Ubuntu/Debian
+sudo apt install octave
+```
+
+## Core Capabilities
+
+### Matrix Operations
+```matlab
+A = [1 2 3; 4 5 6; 7 8 9];
+v = 1:10;
+I = eye(3);
+B = A&#x27;;
+C = A * B;
+D = A .* B;
+E = A \ b;
+```
+
+### Linear Algebra
+```matlab
+[V, D] = eig(A);
+[U, S, V] = svd(A);
+[L, U] = lu(A);
+[Q, R] = qr(A);
+x = A \ b;
+```
+
+### Plotting and Visualization
+```matlab
+x = 0:0.1:2*pi;
+y = sin(x);
+plot(x, y, &#x27;b-&#x27;, &#x27;LineWidth&#x27;, 2);
+xlabel(&#x27;x&#x27;); ylabel(&#x27;sin(x)&#x27;);
+title(&#x27;Sine Wave&#x27;);
+grid on;
+saveas(gcf, &#x27;plot.png&#x27;);
+```
+
+### Data Import/Export
+```matlab
+T = readtable(&#x27;data.csv&#x27;);
+writetable(T, &#x27;output.csv&#x27;);
+save(&#x27;data.mat&#x27;, &#x27;A&#x27;, &#x27;B&#x27;);
+load(&#x27;data.mat&#x27;);
+```
+
+### Control Flow and Functions
+```matlab
+if x &gt; 0
+    disp(&#x27;positive&#x27;);
+end
+for i = 1:10
+    disp(i);
+end
+function y = myfunction(x, n)
+    y = x.^n;
+end
+```
+
+### Statistics and Data Analysis
+```matlab
+m = mean(data);
+s = std(data);
+R = corrcoef(X, Y);
+p = polyfit(x, y, 1);
+```
+
+### Differential Equations
+```matlab
+f = @(t, y) -2*y;
+[t, y] = ode45(f, [0 5], 1);
+```
+
+### Signal Processing
+```matlab
+Y = fft(signal);
+b = fir1(50, 0.3);
+y_filtered = filter(b, 1, signal);
+```
+
+## Language and Data Checklist
+- MATLAB uses 1-based, column-major indexing.
+- Scripts share the caller/base workspace; functions have local workspaces.
+- Avoid `clear all`, broad `addpath(genpath(...))`, dependence on `pwd`, and global variables.
+- Validate sizes, classes, and values in `arguments` blocks.
+- A main function file should match the main function name.</pre>
+</body>
+</html>

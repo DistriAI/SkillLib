@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>growth-engine</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">growth-experimentation</a> / growth-engine</p><h1>growth-engine</h1><p class="meta">combined</p><p>The two skills share the name &#x27;growth-engine&#x27; but describe fundamentally different procedures. The first (ericosiU) is a technical, code-driven framework for running A/B tests, logging data, and performing statistical analysis (bootstrap CI, Mann-Whitney U) to promote winning marketing variants. The second (sickn33) is a strategic content guide for a specific product (&#x27;Auri&#x27;), focusing on Pirate Metrics (AARRR), SEO/ASO optimization, and viral loop design. They do not reproduce or shorten each other; they address different aspects of growth (experimental validation vs. strategic planning/optimization).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/ericosiu/ai-marketing-skills">ericosiu/ai-marketing-skills</a></td><td><code>growth-engine/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/growth-engine/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/ericosiu/ai-marketing-skills">ericosiu/ai-marketing-skills</a></td><td><code>growth-engine/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/growth-engine/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/growth-engine/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/growth-engine/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Growth Engine
+
+This skill covers two complementary approaches to growth: statistical experimentation and strategic optimization.
+
+## 1. Experimental Framework (A/B Testing)
+Use this section when you need to validate hypotheses with data.
+
+### Workflow
+1. **Check Playbook**: Run `python3 experiment-engine.py playbook --agent &lt;agent_name&gt;` to apply proven best practices.
+2. **Create Experiment**: 
+   ```bash
+   python3 experiment-engine.py create \
+     --agent &lt;agent_name&gt; \
+     --hypothesis &quot;Hypothesis&quot; \
+     --variable &quot;variable&quot; \
+     --variants &#x27;[&quot;A&quot;, &quot;B&quot;]&#x27; \
+     --metric &quot;metric&quot; \
+     --cycle-hours 24
+   ```
+3. **Log Data**: After publishing, log metrics:
+   ```bash
+   python3 experiment-engine.py log \
+     --agent &lt;agent_name&gt; \
+     --experiment-id &lt;ID&gt; \
+     --variant &quot;A&quot; \
+     --metrics &#x27;{&quot;metric&quot;: 100}&#x27;
+   ```
+4. **Score**: Periodically check for significance:
+   ```bash
+   python3 experiment-engine.py score --agent &lt;agent_name&gt; --experiment-id &lt;ID&gt;
+   ```
+   *Winners (p &lt; 0.05 AND ≥ 15% lift) auto-promote to the playbook.*
+5. **Suggest**: Use `python3 experiment-engine.py suggest --agent &lt;agent_name&gt;` for next steps.
+
+## 2. Strategic Optimization (AARRR &amp; SEO)
+Use this section for high-level growth strategy and channel optimization.
+
+### Pirate Metrics (AARRR)
+- **Acquisition**: Define channels (SEO, PR, Influencers). Target: 10k visitors/mo.
+- **Activation**: Ensure users experience value quickly. Target: 60% complete first action in 24h.
+- **Retention**: Monitor D7/D30/D90 retention. Target: D7=30%, D30=15%.
+- **Revenue**: Track MRR/ARPU. Target: 8% trial-to-paid conversion.
+- **Referral**: Implement viral loops. Target: K-factor &gt; 0.3.
+
+### SEO &amp; ASO Checklist
+- **Meta Tags**: Optimize `&lt;title&gt;` and `&lt;meta name=&quot;description&quot;&gt;` for high-intent keywords.
+- **Schema**: Implement `SoftwareApplication` JSON-LD for rich snippets.
+- **ASO**: Optimize app store listings with clear value propositions and example phrases.
+
+### Viral Loops
+- **Word-of-Mouth**: Encourage sharing of impressive results.
+- **Share Insights**: Add &quot;Share&quot; buttons for generated content.
+- **Referral Program**: Incentivize referrals (e.g., free Pro months).
+
+### K-Factor Calculation
+```python
+def calculate_k_factor(percent_who_invite, invites_per_user, conversion_rate):
+    k = percent_who_invite * invites_per_user * conversion_rate
+    # Interpret k: &gt;=1 Viral, &gt;=0.5 Good, &gt;=0.2 Ok, &lt;0.2 Low
+    return k
+```</pre>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>anatomy-quiz-master</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">anatomy-quiz-generation</a> / anatomy-quiz-master</p><h1>anatomy-quiz-master</h1><p class="meta">combined</p><p>Both copies describe the same anatomy-quiz skill, but the LeoYeAI copy contains the full, coherent procedure (usage boundaries, integration, adaptive engine, common patterns, CLI examples) while the aipoch copy adds a different execution/audit workflow (py_compile, --help, CONFIG block, fallback path) and a truncated description. Neither is a clean superset of the other, so crowning one would hide real alternative steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/anatomy-quiz-master/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/anatomy-quiz-master/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/anatomy-quiz-master/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/anatomy-quiz-master/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: anatomy-quiz-master
+description: Generate interactive anatomy quizzes for medical education with multiple question types, difficulty levels, and anatomical regions. Supports gross anatomy, neuroanatomy, and clinical correlations for self-assessment and exam preparation.
+license: MIT
+---
+
+# Anatomy Quiz Master
+
+## When to Use
+- Medical students preparing for anatomy practical exams or USMLE Step 1 anatomy questions.
+- Self-assessment after lectures or dissections.
+- Identifying weak anatomical regions for focused study.
+- Creating practice questions for study groups or remediation.
+- Teaching assistants generating quiz materials for labs.
+
+## Do NOT Use When
+- As the primary learning resource (use textbooks/atlas first).
+- As a substitute for cadaver lab attendance.
+- For pathology or physiology questions (use specialized skills).
+- For board exam registration or scheduling (use official NBME resources).
+
+## Integration
+- Upstream: usmle-case-generator, anki-card-creator.
+- Downstream: study-limitations-drafter, performance-tracker.
+
+## Core Capabilities
+
+### 1. Regional Anatomy Quizzes
+Generate focused quizzes by body region (head/neck, thorax, abdomen, pelvis, upper limb, lower limb, back) with subtopics and question types as documented in the skill references.
+
+```python
+from scripts.quiz_generator import QuizGenerator
+generator = QuizGenerator()
+quiz = generator.generate_quiz(
+    region=&quot;thorax&quot;,
+    topics=[&quot;heart&quot;, &quot;lungs&quot;, &quot;mediastinum&quot;, &quot;thoracic_wall&quot;],
+    difficulty=&quot;intermediate&quot;,
+    n_questions=20
+)
+quiz.export(format=&quot;json&quot;, filename=&quot;thorax_quiz.json&quot;)
+```
+
+### 2. Neuroanatomy Pathway Tracing
+Generate quizzes for motor, sensory, cranial nerve, reflex, and vascular pathways.
+
+```python
+neuro_quiz = generator.generate_neuro_quiz(
+    pathway_type=&quot;motor&quot;,
+    include_lesions=True,
+    clinical_correlations=True
+)
+```
+
+### 3. Clinical Correlation Questions
+Integrate anatomy with clinical scenarios (surgery, radiology, physical exam).
+
+```python
+clinical_quiz = generator.generate_clinical_quiz(
+    region=&quot;abdomen&quot;,
+    scenario_types=[&quot;surgery&quot;, &quot;radiology&quot;, &quot;physical_exam&quot;],
+    difficulty=&quot;advanced&quot;
+)
+```
+
+### 4. Adaptive Learning System
+Track performance and generate personalized quizzes targeting weak areas.
+
+```python
+from scripts.adaptive import AdaptiveEngine
+engine = AdaptiveEngine()
+student_progress = engine.track_performance(
+    student_id=&quot;student_001&quot;,
+    quiz_results=results,
+    time_per_question=True
+)
+personalized = engine.generate_adaptive_quiz(
+    student_progress=student_progress,
+    focus_areas=[&quot;thorax_vessels&quot;, &quot;cranial_nerves&quot;],
+    mastery_threshold=0.80
+)
+```
+
+## Workflow
+1. Confirm the user objective, required inputs, and non-negotiable constraints.
+2. Validate that the request matches the documented scope; stop early if unsupported assumptions are required.
+3. Use the packaged script path or documented reasoning path with only the inputs that are actually available.
+4. Return a structured result separating assumptions, deliverables, risks, and unresolved items.
+5. If execution fails or inputs are incomplete, switch to the fallback path and state exactly what blocked full completion.
+
+## Execution and Audit
+- Primary implementation surface: `scripts/main.py`.
+- Reference guidance: `references/` contains supporting rules, prompts, or checklists.
+- Parameters to clarify first: input path, output path, scope filters, thresholds, and domain-specific constraints.
+- Output discipline: keep results reproducible, identify assumptions explicitly, and avoid undocumented side effects.
+
+Quick check:
+```bash
+python -m py_compile scripts/main.py
+python scripts/main.py --help
+```
+
+## Common Patterns
+
+### Pre-Exam Comprehensive Review
+```bash
+python scripts/main.py \
+  --mode comprehensive \
+  --regions all \
+  --difficulty intermediate \
+  --n-questions 100 \
+  --timed \
+  --output pre_practice_exam.json
+```
+
+### Adaptive Focus on Weak Areas
+```bash
+python scripts/main.py \
+  --mode adaptive \
+  --focus abdomen,pelvis \
+  --difficulty advanced \
+  --n-questions 30 \
+  --output adaptive_review.json
+```
+
+## Conflicts
+- aipoch/medical-research-skills emphasizes a CONFIG block and py_compile/--help audit commands as part of the execution model.
+- LeoYeAI/openclaw-master-skills emphasizes CLI mode flags (--mode, --regions, --timed, --output) and upstream/downstream skill integration, without the CONFIG/fallback audit workflow.</pre>
+</body>
+</html>

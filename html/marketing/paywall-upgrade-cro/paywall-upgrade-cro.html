@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>paywall-upgrade-cro</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">paywall-upgrade-cro</a> / paywall-upgrade-cro</p><h1>paywall-upgrade-cro</h1><p class="meta">combined</p><p>The first copy is the substantive procedure, while the third is a thin wrapper that defers to a separate detailed guide and adds generic safety/limitation constraints. The second copy overlaps heavily with the first but includes material steps and constraints the first lacks, such as context-triggered paywalls, mobile paywall patterns, and additional paywall types. Crowning the first copy would hide these real alternatives, so the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/paywall-upgrade-cro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/paywall-upgrade-cro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/paywall-upgrade-cro/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/paywall-upgrade-cro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/paywall-upgrade-cro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/paywall-upgrade-cro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/paywall-upgrade-cro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/paywall-upgrade-cro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/paywall-upgrade-cro/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: paywall-upgrade-cro
+description: When the user wants to create or optimize in-app paywalls, upgrade screens, upsell modals, or feature gates. Also use when the user mentions &quot;paywall,&quot; &quot;upgrade screen,&quot; &quot;upgrade modal,&quot; &quot;upsell,&quot; &quot;feature gate,&quot; &quot;convert free to paid,&quot; &quot;freemium conversion,&quot; &quot;trial expiration screen,&quot; &quot;limit reached screen,&quot; &quot;plan upgrade prompt,&quot; or &quot;in-app pricing.&quot; Distinct from public pricing pages (see page-cro) — this focuses on in-product upgrade moments where the user has already experienced value. For pricing decisions, see pricing-strategy.
+---
+
+# Paywall and Upgrade Screen CRO
+
+You are an expert in in-app paywalls and upgrade flows. Your goal is to convert free users to paid, or upgrade users to higher tiers, at moments when they&#x27;ve experienced enough value to justify the commitment.
+
+## Initial Assessment
+
+**Check for product marketing context first:**
+If `.agents/product-marketing-context.md` exists (or `.agents/product-marketing-context.md` in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+
+Before providing recommendations, understand:
+
+1. **Upgrade Context**
+   - Freemium → Paid conversion
+   - Trial → Paid conversion
+   - Tier upgrade (Basic → Pro)
+   - Feature-specific upsell
+   - Usage limit upsell
+
+2. **Product Model**
+   - What&#x27;s free forever?
+   - What&#x27;s behind the paywall?
+   - What triggers upgrade prompts?
+   - What&#x27;s the current conversion rate?
+
+3. **User Journey**
+   - At what point does this appear?
+   - What have they experienced already?
+   - What are they trying to do when blocked?
+
+---
+
+## Core Principles
+
+### 1. Value Before Ask
+- User should have experienced real value first
+- The upgrade should feel like a natural next step
+- Timing: After &quot;aha moment,&quot; not before
+
+### 2. Show, Don&#x27;t Just Tell
+- Demonstrate the value of paid features
+- Preview what they&#x27;re missing
+- Make the upgrade feel tangible
+
+### 3. Friction-Free Path
+- Easy to upgrade when ready
+- Don&#x27;t make them hunt for pricing
+- Remove barriers to conversion
+
+### 4. Respect the No
+- Don&#x27;t trap or pressure
+- Make it easy to continue free
+- Maintain trust for future conversion
+
+---
+
+## Paywall Trigger Points
+
+### Feature Gates
+When user clicks a paid-only feature:
+- Clear explanation of why it&#x27;s paid
+- Show what the feature does
+- Quick path to unlock
+- Option to continue without
+
+### Usage Limits
+When user hits a limit:
+- Clear indication of what limit was reached
+- Show what upgrading provides
+- Option to buy more without full upgrade
+- Don&#x27;t block abruptly
+
+### Trial Expiration
+When trial is ending:
+- Early warnings (7 days, 3 days, 1 day)
+- Clear &quot;what happens&quot; on expiration
+- Easy re-activation if expired
+- Summarize value received
+
+### Time-Based Prompts
+After X days/sessions of free use:
+- Gentle upgrade reminder
+- Highlight unused paid features
+- Not intrusive—banner or subtle modal
+- Easy to dismiss
+
+### Context-Triggered
+When behavior indicates upgrade fit:
+- Power users who&#x27;d benefit
+- Teams using solo features
+- Heavy usage approaching limits
+- Inviting teammates
+
+---
+
+## Paywall Screen Components
+
+### 1. Headline
+Focus on what they get, not what they pay:
+- &quot;Unlock [Feature] to [Benefit]&quot;
+- &quot;Get more [value] with [Plan]&quot;
+- Not: &quot;Upgrade to Pro for $X/month&quot;
+
+### 2. Value Demonstration
+Show what they&#x27;re missing:
+- Preview of the feature in action
+- Before/after comparison
+- &quot;With Pro, you could...&quot; examples
+- Specific to their use case if possible
+
+### 3. Feature Comparison
+If showing tiers:
+- Highlight key differences
+- Current plan clearly marked
+- Recommended plan emphasized
+- Focus on outcomes, not feature lists
+
+### 4. Pricing
+- Clear, simple pricing
+- Annual vs. monthly options
+- Per-seat clarity if applicable
+- Any trials or guarantees
+
+### 5. Social Proof (Optional)
+- Customer quotes about the upgrade
+- &quot;X teams use this feature&quot;
+- Success metrics from upgraded users
+
+### 6. CTA
+- Specific: &quot;Upgrade to Pro&quot; not &quot;Upgrade&quot;
+- Value-oriented: &quot;Start Getting [Benefit]&quot;
+- If trial: &quot;Start Free Trial&quot;
+
+### 7. Escape Hatch
+- Clear &quot;Not now&quot; or &quot;Continue with Free&quot;
+- Don&#x27;t make them feel bad
+- &quot;Maybe later&quot; vs. &quot;No, I&#x27;ll stay limited&quot;
+
+---
+
+## Specific Paywall Types
+
+### Feature Lock Paywall
+When clicking a paid feature:
+
+```
+[Lock Icon]
+This feature is available on Pro
+
+[Feature preview/screenshot]
+
+[Feature name] helps you [benefit]:
+• [Specific capability]
+• [Specific capability]
+• [Specific capability]
+
+[Upgrade to Pro - $X/mo]
+[Maybe Later]
+```
+
+### Usage Limit Paywall
+When hitting a limit:
+
+```
+You&#x27;ve reached your free limit
+
+[Visual: Progress bar at 100%]
+
+Free plan: 3 projects
+Pro plan: Unlimited projects
+
+You&#x27;re active! Upgrade to keep building.
+
+[Upgrade to Pro]    [Delete a project]
+```
+
+### Trial Expiration Paywall
+When trial is ending:
+
+```
+Your trial ends in 3 days
+
+What you&#x27;ll lose:
+• [Feature they&#x27;ve used]
+• [Feature they&#x27;ve used]
+• [Data/work they&#x27;ve created]
+
+What you&#x27;ve accomplished:
+• Created X projects
+• [Specific value metric]
+
+[Continue with Pro - $X/mo]
+[Remind me later]    [Downgrade to Free]
+```
+
+### Soft Upgrade Prompt
+Non-blocking suggestion:
+
+```
+[Banner or subtle modal]
+
+You&#x27;ve been using [Product] for 2 weeks!
+Teams like yours get X% more [value] with Pro.
+
+[See Pro Features]    [Dismiss]
+```
+
+### Team/Seat Upgrade
+When adding users:
+
+```
+Invite your team
+
+Your plan: Solo (1 user)
+Team plans start at $X/user
+
+• Shared projects
+• Collaboration features
+• Admin controls
+
+[Upgrade to Team]    [Continue Solo]
+```
+
+---
+
+## Mobile Paywall Patterns
+
+### iOS/Android Conventions
+- System-like styling builds trust
+- Standard paywall patterns users recognize
+- Free trial emphasis common
+- Subscription terminology they expect
+
+### Mobile-Specific UX
+- Full-screen often acceptable
+- Swipe to dismiss
+- Large tap targets
+- Plan selection with clear visual state
+
+### App Store Considerations
+- Clear pricing display
+- Subscription terms visible
+- Restore purchases option
+- Meet review guidelines
+
+---
+
+## Timing and Frequency
+
+### When to Show
+- **Best**: After value moment, before frustration
+- After activation/aha moment
+- When hitting genuine limits
+- When using adjacent-to-paid features
+
+### When NOT to Show
+- During onboarding (too early)
+- When they&#x27;re in a flow
+- Repeatedly after dismissal
+
+### Frequency Rules
+- Limit per session
+- Cool-down after dismiss (days, not hours)
+- Track annoyance signals
+
+---
+
+## Upgrade Flow Optimization
+
+### From Paywall to Payment
+- Minimize steps
+- Keep in-context if possible
+- Pre-fill known information
+
+### Post-Upgrade
+- Immediate access to features
+- Confirmation and receipt
+- Guide to new features
+
+---
+
+## A/B Testing
+
+### What to Test
+- Trigger timing
+- Headline/copy variations
+- Price presentation
+- Trial length
+- Feature emphasis
+- Design/layout
+
+### Metrics to Track
+- Paywall impression rate
+- Click-through to upgrade
+- Completion rate
+- Revenue per user
+- Churn rate post-upgrade
+
+**For comprehensive experiment ideas**: See [references/experiments.md](references/experiments.md)
+
+---
+
+## Anti-Patterns to Avoid
+
+### Dark Patterns
+- Hiding the close button
+- Confusing plan selection
+- Guilt-trip copy
+
+### Conversion Killers
+- Asking before value delivered
+- Too frequent prompts
+- Blocking critical flows
+- Complicated upgrade process
+
+---
+
+## Task-Specific Questions
+
+1. What&#x27;s your current free → paid conversion rate?
+2. What triggers upgrade prompts today?
+3. What features are behind the paywall?
+4. What&#x27;s your &quot;aha moment&quot; for users?
+5. What pricing model? (per seat, usage, flat)
+6. Mobile app, web app, or both?
+
+---
+
+## Related Skills
+
+- **churn-prevention**: For cancel flows, save offers, and reducing churn post-upgrade
+- **page-cro**: For public pricing page optimization
+- **onboarding-cro**: For driving to aha moment before upgrade
+- **ab-test-setup**: For testing paywall variations
+
+---
+
+## Conflicts
+
+- **sickn33/agentic-awesome-skills::plugins/agentic-awesome-skills-claude/skills/paywall-upgrade-cro/SKILL.md** requires reading a separate detailed guide and treats its safety, prerequisites, and validation requirements as mandatory, while the other copies do not reference an external guide or impose those requirements. When using this combined skill, do not assume an external guide exists; if one is present in the working environment, read it and treat its safety, prerequisites, and validation requirements as mandatory. If no external guide is present, proceed with the steps above and stop to ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+- **LeoYeAI/openclaw-master-skills::skills/marketing-skills/references/paywall-upgrade-cro/SKILL.md** includes context-triggered paywalls, mobile paywall patterns, soft upgrade prompts, and team/seat upgrade paywalls, while **LeoYeAI/openclaw-marketing-skills::skills/paywall-upgrade-cro/SKILL.md** does not. The combined skill includes all of these additional paywall types and patterns.</pre>
+</body>
+</html>

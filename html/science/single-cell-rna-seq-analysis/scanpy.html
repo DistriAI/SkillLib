@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scanpy</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">single-cell-rna-seq-analysis</a> / scanpy</p><h1>scanpy</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the most rigorous and specific, containing critical &#x27;Representation and inference contracts&#x27; (e.g., raw count provenance, HVG flavor differences, Harmony/BBKNN side effects) and specific version pinning (Python 3.12+, Scanpy 1.12.4) that the others lack. However, the other three copies (Vibe-Skills, aipoch, sickn33) provide a complete, step-by-step &#x27;Standard Analysis Workflow&#x27; with Python code snippets for QC, normalization, clustering, and annotation that the K-Dense copy omits in favor of referencing bundled scripts. The aipoch copy also adds a &#x27;When to Use&#x27; section that explicitly frames the skill as a packaged method for reproducible deliverables. Combining is necessary to capture both the rigorous data contracts of the K-Dense copy and the executable workflow steps of the others.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scanpy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scanpy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/scanpy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/scanpy/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scanpy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scanpy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/scanpy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/scanpy/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/scanpy/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/scanpy/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/scanpy/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Scanpy: Single-Cell Analysis
+
+## Overview
+Scanpy is a scalable Python toolkit for analyzing single-cell RNA-seq data, built on AnnData. This skill covers complete workflows including quality control, normalization, dimensionality reduction, clustering, marker gene identification, visualization, and trajectory analysis.
+
+## Environment &amp; Installation
+- **Python**: 3.12+ (Scanpy 1.12+ requirement).
+- **Packages**: `scanpy[leiden]` (installs `igraph` and `leidenalg`).
+- **Version Pinning**: Pin to `scanpy==1.12.4` for reproducibility.
+- **R Interop**: Convert `.rds`/Seurat objects to `.h5ad` using R tooling before loading in Scanpy.
+
+## Data Contracts &amp; Provenance
+- **Input**: Must be identified raw counts. Reject negative, fractional, or non-finite values.
+- **Layers**: `layers[&quot;counts&quot;]` remains unnormalized. `.raw` is an independent log-normalized snapshot.
+- **HVGs**: `seurat`/`cell_ranger` flavors use log-normalized values; `seurat_v3` uses counts.
+- **Marker Ranking**: Defaults to `.raw` if present. Use `--no-use-raw` to select X.
+- **Integration**: Harmony/BBKNN modify PCA/graphs. Keep original expression for DE analysis.
+
+## Standard Analysis Workflow
+
+### 1. Quality Control
+```python
+import scanpy as sc
+adata.var[&#x27;mt&#x27;] = adata.var_names.str.startswith(&#x27;MT-&#x27;)
+sc.pp.calculate_qc_metrics(adata, qc_vars=[&#x27;mt&#x27;], inplace=True)
+sc.pp.filter_cells(adata, min_genes=200)
+sc.pp.filter_genes(adata, min_cells=3)
+adata = adata[adata.obs.pct_counts_mt &lt; 5, :]
+```
+
+### 2. Normalization &amp; Preprocessing
+```python
+sc.pp.normalize_total(adata, target_sum=1e4)
+sc.pp.log1p(adata)
+adata.raw = adata
+sc.pp.highly_variable_genes(adata, n_top_genes=2000)
+adata = adata[:, adata.var.highly_variable]
+sc.pp.scale(adata, max_value=10)
+```
+
+### 3. Dimensionality Reduction
+```python
+sc.tl.pca(adata, svd_solver=&#x27;arpack&#x27;)
+sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+sc.tl.umap(adata)
+```
+
+### 4. Clustering
+```python
+sc.tl.leiden(adata, resolution=0.5)
+```
+
+### 5. Marker Genes &amp; Annotation
+```python
+sc.tl.rank_genes_groups(adata, &#x27;leiden&#x27;, method=&#x27;wilcoxon&#x27;)
+sc.pl.rank_genes_groups(adata, n_genes=25, sharey=False)
+# Map clusters to cell types based on marker expression
+```
+
+### 6. Visualization &amp; Export
+```python
+sc.settings.set_figure_params(dpi=300, frameon=False)
+sc.pl.umap(adata, color=&#x27;cell_type&#x27;, palette=&#x27;Set2&#x27;)
+adata.write(&#x27;results/processed_data.h5ad&#x27;)
+```
+
+## When to Use
+- Analyzing `.h5ad`, 10X, or CSV single-cell data.
+- Performing exploratory scRNA-seq analysis.
+- Generating publication-quality plots.
+- Converting R-native objects to h5ad for downstream Python analysis.</pre>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>discover</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">discover</a> / discover</p><h1>discover</h1><p class="meta">combined</p><p>The two copies use the same skill name for completely different tasks. The first is a local CLI-based discovery tool that inventories AI agents and MCP server configurations on a machine. The second is a research workflow that routes to interview, literature review, data discovery, or ideation agents. They share no steps, constraints, or outputs, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/agent-bom/discover/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/16-hsantanna88-clo-author/dot-claude/skills/discover/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/agent-bom/discover/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/16-hsantanna88-clo-author/dot-claude/skills/discover/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Discover
+
+This skill has two distinct modes. Determine which mode the user wants and follow the matching procedure.
+
+## Mode A: Local AI Agent and MCP Server Discovery
+
+Use when the user asks to find agents, list MCP servers, check what is configured, run a doctor check, or show an MCP inventory.
+
+1. Ensure the agent-bom CLI is available. Install with `pipx install agent-bom` if needed.
+2. Run the requested command:
+   - `agent-bom agents` to discover all AI agents and MCP servers.
+   - `agent-bom doctor` to check prerequisites and configuration health.
+   - `agent-bom mcp inventory` to list discovered MCP servers.
+   - `agent-bom where` to show all discovery paths.
+3. Present the output to the user.
+4. Guardrails: discovery is read-only; environment variable values are redacted before processing; only structural data is extracted; confirm with the user before scanning paths outside the home directory.
+
+## Mode B: Research Discovery Phase
+
+Use when the user asks for a research interview, literature review, data discovery, or research ideation.
+
+1. Parse the mode keyword from the arguments: `interview`, `lit`, `data`, or `ideate`. If no mode is given, default to `interview`.
+2. Follow the corresponding workflow:
+   - **interview**: Conduct a structured conversational interview in six sections (Big Picture, Theoretical Motivation, Data and Setting, Identification, Expected Results, Contribution). Ask one or two questions at a time and wait for the user&#x27;s response. After 5-8 exchanges, produce a Research Specification at `quality_reports/research_spec_[topic].md` and, if the template is still empty, fill in `.claude/references/domain-profile.md`.
+   - **lit**: Read the domain profile, check `master_supporting_docs/` and `bibliography_base.bib`, dispatch a Librarian agent to search top-5 journals, field journals, working papers, and citation chains, assign proximity scores 1-5, dispatch a librarian-critic to check coverage, re-dispatch once if gaps are found, and save the result to `quality_reports/lit_review_[topic].md`. Mark unverifiable citations with `% UNVERIFIED`.
+   - **data**: Read the research spec and domain profile, identify needed variables, dispatch an Explorer agent to search public microdata, administrative data, survey data, international sources, and novel/alternative sources, dispatch an explorer-critic to assess feasibility, and produce ranked data sources with feasibility grades.
+   - **ideate**: Follow the ideation workflow defined in the source skill.
+3. Present the produced artifacts to the user.
+
+## Conflicts
+
+- LeoYeAI/openclaw-master-skills::skills/agent-bom/discover/SKILL.md defines discover as a local CLI inventory of AI agents and MCP servers.
+- brycewang-stanford/Auto-Empirical-Research-Skills::skills/16-hsantanna88-clo-author/dot-claude/skills/discover/SKILL.md defines discover as a research phase that routes to interview, lit, data, or ideate modes.</pre>
+</body>
+</html>

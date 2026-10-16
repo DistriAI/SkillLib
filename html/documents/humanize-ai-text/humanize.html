@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>humanize</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">humanize-ai-text</a> / humanize</p><h1>humanize</h1><p class="meta">combined</p><p>The two skills overlap in purpose (removing AI writing patterns) but are structurally different. The LeoYeAI skill is a single-pass editorial guide with a detailed pattern catalog and a &#x27;personality/soul&#x27; section. The brycewang-stanford skill is a multi-pass orchestration pipeline (G5 audit, G6 transform, F5 verify) with mandatory checkpoints, modes, and typographic mandates. Neither is a reproduction of the other; combining them captures both the pattern knowledge and the pipeline workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/humanize/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/25-HosungYou-Diverga/skills/humanize/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/humanize/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/25-HosungYou-Diverga/skills/humanize/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: humanize
+version: 1.0.0
+description: |
+  Humanize AI-generated text by removing AI patterns and adding human voice.
+  Supports both single-pass editing and multi-pass pipeline orchestration.
+---
+
+# Humanize AI Text
+
+## 1. Preparation
+- Identify the target text and desired tone (formal, casual, technical).
+- If using a pipeline mode, determine the intensity: Conservative, Balanced, or Aggressive.
+
+## 2. Pattern Identification
+Scan for and remove the following AI writing patterns:
+- **Inflated Significance:** Remove phrases like &quot;pivotal moment,&quot; &quot;testament to,&quot; or &quot;broader trends&quot; unless factually necessary.
+- **Promotional Language:** Replace &quot;vibrant,&quot; &quot;groundbreaking,&quot; &quot;boasts,&quot; and &quot;renowned&quot; with neutral, specific descriptions.
+- **Superficial -ing Analyses:** Remove tacked-on present participles (e.g., &quot;highlighting...&quot;, &quot;ensuring...&quot;) that add no new information.
+- **Vague Attributions:** Replace &quot;experts say&quot; or &quot;studies show&quot; with specific sources or direct quotes.
+- **Em Dash Overuse:** Reduce reliance on em dashes for dramatic pauses.
+- **Rule of Three:** Avoid forcing lists of three items when two or four are more natural.
+- **AI Vocabulary:** Replace &quot;delve,&quot; &quot;tapestry,&quot; &quot;landscape,&quot; and &quot;foster&quot; with simpler synonyms.
+
+## 3. Adding Voice and Soul
+- **Have Opinions:** React to facts rather than just reporting them.
+- **Vary Rhythm:** Mix short, punchy sentences with longer, complex ones.
+- **Acknowledge Complexity:** Express mixed feelings or uncertainty where appropriate.
+- **Use First Person:** Use &quot;I&quot; or &quot;we&quot; when it fits the context to signal a real person.
+- **Be Specific:** Replace vague feelings (&quot;concerning&quot;) with concrete observations.
+
+## 4. Pipeline Execution (Optional)
+If a multi-pass approach is required:
+1. **Audit:** Score the text for AI probability and identify section-level issues.
+2. **Checkpoint:** Present scores to the user and confirm the next step.
+3. **Transform:** Apply vocabulary and structural changes.
+4. **Verify:** Check for remaining patterns and typographic errors (ensure proper Unicode for em dashes and smart quotes).
+5. **Repeat:** Continue passes until the target score is met or the user approves.
+
+## 5. Final Review
+- Ensure the core meaning is preserved.
+- Check for typographic consistency (smart quotes, proper dashes).
+- Confirm the text sounds natural and has a distinct human voice.</pre>
+</body>
+</html>

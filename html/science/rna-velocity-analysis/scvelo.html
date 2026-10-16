@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scvelo</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">rna-velocity-analysis</a> / scvelo</p><h1>scvelo</h1><p class="meta">combined</p><p>The two skills describe the same high-level task (RNA velocity with scVelo) but diverge significantly on implementation details, version compatibility, and workflow steps. The K-Dense-AI skill is a highly specific, version-pinned (scVelo 0.3.4, Python 3.13) workflow that explicitly warns against using the stochastic model due to NumPy 2 incompatibility and provides a bundled script. The FreedomIntelligence skill is a general, version-agnostic tutorial that recommends the stochastic model for exploratory analysis and uses older API calls (like `scv.read` and `scv.DataFrame`) that the K-Dense-AI skill notes are removed or deprecated in newer versions. Because they disagree on the recommended model (stochastic vs. dynamical) and the valid API surface, crowning one would hide a real alternative approach or lead to errors if the user&#x27;s environment matches the other skill&#x27;s assumptions.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scvelo/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/scvelo/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scvelo/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/scvelo/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># scVelo RNA Velocity Analysis
+
+## Overview
+Perform RNA velocity analysis to infer cell state transitions, trajectory directions, and driver genes from spliced and unspliced single-cell RNA counts.
+
+## Prerequisites
+- **Data**: AnnData object with `layers[&#x27;spliced&#x27;]` and `layers[&#x27;unspliced&#x27;]` containing raw, non-negative counts.
+- **Environment**: 
+  - **Modern Stack (scVelo 0.3.4+)**: Python 3.13, NumPy 2.x. **Note**: Stochastic model is incompatible with NumPy 2. Use Dynamical model only.
+  - **Legacy Stack**: Python 3.10/3.11, NumPy &lt;2. Required if you wish to use the Stochastic model.
+
+## Workflow
+
+### 1. Data Loading
+- **Modern (scVelo 0.3.4+)**: Use `anndata.read_h5ad()` or `anndata.io.read_loom()`. Do not use `scv.read`.
+- **Legacy**: `scv.read()` may be available. Check your version.
+
+### 2. Preprocessing
+```python
+import scvelo as scv
+import scanpy as sc
+
+# Filter and normalize
+scv.pp.filter_and_normalize(adata, min_shared_counts=20, n_top_genes=2000)
+
+# Compute moments (requires neighbors)
+sc.pp.neighbors(adata, n_neighbors=30, n_pcs=30)
+scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
+```
+
+### 3. Velocity Estimation
+**Choose based on environment:**
+
+**Option A: Dynamical Model (Recommended for Modern Stack)**
+```python
+scv.tl.recover_dynamics(adata, n_jobs=4)
+scv.tl.velocity(adata, mode=&#x27;dynamical&#x27;)
+scv.tl.velocity_graph(adata)
+```
+
+**Option B: Stochastic Model (Legacy Stack Only)**
+```python
+# WARNING: Fails with NumPy 2.x
+scv.tl.velocity(adata, mode=&#x27;stochastic&#x27;)
+scv.tl.velocity_graph(adata)
+```
+
+### 4. Latent Time &amp; Driver Genes
+```python
+# Latent time (Dynamical model only)
+scv.tl.latent_time(adata)
+
+# Rank velocity genes
+scv.tl.rank_velocity_genes(adata, groupby=&#x27;leiden&#x27;, min_corr=0.3)
+# Note: Access results via adata.uns[&#x27;rank_velocity_genes&#x27;] directly if scv.DataFrame is unavailable
+```
+
+### 5. Visualization
+```python
+# Stream plot
+scv.pl.velocity_embedding_stream(adata, basis=&#x27;umap&#x27;, color=&#x27;leiden&#x27;)
+
+# Phase portraits
+scv.pl.velocity(adata, [&#x27;Gene1&#x27;, &#x27;Gene2&#x27;], ncols=2)
+```
+
+## Conflicts &amp; Notes
+- **API Differences**: `scv.read` and `scv.DataFrame` are removed in scVelo 0.3.4. Use `anndata` and direct `adata.uns` access respectively.
+- **Model Compatibility**: The stochastic model relies on GLS scalar assignment which fails with NumPy 2. If using a modern environment, strictly use the dynamical model.</pre>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pymatgen</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">pymatgen-structure-analysis</a> / pymatgen</p><h1>pymatgen</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a distinct, more rigorous procedure (pinned versions, provenance, validation, symmetry tolerance reporting, safe intake, database disclosure) that the other three copies do not contain. The other three copies are near-identical quick-start guides, but the benchflow-ai copy adds a specific Wyckoff-position extraction step that the other two lack. Crowning one copy would hide the K-Dense-AI workflow and the benchflow-ai Wyckoff detail.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/pymatgen/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pymatgen/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pymatgen/SKILL.md</code></td></tr><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/crystallographic-wyckoff-position-analysis/environment/skills/pymatgen/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/pymatgen/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pymatgen/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pymatgen/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/crystallographic-wyckoff-position-analysis/environment/skills/pymatgen/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># pymatgen
+
+Use pymatgen for explicit, provenance-preserving work with compositions, molecules, periodic structures, computed entries, symmetry, phase diagrams, electronic structures, and electronic-structure-code files. Treat every parse, conversion, symmetry assignment, transformation, and database result as method- and parameter-dependent.
+
+## Installation
+
+For a reproducible environment, pin versions:
+
+```bash
+uv init --python 3.11
+uv add &quot;pymatgen==2026.9.24&quot; &quot;pymatgen-core==2026.9.23&quot; &quot;mp-api==0.46.5&quot;
+uv lock
+uv sync --frozen
+```
+
+For a quick start without pinning:
+
+```bash
+uv pip install pymatgen
+uv pip install pymatgen mp-api
+```
+
+## Required workflow
+
+1. State whether the object is a non-periodic Molecule or periodic Structure; record lattice and periodic boundary conditions.
+2. State units (Å, degrees, eV, eV/atom, amu, g/cm³).
+3. State coordinate mode: Structure coordinates are fractional unless coords_are_cartesian=True; Molecule coordinates are Cartesian.
+4. Inspect every parser warning. For CIF, preserve occupancy, site-merging, stoichiometry, and correction warnings.
+5. Report disorder/partial occupancies and oxidation-state decoration. Never guess oxidation states implicitly.
+6. Run validation before symmetry, neighbor, transformation, conversion, or thermodynamic analysis.
+7. Sweep symmetry tolerances and report symprec in Å and angle_tolerance in degrees with every assignment.
+8. Treat transformations as new artifacts. Preserve the input, parameters, software versions, warnings, and parent/child checksums.
+9. Before conversion, identify representation loss. Write only to a new path and round-trip-check scientifically relevant properties.
+10. Build phase diagrams only from compatible total energies and correction schemes.
+11. Keep all database access off by default. Disclose endpoint, filters, fields, result limit, cache behavior, output, license, and citation before an explicit execution step.
+12. Preserve an artifact manifest. Never use pickle or load an untrusted general object graph; use schema-validated JSON and explicit constructors.
+
+## Core objects
+
+```python
+from pymatgen.core import Composition, Element, Lattice, Molecule, Structure
+
+composition = Composition(&quot;LiFePO4&quot;, strict=True)
+lattice = Lattice.cubic(5.64)
+structure = Structure(
+    lattice,
+    [&quot;Na&quot;, &quot;Cl&quot;],
+    [[0, 0, 0], [0.5, 0.5, 0.5]],
+    coords_are_cartesian=False,
+    validate_proximity=True,
+)
+```
+
+## Structure creation and manipulation
+
+```python
+struct = Structure.from_file(&quot;POSCAR&quot;)
+lattice = Lattice.cubic(3.84)
+struct = Structure(lattice, [&quot;Si&quot;, &quot;Si&quot;], [[0,0,0], [0.25,0.25,0.25]])
+struct.to(filename=&quot;structure.cif&quot;)
+```
+
+Transformations:
+
+```python
+from pymatgen.transformations.standard_transformations import (
+    SupercellTransformation,
+    SubstitutionTransformation,
+    PrimitiveCellTransformation
+)
+trans = SupercellTransformation([[2,0,0],[0,2,0],[0,0,2]])
+supercell = trans.apply_transformation(struct)
+```
+
+## File format conversion
+
+```python
+struct = Structure.from_file(&quot;input_file&quot;)
+struct.to(filename=&quot;output.cif&quot;)
+```
+
+## Symmetry and coordination
+
+```python
+from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+sga = SpacegroupAnalyzer(struct)
+print(sga.get_space_group_symbol())
+print(sga.get_space_group_number())
+print(sga.get_crystal_system())
+```
+
+For Wyckoff positions, use get_symmetry_dataset().wyckoffs, not get_symmetrized_structure().wyckoff_symbols.
+
+```python
+from pymatgen.analysis.local_env import CrystalNN
+cnn = CrystalNN()
+neighbors = cnn.get_nn_info(struct, n=0)
+```
+
+## Materials Project integration
+
+```bash
+export MP_API_KEY=&quot;your_api_key_here&quot;
+```
+
+```python
+from mp_api.client import MPRester
+with MPRester() as mpr:
+    struct = mpr.get_structure_by_material_id(&quot;mp-149&quot;)
+    materials = mpr.materials.summary.search(formula=&quot;Fe2O3&quot;, energy_above_hull=(0, 0.05))
+```
+
+## Conflicts
+
+- K-Dense-AI/scientific-agent-skills requires pinned versions and a 12-step required workflow; the other copies use unpinned installation and no such workflow.
+- benchflow-ai/skillsbench adds a Wyckoff-position extraction step that the other copies do not include.
+- K-Dense-AI/scientific-agent-skills mandates reporting symprec and angle_tolerance with every symmetry assignment; the other copies do not state these constraints.</pre>
+</body>
+</html>

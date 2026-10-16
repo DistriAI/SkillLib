@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>dwarf-expert</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">dwarf-debug-info-analysis</a> / dwarf-expert</p><h1>dwarf-expert</h1><p class="meta">combined</p><p>The trailofbits copy is the more complete, self-contained procedure: it contains the specific dwarfdump flags, the DIE search escalation strategy, the macOS dSYM caveat, the DWARF version pinning notes, and the library table with parsing pitfalls. The sickn33 copy is a wrapper that delegates the detailed steps to external reference files (readelf.md, dwarfdump.md, coding.md) and adds a decision tree and explicit scope limits (v3-v5 only). Because the sickn33 copy lacks the concrete command-line details and the trailofbits copy lacks the explicit version scope and decision-tree structure, crowning one would hide a real alternative approach (self-contained vs. reference-file-based).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/dwarf-expert/skills/dwarf-expert/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/dwarf-expert/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/dwarf-expert/skills/dwarf-expert/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/dwarf-expert/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/dwarf-expert/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/dwarf-expert/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: dwarf-expert
+description: Analyzes DWARF debug information in compiled binaries. Use when inspecting .debug_* sections, DIE trees, or DW_TAG_/DW_AT_ entries with dwarfdump/llvm-dwarfdump or readelf, verifying debug info with llvm-dwarfdump --verify, answering DWARF standard questions, or writing code that parses DWARF (libdwarf, pyelftools, gimli).
+effort: medium
+allowed-tools: Read Write Edit Bash Grep Glob WebSearch WebFetch
+---
+# DWARF Expert
+
+Expertise for DWARF debug info: parsing and searching it, verifying its integrity, answering questions about the standard, and writing code that consumes it.
+
+## Scope
+- **In Scope**: DWARF v3, v4, and v5 analysis, parsing, verification, and code generation.
+- **Out of Scope**: Runtime debugging (use gdb/lldb), reverse engineering beyond DWARF sections (use Ghidra/IDA), compiler-specific DWARF generation bugs, and general ELF parsing without DWARF needs.
+
+# Authoritative Sources
+When precision matters, look standard details up instead of answering from memory:
+1. **dwarfstd.org** — the official specification. Web-search specific sections, e.g. &quot;DWARF5 DW_TAG_subprogram attributes site:dwarfstd.org&quot;.
+2. **LLVM** — `llvm/lib/DebugInfo/DWARF/` is a reliable reference implementation: `DWARFDie.cpp`, `DWARFUnit.cpp`, `DWARFDebugLine.cpp`, `DWARFVerifier.cpp`.
+3. **libdwarf** — the reference C implementation at github.com/davea42/libdwarf-code.
+
+# Parsing and Searching with dwarfdump
+Prefer `dwarfdump` over `readelf` for DWARF-specific work. Check `dwarfdump --version` first to distinguish libdwarf&#x27;s `dwarfdump` from LLVM&#x27;s `llvm-dwarfdump`. The options below are LLVM&#x27;s.
+
+On macOS, linked Mach-O executables do not carry DWARF: it stays in the `.o` files until `dsymutil` collects it into a `.dSYM` bundle. Point `dwarfdump` at the dSYM (or the object files), not the executable. `pyelftools` is ELF-only — for Mach-O scripted work, stay with the LLVM tools.
+
+- `--all`: dump every DWARF section; `--debug-info`, `--debug-line`, etc. dump one
+- `--show-children [--recurse-depth=&lt;n&gt;]`: include child DIEs
+- `--show-parents [--parent-recurse-depth=&lt;n&gt;]`: include parent DIEs
+- `--show-form`: print attribute form types
+- `--find=&lt;name&gt;`: exact-name lookup via accelerator tables
+- `--name=&lt;pattern&gt; [--ignore-case] [--regex]`: exhaustive DIE-name search
+- `--lookup=&lt;address&gt;`: find the DIE covering an address
+- `--verbose`: print low-level encoding detail
+
+## Searching DIEs
+Escalate through these strategies:
+1. **Name or address match**: `--find`, then `--name`; `--lookup` for addresses.
+2. **Attribute or type queries**: dump and filter. `grep -B` pulls in the header line carrying each DIE&#x27;s offset.
+3. **Multi-attribute or structural queries**: write a Python script using `pyelftools`.
+
+# Verifying DWARF Integrity
+- `llvm-dwarfdump --verify &lt;binary&gt;`: structural checks. `--error-display=&lt;quiet|summary|details|full&gt;` controls detail; `--verify-json=&lt;path&gt;` writes a machine-readable error summary.
+- `llvm-dwarfdump --statistics &lt;binary&gt;`: debug-info quality metrics as JSON.
+
+Verify after producing DWARF, when a debugger misbehaves, and when developing DWARF tooling.
+
+# readelf
+For general ELF structure, or when `dwarfdump` is unavailable:
+- `--debug-dump=&lt;section&gt;`: dump a DWARF section
+- `--dwarf-depth=&lt;n&gt;` / `--dwarf-start=&lt;n&gt;`: limit DIE depth / start offset
+
+# Writing Code That Parses DWARF
+Prefer an existing library over parsing by hand:
+
+| Library | Language | Notes |
+|---------|----------|-------|
+| `libdwarf` | C/C++ | Low-level; used to implement `dwarfdump` |
+| `pyelftools` | Python | Also parses ELF in general |
+| `gimli` | Rust | Pair with `object` to load container files |
+| `debug/dwarf` | Go | Standard library |
+| `LibObjectFile` | .NET | Also handles ELF/PE object files |
+
+Default to Python with `pyelftools` for one-off scripts.
+
+DWARF-specific pitfalls:
+- Attributes are optional.
+- Attribute indirection: resolve `DW_AT_abstract_origin` or `DW_AT_specification` chains.
+- Type chains: walk `DW_AT_type` links to reach the base type.
+
+# Decision Tree
+- Need to verify DWARF data integrity? Use `llvm-dwarfdump --verify`.
+- Need to answer questions about the DWARF standard? Search dwarfstd.org or reference LLVM/libdwarf source.
+- Need simple section dump or general ELF info? Use `readelf`.
+- Need to parse, search, and/or dump DWARF DIE nodes? Use `dwarfdump`.
+- Need to write, modify, or review code that interacts with DWARF data? Refer to the coding guidelines above.</pre>
+</body>
+</html>

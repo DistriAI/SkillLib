@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>molfeat</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">molecular-featurization</a> / molfeat</p><h1>molfeat</h1><p class="meta">combined</p><p>The two copies target different Molfeat generations and disagree on core API usage. The K-Dense copy is pinned to Molfeat 1.0.0, explicitly states that DGL/Graphormer extras and legacy adapters are removed, and shows the 1.x pattern where ignore_errors is a call argument and PretrainedHFTransformer is the concrete adapter. The OpenClaw copy describes the older 0.x surface, recommends molfeat[dgl]/[graphormer], and shows PretrainedMolTransformer as a model-name factory with ignore_errors in the constructor. Because each contains material steps the other lacks and they conflict on installation extras, error handling, and pretrained transformer usage, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/molfeat/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/molfeat/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/molfeat/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/molfeat/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Molfeat — Small-molecule featurization
+
+## When to use
+Use this skill to turn SMILES or RDKit molecules into fingerprints, descriptors, pharmacophores, or pretrained embeddings for QSAR/QSPR, chemical similarity, virtual screening, and molecular ML. Compare representations on the same molecular split and assay endpoint.
+
+## Installation
+Create an isolated environment. Pin the Molfeat version you intend to use and install only the extras you need with the same interpreter. Core fingerprints run offline; pretrained inference may download substantial weights, so check model licensing, disk space, and device requirements first.
+
+```bash
+uv venv --python 3.13 .venv-molfeat
+uv pip install --python .venv-molfeat/bin/python &quot;molfeat==1.0.0&quot;
+```
+
+On Windows use `.venv-molfeat\Scripts\python.exe` as the interpreter path. Let Molfeat&#x27;s platform markers resolve platform-specific constraints; do not copy pins from one platform to another.
+
+## Workflow
+1. Preserve source record IDs, labels, original structures, and a declared policy for salts, stereochemistry, tautomers, charge, and duplicate compounds. Standardization changes chemical identity; apply the same policy to training and prediction.
+2. Start with an explicit ECFP baseline. A calculator processes one molecule; `MoleculeTransformer` batches it. `datamol.Mol` is RDKit&#x27;s molecule type.
+3. Record rejected positions and align every associated array. Inspect descriptor NaN/Inf separately: successful parsing does not guarantee finite features.
+4. Fit any feature selection, imputation, scaling, and model inside the training fold. Prefer scaffold/group or temporal splits appropriate to the scientific question; random splits can leak close analogues or repeated measurements.
+5. Save the featurizer state, ordered feature names, package versions, molecular preprocessing policy, and input IDs. Revalidate old state after migrating versions.
+
+### Fingerprint baseline and invalid records
+
+```python
+import numpy as np
+from molfeat.calc import FPCalculator
+from molfeat.trans import MoleculeTransformer
+
+smiles = [&quot;CCO&quot;, &quot;invalid&quot;, &quot;CC(=O)O&quot;, &quot;c1ccccc1&quot;]
+record_ids = np.array([&quot;ethanol&quot;, &quot;rejected&quot;, &quot;acetate&quot;, &quot;benzene&quot;])
+y = np.array([0.1, 9.9, 0.2, 0.3])  # toy labels only
+calc = FPCalculator(&quot;ecfp&quot;, radius=2, fpSize=2048, includeChirality=True)
+transformer = MoleculeTransformer(calc, n_jobs=1, dtype=np.float32)
+X, valid_ids = transformer(smiles, ignore_errors=True)
+assert X.shape == (3, 2048)
+X_ids, y_valid = record_ids[valid_ids], y[valid_ids]
+assert valid_ids == [0, 2, 3]
+assert np.isfinite(X).all()
+```
+
+`ignore_errors` belongs on the call, not the constructor. With `True`, `__call__` returns filtered features and original input positions; with `False`, it raises on failed molecules. `transform(..., ignore_errors=True)` preserves positions using `None` for failures. Never filter each feature block independently and then concatenate.
+
+ECFP radius is a bond radius: `radius=2` means ECFP4; radius 3 means ECFP6. In 1.0.0 `FPCalculator(&quot;ecfp&quot;)` defaults to radius 2 and 2048 bits. `FPVecTransformer` has a different default length of 2000, so specify `length=2048` when using it.
+
+### Configuration round trip
+
+```python
+transformer.to_state_yaml_file(&quot;featurizer.yml&quot;)
+loaded = MoleculeTransformer.from_state_yaml_file(&quot;featurizer.yml&quot;)
+np.testing.assert_array_equal(loaded([&quot;CCO&quot;]), transformer([&quot;CCO&quot;]))
+```
+
+Load only trusted configuration/artifacts. State can identify Python classes and custom serialized callables; YAML/JSON does not make arbitrary third-party state safe. State saves configuration, not assay labels, preprocessing decisions, or a trained QSAR model.
+
+### Pretrained embeddings
+
+Use the concrete adapter for the model family you need. Embedding width depends on checkpoint, pooling, and selected layers; do not assume a fixed width. Inspect token lengths: truncation can change meaning.
+
+```python
+from molfeat.trans.pretrained import PretrainedHFTransformer
+
+embedder = PretrainedHFTransformer(
+    kind=&quot;ChemBERTa-77M-MLM&quot;, pooling=&quot;mean&quot;, concat_layers=-1,
+    device=&quot;cpu&quot;, max_length=128, preload=False,
+)
+# First inference downloads/loads the model.
+# embeddings = embedder([&quot;CCO&quot;, &quot;c1ccccc1&quot;])
+```
+
+`PretrainedMolTransformer` is a base class, not a model-name factory. Use the concrete adapter.
+
+## Choosing the right featurizer
+
+### For traditional machine learning (RF, SVM, XGBoost)
+Start with fingerprints:
+
+```python
+# ECFP - Most popular, general-purpose
+FPCalculator(&quot;ecfp&quot;, radius=2, fpSize=2048)
+
+# MACCS - Fast, good for scaffold hopping
+FPCalculator(&quot;maccs&quot;)
+```
+
+For interpretable models:
+
+```python
+# RDKit 2D descriptors (200+ named properties)
+from molfeat.calc import RDKitDescriptors2D
+RDKitDescriptors2D()
+
+# Mordred (1800+ comprehensive descriptors)
+from molfeat.calc import MordredDescriptors
+MordredDescriptors()
+```
+
+Combine multiple featurizers:
+
+```python
+from molfeat.trans import FeatConcat
+
+concat = FeatConcat([
+    FPCalculator(&quot;maccs&quot;),      # 167 dimensions
+    FPCalculator(&quot;ecfp&quot;)         # 2048 dimensions
+])  # Result: 2215-dimensional combined features
+```
+
+### For deep learning
+Use transformer-based embeddings via the concrete pretrained adapter. Graph neural network and Graphormer adapters are available in older Molfeat releases; verify they exist in the version you installed before using them.
+
+### For similarity searching
+Use ECFP for general-purpose similarity, MACCS for fast scaffold-based similarity, or MAP4 for efficient large-database screening where available in your Molfeat version.
+
+## Conflicts
+- K-Dense-AI/scientific-agent-skills pins molfeat==1.0.0 and states DGL/Graphormer extras no longer exist; FreedomIntelligence/OpenClaw-Medical-Skills recommends molfeat[dgl] and molfeat[graphormer].
+- K-Dense-AI/scientific-agent-skills places ignore_errors on the transformer call and returns valid positions; FreedomIntelligence/OpenClaw-Medical-Skills places ignore_errors in the MoleculeTransformer constructor and says it returns None for failed molecules.
+- K-Dense-AI/scientific-agent-skills uses PretrainedHFTransformer as the concrete adapter and warns PretrainedMolTransformer is a base class; FreedomIntelligence/OpenClaw-Medical-Skills uses PretrainedMolTransformer as a model-name factory for ChemBERTa, ChemGPT, GIN, and Graphormer.
+- K-Dense-AI/scientific-agent-skills specifies ECFP radius=2 as the 1.0.0 default and notes FPVecTransformer defaults to length 2000; FreedomIntelligence/OpenClaw-Medical-Skills uses radius=3 examples without those 1.x caveats.</pre>
+</body>
+</html>

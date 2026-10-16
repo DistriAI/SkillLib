@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>error-debugging-multi-agent-review</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">multi-agent-code-review</a> / error-debugging-multi-agent-review</p><h1>error-debugging-multi-agent-review</h1><p class="meta">combined</p><p>The two copies describe the same task (multi-perspective code review) but disagree on the core procedure. The first copy is a high-level orchestration framework that mandates dynamic agent routing, parallel/sequential execution, weighted conflict resolution, and quality-score validation, and it includes Python pseudocode for an orchestration engine. The second copy is a bounded, safety-focused procedure that explicitly rejects those mechanisms (no routing code, no quality scores, no weighted votes), requires user authorization for delegation, and mandates central reproduction of findings. Because the first copy&#x27;s core steps (routing, scoring, weighted voting) are explicitly forbidden by the second, crowning one would hide a real, conflicting alternative. The combined instruction must therefore present the two as distinct approaches and flag the conflicts.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/error-debugging-multi-agent-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/error-debugging-multi-agent-review/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/error-debugging-multi-agent-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/error-debugging-multi-agent-review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/error-debugging-multi-agent-review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/error-debugging-multi-agent-review/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Multi-Agent Code Review
+
+## When to Use
+Use this skill when a codebase or diff needs review across multiple disciplines such as correctness, security, architecture, and performance.
+
+## Approach A: Orchestration Framework (rmyndharis/antigravity-skills)
+1. **Clarify inputs**: Identify the target code, file paths, or repository.
+2. **Route agents**: Analyze code characteristics and select relevant agent types (security, architecture, performance, compliance, best practices).
+3. **Execute reviews**: Run independent agents in parallel and dependent agents sequentially.
+4. **Aggregate results**: Merge insights, resolve conflicts using weighted scoring, and generate a prioritized report.
+5. **Validate quality**: Compute a quality score and verify cross-agent consistency.
+
+## Approach B: Bounded Review Procedure (sickn33/agentic-awesome-skills)
+1. **Pin scope**: Define repository, base/head, changed paths, intended behavior, and available tests.
+2. **Authorize delegation**: Use independent agents only if the user explicitly authorizes delegation and the host supports it. Otherwise, conduct perspectives sequentially.
+3. **Read the diff**: Examine the complete diff, affected call paths, and tests.
+4. **Assign bounded questions**: Give each reviewer a specific question, owned paths, time limit, and expected evidence format.
+5. **Record findings**: Note exact locations, triggers, consequences, and reproduction steps. Keep hypotheses separate from demonstrated failures.
+6. **Reproduce centrally**: Reproduce important findings in a single environment. Deduplicate by root cause.
+7. **Resolve disagreements**: Use code or tests as the arbiter. Do not use weighted votes or agent consensus as evidence.
+8. **Report**: Return blockers first, then material improvements and untested areas. Preserve original failing results.
+
+## Conflicts
+- **Agent routing**: Approach A mandates dynamic routing; Approach B explicitly excludes routing code and warns against unnecessary agent spawning.
+- **Conflict resolution**: Approach A uses weighted scoring; Approach B forbids weighted votes and requires code/test-based resolution.
+- **Quality scoring**: Approach A includes a quality-score calculator; Approach B forbids inventing confidence scores.
+- **Parallel execution**: Approach A assumes parallel execution; Approach B makes it conditional on user authorization.
+
+## Limitations
+- Neither approach can prove whole-repository safety from a diff alone.
+- Parallel review adds cost and can duplicate blind spots.
+- Read-only review is the default; fixes and deployment require separate user authority.</pre>
+</body>
+</html>

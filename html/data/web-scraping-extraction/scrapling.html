@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scrapling</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">web-scraping-extraction</a> / scrapling</p><h1>scrapling</h1><p class="meta">combined</p><p>The three copies overlap on installing Scrapling and using the CLI to extract content, but each contains material steps the others lack. The Vibe-Skills copy is CLI-first and documents the optional MCP server and a Windows PowerShell wrapper. The daymade copy is a diagnostic/troubleshooting workflow that insists on verifying the install, validating output files, handling TLS trust-store failures, and using a specific WeChat selector. The LeoYeAI copy is Python-library-first and adds Spider crawling, adaptive parsing, stealthy-fetch, and API reverse-engineering patterns. Crowning one would hide real alternatives (CLI vs Python API, MCP vs no MCP, diagnostic vs library-first).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scrapling/SKILL.md</code></td></tr><tr><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>scrapling-skill/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/scrapling/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scrapling/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>scrapling-skill/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/scrapling/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Scrapling Skill
+
+## Overview
+Scrapling is a Python web scraping toolkit with a CLI, optional MCP server, and Python library API. Use it to extract HTML, Markdown, or text from web pages, crawl multiple pages, and bypass basic anti-bot protections.
+
+## When to Use
+- Extract specific parts of a web page using CSS selectors or XPath.
+- Run repeatable scraping jobs over a list of URLs.
+- Crawl multiple pages with a Spider.
+- Reduce token usage by extracting only the relevant DOM region before passing to an LLM.
+- Provide a local MCP endpoint for structured scraping tools.
+
+Do not use for:
+- X/Twitter (use a dedicated tweet-fetcher skill).
+- Login-protected sites unless credentials are provided.
+- Paywalled content or sites that prohibit scraping in their TOS.
+
+## Prerequisite Check
+1. Verify Python version (&gt;= 3.10):
+   ```bash
+   python --version
+   ```
+2. Verify Scrapling CLI availability:
+   ```bash
+   scrapling --help
+   ```
+3. If a diagnostic script is available, run it:
+   ```bash
+   python3 scripts/diagnose_scrapling.py
+   ```
+
+## Installation
+Choose the extras you need:
+
+- CLI + fetchers (recommended for most CLI workflows):
+  ```bash
+  pip install &quot;scrapling[fetchers]&quot;
+  ```
+- CLI shell tools:
+  ```bash
+  pip install &quot;scrapling[shell]&quot;
+  ```
+- MCP server support:
+  ```bash
+  pip install &quot;scrapling[ai]&quot;
+  ```
+- Everything:
+  ```bash
+  pip install &quot;scrapling[all]&quot;
+  ```
+
+If using browser-backed fetchers, install browser binaries:
+```bash
+scrapling install
+# or
+python -m playwright install
+```
+
+## CLI Extraction
+Always quote URLs in shell commands, especially when they contain `?`, `&amp;`, or other special characters.
+
+### Static Fetch (default)
+```bash
+scrapling extract get &#x27;https://example.com&#x27; page.html
+scrapling extract get &#x27;https://example.com&#x27; article.md --css-selector &#x27;main&#x27;
+```
+
+### Browser-Backed Fetch (for JS-rendered pages)
+```bash
+scrapling extract fetch &#x27;https://example.com&#x27; page.html --timeout 20000
+```
+
+### Stealthy Fetch (for anti-bot or challenge pages)
+```bash
+scrapling extract stealthy-fetch &#x27;https://example.com&#x27; page.html
+```
+
+### WeChat Public Articles
+Use `#js_content` as the default selector for article body on `mp.weixin.qq.com`:
+```bash
+scrapling extract get &#x27;https://mp.weixin.qq.com/s/ARTICLE_ID?scene=1&#x27; article.md --css-selector &#x27;#js_content&#x27;
+```
+
+## Python Library API
+
+### Basic Fetch
+```python
+from scrapling.fetchers import Fetcher
+page = Fetcher.get(&#x27;https://example.com&#x27;)
+title = page.css(&#x27;h1::text&#x27;).get()
+paragraphs = page.css(&#x27;p::text&#x27;).getall()
+```
+
+### Stealthy Fetch
+```python
+from scrapling.fetchers import StealthyFetcher
+StealthyFetcher.adaptive = True
+page = StealthyFetcher.fetch(&#x27;https://example.com&#x27;, headless=True, solve_cloudflare=True)
+```
+
+### Dynamic Fetch
+```python
+from scrapling.fetchers import DynamicFetcher
+page = DynamicFetcher.fetch(&#x27;https://example.com&#x27;, headless=True, network_idle=True)
+```
+
+### Adaptive Parsing
+```python
+from scrapling.fetchers import Fetcher
+page = Fetcher.get(&#x27;https://example.com&#x27;)
+items = page.css(&#x27;.product&#x27;, auto_save=True)
+# Later, if the site changes:
+items = page.css(&#x27;.product&#x27;, adaptive=True)
+```
+
+### Spider (Multiple Pages)
+```python
+from scrapling.spiders import Spider, Response
+
+class MySpider(Spider):
+    name = &quot;demo&quot;
+    start_urls = [&quot;https://example.com&quot;]
+    concurrent_requests = 3
+
+    async def parse(self, response: Response):
+        for item in response.css(&#x27;.item&#x27;):
+            yield {&quot;item&quot;: item.css(&#x27;h2::text&#x27;).get()}
+        next_page = response.css(&#x27;.next a&#x27;)
+        if next_page:
+            yield response.follow(next_page[0].attrib[&#x27;href&#x27;])
+
+MySpider().start()
+```
+
+## MCP Server (Optional)
+Start the MCP server with stdio transport:
+```bash
+scrapling mcp
+```
+Or with HTTP transport:
+```bash
+scrapling mcp --http --host 127.0.0.1 --port 8765
+```
+
+Example MCP server config:
+```json
+{
+  &quot;servers&quot;: {
+    &quot;scrapling&quot;: {
+      &quot;mode&quot;: &quot;stdio&quot;,
+      &quot;command&quot;: &quot;scrapling&quot;,
+      &quot;args&quot;: [&quot;mcp&quot;],
+      &quot;required&quot;: false
+    }
+  }
+}
+```
+
+## Validation
+After every extraction, verify the output file:
+```bash
+wc -c article.md
+sed -n &#x27;1,40p&#x27; article.md
+```
+For HTML output, check that the expected container or selector target is present:
+```bash
+rg -n &#x27;&lt;title&gt;|js_content|rich_media_title|main&#x27; page.html
+```
+If the file is tiny, empty, or missing the expected container, switch fetchers or selectors.
+
+## Troubleshooting
+- If `extract get` fails with `curl: (60) SSL certificate problem`, treat it as a local trust-store issue. Retry with `--no-verify` only after confirming the error pattern.
+- If browser-backed fetch fails, re-run the diagnostic script, confirm Chromium and Chrome Headless Shell are present, retry with a longer timeout, and escalate to `stealthy-fetch` only if justified.
+- Do not claim success from exit code alone. Inspect the saved file.
+
+## Guardrails
+- Prefer selector-based extraction to minimize data volume.
+- Treat scraping as an external dependency: handle timeouts, retries, and failures explicitly.
+- Do not default to browser-backed fetching unless the static result is missing the real content.
+- Do not hardcode user-specific absolute paths into outputs or docs.</pre>
+</body>
+</html>

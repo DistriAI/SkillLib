@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>content-creator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">content-creation-routing</a> / content-creator</p><h1>content-creator</h1><p class="meta">combined</p><p>The two copies describe fundamentally different procedures for the same skill name. The first copy is a full execution skill that instructs the agent to draft content, run local Python scripts for brand voice and SEO diagnostics, and follow specific templates. The second copy is a deprecated redirect skill that explicitly forbids handling the request directly and instead routes the user to other specialist skills (content-production, content-strategy, social-content). Because one copy performs the work and the other refuses to perform the work in favor of routing, crowning one as authentic would hide a real alternative implementation (the redirect pattern).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/content-creator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/content-creator/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/content-creator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/content-creator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/content-creator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-localization-international-growth/skills/content-creator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-marketing-seo-growth/skills/content-creator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-design-studio/skills/content-creator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/content-creator/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: content-creator
+description: &quot;Handles content creation requests either by executing local workflows or by routing to specialist skills, depending on the deployment context.&quot;
+category: marketing
+---
+
+# Content Creator
+
+This skill handles content creation requests. Depending on the system configuration, it either executes the work directly or routes to specialist skills.
+
+## Mode 1: Direct Execution
+Use this mode when local scripts and reference files are available and the agent is expected to perform the work.
+
+### When to Use
+Use this skill when writing blog posts, creating social media content, establishing brand voice, optimizing content for SEO, or planning content calendars.
+
+### Inputs and Boundaries
+Obtain the audience, purpose, approved claims and sources, brand examples, channel, and desired next action. Reuse supplied constraints; do not invent audience research. Python 3 is sufficient for the optional local scripts. Run the examples from this skill directory with a permitted UTF-8 input below the working directory (maximum 1 MiB); paths elsewhere are rejected. The scripts read that file and print diagnostics, without calling an analytics service or editing it. Review any private text before sharing the output. Drafting does not authorize scheduling, sending or publication.
+
+### Quick Start
+
+#### For Brand Voice Development
+1. Run `scripts/brand_voice_analyzer.py` on existing content to record rough lexical features.
+2. Review `references/brand_guidelines.md` to select voice attributes.
+3. Apply chosen voice consistently across all content.
+
+#### For Blog Content Creation
+1. Choose template from `references/content_frameworks.md`.
+2. Research keywords for topic.
+3. Write content following template structure.
+4. Run `scripts/seo_optimizer.py [file] [primary-keyword]` to optimize.
+5. Review suggestions against the audience and actual page before publishing.
+
+#### For Social Media Content
+1. Review platform best practices in `references/social_media_optimization.md`.
+2. Use appropriate template from `references/content_frameworks.md`.
+3. Optimize based on platform-specific guidelines.
+4. Schedule using `assets/content_calendar_template.md`.
+
+### Core Workflows
+
+#### Establishing Brand Voice
+1. **Analyze Existing Content** (if available)
+   ```bash
+   python scripts/brand_voice_analyzer.py existing_content.txt
+   ```
+2. **Define Voice Attributes**
+   - Review brand personality archetypes in `references/brand_guidelines.md`.
+   - Select primary and secondary archetypes.
+   - Choose 3-5 tone attributes.
+   - Document in brand guidelines.
+3. **Create Voice Sample**
+   - Write 3 sample pieces in chosen voice.
+   - Compare samples manually with approved examples; use the analyzer only for lexical clues.
+   - Refine based on results.
+
+#### Creating SEO-Optimized Blog Posts
+1. **Keyword Research**
+   - Identify the reader question and relevant search intent from actual research.
+   - Record related questions that the piece needs to answer.
+   - Do not invent search volumes or treat word frequency as semantic research.
+2. **Content Structure**
+   - Use blog template from `references/content_frameworks.md`.
+   - Use a descriptive title and headings; use the reader&#x27;s terminology naturally.
+   - Use enough detail to answer the question; there is no universal SEO word count.
+3. **Optimization Check**
+   ```bash
+   python scripts/seo_optimizer.py blog_post.md &quot;primary keyword&quot; &quot;secondary,keywords,list&quot;
+   ```
+4. **Apply SEO Recommendations**
+   - Remove repetition that hurts clarity; do not target a keyword-density percentage.
+   - Ensure proper heading structure.
+   - Add internal and external links.
+   - Optimize meta description.
+
+#### Social Media Content Creation
+1. **Platform Selection**
+   - Identify primary platforms based on audience.
+   - Review platform-specific guidelines in `references/social_media_optimization.md`.
+2. **Content Adaptation**
+   - Start with blog post or core message.
+   - Use repurposing matrix from `references/content_frameworks.md`.
+   - Adapt for each platform following templates.
+3. **Optimization Checklist**
+   - Platform-appropriate length.
+   - Audience-informed posting time to test.
+   - Correct image dimensions.
+   - Platform-specific hashtags.
+   - Engagement elements (polls, questions).
+
+#### Content Calendar Planning
+1. **Monthly Planning**
+   - Copy `assets/content_calendar_template.md`.
+   - Set monthly goals and KPIs.
+   - Identify key campaigns/themes.
+2. **Weekly Distribution**
+   - Choose a mix based on goals, production capacity and observed audience needs.
+   - Balance platforms throughout week.
+   - Label untested timing assumptions and compare results over a stated period.
+3. **Batch Creation**
+   - Create all weekly content in one session.
+   - Maintain consistent voice across pieces.
+   - Prepare all visual assets together.
+
+### Key Scripts
+
+#### brand_voice_analyzer.py
+Counts a small English vocabulary and estimates sentence length/readability. It cannot establish authentic brand voice or validate factual claims.
+
+**Usage**: `python scripts/brand_voice_analyzer.py &lt;file&gt; [json|text]`
+
+**Returns**:
+- Voice profile (formality, tone, perspective)
+- Readability score
+- Sentence structure analysis
+- Improvement recommendations
+
+#### seo_optimizer.py
+Analyzes content for SEO optimization and provides actionable recommendations.
+
+**Usage**: `python scripts/seo_optimizer.py &lt;file&gt; [primary_keyword] [secondary_keywords]`
+
+**Returns**:
+- Descriptive text diagnostics (no ranking or quality score)
+- Keyword density analysis
+- Structure assessment
+- Meta tag suggestions
+- Specific optimization recommendations
+
+## Mode 2: Redirect
+Use this mode when the system is configured to route requests to specialist skills rather than executing them locally.
+
+&gt; **This skill has been split into two specialist skills.** Use the one that matches your intent:
+
+| You want to... | Use this instead |
+|----------------|-----------------|
+| **Write** a blog post, article, or guide | [content-production](../content-production/) |
+| **Plan** what content to create, topic clusters, calendar | [content-strategy](../content-strategy/) |
+| **Analyze brand voice** | [content-production](../content-production/) (includes `brand_voice_analyzer.py`) |
+| **Optimize SEO** for existing content | [content-production](../content-production/) (includes `seo_optimizer.py`) |
+| **Create social media content** | [social-content](../social-content/) |
+
+### Proactive Triggers
+- **User asks &quot;content creator&quot;** → Route to content-production (most likely intent is writing).
+- **User asks &quot;content plan&quot; or &quot;what should I write&quot;** → Route to content-strategy.
+
+### Output Artifacts
+
+| When you ask for... | Routed to... |
+|---------------------|-------------|
+| &quot;Write a blog post&quot; | content-production |
+| &quot;Content calendar&quot; | content-strategy |
+| &quot;Brand voice analysis&quot; | content-production (`brand_voice_analyzer.py`) |
+| &quot;SEO optimization&quot; | content-production (`seo_optimizer.py`) |
+
+### Communication
+This is a redirect skill. Route the user to the correct specialist — don&#x27;t attempt to handle the request here.
+
+### Related Skills
+- **content-production**: Full content execution pipeline (successor).
+- **content-strategy**: Content planning and topic selection (successor).
+- **content-humanizer**: Post-processing AI content to sound authentic.
+- **marketing-context**: Foundation context that both successors read.</pre>
+</body>
+</html>

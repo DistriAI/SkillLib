@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>agentic-actions-auditor</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">github-actions-ai-agent-audit</a> / agentic-actions-auditor</p><h1>agentic-actions-auditor</h1><p class="meta">combined</p><p>The two copies are nearly identical, but the sickn33 copy adds a &#x27;Supporting material availability&#x27; section that explicitly forbids claiming to have read absent reference files and requires reporting unsupported action-version details as unverified. The trailofbits copy lacks this constraint and instead includes a more detailed error-handling list. Crowning one copy would hide the other&#x27;s real constraints and error-handling details.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/agentic-actions-auditor/skills/agentic-actions-auditor/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/agentic-actions-auditor/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/agentic-actions-auditor/skills/agentic-actions-auditor/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/agentic-actions-auditor/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/agentic-actions-auditor/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/agentic-actions-auditor/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: agentic-actions-auditor
+description: &quot;Audits GitHub Actions workflows for security vulnerabilities in AI agent integrations including Claude Code Action, Gemini CLI, OpenAI Codex, and GitHub AI Inference. Detects attack vectors where attacker-controlled input reaches AI agents running in CI/CD pipelines, including env var intermediary patterns, direct expression injection, dangerous sandbox configurations, and wildcard user allowlists. Use when reviewing workflow files that invoke AI coding agents, auditing CI/CD pipeline security for prompt injection risks, or evaluating agentic action configurations.&quot;
+allowed-tools: Read Grep Glob Bash
+---
+
+# Agentic Actions Auditor
+
+Static security analysis guidance for GitHub Actions workflows that invoke AI coding agents. This skill teaches you how to discover workflow files locally or from remote GitHub repositories, identify AI action steps, follow cross-file references to composite actions and reusable workflows that may contain hidden AI agents, capture security-relevant configuration, and detect attack vectors where attacker-controlled input reaches an AI agent running in a CI/CD pipeline.
+
+## Supporting Material Availability
+
+This skill bundles the inline methodology only. If the original guide named foundations files, action profiles, cross-file resolution, or vector reference files, and those files are absent, do not claim they were read. Apply the inline checks below and report unsupported action-version details as unverified. Recover external materials only from a verified source with a confirmed license.
+
+## When to Use
+
+- Auditing a repository&#x27;s GitHub Actions workflows for AI agent security
+- Reviewing CI/CD configurations that invoke Claude Code Action, Gemini CLI, or OpenAI Codex
+- Checking whether attacker-controlled input can reach AI agent prompts
+- Evaluating agentic action configurations (sandbox settings, tool permissions, user allowlists)
+- Assessing trigger events that expose workflows to external input (`pull_request_target`, `issue_comment`, etc.)
+- Investigating data flow from GitHub event context through `env:` blocks to AI prompt fields
+
+## When NOT to Use
+
+- Analyzing workflows that do NOT use any AI agent actions (use general Actions security tools instead)
+- Reviewing standalone composite actions or reusable workflows outside of a caller workflow context (use this skill when analyzing a workflow that references them via `uses:`)
+- Performing runtime prompt injection testing (this is static analysis guidance, not exploitation)
+- Auditing non-GitHub CI/CD systems (Jenkins, GitLab CI, CircleCI)
+- Auto-fixing or modifying workflow files (this skill reports findings, does not modify files)
+
+## Rationalizations to Reject
+
+When auditing agentic actions, reject these common rationalizations. Each represents a reasoning shortcut that leads to missed findings.
+
+**1. &quot;It only runs on PRs from maintainers&quot;**
+Wrong because it ignores `pull_request_target`, `issue_comment`, and other trigger events that expose actions to external input. Attackers do not need write access to trigger these workflows. A `pull_request_target` event runs in the context of the base branch, not the PR branch, meaning any external contributor can trigger it by opening a PR.
+
+**2. &quot;We use allowed_tools to restrict what it can do&quot;**
+Wrong because tool restrictions can still be weaponized. Even restricted tools like `echo` can be abused for data exfiltration via subshell expansion (`echo $(env)`). A tool allowlist reduces attack surface but does not eliminate it. Limited tools != safe tools.
+
+**3. &quot;There&#x27;s no ${{ }} in the prompt, so it&#x27;s safe&quot;**
+Wrong because this is the classic env var intermediary miss. Data flows through `env:` blocks to the prompt field with zero visible expressions in the prompt itself. The YAML looks clean but the AI agent still receives attacker-controlled input. This is the most commonly missed vector because reviewers only look for direct expression injection.
+
+**4. &quot;The sandbox prevents any real damage&quot;**
+Wrong because sandbox misconfigurations (`danger-full-access`, `Bash(*)`, `--yolo`) disable protections entirely. Even properly configured sandboxes leak secrets if the AI agent can read environment variables or mounted files. The sandbox boundary is only as strong as its configuration.
+
+## Audit Methodology
+
+Follow these steps in order. Each step builds on the previous one.
+
+### Step 0: Determine Analysis Mode
+
+If the user provides a GitHub repository URL or `owner/repo` identifier, use remote analysis mode. Otherwise, use local analysis mode (proceed to Step 1).
+
+#### URL Parsing
+
+Extract `owner/repo` and optional `ref` from the user&#x27;s input:
+
+| Input Format | Extract |
+|-------------|---------|
+| `owner/repo` | owner, repo; ref = default branch |
+| `owner/repo@ref` | owner, repo, ref (branch, tag, or SHA) |
+| `https://github.com/owner/repo` | owner, repo; ref = default branch |
+| `https://github.com/owner/repo/tree/main/...` | owner, repo; strip extra path segments |
+| `github.com/owner/repo/pull/123` | Suggest: &quot;Did you mean to analyze owner/repo?&quot; |
+
+Strip trailing slashes, `.git` suffix, and `www.` prefix. Handle both `http://` and `https://`.
+
+#### Fetch Workflow Files
+
+Use a two-step approach with `gh api`:
+
+1. **List workflow directory:**
+   ```
+   gh api repos/{owner}/{repo}/contents/.github/workflows --paginate --jq &#x27;.[].name&#x27;
+   ```
+   Resolve the requested/default ref to a full SHA and use that SHA on every fetch; URL-encode path/ref components and pass endpoints as quoted structured arguments.
+
+2. **Filter for YAML files:** Keep only filenames ending in `.yml` or `.yaml`.
+
+3. **Fetch each file&#x27;s content:**
+   ```
+   gh api repos/{owner}/{repo}/contents/.github/workflows/{filename} --jq &#x27;.content | @base64d&#x27;
+   ```
+   If a ref is specified, append `?ref={ref}` to this URL too. Use the same resolved SHA on EVERY call, not just the directory listing.
+
+4. Report: &quot;Found N workflow files in owner/repo: file1.yml, file2.yml, ...&quot;
+5. Proceed to Step 2 with the fetched YAML content.
+
+#### Error Handling
+
+Do NOT pre-check `gh auth status` before API calls. Attempt the API call and handle failures:
+
+- **401/auth error:** Report: &quot;GitHub authentication required. Run `gh auth login` to authenticate.&quot;
+- **404 error:** Report: &quot;Repository not found or private. Check the name and your token permissions.&quot;
+- **No `.github/workflows/` directory or no YAML files:** Use the same clean report format as local analysis: &quot;Analyzed 0 workflows, 0 AI action steps found.&quot;
+
+### Step 1: Local Analysis
+
+[Content from original skill, not fully provided in either copy. Follow the original skill&#x27;s Step 1 instructions for local file discovery and analysis.]
+
+### Step 2: Identify AI Action Steps
+
+[Content from original skill, not fully provided in either copy. Follow the original skill&#x27;s Step 2 instructions for identifying AI action steps.]
+
+### Step 3: Follow Cross-File References
+
+[Content from original skill, not fully provided in either copy. Follow the original skill&#x27;s Step 3 instructions for following cross-file references.]
+
+### Step 4: Capture Security-Relevant Configuration
+
+[Content from original skill, not fully provided in either copy. Follow the original skill&#x27;s Step 4 instructions for capturing security-relevant configuration.]
+
+### Step 5: Detect Attack Vectors
+
+[Content from original skill, not fully provided in either copy. Follow the original skill&#x27;s Step 5 instructions for detecting attack vectors.]
+
+### Step 6: Report Findings
+
+[Content from original skill, not fully provided in either copy. Follow the original skill&#x27;s Step 6 instructions for reporting findings.]
+
+## Conflicts
+
+- **sickn33/agentic-awesome-skills** includes a &quot;Supporting material availability&quot; section that the **trailofbits/skills** copy does not. The sickn33 copy explicitly states that referenced files are absent and instructs the auditor not to claim they were read and to report unsupported details as unverified. The trailofbits copy lacks this constraint.
+- **trailofbits/skills** provides a more complete error-handling list with specific report strings for 401, 404, and no-workflows cases. The **sickn33/agentic-awesome-skills** copy is truncated in the provided text and does not show the full error-handling list.</pre>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nextjs-app-router-patterns</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">nextjs-app-router-architecture</a> / nextjs-app-router-patterns</p><h1>nextjs-app-router-patterns</h1><p class="meta">combined</p><p>The first two copies are thin wrappers that point to a missing or external implementation playbook, while the third copy contains the actual patterns, file conventions, and code examples. Because the substantive content exists only in the third copy and the others add only generic guardrails, crowning one would hide the real alternative of using the detailed patterns versus the generic wrapper.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/nextjs-app-router-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/nextjs-app-router-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/nextjs-app-router-patterns/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/nextjs-app-router-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/nextjs-app-router-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/nextjs-app-router-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/nextjs-app-router-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-web-app/skills/nextjs-app-router-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/nextjs-app-router-patterns/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: nextjs-app-router-patterns
+description: Master Next.js 14+ App Router with Server Components, streaming, parallel routes, and advanced data fetching. Use when building Next.js applications, implementing SSR/SSG, or optimizing React Server Components.
+---
+
+# Next.js App Router Patterns
+
+Comprehensive patterns for Next.js 14+ App Router architecture, Server Components, and modern full-stack React development.
+
+## Use this skill when
+
+- Building new Next.js applications with App Router
+- Migrating from Pages Router to App Router
+- Implementing Server Components and streaming
+- Setting up parallel and intercepting routes
+- Optimizing data fetching and caching
+- Building full-stack features with Server Actions
+
+## Do not use this skill when
+
+- The task is unrelated to Next.js App Router patterns
+- You need a different domain or tool outside this scope
+
+## Instructions
+
+- Clarify goals, constraints, and required inputs.
+- Apply the patterns below and validate outcomes.
+- Provide actionable steps and verification.
+- If detailed examples are required, use the patterns in this skill.
+
+## Core Concepts
+
+### 1. Rendering Modes
+
+| Mode                  | Where        | When to Use                               |
+| --------------------- | ------------ | ----------------------------------------- |
+| **Server Components** | Server only  | Data fetching, heavy computation, secrets |
+| **Client Components** | Browser      | Interactivity, hooks, browser APIs        |
+| **Static**            | Build time   | Content that rarely changes               |
+| **Dynamic**           | Request time | Personalized or real-time data            |
+| **Streaming**         | Progressive  | Large pages, slow data sources            |
+
+### 2. File Conventions
+
+```
+app/
+├── layout.tsx       # Shared UI wrapper
+├── page.tsx         # Route UI
+├── loading.tsx      # Loading UI (Suspense)
+├── error.tsx        # Error boundary
+├── not-found.tsx    # 404 UI
+├── route.ts         # API endpoint
+├── template.tsx     # Re-mounted layout
+├── default.tsx      # Parallel route fallback
+└── opengraph-image.tsx  # OG image generation
+```
+
+## Quick Start
+
+```typescript
+// app/layout.tsx
+import { Inter } from &#x27;next/font/google&#x27;
+import { Providers } from &#x27;./providers&#x27;
+
+const inter = Inter({ subsets: [&#x27;latin&#x27;] })
+
+export const metadata = {
+  title: { default: &#x27;My App&#x27;, template: &#x27;%s | My App&#x27; },
+  description: &#x27;Built with Next.js App Router&#x27;,
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    &lt;html lang=&quot;en&quot; suppressHydrationWarning&gt;
+      &lt;body className={inter.className}&gt;
+        &lt;Providers&gt;{children}&lt;/Providers&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}
+
+// app/page.tsx - Server Component by default
+async function getProducts() {
+  const res = await fetch(&#x27;https://api.example.com/products&#x27;, {
+    next: { revalidate: 3600 }, // ISR: revalidate every hour
+  })
+  return res.json()
+}
+
+export default async function HomePage() {
+  const products = await getProducts()
+
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Products&lt;/h1&gt;
+      &lt;ProductGrid products={products} /&gt;
+    &lt;/main&gt;
+  )
+}
+```
+
+## Patterns
+
+### Pattern 1: Server Components with Data Fetching
+
+```typescript
+// app/products/page.tsx
+import { Suspense } from &#x27;react&#x27;
+import { ProductList, ProductListSkeleton } from &#x27;@/components/products&#x27;
+import { FilterSidebar } from &#x27;@/components/filters&#x27;
+
+interface SearchParams {
+  category?: string
+  sort?: &#x27;price&#x27; | &#x27;name&#x27; | &#x27;date&#x27;
+  page?: string
+}
+
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise&lt;SearchParams&gt;
+}) {
+  const params = await searchParams
+
+  return (
+    &lt;div className=&quot;flex gap-8&quot;&gt;
+      &lt;FilterSidebar /&gt;
+      &lt;Suspense
+        key={JSON.stringify(params)}
+        fallback={&lt;ProductListSkeleton /&gt;}
+      &gt;
+        &lt;ProductList
+          category={params.category}
+          sort={params.sort}
+          page={Number(params.page) || 1}
+        /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}
+
+// components/products/ProductList.tsx - Server Component
+async function getProducts(filters: ProductFilters) {
+  const res = await fetch(
+    `${process.env.API_URL}/products?${new URLSearchParams(filters)}`,
+    { next: { tags: [&#x27;products&#x27;] } }
+  )
+  if (!res.ok) throw new Error(&#x27;Failed to fetch products&#x27;)
+  return res.json()
+}
+
+export async function ProductList({ category, sort, page }: ProductFilters) {
+  const { products, totalPages } = await getProducts({ category, sort, page })
+
+  return (
+    &lt;div&gt;
+      &lt;div className=&quot;grid grid-cols-3 gap-4&quot;&gt;
+        {products.map((product) =&gt; (
+          &lt;ProductCard key={product.id} product={product} /&gt;
+        ))}
+      &lt;/div&gt;
+      &lt;Pagination currentPage={page} totalPages={totalPages} /&gt;
+    &lt;/div&gt;
+  )
+}
+```
+
+### Pattern 2: Client Components with &#x27;use client&#x27;
+
+```typescript
+// components/products/AddToCartButton.tsx
+&#x27;use client&#x27;
+
+import { useState, useTransition } from &#x27;react&#x27;
+import { addToCart } from &#x27;@/app/actions/cart&#x27;
+
+export function AddToCartButton({ productId }: { productId: string }) {
+  const [isPending, startTransition] = useTransition()
+  const [error, setError] = useState&lt;string | null&gt;(null)
+
+  const handleClick = () =&gt; {
+    setError(null)
+    startTransition(async () =&gt; {
+      const result = await addToCart(productId)
+      if (result.error) {
+        setError(result.error)
+      }
+    })
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;button
+        onClick={handleClick}
+        disabled={isPending}
+        className=&quot;btn-primary&quot;
+      &gt;
+        {isPending ? &#x27;Adding...&#x27; : &#x27;Add to Cart&#x27;}
+      &lt;/button&gt;
+      {error &amp;&amp; &lt;p className=&quot;text-red-500 text-sm&quot;&gt;{error}&lt;/p&gt;}
+    &lt;/div&gt;
+  )
+}
+```
+
+### Pattern 3: Server Actions
+
+```typescript
+// app/actions/cart.ts
+&quot;use server&quot;;
+
+import { revalidateTag } from &quot;next/cache&quot;;
+import { cookies } from &quot;next/headers&quot;;
+import { redirect } from &quot;next/navigation&quot;;
+
+export async function addToCart(productId: string) {
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get(&quot;session&quot;)?.value;
+
+  if (!sessionId) {
+    redirect(&quot;/login&quot;);
+  }
+
+  try {
+    await db.cart.upsert({
+      where: { sessionId_productId: { sessionId, productId } },
+      update: { quantity: { increment: 1 } },
+      create: { sessionId, productId, quantity: 1 },
+    });
+
+    revalidateTag(&quot;cart&quot;);
+    return { success: true };
+  } catch (error) {
+    return { error: &quot;Failed to add to cart&quot; };
+  }
+}
+```
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

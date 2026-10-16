@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>auto-paper-improvement-loop</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">paper-improvement-loop</a> / auto-paper-improvement-loop</p><h1>auto-paper-improvement-loop</h1><p class="meta">combined</p><p>Both copies describe the same two-round review→fix→recompile loop, but they disagree on the reviewer model (gpt-6-astra vs gpt-5.4) and on a core loop mechanic: the wanshuiyin copy mandates a fresh reviewer thread each round (REVIEWER_BIAS_GUARD, no codex-reply) and adds style-ref/edit-whitelist options, while the brycewang copy explicitly uses codex-reply with the saved threadId in Round 2 and adds state-persistence recovery. Crowning one would hide a real alternative procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/auto-paper-improvement-loop/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/auto-paper-improvement-loop/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/auto-paper-improvement-loop/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/auto-paper-improvement-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex/auto-paper-improvement-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex-claude-review/auto-paper-improvement-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex-gemini-review/auto-paper-improvement-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex/auto-paper-improvement-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex-claude-review/auto-paper-improvement-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex-gemini-review/auto-paper-improvement-loop/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: auto-paper-improvement-loop
+description: &quot;Autonomously improve a generated paper via external LLM review → implement fixes → recompile, for 2 rounds. Use when user says \&quot;改论文\&quot;, \&quot;improve paper\&quot;, \&quot;论文润色循环\&quot;, \&quot;auto improve\&quot;, or wants to iteratively polish a generated paper.&quot;
+argument-hint: &quot;[paper-directory] [— style-ref: &lt;source&gt;] [— edit-whitelist &lt;path&gt;]&quot;
+allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, mcp__codex__codex, mcp__codex__codex-reply
+---
+
+# Auto Paper Improvement Loop: Review → Fix → Recompile
+
+&gt; 🔒 **Do not wrap this skill in `/loop`, `/schedule`, or `CronCreate`.** It already loops internally with its own round structure. Schedule the external wait that precedes it, not the improvement loop.
+
+Autonomously improve the paper at: **$ARGUMENTS**
+
+## Context
+
+This skill runs **after** Workflow 3 (`/paper-plan` → `/paper-figure` → `/paper-write` → `/paper-compile`). It iterates on **paper writing quality** — fixing theoretical inconsistencies, softening overclaims, adding missing content, and improving presentation. It does **not** iterate on research (experiments, data collection, narrative rewriting).
+
+## Constants
+
+- **MAX_ROUNDS = 2** — Two rounds of review→fix→recompile.
+- **REVIEWER_MODEL** — Model used via Codex MCP for paper review. (See Conflicts: wanshuiyin uses `gpt-6-astra`; brycewang uses `gpt-5.4`.)
+- **REVIEWER_BIAS_GUARD** — When `true`, every review round uses a fresh `mcp__codex__codex` thread with no prior review context; never use `mcp__codex__codex-reply` for review rounds. When `false`, Round 2 may use `mcp__codex__codex-reply` with the saved threadId. (See Conflicts: wanshuiyin defaults to `true`; brycewang uses `codex-reply` in Round 2.)
+- **REVIEW_LOG = `PAPER_IMPROVEMENT_LOG.md`** — Cumulative log of all rounds, stored in paper directory.
+- **HUMAN_CHECKPOINT = false** — When `true`, pause after each round&#x27;s review and present score + weaknesses to the user. The user can approve fixes, provide custom modification instructions, skip specific fixes, or stop early. When `false` (default), runs fully autonomously.
+- **EDIT_WHITELIST = `null`** — Optional path to a YAML/JSON whitelist file constraining which paths and operations the fix-implementation step may touch. When `null` (default), all edits proceed unconstrained. When set via `— edit-whitelist &lt;path&gt;`, the loop loads the file at startup and consults it before each edit; rejected edits are logged to `PAPER_IMPROVEMENT_LOG.md`.
+
+&gt; 💡 Override: `/auto-paper-improvement-loop &quot;paper/&quot; — human checkpoint: true`
+
+## Optional: Style reference (`— style-ref: &lt;source&gt;`, opt-in)
+
+Lets the user steer **structural fixes only** during improvement toward a reference paper. **Default OFF.** Only when `— style-ref: &lt;source&gt;` appears in `$ARGUMENTS`, run the style-extraction helper before the loop starts. Sources accepted: local TeX dir/file, local PDF, arXiv id, http(s) URL. Overleaf URLs/IDs are rejected — clone via `/overleaf-sync setup &lt;id&gt;` first. Use the resulting `style_profile.md` only during the fix-implementation phase for structural nudges (section reordering, paragraph length, figure density).
+
+## Inputs
+
+1. **Compiled paper** — `paper/main.pdf` + LaTeX source files
+2. **All section `.tex` files** — concatenated for review prompt
+
+## State Persistence (Compact Recovery)
+
+If the context window fills up mid-loop, write `PAPER_IMPROVEMENT_STATE.json` after each round:
+
+```json
+{
+  &quot;current_round&quot;: 1,
+  &quot;threadId&quot;: &quot;019ce736-...&quot;,
+  &quot;last_score&quot;: 6,
+  &quot;status&quot;: &quot;in_progress&quot;,
+  &quot;timestamp&quot;: &quot;2026-03-13T21:00:00&quot;
+}
+```
+
+**On startup**: if `PAPER_IMPROVEMENT_STATE.json` exists with `&quot;status&quot;: &quot;in_progress&quot;` AND `timestamp` is within 24 hours, read it + `PAPER_IMPROVEMENT_LOG.md` to recover context, then resume from the next round. Otherwise, start fresh.
+
+**After each round**: overwrite the state file. **On completion**: set `&quot;status&quot;: &quot;completed&quot;`.
+
+## Workflow
+
+### Step 0: Preserve Original
+
+```bash
+cp paper/main.pdf paper/main_round0_original.pdf
+```
+
+### Step 1: Collect Paper Text
+
+Concatenate all section files into a single text block for the review prompt:
+
+```bash
+for f in paper/sections/*.tex; do
+    echo &quot;% === $(basename $f) ===&quot;
+    cat &quot;$f&quot;
+done &gt; /tmp/paper_full_text.txt
+```
+
+### Step 2: Round 1 Review
+
+Send the full paper text to the reviewer model via `mcp__codex__codex` with `model_reasoning_effort: &quot;xhigh&quot;`. Prompt the model to act as a senior ML reviewer and provide: Overall Score (1-10), Summary, Strengths (ranked), Weaknesses (ranked CRITICAL &gt; MAJOR &gt; MINOR), specific actionable fixes for each CRITICAL/MAJOR weakness, Missing References, and Verdict (Ready for submission? Yes / Almost / No). Focus on theoretical rigor, claims vs evidence alignment, writing clarity, self-containedness, notation consistency.
+
+Save the threadId for potential Round 2 use (if REVIEWER_BIAS_GUARD is false).
+
+### Step 2b: Human Checkpoint (if enabled)
+
+**Skip if `HUMAN_CHECKPOINT = false`.** Present the review results and wait for user input: approve all fixes, give custom instructions, skip specific fixes, or stop.
+
+### Step 3: Implement Round 1 Fixes
+
+Parse the review and implement fixes by severity: CRITICAL first, then MAJOR, then MINOR (if time permits). Common fix patterns include: rewriting assumptions to match the model, softening overclaims, adding missing metrics tables, making theorems self-contained, renaming conflicting notation, adding missing references, and explicitly framing theory-practice gaps.
+
+If EDIT_WHITELIST is set, consult it before each edit; log rejected edits to PAPER_IMPROVEMENT_LOG.md.
+
+### Step 4: Recompile Round 1
+
+```bash
+cd paper &amp;&amp; latexmk -C &amp;&amp; latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+cp main.pdf main_round1.pdf
+```
+
+Verify: 0 undefined references, 0 undefined citations.
+
+### Step 5: Round 2 Review
+
+If REVIEWER_BIAS_GUARD is `true`: start a fresh `mcp__codex__codex` thread with no prior review context. If `false`: use `mcp__codex__codex-reply` with the saved threadId from Round 1. Use the same review prompt structure as Round 1.
+
+### Step 5b: Human Checkpoint (if enabled)
+
+Same as Step 2b.
+
+### Step 6: Implement Round 2 Fixes
+
+Same as Step 3.
+
+### Step 7: Recompile Round 2
+
+```bash
+cd paper &amp;&amp; latexmk -C &amp;&amp; latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+cp main.pdf main_round2.pdf
+```
+
+Verify: 0 undefined references, 0 undefined citations.
+
+### Step 8: Finalize
+
+Set `PAPER_IMPROVEMENT_STATE.json` status to `&quot;completed&quot;`. Append final summary to `PAPER_IMPROVEMENT_LOG.md`.
+
+## Conflicts
+
+- **Reviewer model**: wanshuiyin/Auto-claude-code-research-in-sleep specifies `gpt-6-astra`; brycewang-stanford/Auto-Empirical-Research-Skills specifies `gpt-5.4`. Choose the model available in your environment.
+- **Round 2 review mechanism**: wanshuiyin enforces a fresh thread each round (REVIEWER_BIAS_GUARD=true, no codex-reply) based on empirical evidence that codex-reply inflated scores; brycewang uses codex-reply with the saved threadId for Round 2. If you adopt the fresh-thread approach, set REVIEWER_BIAS_GUARD=true and never call codex-reply for review rounds. If you adopt the reply approach, set REVIEWER_BIAS_GUARD=false and use codex-reply in Round 2.</pre>
+</body>
+</html>

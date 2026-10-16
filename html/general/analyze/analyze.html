@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>analyze</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">analyze</a> / analyze</p><h1>analyze</h1><p class="meta">combined</p><p>The two skills share the name &#x27;analyze&#x27; but perform completely different tasks. The first is a security skill for analyzing blast radius and attack paths in AI infrastructure using the &#x27;agent-bom&#x27; CLI. The second is a research skill for end-to-end empirical data analysis (R/Stata/Python) that dispatches specialized sub-agents (Coder, Data-engineer, coder-critic). There is no overlap in procedure, tools, or domain, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/agent-bom/analyze/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/16-hsantanna88-clo-author/dot-claude/skills/analyze/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/agent-bom/analyze/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/16-hsantanna88-clo-author/dot-claude/skills/analyze/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/61-phdemotions-research-methods/skills/analyze/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Analyze
+
+This skill name covers two distinct workflows. Determine the user&#x27;s intent to select the correct procedure.
+
+## 1. Security: Blast Radius &amp; Attack Path Analysis
+**Use when:** User asks about &quot;blast radius&quot;, &quot;threat intel&quot;, &quot;risk score&quot;, &quot;attack path&quot;, or &quot;lateral movement&quot; in AI infrastructure.
+
+**Procedure:**
+1. Ensure `agent-bom` is installed (`pipx install agent-bom`).
+2. Run `agent-bom agents --verbose` to map blast radius details.
+3. Run `agent-bom graph` to generate the agent context graph.
+4. Use `blast_radius(cve_id=&quot;...&quot;)` to map specific CVE impacts.
+5. Present findings clearly. If CRITICAL CVEs are found, ask the user if they want a remediation plan.
+
+**Guardrails:**
+- Analysis is read-only.
+- Only public CVE IDs are sent externally.
+- No internal data leaves the machine.
+
+## 2. Research: End-to-End Data Analysis
+**Use when:** User provides a dataset or analysis goal for empirical research (R, Stata, Python, Julia).
+
+**Procedure:**
+1. **Context Gathering:** Read `domain-profile.md`, strategy memos, and `CLAUDE.md` for language preferences.
+2. **Data Preparation:** If raw data is provided, dispatch **Data-engineer** to clean data, handle missing values, and create descriptive figures.
+3. **Main Analysis:** Dispatch **Coder** to run the main specification, robustness checks, and generate publication-ready tables/figures. Must produce `results_summary.md`.
+4. **Code Review:** Dispatch **coder-critic** to run a 12-category checklist (strategy alignment, sanity checks, reproducibility, etc.).
+5. **Fix Issues:** If critical issues are found, re-dispatch Coder (max 3 rounds).
+6. **Present Results:** Summarize estimates, scripts, outputs, and review scores.
+
+**Key Artifacts:**
+- `results_summary.md` (Mandatory)
+- Tables in `paper/tables/`
+- Figures in `paper/figures/`
+- Code review report in `quality_reports/`</pre>
+</body>
+</html>

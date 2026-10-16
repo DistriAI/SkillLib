@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>coverage-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">coverage-analysis</a> / coverage-analysis</p><h1>coverage-analysis</h1><p class="meta">combined</p><p>The three skills share the name &#x27;coverage-analysis&#x27; but address three distinct domains with no overlapping procedure. The dotnet/skills copy is a .NET-specific procedure for interpreting Cobertura reports and calculating CRAP scores. The trailofbits/skills copy is a security/fuzzing procedure for using llvm-cov and lcov to analyze fuzzer effectiveness. The GPTomics/bioSkills copy is a bioinformatics procedure for analyzing sequencing read depth using bedtools and mosdepth. Because they are mutually exclusive procedures for different tools and data types, crowning one would hide the other two valid interpretations of the skill name.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-test/skills/coverage-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/testing-handbook-skills/skills/coverage-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>genome-intervals/coverage-analysis/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-test/skills/coverage-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/testing-handbook-skills/skills/coverage-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>genome-intervals/coverage-analysis/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Coverage Analysis
+
+This skill covers three distinct domains. Select the appropriate section based on the data type provided.
+
+## 1. .NET Software Coverage
+**Use when:** Analyzing .NET test coverage (Cobertura) or refactoring safety.
+1. **Interpret Evidence:** Analyze supplied line/branch/condition metrics.
+2. **Reconcile Targets:** Check against thresholds (default 80% line, 70% branch).
+3. **Risk Analysis (Optional):** If requested, calculate CRAP scores to identify refactoring hotspots.
+4. **Collection:** If no report exists, invoke `run-tests` to collect coverage.
+
+## 2. Fuzzing Coverage (Security)
+**Use when:** Analyzing fuzzer effectiveness or identifying fuzzing blockers.
+1. **Instrument:** Build with coverage flags (e.g., `-fprofile-instr-generate` for LLVM).
+2. **Execute:** Run the fuzzer to generate a corpus.
+3. **Analyze:** Use `llvm-cov` or `lcov` to generate reports.
+4. **Diagnose:** Identify uncovered regions, magic value checks, or plateaus to guide harness/dictionary improvements.
+
+## 3. Genomic Sequencing Coverage (Bioinformatics)
+**Use when:** Assessing sequencing depth, breadth, or uniformity.
+1. **Calculate Depth:** Use `mosdepth` or `bedtools genomecov` to compute depth distributions.
+2. **Report Metrics:** Report median depth and breadth at specific thresholds (e.g., % of target &gt;= 20x).
+3. **Assess Evenness:** Calculate CV, Fano factor, or fold-80 to determine library quality.
+4. **QC:** Check for duplicates, MAPQ filters, and mate-overlap corrections.</pre>
+</body>
+</html>

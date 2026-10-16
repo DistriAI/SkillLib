@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>retro</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">retrospective</a> / retro</p><h1>retro</h1><p class="meta">combined</p><p>The copies share the name &#x27;retro&#x27; but describe three different procedures. mattpocock/skills and dzhng/skills are near-identical engineering retrospectives that analyze a coding session to improve the agent&#x27;s environment (navigation, automated checks, coding standards, tool economy, etc.). phuryn/pm-skills is a product-management sprint retrospective that uses formats like Start/Stop/Continue or 4Ls and produces prioritized action items with owners and deadlines. bergside/awesome-design-skills is a design-system skill for creating retro/vintage visual guidelines, which is unrelated to the other two. Because the copies overlap only in name and each contains material steps the others lack, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/engineering/retro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/phuryn/pm-skills">phuryn/pm-skills</a></td><td><code>pm-execution/skills/retro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/retro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/retro/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/engineering/retro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/phuryn/pm-skills">phuryn/pm-skills</a></td><td><code>pm-execution/skills/retro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/retro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/retro/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>.agents/skills/retro/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/gstack/retro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>.claude/skills/retro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>skills/retro/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: retro
+description: &quot;Conduct a retrospective. Choose the appropriate mode: coding-session environment review, sprint retrospective, or retro design-system guidance.&quot;
+---
+
+## Mode Selection
+
+Determine which retrospective the user wants:
+
+1. **Coding-session retrospective** — the user wants to review a coding agent session and suggest environment improvements.
+2. **Sprint retrospective** — the user wants to facilitate a structured team sprint retro with action items.
+3. **Retro design-system guidance** — the user wants vintage/retro visual design guidelines.
+
+If the user does not specify, ask which mode they need.
+
+## Mode 1: Coding-Session Retrospective
+
+You are suggesting improvements to the coding agent&#x27;s environment to improve future runs.
+
+### Steps
+
+1. Read the writing style guide for agent-facing documentation (e.g., `writing-for-agents` skill or equivalent).
+
+2. Read the primary sources for the session the user specifies. This may mean searching through session logs on this machine. If the user doesn&#x27;t specify a session, default to the current one.
+
+3. Look for candidates for improvement in these categories:
+
+- **Navigation**: how easy was it for the agent to find the right files? Are there hidden dependencies between files? Would a navigation pointer make it easier? _Use when_ the session took a long time to find a piece of information.
+- **Automated checks**: are there automated checks that could catch errors the agent made? Linting, typing, tests, filesystem linters? Read the repo&#x27;s own check command first (its `package.json`/build-tool `lint`/`check` scripts, its CI workflow), so a check that already exists but sits unwired or silently broken is the finding, not a reinvention. A repo with no guardrail (no pre-commit hook and no CI job running its lint/typecheck/test command) is itself a finding. _Use when_ the agent made a mistake an automated check could have caught, or the repo has no guardrail at all.
+- **Coding standards**: should the reviewer agent be given a new rule to enforce? Should an existing rule be removed or clarified? Classify the violation first: a mechanical one gets a deterministic check (custom linter rule, pre-commit hook, or CI job). Reserve `CODING_STANDARDS.md` for genuine judgement calls. _Use when_ the reviewer agent failed to catch a mistake.
+- **Global AGENTS.md**: are there any steering instructions that should be moved to coding standards or automated checks instead? _Use when_ the AGENTS.md file is particularly large.
+- **Tool economy**: did the agent make expensive tool calls that could be streamlined? Is there any custom tooling that is particularly token-inefficient? _Use when_ the agent made an expensive tool call.
+- **No-ops**: look for instructions in steering files that don&#x27;t modify the agent&#x27;s behavior. _Use when_ the steering files are large and unwieldy.
+- **Information access**: look for opportunities to increase the agent&#x27;s access to information. _Use when_ a crucial piece of information was not available to the agent.
+
+4. Present these candidates to the user, in order of severity.
+
+### Reference
+
+- **Implementation vs Review**: The implementation agent has the most context pressure. The review agent has the least. The review agent should be responsible for imposing coding standards, not the implementation agent.
+- **Files**: `CLAUDE.md`/`AGENTS.md` should be used sparingly for navigation pointers. `CODING_STANDARDS.md` is read during review. Use docs as reference files. Use skills for docs or user-invoked commands.
+
+## Mode 2: Sprint Retrospective
+
+Run a structured retrospective that surfaces insights and produces actionable improvements.
+
+### Steps
+
+1. **Choose a retro format** based on context (or let the user pick):
+
+   **Format A — Start / Stop / Continue**
+   - Start: What should we begin doing?
+   - Stop: What should we stop doing?
+   - Continue: What&#x27;s working well that we should keep?
+
+   **Format B — 4Ls (Liked / Learned / Lacked / Longed For)**
+   - Liked: What did the team enjoy?
+   - Learned: What new knowledge was gained?
+   - Lacked: What was missing?
+   - Longed For: What do we wish we had?
+
+   **Format C — Sailboat**
+   - Wind (propels us): What&#x27;s driving us forward?
+   - Anchor (holds us back): What&#x27;s slowing us down?
+   - Rocks (risks): What dangers lie ahead?
+   - Island (goal): Where are we trying to get to?
+
+2. **If the user provides raw feedback** (e.g., sticky notes, survey responses, Slack messages):
+   - Group similar items into themes
+   - Identify the most frequently mentioned topics
+   - Note sentiment patterns (frustration, energy, confusion)
+
+3. **Analyze the sprint performance**:
+   - Sprint goal: achieved or not?
+   - Velocity vs. commitment (over-committed? under-committed?)
+   - Blockers encountered and how they were resolved
+   - Collaboration patterns (what worked, what didn&#x27;t)
+
+4. **Generate prioritized action items**:
+
+   | Priority | Action Item | Owner | Deadline | Success Metric |
+   |---|---|---|---|---|
+   | 1 | [Specific, actionable improvement] | [Name/Role] | [Date] | [How we&#x27;ll know it worked] |
+
+   - Limit to 2-3 action items (more won&#x27;t get done)
+   - Each must be specific, assignable, and measurable
+   - Reference previous retro actions if available — were they completed?
+
+5. **Create the retro summary**:
+   ```
+   ## Sprint [X] Retrospective — [Date]
+
+   ### Sprint Performance
+   - Goal: [Achieved / Partially / Missed]
+   - Committed: [X pts] | Completed: [Y pts]
+
+   ### Key Themes
+   1. [Theme] — [summary]
+
+   ### Action Items
+   1. [Action] — [Owner] — [By date]
+
+   ### Carry-over from Last Retro
+   - [Previous action] — [Status: Done / In Progress / Not Started]
+   ```
+
+   Save as markdown. Keep the tone constructive — the goal is improvement, not blame.
+
+## Mode 3: Retro Design-System Guidance
+
+You are an expert design-system guideline author for Retro (vintage-inspired) visual design.
+
+### Style Foundations
+- Visual style: high-contrast, retro
+- Typography: primary=Macondo, display=Macondo, mono=JetBrains Mono; weights 100-900
+- Color palette: primary=#3B82F6, secondary=#8B5CF6, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827
+- Spacing scale: 4/8/12/16/24/32
+
+### Accessibility
+WCAG 2.2 AA, keyboard-first interactions, visible focus states.
+
+### Guideline Authoring Workflow
+1. Restate the design intent in one sentence before proposing rules.
+2. Define tokens and foundational constraints before component-level guidance.
+3. Specify component anatomy, states, variants, and interaction behavior.
+4. Include accessibility acceptance criteria and content-writing expectations.
+5. Add anti-patterns and migration notes for existing inconsistent UI.
+6. End with a QA checklist that can be executed in code review.
+
+### Required Output Structure
+- Context and goals
+- Design tokens and foundations
+- Component-level rules (anatomy, variants, states, responsive behavior)
+- Accessibility requirements and testable acceptance criteria
+- Content and tone standards with examples
+- Anti-patterns and prohibited implementations
+- QA checklist
+
+### Quality Gates
+- No rule should depend on ambiguous adjectives alone; anchor each rule to a token, threshold, or example.
+- Every accessibility statement must be testable in implementation.
+- Prefer system consistency over one-off local optimizations.
+- Flag conflicts between aesthetics and accessibility, then prioritize accessibility.</pre>
+</body>
+</html>

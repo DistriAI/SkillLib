@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nestjs-expert</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">nestjs-backend-development</a> / nestjs-expert</p><h1>nestjs-expert</h1><p class="meta">combined</p><p>The two copies overlap in scope (NestJS modules, controllers, services, DI, guards, testing) but each contains material steps the other lacks. Jeffallan/claude-skills provides a concrete 6-step implementation workflow, a reference-loading table, and full code examples for controllers, services, modules, and unit tests. sickn33/agentic-awesome-skills adds a pre-flight routing step to defer to more specialized experts, a detection step using internal tools, a specific validation order (typecheck → unit → integration → e2e), and a mandatory pointer to a detailed guide. Crowning one would hide the other&#x27;s distinct routing and validation constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/nestjs-expert/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/nestjs-expert/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/nestjs-expert/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/nestjs-expert/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/nestjs-expert/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/nestjs-expert/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: nestjs-expert
+description: Creates and configures NestJS modules, controllers, services, DTOs, guards, and interceptors for enterprise-grade TypeScript backend applications. Use when building NestJS REST APIs or GraphQL services, implementing dependency injection, scaffolding modular architecture, adding JWT/Passport authentication, integrating TypeORM or Prisma, or working with .module.ts, .controller.ts, and .service.ts files.
+---
+
+# NestJS Expert
+
+Senior NestJS specialist with deep expertise in enterprise-grade, scalable TypeScript backend applications.
+
+## Pre-flight Routing
+
+0. If a more specialized expert fits better, recommend switching and stop:
+   - Pure TypeScript type issues → typescript-type-expert
+   - Database query optimization → database-expert
+   - Node.js runtime issues → nodejs-expert
+   - Frontend React issues → react-expert
+
+   Example: &quot;This is a TypeScript type system issue. Use the typescript-type-expert subagent. Stopping here.&quot;
+
+## Core Workflow
+
+1. **Detect project setup** — Use internal tools (Read, Grep, Glob) to identify NestJS project structure, existing modules, and architecture patterns.
+2. **Analyze requirements** — Identify modules, endpoints, entities, and relationships.
+3. **Design structure** — Plan module organization and inter-module dependencies.
+4. **Implement** — Create modules, services, and controllers with proper DI wiring.
+5. **Secure** — Add guards, validation pipes, and authentication.
+6. **Verify** — Run validation in order: typecheck → unit tests → integration tests → e2e tests. Also run `npm run lint` and confirm DI graph with `nest info`.
+7. **Test** — Write unit tests for services and E2E tests for controllers.
+
+## Reference Guide
+
+Load detailed guidance based on context:
+
+| Topic | Reference | Load When |
+|-------|-----------|-----------|
+| Controllers | `references/controllers-routing.md` | Creating controllers, routing, Swagger docs |
+| Services | `references/services-di.md` | Services, dependency injection, providers |
+| DTOs | `references/dtos-validation.md` | Validation, class-validator, DTOs |
+| Authentication | `references/authentication.md` | JWT, Passport, guards, authorization |
+| Testing | `references/testing-patterns.md` | Unit tests, E2E tests, mocking |
+| Express Migration | `references/migration-from-express.md` | Migrating from Express.js to NestJS |
+
+Read the detailed guide (`references/detailed-guide.md`) before executing this skill. Treat its safety, prerequisites, and validation requirements as mandatory.
+
+## Code Examples
+
+### Controller with DTO Validation and Swagger
+
+```typescript
+// create-user.dto.ts
+import { IsEmail, IsString, MinLength } from &#x27;class-validator&#x27;;
+import { ApiProperty } from &#x27;@nestjs/swagger&#x27;;
+
+export class CreateUserDto {
+  @ApiProperty({ example: &#x27;user@example.com&#x27; })
+  @IsEmail()
+  email: string;
+
+  @ApiProperty({ example: &#x27;strongPassword123&#x27;, minLength: 8 })
+  @IsString()
+  @MinLength(8)
+  password: string;
+}
+
+// users.controller.ts
+import { Body, Controller, Post, HttpCode, HttpStatus } from &#x27;@nestjs/common&#x27;;
+import { ApiCreatedResponse, ApiTags } from &#x27;@nestjs/swagger&#x27;;
+import { UsersService } from &#x27;./users.service&#x27;;
+import { CreateUserDto } from &#x27;./dto/create-user.dto&#x27;;
+
+@ApiTags(&#x27;users&#x27;)
+@Controller(&#x27;users&#x27;)
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({ description: &#x27;User created successfully.&#x27; })
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
+  }
+}
+```
+
+### Service with Dependency Injection and Error Handling
+
+```typescript
+// users.service.ts
+import { Injectable, ConflictException, NotFoundException } from &#x27;@nestjs/common&#x27;;
+import { InjectRepository } from &#x27;@nestjs/typeorm&#x27;;
+import { Repository } from &#x27;typeorm&#x27;;
+import { User } from &#x27;./entities/user.entity&#x27;;
+import { CreateUserDto } from &#x27;./dto/create-user.dto&#x27;;
+
+@Injectable()
+export class UsersService {
+  constructor(
+    @InjectRepository(User)
+    private readonly usersRepository: Repository&lt;User&gt;,
+  ) {}
+
+  async create(createUserDto: CreateUserDto): Promise&lt;User&gt; {
+    const existing = await this.usersRepository.findOneBy({ email: createUserDto.email });
+    if (existing) {
+      throw new ConflictException(&#x27;Email already registered&#x27;);
+    }
+    const user = this.usersRepository.create(createUserDto);
+    return this.usersRepository.save(user);
+  }
+
+  async findOne(id: number): Promise&lt;User&gt; {
+    const user = await this.usersRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`User #${id} not found`);
+    }
+    return user;
+  }
+}
+```
+
+### Module Definition
+
+```typescript
+// users.module.ts
+import { Module } from &#x27;@nestjs/common&#x27;;
+import { TypeOrmModule } from &#x27;@nestjs/typeorm&#x27;;
+import { UsersController } from &#x27;./users.controller&#x27;;
+import { UsersService } from &#x27;./users.service&#x27;;
+import { User } from &#x27;./entities/user.entity&#x27;;
+
+@Module({
+  imports: [TypeOrmModule.forFeature([User])],
+  controllers: [UsersController],
+  providers: [UsersService],
+  exports: [UsersService],
+})
+export class UsersModule {}
+```
+
+### Unit Test for Service
+
+```typescript
+// users.service.spec.ts
+import { Test, TestingModule } from &#x27;@nestjs/testing&#x27;;
+import { getRepositoryToken } from &#x27;@nestjs/typeorm&#x27;;
+import { ConflictException } from &#x27;@nestjs/common&#x27;;
+import { UsersService } from &#x27;./users.service&#x27;;
+import { User } from &#x27;./entities/user.entity&#x27;;
+
+const mockRepo = {
+  findOneBy: jest.fn(),
+  create: jest.fn(),
+  save: jest.fn(),
+};
+
+describe(&#x27;UsersService&#x27;, () =&gt; {
+  let service: UsersService;
+
+  beforeEach(async () =&gt; {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        UsersService,
+        { provide: getRepositoryToken(User), useValue: mockRepo },
+      ],
+    }).compile();
+    service = module.get&lt;UsersService&gt;(UsersService);
+    jest.clearAllMocks();
+  });
+
+  it(&#x27;throws ConflictException when email already exists&#x27;, async () =&gt; {
+    mockRepo.findOneBy.mockResolvedValue({ id: 1, email: &#x27;user@example.com&#x27; });
+    await expect(
+      service.create({ email: &#x27;user@example.com&#x27;, password: &#x27;pass1234&#x27; }),
+    ).rejects.toThrow(ConflictException);
+  });
+});
+```
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

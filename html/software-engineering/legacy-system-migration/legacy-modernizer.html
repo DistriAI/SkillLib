@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>legacy-modernizer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">legacy-system-migration</a> / legacy-modernizer</p><h1>legacy-modernizer</h1><p class="meta">combined</p><p>The three copies overlap on the core strangler-fig, test-first, feature-flag, and rollback approach, but they disagree on scope and add material steps the others lack. Jeffallan/claude-skills provides a detailed 5-step workflow with validation checkpoints, dependency mapping, 80% coverage targets, and code templates. rmyndharis/antigravity-skills adds specific framework migration examples (jQuery→React, Java 8→17, Python 2→3) and a focus on stored procedure to ORM migration. sickn33/agentic-awesome-skills explicitly corrects the others by stating that database migration should only be done when justified and that a monolith does not automatically need microservices, which conflicts with the broader scope of the other two. Crowning one copy would hide these real alternatives and the specific constraints in the third.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/legacy-modernizer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/legacy-modernizer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/legacy-modernizer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/legacy-modernizer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/legacy-modernizer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/legacy-modernizer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/legacy-modernizer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/legacy-modernizer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: legacy-modernizer
+description: Designs incremental migration strategies, identifies service boundaries, and produces dependency maps and migration roadmaps for aging codebases. Use when modernizing legacy systems, implementing the strangler fig pattern, upgrading frameworks or languages, or reducing technical debt without disrupting business operations.
+---
+
+# Legacy Modernizer
+
+## Core Workflow
+
+1. **Assess system** — Analyze the codebase, dependencies, risks, and business constraints. Produce a dependency map and risk register.
+   - *Validation checkpoint:* Confirm all external integrations and data contracts are documented.
+
+2. **Plan migration** — Design an incremental roadmap with explicit rollback strategies per phase. Do not assume a monolith requires microservices; only decompose when justified by business or technical constraints.
+   - *Validation checkpoint:* Confirm each phase has a defined rollback trigger and owner.
+
+3. **Build safety net** — Create characterization tests and monitoring before touching production code. Target 80%+ coverage of existing behavior.
+   - *Validation checkpoint:* Run the characterization test suite and confirm it passes on the unmodified legacy system.
+
+4. **Migrate incrementally** — Apply the strangler fig pattern with feature flags. Route traffic via a facade; shift load gradually (e.g., 5% → 25% → 50% → 100%).
+   - *Validation checkpoint:* Verify error rates and latency metrics remain within baseline thresholds after each traffic increment.
+
+5. **Validate &amp; iterate** — Run the full test suite, review monitoring dashboards, and confirm business behavior is preserved before retiring legacy code.
+   - *Validation checkpoint:* New code must be proven stable at 100% traffic for at least one release cycle before legacy path is removed.
+
+## Focus Areas
+- Framework migrations (e.g., jQuery→React, Java 8→17, Python 2→3)
+- Database modernization (e.g., stored procedures→ORMs) only when justified by specific tradeoffs
+- Architectural modernization (monolith decomposition) only when justified
+- Dependency updates and security patches
+- Test coverage for legacy code
+- API versioning and backward compatibility
+
+## Constraints
+
+### MUST DO
+- Maintain zero production disruption during all migrations
+- Create comprehensive test coverage before refactoring (target 80%+)
+- Use feature flags for all incremental rollouts
+- Implement monitoring and rollback procedures
+- Document all migration decisions and rationale
+- Preserve existing business logic and behavior
+
+### MUST NOT DO
+- Big bang rewrites or replacements
+- Skip testing legacy behavior before changes
+- Deploy without rollback capability
+- Break existing integrations or APIs
+- Assume a monolith must become microservices without justification
+- Remove legacy code before new code is proven stable
+
+## Output
+1. Assessment summary (risks, dependencies, approach)
+2. Migration plan (phases, rollback strategy, metrics)
+3. Implementation code (facades, adapters, new services)
+4. Test coverage (characterization, integration, e2e)
+5. Monitoring setup (metrics, alerts, dashboards)
+6. Deprecation warnings and timelines
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

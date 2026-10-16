@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-rce</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">rce-hunt</a> / hunt-rce</p><h1>hunt-rce</h1><p class="meta">combined</p><p>The two copies share the same core RCE hunting methodology, crown jewel targets, and attack surface signals, but each contains material steps the other lacks. The uphiago copy provides a complete 10-step methodology including dependency confusion, file path traversal, Kubernetes auditing, OAuth redirect testing, and out-of-band verification. The sickn33 copy adds a mandatory authorization confirmation gate, a content-type failure mode warning, and a specific list of command injection operators with proof criteria. Crowning one copy would hide the other&#x27;s unique constraints and steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-rce/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-rce/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-rce/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-rce/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-rce/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-rce/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-rce
+description: &quot;Hunting skill for rce vulnerabilities. Built from 67 public bug bounty reports. Use when hunting rce on any target.&quot;
+version: 1.1.0
+license: MIT
+category: security
+risk: offensive
+tags: [rce, hunt, redteam]
+---
+
+&gt; **⚠️ AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## When to Use
+
+Use when the target has any endpoint that processes user-controlled input through an execution layer — template engines, shell commands, YAML/XML parsers, file paths used in operations, package resolution, or configuration files. RCE is the highest-payout vulnerability class because it grants direct execution control over target infrastructure. Every admin/management console, template/preview endpoint, upload processor, deserialization sink, and dependency resolver is a candidate. Highest-value targets: enterprise server products (GHES, self-hosted GitLab), supply chain/package registries, cloud-native infrastructure, and admin/management consoles.
+
+## Autonomous Testing Priority
+
+**Content-type is the #1 silent failure mode for command injection.**
+
+Traditional web forms use `Content-Type: application/x-www-form-urlencoded`. If you send a JSON body (`{&quot;host&quot;:&quot;127.0.0.1;id&quot;}`) to a form endpoint, the server reads `request.form[&#x27;host&#x27;]` and gets nothing — the app executes normally with no injection, returning a plausible 200 response. You get a false negative with no indication anything went wrong.
+
+**Rule:** If the page has an HTML form (`&lt;form method=&quot;POST&quot;&gt;`), use form-encoding. If the path is `/api/...` or the response is JSON, use JSON.
+
+**Command injection operators to try (in order of prevalence):**
+```
+value;id        ← Unix semicolon (most common)
+value|id        ← pipe
+value&amp;&amp;id       ← AND
+value$(id)      ← subshell
+value`id`       ← backtick
+```
+
+**Proof:** OS command output (`uid=N(username) gid=...`) in the response body confirms code execution. The output may be HTML-wrapped — that still counts. If the response is otherwise normal (200, expected content) with the command output appended or embedded, exploitation is confirmed.
+
+## Crown Jewel Targets
+
+RCE vulnerabilities command the highest payouts in bug bounty programs because they grant attackers direct execution control over target infrastructure. The highest-value targets are:
+
+**Highest-paying asset types:**
+- **Enterprise server products** (GitHub Enterprise Server, self-hosted GitLab) — privilege escalation chains from low-privileged console roles to root SSH access consistently pay critical/high
+- **Supply chain / package registries** — dependency confusion attacks against npm, PyPI, etc. hit critical severity across every major program
+- **Cloud-native infrastructure** — exposed Kubernetes API servers, ingress controllers, and misconfigured CI/CD pipelines
+- **Mobile app backends and OAuth flows** — where server-side processing of attacker-controlled data meets execution contexts
+- **Admin/management consoles** — template injection in configuration panels reaches root with a single payload
+
+**Why this class pays most:**
+- Blast radius is infrastructure-wide, not user-scoped
+- Proof-of-concept is unambiguous — shell output is undeniable
+- Fix requires architectural changes, not just a patch
+- Programs cannot afford false negatives on RCE
+
+## Attack Surface Signals
+
+### URL Patterns
+```
+/management-console/*
+/admin/settings/*
+/api/v*/exec
+/api/v*/run
+/webhook/*
+/_internal/*
+/import?url=
+/render?template=
+/preview?format=
+```
+
+### Response Headers / Tech Stack Signals
+```
+X-Powered-By: Express          # Node.js — npm dependency surface
+X-Powered-By: Phusion Passenger
+Server: nginx (ingress-nginx)  # Kubernetes ingress — path field injection
+X-Runtime: Ruby                # Rails ActiveStorage, RDoc, REXML attack surface
+Content-Type: application/yaml # YAML parsers (SnakeYAML, Psych) — deserialization
+X-GitHub-Enterprise-Version    # GHAS — nomad template, collectd, syslog-ng injection
+```
+
+### JavaScript / Frontend Signals
+```javascript
+// Look for these patterns in JS bundles
+fetch(&#x27;/api/exec&#x27;, {method:&#x27;POST&#x27;, body: cmd})
+eval(userInput)
+new Function(userInput)
+document.write(unsafeData)
+window.location = userControlled  // URL scheme bypass → JS execution
+```
+
+### Tech Stack Signals
+| Signal | RCE Vector |
+|--------|-----------|
+| `nomad` in config UI | Template injection → `{{ ... }}` |
+| `syslog-ng` config editable | Config injection → `program()` destination |
+| `collectd` config editable | Plugin exec injection |
+| `SnakeYAML` in classpath | `!!javax.script.ScriptEngineManager [...]` |
+| npm `package.json` internal scope | Dependency confusion |
+| ingress-nginx annotations | Path field regex bypass |
+
+## Step-by-Step Hunting Methodology
+
+1. **Map the execution contexts first.** Before testing payloads, identify everywhere user-controlled input touches an execution layer: template engines, shell commands, YAML parsers, file paths used in operations, package resolution, and configuration files.
+
+2. **Enumerate admin/management interfaces.** Crawl for `/management-console`, `/admin`, `/_internal`, `/setup`, `/config`. These surfaces are lower-auth and higher-privilege — the GHES cluster produced 6 separate RCEs from one console role.
+
+3. **Check template injection in every config field.** In any management UI that accepts free-form configuration (log destinations, notification formats, proxy settings), submit `{{7*7}}`, `${7*7}`, `&lt;%= 7*7 %&gt;`. Look for `49` in responses, logs, or DNS callbacks.
+
+4. **Test YAML/XML/serialized input for code execution.** Any endpoint accepting `Content-Type: application/yaml` or `application/xml`:
+   - SnakeYAML: submit `!!javax.script.ScriptEngineManager` gadget
+   - Ruby YAML: submit `!ruby/object:Gem::Installer` gadget
+   - REXML: submit billion-laughs / quadratic blowup XML
+
+5. **Hunt dependency confusion.** For every npm/pip/gem internal package name visible in JS bundles, error messages, or `package.json` in public repos — register a higher-versioned package on the public registry pointing to a canary callback.
+
+6. **Check file path operations for traversal → execution.** ActiveStorage, file upload handlers, symlink operations: submit `../../../etc/cron.d/shell` as filename. Confirm write then trigger execution.
+
+7. **Audit Kubernetes/cloud-native surfaces.** Run `kubectl` against any exposed API server. Check ingress annotations, especially `nginx.ingress.kubernetes.io/configuration-snippet` and `spec.rules.http.paths.path` for Lua/regex injection.
+
+8. **Test OAuth redirect URI and URL scheme handlers.** Mobile apps processing `javascript:` or `intent://` URIs via OAuth redirect may execute JavaScript. Try `javascript:alert(document.cookie)` and custom scheme URIs.
+
+9. **Verify with out-of-band callbacks.** Never rely solely on visible output. Use Burp Collaborator, interactsh, or `canarytokens.org` DNS tokens. Blind RCE is common in backend processors.
+
+10. **Chain privileges.** A low-severity misconfiguration (editor role, CSRF, path traversal) combined with an RCE primitive equals critical. Always ask: &quot;what can I reach from here?&quot;</pre>
+</body>
+</html>

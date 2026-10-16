@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>database-schema-designer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">database-schema-design</a> / database-schema-designer</p><h1>database-schema-designer</h1><p class="meta">combined</p><p>The two copies overlap on the core task of designing database schemas, but each contains material steps the other lacks. The softaworks copy provides a four-phase process (analysis, design, optimization, migration), normalization guidance, SQL/NoSQL selection, indexing strategy, and anti-patterns. The LeoYeAI copy adds concrete engineering artifacts and constraints: Row-Level Security policies, seed data generation, TypeScript/Python type generation, ERD generation in Mermaid, and cross-cutting concerns like multi-tenancy, soft deletes, audit trails, and optimistic locking. Neither copy is a reproduction of the other, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/softaworks/agent-toolkit">softaworks/agent-toolkit</a></td><td><code>dist/plugins/database-schema-designer/skills/database-schema-designer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/database-schema-designer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/softaworks/agent-toolkit">softaworks/agent-toolkit</a></td><td><code>dist/plugins/database-schema-designer/skills/database-schema-designer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/database-schema-designer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/softaworks/agent-toolkit">softaworks/agent-toolkit</a></td><td><code>skills/database-schema-designer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: database-schema-designer
+description: Design robust, scalable database schemas for SQL and NoSQL databases. Provides normalization guidelines, indexing strategies, migration patterns, constraint design, performance optimization, RLS policies, seed data, type generation, and ERD diagrams.
+license: MIT
+---
+
+# Database Schema Designer
+
+Design production-ready database schemas with best practices built-in.
+
+## Quick Start
+
+Describe your data model, including entities, key relationships, scale hints, and database preference (SQL/NoSQL). Defaults to SQL if not specified.
+
+## Process
+
+### Phase 1: Analysis
+- Identify entities and relationships from requirements.
+- Determine access patterns (read-heavy vs write-heavy).
+- Choose SQL or NoSQL based on requirements.
+
+### Phase 2: Design
+- Normalize to 3NF for SQL, or use embedding/referencing for NoSQL.
+- Define primary keys and foreign keys.
+- Choose appropriate data types.
+- Add constraints (UNIQUE, CHECK, NOT NULL).
+- Add cross-cutting concerns: multi-tenancy (organization_id), soft deletes (deleted_at), audit trail (created_by, updated_by, created_at, updated_at), versioning (version INTEGER for optimistic locking).
+
+### Phase 3: Optimize
+- Plan indexing strategy: index foreign keys, WHERE columns, and consider composite, partial, and covering indexes.
+- Consider denormalization for read-heavy queries.
+- Add timestamps (created_at, updated_at).
+
+### Phase 4: Migrate
+- Generate migration scripts (up and down) using Drizzle, Prisma, TypeORM, or Alembic.
+- Ensure backward compatibility.
+- Plan zero-downtime deployment.
+
+### Phase 5: Generate Artifacts
+- Generate TypeScript interfaces or Python dataclasses/Pydantic models from the schema.
+- Generate Row-Level Security (RLS) policies for multi-tenant applications.
+- Generate seed data with realistic test data.
+- Generate an ERD in Mermaid format.
+
+## Key Principles
+
+- Model the domain, not the UI.
+- Data integrity first: use constraints at the database level.
+- Optimize for access pattern: OLTP normalized, OLAP denormalized.
+- Plan for scale: index strategy and partitioning plan.
+
+## Anti-Patterns
+
+- Avoid VARCHAR(255) everywhere; size fields appropriately.
+- Avoid FLOAT for money; use DECIMAL(10,2).
+- Avoid missing FK constraints; always define foreign keys.
+- Avoid no indexes on FKs; index every foreign key.
+- Avoid storing dates as strings; use DATE or TIMESTAMP types.
+- Avoid SELECT * in queries; use explicit column lists.
+- Avoid non-reversible migrations; always provide down migrations.
+
+## Commands
+
+- design schema for {domain}: Full schema generation.
+- normalize {table}: Apply normalization rules.
+- add indexes for {table}: Generate index strategy.
+- migration for {change}: Create reversible migration.
+- review schema: Audit existing schema.
+- generate types: Generate TypeScript or Python types.
+- generate rls: Generate Row-Level Security policies.
+- generate seed: Generate seed data.
+- generate erd: Generate Mermaid ERD diagram.
+
+## Conflicts
+
+- softaworks/agent-toolkit structures the process as four phases (Analysis, Design, Optimize, Migrate) with emphasis on normalization to 3NF and SQL/NoSQL selection, but does not include RLS, seed data, type generation, or ERD generation.
+- LeoYeAI/openclaw-master-skills structures the process as Requirements to Entities, Identify Relationships, Add Cross-cutting Concerns, then generates RLS policies, seed data, types, and ERD diagrams, but does not include a dedicated migration phase or explicit normalization-to-3NF step.</pre>
+</body>
+</html>

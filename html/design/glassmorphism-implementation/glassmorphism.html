@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>glassmorphism</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">glassmorphism-implementation</a> / glassmorphism</p><h1>glassmorphism</h1><p class="meta">combined</p><p>The two copies overlap on the core visual concept (frosted glass, backdrop blur, translucent panels, subtle light borders) but each contains material steps the other lacks. The bergside copy is a design-system authoring workflow (tokens, accessibility, QA checklist, component states, writing tone) with no implementation code. The sickn33 copy is an implementation guide with concrete CSS, SwiftUI, and Flutter code, platform-specific material APIs, and a requirement for a vibrant background. Crowning one would hide a real alternative: one is a governance/authoring procedure, the other is a build procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/glassmorphism/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/design-it/glassmorphism/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/glassmorphism/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/design-it/glassmorphism/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/design-it/glassmorphism/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/design-it/glassmorphism/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Glassmorphism
+
+## When to Use
+Use this skill when the user wants a frosted-glass effect, blurred backgrounds, transparency, or a sleek MacOS-like feel. It covers both design-system authoring and implementation.
+
+## Core Principles
+1. **Background Blur (Backdrop Filter)**: The defining characteristic. Elements blur whatever is underneath them.
+2. **Semi-transparent Backgrounds**: Panels use rgba() colors to let the background shine through.
+3. **Subtle Light Borders**: A 1px semi-transparent white (or light) border to simulate the glass edge catching the light.
+4. **Vibrant Background Required**: Glass only works if there is a vibrant or textured background (gradients, abstract meshes, or photos) visible behind it.
+5. **High-Contrast Text**: Pure white or pure black text is required for legibility against the glass.
+6. **Soft Shadows**: Soft, subtle drop shadows detach the glass pane from the background.
+
+## Design Tokens and Foundations
+- Define tokens before component-level guidance.
+- Prefer semantic tokens over raw values.
+- Preserve visual hierarchy.
+- Keep interaction states explicit.
+- Use a comfortable spacing density.
+- Anchor each rule to a token, threshold, or example; do not rely on ambiguous adjectives alone.
+
+## Component-Level Rules
+- Define required states: default, hover, focus-visible, active, disabled, loading, error (as relevant).
+- Describe interaction behavior for keyboard, pointer, and touch.
+- State spacing, typography, and color-token usage explicitly.
+- Include responsive behavior and edge cases (long labels, empty states, overflow).
+
+## Accessibility
+- WCAG 2.2 AA.
+- Keyboard-first interactions.
+- Visible focus states.
+- Every accessibility statement must be testable in implementation.
+- Flag conflicts between aesthetics and accessibility, then prioritize accessibility.
+
+## Web Implementation
+- Rely heavily on `backdrop-filter: blur()`.
+- CSS example:
+```css
+body {
+  background: url(&#x27;abstract-mesh.jpg&#x27;) cover;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.15);
+  /* OR background: rgba(0, 0, 0, 0.25); for Dark glass */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+}
+```
+
+## App Implementation
+
+### SwiftUI
+- Use `.ultraThinMaterial`, `.thinMaterial`, `.regularMaterial`, `.thickMaterial` for built-in frosted glass.
+- Add `.overlay(RoundedRectangle().stroke(.white.opacity(0.3)))` for the light edge catch.
+- Glass only works if there is a vibrant background visible behind it.
+- Example:
+```swift
+struct GlassCard: View {
+    var body: some View {
+        ZStack {
+            LinearGradient(
+                colors: [.purple, .blue, .cyan],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+            
+            VStack(alignment: .leading, spacing: 16) {
+                Text(&quot;Glass Panel&quot;)
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundColor(.white)
+                Text(&quot;Content floating on frosted glass.&quot;)
+                    .font(.system(size: 15))
+                    .foregroundColor(.white.opacity(0.8))
+                
+                Button(action: {}) {
+                    Text(&quot;Continue&quot;)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 12)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(8)
+                }
+            }
+            .padding(24)
+            .background(.ultraThinMaterial)
+            .cornerRadius(16)
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(.white.opacity(0.3), lineWidth: 1)
+            )
+            .shadow(color: .black.opacity(0.1), radius: 20, x: 0, y: 10)
+            .padding(24)
+        }
+    }
+}
+```
+
+### Flutter
+- **Critical**: `BackdropFilter` MUST wrap the glass content.
+- Example:
+```dart
+class GlassCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.purple, Colors.blue, Colors.cyan],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.3),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(&#x27;Glass Panel&#x27;,
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600,
+                        color: Colors.white)),
+                    const SizedBox(height: 16),
+                    Text(&#x27;Content floating on frosted glass.&#x27;,
+                      style: TextStyle(fontSize: 15,
+                        color: Colors.white.withOpacity(0.8))),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+```
+
+## Guideline Authoring Workflow
+1. Restate the design intent in one sentence before proposing rules.
+2. Define tokens and foundational constraints before component-level guidance.
+3. Specify component anatomy, states, variants, and interaction behavior.
+4. Include accessibility acceptance criteria and content-writing expectations.
+5. Add anti-patterns and migration notes for existing inconsistent UI.
+6. End with a QA checklist that can be executed in code review.
+
+## Required Output Structure
+When generating design-system guidance, use this structure:
+- Context and goals
+- Design tokens and foundations
+- Component-level rules (anatomy, variants, states, responsive behavior)
+- Accessibility requirements and testable acceptance criteria
+- Content and tone standards with examples
+- Anti-patterns and prohibited implementations
+- QA checklist
+
+## Rules: Do
+- Prefer semantic tokens over raw values.
+- Preserve visual hierarchy.
+- Keep interaction states explicit.
+- Use &quot;must&quot; for non-negotiable rules and &quot;should&quot; for recommendations.
+- Pair every do-rule with at least one concrete don&#x27;t-example.
+- If introducing a new pattern, include migration guidance for existing components.
+
+## Rules: Don&#x27;t
+- Avoid low contrast text.
+- Avoid inconsistent spacing rhythm.
+- Avoid decorative motion without purpose.
+- Avoid ambiguous labels.
+- Avoid mixing multiple visual metaphors.
+
+## Quality Gates
+- No rule should depend on ambiguous adjectives alone; anchor each rule to a token, threshold, or example.
+- Every accessibility statement must be testable in implementation.
+- Prefer system consistency over one-off local optimizations.
+- Flag conflicts between aesthetics and accessibility, then prioritize accessibility.
+
+## Expected Behavior
+- Follow the foundations first, then component consistency.
+- When uncertain, prioritize accessibility and clarity over novelty.
+- Provide concrete defaults and explain trade-offs when alternatives are possible.
+- Keep guidance opinionated, concise, and implementation-focused.</pre>
+</body>
+</html>

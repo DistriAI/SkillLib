@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pydeseq2</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">rna-seq-differential-expression</a> / pydeseq2</p><h1>pydeseq2</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a rigorous, version-pinned (PyDESeq2 0.5.4) skill that includes a CLI driver, strict data validation rules (rejecting silent intersections), and specific output artifacts. The other three copies (Vibe-Skills, medical-research-skills, OpenClaw-Medical-Skills) are nearly identical to each other, providing a standard Python API workflow with inline code examples and a manual volcano plot script. The K-Dense copy lacks the specific Python API code patterns found in the others, while the others lack the strict validation logic, CLI usage, and version constraints of the K-Dense copy. Combining them provides both the robust procedural guardrails and the practical code implementation.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pydeseq2/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pydeseq2/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/pydeseq2/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pydeseq2/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pydeseq2/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pydeseq2/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/pydeseq2/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pydeseq2/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: pydeseq2
+description: Performs bulk RNA-seq differential expression analysis with PyDESeq2, including count validation, formula designs, explicit contrasts, Wald tests, FDR correction, coefficient-matched LFC shrinkage, and result visualization.
+---
+
+# PyDESeq2
+
+Use this skill for bulk RNA-seq negative-binomial GLMs with explicit biological replicates. Do not use for single-cell per-cell testing.
+
+## Environment
+
+- **Python:** &gt;= 3.11 (Recommended 3.13 for current stack)
+- **PyDESeq2:** 0.5.4
+- **AnnData:** 0.13.4 (if using h5ad)
+
+Install in an isolated environment:
+```bash
+uv venv --python 3.13 .venv-pydeseq2
+uv pip install --python .venv-pydeseq2/bin/python &#x27;pydeseq2==0.5.4&#x27; &#x27;anndata==0.13.4&#x27;
+```
+
+## Analysis Contract
+
+1. **Experimental Unit:** Ensure samples are independent biological replicates.
+2. **Data Orientation:** Counts must be **samples × genes** with non-negative integer counts. If input is genes × samples, transpose it.
+3. **Validation:** 
+   - **Never silently intersect** sample IDs. Resolve unmatched IDs and missing design annotations explicitly.
+   - Reject duplicate headers, unequal sample sets, and invalid count values.
+4. **Prefiltering:** Apply a prespecified gene prefilter (e.g., total counts &gt;= 10) after sample exclusions.
+5. **Design:** Build a full-rank formula. Put adjustment variables (batch) before the variable of interest (condition).
+
+## Workflow
+
+### Option A: CLI Driver (Recommended for reproducibility)
+
+Use the bundled driver for strict validation and standardized outputs.
+
+```bash
+python scripts/run_deseq2_analysis.py \
+  --counts counts.csv --metadata metadata.csv \
+  --design &#x27;~batch + condition&#x27; --contrast condition treated control \
+  --min-counts 10 --alpha 0.05 --n-cpus 1 --plots --output results/
+```
+
+*Note: The driver expects counts CSV as genes × samples by default. Use `--no-transpose` if already samples × genes.*
+
+**Outputs:**
+- `deseq2_results.csv`: Shrunken estimates (if requested) with original Wald stats.
+- `deseq2_results_unshrunken.csv`: Original Wald table.
+- `significant_genes.csv`: Genes with `padj &lt; alpha`.
+- `deseq_dataset.h5ad`: Fitted AnnData snapshot.
+- `volcano_plot.png` / `ma_plot.png`: Visualizations.
+
+### Option B: Python API (For custom pipelines)
+
+```python
+import pandas as pd
+from pydeseq2.dds import DeseqDataSet
+from pydeseq2.ds import DeseqStats
+
+# 1. Load and Orient Data
+counts_df = pd.read_csv(&quot;counts.csv&quot;, index_col=0).T  # Ensure samples x genes
+metadata = pd.read_csv(&quot;metadata.csv&quot;, index_col=0)
+
+# 2. Validate Alignment (Explicit check, do not silently intersect)
+if not counts_df.index.equals(metadata.index):
+    raise ValueError(&quot;Sample IDs in counts and metadata do not match exactly.&quot;)
+
+# 3. Filter Low-Count Genes
+genes_to_keep = counts_df.columns[counts_df.sum(axis=0) &gt;= 10]
+counts_df = counts_df[genes_to_keep]
+
+# 4. Fit Model
+dds = DeseqDataSet(
+    counts=counts_df,
+    metadata=metadata,
+    design=&quot;~batch + condition&quot;,
+    refit_cooks=True
+)
+dds.deseq2()
+
+# 5. Statistical Testing
+ds = DeseqStats(
+    dds,
+    contrast=[&quot;condition&quot;, &quot;treated&quot;, &quot;control&quot;],
+    alpha=0.05,
+    cooks_filter=True,
+    independent_filter=True
+)
+ds.summary()
+
+# 6. Results and Shrinkage
+results = ds.results_df.copy()
+
+# Optional: Shrink LFC for visualization/ranking (p-values remain unchanged)
+ds.lfc_shrink()
+results_shrunk = ds.results_df.copy()
+
+# 7. Export
+results.to_csv(&quot;deseq2_results_unshrunken.csv&quot;)
+results_shrunk.to_csv(&quot;deseq2_results_shrunk.csv&quot;)
+significant = results[results.padj &lt; 0.05]
+significant.to_csv(&quot;significant_genes.csv&quot;)
+```
+
+## Statistical Interpretation
+
+- **Contrast:** `[&quot;condition&quot;, &quot;treated&quot;, &quot;control&quot;]` tests **treated / control**.
+- **Significance:** Use `padj &lt; alpha` (e.g., 0.05). Missing `padj` is never significant.
+- **Shrinkage:** Use shrunk `log2FoldChange` for volcano plots and ranking. Report unshrunken `pvalue` and `padj` for statistical significance.
+- **Volcano Plot:** Plot `log2FoldChange` vs `-log10(padj)`. Cap zero adjusted p-values for plotting only.</pre>
+</body>
+</html>

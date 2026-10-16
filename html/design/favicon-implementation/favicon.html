@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>favicon</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">favicon-implementation</a> / favicon</p><h1>favicon</h1><p class="meta">combined</p><p>The two skills cover the same task but from different angles. The first is a comprehensive guide covering brand consistency, required sizes, formats, Google Search (SERP) requirements, and implementation patterns for various tech stacks. The second is a specific, executable procedure that uses ImageMagick to generate the actual files, detect the project framework, and update the HTML/manifest. The first lacks the specific generation commands and framework detection logic, while the second lacks the SERP optimization details and broader brand context. Combining them provides a complete workflow from generation to optimization.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/components/branding/favicon/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/favicon/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/components/branding/favicon/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/favicon/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/favicon/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/favicon/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: favicon
+description: Generate, implement, and optimize favicons and app icons for brand consistency and search visibility.
+---
+
+# Favicon Generator &amp; Optimizer
+
+## 1. Assessment
+1. **Context**: Read `contextus.md` or project files to understand the tech stack and brand identity.
+2. **Source**: Identify a source image (logo) or create one.
+3. **Search Visibility**: Note that favicons appear in Google Search results. Ensure the homepage is crawlable and the favicon URL is stable.
+
+## 2. Generation (ImageMagick)
+If generating from a source image:
+1. **Prerequisites**: Ensure `magick` (ImageMagick v7+) is installed.
+2. **Detect Framework**: Identify the static assets directory (e.g., `public/` for Next.js, `static/` for Gatsby).
+3. **Generate Files**:
+   - `favicon.ico` (16x16, 32x32, 48x48)
+   - `favicon-96x96.png`
+   - `apple-touch-icon.png` (180x180)
+   - `web-app-manifest-192x192.png`
+   - `web-app-manifest-512x512.png`
+   - `favicon.svg` (if source is SVG)
+   *Note: Use `-background none` before the input file to preserve transparency.*
+
+## 3. Implementation
+1. **HTML Tags**: Add `&lt;link&gt;` tags for `icon`, `apple-touch-icon`, and `manifest`.
+2. **PWA Manifest**: Create/update `site.webmanifest` with 192x192 and 512x512 icons (purpose: maskable).
+3. **Framework Specifics**: 
+   - **Next.js**: Place `favicon.ico`, `icon.png`, `apple-icon.png` in `/app`.
+   - **Static**: Place in root or `public/`.
+
+## 4. Optimization &amp; Best Practices
+- **Simplicity**: Design for 16x16 legibility.
+- **SERP**: Ensure the favicon is square, &gt;48x48px, and hosted at a stable URL on the homepage.
+- **Caching**: Use versioning (e.g., `?v=2`) for updates.
+- **Testing**: Check across browsers, dark mode, and Google Search Console.</pre>
+</body>
+</html>

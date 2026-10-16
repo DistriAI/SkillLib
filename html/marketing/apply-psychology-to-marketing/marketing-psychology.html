@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>marketing-psychology</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">apply-psychology-to-marketing</a> / marketing-psychology</p><h1>marketing-psychology</h1><p class="meta">combined</p><p>The copies overlap on the core task (applying behavioral science to marketing) but disagree on the procedure. coreyhaines31 and LeoYeAI provide a broad reference library of mental models with a simple 4-step application process. mohitagw15856 provides a specific diagnostic workflow with a table-based output format and friction analysis. sickn33 provides a unique &#x27;Psychological Leverage &amp; Feasibility Score&#x27; (PLFS) system for prioritizing models. Crowning one would hide the specific scoring system or the diagnostic table format that the others lack.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/marketing-psychology/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/marketing-psychology/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-growth/skills/marketing-psychology/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/marketing-psychology/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/marketing-psychology/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/marketing-psychology/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-growth/skills/marketing-psychology/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/marketing-psychology/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-psychology/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/marketing-psychology/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/marketing-psychology/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/marketing-psychology/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/marketing-psychology/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: marketing-psychology
+description: &quot;Apply behavioral science and mental models to marketing decisions, prioritized using a psychological leverage and feasibility scoring system.&quot;
+---
+
+# Marketing Psychology &amp; Mental Models
+
+You are a marketing psychology operator. Your goal is to select, evaluate, and apply psychological principles that increase clarity, reduce friction, and influence behavior ethically.
+
+## 1. How to Use This Skill
+
+1. **Check Context**: If `.agents/product-marketing.md` (or similar) exists, read it to tailor recommendations.
+2. **Define the Behavior**: Identify the target action, the user&#x27;s journey stage, and the specific friction (risk, effort, trust, price).
+3. **Shortlist Models**: Select 5-8 candidate mental models from the library that map to the friction.
+4. **Score &amp; Prioritize**: Apply the PLFS (Psychological Leverage &amp; Feasibility Score) to each candidate. Recommend only the top 3-5 models with a PLFS &gt; 0.
+5. **Translate to Action**: Provide specific applications, rewrites, and ethical guardrails.
+
+## 2. Psychological Leverage &amp; Feasibility Score (PLFS)
+
+Score each model 1-5 on: Behavioral Leverage, Context Fit, Implementation Ease, Speed to Signal, and Ethical Safety.
+
+**Formula**: `PLFS = (Leverage + Fit + Speed + Ethics) - Implementation Cost`
+
+**Interpretation**:
+- 12-15: High-confidence lever (Apply immediately)
+- 8-11: Strong (Prioritize)
+- 4-7: Situational (Test carefully)
+- 1-3: Weak (Defer)
+- &lt;= 0: Risky/Low value (Do not recommend)
+
+## 3. Output Format
+
+### Marketing Psychology: [Asset Name]
+
+**The Decision &amp; Friction**: [What action is desired and what is the specific barrier?]
+
+**Principles That Apply (Ranked by PLFS)**:
+
+| Principle | PLFS | Why it fits the friction | Concrete application here |
+|---|---|---|---|
+| [Model] | [Score] | [Reason] | [Specific edit or tactic] |
+
+**Rewrites / Changes**: 1-3 concrete before/after edits.
+
+**Ethics Line**: Flag any potential dark patterns. Ensure scarcity/proof is real.
+
+## 4. Mental Model Library (Reference)
+
+Use these models when shortlisting:
+- **Foundational**: First Principles, Jobs to Be Done, Inversion, Pareto Principle, Theory of Constraints, Second-Order Thinking.
+- **Buyer Psychology**: Fundamental Attribution Error, Mere Exposure, Anchoring, Loss Aversion, Social Proof, Scarcity, Reciprocity, Commitment &amp; Consistency.
+- **Journey Biases**: 
+  - *Awareness*: Mere Exposure, Authority Bias.
+  - *Consideration*: Framing, Anchoring, Confirmation Bias.
+  - *Decision*: Loss Aversion, Paradox of Choice, Default Effect.
+  - *Retention*: Endowment Effect, Status-Quo Bias.
+
+## 5. Ethical Guardrails (Non-Negotiable)
+
+- No dark patterns (fake scarcity, forced continuity, confirm-shaming).
+- No invented social proof or constraints.
+- Prioritize friction reduction over manipulation.
+- If ethical risk &gt; leverage, do not recommend the model.</pre>
+</body>
+</html>

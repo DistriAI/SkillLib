@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sleep-analyzer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">sleep-data-analysis</a> / sleep-analyzer</p><h1>sleep-analyzer</h1><p class="meta">combined</p><p>The two copies share the same name and high-level purpose but diverge significantly in procedure. The first copy is a thin wrapper that defers to an external &#x27;detailed-guide.md&#x27; and provides no concrete steps, data sources, or algorithms. The second copy is a self-contained, detailed procedure specifying data file paths, specific analysis algorithms (linear regression, Pearson correlation), diagnostic criteria (STOP-BANG, PSQI), and a structured output format. Because the first copy lacks the material steps present in the second, and the second does not reference the external guide, crowning one would hide the other&#x27;s approach (external reference vs. inline procedure).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/sleep-analyzer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/sleep-analyzer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/sleep-analyzer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/sleep-analyzer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/sleep-analyzer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/sleep-analyzer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: sleep-analyzer
+description: 分析睡眠数据、识别睡眠模式、评估睡眠质量，并提供个性化睡眠改善建议。支持与其他健康数据的关联分析。
+allowed-tools: Read, Grep, Glob, Write
+---
+
+# 睡眠分析器技能
+
+分析睡眠数据，识别睡眠模式，评估睡眠质量，并提供个性化睡眠改善建议。
+
+## 执行步骤
+
+### 1. 确定分析范围
+明确用户请求的分析类型（趋势/质量/问题/相关性/建议）和时间范围。
+
+### 2. 读取数据
+**主要数据源**：
+1. `data-example/sleep-tracker.json` - 睡眠追踪主数据
+2. `data-example/sleep-logs/YYYY-MM/YYYY-MM-DD.json` - 每日睡眠记录
+
+**关联数据源**：
+1. `data-example/fitness-tracker.json` - 运动数据
+2. `data-example/hypertension-tracker.json` - 血压数据
+3. `data-example/diabetes-tracker.json` - 血糖数据
+4. `data-example/diet-records/` - 饮食记录
+5. `data-example/mood-tracker.json` - 情绪数据
+
+### 3. 数据分析
+根据分析类型执行相应的分析算法：
+- **趋势分析**：线性回归计算趋势斜率，移动平均平滑波动，统计显著性检验。
+- **相关性分析**：Pearson相关系数计算，滞后相关性分析，多变量回归分析。
+- **模式识别**：时间序列模式识别，异常值检测，周期性分析。
+- **问题识别**：
+  - 失眠模式：入睡困难（&gt;30分钟）、睡眠维持困难（觉醒&gt;2次或&gt;30分钟）、早醒（&gt;30分钟）。
+  - 呼吸暂停风险：STOP-BANG问卷评分，症状分析，风险等级评估。
+  - 其他：作息不规律检测，睡眠债计算，社交时差评估。
+
+### 4. 生成报告
+按照标准格式输出分析报告，包括：
+- 睡眠时长趋势
+- 睡眠效率
+- 作息规律性
+- 睡眠质量分布
+- 夜间觉醒分析
+- PSQI 评估趋势
+- 睡眠问题识别
+- 相关性分析
+- 洞察与建议（优先级行动计划）
+
+## 输出格式
+
+```markdown
+# 睡眠质量分析报告
+
+## 分析周期
+[日期范围]
+
+## 睡眠时长趋势
+- 趋势方向
+- 变化幅度和百分比
+- 解读
+
+## 睡眠效率
+- 平均睡眠效率
+- 效率范围
+- 达标率
+
+## 作息规律性
+- 平均上床/起床时间
+- 作息一致性评分
+- 社交时差
+
+## 睡眠质量分布
+| 质量等级 | 天数 | 占比 | 趋势 |
+|---------|------|------|------|
+
+## 夜间觉醒分析
+- 平均觉醒次数/时长
+- 主要原因
+
+## PSQI 评估趋势
+- 最新分数
+- 变化趋势
+
+## 睡眠问题识别
+- 失眠评估
+- 呼吸暂停筛查（STOP-BANG）
+
+## 相关性分析
+- 睡眠 ↔ 运动
+- 睡眠 ↔ 咖啡因
+- 睡眠 ↔ 情绪
+
+## 洞察与建议
+- 关键洞察
+- 优先级行动计划
+```
+
+## 限制
+- 仅当任务明确匹配上述范围时使用此技能。
+- 输出不应替代环境特定的验证、测试或专家审查。
+- 如果缺少必要的输入、权限、安全边界或成功标准，请停止并请求澄清。</pre>
+</body>
+</html>

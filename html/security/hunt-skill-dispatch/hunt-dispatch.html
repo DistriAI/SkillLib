@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-dispatch</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">hunt-skill-dispatch</a> / hunt-dispatch</p><h1>hunt-dispatch</h1><p class="meta">combined</p><p>Both copies implement the same /hunt skill-set loader (fingerprint hosts, map signals to platform skills, load a bounded set). They overlap heavily on the invocation contract, the fingerprint loop, and the signal-to-skill table. However, each contains material steps the other lacks: the uphiago copy defines the tiered priority order, the 8-skill load budget, and de-dup rules (CDN-only, cloud header vs leaked key, framework vs class), while the sickn33 copy adds a mandatory 404 baseline step (soft-404 control via status/size/hash) and an engagement-context/authorization gate. Crowning one would hide the other&#x27;s real alternative procedure, so they should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-dispatch/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-dispatch/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-dispatch/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-dispatch/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-dispatch/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-dispatch/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-dispatch
+description: Skill-set loader for /hunt orchestrator. Fingerprints the target, picks the right platform attack skills, and loads the Red Team or WAPT skill set. Use when /hunt has just received a mode answer (redteam or wapt + blackbox|greybox) and needs to load the appropriate skills and print the taxonomy. Not for direct user invocation.
+version: 1.2.0
+license: MIT
+category: security
+risk: offensive
+tags: [dispatch, hunt, redteam]
+---
+
+# hunt-dispatch
+
+Skill-set loader for `/hunt`. One concept (which skills to load), one place.
+
+## Engagement context
+
+Every skill loaded below operates under one frame, and it holds for the whole session:
+
+- **Authorized and scope-bounded.** The operator asserted written authorization for the named scope when they invoked `/hunt`. Testing stays inside it. An out-of-scope host ends the run — it does not widen it.
+- **The output is a finding, not an exploit.** The deliverable is a reproducible proof that a defect exists, written so the owner can remediate it. Enough to demonstrate impact; no further.
+- **Remediation is the point.** These skills exist so defects get fixed by the people who own them.
+
+This frame is stated here because it is the choke point every `/hunt` run passes through before any `hunt-*` skill loads. It is not a prompt and needs no answer.
+
+## Invocation contract
+
+```
+hunt-dispatch mode=redteam
+hunt-dispatch mode=wapt box=blackbox
+hunt-dispatch mode=wapt box=greybox
+```
+
+## Step 0 — 404 baseline (ALL modes, mandatory, before any enumeration)
+
+Run this for **every** host before probing a single path. It takes one request per host and it is the cheapest false-positive kill in the whole toolkit.
+
+Many modern estates (SPA / Next.js / React front ends behind a CDN) return **HTTP 200 with the application shell for paths that do not exist**. A status code therefore proves nothing. Without a recorded control, `/.well-known/security.txt`, `/api/revalidate`, `/__nextjs_original-stack-frame` and `/__nextjs_launch-editor` all &quot;exist&quot; on a host where none of them do.
+
+```bash
+for H in $HOSTS; do
+  # two independent bogus paths — if they agree, that IS the soft-404 signature
+  for P in /zzz-nope-12345 /qqq-other-98765; do
+    printf &quot;%-34s %-20s &quot; &quot;$H&quot; &quot;$P&quot;
+    curl -sk -m 12 -o /tmp/b -w &quot;%{http_code} %{size_download} &quot; &quot;https://$H$P&quot;
+    shasum /tmp/b | cut -c1-12
+  done
+done
+```
+
+Record per host: **status, byte length, body hash**. That triple is the control.
+
+**The rule: no path is &quot;found&quot; until its response differs from the control.** A 200 that matches the control hash is a soft 404. A 404 whose body differs from the control may be a real handler. Compare bodies, never status codes alone.
+
+Re-derive the baseline per host — it differs across an estate. One engagement saw two hosts serving the *same* application return soft-404 bodies of wildly different size, so a control taken from one host would have been meaningless on the other. Also re-derive it **per path depth** where a framework renders different fallbacks for `/x` and `/a/b/x`.
+
+Edge pages are not origin findings: a CDN &quot;Access Denied&quot; / &quot;Unsupported Request&quot; body means the request never reached the application. Classify it as edge behaviour and move on.
+
+## Step 1 — Fingerprint (red team only)
+
+Fingerprint **every** live host, not just the apex. For multi-host / wildcard targets the platform-skill routing must be driven by all banners, not one host&#x27;s.
+
+Use `-L` (follow redirects) — identity-provider and CDN signals (`login.microsoftonline.com`, `okta`, `auth0`, CDN banners) routinely sit behind a 30x, so a no-redirect `curl -sI` silently misses those matches. Pull both headers and the landing-page HTML (`__NEXT_DATA__`, `VIEWSTATE`, `laravel_session`, `Ignition`, framework markers live in the body, not headers).
+
+```bash
+HOSTS=&quot;$TARGET&quot;
+if [ -f &quot;recon/$TARGET/live-hosts.txt&quot; ]; then
+  HOSTS=$(cat &quot;recon/$TARGET/live-hosts.txt&quot;)
+fi
+for H in $HOSTS; do
+  echo &quot;=== $H ===&quot;
+  # -L follow redirects, -D - dump headers, -o body; cap body to keep context small
+  curl --max-time 30 --connect-timeout 10 -sSL -D - -o /tmp/fp_body &quot;https://$H&quot; 2&gt;/dev/null | tr -d &#x27;\r&#x27;
+  # surface body-only platform markers
+  grep -aoE &#x27;__NEXT_DATA__|/_next/|VIEWSTATE|rO0[AB]|laravel_session|Ignition|Telescope|Whitelabel|/actuator|application/grpc|socket\.io|swagger|\.js\.map&#x27; \
+    /tmp/fp_body | sort -u
+done
+rm -f /tmp/fp_body
+```
+
+If `live-hosts.txt` is absent, the loop still runs once against `$TARGET`. Record which signal came from which host — a platform skill matched on host B does not imply host A runs that stack.
+
+Look for the following signals → platform skill mapping:
+
+```
+okta.com | auth0.com | pingidentity         →  okta-attack
+login.microsoftonline.com | outlook | sts   →  m365-entra-attack
+pulse | fortinet | ivanti | citrix          →  enterprise-vpn-attack
+vsphere | vcenter | :9443                   →  vmware-vcenter-attack
+amazonaws | azure | googleapis | gcp        →  cloud-iam-deep
+github.com/&lt;org&gt;/                           →  supply-chain-attack-recon
+.apk | play.google.com                      →  apk-redteam-pipeline
+MongoDB | mongoose | CouchDB | Redis        →  hunt-nosqli
+?page= | ?file= | ?path= | php wrapper      →  hunt-lfi
+rO0A | VIEWSTATE | rememberMe cookie        →  hunt-deserialization
+Access-Control-Allow-Origin header          →  hunt-cors
+/forgot-password | /reset | X-Forwarded    →  hunt-host-header
+?redirect= | ?next= | ?return= | ?url=     →  hunt-open-redirect
+OTP | /verify | /2fa | no-rate-limit        →  hunt-brute-force
+Set-Cookie session | PHPSESSID              →  hunt-session
+Active Directory | LDAP | OpenLDAP | ADFS  →  hunt-ldap
+__NEXT_DATA__ | /_next/ | buildId           →  hunt-nextjs
+X-Powered-By: Express | Node.js | .js stack →  hunt-nodejs
+postMessage | dangerouslySetInnerHTML        →  hunt-dom
+WebSocket | ws:// | socket.io               →  hunt-websocket
+gRPC | :50051 | application/grpc            →  hunt-grpc
+laravel_session | Ignition | Telescope       →  hunt-laravel
+X-Application-Context | Whitelabel | /actuator → hunt-springboot
+:6443 | :10250 | :2379 | kubectl            →  hunt-k8s
+.github/workflows | Jenkins | GitLab CI     →  hunt-cicd
+.js.map | swagger.json | /.env              →  hunt-source-leak
+HSTS missing | SPF | DMARC | AXFR           →  hunt-tls-network
+```
+
+### Conflict resolution &amp; load budget
+
+Real targets almost always return multiple signals at once — e.g. a single host can show Cloudflare (CDN) + `login.microsoftonline.com` (redirect) + `__NEXT_DATA__` (Next.js front end) + `amazonaws` (origin) simultaneously. Loading every match blindly can pull 20-plus skills and blow the context window, drowning the high-signal skill in noise. Apply this precedence and cap:
+
+**Priority order (load highest tiers first, stop at the cap):**
+
+```
+tier 1  identity / SSO fabric    okta-attack, m365-entra-attack
+        (own the auth boundary — highest blast radius if compromised)
+tier 2  perimeter appliances     enterprise-vpn-attack, vmware-vcenter-attack
+        (pre-auth RCE / direct internal foothold)
+tier 3  cloud / IAM              cloud-iam-deep, hunt-cloud-misconfig
+        (credential → lateral movement)
+tier 4  app framework / stack    hunt-nextjs, hunt-nodejs, hunt-laravel,
+        hunt-springboot, hunt-aspnet, hunt-sharepoint
+tier 5  protocol / class signals hunt-nosqli, hunt-lfi, hunt-deserialization,
+        hunt-cors, hunt-host-header, hunt-open-redirect, hunt-grpc,
+        hunt-websocket, hunt-dom, hunt-k8s, hunt-cicd, hunt-source-leak,
+        hunt-tls-network, hunt-ldap, hunt-brute-force, hunt-session
+```
+
+**Load budget: cap platform-skill loads at 8.** If more than 8 match, keep the highest-tier 8 and drop the rest; print the dropped ones under `deferred:` in the taxonomy block so they can be loaded on demand later.
+
+**De-dup rules (avoid loading two skills for the same evidence):**
+
+- CDN banner alone (Cloudflare/Akamai/Fastly) is **not** a platform match — it fingerprints the edge, not the app. Do not load a skill for it; note it for `hunt-cache-poison` / `hunt-http-smuggling`, which the mode set already carries.
+- `amazonaws` / `azure` / `googleapis` in a **header/origin** → `cloud-iam-deep`. The same string found as a **leaked key/JSON in a JS bundle or APK** → still `cloud-iam-deep`, but flag it as a live-credential lead (higher priority, tier 3 becomes tier 1 for that host).
+- A framework marker (`__NEXT_DATA__`, `laravel_session`) and a generic class signal from the same host are distinct evidence; load both if they fall within the budget, but do not load two skills for the same underlying evidence.
+
+## Conflicts
+
+- **uphiago/recon-skills** does not include a 404 baseline step; **sickn33/agentic-awesome-skills** makes a 404 baseline (step 0) mandatory before any enumeration.
+- **sickn33/agentic-awesome-skills** includes an explicit authorization/engagement-context gate and a mandatory confirmation gate; **uphiago/recon-skills** does not include this gate in the visible text.
+- **uphiago/recon-skills** defines a tiered priority order and an 8-skill load budget with deferred skills; **sickn33/agentic-awesome-skills** does not show this budget in the visible text.
+- **uphiago/recon-skills** includes de-dup rules (CDN-only not a platform match, cloud header vs leaked key, framework vs class); **sickn33/agentic-awesome-skills** does not show these rules in the visible text.</pre>
+</body>
+</html>

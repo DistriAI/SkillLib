@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>seaborn</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">statistical-visualization</a> / seaborn</p><h1>seaborn</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the most complete and current, containing specific version constraints (Seaborn 0.13.2), installation instructions, and critical API migration notes (e.g., `errorbar` replacing `ci`, `native_scale` for categorical plots) that the other copies lack. The other copies (zLanqing, foryourhealth111, aipoch) provide a more general, version-agnostic reference that is useful for understanding the library&#x27;s structure but lacks the specific operational details required for a robust agent skill. Combining them ensures the agent has both the high-level conceptual map and the specific, version-aware implementation details.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/seaborn/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/seaborn/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/seaborn/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/seaborn/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/seaborn/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/seaborn/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/seaborn/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/seaborn/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/seaborn/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/seaborn/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/seaborn/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/seaborn/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: seaborn
+description: Statistical visualization with pandas integration. Use for quick exploration of distributions, relationships, and categorical comparisons with attractive defaults. Best for box plots, violin plots, pair plots, heatmaps. Built on matplotlib. For interactive plots use plotly; for publication styling use scientific-visualization.
+license: BSD-3-Clause license
+metadata:
+    skill-author: K-Dense Inc.
+    version: &quot;1.5&quot;
+    upstream-version: &quot;0.13.2&quot;
+---
+
+# Seaborn Statistical Visualization
+
+## Overview
+
+Seaborn is a Python visualization library for creating publication-quality statistical graphics. Use this skill for dataset-oriented plotting, multivariate analysis, automatic statistical estimation, and complex multi-panel figures with minimal code.
+
+## Environment and Installation
+
+Reviewed against Seaborn 0.13.2 documentation. Native synthetic checks used Python 3.13, Seaborn 0.13.2, Matplotlib 3.11.2, pandas 3.0.6, NumPy 2.5.3.
+
+```bash
+# Reproducible install for examples in this skill
+uv pip install &quot;seaborn==0.13.2&quot;
+
+# Include optional statistical dependencies when needed
+uv pip install &quot;seaborn[stats]==0.13.2&quot;
+```
+
+Recommended imports:
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import seaborn.objects as so
+```
+
+`sns.load_dataset()` downloads public CSV example data from the `mwaskom/seaborn-data` repository when it is not cached. For private, regulated, or offline work, load local files explicitly with pandas and pass the resulting DataFrame to seaborn.
+
+## Design Philosophy
+
+1. **Dataset-oriented**: Work directly with DataFrames and named variables.
+2. **Semantic mapping**: Automatically translate data values into visual properties.
+3. **Statistical awareness**: Built-in aggregation, error estimation, and confidence intervals.
+4. **Aesthetic defaults**: Publication-ready themes and color palettes.
+5. **Matplotlib integration**: Full compatibility with matplotlib customization.
+
+## Quick Start
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+
+df = sns.load_dataset(&#x27;tips&#x27;)
+sns.scatterplot(data=df, x=&#x27;total_bill&#x27;, y=&#x27;tip&#x27;, hue=&#x27;day&#x27;)
+plt.show()
+```
+
+## Core Plotting Interfaces
+
+### Function Interface (Traditional)
+Specialized plotting functions organized by visualization type. Each category has **axes-level** functions (plot to single axes) and **figure-level** functions (manage entire figure with faceting).
+
+**When to use:**
+- Quick exploratory analysis
+- Single-purpose visualizations
+
+### Objects Interface (Modern)
+The `seaborn.objects` interface provides a declarative, composable API similar to ggplot2. Upstream describes this interface as experimental in 0.13.2; prefer the function interface for conservative production code.
+
+**When to use:**
+- Complex layered visualizations
+- Fine-grained control over transformations
+
+```python
+from seaborn import objects as so
+
+(
+    so.Plot(data=df, x=&#x27;total_bill&#x27;, y=&#x27;tip&#x27;)
+    .add(so.Dot(), color=&#x27;day&#x27;)
+    .add(so.Line(), so.PolyFit(order=1))
+)
+```
+
+## Current API Notes (Seaborn 0.13)
+
+- **Keyword Arguments**: Most plotting functions require keyword arguments for variables. Prefer `sns.scatterplot(data=df, x=&quot;x&quot;, y=&quot;y&quot;)`.
+- **Error Bars**: `errorbar` replaces the old `ci` parameter in `lineplot()`, `barplot()`, and `pointplot()`. Regression functions (`regplot()`, `lmplot()`) still use `ci`.
+- **Categorical Scale**: Use `native_scale=True` when numeric or datetime categories should keep their original scale.
+- **Palette**: Passing `palette` without `hue` is deprecated for categorical functions. Assign a redundant hue (e.g., `hue=&quot;day&quot;`) and set `legend=False` if needed.
+- **Renamed Parameters**: Use `violinplot(density_norm=..., common_norm=...)` instead of `scale`/`scale_hue`.
+
+## Plotting Functions by Category
+
+### Relational Plots
+- `scatterplot()`: Display individual observations.
+- `lineplot()`: Show trends and changes (aggregates and computes CI).
+- `relplot()`: Figure-level interface with automatic faceting.
+
+**Key parameters:** `x`, `y`, `hue`, `size`, `style`, `col`, `row`.
+
+```python
+sns.scatterplot(data=df, x=&#x27;total_bill&#x27;, y=&#x27;tip&#x27;, hue=&#x27;time&#x27;, size=&#x27;size&#x27;, style=&#x27;sex&#x27;)
+sns.relplot(data=df, x=&#x27;total_bill&#x27;, y=&#x27;tip&#x27;, col=&#x27;time&#x27;, row=&#x27;sex&#x27;, hue=&#x27;smoker&#x27;, kind=&#x27;scatter&#x27;)
+```
+
+### Distribution Plots
+- `histplot()`: Bar-based frequency distributions.
+- `kdeplot()`: Smooth density estimates.
+- `ecdfplot()`: Empirical cumulative distribution.
+- `jointplot()`: Bivariate plot with marginal distributions.
+- `pairplot()`: Matrix of pairwise relationships.
+
+**Key parameters:** `stat` (&quot;count&quot;, &quot;density&quot;), `bins`, `bw_adjust`, `fill`, `multiple`.
+
+```python
+sns.histplot(data=df, x=&#x27;total_bill&#x27;, hue=&#x27;time&#x27;, stat=&#x27;density&#x27;, multiple=&#x27;stack&#x27;)
+sns.jointplot(data=df, x=&#x27;total_bill&#x27;, y=&#x27;tip&#x27;, kind=&#x27;scatter&#x27;, hue=&#x27;time&#x27;)
+```
+
+### Categorical Plots
+- `stripplot()`: Points with jitter.
+- `swarmplot()`: Non-overlapping points.
+- `boxplot()`: Quartiles and outliers.
+- `violinplot()`: KDE + quartile information.
+- `barplot()`: Mean/aggregate with confidence intervals.
+- `catplot()`: Faceted categorical plots.
+
+**Key parameters:** `order`, `hue_order`, `dodge`, `orient`, `kind`.
+
+```python
+sns.swarmplot(data=df, x=&#x27;day&#x27;, y=&#x27;total_bill&#x27;, hue=&#x27;time&#x27;)
+sns.catplot(data=df, x=&#x27;day&#x27;, y=&#x27;total_bill&#x27;, col=&#x27;time&#x27;, kind=&#x27;violin&#x27;, inner=&#x27;quartile&#x27;)
+```
+
+### Matrix Plots
+- `heatmap()`: Rectangular data mapping.
+- `clustermap()`: Hierarchical clustering with heatmap.
+
+```python
+corr = df.select_dtypes(&quot;number&quot;).corr(numeric_only=True)
+sns.heatmap(corr, annot=True, fmt=&quot;.2f&quot;, cmap=&quot;coolwarm&quot;, center=0, square=True)
+```
+
+## Data Structure Requirements
+
+- **Long-Form Data (Preferred)**: Each variable is a column, each observation is a row.
+- **Wide-Form Data**: Supported for matrix-like inputs (heatmaps), but may require `pandas.melt()` for general plotting.
+
+## When Not to Use
+
+- Do not use for interactive plots (use Plotly).
+- Do not use for final publication styling without additional Matplotlib customization (use scientific-visualization skill).</pre>
+</body>
+</html>

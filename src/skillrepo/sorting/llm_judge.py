@@ -54,6 +54,8 @@ def judge_contents(
             },
         }
     cache_path = _cache_path(cache_dir, name, readable) if cache_dir is not None else None
+    # A saved decision is a finished case. Reruns reuse it and do not call the model again.
+    # Failures are not saved, so the next run retries only those clusters.
     if cache_path is not None and cache_path.is_file():
         try:
             cached = json.loads(cache_path.read_text(encoding="utf-8"))

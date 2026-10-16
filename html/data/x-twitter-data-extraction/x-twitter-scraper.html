@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>x-twitter-scraper</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">x-twitter-data-extraction</a> / x-twitter-scraper</p><h1>x-twitter-scraper</h1><p class="meta">combined</p><p>Both copies describe the same Xquik platform, but they are not interchangeable. The davepoon copy is a concise API/MCP reference with concrete endpoints, rate limits, pricing, and a 19-tool extraction workflow. The sickn33 copy is a security-hardened wrapper that adds a mandatory pre-install review, explicit approval gates for private reads/writes/monitors/webhooks/metered jobs, a pinned SDK version, and a broader capability list including write actions and multiple SDKs. Crowning one would hide either the operational API details or the critical-risk governance steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/x-twitter-scraper/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/x-twitter-scraper/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/x-twitter-scraper/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/x-twitter-scraper/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: x-twitter-scraper
+category: data
+description: &quot;X (Twitter) data extraction and monitoring via Xquik with security-gated workflows: tweet search, user lookup, follower extraction, giveaway draws, trending topics, account monitoring with webhooks, reply/retweet/quote extraction, community and Space data, follow checks, write actions, and multi-language SDKs.&quot;
+---
+
+# Xquik - X (Twitter) Data Platform
+
+Xquik provides a REST API, MCP server, and HMAC webhooks for X (Twitter) data. It covers tweet search, user profiles, bulk extraction, giveaway draws, account monitoring, trending topics, write actions, and multi-language SDKs.
+
+**Docs**: [docs.xquik.com](https://docs.xquik.com)
+
+## Security and Approval Requirements
+
+This workflow can access private data and automate authenticated X/Twitter account actions. Treat it as critical-risk guidance. Only use it with accounts and targets you are authorized to operate.
+
+**Require explicit user approval before:**
+- Private reads (DMs, non-public profiles)
+- Write actions (send tweets, post replies, like, repost, follow, unfollow, send DMs)
+- Persistent monitors
+- Webhook delivery
+- Metered bulk jobs
+
+### Pre-Install Review
+
+Do not install a moving branch directly into an active agent directory. First ask the user to approve network access to the named repository. Clone the reviewed revision to a temporary directory and inspect every bundled file:
+
+```bash
+review_dir=&quot;$(mktemp -d)&quot;
+git clone --filter=blob:none https://github.com/Xquik-dev/x-twitter-scraper.git &quot;$review_dir/x-twitter-scraper&quot;
+git -C &quot;$review_dir/x-twitter-scraper&quot; checkout --detach 0aa909b40f341b28d8b58766e251e44e080df998
+git -C &quot;$review_dir/x-twitter-scraper&quot; ls-files
+```
+
+Read the skill and all bundled files; check package scripts, hooks, symlinks, network calls, credential handling, and account-write actions. Show the findings and exact commit to the user. Copy only the reviewed files into the chosen host directory after explicit approval. Re-review any newer revision before updating.
+
+## Quick Reference
+
+| | |
+|---|---|
+| **Base URL** | `https://xquik.com/api/v1` |
+| **Auth** | `x-api-key: xq_...` header |
+| **MCP endpoint** | `https://xquik.com/mcp` (StreamableHTTP) |
+| **Rate limits** | 10 req/s sustained, 20 burst |
+| **Pricing** | $20/month (1 monitor included), $5/month per extra monitor |
+
+## Prerequisites
+
+- Xquik account with active subscription
+- API key generated from the [Xquik dashboard](https://xquik.com)
+- For MCP: configure the endpoint in your client (Claude Desktop, Claude Code, Cursor, VS Code, etc.)
+
+## Setup
+
+### MCP Server (Claude Code)
+
+Add to your MCP configuration:
+
+```json
+{
+  &quot;mcpServers&quot;: {
+    &quot;xquik&quot;: {
+      &quot;type&quot;: &quot;streamable-http&quot;,
+      &quot;url&quot;: &quot;https://xquik.com/mcp&quot;,
+      &quot;headers&quot;: {
+        &quot;x-api-key&quot;: &quot;xq_YOUR_KEY_HERE&quot;
+      }
+    }
+  }
+}
+```
+
+### REST API
+
+```javascript
+const API_KEY = &quot;xq_YOUR_KEY_HERE&quot;;
+const BASE = &quot;https://xquik.com/api/v1&quot;;
+const headers = { &quot;x-api-key&quot;: API_KEY, &quot;Content-Type&quot;: &quot;application/json&quot; };
+```
+
+### Use the TypeScript SDK
+
+For JavaScript or TypeScript integrations, install the validated SDK package:
+
+```bash
+npm install x-twitter-scraper@0.12.1
+```
+
+`x-twitter-scraper` is the typed application SDK. `x-developer@2.6.5` is the separate Skill and plugin bundle, not the TypeScript SDK. Use REST, the SDK, or MCP depending on the host environment. Verify unfamiliar endpoint parameters against the current docs or OpenAPI spec before constructing calls.
+
+### Get an API Key
+
+1. Sign up at [xquik.com](https://xquik.com)
+2. Generate an API key from the dashboard
+3. Set it as an environment variable or pass it directly
+
+```bash
+read -rsp &quot;X API key: &quot; XQUIK_API_KEY
+echo
+export XQUIK_API_KEY
+```
+
+## Capabilities
+
+| Capability | Description |
+|---|---|
+| Tweet Search | Find tweets by keyword, hashtag, from:user, &quot;exact phrase&quot;, and advanced operators |
+| User Lookup | Profile info, bio, follower/following counts |
+| Tweet Lookup | Full metrics: likes, retweets, replies, quotes, views, bookmarks |
+| Follow Check | Check if A follows B (both directions) |
+| Trending Topics | Metered regional trends for plans with access |
+| Account Monitoring | Track new tweets, replies, retweets, quotes, follower changes |
+| Webhooks | HMAC-signed real-time event delivery to your endpoint |
+| Giveaway Draws | Random winner selection from tweet replies with filters |
+| Bulk Extraction Tools | Followers, following, verified followers, mentions, posts, replies, reposts, quotes, threads, articles, communities, lists, Spaces, people search, media, likes, and more |
+| Write Actions | Send tweets, post replies, like, repost, follow, unfollow, and send DMs after explicit approval |
+| SDKs | Official TypeScript, Python, Ruby, Go, Kotlin, Java, PHP, C#, CLI, and Terraform clients |
+| MCP Server | StreamableHTTP endpoint for AI-native integrations |
+
+## Core Workflows
+
+### 1. Search Tweets
+
+**When to use**: Find tweets by keyword, hashtag, or user.
+
+**Endpoint**: `GET /x/tweets/search?q=...`
+
+**MCP tool**: `search-tweets`
+
+```javascript
+const results = await fetch(`${BASE}/x/tweets/search?q=from:elonmusk AI`, { headers });
+```
+
+**Pitfalls**:
+- Basic results only (id, text, author, date). Use `lookup-tweet` for engagement metrics
+- Searches recent tweets, not full archive
+
+### 2. Look Up a Tweet
+
+**When to use**: Get full metrics (likes, retweets, views, bookmarks) for a specific tweet.
+
+**Endpoint**: `GET /x/tweets/{id}`
+
+**MCP tool**: `lookup-tweet`
+
+### 3. Look Up a User Profile
+
+**When to use**: Get name, bio, follower/following counts, profile picture, join date.
+
+**Endpoint**: `GET /x/users/{username}`
+
+**MCP tool**: `get-user-info`
+
+**Pitfalls**:
+- MCP returns a subset (no verified, location, createdAt, statusesCount). Use REST API for the full profile
+
+### 4. Check Follow Relationship
+
+**When to use**: Check if account A follows account B (both directions).
+
+**Endpoint**: `GET /x/followers/check?source=A&amp;target=B`
+
+**MCP tool**: `check-follow`
+
+### 5. Bulk Data Extraction (19 Tools)
+
+**When to use**: Extract followers, replies, retweets, quotes, community members, list data, and more.
+
+**Workflow**: Always estimate cost first, then create the job, then retrieve results.
+
+**Tool types**:
+
+| Tool Type | Target | Description |
+|-----------|--------|-------------|
+| `reply_extractor` | Tweet ID | Users who replied |
+| `repost_extractor` | Tweet ID | Users who retweeted |
+| `quote_extractor` | Tweet ID | Users who quote-tweeted |
+| `thread_extractor` | Tweet ID | All tweets in a thread |
+| `article_extractor` | Tweet ID | Article content from a tweet |
+| `follower_explorer` | Username | Followers of an account |
+| `following_explorer` | Username | Accounts followed by a user |
+| `verified_follower_explorer` | Username | Verified followers |
+| `mention_extractor` | Username | Tweets mentioning an account |
+| `post_extractor` | Username | Posts from an account |
+| `community_extractor` | Community ID | Community members |
+| `community_moderator_explorer` | Community ID | Community moderators |
+| `community_post_extractor` | Community ID | Community posts |
+| `community_search` | Community ID + query | Search within a community |
+| `list_member_extractor` | List ID | List members |
+| `list_post_extractor` | List ID | List posts |
+| `list_follower_explorer` | List ID | List followers |
+| `space_explorer` | Space ID | Space participants |
+| `people_search` | Search query | Search for users |
+
+**MCP tools**: `estimate-extraction` -&gt; `run-extraction` -&gt; `get-extraction`
+
+```javascript
+// 1. Estimate cost
+const estimate = await fetch(`${BASE}/extractions/estimate`, {
+  method: &quot;POST&quot;, headers,
+  body: JSON.stringify({ toolType: &quot;follower_explorer&quot;, targetUsername: &quot;elonmusk&quot; }),
+}).then(r =&gt; r.json());
+
+if (!estimate.allowed) return; // Would exceed monthly quota
+
+// 2. Create job
+const job = await fetch(`${BASE}/extractions`, {
+  method: &quot;POST&quot;, headers,
+  body: JSON.stringify({ toolType: &quot;follower_explorer&quot;, targetUsername: &quot;elonmusk&quot; }),
+}).then(r =&gt; r.json());
+
+// 3. Retrieve results (paginated)
+const results = await fetch(`${BASE}/extractions/${job.id}`, { headers }).then(r =&gt; r.json());
+```
+
+**Pitfalls**:
+- Always call estimate first. `402` means quota exhausted
+- Large jobs return `status: &quot;running&quot;` and need polling
+- Export (CSV/XLSX/MD) capped at 50,000 rows
+
+### 6. Giveaway Draws
+
+**When to use**: Pick random winners from tweet replies with configurable filters.
+
+**Endpoint**: `POST /draws`
+
+**MCP tool**: `run-draw`
+
+Available filters: `mustRetweet`, `mustFollowUsername`, `filterMinFollowers`, `filterAccountAgeDays`, `filterLanguage`, `requiredKeywords`, `requiredHashtags`, `requiredMentions`, `uniqueAuthorsOnly`.
+
+```javascript
+const draw = await fetch(`${BASE}/draws`, {
+  method: &quot;POST&quot;, headers,
+  body: JSON.stringify({
+    tweetUrl: &quot;https://x.com/user/status/123456789&quot;,
+    winnerCount: 3,
+    uniqueAuthorsOnly: true,
+    mustRetweet: true,
+  }),
+}).then(r =&gt; r.json());
+```
+
+### 7. Real-Time Monitoring
+
+**When to use**: Track when an account tweets, gets replies, gains/loses followers.
+
+**Workflow**: Create a monitor, optionally register a webhook for push notifications.
+
+**Event types**: `tweet.new`, `tweet.reply`, `tweet.repost`, `tweet.quote`, `follower.gain`, `follower.loss`
+
+**Requires explicit user approval before creating persistent monitors or registering webhooks.**
+
+### 8. Write Actions
+
+**When to use**: Send tweets, post replies, like, repost, follow, unfollow, or send DMs.
+
+**Requires explicit user approval before any write action.**
+
+**Endpoints**:
+- `POST /x/tweets` - Send a tweet
+- `POST /x/tweets/{id}/replies` - Post a reply
+- `POST /x/tweets/{id}/like` - Like a tweet
+- `POST /x/tweets/{id}/repost` - Repost a tweet
+- `POST /x/users/{username}/follow` - Follow a user
+- `DELETE /x/users/{username}/follow` - Unfollow a user
+- `POST /x/dms` - Send a DM
+
+## Examples
+
+**Search tweets:**
+```
+&quot;Search X for tweets about &#x27;claude code&#x27; from the last week&quot;
+```
+
+**Look up a user:**
+```
+&quot;Who is @elonmusk? Show me their profile and follower count&quot;
+```
+
+**Check engagement:**
+```
+&quot;How many likes and retweets does this tweet have? https://x.com/...&quot;
+```
+
+**Run a giveaway:**
+```
+&quot;Pick 3 random winners from the replies to this tweet&quot;
+```
+
+**Monitor an account:**
+```
+&quot;Monitor @openai for new tweets and notify me via webhook&quot;
+```
+
+**Bulk extraction:**
+```
+&quot;Extract all followers of @anthropic&quot;
+```
+
+**Post a reply:**
+```
+&quot;Draft and post a reply to this tweet after I approve the final text&quot;
+```
+
+## API Reference
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/x/tweets/{id}` | GET | Single tweet with full metrics |
+| `/x/tweets/search` | GET | Search tweets |
+| `/x/users/{id}` | GET | User profile by username or numeric ID |
+| `/x/followers/check` | GET | Check follow relationship |
+| `/extractions/estimate` | POST | Estimate extraction cost |
+| `/extractions` | POST | Create extraction job |
+| `/extractions/{id}` | GET | Retrieve extraction results |
+| `/draws` | POST | Run giveaway draw |
+| `/monitors` | POST | Create account monitor |
+| `/webhooks` | POST | Register webhook endpoint |</pre>
+</body>
+</html>

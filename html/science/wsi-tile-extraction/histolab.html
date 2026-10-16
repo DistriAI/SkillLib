@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>histolab</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">wsi-tile-extraction</a> / histolab</p><h1>histolab</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the most rigorous and contains critical, non-obvious constraints (pinned version 0.7.0, Python 3.10, native OpenSlide installation, macOS DYLD path, and the correct API usage where extraction_mask is passed to extract/locate_tiles rather than the constructor). The other three copies (Vibe-Skills, aipoch, OpenClaw) are near-identical, less rigorous mirrors that use a simplified, potentially incorrect API call (tiler.locate_tiles(slide, n_tiles=20)) and omit the environment setup. Because the K-Dense copy has material steps the others lack, and the others disagree on the API usage, crowning one would hide the alternative (simpler) approach, so combine is appropriate.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/histolab/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/histolab/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/histolab/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/histolab/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/histolab/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/histolab/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/histolab/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/histolab/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: histolab
+description: Extracts and preprocesses whole-slide histology image tiles with Histolab. Use for WSI inspection, tissue masks, random/grid/score-based tile extraction, H&amp;E stain normalization, and tile dataset preparation.
+license: Apache-2.0 license
+metadata:
+  version: &quot;1.5&quot;
+  skill-author: K-Dense Inc.
+---
+
+# Histolab
+
+## When to use
+
+Use Histolab to inspect WSI metadata, identify tissue, extract image tiles, and standardize H&amp;E staining. Its masks and scores are image-processing heuristics; they do not diagnose cancer, count individual cells, or establish image quality.
+
+## Installation
+
+Histolab 0.7.0 requires Python &lt;3.12, NumPy &lt;=1.24.4, scikit-image &lt;0.19.4, SciPy &lt;1.10.1, Pillow &lt;11, and openslide-python 1.3.1. Keep this stack isolated from modern scientific environments. Windows is not supported.
+
+Install native OpenSlide for your system, then create a dedicated environment (Python 3.10 was tested):
+
+```bash
+uv venv --python 3.10 .venv-histolab
+uv pip install --python .venv-histolab/bin/python &#x27;histolab==0.7.0&#x27; pooch matplotlib
+.venv-histolab/bin/python -c &#x27;import openslide; print(openslide.__library_version__)&#x27;
+```
+
+On macOS with Homebrew, `brew install openslide` installs the native library. If the older Python binding cannot find it, launch Python with the library path set:
+
+```bash
+env DYLD_FALLBACK_LIBRARY_PATH=&quot;$(brew --prefix openslide)/lib&quot; .venv-histolab/bin/python -c &#x27;import openslide; print(openslide.__library_version__)&#x27;
+```
+
+## Workflow
+
+1. Inspect `slide.dimensions`, `slide.levels` (a list), and `slide.level_dimensions(level)` (a method). Check both MPP axes in metadata.
+2. Select physical field of view and pixel resolution; level numbers are not interchangeable across scanners. Preserve level-0 coordinate bounds.
+3. Choose `TissueMask` for all tissue sections or `BiggestTissueBoxMask` for the largest section&#x27;s bounding box. Inspect the mask at its actual resolution.
+4. Configure a tiler and preview with the **same mask** passed to extraction. Preview methods return a Pillow image; save or display that return value.
+5. Extract into a distinct per-slide/per-strategy directory. Count saved files, inspect representative tiles, and retain parameters, source IDs and QC flags.
+6. Split datasets by patient before training/validation/test tile assignment. Fit stain normalization targets on training data only and validate on held-out scanners. A seed reproduces sampling; it does not prevent patient leakage.
+
+## Quick start
+
+```python
+from pathlib import Path
+from histolab.slide import Slide
+from histolab.masks import TissueMask
+from histolab.tiler import RandomTiler
+
+output = Path(&quot;output/random_tiles&quot;)
+output.mkdir(parents=True, exist_ok=True)
+slide = Slide(&quot;slide.svs&quot;, processed_path=output)
+mask = TissueMask()
+slide.locate_mask(mask).save(output / &quot;mask_preview.png&quot;)
+
+tiler = RandomTiler(
+    tile_size=(512, 512), n_tiles=100, level=0, seed=42,
+    check_tissue=True, tissue_percent=80.0, prefix=&quot;random_&quot;,
+)
+tiler.locate_tiles(slide, extraction_mask=mask).save(output / &quot;tile_preview.png&quot;)
+tiler.extract(slide, extraction_mask=mask)
+print(&quot;[OK] Saved tiles:&quot;, len(list(output.glob(&quot;random_tile_*.png&quot;))))
+```
+
+`extraction_mask` belongs to `extract()` and `locate_tiles()`, not to the tiler constructor. `locate_tiles()` has no `n_tiles` argument.
+
+## Choose a strategy
+
+| Tiler | Selection | Important limitation |
+| --- | --- | --- |
+| `RandomTiler` | Seeded sampling, at most `n_tiles`, up to `max_iter` attempts | May overlap, repeat, or miss rare structures |
+| `GridTiler` | Grid within the extraction mask | Boundary tiles and tissue checks can leave gaps |
+| `ScoreTiler` | Scores all eligible grid candidates; saves top `n_tiles` | Lower output count does not avoid scoring all candidates |
+
+For grids, stride in each axis is tile size minus `pixel_overlap`; positive values must be smaller than both tile dimensions. Negative overlap leaves gaps. `ScoreTiler(n_tiles=0)` saves all eligible ranked tiles.
+
+Nuclei and cellularity scores estimate stain-derived area fractions. They are not calibrated tumor probabilities or blur/focus scores. Score reports contain exactly `filename,score,scaled_score`; record coordinate bounds and physical resolution separately. Equal raw scores can make `scaled_score` undefined in 0.7.0, so inspect raw scores and finiteness before plotting or comparing them.
+
+## Troubleshooting and scientific checks
+
+- **No/few tiles:** inspect mask and output counts, dimensions, level, and `max_iter`. Lowering `tissue_percent` relaxes QC; validate the added tiles.
+- **Missing sections:** the default biggest-region box excludes other sections. Pass `TissueMask` to include all sections.
+
+## Conflicts
+
+- K-Dense-AI/scientific-agent-skills specifies a pinned installation (histolab==0.7.0, Python 3.10, native OpenSlide) and correct API usage (extraction_mask passed to extract/locate_tiles), while foryourhealth111-pixel/Vibe-Skills, aipoch/medical-research-skills, and FreedomIntelligence/OpenClaw-Medical-Skills use a simplified install (uv pip install histolab) and an incorrect API call (tiler.locate_tiles(slide, n_tiles=20)).
+- K-Dense-AI/scientific-agent-skills includes a detailed workflow with patient-level dataset splitting and stain normalization validation, which the other copies omit.</pre>
+</body>
+</html>

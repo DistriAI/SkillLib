@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>event-sourcing-architect</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">event-sourcing-architecture</a> / event-sourcing-architect</p><h1>event-sourcing-architect</h1><p class="meta">combined</p><p>The two copies share the same core procedure (aggregate boundaries, immutable events, projections, sagas, snapshotting, versioning) and most best practices. However, the sickn33 copy adds material constraints and steps the rmyndharis copy lacks: durable execution frameworks for sagas, a Limitations section covering concurrency/idempotency/projection lag and replay side-effects, and a Related Skills section. The copies also disagree on the safety rule for deleting committed events: rmyndharis states they must never be deleted, while sickn33 allows deliberate redaction/key-deletion for privacy/legal requirements. Crowning one copy would hide the more nuanced deletion policy and the additional operational constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/event-sourcing-architect/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/event-sourcing-architect/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/event-sourcing-architect/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/event-sourcing-architect/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/event-sourcing-architect/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-architecture-design/skills/event-sourcing-architect/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/event-sourcing-architect/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: event-sourcing-architect
+description: &quot;Expert in event sourcing, CQRS, and event-driven architecture patterns. Masters event store design, projection building, saga orchestration, and eventual consistency patterns. Use PROACTIVELY for event-sourced systems, audit trail requirements, or complex domain modeling with temporal queries.&quot;
+---
+
+# Event Sourcing Architect
+
+Expert in event sourcing, CQRS, and event-driven architecture patterns. Masters event store design, projection building, saga orchestration, and eventual consistency patterns. Use PROACTIVELY for event-sourced systems, audit trail requirements, or complex domain modeling with temporal queries.
+
+## Capabilities
+
+- Event store design and implementation
+- CQRS (Command Query Responsibility Segregation) patterns
+- Projection building and read model optimization
+- Saga and process manager orchestration
+- Event versioning and schema evolution
+- Snapshotting strategies for performance
+- Eventual consistency handling
+
+## Use this skill when
+
+- Building systems requiring complete audit trails
+- Implementing complex business workflows with compensating actions
+- Designing systems needing temporal queries (&quot;what was state at time X&quot;)
+- Separating read and write models for performance
+- Building event-driven microservices architectures
+- Implementing undo/redo or time-travel debugging
+
+## Do not use this skill when
+
+- The domain is simple and CRUD is sufficient
+- You cannot support event store operations or projections
+- Strong immediate consistency is required everywhere
+
+## Instructions
+
+1. Identify aggregate boundaries and event streams
+2. Design events as immutable facts
+3. Implement command handlers and event application
+4. Build projections for query requirements
+5. Design saga/process managers for cross-aggregate workflows
+6. Implement snapshotting for long-lived aggregates
+7. Set up event versioning strategy
+
+## Safety
+
+- Treat committed events as immutable by default; approved privacy/retention/legal deletion requirements need a deliberate redaction/key-deletion/migration design and audit trail, not a blanket claim that events can never be deleted.
+- Rebuild projections in staging before running in production.
+
+## Best Practices
+
+- Events record domain assertions with version/provenance; corrections are new events by default, not proof that every recorded assertion was objectively true
+- Keep events small and focused
+- Version events from day one
+- Design for eventual consistency
+- Use correlation IDs for tracing
+- Implement idempotent event handlers
+- Plan for projection rebuilding
+- Use durable execution for process managers and sagas — frameworks like DBOS persist workflow state automatically, making cross-aggregate orchestration resilient to crashes
+
+## Related Skills
+
+Works well with: `saga-orchestration`, `architecture-patterns`, `dbos-*`
+
+## Limitations
+
+- Record actual aggregate concurrency/ordering guarantees, idempotency keys and projection lag; sagas compensate business effects but are not automatic rollback of every external action. Replay must suppress real notifications/payments and other effects unless separately authorized.
+- Do not introduce event sourcing/CQRS where a simpler design meets the task; retain policy and deletion boundaries, and test projection rebuild before claiming audit completeness.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

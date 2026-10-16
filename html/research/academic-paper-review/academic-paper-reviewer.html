@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>academic-paper-reviewer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">academic-paper-review</a> / academic-paper-reviewer</p><h1>academic-paper-reviewer</h1><p class="meta">combined</p><p>The two copies describe the same multi-perspective academic paper review workflow but disagree on the reviewer panel composition and include materially different operational content. The Imbad0202 copy (v1.11.1) uses a Journal-Fit Reviewer plus 3 peer reviewers plus a Devil&#x27;s Advocate, adds a calibration mode, and contains a detailed routing/escape-hatch protocol. The brycewang-stanford copy (v1.4) uses an Editor-in-Chief plus 3 peer reviewers plus a Devil&#x27;s Advocate, omits calibration, and provides a Quick Start, trigger/non-trigger table, and a 7-agent orchestration diagram. Crowning one would hide the alternative panel structure and the distinct routing or quick-start guidance.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Imbad0202/academic-research-skills">Imbad0202/academic-research-skills</a></td><td><code>academic-paper-reviewer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/24-Imbad0202-academic-research-skills/academic-paper-reviewer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Imbad0202/academic-research-skills">Imbad0202/academic-research-skills</a></td><td><code>academic-paper-reviewer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/24-Imbad0202-academic-research-skills/academic-paper-reviewer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: academic-paper-reviewer
+description: &quot;Multi-perspective academic paper review with dynamic reviewer personas. Runs a 5-seat, role-separated review panel with field-specific expertise and a Devil&#x27;s Advocate. Supports full review, re-review, quick assessment, methodology focus, Socratic guided, and calibration modes.&quot;
+---
+
+# Academic Paper Reviewer
+
+Simulates a complete international journal peer review process: automatically identifies the paper&#x27;s field, dynamically configures 4 card-backed reviewer identities, and adds a fixed Devil&#x27;s Advocate as the fifth execution seat. A separate editorial synthesizer produces the structured Editorial Decision and Revision Roadmap.
+
+## Quick Start
+
+```
+Review this paper: [paste paper or provide file]
+```
+
+Output:
+1. Automatically identifies the paper&#x27;s field and methodology type
+2. Dynamically configures the specific identities and expertise of 5 reviewers
+3. 5 independent review reports (each from a different perspective)
+4. 1 Editorial Decision Letter + Revision Roadmap
+
+## Trigger Conditions
+
+**English**: review paper, peer review, manuscript review, referee report, review my paper, critique paper, simulate review, editorial review, calibrate reviewer, reviewer calibration, measure reviewer accuracy
+
+### Non-Trigger Scenarios
+
+| Scenario | Skill to Use |
+|----------|-------------|
+| Need to write a paper (not review) | `academic-paper` |
+| Need in-depth investigation of a research topic | `deep-research` |
+| Need to revise a paper (already have review comments) | `academic-paper` (revision mode) |
+
+### Quick Mode Selection Guide
+
+| Your Situation | Recommended Mode |
+|----------------|-----------------|
+| Need comprehensive review (first submission) | full |
+| Checking if revisions addressed comments | re-review |
+| Quick quality assessment (15 min) | quick |
+| Focus only on methods/statistics | methodology-focus |
+| Want to learn by doing (guided review) | guided |
+| Measure reviewer accuracy | calibration |
+
+## Agent Team (7 Agents)
+
+| # | Agent | Role | Phase |
+|---|-------|------|-------|
+| 1 | `field_analyst_agent` | Analyzes the paper&#x27;s field, dynamically configures 5 reviewer identities | Phase 0 |
+| 2 | `journal_fit_reviewer_agent` | Journal-Fit Reviewer — journal fit, originality, overall quality | Phase 1 |
+| 3 | `methodology_reviewer_agent` | Peer Reviewer 1 — research design, statistical validity, reproducibility | Phase 1 |
+| 4 | `domain_reviewer_agent` | Peer Reviewer 2 — literature coverage, theoretical framework, domain contribution | Phase 1 |
+| 5 | `perspective_reviewer_agent` | Peer Reviewer 3 — cross-disciplinary connections, practical impact, challenging fundamental assumptions | Phase 1 |
+| 6 | `devils_advocate_reviewer_agent` | Devil&#x27;s Advocate — core argument challenges, logical fallacy detection, strongest counter-arguments | Phase 1 |
+| 7 | `editorial_synthesizer_agent` | Synthesizes all reviews, identifies consensus and disagreements, makes editorial decision | Phase 2 |
+
+## Orchestration Workflow (3 Phases)
+
+```
+User: &quot;Review this paper&quot;
+     |
+=== Phase 0: FIELD ANALYSIS &amp; PERSONA CONFIGURATION ===
+     |
+     +-&gt; [field_analyst_agent] -&gt; Reviewer Configuration Card (x5)
+         - Reads the complete paper
+         - Identifies: primary discipline, secondary discipline, research paradigm, methodology type, target journal tier, paper maturity
+         - Dynamically generates specific identities for 5 reviewers
+     |
+     ** Presents Reviewer Configuration to user for confirmation (adjustable) **
+     |
+=== Phase 1: PARALLEL MULTI-PERSPECTIVE REVIEW ===
+     |
+     |-&gt; [journal_fit_reviewer_agent] -&gt; Journal-Fit Review Report
+     |   - Journal fit, originality, significance, relevance to readership
+     |   - Sets the review tone
+     |
+     |-&gt; [methodology_reviewer_agent] -&gt; Methodology Review Report
+     |   - Research design rigor, sampling strategy, data collection
+     |   - Analysis method selection, statistical validity, effect sizes
+     |   - Reproducibility, data transparency
+     |
+     |-&gt; [domain_reviewer_agent] -&gt; Domain Review Report
+     |   - Literature review completeness, theoretical framework appropriateness
+     |   - Academic argument accuracy, incremental contribution to the field
+     |   - Missing key references
+     |
+     |-&gt; [perspective_reviewer_agent] -&gt; Perspective Review Report
+     |   - Cross-disciplinary connections and borrowing opportunities
+     |   - Practical applications and policy implications
+     |   - Broader social or ethical implications
+     |
+     +-&gt; [devils_advocate_reviewer_agent] -&gt; Devil&#x27;s Advocate Report
+         - Core argument challenges (strongest counter-arguments)
+         - Logical fallacy detection
+     |
+=== Phase 2: EDITORIAL SYNTHESIS ===
+     |
+     +-&gt; [editorial_synthesizer_agent] -&gt; Editorial Decision + Revision Roadmap
+```
+
+## Routing Discipline
+
+**Step 0 — Escape hatch check (before any classification):** If the user&#x27;s first message begins with `[direct-mode]` (case-insensitive byte-0 token, optionally preceded by whitespace/newlines that are stripped on parse), record this fact, strip the prefix and surrounding whitespace from the message, and skip directly to **Step 1 explicit-intent handling** on the stripped content. The literal `[direct-mode]` is NOT passed through to the dispatched agent. If the stripped message itself has no clear skill named, Step 1 falls through to Step 3 clarification. When the token is honored and the named agent or skill needs inputs the message does not supply, read that agent&#x27;s or skill&#x27;s file and ask for what it requires, in its terms. A `[direct-mode]` token after any other non-whitespace character is not the escape hatch, even when the message asks to skip questions: classify the message through Steps 1-3 as if the token were absent, and do not forward the token. Without the byte-0 token, naming an agent is not explicit intent: such a message goes through Steps 1-3 like any other, so cross-phase materials still get Step 2 clarification.
+
+Otherwise, classify the user&#x27;s input:
+
+1. **Explicit clear intent** — user invokes a specific skill via `/ars-*` slash command, or uses an unambiguous trigger keyword that maps to a single skill (e.g., &quot;lit-review this&quot;, &quot;review my paper&quot;, &quot;draft an abstract&quot;):
+   → Route directly; no clarification, no orchestrator detour.
+   → The request stays explicit when the mode&#x27;s usual input is absent or a word in it has other everyday senses. A revision request with no reviewer comments is revision mode&#x27;s &quot;feel certain sections need improvement&quot; case, and &quot;revisar artículo&quot; is the reviewer&#x27;s trigger. Route to that mode and let the mode handle what is missing; do not reopen the choice of workflow.
+
+2. **Cross-phase materials detected** — user provides artifacts spanning ≥ 2 pipeline phases without naming a specific skill (e.g., pre-written abstract + pre-collected literature; full draft + reviewer comments + bibliography):
+   → **Clarify**. Do NOT auto-route to a single-phase agent. List candidate workflows as a-d options in markdown body (NOT via AskUserQuestion tool).
+   → Reason: clarification is the safest action when materials don&#x27;t unambiguously identify intent.
+
+3. **Ambiguous intent, no materials** — user provides no artifacts and no clear request:
+   → Clarify per the intent clarification protocol.
+
+**Screening boundary (sr-screener):** a request to screen records the user already has (database exports, pasted abstracts, full-text PDFs) against a review&#x27;s eligibility criteria, or to build a screening protocol, pilot the screening, adjudicate screening conflicts, audit exclusions, or report the selection counts, routes to `sr-screener`. A request to write a literature review, or to run a systematic review, meta-analysis, or PRISMA report, does not route to `sr-screener`. Screening starts only when the user asks for it: `deep-research` `systematic-review` mode may mention `sr-screener`, but never hands over to it automatically.
+
+**Anti-pattern:** Receiving ambiguous cross-phase materials and silently auto-routing to a single-phase agent based on which phase the materials &quot;look closest to.&quot; This bypasses orchestrator-level reconciliation.
+
+## Conflicts
+
+- **Imbad0202/academic-research-skills** uses a **Journal-Fit Reviewer** as the first seat; **brycewang-stanford/Auto-Empirical-Research-Skills** uses an **Editor-in-Chief** as the first seat.
+- **Imbad0202/academic-research-skills** includes a **calibration mode** and a **routing/escape-hatch protocol**; **brycewang-stanford/Auto-Empirical-Research-Skills** omits both and instead includes a **Quick Start** and **trigger/non-trigger table**.</pre>
+</body>
+</html>

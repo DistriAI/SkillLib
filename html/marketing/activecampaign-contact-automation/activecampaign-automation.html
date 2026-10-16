@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>activecampaign-automation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">activecampaign-contact-automation</a> / activecampaign-automation</p><h1>activecampaign-automation</h1><p class="meta">combined</p><p>The two copies share the same Rube MCP setup and the same five ActiveCampaign workflows, but the sickn33 copy adds a distinct authorization and verification section that the davepoon copy lacks. The davepoon copy also includes a toolkit documentation link and slightly different setup wording. Because the authorization constraints are material and not present in the other copy, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/activecampaign-automation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/activecampaign-automation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/activecampaign-automation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/activecampaign-automation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/activecampaign-automation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/activecampaign-automation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: activecampaign-automation
+description: &quot;Automate ActiveCampaign tasks via Rube MCP (Composio): manage contacts, tags, list subscriptions, automation enrollment, and tasks. Always search tools first for current schemas.&quot;
+requires:
+  mcp: [rube]
+category: email
+---
+
+# ActiveCampaign Automation via Rube MCP
+
+Automate ActiveCampaign CRM and marketing automation operations through Composio&#x27;s ActiveCampaign toolkit via Rube MCP.
+
+**Toolkit docs**: [composio.dev/toolkits/active_campaign](https://composio.dev/toolkits/active_campaign)
+
+## Prerequisites
+
+- Rube MCP must be connected (RUBE_SEARCH_TOOLS available)
+- Active ActiveCampaign connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `active_campaign`
+- Always call `RUBE_SEARCH_TOOLS` first to get current tool schemas
+
+## Setup
+
+**Get Rube MCP**: Add `https://rube.app/mcp` as an MCP server in your client configuration. Authentication and permissions depend on the host and current Rube integration; adding an endpoint alone does not prove access. Apply host configuration only when authorized.
+
+1. Verify Rube MCP is available by confirming `RUBE_SEARCH_TOOLS` responds
+2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `active_campaign`
+3. If connection is not ACTIVE, follow the returned auth link to complete ActiveCampaign authentication
+4. Confirm connection status shows ACTIVE before running any workflows
+
+## Authorization and verification
+
+Tool slugs and parameter notes are examples; discovered current schemas take precedence. Identify the exact account, contacts and requested mutations, read existing state, and check whether tags or automation enrollment trigger outbound messages. Contact creation does not imply subscription consent. Obtain explicit authorization for sending/enrollment with those effects, and preserve unsubscribe/suppression status. Read results back; reconcile timeouts before retrying non-idempotent operations.
+
+## Core Workflows
+
+### 1. Create and Find Contacts
+
+**When to use**: User wants to create new contacts or look up existing ones
+
+**Tool sequence**:
+1. `ACTIVE_CAMPAIGN_FIND_CONTACT` - Search for an exact existing contact before a requested create/update
+2. `ACTIVE_CAMPAIGN_CREATE_CONTACT` - Create only when requested and not already present; lookup-only requests perform no create
+
+**Key parameters for find**:
+- `email`: Search by email address
+- `id`: Search by ActiveCampaign contact ID
+- `phone`: Search by phone number
+
+**Key parameters for create**:
+- `email`: Contact email address (required)
+- `first_name`: Contact first name
+- `last_name`: Contact last name
+- `phone`: Contact phone number
+- `organization_name`: Contact&#x27;s organization
+- `job_title`: Contact&#x27;s job title
+- `tags`: Comma-separated list of tags to apply
+
+**Pitfalls**:
+- `email` is the only required field for contact creation
+- Phone search uses a general search parameter internally; it may return partial matches
+- When combining `email` and `phone` in FIND_CONTACT, results are filtered client-side
+- Tags provided during creation are applied immediately
+- Creating a contact with an existing email may update the existing contact
+
+### 2. Manage Contact Tags
+
+**When to use**: User wants to add or remove tags from contacts
+
+**Tool sequence**:
+1. `ACTIVE_CAMPAIGN_FIND_CONTACT` - Find contact by email or ID [Prerequisite]
+2. `ACTIVE_CAMPAIGN_MANAGE_CONTACT_TAG` - Add or remove tags [Required]
+
+**Key parameters**:
+- `action`: &#x27;Add&#x27; or &#x27;Remove&#x27; (required)
+- `tags`: Tag names as comma-separated string or array of strings (required)
+- `contact_id`: Contact ID (provide this or contact_email)
+- `contact_email`: Contact email address (alternative to contact_id)
+
+**Pitfalls**:
+- `action` values are capitalized: &#x27;Add&#x27; or &#x27;Remove&#x27; (not lowercase)
+- Tags can be a comma-separated string (&#x27;tag1, tag2&#x27;) or an array ([&#x27;tag1&#x27;, &#x27;tag2&#x27;])
+- Either `contact_id` or `contact_email` must be provided; `contact_id` takes precedence
+- Adding a tag that does not exist creates it automatically
+- Removing a non-existent tag is a no-op (does not error)
+
+### 3. Manage List Subscriptions
+
+**When to use**: User wants to subscribe or unsubscribe contacts from lists
+
+**Tool sequence**:
+1. `ACTIVE_CAMPAIGN_FIND_CONTACT` - Find the contact [Prerequisite]
+2. `ACTIVE_CAMPAIGN_MANAGE_LIST_SUBSCRIPTION` - Subscribe or unsubscribe [Required]
+
+**Key parameters**:
+- `action`: &#x27;subscribe&#x27; or &#x27;unsubscribe&#x27; (required)
+- `list_id`: Numeric list ID string (required)
+- `email`: Contact email address (provide this or contact_id)
+- `contact_id`: Numeric contact ID string (alternative to email)
+
+**Pitfalls**:
+- `action` values are lowercase: &#x27;subscribe&#x27; or &#x27;unsubscribe&#x27;
+- `list_id` is a numeric string (e.g., &#x27;2&#x27;), not the list name
+- List IDs can be retrieved via the GET /api/3/lists endpoint (not available as a Composio tool; use the ActiveCampaign UI)
+- If both `email` and `contact_id` are provided, `contact_id` takes precedence
+- Unsubscribing changes status to &#x27;2&#x27; (unsubscribed) but the relationship record persists
+
+### 4. Add Contacts to Automations
+
+**When to use**: User wants to enroll a contact in an automation workflow
+
+**Tool sequence**:
+1. `ACTIVE_CAMPAIGN_FIND_CONTACT` - Verify contact exists [Prerequisite]
+2. `ACTIVE_CAMPAIGN_ADD_CONTACT_TO_AUTOMATION` - Enroll contact in automation [Required]
+
+**Key parameters**:
+- `contact_email`: Email of the contact to enroll (required)
+- `automation_id`: ID of the target automation (required)
+
+**Pitfalls**:
+- The contact must already exist in ActiveCampaign
+- Automations can only be created through the ActiveCampaign UI, not via API
+- `automation_id` must reference an existing, active automation
+- The tool performs a two-step process: lookup contact by email, then enroll
+- Automation IDs can be found in the ActiveCampaign UI or via GET /api/3/automations
+
+### 5. Create Contact Tasks
+
+**When to use**: User wants to create follow-up tasks associated with contacts
+
+**Tool sequence**:
+1. `ACTIVE_CAMPAIGN_FIND_CONTACT` - Find the contact to associate the task with [Prerequisite]
+2. `ACTIVE_CAMPAIGN_CREATE_CONTACT_TASK` - Create the task [Required]
+
+**Key parameters**:
+- `relid`: Contact ID to associate the task with (required)
+- `duedate`: Due date in ISO 8601 format with timezone (required, e.g., &#x27;2025-01-15T14:30:00-05:00&#x27;)
+- `dealTasktype`: Task type ID based on available types (required)
+- `title`: Task title
+- `note`: Task description/content
+- `assignee`: User ID to assign the task to
+- `edate`: End date in ISO 8601 format (must be later than duedate)
+- `status`: 0 for incomplete, 1 for complete
+
+**Pitfalls**:
+- `duedate` must be a valid ISO 8601 datetime with timezone offset; do NOT use placeholder values
+- `edate` must be later than `duedate`
+- `dealTasktype` is a string ID
+
+## Conflicts
+
+- sickn33/agentic-awesome-skills includes an Authorization and verification section requiring explicit authorization for sending/enrollment effects, preserving unsubscribe/suppression status, and reconciling timeouts before retrying non-idempotent operations; davepoon/buildwithclaude does not include this section.
+- davepoon/buildwithclaude states no API keys are needed for Rube MCP and includes a toolkit documentation link; sickn33/agentic-awesome-skills says authentication and permissions depend on the host and current Rube integration and omits the link.</pre>
+</body>
+</html>

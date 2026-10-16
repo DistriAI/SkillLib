@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>api-security-best-practices</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">api-security-review</a> / api-security-best-practices</p><h1>api-security-best-practices</h1><p class="meta">combined</p><p>The two copies cover the same topic but with materially different depth and scope. The sickn33 copy is a rigorous, defensive procedure focused on exact token contracts, tenant-scoped authorization predicates, strict input parsing, and refresh-token atomicity, with explicit constraints against inferring permissions before verification and against implicit admin bypasses. The LeoYeAI copy is a broader, more prescriptive checklist that includes rate limiting, data protection, security testing, and a full JWT login/refresh implementation example that the first copy deliberately avoids (it treats refresh as a server-side opaque design and warns against storing tokens in a database). Because the LeoYeAI copy contains steps (rate limiting, data protection, testing) and a concrete implementation pattern (storing refresh tokens in a database) that the sickn33 copy lacks or explicitly contradicts, crowning one would hide a real alternative approach.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/api-security-best-practices/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/api-security-best-practices/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/api-security-best-practices/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/api-security-best-practices/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/api-security-best-practices/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-api-platform-builder/skills/api-security-best-practices/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-python-api-builder/skills/api-security-best-practices/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-secure-app-builder/skills/api-security-best-practices/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/api-security-best-practices/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># API Security Best Practices
+
+## When to Use
+Use when adding a protected endpoint, reviewing object access, replacing permissive request parsing, investigating an API abuse path, designing new API endpoints, securing existing APIs, implementing authentication and authorization, protecting against API attacks, conducting API security reviews, preparing for security audits, implementing rate limiting and throttling, or handling sensitive data in APIs.
+
+## Inputs and Prerequisites
+Record the routes, caller/tenant model, identity provider, token contract, runtime and locked dependency versions, database schema, proxy topology, and authorized test scope. Use synthetic identities in a test environment. Existing task authorization carries forward; production scans, account writes, and message sends need their own authority.
+
+## 1. Authenticate the Exact Token Contract
+Prefer the established provider/session middleware. When the service owns an HMAC JWT contract, require a strong server-owned key, a fixed algorithm, exact issuer and audience, and required runtime claims. Do not infer permissions from a decoded token before signature verification. Never accept a caller-selected verification algorithm.
+
+Issue access tokens with the same issuer/audience/algorithm and a short application-approved expiration. Handle verification failure as a generic 401 without echoing the token or exception. Expiration alone does not revoke a token; define revocation or short-lived sessions according to the actual threat model. A service using asymmetric provider keys needs the provider&#x27;s discovery/JWKS validation and key-rotation policy. Never reuse an access token as a refresh token.
+
+### Refresh Sessions
+Use the provider&#x27;s supported session flow or a server-side opaque refresh design: store only a digest, expiry, user/session family, and revocation state. In one atomic transaction consume the old active token and create the replacement. Concurrent reuse must not issue two successors; defined reuse handling revokes the affected family. Check current user status and permissions when issuing new access tokens. Bind refresh to the intended client/session and protect cookie-based requests against CSRF. Do not log tokens, store them plaintext in a database, or return a refresh token through a URL. Test simultaneous refresh, expiry, replay, revocation, and transaction failure before calling the flow complete.
+
+## 2. Authorize the Resource and Operation
+Authentication identifies the caller; authorization decides the exact operation on an object and tenant. A role name does not automatically grant cross-tenant access. Apply the owner/tenant predicate in the database mutation to avoid a check-then-write race, and allowlist writable properties. Use 404/403 consistently with the product&#x27;s resource-disclosure policy.
+
+An administrator path needs an explicit separate policy and audit event; do not add an implicit admin bypass to every owner check. Test a valid user accessing another user&#x27;s object, the same ID in another tenant, deleted memberships, and bulk endpoints.
+
+## 3. Parse Once, Then Use the Validated Value
+Reject partial numeric parses, unsafe integers, unexpected properties, and oversized requests. Use parameterized database queries. An ORM does not provide business authorization or make unsafe raw SQL safe. Validate all input data, sanitize user inputs, implement request schema validation, and prevent SQL injection, XSS, and command injection.
+
+## 4. Rate Limiting and Throttling
+Implement rate limiting per user/IP. Set up API throttling. Configure request quotas. Handle rate limit errors gracefully. Monitor for suspicious activity.
+
+## 5. Data Protection
+Encrypt data in transit (HTTPS/TLS). Encrypt sensitive data at rest. Implement proper error handling (no data leaks). Sanitize error messages. Use secure headers.
+
+## 6. API Security Testing
+Test authentication and authorization. Perform penetration testing. Check for common vulnerabilities (OWASP API Top 10). Validate input handling. Test rate limiting.
+
+## Conflicts
+- **sickn33/agentic-awesome-skills** states: &#x27;Do not log tokens, store them plaintext in a database, or return a refresh token through a URL&#x27; and &#x27;No database transaction adapter is bundled here.&#x27; **LeoYeAI/openclaw-master-skills** provides an explicit code example: &#x27;Store refresh token in database&#x27; with `db.refreshToken.create({ data: { token: refreshToken, ... } })`. The combined instruction follows the sickn33 constraint of not storing tokens plaintext in a database; if a database-backed refresh store is required, store only a digest as specified in the sickn33 copy.
+- **sickn33/agentic-awesome-skills** states: &#x27;Prefer the established provider/session middleware&#x27; and &#x27;Preserve the application&#x27;s actual identity provider.&#x27; **LeoYeAI/openclaw-master-skills** states: &#x27;Choose authentication method (JWT, OAuth 2.0, API keys).&#x27; The combined instruction follows the sickn33 guidance to preserve the existing identity provider when one exists, and only selects a method when designing a new system.</pre>
+</body>
+</html>

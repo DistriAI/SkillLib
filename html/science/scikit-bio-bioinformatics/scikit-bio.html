@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scikit-bio</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">scikit-bio-bioinformatics</a> / scikit-bio</p><h1>scikit-bio</h1><p class="meta">combined</p><p>The copies overlap heavily on the high-level capabilities (sequences, alignment, trees, diversity, ordination, PERMANOVA), but they disagree on the concrete API to use. K-Dense-AI targets scikit-bio 0.7.4 and documents the new pair_align / pair_align_nucl / pair_align_prot API, explicitly noting that the SSW wrappers were removed. Vibe-Skills and OpenClaw-Medical-Skills still instruct the agent to use local_pairwise_align_ssw and StripedSmithWaterman, which are deprecated/removed in the newer version. aipoch/medical-research-skills targets an older version (&gt;=0.6.0) and provides a different, more end-to-end example workflow. Crowning one copy would hide the version-specific API differences and the alternative workflow style.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scikit-bio/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scikit-bio/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/scikit-bio/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/scikit-bio/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scikit-bio/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scikit-bio/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/scikit-bio/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/scikit-bio/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># scikit-bio
+
+## Overview
+
+Use scikit-bio for sequence manipulation, alignment, phylogenetics, microbial ecology, and multivariate statistics. Check the installed scikit-bio version before choosing alignment APIs: 0.7.0+ uses pair_align; older versions use the SSW wrappers.
+
+## When to Use
+
+- Working with biological sequences (DNA, RNA, protein)
+- Reading/writing FASTA, FASTQ, GenBank, Newick, BIOM formats
+- Performing sequence alignments or motif searches
+- Constructing or analyzing phylogenetic trees
+- Calculating alpha/beta diversity, UniFrac distances
+- Running ordination (PCoA, CCA, RDA) and statistical tests (PERMANOVA, ANOSIM, Mantel)
+- Analyzing microbiome or community ecology data
+
+## 1. Sequence Manipulation
+
+Use DNA, RNA, Protein classes for alphabet-aware validation; use Sequence for generic sequences.
+
+```python
+import skbio
+seq = skbio.DNA.read(&#x27;input.fasta&#x27;)
+rc = seq.reverse_complement()
+rna = seq.transcribe()
+protein = rna.translate()
+```
+
+- FASTQ quality scores load into positional metadata. Specify phred_offset=33 or variant explicitly; do not infer from filename.
+- find_with_regex requires a capture group in the pattern (e.g., &#x27;(ATG[ACGT]{3})&#x27;).
+- Translation requires an explicit genetic code/frame and a decision about incomplete codons.
+
+## 2. Sequence Alignment
+
+### scikit-bio 0.7.0+ (recommended)
+
+Use pair_align, pair_align_nucl, or pair_align_prot. The old SSW wrappers (local_pairwise_align_ssw, StripedSmithWaterman) are removed.
+
+```python
+from skbio.alignment import pair_align_nucl, pair_align_prot, pair_align, TabularMSA
+aln = pair_align_nucl(seq1, seq2)
+path = aln.paths[0]
+aln_seqs = path.to_aligned((seq1, seq2))
+msa = TabularMSA.from_path_seqs(path, (seq1, seq2))
+```
+
+- sub_score accepts a (match, mismatch) tuple or a matrix name (&#x27;NUC.4.4&#x27;, &#x27;BLOSUM62&#x27;).
+- gap_cost accepts a single number (linear) or (open, extend) tuple (affine).
+- mode=&#x27;global&#x27; defaults to free terminal gaps; use free_ends=False for fully penalized global alignment.
+
+### scikit-bio &lt; 0.7.0
+
+Use local_pairwise_align_ssw for local alignments and StripedSmithWaterman for protein alignments.
+
+```python
+from skbio.alignment import local_pairwise_align_ssw, TabularMSA
+alignment = local_pairwise_align_ssw(seq1, seq2)
+msa = alignment.aligned_sequences
+```
+
+## 3. Phylogenetic Trees
+
+```python
+from skbio import TreeNode
+from skbio.tree import nj, upgma
+tree = TreeNode.read(&#x27;tree.nwk&#x27;)
+tree = nj(distance_matrix)
+subtree = tree.shear([&#x27;taxon1&#x27;, &#x27;taxon2&#x27;])
+patristic = tree.find(&#x27;taxon1&#x27;).distance(tree.find(&#x27;taxon2&#x27;))
+rf = tree.robinson_foulds(other_tree)
+```
+
+- Use nj() for neighbor joining; upgma() assumes a molecular clock.
+- GME and BME are scalable for large trees.
+
+## 4. Diversity Analysis
+
+```python
+from skbio.diversity import alpha_diversity, beta_diversity
+alpha = alpha_diversity(&#x27;shannon&#x27;, counts, ids=sample_ids)
+faith_pd = alpha_diversity(&#x27;faith_pd&#x27;, counts, ids=sample_ids, tree=tree, otu_ids=feature_ids)
+bc_dm = beta_diversity(&#x27;braycurtis&#x27;, counts, ids=sample_ids)
+unifrac_dm = beta_diversity(&#x27;unweighted_unifrac&#x27;, counts, ids=sample_ids, tree=tree, otu_ids=feature_ids)
+```
+
+- Counts must be non-negative integers (abundances, not relative frequencies).
+- Phylogenetic metrics require a tree and OTU/feature ID mapping.
+
+## 5. Ordination and Statistics
+
+```python
+from skbio.stats.ordination import pcoa
+from skbio.stats.distance import permanova
+ord_res = pcoa(dm)
+perma = permanova(dm, grouping=grouping, permutations=999)
+```
+
+- DistanceMatrix enforces symmetry and zero diagonal.
+- Increase permutations (999+) for stable p-values in real analyses.
+
+## Dependencies
+
+- scikit-bio 0.7.4 (or &gt;=0.6.0 for older API)
+- NumPy 2.0+ (0.7.4) or &gt;=1.23 (older)
+- pandas &gt;=1.5
+- Optional: matplotlib/seaborn/plotly for plotting; biom-format for BIOM tables</pre>
+</body>
+</html>

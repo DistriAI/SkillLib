@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>similarity-search-patterns</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">vector-similarity-search</a> / similarity-search-patterns</p><h1>similarity-search-patterns</h1><p class="meta">combined</p><p>The first copy is the only one that contains the actual procedure: distance metrics, index type trade-offs, and concrete Pinecone/Qdrant implementation templates. The other two copies are thin wrappers that omit the technical content and instead point to a resources/implementation-playbook.md file that is not present in the provided text. Because the first copy has material steps the others lack, and the others add a resource pointer and explicit limitations the first lacks, crowning one would hide a real alternative structure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/similarity-search-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/similarity-search-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/similarity-search-patterns/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/similarity-search-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/similarity-search-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/similarity-search-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/similarity-search-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/similarity-search-patterns/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: similarity-search-patterns
+description: Implement efficient similarity search with vector databases. Use when building semantic search, implementing nearest neighbor queries, or optimizing retrieval performance.
+---
+
+# Similarity Search Patterns
+
+Patterns for implementing efficient similarity search in production systems.
+
+## When to Use This Skill
+
+- Building semantic search systems
+- Implementing RAG retrieval
+- Creating recommendation engines
+- Optimizing search latency
+- Scaling to millions of vectors
+- Combining semantic and keyword search
+
+## Do Not Use This Skill When
+
+- The task is unrelated to similarity search patterns
+- You need a different domain or tool outside this scope
+
+## Core Concepts
+
+### 1. Distance Metrics
+
+| Metric | Formula | Best For |
+|--------|---------|----------|
+| **Cosine** | 1 - (A·B)/(‖A‖‖B‖) | Normalized embeddings |
+| **Euclidean (L2)** | √Σ(a-b)² | Raw embeddings |
+| **Dot Product** | A·B | Magnitude matters |
+| **Manhattan (L1)** | Σ|a-b| | Sparse vectors |
+
+### 2. Index Types
+
+| Index | Search Complexity | Recall | Data Scale |
+|-------|-------------------|--------|------------|
+| Flat (Exact) | O(n) | 100% | Small data |
+| HNSW (Graph-based) | O(log n) | ~95-99% | Medium-Large |
+| IVF+PQ (Quantized) | O(√n) | ~90-95% | Very Large |
+
+## Templates
+
+### Template 1: Pinecone Implementation
+
+```python
+from pinecone import Pinecone, ServerlessSpec
+from typing import List, Dict, Optional
+
+class PineconeVectorStore:
+    def __init__(
+        self,
+        api_key: str,
+        index_name: str,
+        dimension: int = 1536,
+        metric: str = &quot;cosine&quot;
+    ):
+        self.pc = Pinecone(api_key=api_key)
+
+        if index_name not in self.pc.list_indexes().names():
+            self.pc.create_index(
+                name=index_name,
+                dimension=dimension,
+                metric=metric,
+                spec=ServerlessSpec(cloud=&quot;aws&quot;, region=&quot;us-east-1&quot;)
+            )
+
+        self.index = self.pc.Index(index_name)
+
+    def upsert(
+        self,
+        vectors: List[Dict],
+        namespace: str = &quot;&quot;
+    ) -&gt; int:
+        batch_size = 100
+        total = 0
+        for i in range(0, len(vectors), batch_size):
+            batch = vectors[i:i + batch_size]
+            self.index.upsert(vectors=batch, namespace=namespace)
+            total += len(batch)
+        return total
+
+    def search(
+        self,
+        query_vector: List[float],
+        top_k: int = 10,
+        namespace: str = &quot;&quot;,
+        filter: Optional[Dict] = None,
+        include_metadata: bool = True
+    ) -&gt; List[Dict]:
+        results = self.index.query(
+            vector=query_vector,
+            top_k=top_k,
+            namespace=namespace,
+            filter=filter,
+            include_metadata=include_metadata
+        )
+        return [
+            {
+                &quot;id&quot;: match.id,
+                &quot;score&quot;: match.score,
+                &quot;metadata&quot;: match.metadata
+            }
+            for match in results.matches
+        ]
+
+    def search_with_rerank(
+        self,
+        query: str,
+        query_vector: List[float],
+        top_k: int = 10,
+        rerank_top_n: int = 50,
+        namespace: str = &quot;&quot;
+    ) -&gt; List[Dict]:
+        initial_results = self.search(
+            query_vector,
+            top_k=rerank_top_n,
+            namespace=namespace
+        )
+        reranked = self._rerank(query, initial_results)
+        return reranked[:top_k]
+
+    def _rerank(self, query: str, results: List[Dict]) -&gt; List[Dict]:
+        from sentence_transformers import CrossEncoder
+        model = CrossEncoder(&#x27;cross-encoder/ms-marco-MiniLM-L-6-v2&#x27;)
+        pairs = [(query, r[&quot;metadata&quot;][&quot;text&quot;]) for r in results]
+        scores = model.predict(pairs)
+        for result, score in zip(results, scores):
+            result[&quot;rerank_score&quot;] = float(score)
+        return sorted(results, key=lambda x: x[&quot;rerank_score&quot;], reverse=True)
+
+    def delete(self, ids: List[str], namespace: str = &quot;&quot;):
+        self.index.delete(ids=ids, namespace=namespace)
+
+    def delete_by_filter(self, filter: Dict, namespace: str = &quot;&quot;):
+        self.index.delete(filter=filter, namespace=namespace)
+```
+
+### Template 2: Qdrant Implementation
+
+```python
+from qdrant_client import QdrantClient
+from qdrant_client.http import models
+from typing import List, Dict, Optional
+
+class QdrantVectorStore:
+    def __init__(
+        self,
+        url: str = &quot;localhost&quot;,
+        port: int = 6333,
+        collection_name: str = &quot;documents&quot;,
+        vector_size: int = 1536
+    ):
+        self.client = QdrantClient(url=url, port=port)
+        self.collection_name = collection_name
+
+        collections = self.client.get_collections().collections
+        if collection_name not in [c.name for c in collections]:
+            self.client.create_collection(
+                collection_name=collection_name,
+                vectors_config=models.VectorParams(
+                    size=vector_size,
+                    distance=models.Distance.COSINE
+                ),
+                quantization_config=models.ScalarQuantization(
+                    scalar=models.ScalarQuantizationConfig(
+                        type=models.ScalarType.INT8,
+                        quantile=0.99,
+                        always_ram=True
+                    )
+                )
+            )
+```
+
+## Instructions
+
+- Clarify goals, constraints, and required inputs.
+- Apply relevant best practices and validate outcomes.
+- Provide actionable steps and verification.
+- If detailed examples are required, open `resources/implementation-playbook.md`.
+
+## Resources
+
+- `resources/implementation-playbook.md` for detailed patterns and examples.
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

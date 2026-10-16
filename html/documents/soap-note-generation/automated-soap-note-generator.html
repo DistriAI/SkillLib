@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>automated-soap-note-generator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">soap-note-generation</a> / automated-soap-note-generator</p><h1>automated-soap-note-generator</h1><p class="meta">combined</p><p>Both copies describe the same SOAP note generation workflow and share the same core capabilities, parameters, and preprocessing steps. However, the aipoch copy adds a concrete script-backed validation workflow (py_compile, --help, sample run) and a generic fallback/assumption workflow, while the LeoYeAI copy adds explicit safety constraints (physician review required, PHI de-identification, do-not-use cases) and integration with upstream/downstream skills. Neither copy is a strict reproduction of the other; crowning one would hide either the validation commands or the safety/integration constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/automated-soap-note-generator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/automated-soap-note-generator/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/automated-soap-note-generator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/automated-soap-note-generator/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: automated-soap-note-generator
+description: Generate structured SOAP notes from clinical narratives, transcripts, or existing notes; use when the user needs de-identified clinical documentation organized into Subjective, Objective, Assessment, and Plan sections, with clear assumptions and review points.
+license: MIT
+author: AIPOCH
+---
+
+# Automated SOAP Note Generator
+
+## Safety and Scope
+
+- Use only for initial documentation draft generation from de-identified clinical input.
+- All output requires physician review and approval before entering patient records.
+- Do not use when input contains PHI that has not been de-identified for testing or training.
+- Do not use for complex psychiatric cases, surgical operative reports, legal/forensic documentation, critical care real-time documentation, or cases requiring nuanced clinical reasoning beyond text extraction.
+- Verify medical facts, medication names, dosages, and instructions before final use.
+
+## Quick Check
+
+Use this command to verify that the packaged script entry point can be parsed before deeper execution.
+
+```bash
+python -m py_compile scripts/main.py
+```
+
+## Audit-Ready Commands
+
+Use these concrete commands for validation. They are intentionally self-contained and avoid placeholder paths.
+
+```bash
+python -m py_compile scripts/main.py
+python scripts/main.py --help
+python scripts/main.py --input &quot;Audit validation sample with explicit symptoms, history, assessment, and next-step plan.&quot; --patient-id P12345 --provider &quot;Dr. Smith&quot; --format json
+```
+
+## Workflow
+
+1. Confirm the user objective, required inputs, and non-negotiable constraints before doing detailed work.
+2. Validate that the request matches the documented scope and stop early if the task would require unsupported assumptions.
+3. Use the packaged script path or the documented reasoning path with only the inputs that are actually available.
+4. Return a structured result that separates assumptions, deliverables, risks, and unresolved items.
+5. If execution fails or inputs are incomplete, switch to the fallback path and state exactly what blocked full completion.
+
+## Overview
+
+AI-powered clinical documentation tool that converts unstructured clinical input into professionally formatted SOAP notes compliant with medical documentation standards.
+
+**Key Capabilities:**
+- **Intelligent Parsing**: Extracts structured information from free-text clinical narratives
+- **SOAP Classification**: Automatically categorizes content into Subjective, Objective, Assessment, Plan sections
+- **Medical Entity Recognition**: Identifies symptoms, diagnoses, medications, procedures, and anatomical locations
+- **Temporal Analysis**: Extracts timeline information (onset, duration, progression)
+- **Template Generation**: Produces standardized SOAP format suitable for EHR integration
+- **Multi-modal Input**: Accepts text dictation, transcripts, or clinical notes
+
+## When to Use
+
+- Use this skill when the user provides de-identified clinical narratives, dictation, or transcripts and needs a structured SOAP note.
+- Use this skill when the output must clearly separate Subjective, Objective, Assessment, and Plan sections for clinical review.
+- Use this skill when you need a reproducible script-backed workflow with explicit assumptions, unresolved items, and fallback handling.
+
+## Integration with Other Skills
+
+**Upstream Skills:**
+- `medical-scribe-dictation`: Convert physician verbal dictation to text input
+- `ehr-semantic-compressor`: Summarize lengthy EHR notes for SOAP generation
+- `dicom-anonymizer`: Prepare imaging reports for SOAP inclusion
+- `audio-script-writer`: Convert audio recordings to text format
+
+**Downstream Skills:**
+- `medical-email-polisher`: Professional communication of SOAP summaries to patients
+- `clinical-data-cleaner`: Standardize extracted data for research databases
+- `hipaa-compliance-auditor`: Verify de-identification before sharing documentation
+- `discharge-summary-writer`: Generate discharge summaries from SOAP encounters
+- `referral-letter-generator`: Create referral letters based on Assessment and Plan sections
+
+**Complete Workflow:**
+```
+Medical Scribe Dictation (audio→text) → 
+  Automated SOAP Note Generator (this skill) → 
+    Physician Review → 
+      EHR Entry / 
+      Medical Email Polisher (patient communication) / 
+      Referral Letter Generator (referrals)
+```
+
+## Core Capabilities
+
+### 1. Input Processing and Preprocessing
+
+Handle various input formats and prepare for NLP analysis:
+
+```python
+from scripts.soap_generator import SOAPNoteGenerator
+
+generator = SOAPNoteGenerator()
+
+# Process text input
+soap_note = generator.generate(
+    input_text=&quot;Patient presents with 2-day history of chest pain, radiating to left arm...&quot;,
+    patient_id=&quot;P12345&quot;,
+    encounter_date=&quot;2026-01-15&quot;,
+    provider=&quot;Dr. Smith&quot;
+)
+
+# Process from audio transcript
+soap_note = generator.generate_from_transcript(
+    transcript_path=&quot;consultation_transcript.txt&quot;,
+    patient_id=&quot;P12345&quot;
+)
+```
+
+**Input Preprocessing Steps:**
+1. **Text Cleaning**: Remove filler words (&quot;um&quot;, &quot;uh&quot;), timestamps, speaker labels
+2. **Sentence Segmentation**: Split into clinically meaningful segments
+3. **Normalization**: Standardize abbreviations and medical shorthand
+4. **Encoding Detection**: Handle various file formats (UTF-8, ASCII, etc.)
+
+**Parameters:**
+| Parameter | Type | Required | Description | Default |
+|-----------|------|----------|-------------|---------|
+| `input_text` | str | Yes* | Raw clinical text or dictation | None |
+| `transcript_path` | str | Yes* | Path to transcript file | None |
+| `patient_id` | str | No | Patient identifier (MUST be de-identified for testing) | None |
+| `encounter_date` | str | No | Date in ISO 8601 format (YYYY-MM-DD) | Current date |
+| `provider` | str | No | Healthcare provider name | None |
+| `specialty` | str | No | Medical specialty context | &quot;general&quot; |
+| `verbose` | bool | No | Include confidence scores | False |
+
+*Either `input_text` or `transcript_path` required
+
+**Best Practices:**
+- Always verify input text quality (clear audio → better transcription → better SOAP)
+- Remove patient identifiers before processing unless in secure environment
+- Split long encounters (&gt;30 minutes) into logical segments
+- Flag ambiguous abbreviations for manual review
+
+### 2. Medical Named Entity Recognition (NER)
+
+Identify and extract medical concepts from unstructured text:
+
+```python
+# Extract entities with context
+entities = generator.extract_medical_entities(
+    &quot;Patient has history of hypertension and diabetes, 
+     currently taking lisinopril 10mg daily and metformin 500mg BID&quot;
+)
+
+# Returns structured entities:
+# {
+#   &quot;diagnoses&quot;: [&quot;hypertension&quot;, &quot;diabetes mellitus&quot;],
+#   &quot;medications&quot;: [
+#     {&quot;name&quot;: &quot;lisinopril&quot;, &quot;dose&quot;: &quot;10mg&quot;, &quot;frequency&quot;: &quot;daily&quot;},
+#     {&quot;name&quot;: &quot;metformin&quot;, &quot;dose&quot;: &quot;500mg&quot;, &quot;frequency&quot;: &quot;BID&quot;}
+#   ]
+# }
+```
+
+**Entity Types Recognized:**
+| Category | Examples | Notes |
+|----------|----------|-------|
+| **Diagnoses** | diabetes, hypertension, pneumonia | ICD-10 compatible where possible |
+| **Symptoms** | chest pain, headache, nausea | Includes severity modifiers |
+| **Medications** | metformin, lisinopril, aspirin | Extracts dose, route, frequency |
+| **Procedures** | ECG, CT scan, blood draw | Includes body site |
+| **Anatomy** | left arm, chest, abdomen | Laterality and location |
+| **Lab Values** | glucose 120, BP 140/90 | Units and reference ranges |
+| **Temporal** | yesterday, 3 days ago, chronic | Normalized to relative dates |</pre>
+</body>
+</html>

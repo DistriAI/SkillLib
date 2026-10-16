@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>openalex</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">openalex-academic-search</a> / openalex</p><h1>openalex</h1><p class="meta">combined</p><p>Both copies target OpenAlex, but they prescribe different tools and workflows. The first copy is a Python fetcher skill (openalex_fetch.py) with a strict resolution chain, optional .env API key, and filters like min-citations and type. The second copy is a Node CLI skill (openalex-skill) with entity types, ID formats, cited-by/references/related, autocomplete, group-by, PDF download, and output formats (summary/detail/json/bibtex). Neither is a reproduction of the other; crowning one would hide a real alternative implementation and a set of capabilities the other lacks.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/openalex/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/59-shiquda-openalex-skill/openalex/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/openalex/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/59-shiquda-openalex-skill/openalex/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex/openalex/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># OpenAlex Academic Search
+
+Search academic papers, authors, institutions, and citations via the OpenAlex API.
+
+## When to Use
+
+Use this skill when the user wants to:
+- Search for academic papers or scholarly works
+- Find author, institution, or journal information
+- Track citations (cited-by, references, related)
+- Look up metadata by DOI, ORCID, or OpenAlex ID
+- Analyze publication trends or research metrics
+- Download open-access PDFs
+
+## Setup
+
+### Option A: Python Fetcher (wanshuiyin style)
+
+1. Install Python 3.7+ and requests:
+   ```bash
+   pip install requests
+   ```
+2. Optional: Create `.claude/.env` with `OPENALEX_API_KEY` and `OPENALEX_EMAIL`.
+3. Resolve `openalex_fetch.py` via the canonical chain (`.aris/tools/`, `tools/`, `$ARIS_REPO/tools/`).
+
+### Option B: Node CLI (brycewang-stanford style)
+
+1. Install the CLI:
+   ```bash
+   npm install -g openalex-skill
+   openalex --help
+   ```
+2. Configure API key per `references/setup.md` if needed.
+
+## Core Commands
+
+### Search Works
+
+**Python fetcher:**
+```bash
+python3 &quot;$OPENALEX_FETCHER&quot; search &quot;QUERY&quot; --max 10
+```
+
+**Node CLI:**
+```bash
+openalex works search &quot;QUERY&quot; --per-page 5
+```
+
+### Filters and Sort
+
+**Python fetcher overrides (append to arguments):**
+- `— max: 20` — return up to 20 results
+- `— year: 2023-` — papers from 2023 onward
+- `— year: 2020-2023` — papers from 2020 to 2023
+- `— type: article` — only journal articles
+- `— type: preprint` — only preprints
+- `— open-access` — only open access papers
+- `— min-citations: 50` — minimum 50 citations
+- `— sort: citations` — sort by citation count
+- `— sort: date` — sort by publication date
+
+**Node CLI filters:**
+```bash
+openalex works list \
+  --filter publication_year:2024 \
+  --filter is_oa:true \
+  --sort cited_by_count:desc \
+  --per-page 10
+```
+
+### Get Specific Work
+
+**Python fetcher:**
+```bash
+python3 &quot;$OPENALEX_FETCHER&quot; work &quot;10.1109/TWC.2024.1234567&quot;
+```
+
+**Node CLI:**
+```bash
+openalex works get W2741809807
+openalex works get https://doi.org/10.1038/nature12373
+openalex works get 10.1038/nature12373
+```
+
+### Citation Tracking (Node CLI only)
+
+```bash
+# Papers that cite this work
+openalex works cited-by W2741809807 --per-page 5
+
+# Papers this work references
+openalex works references W2741809807 --per-page 5
+
+# Related works
+openalex works related W2741809807 --per-page 5
+```
+
+### Author and Institution Lookup (Node CLI only)
+
+```bash
+openalex authors search &quot;Author Name&quot; --per-page 3
+openalex authors get https://orcid.org/0000-0002-3141-5845
+openalex institutions autocomplete &quot;tsinghua&quot;
+```
+
+### Group By (Node CLI only)
+
+```bash
+openalex works group --by publication_year \
+  --filter author.id:A5070829652
+```
+
+### Download PDF (Node CLI only)
+
+```bash
+openalex works download https://doi.org/10.48550/arXiv.1706.03762
+openalex works download W2741809807 -o paper.pdf
+```
+
+## Output Formats (Node CLI)
+
+- `summary` (default) — Concise one-line format
+- `detail` — Human-readable with inline lists
+- `json` — Full structured payload
+- `bibtex` — BibTeX entries
+- `--field &lt;path&gt;` — Client-side projection
+- `--select &lt;field&gt;` — Server-side selection
+
+## Conflicts
+
+- **wanshuiyin/Auto-claude-code-research-in-sleep** uses a Python helper script with a strict resolution chain and requires `pip install requests`; **brycewang-stanford/Auto-Empirical-Research-Skills** uses a Node CLI installed via `npm` and does not require Python.
+- **wanshuiyin/Auto-claude-code-research-in-sleep** supports `min-citations` and work-type filters; **brycewang-stanford/Auto-Empirical-Research-Skills** does not document these but supports entity types, autocomplete, group-by, and PDF download.
+- **wanshuiyin/Auto-claude-code-research-in-sleep** uses `.claude/.env` for API key; **brycewang-stanford/Auto-Empirical-Research-Skills** references a separate setup document.
+- **wanshuiyin/Auto-claude-code-research-in-sleep** has a fixed `MAX_RESULTS` default of 10; **brycewang-stanford/Auto-Empirical-Research-Skills** uses `--per-page` with no fixed default in the skill text.</pre>
+</body>
+</html>

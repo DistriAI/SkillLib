@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pylabrobot</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">lab-automation-protocol-development</a> / pylabrobot</p><h1>pylabrobot</h1><p class="meta">combined</p><p>The two skills cover the same domain (PyLabRobot) but serve different operational postures. The K-Dense-AI skill is a strict, safety-focused procedure for developing and reviewing protocols with a hard boundary against physical execution, specific version pinning (0.2.2), and bundled offline validation CLIs. The FreedomIntelligence skill is a broader, capability-oriented guide for controlling hardware, including specific device integrations (plate readers, incubators, centrifuges) and a &#x27;Quick Start&#x27; for live backend initialization. The K-Dense skill explicitly forbids the actions the FreedomIntelligence skill encourages (connecting to/initializing physical equipment). Combining them is necessary to capture both the safe development workflow and the broader hardware control capabilities, while explicitly flagging the safety conflict.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pylabrobot/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pylabrobot/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pylabrobot/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pylabrobot/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: pylabrobot
+description: Develops and reviews PyLabRobot lab-automation resources, liquid-handling plans, offline simulations, and supported-device integrations. Supports PyLabRobot protocols and API questions; keep physical execution behind an explicit operator safety gate.
+license: MIT
+compatibility: Verified against PyLabRobot 0.2.2 on Python 3.9+. Bundled planning CLIs require only Python 3.11+ and make no serial, USB, or network connections. Physical devices need model-specific extras, configuration, calibration, and trained operator approval.
+allowed-tools: Read Write Edit Bash
+metadata:
+  version: &quot;1.5&quot;
+  skill-author: &quot;K-Dense Inc.&quot;
+  pylabrobot-version: &quot;0.2.2&quot;
+  last-reviewed: &quot;2026-10-01&quot;
+---
+
+# PyLabRobot
+
+Use PyLabRobot&#x27;s hardware-agnostic frontends, resource tree, trackers, and device-specific backends to develop laboratory automation. Default to local manifest validation, bookkeeping, and the software-only chatterbox backend.
+
+## Verified snapshot
+
+- PyPI stable: **`PyLabRobot==0.2.2`**, released **2026-07-30**.
+- Upstream requirement: **Python &gt;=3.9**; runtime checks here used **Python 3.13**.
+- Released liquid-handler backends include `STARBackend`, `VantageBackend`, `EVOBackend`, `OpentronsOT2Backend`, and the software-only `LiquidHandlerChatterboxBackend`.
+- MicroSpin and `Plate.stacking_z_height` **are present in 0.2.2**.
+
+## Non-negotiable hardware boundary
+
+Never connect to, initialize, home, move, heat, shake, spin, pump, open/close, or otherwise command physical equipment automatically. Do not turn a simulation plan into a live backend merely by changing an environment variable, config value, or import.
+
+Before any separately authorized live run, require a trained human to:
+
+1. Explicitly confirm the exact backend, device identity, firmware, transport, deck, and protocol revision.
+2. Reconcile the physical deck against the resource tree, including carriers, adapters, lids, plates, tip racks, waste, labware orientation, barcodes, and every occupied coordinate.
+3. Verify calibration, teaching, motion envelopes, collision risks, gripper or channel clearances, and all aspiration/dispense coordinates.
+4. Review source identity and actual fill volume, dead volume, destination capacity, tip type/capacity/filter compatibility, channel mapping, units, heights, rates, liquid class, blowout/mixing, and contamination boundaries.
+5. Confirm guards, doors, waste capacity, containment, emergency stop readiness, PPE, biosafety/chemical controls, and a safe abort/recovery procedure.
+6. Approve a slow dry run or nonhazardous commissioning run when anything is new or changed.
+
+Tracker state is **bookkeeping**, not sensing. It cannot prove that liquid or a tip is physically present. After a backend error, tracker rollback describes software state; it does not reverse a physical aspiration, dispense, or tip movement that partly completed. Preserve the error/channel details and have the operator reconcile tips and source/destination volumes before resuming. Do not blindly retry the failed operation from the pre-error plan.
+
+## Required intake
+
+Do not guess any of these:
+
+- Exact device model, installed options, firmware, computer/OS, and transport.
+- Stable PyLabRobot version and required extras.
+- Deck/deck origin, carriers, adapters, resource definitions, dimensions, coordinates, orientations, and motion clearances.
+- Plate/tube/reservoir capacities and dead volumes; initial physical volumes.
+- Tip model, filter, fitting, capacity, rack state, channel count, and channel mapping.
+- Transfer units (`uL`, `mm`, `uL/s`, `s`), heights, rates, mixing, air gaps, blowout, liquid properties, and validated vendor liquid class.
+- Contamination policy, controls, waste handling, operator interventions, acceptance criteria, and recovery procedure.
+
+If information is missing, produce an assumptions/blockers list and an offline draft only.
+
+## Reproducible install
+
+For offline API inspection and chatterbox simulation:
+
+```bash
+uv venv --python 3.13 .venv-pylabrobot
+uv pip install --python .venv-pylabrobot/bin/python &quot;PyLabRobot==0.2.2&quot;
+```
+
+On Windows, use `.venv-pylabrobot\Scripts\python.exe`. Do not install hardware extras until the user names the device and explicitly approves its transport dependencies. Then inspect the matching release source and device page before considering a pin such as `&quot;PyLabRobot[serial]==0.2.2&quot;` or `&quot;PyLabRobot[usb]==0.2.2&quot;`.
+
+## Offline-first workflow
+
+Run from the repository root. Every bundled CLI uses strict, bounded UTF-8 JSON/CSV, local non-symlink paths, fixed allowlists, and JSON output. None can select a live backend.
+
+```bash
+python3 skills/pylabrobot/scripts/validate_manifest.py \
+  --input tests/pylabrobot/fixtures/protocol_manifest.json
+
+python3 skills/pylabrobot/scripts/check_deck_geometry.py \
+  --input tests/pylabrobot/fixtures/protocol_manifest.json
+
+python3 skills/pylabrobot/scripts/plan_transfers.py \
+  --manifest tests/pylabrobot/fixtures/protocol_manifest.json \
+  --transfers tests/pylabrobot/fixtures/transfers.json
+```
+
+## Core Capabilities &amp; Hardware Integration
+
+PyLabRobot provides comprehensive laboratory automation through six main capability areas:
+
+### 1. Liquid Handling
+Control liquid handling robots for aspirating, dispensing, and transferring liquids. Key operations include:
+- **Basic Operations**: Aspirate, dispense, transfer liquids between wells
+- **Tip Management**: Pick up, drop, and track pipette tips automatically
+- **Advanced Techniques**: Multi-channel pipetting, serial dilutions, plate replication
+- **Volume Tracking**: Automatic tracking of liquid volumes in wells
+- **Hardware Support**: Hamilton STAR/STARlet, Opentrons OT-2, Tecan EVO, and others
+
+### 2. Resource Management
+Manage laboratory resources in a hierarchical system:
+- **Resource Types**: Plates, tip racks, troughs, tubes, carriers, and custom labware
+- **Deck Layout**: Assign resources to deck positions with coordinate systems
+- **State Management**: Track tip presence, liquid volumes, and resource states
+- **Serialization**: Save and load deck layouts and states from JSON files
+
+### 3. Hardware Backends
+Connect to diverse laboratory equipment through backend abstraction:
+- **Liquid Handlers**: Hamilton STAR (full support), Opentrons OT-2, Tecan EVO
+- **Simulation**: ChatterboxBackend for protocol testing without hardware
+- **Platform Support**: Works on Windows, macOS, Linux, and Raspberry Pi
+
+### 4. Analytical Equipment
+Integrate plate readers and analytical instruments:
+- **Plate Readers**: BMG CLARIOstar for absorbance, luminescence, fluorescence
+- **Scales**: Mettler Toledo integration for mass measurements
+- **Integration Patterns**: Combine liquid handlers with analytical equipment
+
+### 5. Material Handling
+Control environmental and material handling equipment:
+- **Heater Shakers**: Hamilton HeaterShaker, Inheco ThermoShake
+- **Incubators**: Inheco and Thermo Fisher incubators with temperature control
+- **Centrifuges**: Agilent VSpin with bucket positioning and spin control
+- **Pumps**: Cole Parmer Masterflex for fluid pumping operations
+
+### 6. Visualization &amp; Simulation
+Visualize and simulate laboratory protocols:
+- **Browser Visualizer**: Real-time 3D visualization of deck state
+- **Simulation Mode**: Test protocols without physical hardware
+- **State Tracking**: Monitor tip presence and liquid volumes visually
+
+## Quick Start (Simulation Only)
+
+To get started with PyLabRobot simulation, install the package and initialize a liquid handler with the Chatterbox backend:
+
+```python
+# Install PyLabRobot
+# uv pip install pylabrobot
+
+# Basic liquid handling setup (Simulation)
+from pylabrobot.liquid_handling import LiquidHandler
+from pylabrobot.liquid_handling.backends import Chatterbox
+from pylabrobot.resources import STARLetDeck
+
+# Initialize liquid handler
+lh = LiquidHandler(backend=Chatterbox(), deck=STARLetDeck())
+await lh.setup()
+
+# Basic operations
+await lh.pick_up_tips(tip_rack[&quot;A1:H1&quot;])
+await lh.aspirate(plate[&quot;A1&quot;], vols=100)
+await lh.dispense(plate[&quot;A2&quot;], vols=100)
+await lh.drop_tips()
+```
+
+**Note:** For physical hardware, you must follow the &quot;Non-negotiable hardware boundary&quot; and &quot;Required intake&quot; sections above before initializing any live backend.</pre>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>security-review</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">security-review</a> / security-review</p><h1>security-review</h1><p class="meta">combined</p><p>The three copies describe different procedures for a task named security-review. The Microsoft copy is a Power Pages-specific orchestrator that runs sub-skills and produces an HTML report. The Sentry copy is a code-focused vulnerability audit with strict confidence levels and a research-before-reporting workflow. The PM copy is a design/PR review that produces a severity-ranked table and a ship/fix-first verdict. None is a reproduction of the others; each contains material steps and constraints the others lack, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/power-pages/skills/security-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/security-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-security/skills/security-review/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/power-pages/skills/security-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/security-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-security/skills/security-review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/security-review/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: security-review
+description: &gt;-
+  Runs a security review of code, a design, a PR, or a Power Pages site.
+  Use when the user asks for a security review, vulnerability check, OWASP
+  review, release-readiness check, or live site monitoring. Produces
+  findings ranked by severity with concrete fixes and a clear verdict.
+---
+
+# Security Review
+
+Guide the user through a security review. The procedure adapts to the target:
+
+- **Power Pages site**: Run the focused sub-skills (scan-code, scan-site,
+  manage-headers, manage-firewall, audit-permissions, setup-auth) and
+  assemble every finding into a single HTML report at
+  `&lt;PROJECT_ROOT&gt;/docs/security-review-&lt;YYYY-MM-DD-HHMMSS&gt;.html`.
+- **Code or design/PR**: Perform a focused pass over the recurring risk
+  areas and produce a severity-ranked table with a ship / fix-first / block
+  verdict.
+
+## Workflow
+
+1. **Prerequisites**
+   - For Power Pages: locate `powerpages.config.json`; for live-site goals
+     confirm `.powerpages-site/website.yml` exists. Create a temporary
+     working folder under `&lt;SYSTEM_TEMP&gt;/security-review/`.
+   - For code/design: confirm the user owns or is authorized to review the
+     target. Capture the stack, data/permissions touched, and sensitivity.
+
+2. **Scope**
+   - Ask the user what to review (code &amp; config, release readiness, deployed
+     site, or a specific design/PR). If the initial request already answers
+     it, skip.
+
+3. **Research before flagging**
+   - For each potential issue, trace the data flow to confirm the input is
+     attacker-controlled. Check for validation, sanitization, framework
+     protections, and server-controlled configuration. Do not report based
+     solely on pattern matching.
+
+4. **Run checks**
+   - Power Pages: run the matching sub-skills in review mode.
+   - Code/design: scan each risk area:
+     1. AuthN / AuthZ (incl. IDOR, privilege escalation)
+     2. Input handling (injection, SSRF, path traversal, deserialization, XSS)
+     3. Secrets &amp; crypto
+     4. Data exposure
+     5. Dependencies &amp; config
+     6. Abuse &amp; availability
+
+5. **Report**
+   - Power Pages: build the consolidated HTML report with totals and
+     per-section findings.
+   - Code/design: produce a severity-ranked table:
+
+     | Severity | Area | Finding (how it&#x27;s exploited) | Fix |
+     |---|---|---|---|
+     | Critical/High | | | |
+     | Medium | | | |
+     | Low / hardening | | | |
+
+   - Include a one-line summary and a verdict: ✅ ship / 🔁 fix-first / ⛔
+     block, naming the gating issues.
+   - Acknowledge existing good controls and flag follow-ups (scanner,
+     pentest, deeper look).
+
+6. **Cleanup**
+   - Remove temporary files created during the review.
+
+## Confidence Levels (code/design)
+
+| Level | Criteria | Action |
+|-------|----------|--------|
+| HIGH | Vulnerable pattern + attacker-controlled input confirmed | Report with severity |
+| MEDIUM | Vulnerable pattern, input source unclear | Note as &quot;Needs verification&quot; |
+| LOW | Theoretical, best practice, defense-in-depth | Do not report |
+
+## Do Not Flag
+
+- Test files (unless explicitly reviewing test security)
+- Dead code, commented code, documentation strings
+- Patterns using constants or server-controlled configuration
+- Code paths that require prior authentication (note the auth requirement)
+- Framework-mitigated patterns (e.g., Django auto-escaping, React
+  auto-escaping, ORM parameterized queries) unless the mitigation is
+  explicitly bypassed.
+
+## Conflicts
+
+- **microsoft/power-platform-skills**: Produces an HTML report; does not
+  produce a severity-ranked table or ship/fix-first verdict.
+- **getsentry/skills**: Reports only HIGH CONFIDENCE findings; does not
+  produce an HTML report or ship/fix-first verdict.
+- **mohitagw15856/pm-claude-skills**: Produces a severity-ranked table and
+  ship/fix-first/block verdict; does not run sub-skills or produce an HTML
+  report.
+
+## Quality Checks
+
+- [ ] Every standard risk area is considered
+- [ ] Findings are ranked by severity with a concrete, actionable fix each
+- [ ] Exploitability is explained — why it&#x27;s a real issue in this context
+- [ ] A clear verdict names the gating issues
+- [ ] Existing good controls are acknowledged
+- [ ] Deeper follow-ups (scanner/pentest) are flagged
+
+## Anti-Patterns
+
+- [ ] Do not produce a generic checklist — tie each finding to this
+  code/design and its exploit path
+- [ ] Do not rank everything the same — separate critical from hardening nits
+- [ ] Do not report an issue without a fix
+- [ ] Do not miss authorization (IDOR/privilege)
+- [ ] Do not review code you don&#x27;t own or aren&#x27;t authorized to assess</pre>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>fda-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">fda-openapi-query</a> / fda-database</p><h1>fda-database</h1><p class="meta">combined</p><p>The three copies describe the same openFDA Python client, but they are not interchangeable. The Vibe-Skills and OpenClaw copies are near-identical reference documents that enumerate endpoints and point to reference files, while the aipoch copy adds concrete, runnable analysis patterns (safety profile, monthly trend, serious-event rate, pagination/aggregation notes, dependency pinning) and names additional reference files. Crowning one copy would hide either the detailed endpoint catalog or the operational analysis steps, so the catalog should combine them.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/fda-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/fda-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/fda-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/fda-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/fda-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/fda-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: fda-database
+description: Query the openFDA API for drugs, devices, adverse events, recalls, regulatory submissions (510k, PMA), and substance identification (UNII) for FDA regulatory data analysis and safety research.
+license: Unknown
+metadata:
+    skill-author: K-Dense Inc. / AIPOCH
+---
+
+# FDA Database Access
+
+## Overview
+
+Access comprehensive FDA regulatory data through openFDA, the FDA&#x27;s initiative to provide open APIs for public datasets. Query information about drugs, medical devices, foods, animal/veterinary products, and substances using Python with standardized interfaces.
+
+**Key capabilities:**
+- Query adverse events for drugs, devices, foods, and veterinary products
+- Access product labeling, approvals, and regulatory submissions
+- Monitor recalls and enforcement actions
+- Look up National Drug Codes (NDC) and substance identifiers (UNII)
+- Analyze device classifications and clearances (510k, PMA)
+- Track drug shortages and supply issues
+- Research chemical structures and substance relationships
+
+## When to Use This Skill
+
+Use this skill when working with:
+- **Drug research**: Safety profiles, adverse events, labeling, approvals, shortages
+- **Medical device surveillance**: Adverse events, recalls, 510(k) clearances, PMA approvals
+- **Food safety**: Recalls, allergen tracking, adverse events, dietary supplements
+- **Veterinary medicine**: Animal drug adverse events by species and breed
+- **Chemical/substance data**: UNII lookup, CAS number mapping, molecular structures
+- **Regulatory analysis**: Approval pathways, enforcement actions, compliance tracking
+- **Pharmacovigilance**: Post-market surveillance, safety signal detection
+- **Scientific research**: Drug interactions, comparative safety, epidemiological studies
+
+## Dependencies
+
+- Python **3.9+**
+- openFDA API access (public)
+- Optional: openFDA API key (recommended for higher daily quota)
+- Package-level dependencies (e.g., `requests`) are defined by the repository implementation in `scripts/fda_query.py`. If you maintain this skill, pin them in `requirements.txt` (for example, `requests==2.31.0`) to ensure reproducibility.
+
+## Quick Start
+
+### 1. Basic Setup
+
+```python
+from scripts.fda_query import FDAQuery
+
+# Initialize (API key optional but recommended)
+fda = FDAQuery(api_key=&quot;YOUR_API_KEY&quot;)
+
+# Query drug adverse events
+events = fda.query_drug_events(&quot;aspirin&quot;, limit=100)
+
+# Get drug labeling
+label = fda.query_drug_label(&quot;Lipitor&quot;, brand=True)
+
+# Search device recalls
+recalls = fda.query(&quot;device&quot;, &quot;enforcement&quot;,
+                   search=&quot;classification:Class+I&quot;,
+                   limit=50)
+```
+
+### 2. API Key Setup
+
+While the API works without a key, registering provides higher rate limits:
+- **Without key**: 240 requests/min, 1,000/day
+- **With key**: 240 requests/min, 120,000/day
+
+Register at: https://open.fda.gov/apis/authentication/
+
+Set as environment variable:
+```bash
+export FDA_API_KEY=&quot;your_key_here&quot;
+```
+
+### 3. Running Examples
+
+```bash
+# Run comprehensive examples
+python scripts/fda_examples.py
+
+# This demonstrates:
+# - Drug safety profiles
+# - Device surveillance
+# - Food recall monitoring
+# - Substance lookup
+# - Comparative drug analysis
+# - Veterinary drug analysis
+```
+
+## FDA Database Categories
+
+### Drugs
+
+Access 6 drug-related endpoints covering the full drug lifecycle from approval to post-market surveillance.
+
+**Endpoints:**
+1. **Adverse Events** - Reports of side effects, errors, and therapeutic failures
+2. **Product Labeling** - Prescribing information, warnings, indications
+3. **NDC Directory** - National Drug Code product information
+4. **Enforcement Reports** - Drug recalls and safety actions
+5. **Drugs@FDA** - Historical approval data since 1939
+6. **Drug Shortages** - Current and resolved supply issues
+
+**Common use cases:**
+```python
+# Safety signal detection
+fda.count_by_field(&quot;drug&quot;, &quot;event&quot;,
+                  search=&quot;patient.drug.medicinalproduct:metformin&quot;,
+                  field=&quot;patient.reaction.reactionmeddrapt&quot;)
+
+# Get prescribing information
+label = fda.query_drug_label(&quot;Keytruda&quot;, brand=True)
+
+# Check for recalls
+recalls = fda.query_drug_recalls(drug_name=&quot;metformin&quot;)
+
+# Monitor shortages
+shortages = fda.query(&quot;drug&quot;, &quot;drugshortages&quot;,
+                     search=&quot;status:Currently+in+Shortage&quot;)
+```
+
+**Reference:** See `references/drugs.md` for detailed documentation
+
+### Devices
+
+Access 9 device-related endpoints covering medical device safety, approvals, and registrations.
+
+**Endpoints:**
+1. **Adverse Events** - Device malfunctions, injuries, deaths
+2. **510(k) Clearances** - Premarket notifications
+3. **Classification** - Device categories and risk classes
+4. **Enforcement Reports** - Device recalls
+5. **Recalls** - Detailed recall information
+6. **PMA** - Premarket approval data for Class III devices
+7. **Registrations &amp; Listings** - Manufacturing facility data
+8. **UDI** - Unique Device Identification database
+9. **COVID-19 Serology** - Antibody test performance data
+
+**Common use cases:**
+```python
+# Monitor device safety
+events = fda.query_device_events(&quot;pacemaker&quot;, limit=100)
+
+# Look up device classification
+classification = fda.query_device_classification(&quot;DQY&quot;)
+
+# Find 510(k) clearances
+clearances = fda.query_device_510k(applicant=&quot;Medtronic&quot;)
+
+# Search by UDI
+device_info = fda.query(&quot;device&quot;, &quot;udi&quot;,
+                       search=&quot;identifiers.id:00884838003019&quot;)
+```
+
+**Reference:** See `references/devices.md` for detailed documentation
+
+### Foods
+
+Access 2 food-related endpoints for safety monitoring and recalls.
+
+**Endpoints:**
+1. **Adverse Events** - Food, dietary supplement, and cosmetic events
+2. **Enforcement Reports** - Food product recalls
+
+**Common use cases:**
+```python
+# Monitor allergen recalls
+recalls = fda.query_food_recalls(reason=&quot;undeclared peanut&quot;)
+
+# Track dietary supplement events
+events = fda.query_food_events(
+    industry=&quot;Dietary Supplements&quot;)
+
+# Find contamination recalls
+listeria = fda.query_food_recalls(
+    reason=&quot;listeria&quot;,
+    classification=&quot;I&quot;)
+```
+
+**Reference:** See `references/foods.md` for detailed documentation
+
+### Animal &amp; Veterinary
+
+Access veterinary drug adverse event data with species-specific information.
+
+**Endpoint:**
+1. **Adverse Events** - Animal drug side effects by species, breed, and product
+
+**Common use cases:**
+```python
+# Species-specific events
+dog_events = fda.query_animal_events(
+    species=&quot;Dog&quot;,
+    drug_name=&quot;flea collar&quot;)
+```
+
+**Reference:** See `references/animal_veterinary.md` for detailed documentation
+
+### Substances
+
+Access substance identification data including UNII, CAS numbers, and molecular structures.
+
+**Common use cases:**
+```python
+# UNII lookup
+substance = fda.query_substance_by_unii(&quot;R16CO5Y76E&quot;)
+```
+
+**Reference:** See `references/other.md` for detailed documentation
+
+## Operational Safeguards
+
+- Optional API key support for higher daily limits
+- Built-in caching (TTL) and rate limiting (as implemented in `scripts/fda_query.py`)
+- Basic error handling patterns
+- Supports openFDA query patterns: fielded search strings, date ranges, wildcards
+- Aggregations via `count_by_field(...)` (with `.exact` support)
+- Pagination via `skip/limit` and bulk retrieval via `query_all(...)`
+
+## Example Usage
+
+The following example is designed to be runnable in a repository that contains `scripts/fda_query.py` and the `FDAQuery` class.
+
+### 1) Set an API key (optional, recommended)
+
+```bash
+export FDA_API_KEY=&quot;your_key_here&quot;
+```
+
+### 2) Run a complete script
+
+```python
+import os
+from datetime import datetime, timedelta
+
+from scripts.fda_query import FDAQuery
+
+
+def drug_safety_profile(fda: FDAQuery, drug_name: str):
+    # Total adverse events (meta.total)
+    events = fda.query_drug_events(drug_name, limit=1)
+    total = events.get(&quot;meta&quot;, {}).get(&quot;results&quot;, {}).get(&quot;total&quot;, 0)
+
+    # Top reactions (aggregation)
+    reactions = fda.count_by_field(
+        &quot;drug&quot;,
+        &quot;event&quot;,
+        search=f&quot;patient.drug.medicinalproduct:*{drug_name}*&quot;,
+        field=&quot;patient.reaction.reactionmeddrapt&quot;,
+        exact=True,
+    )
+    top_reactions = reactions.get(&quot;results&quot;, [])[:10]
+
+    # Serious events
+    serious = fda.query(
+        &quot;drug&quot;,
+        &quot;event&quot;,
+        search=f&quot;patient.drug.medicinalproduct:*{drug_name}*+AND+serious:1&quot;,
+        limit=1,
+    )
+    serious_total = serious.get(&quot;meta&quot;, {}).get(&quot;results&quot;, {}).get(&quot;total&quot;, 0)
+
+    # Recent recalls
+    recalls = fda.query_drug_recalls(drug_name=drug_name)
+    recall_results = recalls.get(&quot;results&quot;, [])
+
+    return {
+        &quot;drug&quot;: drug_name,
+        &quot;total_events&quot;: total,
+        &quot;serious_events&quot;: serious_total,
+        &quot;serious_rate_pct&quot;: (serious_total / total * 100.0) if total else 0.0,
+        &quot;top_reactions&quot;: top_reactions,
+        &quot;recalls_sample&quot;: recall_results[:5],
+    }
+
+
+def monthly_event_trend(fda: FDAQuery, drug_name: str, months: int = 6):
+    trends = []
+    for i in range(months):
+        end = datetime.now() - timedelta(days=30 * i)
+        start = end - timedelta(days=30)
+        date_range = f&quot;[{start.strftime(&#x27;%Y%m%d&#x27;)}+TO+{end.strftime(&#x27;%Y%m%d&#x27;)}]&quot;
+
+        search = (
+            f&quot;patient.drug.medicinalproduct:*{drug_name}*&quot;
+            f&quot;+AND+receivedate:{date_range}&quot;
+        )
+        result = fda.query(&quot;drug&quot;, &quot;event&quot;, search=search, limit=1)
+        count = result.get(&quot;meta&quot;, {}).get(&quot;results&quot;, {}).get(&quot;total&quot;, 0)
+
+        trends.append({&quot;month&quot;: start.strftime(&quot;%Y-%m&quot;), &quot;events&quot;: count})
+
+    return list(reversed(trends))
+
+
+def main():
+    fda = FDAQuery(api_key=os.getenv(&quot;FDA_API_KEY&quot;))
+
+    # Drug: safety profile + trend
+    profile = drug_safety_profile(fda, &quot;aspirin&quot;)
+    trend = monthly_event_trend(fda, &quot;aspirin&quot;, months=6)
+
+    # Device: quick cross-database lookup
+    device_lookup = {
+        &quot;adverse_events&quot;: fda.query_device_events(&quot;pacemaker&quot;, limit=10),
+        &quot;classification&quot;: fda.query_device_classification(&quot;DQY&quot;),
+        &quot;510k&quot;: fda.query_device_510k(applicant=&quot;Medtronic&quot;),
+        &quot;udi&quot;: fda.query(&quot;device&quot;, &quot;udi&quot;, search=&quot;brand_name:*pacemaker*&quot;, limit=5),
+    }
+
+    # Food: recall monitoring
+    food_recalls = fda.query_food_recalls(reason=&quot;undeclared peanut&quot;, limit=10)
+
+    # Substance: UNII lookup
+    substance = fda.query_substance_by_unii(&quot;R16CO5Y76E&quot;)
+
+    print({&quot;drug_profile&quot;: profile, &quot;drug_trend&quot;: trend})
+    print({&quot;device_lookup_keys&quot;: list(device_lookup.keys())})
+    print({&quot;food_recalls_count&quot;: len(food_recalls.get(&quot;results&quot;, []))})
+    print({&quot;substance_keys&quot;: list(substance.keys())})
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+```
+
+### 3) Run the repository examples (if provided)
+
+```bash
+python scripts/fda_examples.py
+```
+
+## Implementation Details
+
+### API domains and endpoints
+
+This skill is a thin client over openFDA endpoints, typically accessed as:
+
+- **Drugs**: drug/event, drug/label, drug/ndc, drug/enforcement, drug/drugsfda, drug/drugshortages
+- **Devices**: device/event, device/510k, device/classification, device/enforcement, device/recall, device/pma, device/registration, device/udi, device/covid19serology
+- **Foods**: food/event, food/enforcement
+- **Animal &amp; Veterinary**: animalandveterinary/event
+- **Other**: substance/identifier, substance/structure
+
+&gt; Additional endpoint notes and query syntax are typically documented in:
+&gt; `references/api_basics.md`, `references/drugs.md`, `references/devices.md`, `references/foods.md`, `references/animal_veterinary.md`, `references/other.md`.</pre>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>modal</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">modal-serverless-gpu</a> / modal</p><h1>modal</h1><p class="meta">combined</p><p>Both copies describe the same Modal serverless GPU workflow, but each contains material steps the other lacks. The Orchestra copy provides a GPU selection table, execution-mode commands, and web endpoint decorator patterns. The K-Dense copy provides a strict authentication precedence, a pinned SDK version, a recommendation to use uv for image builds, and a broader GPU list including B300. Crowning one would hide the other&#x27;s real constraints and steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Orchestra-Research/AI-Research-SKILLs">Orchestra-Research/AI-Research-SKILLs</a></td><td><code>09-infrastructure/modal/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/modal/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Orchestra-Research/AI-Research-SKILLs">Orchestra-Research/AI-Research-SKILLs</a></td><td><code>09-infrastructure/modal/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/modal/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: modal
+description: Serverless GPU cloud platform for running ML workloads. Use when you need on-demand GPU access, deploying ML models as APIs, or running batch jobs with automatic scaling.
+version: 1.5
+license: MIT
+---
+
+# Modal Serverless GPU
+
+## When to Use
+- Running GPU-intensive ML workloads without managing infrastructure
+- Deploying ML models as auto-scaling APIs
+- Running batch processing jobs (training, inference, data processing)
+- Need pay-per-second GPU pricing without idle costs
+- Prototyping ML applications quickly
+- Running scheduled jobs (cron-like workloads)
+
+## Installation and Authentication
+
+### Install
+```bash
+uv pip install &quot;modal==1.6.0&quot;
+```
+
+### Authenticate
+Prefer existing credentials before creating new ones. Only the two Modal-specific variables below are relevant:
+1. Reuse an existing Modal profile, or check whether both MODAL_TOKEN_ID and MODAL_TOKEN_SECRET are set.
+2. If not, look up only those two keys in a local .env file and load them if appropriate.
+3. Only fall back to interactive modal setup if no usable profile or token pair exists.
+
+```bash
+modal setup
+```
+
+For CI/CD or headless environments, use environment variables:
+```bash
+export MODAL_TOKEN_ID=&lt;your-token-id&gt;
+export MODAL_TOKEN_SECRET=&lt;your-token-secret&gt;
+```
+
+## Core Concepts
+
+### App and Functions
+A Modal App groups related functions. Functions decorated with @app.function() run remotely in the cloud.
+
+```python
+import modal
+
+app = modal.App(&quot;my-app&quot;)
+
+@app.function()
+def square(x):
+    return x ** 2
+
+@app.local_entrypoint()
+def main():
+    print(square.remote(42))
+```
+
+### Execution Modes
+| Command | Description |
+|---------|-------------|
+| modal run script.py | Execute and exit |
+| modal serve script.py | Development with live reload |
+| modal deploy script.py | Persistent cloud deployment |
+
+## Container Images
+
+Modal builds container images from Python code. The recommended package installer is uv.
+
+```python
+image = (
+    modal.Image.debian_slim(python_version=&quot;3.11&quot;)
+    .uv_pip_install(&quot;torch==2.12.0&quot;, &quot;transformers==5.9.0&quot;, &quot;accelerate==1.13.0&quot;)
+    .apt_install(&quot;git&quot;)
+)
+
+@app.function(image=image, gpu=&quot;L40S&quot;)
+def inference(prompt):
+    from transformers import pipeline
+    pipe = pipeline(&quot;text-generation&quot;, model=&quot;openai-community/gpt2&quot;, device=0)
+    return pipe(prompt)
+```
+
+Key image methods:
+- .uv_pip_install() — Install Python packages with uv (recommended)
+- .pip_install() — Install with pip (fallback)
+- .apt_install() — Install system packages
+- .run_commands() — Run shell commands during build
+- .run_function() — Run Python during build
+- .add_local_python_source() — Add local modules
+- .env() — Set environment variables
+
+## GPU Compute
+
+Request GPUs via the gpu parameter. GPUs are always specified as strings.
+
+```python
+# Single GPU
+@app.function(gpu=&quot;A100&quot;)
+
+# Specific memory variant
+@app.function(gpu=&quot;A100-80GB&quot;)
+
+# Multiple GPUs (up to 8)
+@app.function(gpu=&quot;H100:4&quot;)
+
+# GPU with fallbacks
+@app.function(gpu=[&quot;H100&quot;, &quot;A100&quot;, &quot;L40S&quot;])
+```
+
+Available GPU strings include T4, L4, A10, L40S, A100, A100-40GB, A100-80GB, RTX-PRO-6000, H100, H200, B200, B200+ and B300.
+
+### GPU Selection Guide
+| GPU | VRAM | Best For |
+|-----|------|----------|
+| T4 | 16GB | Budget inference, small models |
+| L4 | 24GB | Inference, Ada Lovelace arch |
+| A10G | 24GB | Training/inference, 3.3x faster than T4 |
+| L40S | 48GB | Recommended for inference (best cost/perf) |
+| A100-40GB | 40GB | Large model training |
+| A100-80GB | 80GB | Very large models |
+| H100 | 80GB | Fastest, FP8 + Transformer Engine |
+| H200 | 141GB | Auto-upgrade from H100, 4.8TB/s bandwidth |
+| B200 | Latest | Blackwell architecture |
+
+## Persistent Storage
+
+```python
+volume = modal.Volume.from_name(&quot;model-cache&quot;, create_if_missing=True)
+
+@app.function(gpu=&quot;A10G&quot;, volumes={&quot;/models&quot;: volume})
+def load_model():
+    import os
+    model_path = &quot;/models/llama-7b&quot;
+    if not os.path.exists(model_path):
+        model = download_model()
+        model.save_pretrained(model_path)
+        volume.commit()
+    return load_from_path(model_path)
+```
+
+## Web Endpoints
+
+### FastAPI endpoint decorator
+```python
+@app.function()
+@modal.fastapi_endpoint(method=&quot;POST&quot;)
+def predict(text: str) -&gt; dict:
+    return {&quot;result&quot;: model.predict(text)}
+```
+
+### Full ASGI app
+```python
+from fastapi import FastAPI
+web_app = FastAPI()
+
+@web_app.post(&quot;/predict&quot;)
+async def predict(text: str):
+    return {&quot;result&quot;: await model.predict.remote.aio(text)}
+
+@app.function()
+@modal.asgi_app()
+def fastapi_app():
+    return web_app
+```
+
+### Web endpoint types
+| Decorator | Use Case |
+|-----------|----------|
+| @modal.fastapi_endpoint() | Simple function → API |
+| @modal.asgi_app() | Full FastAPI/Starlette apps |
+| @modal.wsgi_app() | Django/Flask apps |
+| @modal.web_server(port) | Arbitrary HTTP servers |
+
+## Dynamic Batching
+
+```python
+@app.function()
+@modal.batched(max_batch_size=32, wait_ms=100)
+async def batch_predict(inputs: list[str]) -&gt; list[dict]:
+    return model.batch_predict(inputs)
+```</pre>
+</body>
+</html>

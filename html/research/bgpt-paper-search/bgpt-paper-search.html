@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>bgpt-paper-search</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">bgpt-paper-search</a> / bgpt-paper-search</p><h1>bgpt-paper-search</h1><p class="meta">combined</p><p>The two copies describe the same BGPT MCP paper-search skill but disagree on the tool contract, connection method, and result semantics. The K-Dense copy is a newer, schema-checked contract (v1.3, 2026-09-30) that documents specific tool arguments (num_results, days_back, min_citations, study_type, output_format), distinguishes evidence/full/legacy formats, and warns that returned records may lack claim-level provenance. The FreedomIntelligence copy is an older, higher-level overview that advertises 25+ fields, quality scores, and a free tier of 50 searches, and recommends the SSE endpoint and the bgpt-mcp npm package. Because each copy contains material steps or constraints the other lacks, and they conflict on the result contract and setup, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/bgpt-paper-search/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/bgpt-paper-search/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/bgpt-paper-search/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/bgpt-paper-search/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># BGPT Paper Search
+
+## When to use
+Use BGPT to find full-text-derived evidence for a research question or a known DOI. It returns extracted claims and their supporting experiments, rather than only bibliographic metadata. Use these records to build a traceable evidence table; they are not a complete systematic-review search or a validated risk-of-bias assessment.
+
+## Connect
+Configure BGPT in the host before use; installing this skill does not register an MCP server. The provider supports both transports:
+
+| Transport | Endpoint |
+| --- | --- |
+| Streamable HTTP | `https://bgpt.pro/mcp/stream` |
+| SSE | `https://bgpt.pro/mcp/sse` |
+
+Use the host&#x27;s native remote-MCP configuration when supported. For a host that uses `mcpServers` JSON and requires a local stdio bridge, this configuration uses `mcp-remote` (adapt it to the host&#x27;s actual settings format):
+
+```json
+{
+  &quot;mcpServers&quot;: {
+    &quot;bgpt&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;-y&quot;, &quot;mcp-remote&quot;, &quot;https://bgpt.pro/mcp/stream&quot;, &quot;--transport&quot;, &quot;http-only&quot;]
+    }
+  }
+}
+```
+
+The published `bgpt-mcp` npm package is a thin SSE wrapper around `mcp-remote`, not a local paper database. Its bundled README may predate the current tool contract and pricing. Prefer the native connection or configurable bridge above. Use the current provider documentation and live tool schema.
+
+Free access needs no key. For paid usage, configure `Authorization: Bearer &lt;key&gt;` in the host&#x27;s remote-server headers, using its credential storage. For the bridge, `mcp-remote` supports `--header-file` with a local credential file. Do not put `api_key` in an MCP tool call: neither current tool declares that argument. Authenticate through the connection.
+
+## Search and DOI lookup
+Discover the connected server&#x27;s tools before calling them. The live BGPT schema exposes:
+
+| Tool / argument | Contract |
+| --- | --- |
+| `search_papers.query` | Required string. Use short English search terms. |
+| `num_results` | Integer, 1–100; default 16. Set it explicitly to control result use. |
+| `days_back` | Optional integer; papers published within the last N days. Omit for all dates. |
+| `min_citations` | Optional integer; minimum number of **references cited by the paper**, not citations received. |
+| `study_type` | Optional string: `primary study`, `systematic review`, `meta-analysis`, `narrative review`, `protocol`, `dataset`, `commentary`, or `other`. |
+| `output_format` | `evidence` (default), `full`, or `legacy`. |
+| `lookup_paper.doi` | Required DOI string; also accepts `output_format`. A found paper counts as one result. |
+
+Use the filter arguments instead of putting years or filters into the query. No Boolean-query grammar, offset, page, or cursor is documented by this schema. A result limit is not pagination: do not invent continuation arguments or claim the search enumerates every matching paper. For broader coverage, run explicit question variants and deduplicate by DOI while retaining the query history.
+
+Search example:
+
+```json
+{&quot;query&quot;: &quot;CRISPR human cells&quot;, &quot;num_results&quot;: 1, &quot;output_format&quot;: &quot;full&quot;}
+```
+
+Illustrative filtered search:
+
+```json
+{&quot;query&quot;: &quot;CRISPR delivery neurons&quot;, &quot;num_results&quot;: 5, &quot;days_back&quot;: 90, &quot;study_type&quot;: &quot;primary study&quot;, &quot;output_format&quot;: &quot;evidence&quot;}
+```
+
+For a paper already identified, call `lookup_paper` with its bare DOI rather than hoping a title search returns that exact paper:
+
+```json
+{&quot;doi&quot;: &quot;10.1016/j.ymeth.2015.10.014&quot;, &quot;output_format&quot;: &quot;evidence&quot;}
+```
+
+Do not interpret a connection, quota, or tool error as an empty evidence set. The provider publishes a result allowance, but no numeric request-rate limit on the reviewed page; avoid assuming unlimited request throughput.
+
+## Read the result contract
+Search returns an envelope with a `results` list and `count`; record the returned `query` too, since the service may rewrite search terms. DOI lookup returns `found` and a single `result`; handle not-found before reading it. Inspect the MCP result for tool errors before interpreting the envelope.
+
+- `evidence` gives compact evidence records; empty optional fields may be absent.
+- `full` adds legacy paper metadata to the evidence record.
+- `legacy` requests the older paper metadata representation. Do not assume every paper has all previously advertised fields or a quality score.
+
+The provider says evidence/full formats omit papers without extracted evidence. However, a returned record does not guarantee claim-level provenance. An empty search or unfound DOI also does not establish that the paper does not exist. Retain `doi`, `title`, `publication_date`, and `publication_name` when available, then inspect `central_claim` and `evidence.evidence_units`. Each unit links its claim to an experiment, reported statistics, demonstrated scope, and provenance. Keep the schema version: older records can have a different shape.
+
+## Conflicts
+- **FreedomIntelligence/OpenClaw-Medical-Skills** advertises 25+ fields per paper including quality scores and structured data from the actual paper content, implying reliable claim-level extraction. **K-Dense-AI/scientific-agent-skills** warns that a returned record does not guarantee claim-level provenance and that evidence/full formats omit papers without extracted evidence.
+- **FreedomIntelligence/OpenClaw-Medical-Skills** recommends the SSE endpoint and lists `npx bgpt-mcp` as an alternative. **K-Dense-AI/scientific-agent-skills** recommends the Streamable HTTP endpoint and notes the `bgpt-mcp` npm package is a thin SSE wrapper whose README may predate the current contract.
+- **FreedomIntelligence/OpenClaw-Medical-Skills** states a free tier of 50 searches per network and paid usage at $0.01 per result. **K-Dense-AI/scientific-agent-skills** states free access needs no key and does not specify a free-tier limit.</pre>
+</body>
+</html>

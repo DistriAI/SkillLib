@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>javascript-pro</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">javascript-implementation</a> / javascript-pro</p><h1>javascript-pro</h1><p class="meta">combined</p><p>The three copies overlap on modern JavaScript, async/await, and Node/browser targets, but they disagree on scope and add material steps the others lack. Jeffallan/claude-skills is the most specific, mandating ES2023+, ESM, Jest 85%+ coverage, linting, memory-leak checks, and concrete code patterns. rmyndharis/antigravity-skills and sickn33/agentic-awesome-skills are nearly identical, but they explicitly include TypeScript migration and type safety, which the first copy excludes, and they add polyfill strategy and performance profiling. Crowning one copy would hide the TypeScript-migration alternative and the stricter validation constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/javascript-pro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/javascript-pro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/javascript-pro/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/javascript-pro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/javascript-pro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/javascript-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/javascript-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-web-app/skills/javascript-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/javascript-pro/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: javascript-pro
+description: Writes, debugs, and refactors JavaScript code using modern ES2023+ features, async/await patterns, ESM module systems, and Node.js APIs. Use when building vanilla JavaScript applications, implementing Promise-based async flows, optimising browser or Node.js performance, working with Web Workers or Fetch API, or reviewing .js/.mjs/.cjs files for correctness and best practices.
+license: MIT
+metadata:
+  author: https://github.com/Jeffallan
+  company: https://synergetic.solutions
+  version: &quot;1.1.0&quot;
+  domain: language
+  triggers: JavaScript, ES2023, async await, Node.js, vanilla JavaScript, Web Workers, Fetch API, browser API, module system
+  role: specialist
+  scope: implementation
+  output-format: code
+  related-skills: fullstack-guardian
+---
+
+# JavaScript Pro
+
+## When to Use This Skill
+
+- Building vanilla JavaScript applications
+- Implementing async/await patterns and Promise handling
+- Working with modern module systems (ESM/CJS)
+- Optimizing browser performance and memory usage
+- Developing Node.js backend services
+- Implementing Web Workers, Service Workers, or browser APIs
+- Migrating legacy JS to modern ES standards
+- TypeScript migration and type safety (when explicitly requested)
+
+## Do Not Use This Skill When
+
+- You need TypeScript architecture guidance (unless migration is the task)
+- You are working in a non-JS runtime
+- The task requires backend architecture decisions
+
+## Core Workflow
+
+1. **Analyze requirements** — Review `package.json`, module system, Node version, browser targets; confirm `.js`/`.mjs`/`.cjs` conventions. Identify runtime targets and constraints.
+2. **Design architecture** — Plan modules, async flows, and error handling strategies. Choose async patterns and module system.
+3. **Implement** — Write ES2023+ code with proper patterns and optimisations. Use robust error handling.
+4. **Validate** — Run linter (`eslint --fix`); if linter fails, fix all reported issues and re-run before proceeding. Check for memory leaks with DevTools or `--inspect`, verify bundle size; if leaks are found, resolve them before continuing. Validate performance and compatibility.
+5. **Test** — Write comprehensive tests with Jest achieving 85%+ coverage; if coverage falls short, add missing cases and re-run. Confirm no unhandled Promise rejections. Include async test patterns.
+
+## Reference Guide
+
+Load detailed guidance based on context:
+
+| Topic | Reference | Load When |
+|-------|-----------|-----------|
+| Modern Syntax | `references/modern-syntax.md` | ES2023+ features, optional chaining, private fields |
+| Async Patterns | `references/async-patterns.md` | Promises, async/await, error handling, event loop |
+| Modules | `references/modules.md` | ESM vs CJS, dynamic imports, package.json exports |
+| Browser APIs | `references/browser-apis.md` | Fetch, Web Workers, Storage, IntersectionObserver |
+| Node Essentials | `references/node-essentials.md` | fs/promises, streams, EventEmitter, worker threads |
+
+## Constraints
+
+### MUST DO
+- Use ES2023+ features exclusively
+- Use `X | null` or `X | undefined` patterns
+- Use optional chaining (`?.`) and nullish coalescing (`??`)
+- Use async/await for all asynchronous operations
+- Use ESM (`import`/`export`) for new projects
+- Implement proper error handling with try/catch
+- Add JSDoc comments for complex functions
+- Follow functional programming principles
+- Prevent race conditions in async code
+- Consider bundle size for browser code
+- Report performance results only when measured
+
+### MUST NOT DO
+- Use `var` (always use `const` or `let`)
+- Use callback-based patterns (prefer Promises)
+- Mix CommonJS and ESM in the same module
+- Ignore memory leaks or performance issues
+- Skip error handling in async functions
+- Use synchronous I/O in Node.js
+- Mutate function parameters
+- Create blocking operations in the browser
+- Treat Node-specific APIs as browser APIs
+
+## Key Patterns with Examples
+
+### Async/Await Error Handling
+```js
+// ✅ Correct — always handle async errors explicitly
+async function fetchUser(id) {
+  try {
+    const response = await fetch(`/api/users/${id}`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.json();
+  } catch (err) {
+    console.error(&quot;fetchUser failed:&quot;, err);
+    return null;
+  }
+}
+
+// ❌ Incorrect — unhandled rejection, no null guard
+async function fetchUser(id) {
+  const response = await fetch(`/api/users/${id}`);
+  return response.json();
+}
+```
+
+### Optional Chaining &amp; Nullish Coalescing
+```js
+// ✅ Correct
+const city = user?.address?.city ?? &quot;Unknown&quot;;
+
+// ❌ Incorrect — throws if address is undefined
+const city = user.address.city || &quot;Unknown&quot;;
+```
+
+### ESM Module Structure
+```js
+// ✅ Correct — named exports, no default-only exports for libraries
+// utils/math.mjs
+export const add = (a, b) =&gt; a + b;
+export const multiply = (a, b) =&gt; a * b;
+
+// consumer.mjs
+import { add } from &quot;./utils/math.mjs&quot;;
+
+// ❌ Incorrect — mixing require() with ESM
+const { add } = require(&quot;./utils/math.mjs&quot;);
+```
+
+### Avoid var / Prefer const
+```js
+// ✅ Correct
+const MAX_RETRIES = 3;
+let attempts = 0;
+
+// ❌ Incorrect
+var MAX_RETRIES = 3;
+var attempts = 0;
+```
+
+## Output Templates
+
+When implementing JavaScript features, provide:
+1. Module file with clean exports
+2. Test file with comprehensive coverage
+3. JSDoc documentation for public APIs
+4. Brief explanation of patterns used
+5. Performance profiling results (when measured)
+6. Polyfill strategy for browser compatibility (when needed)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+Maintained by [@jeffallan](https://github.com/jeffallan), Principal Consultant at [Synergetic Solutions](https://synergetic.solutions)
+
+[Documentation](https://jeffallan.github.io/claude-skills/skills/language/javascript-pro/)</pre>
+</body>
+</html>

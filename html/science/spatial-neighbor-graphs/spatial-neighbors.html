@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-neighbors</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">spatial-neighbor-graphs</a> / spatial-neighbors</p><h1>spatial-neighbors</h1><p class="meta">combined</p><p>The two skills cover the same task but with different levels of depth and focus. The first copy (OpenClaw) is a practical, code-heavy recipe book that provides specific Python snippets for building various graph types, accessing data, and visualizing results. The second copy (GPTomics) is a conceptual guide that emphasizes the statistical implications of graph choice, the &#x27;modifiable areal unit problem,&#x27; and decision-making criteria (e.g., when to use grid vs. generic, density biases). The first copy lacks the critical reasoning about why graph choice affects downstream statistics, while the second copy lacks the specific implementation details for visualization, specific spot querying, and combining spatial/expression graphs found in the first. Combining them provides both the &#x27;how&#x27; and the &#x27;why&#x27;.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-neighbors/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-neighbors/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/spatial-neighbors/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/spatial-neighbors/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: bio-spatial-transcriptomics-spatial-neighbors
+description: Build spatial neighbor graphs for spatial transcriptomics data using Squidpy. Covers graph type selection (kNN, Delaunay, radius, grid), implementation, and the statistical implications of graph choice.
+tool_type: python
+primary_tool: squidpy
+---
+
+# Spatial Neighbor Graphs
+
+Build spatial neighbor graphs for connectivity-based analyses. The graph is the model that all spatial statistics (Moran&#x27;s I, enrichment, domains) inherit. Changing the graph definition changes the results.
+
+## Required Imports
+
+```python
+import squidpy as sq
+import scanpy as sc
+import numpy as np
+```
+
+## Graph Construction Decision
+
+Choose the graph type based on data geometry and biological question:
+
+1.  **Grid (Visium/HD):** Use `coord_type=&#x27;grid&#x27;` and `n_rings`. Best for fixed lattices. Note: spots are mixtures, not single cells.
+2.  **kNN (Generic):** Use `coord_type=&#x27;generic&#x27;` and `n_neighs`. Best for single-cell platforms (Xenium/MERFISH) where fixed degree is desired. Note: kNN is asymmetric; consider mutual kNN for conservatism.
+3.  **Delaunay (Generic):** Use `coord_type=&#x27;generic&#x27;` and `delaunay=True`. Parameter-free contact graph. **Warning:** Prune long edges if tissue has gaps/holes to avoid spurious connections across empty space.
+4.  **Fixed Radius (Generic):** Use `coord_type=&#x27;generic&#x27;` and `radius`. Best when a physical interaction range exists and density is uniform. **Warning:** Density gradients will bias results (dense regions get more neighbors).
+
+**Sensitivity Analysis:** Always test at least two graph definitions (e.g., k=6 vs k=10, or kNN vs Delaunay) to ensure downstream conclusions are robust to the adjacency definition.
+
+## Implementation
+
+### Build K-Nearest Neighbors Graph
+```python
+sq.gr.spatial_neighbors(adata, n_neighs=6, coord_type=&#x27;generic&#x27;)
+```
+
+### Build Delaunay Triangulation Graph
+```python
+sq.gr.spatial_neighbors(adata, delaunay=True, coord_type=&#x27;generic&#x27;)
+```
+
+### Radius-Based Neighbors
+```python
+sq.gr.spatial_neighbors(adata, radius=100, coord_type=&#x27;generic&#x27;)
+```
+
+### For Visium Data (Grid Structure)
+```python
+sq.gr.spatial_neighbors(adata, n_rings=1, coord_type=&#x27;grid&#x27;)
+```
+
+## Accessing and Analyzing the Graph
+
+### Check Graph Properties
+```python
+conn = adata.obsp[&#x27;spatial_connectivities&#x27;]
+dist = adata.obsp[&#x27;spatial_distances&#x27;]
+print(f&quot;Edges: {conn.nnz}&quot;)
+print(f&quot;Mean neighbors: {conn.nnz / adata.n_obs:.1f}&quot;)
+```
+
+### Get Neighbors for a Specific Spot
+```python
+spot_idx = 0
+neighbor_indices = conn[spot_idx].nonzero()[1]
+neighbor_distances = dist[spot_idx, neighbor_indices].toarray().flatten()
+```
+
+### Combine Spatial and Expression Neighbors
+```python
+# Build both
+sq.gr.spatial_neighbors(adata, n_neighs=6, coord_type=&#x27;generic&#x27;)
+sc.pp.neighbors(adata, n_neighbors=15, n_pcs=30)
+
+# Weighted combination
+from sklearn.preprocessing import normalize
+alpha = 0.5
+spatial_norm = normalize(adata.obsp[&#x27;spatial_connectivities&#x27;], norm=&#x27;l1&#x27;, axis=1)
+expr_norm = normalize(adata.obsp[&#x27;connectivities&#x27;], norm=&#x27;l1&#x27;, axis=1)
+adata.obsp[&#x27;combined_connectivities&#x27;] = alpha * spatial_norm + (1 - alpha) * expr_norm
+```
+
+### Visualize Neighbor Graph
+```python
+import matplotlib.pyplot as plt
+coords = adata.obsm[&#x27;spatial&#x27;]
+rows, cols = conn.nonzero()
+fig, ax = plt.subplots(figsize=(10, 10))
+for i, j in zip(rows, cols):
+    if i &lt; j:
+        ax.plot([coords[i, 0], coords[j, 0]], [coords[i, 1], coords[j, 1]], &#x27;k-&#x27;, alpha=0.1, linewidth=0.5)
+ax.scatter(coords[:, 0], coords[:, 1], s=10, c=&#x27;blue&#x27;, alpha=0.5)
+ax.set_aspect(&#x27;equal&#x27;)
+plt.show()
+```
+
+### Compute Graph Statistics
+```python
+import networkx as nx
+G = nx.from_scipy_sparse_array(conn)
+print(f&quot;Nodes: {G.number_of_nodes()}&quot;)
+print(f&quot;Edges: {G.number_of_edges()}&quot;)
+print(f&quot;Connected components: {nx.number_connected_components(G)}&quot;)
+```</pre>
+</body>
+</html>

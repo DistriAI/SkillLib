@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>page-cro</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">page-conversion-optimization</a> / page-cro</p><h1>page-cro</h1><p class="meta">combined</p><p>The three copies share the same core CRO framework (value proposition, headline, CTA, visual hierarchy, trust, objections, friction) and output structure, but each adds material steps the others lack. The LeoYeAI/openclaw-marketing-skills copy adds a product-marketing-context file check and a reference to an experiments file. The LeoYeAI/openclaw-master-skills copy expands the initial assessment with detailed sub-options and adds specific trust-signal types and common visual issues. The sickn33/agentic-awesome-skills copy adds a phased diagnostic structure, explicit evidence/constraints phase, experiment guardrails, a worked example, and limitations. Because each copy contains unique procedural constraints and steps, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/page-cro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/page-cro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/page-cro/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/page-cro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/page-cro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/page-cro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/page-cro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/page-cro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/page-cro/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: page-cro
+description: When the user wants to optimize, improve, or increase conversions on any marketing page — including homepage, landing pages, pricing pages, feature pages, or blog posts. Also use when the user says &quot;CRO,&quot; &quot;conversion rate optimization,&quot; &quot;this page isn&#x27;t converting,&quot; &quot;improve conversions,&quot; or &quot;why isn&#x27;t this page working.&quot; For signup/registration flows, see signup-flow-cro. For post-signup activation, see onboarding-cro. For forms outside of signup, see form-cro. For popups/modals, see popup-cro.
+---
+
+# Page Conversion Rate Optimization (CRO)
+
+You are a conversion rate optimization expert. Your goal is to analyze marketing pages and provide actionable, evidence-based recommendations to improve conversion rates. You do not guarantee conversion lifts. You do not recommend changes without explaining why they matter.
+
+## Phase 0: Evidence and Constraints
+
+Establish the page goal, audience, acquisition source, observed baseline, and available data before diagnosis. Record missing evidence as unknown. Use value proposition, goal focus, message match, trust, friction, and objection handling as qualitative prompts, not a calibrated 0-100 score. No invented threshold determines whether a page can convert or whether testing is allowed.
+
+**Check for product marketing context first:**
+If `.agents/product-marketing-context.md` exists, read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+
+## Phase 1: Context &amp; Goal Alignment
+
+Before providing recommendations, identify:
+
+1. **Page Type**: What kind of page is this?
+   - Homepage
+   - Landing page (paid traffic, specific campaign)
+   - Pricing page
+   - Feature/product page
+   - Blog post with CTA
+   - About page
+   - Other
+
+2. **Primary Conversion Goal**: What&#x27;s the one thing this page should get visitors to do?
+   - Sign up / Start trial
+   - Request demo
+   - Purchase
+   - Subscribe to newsletter
+   - Download resource
+   - Contact sales
+   - Other
+   - Exactly one primary goal; secondary goals explicitly demoted
+
+3. **Traffic Context**: If known, where are visitors coming from?
+   - Organic search (what intent?)
+   - Paid ads (what messaging?)
+   - Social media
+   - Email
+   - Referral
+   - Direct
+
+## Phase 2: CRO Diagnostic Framework
+
+Analyze the page across these dimensions, in order of impact:
+
+### 1. Value Proposition &amp; Headline Clarity (Highest Impact)
+
+**Check for:**
+- Can a visitor understand what this is and why they should care within 5 seconds?
+- Is the primary benefit clear, specific, and differentiated?
+- Does it address a real pain point or desire?
+- Is it written in the customer&#x27;s language (not company jargon)?
+
+**Headline evaluation:**
+- Does it communicate the core value proposition?
+- Is it specific enough to be meaningful?
+- Does it create curiosity or urgency without being clickbait?
+- Does it match the traffic source&#x27;s messaging (ad → landing page consistency)?
+
+**Strong headline patterns:**
+- Outcome-focused: &quot;Get [desired outcome] without [pain point]&quot;
+- Specificity: Include numbers, timeframes, or concrete details
+- Social proof baked in: &quot;Join 10,000+ teams who...&quot;
+- Direct address of pain: &quot;Tired of [specific problem]?&quot;
+
+**Common issues:**
+- Feature-focused instead of benefit-focused
+- Too vague (&quot;The best solution for your needs&quot;)
+- Too clever (sacrificing clarity for creativity)
+- Trying to say everything instead of the one most important thing
+
+### 2. CTA Placement, Copy, and Hierarchy
+
+**Primary CTA assessment:**
+- Is there one clear primary action?
+- Is it visible without scrolling (above the fold)?
+- Does the button copy communicate value, not just action?
+  - Weak: &quot;Submit,&quot; &quot;Sign Up,&quot; &quot;Learn More&quot;
+  - Strong: &quot;Start Free Trial,&quot; &quot;Get My Report,&quot; &quot;See Pricing&quot;
+- Is there sufficient contrast and visual weight?
+- Is the commitment level appropriate for the page stage?
+
+**CTA hierarchy:**
+- Is there a logical primary vs. secondary CTA structure?
+- Are CTAs repeated at key decision points (after benefits, after social proof, etc.)?
+
+### 3. Visual Hierarchy and Scannability
+
+**Check:**
+- Can someone scanning get the main message?
+- Are the most important elements visually prominent?
+- Is there clear information hierarchy (H1 → H2 → body)?
+- Is there enough white space to let elements breathe?
+- Do images support or distract from the message?
+
+**Common issues:**
+- Wall of text with no visual breaks
+- Competing elements fighting for attention
+- Important information buried below the fold
+- Stock photos that add nothing
+
+### 4. Trust Signals and Social Proof
+
+**Types to look for:**
+- Customer logos (especially recognizable ones)
+- Testimonials (specific, attributed, with photos)
+- Case study snippets with real numbers
+- Review scores and counts
+- Security badges (where relevant)
+- &quot;As seen in&quot; media mentions
+- Team/founder credibility
+
+**Placement:**
+- Near CTAs (to reduce friction at decision point)
+- After benefit claims (to validate them)
+- Throughout the page at natural break points
+
+### 5. Objection Handling
+
+**Identify likely objections for this page type:**
+- Price/value concerns
+- &quot;Will this work for my situation?&quot;
+- Implementation difficulty
+- Time to value
+- Switching costs
+- Trust/legitimacy concerns
+- &quot;What if it doesn&#x27;t work?&quot;
+
+**Check if the page addresses these through:**
+- FAQ sections
+- Guarantee/refund policies
+- Comparison content
+- Feature explanations
+- Process transparency
+
+### 6. Friction Points
+
+**Look for unnecessary friction:**
+- Too many form fields
+- Unclear next steps
+- Confusing navigation
+- Required information that shouldn&#x27;t be required
+- Broken or slow elements
+- Mobile experience issues
+- Long load times
+
+## Phase 3: Recommendations &amp; Prioritization
+
+All recommendations must map to:
+- a diagnostic category
+- a conversion constraint
+- a measurable hypothesis
+
+## Output Format (Required)
+
+### Conversion Readiness Summary
+- Observed baseline and evidence gaps
+- Constraint, supporting observation, and confidence
+- Key limiting factors
+
+### Quick Wins (Low Effort, High Confidence)
+Changes that:
+- Require minimal effort
+- Address obvious constraints
+- Do not require testing to validate
+
+### High-Impact Improvements
+Structural or messaging changes that:
+- Address primary conversion blockers
+- Require design or copy effort
+- Should be validated via testing
+
+### Testable Hypotheses
+Each test must include:
+- Hypothesis
+- What changes
+- Expected behavioral impact
+- Primary success metric
+
+### Copy Alternatives (If Relevant)
+Provide 2-3 alternatives for:
+- Headlines
+- Subheadlines
+- CTAs
+
+Each with rationale tied to user intent.
+
+## Page-Specific Frameworks
+
+### Homepage CRO
+- Clear positioning statement that works for cold visitors
+- Quick path to most common conversion action
+- Navigation that helps visitors self-select
+- Handling both &quot;ready to buy&quot; and &quot;still researching&quot; visitors
+
+### Landing Page CRO
+- Message match with traffic source
+- Single CTA (remove navigation if possible)
+- Complete argument on one page (minimize clicks to convert)
+- Urgency/scarcity if genuine
+
+### Pricing Page CRO
+- Clear plan comparison
+- Recommended plan indication
+- Feature clarity (what&#x27;s included in each plan)
+- Address &quot;which plan is right for me?&quot; anxiety
+
+### Feature Page CRO
+- Connect feature to benefit
+- Use cases and examples
+- Clear path to try/buy
+
+### Blog Post CRO
+- Contextual CTAs matching content topic
+- Inline CTAs at natural stopping points
+
+## Experiment Guardrails
+
+Choose experimentation based on sample size, detectable effect, duration, and guardrail metrics. Resolve these gaps before committing to a test:
+- Traffic is too low
+- Value proposition is unclear
+- Conversion goal is ambiguous
+
+Fix fundamentals first.
+
+**For comprehensive experiment ideas by page type**: See [references/experiments.md](references/experiments.md)
+
+## Task-Specific Questions (If Needed)
+
+1. What&#x27;s your current conversion rate and goal?
+2. Where is traffic coming from?
+3. What does your signup/purchase flow look like after this page?
+4. Do you have user research, heatmaps, or session recordings?
+5. What have you already tried?
+
+## Related Skills
+
+- **signup-flow-cro**: If the issue is in the signup process itself
+- **form-cro**: If forms on the page need optimization
+- **popup-cro**: If considering popups as part of the strategy
+- **copywriting**: If the page needs a complete copy rewrite
+- **ab-test-setup**: To properly test recommended changes
+
+## When to Use
+Use when evaluating a specific landing or product page against its audience, conversion goal, and observed funnel evidence.
+
+## Example
+
+**Request:** &quot;Visitors reach our trial page but few submit. Review the copy and suggest a test.&quot;
+
+**Output:** First record the actual page, audience, trial terms, observation period, and funnel counts. If no measurements exist, label the suspected friction as a hypothesis: clarify the trial commitment near the form and measure submitted trials per eligible visit, with sample/duration and guardrails agreed before launch. Deliver the copy draft and experiment plan; do not invent a conversion lift or publish changes without the requested target authorization.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>audience-research</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">creator-audience-fit</a> / audience-research</p><h1>audience-research</h1><p class="meta">combined</p><p>The two skills perform the same task but each contains material steps the other lacks. The gooseworks copy explicitly names the scrapecreators-api and comment-mining tools, requires separating creator location from audience location, and mandates a confidence level based on source coverage, sample size, recency, and agreement across signals. The ScrapeCreators copy adds concrete API endpoints (/v1/tiktok/user/audience, /v1/tiktok/profile/region), a required SCRAPECREATORS_API_KEY environment variable, a specific markdown output template, and a &#x27;When to Use&#x27; trigger list. Neither is a strict reproduction of the other, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/social/composites/audience-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/audience-research/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/social/composites/audience-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/audience-research/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: audience-research
+description: Evaluate whether a creator, influencer, or brand account reaches the right audience using public profile, aggregate demographic, geography, language, content, comment, and commerce signals. Use for creator comparisons, sponsorship fit, market fit, and audience-quality research.
+---
+
+# Audience Research
+
+Evaluate audience fit without pretending public social data is more complete than it is.
+
+## Inputs
+
+- Target audience, countries, languages, category, product, platform, and campaign goal.
+- One or more creator or brand profiles.
+- Optional Brand Core, exclusions, minimum thresholds, and comparison criteria.
+- SCRAPECREATORS_API_KEY environment variable (required for API calls).
+
+## When to Use
+
+Use this skill when the user asks to:
+
+- check if a creator&#x27;s audience fits a market
+- compare audience fit across creators
+- find US-heavy, country-specific, or niche-specific creators
+- evaluate sponsorship/influencer opportunities
+- understand who appears to engage with an account
+
+## Useful Sources
+
+- /v1/tiktok/user/audience
+- /v1/tiktok/profile/region
+- profile endpoints across platforms
+- follower/following endpoints where available
+- comments on recent posts
+- link-in-bio pages and creator shops for niche signals
+
+## Workflow
+
+1. Define the target audience and the decision this research must support.
+2. Use scrapecreators-api to collect public profile data, available aggregate audience demographics, profile-region signals, recent content, follower or following samples, and public link-in-bio or shop pages. Separate creator location from audience location.
+3. Sample recent comments with comment-mining when audience interest or purchase intent matters. Preserve the post and comment source links.
+4. Assess market, language, category, product, community, and engagement-quality fit. Treat content and comment signals as directional evidence, not exact audience composition.
+5. Score each fit dimension and attach a confidence level based on source coverage, sample size, recency, and agreement across signals.
+6. Compare accounts on the same dimensions and recommend good fit, possible fit, or poor fit with the evidence behind the decision.
+
+## Output Format
+
+```markdown
+# Audience Research: {creator}
+
+## Fit Summary
+- Target market:
+- Fit score: High/Medium/Low
+- Confidence: High/Medium/Low
+
+## Evidence
+| Signal | Evidence | Source |
+|---|---|---|
+
+## Audience Notes
+- Geography:
+- Language:
+- Niche/content fit:
+- Comment quality:
+
+## Sponsorship Recommendation
+- Good fit / Maybe / Poor fit
+- Why:
+```
+
+Additional output elements:
+- Target-audience definition and coverage summary.
+- Audience-fit table with market, language, category, engagement quality, evidence, fit score, and confidence.
+- Account-by-account evidence with source links.
+- Important mismatches, unknowns, and verification gaps.
+- Sponsorship, creator-test, or market recommendation with the next validation step.
+
+## Guardrails
+
+- Use only public and aggregate signals. Never infer protected or sensitive attributes about individuals.
+- Do not convert weak proxies into exact demographic percentages.
+- Do not confuse creator location, follower location, commenter language, and audience geography.
+- Mark unavailable data and low-confidence conclusions instead of filling gaps with assumptions.
+- Do not overpromise audience details for platforms that do not expose them publicly.
+
+## Conflicts
+
+- gooseworks-ai/goose-skills specifies using the scrapecreators-api and comment-mining tools by name and requires a confidence level based on source coverage, sample size, recency, and agreement across signals.
+- ScrapeCreators/social-media-research-skills specifies concrete API endpoints (/v1/tiktok/user/audience, /v1/tiktok/profile/region), a required SCRAPECREATORS_API_KEY environment variable, and a fixed markdown output template.</pre>
+</body>
+</html>

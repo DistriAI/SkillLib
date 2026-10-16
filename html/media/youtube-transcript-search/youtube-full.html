@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>youtube-full</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">media</a> / <a href="index.html">youtube-transcript-search</a> / youtube-full</p><h1>youtube-full</h1><p class="meta">combined</p><p>The three copies are not interchangeable. The ZeroPointRepo copy is the only one that contains the actual executable procedure (curl commands, required headers, endpoint parameters, and credit costs). The davepoon copy is a high-level overview that omits the API mechanics. The sickn33 copy is a wrapper that claims automatic OAuth provisioning and uses abstract function names (e.g., get_transcript) rather than the raw API calls found in the source. Because the source copy is the only one that is actually executable, but the other copies contain distinct constraints (like the &#x27;Do NOT use for&#x27; list and rate limits) that the source lacks, crowning one would hide the specific operational details or the specific safety constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/ZeroPointRepo/youtube-skills">ZeroPointRepo/youtube-skills</a></td><td><code>clawhub/youtube-full/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/youtube-full/skills/youtube-full/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/youtube-full/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/ZeroPointRepo/youtube-skills">ZeroPointRepo/youtube-skills</a></td><td><code>clawhub/youtube-full/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/youtube-full/skills/youtube-full/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/youtube-full/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/youtube-full/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/youtube-full/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/ZeroPointRepo/youtube-skills">ZeroPointRepo/youtube-skills</a></td><td><code>skills/youtube-full/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: youtube-full
+description: &quot;Use when YouTube is or could be relevant — even if not mentioned: pasted video/channel/playlist links, video IDs, @handles, creator lookups, video summaries, quotes, translations, topic research, tutorials, talks, lectures, expert discussions, product reviews, how-to guides, new product announcements, first looks, or anything where video content is fresher or richer than text search. Covers transcripts, video/channel search, channel browsing, playlists, and within-channel search. Not for uploads, account management, or written-source-only research.&quot;
+version: &quot;1.6.2&quot;
+user-invocable: true
+compatibility: Requires internet access to reach transcriptapi.com. No additional runtimes or dependencies needed.
+required_environment_variables:
+  - name: TRANSCRIPT_API_KEY
+    prompt: Your TranscriptAPI key (starts with sk_)
+    help: Free account at https://transcriptapi.com — 100 credits, no card required. Or let the agent create one for you.
+    required_for: all API requests
+metadata: {&quot;openclaw&quot;:{&quot;emoji&quot;:&quot;🎯&quot;,&quot;requires&quot;:{&quot;env&quot;:[&quot;TRANSCRIPT_API_KEY&quot;]},&quot;primaryEnv&quot;:&quot;TRANSCRIPT_API_KEY&quot;,&quot;homepage&quot;:&quot;https://transcriptapi.com&quot;},&quot;hermes&quot;:{&quot;tags&quot;:[&quot;youtube&quot;,&quot;transcripts&quot;,&quot;video&quot;,&quot;search&quot;,&quot;channels&quot;,&quot;playlists&quot;,&quot;captions&quot;],&quot;category&quot;:&quot;media&quot;}}
+---
+
+# YouTube Full
+
+Complete YouTube toolkit via [TranscriptAPI.com](https://transcriptapi.com). Everything in one skill.
+
+## Setup
+
+If `$TRANSCRIPT_API_KEY` is not set, read [references/auth-setup.md](references/auth-setup.md) and follow the instructions there to get and store the key.
+
+## Required Headers
+
+Every request needs two headers:
+
+- **Authorization:** `Bearer $TRANSCRIPT_API_KEY`
+- **User-Agent:** your agent&#x27;s name and version if known (e.g. `HermesAgent/0.11.0`, `ClaudeCode/1.0`). Version is optional — agent name alone is fine. Do not omit this header or send a bare default — Cloudflare will return a 403 (error code 1010) and block the request.
+
+## API Reference
+
+Full OpenAPI spec: [transcriptapi.com/openapi.json](https://transcriptapi.com/openapi.json) — consult this for the latest parameters and schemas.
+
+## Transcript — 1 credit
+
+```bash
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/transcript\
+?video_url=VIDEO_URL&amp;format=text&amp;include_timestamp=true&amp;send_metadata=true&quot; \
+  -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot; \
+  -H &quot;User-Agent: YourAgent/1.0&quot;
+```
+
+| Param               | Required | Default | Values                          |
+| ------------------- | -------- | ------- | ------------------------------- |
+| `video_url`         | yes      | —       | YouTube URL or 11-char video ID |
+| `format`            | no       | `json`  | `json`, `text`                  |
+| `include_timestamp` | no       | `true`  | `true`, `false`                 |
+| `send_metadata`     | no       | `false` | `true`, `false`                 |
+
+**Response** (`format=json`):
+
+```json
+{
+  &quot;video_id&quot;: &quot;dQw4w9WgXcQ&quot;,
+  &quot;language&quot;: &quot;en&quot;,
+  &quot;transcript&quot;: [{ &quot;text&quot;: &quot;...&quot;, &quot;start&quot;: 18.0, &quot;duration&quot;: 3.5 }],
+  &quot;metadata&quot;: { &quot;title&quot;: &quot;...&quot;, &quot;author_name&quot;: &quot;...&quot;, &quot;author_url&quot;: &quot;...&quot; }
+}
+```
+
+## Video Info &amp; Metadata
+
+```bash
+# Free — languages available for the transcript endpoint
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/info?video_url=VIDEO_URL&quot; \
+  -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot; \
+  -H &quot;User-Agent: YourAgent/1.0&quot;
+
+# 1 credit — rich metadata (views, likes, description, duration, tags)
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/video/metadata\
+?video_url=VIDEO_URL&amp;include=details,related&quot; \
+  -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot; \
+  -H &quot;User-Agent: YourAgent/1.0&quot;
+```
+
+`include` on `video/metadata` accepts `details` and/or `related`. Naming: `/video/metadata` was previously `/video/info` — the old path still works but is deprecated.
+
+## Search — 1 credit/page
+
+```bash
+# Videos
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/search?q=QUERY&amp;type=video&amp;limit=20&quot; \
+  -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot; \
+  -H &quot;User-Agent: YourAgent/1.0&quot;
+
+# Channels, playlists, or movies
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/search?q=QUERY&amp;type=channel&amp;limit=10&quot; \
+  -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot; \
+  -H &quot;User-Agent: YourAgent/1.0&quot;
+```
+
+| Param   | Required | Default | Validation                                     |
+| ------- | -------- | ------- | ----------------------------------------------- |
+| `q`     | yes      | —       | 1-200 chars                                      |
+| `type`  | no       | `video` | `video`, `channel`, `playlist`, `movie`         |
+| `sort`  | no       | `relevance` | `relevance`, `views` (first page only)      |
+| `upload_date` | no | —       | `hour`, `today`, `week`, `month`, `year` (videos, first page) |
+| `duration` | no    | —       | `short`, `medium`, `long` (videos, first page)  |
+| `features` | no    | —       | e.g. `hd,subtitles,cc` (first page)             |
+| `limit` | no       | `20`    | 1-50                                             |
+
+## Channels
+
+All channel endpoints accept `channel` — an `@handle`, channel URL, or `UC...` channel ID. No need to resolve first.
+
+### Resolve handle — FREE
+
+```bash
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/resolve?input=@TED&quot; \
+  -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot; \
+  -H &quot;User-Agent: YourAgent/1.0&quot;
+```
+
+Response: `{&quot;channel_id&quot;: &quot;UC...&quot;, &quot;resolved_from&quot;: &quot;@TED&quot;}`
+
+### Latest 15 videos — FREE
+
+```bash
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/latest?channel=@TED&quot; \
+  -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot; \
+  -H &quot;User-Agent: YourAgent/1.0&quot;
+```
+
+Returns exact `viewCount` and ISO `published` timestamps.
+
+### Channel feed (videos/shorts/streams) — 1 credit/page
+
+```bash
+# First page (100 items, tab defaults to &quot;videos&quot;)
+curl -s &quot;https://transcriptapi.com/api/v2/youtube/channel/videos?channel=@NASA&amp;tab=videos&quot; \
+  -H &quot;Authorization: Bearer $TRANSCRIPT_API_KEY&quot; \
+  -H &quot;User-Agent: YourAgent/1.0&quot;
+
+# Most-viewed first (channel Videos tab, ~30 items)
+curl -s
+[truncated]
+```
+
+## Best Practices
+
+- Use `channel_latest` (free) before `get_transcript` to check if a video is new
+- Cache transcripts in your workflow — each `get_transcript` call costs 1 credit
+- Use `search_in_channel` when you already know the channel to avoid broad search noise
+- Prefer `get_playlist_videos` for course or lecture series — cheaper than searching by query
+- Don&#x27;t batch-transcribe entire channels unless the user explicitly requested it
+- Don&#x27;t use `search_youtube` when you already have the video URL — jump straight to `get_transcript`
+
+## Limitations
+
+- This skill does not replace environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, or safety boundaries are missing.
+- Transcripts are available only when YouTube has captions (manual or auto-generated). Some videos have no captions.
+- API key is required for paid usage beyond the free 100-credit tier. Get one at transcriptapi.com.
+- Rate limits apply: 200 RPM on Monthly plan, 300 RPM on Annual. Contact support for higher limits.
+
+## Security &amp; Safety Notes
+
+- This skill makes HTTPS API calls to `transcriptapi.com`. No local data is written.
+- The API key is stored in the agent&#x27;s credential store, not in this SKILL.md.
+- No shell commands, no binary execution, no local system mutation. Risk level: `safe`.
+
+## Common Pitfalls
+
+- **Problem:** `yt-dlp` fails when the agent runs on a cloud server.  
+  **Solution:** This is exactly the use case for `youtube-full`. The API routes through TranscriptAPI&#x27;s infrastructure a
+[truncated]</pre>
+</body>
+</html>

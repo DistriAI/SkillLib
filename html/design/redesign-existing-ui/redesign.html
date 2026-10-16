@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>redesign</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">redesign-existing-ui</a> / redesign</p><h1>redesign</h1><p class="meta">combined</p><p>Both copies describe an audit-first redesign of an existing UI, but they are not interchangeable. Leonxlnx/taste-skill provides a detailed, self-contained design audit (specific typography, color, and layout anti-patterns and fixes) and a Scan/Diagnose/Fix sequence. plugin87/ux-ui-agent-skills provides a different, tool-dependent workflow (Scan/Diagnose/Direct/Apply/Verify) that relies on external kit files, scripts, and sibling skills, and adds constraints Leonxlnx lacks (single-theme token consistency, contrast/hardcode linting, a11y verification, and a kit-presence check). Crowning one would hide the other&#x27;s real procedure and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Leonxlnx/taste-skill">Leonxlnx/taste-skill</a></td><td><code>skills/redesign-skill/SKILL.md</code></td></tr><tr><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/redesign/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Leonxlnx/taste-skill">Leonxlnx/taste-skill</a></td><td><code>skills/redesign-skill/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/redesign/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Redesign Existing UI
+
+## Step 0 — Environment Check
+- If the plugin87 kit is available, verify it: `ls ${CLAUDE_SKILL_DIR}/../../../tokens &gt;/dev/null 2&gt;&amp;1 &amp;&amp; echo KIT_OK || echo KIT_MISSING`. On `KIT_MISSING`, tell the user the kit is incomplete and stop; do not guess file contents.
+- If no external kit is available, proceed with the inline audit below.
+
+## Step 1 — Scan
+- Read the codebase. Identify the framework, styling method (Tailwind, vanilla CSS, styled-components, etc.), current design patterns, token reality, components, and what must be preserved.
+- If a `frameworks/` adapter exists in the kit, route to the matching adapter.
+
+## Step 2 — Diagnose
+- Run the design audit below. List every generic pattern, weak point, and missing state.
+- If the kit&#x27;s `taste/design-taste.md` Banned Defaults checklist and `design-review` rubric are available, use them to produce a prioritized findings table.
+
+### Typography
+- Replace browser default fonts or Inter everywhere with a font that has character (e.g., Geist, Outfit, Cabinet Grotesk, Satoshi). For editorial/creative projects, pair a serif header with a sans-serif body.
+- Increase headline size, tighten letter-spacing, reduce line-height so headlines feel heavy and intentional.
+- Limit paragraph width to roughly 65 characters; increase line-height for readability.
+- Introduce Medium (500) and SemiBold (600) weights for subtle hierarchy.
+- Use a monospace font or `font-variant-numeric: tabular-nums` for data-heavy interfaces.
+- Use negative tracking for large headers, positive tracking for small caps or labels.
+- Replace all-caps subheaders with lowercase italics, sentence case, or small-caps.
+- Fix orphaned words with `text-wrap: balance` or `text-wrap: pretty`.
+
+### Color and Surfaces
+- Replace pure `#000000` backgrounds with off-black, dark charcoal, or tinted dark (`#0a0a0a`, `#121212`, or a dark navy).
+- Keep accent saturation below 80%; desaturate accents so they blend with neutrals.
+- Pick one accent color; remove the rest.
+- Stick to one gray family (warm or cool, not both).
+- Replace purple/blue &quot;AI gradient&quot; aesthetics with neutral bases and a single, considered accent.
+- Tint shadows to match the background hue; use colored shadows instead of pure black at low opacity.
+- Add subtle noise, grain, or micro-patterns to backgrounds to avoid sterile flat design.
+- Break uniform gradients with radial gradients, noise overlays, or mesh gradients.
+- Audit all shadows to ensure a single, consistent light source.
+- Avoid random dark sections in a light mode page (or vice versa); use a slightly darker shade of the same palette if contrast is needed.
+- Add visual depth to empty sections with high-quality background imagery (blurred, overlaid, or masked), subtle patterns, or ambient gradients. Use `https://picsum.photos/seed/{name}/1920/1080` when real assets are not available.
+
+### Layout
+- Break symmetry with offset margins, mixed aspect ratios, or left-aligned headers over centered content.
+- Replace three equal card columns with a 2-column zig-zag, asymmetric grid, horizontal scroll, or masonry layout.
+- Replace `height: 100vh` with `min-height: 100dvh` to prevent mobile viewport jumping.
+- Replace complex flexbox percentage math with CSS Grid for reliable multi-column structures.
+- Add a max-width container (around 1200-1440px) with auto margins.
+- Allow variable card heights or use masonry when content varies in length.
+- Vary border-radius: tighter on inner elements, softer on containers.
+- Use negative margins to create layering and visual depth.
+- Adjust vertical padding optically; bottom padding often needs to be slightly larger.
+- Consider top navigation, a floating command menu, or a collapsible panel instead of a default left sidebar.
+- For collapsible sidebars, keep expanded labels as the default and offer an opt-in icon rail around 56-72px wide; below the tablet breakpoint, use an off-canvas drawer.
+- Double spacing to let the design breathe; dense layouts are for data dashboards, not marketing pages.
+- Bottom-align buttons in card groups when cards have different content lengths.
+
+## Step 3 — Direct
+- If the `apply-aesthetic` skill is available, choose an archetype/system that fits the brand.
+- Otherwise, select a consistent design direction based on the diagnosis.
+
+## Step 4 — Apply
+- Apply changes in order: tokens first, then typography/spacing, then component states, then motion.
+- Do not change routes, data, or markup semantics (except accessibility fixes).
+- Consolidate to ONE shared token theme and make every page consume it. Replace per-page/ad-hoc colors with semantic tokens.
+- Deliver complete files — no placeholders.
+
+## Step 5 — Verify
+- Re-run `design-review` and `a11y-audit` if available.
+- Smoke-test every previously working flow.
+- Dark mode and responsive spot-check.
+- If the kit scripts are available, run `validate_contrast.py` on the token source and `lint_hardcodes.py` over the changed code to ensure no page reintroduces off-theme values.
+
+## Guardrails
+- Never sacrifice a working feature for aesthetics.
+- Never ship a brand color that fails contrast.
+- Never remove existing accessibility affordances.
+- Do not rewrite from scratch; improve what is there.</pre>
+</body>
+</html>

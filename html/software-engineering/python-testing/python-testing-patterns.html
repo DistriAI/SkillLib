@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>python-testing-patterns</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">python-testing</a> / python-testing-patterns</p><h1>python-testing-patterns</h1><p class="meta">combined</p><p>The first two copies are nearly identical stubs that point to a resources/implementation-playbook.md file for details. The third copy (LeoYeAI/openclaw-master-skills) contains the actual detailed content (Core Concepts, Quick Start, and Fundamental Patterns with code examples) that the other two copies reference but do not include. Because the third copy contains the substantive procedure while the others are just wrappers/stubs, and they disagree on whether the content is inline or in a separate file, this is a combine case where the detailed content from the third copy is the real skill.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/python-testing-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/python-testing-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/python-testing-patterns/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/python-testing-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/python-testing-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/python-testing-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/python-testing-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-python-api-builder/skills/python-testing-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-qa-test-automation/skills/python-testing-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/python-testing-patterns/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: python-testing-patterns
+description: Implement comprehensive testing strategies with pytest, fixtures, mocking, and test-driven development. Use when writing Python tests, setting up test suites, or implementing testing best practices.
+---
+
+# Python Testing Patterns
+
+Comprehensive guide to implementing robust testing strategies in Python using pytest, fixtures, mocking, parameterization, and test-driven development practices.
+
+## Use this skill when
+
+- Writing unit tests for Python code
+- Setting up test suites and test infrastructure
+- Implementing test-driven development (TDD)
+- Creating integration tests for APIs and services
+- Mocking external dependencies and services
+- Testing async code and concurrent operations
+- Setting up continuous testing in CI/CD
+- Implementing property-based testing
+- Testing database operations
+- Debugging failing tests
+
+## Do not use this skill when
+
+- The task is unrelated to python testing patterns
+- You need a different domain or tool outside this scope
+
+## Core Concepts
+
+### 1. Test Types
+
+- **Unit Tests**: Test individual functions/classes in isolation
+- **Integration Tests**: Test interaction between components
+- **Functional Tests**: Test complete features end-to-end
+- **Performance Tests**: Measure speed and resource usage
+
+### 2. Test Structure (AAA Pattern)
+
+- **Arrange**: Set up test data and preconditions
+- **Act**: Execute the code under test
+- **Assert**: Verify the results
+
+### 3. Test Coverage
+
+- Measure what code is exercised by tests
+- Identify untested code paths
+- Aim for meaningful coverage, not just high percentages
+
+### 4. Test Isolation
+
+- Tests should be independent
+- No shared state between tests
+- Each test should clean up after itself
+
+## Quick Start
+
+```python
+# test_example.py
+def add(a, b):
+    return a + b
+
+def test_add():
+    &quot;&quot;&quot;Basic test example.&quot;&quot;&quot;
+    result = add(2, 3)
+    assert result == 5
+
+def test_add_negative():
+    &quot;&quot;&quot;Test with negative numbers.&quot;&quot;&quot;
+    assert add(-1, 1) == 0
+
+# Run with: pytest test_example.py
+```
+
+## Fundamental Patterns
+
+### Pattern 1: Basic pytest Tests
+
+```python
+# test_calculator.py
+import pytest
+
+class Calculator:
+    &quot;&quot;&quot;Simple calculator for testing.&quot;&quot;&quot;
+
+    def add(self, a: float, b: float) -&gt; float:
+        return a + b
+
+    def subtract(self, a: float, b: float) -&gt; float:
+        return a - b
+
+    def multiply(self, a: float, b: float) -&gt; float:
+        return a * b
+
+    def divide(self, a: float, b: float) -&gt; float:
+        if b == 0:
+            raise ValueError(&quot;Cannot divide by zero&quot;)
+        return a / b
+
+
+def test_addition():
+    &quot;&quot;&quot;Test addition.&quot;&quot;&quot;
+    calc = Calculator()
+    assert calc.add(2, 3) == 5
+    assert calc.add(-1, 1) == 0
+    assert calc.add(0, 0) == 0
+
+
+def test_subtraction():
+    &quot;&quot;&quot;Test subtraction.&quot;&quot;&quot;
+    calc = Calculator()
+    assert calc.subtract(5, 3) == 2
+    assert calc.subtract(0, 5) == -5
+
+
+def test_multiplication():
+    &quot;&quot;&quot;Test multiplication.&quot;&quot;&quot;
+    calc = Calculator()
+    assert calc.multiply(3, 4) == 12
+    assert calc.multiply(0, 5) == 0
+
+
+def test_division():
+    &quot;&quot;&quot;Test division.&quot;&quot;&quot;
+    calc = Calculator()
+    assert calc.divide(6, 3) == 2
+    assert calc.divide(5, 2) == 2.5
+
+
+def test_division_by_zero():
+    &quot;&quot;&quot;Test division by zero raises error.&quot;&quot;&quot;
+    calc = Calculator()
+    with pytest.raises(ValueError, match=&quot;Cannot divide by zero&quot;):
+        calc.divide(5, 0)
+```
+
+### Pattern 2: Fixtures for Setup and Teardown
+
+```python
+# test_database.py
+import pytest
+from typing import Generator
+
+class Database:
+    &quot;&quot;&quot;Simple database class.&quot;&quot;&quot;
+
+    def __init__(self, connection_string: str):
+        self.connection_string = connection_string
+        self.connected = False
+
+    def connect(self):
+        &quot;&quot;&quot;Connect to database.&quot;&quot;&quot;
+        self.connected = True
+
+    def disconnect(self):
+        &quot;&quot;&quot;Disconnect from database.&quot;&quot;&quot;
+        self.connected = False
+
+    def query(self, sql: str) -&gt; list:
+        &quot;&quot;&quot;Execute query.&quot;&quot;&quot;
+        if not self.connected:
+            raise RuntimeError(&quot;Not connected&quot;)
+        return [{&quot;id&quot;: 1, &quot;name&quot;: &quot;Test&quot;}]
+
+
+@pytest.fixture
+def db() -&gt; Generator[Database, None, None]:
+    &quot;&quot;&quot;Fixture that provides connected database.&quot;&quot;&quot;
+    # Setup
+    database = Database(&quot;sqlite:///:memory:&quot;)
+    database.connect()
+
+    # Provide to test
+    yield database
+
+    # Teardown
+    database.disconnect()
+
+
+def test_database_query(db):
+    &quot;&quot;&quot;Test database query with fixture.&quot;&quot;&quot;
+    results = db.query(&quot;SELECT * FROM users&quot;)
+    assert len(results) == 1
+    assert results[0][&quot;name&quot;] == &quot;Test&quot;
+
+
+@pytest.fixture(scope=&quot;session&quot;)
+def app_config():
+    &quot;&quot;&quot;Session-scoped fixture - created once per test session.&quot;&quot;&quot;
+    return {
+        &quot;database_url&quot;: &quot;postgresql://localhost/test&quot;,
+        &quot;api_key&quot;: &quot;test-key&quot;,
+        &quot;debug&quot;: True
+    }
+
+
+@pytest.fixture(scope=&quot;module&quot;)
+def api_client(app_config):
+    &quot;&quot;&quot;Module-scoped fixture - created once per test module.&quot;&quot;&quot;
+    # Setup expensive resource
+    client = {&quot;config&quot;: app_config, &quot;session&quot;: &quot;active&quot;}
+    yield client
+    # Cleanup
+    client[&quot;session&quot;] = &quot;closed&quot;
+
+
+def test_api_client(api_client):
+    &quot;&quot;&quot;Test using api client fixture.&quot;&quot;&quot;
+    assert api_client[&quot;session&quot;] == &quot;active&quot;
+    assert api_client[&quot;config&quot;][&quot;debug&quot;] is True
+```
+
+### Pattern 3: Parameterized Tests
+
+```python
+# test_validation.py
+import pytest
+
+def is_valid_email(email: str) -&gt; bool:
+    &quot;&quot;&quot;Check if email is valid.&quot;&quot;&quot;
+    return &quot;@&quot; in email and &quot;.&quot; in email.split(&quot;@&quot;)[1]
+
+
+@pytest.mark.parametrize(&quot;email,expected&quot;, [
+    (&quot;user@example.com&quot;, True),
+    (&quot;test.user@domain.co.uk&quot;, True),
+    (&quot;invalid.email&quot;, False),
+    (&quot;@example.com&quot;, False),
+    (&quot;user@domain&quot;, False),
+    (&quot;&quot;, False),
+])
+def test_email_validation(email, expected):
+    &quot;&quot;&quot;Test email validation with various inputs.&quot;&quot;&quot;
+    assert is_valid_email(email) == expected
+
+
+@pytest.mark.parametrize(&quot;a,b,expected&quot;, [
+    (2, 3, 5),
+    (0, 0, 0),
+    (-1, 1, 0),
+    (100, 200, 300),
+    (-5, -5, -10),
+])
+def test_addition_parameterized(a, b, expected):
+    &quot;&quot;&quot;Test addition with multiple parameter sets.&quot;&quot;&quot;
+    from test_calculator import Calculator
+    calc = Calculator()
+    assert calc.add(a, b) == expected
+```
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

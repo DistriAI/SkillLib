@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>deeptools</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">ngs-deeptools-analysis</a> / deeptools</p><h1>deeptools</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the most technically rigorous, containing specific 4.0.0 migration notes (Rust backend changes, removal of --ignoreDuplicates) and a detailed normalization guide. However, the FreedomIntelligence and aipoch copies contain specific workflow steps (ATAC-seq Tn5 offset correction, RNA-seq strand-specific filtering) and a general execution model that the K-Dense copy defers to external reference files. Because the K-Dense copy is truncated and relies on external references for the full workflow details that are explicitly present in the other copies, crowning it would hide the concrete procedural steps found in the others.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/deeptools/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/deeptools/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/deeptools/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/deeptools/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/deeptools/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/deeptools/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: deeptools
+description: NGS analysis toolkit for BAM to bigWig conversion, QC, and visualization for ChIP-seq, RNA-seq, and ATAC-seq.
+---
+
+# deepTools: NGS Data Analysis Toolkit
+
+## Overview
+deepTools is a comprehensive suite of Python command-line tools for processing high-throughput sequencing data. It is used for quality control, normalization, sample comparison, and generating publication-quality visualizations.
+
+## When to Use
+- **File conversion**: &quot;Convert BAM to bigWig&quot;, &quot;generate coverage tracks&quot;.
+- **Quality control**: &quot;check ChIP quality&quot;, &quot;compare replicates&quot;, &quot;PCA analysis&quot;.
+- **Visualization**: &quot;create heatmap around TSS&quot;, &quot;plot ChIP signal&quot;.
+- **Analysis workflows**: &quot;analyze ChIP-seq data&quot;, &quot;ATAC-seq analysis&quot;.
+
+## Installation
+Use Python 3.12+ and deepTools 4.0.0 for the most up-to-date Rust-backed performance.
+```bash
+uv venv --python 3.13 .venv-deeptools
+uv pip install --python .venv-deeptools/bin/python deepTools==4.0.0
+source .venv-deeptools/bin/activate
+```
+
+## Quick Start
+1. **Validate Input Files**: Check BAM, bigWig, and BED files.
+   ```bash
+   python scripts/validate_files.py --bam sample1.bam sample2.bam --bed regions.bed
+   ```
+2. **Generate Workflow Template**: Create customized scripts for standard analyses.
+   ```bash
+   python scripts/workflow_generator.py chipseq_qc -o qc_workflow.sh \
+       --input-bam Input.bam --chip-bams &quot;ChIP1.bam ChIP2.bam&quot;
+   chmod +x qc_workflow.sh &amp;&amp; ./qc_workflow.sh
+   ```
+
+## Core Workflows
+
+### ChIP-seq Quality Control
+1. **Sample correlation**: Use `multiBamSummary` and `plotCorrelation` (replicates should have &gt;0.9 correlation).
+2. **PCA analysis**: Use `plotPCA` to check for outliers.
+3. **Fingerprint**: Use `plotFingerprint` to assess enrichment strength (steep rise = good ChIP).
+
+### ChIP-seq Complete Analysis
+1. **Generate coverage tracks**: Use `bamCoverage` with RPGC or CPM normalization.
+2. **Create comparison tracks**: Use `bamCompare` for log2 ratio.
+3. **Compute signal matrices**: Use `computeMatrix` around features.
+4. **Generate visualizations**: Use `plotHeatmap` and `plotProfile`.
+
+### RNA-seq Coverage
+- Use `bamCoverage` with `--filterRNAstrand` for strand-specific tracks.
+- **Important**: NEVER use `--extendReads` for RNA-seq.
+- Use CPM for fixed bins or RPKM for gene-level analysis.
+
+### ATAC-seq Analysis
+1. **Shift reads**: Use `alignmentSieve` with `--ATACshift` for Tn5 offset correction.
+2. **Generate coverage**: Use `bamCoverage`.
+3. **Analyze fragment sizes**: Look for the nucleosome ladder pattern.
+
+## Normalization Methods
+- **RPGC**: 1× genome coverage (requires `--effectiveGenomeSize`).
+- **CPM**: Counts per million mapped reads.
+- **RPKM**: Reads per kb per million (per-bin length and library-size scaling).
+
+## 4.0.0 Migration Notes
+- `bamCoverage`, `bamCompare`, and `multiBamSummary` no longer accept `--ignoreDuplicates`; use `--samFlagExclude 1024` after duplicate marking.
+- `bamCompare` no longer accepts SES.
+- `--exactScaling` is removed from rewritten coverage commands.</pre>
+</body>
+</html>

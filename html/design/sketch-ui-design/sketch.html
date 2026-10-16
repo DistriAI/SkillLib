@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sketch</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">sketch-ui-design</a> / sketch</p><h1>sketch</h1><p class="meta">combined</p><p>The two copies use the same skill name for completely different tasks. The davepoon copy is a workflow that generates throwaway HTML mockups to explore design directions, while the bergside copy is a static design-system guideline for a specific &#x27;hand-drawn sketch&#x27; visual theme. Neither is a reproduction of the other; they are distinct procedures that happen to share a name.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/sketch/SKILL.md</code></td></tr><tr><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/sketch/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/sketch/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/sketch/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Sketch Skill
+
+This skill handles two distinct design tasks. Determine the user&#x27;s intent to select the correct mode.
+
+## Mode 1: Design Exploration (Mockups)
+**Intent:** The user wants to explore a design idea, see variants, or generate a mockup.
+**Procedure:**
+1. Accept a design idea or &#x27;frontier&#x27; command.
+2. Create a `.planning/sketches/` directory if it does not exist.
+3. Generate 2-3 throwaway HTML mockup variants for the idea.
+4. Save the mockups and update the MANIFEST.
+5. Commit the changes using GSD patterns.
+
+## Mode 2: Design System Guidelines (Hand-drawn Theme)
+**Intent:** The user wants to apply the &#x27;Sketch&#x27; design system or generate guidelines for it.
+**Procedure:**
+1. Apply the &#x27;Hand-drawn Sketch&#x27; visual style: warm cream paper background, soft teal accents (#1DAD97), and &#x27;Delicious Handrawn&#x27; font.
+2. Use rounded pill controls, dashed card outlines, and chunky offset shadows.
+3. Follow the spacing scale (4/8/12/16/24/32) and typography scale (12/14/16/20/24/32).
+4. Ensure WCAG 2.2 AA compliance and keyboard-first interactions.
+5. When generating guidelines, follow the structure: Context, Tokens, Component Rules, Accessibility, Content, Anti-patterns, QA Checklist.
+
+## Conflicts
+- **davepoon/buildwithclaude** focuses on generating code (HTML mockups) for exploration.
+- **bergside/awesome-design-skills** focuses on defining a static visual identity and providing guidelines for that identity.</pre>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>huggingface-spaces</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">huggingface-spaces-deploy</a> / huggingface-spaces</p><h1>huggingface-spaces</h1><p class="meta">combined</p><p>The huggingface/skills copy is the upstream source, but the sickn33 copy is not a faithful reproduction: it changes the login procedure, the hardware gating rules, and the fallback strategy for free accounts. Because the copies disagree on material steps (how to authenticate, which hardware is free, and what to do when a user cannot pay for the required hardware), crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/huggingface/skills">huggingface/skills</a></td><td><code>skills/huggingface-spaces/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/huggingface-spaces/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/huggingface/skills">huggingface/skills</a></td><td><code>skills/huggingface-spaces/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/huggingface-spaces/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/huggingface-spaces/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/huggingface-spaces/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: huggingface-spaces
+description: Build, deploy, and maintain applications on Hugging Face Spaces — Gradio / Docker / Static SDKs, ZeroGPU and dedicated hardware, model loading, debugging, buckets, inference providers, community grants.
+---
+
+# Hugging Face Spaces
+
+Hugging Face Spaces host machine-learning applications. Each Space is a git repo. This skill covers creating, building, debugging, and maintaining them.
+
+## 0. Getting ready
+
+1. Check the `hf` CLI is installed: `which hf`. If not, `pip install -U huggingface_hub`.
+2. Check the user is logged in: `hf auth whoami`. If not, run `hf auth login`. 
+   - **Conflicts**: The upstream `huggingface/skills` repository states this uses an OAuth flow (URL + one-time code, no token). The `sickn33/agentic-awesome-skills` repository states the user must provide a write-scoped token. Verify the current `hf` CLI behavior or ask the user for their preferred method.
+3. Note `whoami`&#x27;s `canPay` and `isPro` flags — they gate hardware choices.
+
+## 1. What a Space is
+
+A Space is a git repo with three possible SDKs:
+- **Gradio** — Python, fast iteration, supports ZeroGPU.
+- **Docker** — Arbitrary container. Does not support ZeroGPU.
+- **Static** — Plain HTML or built frontend. No hardware needed.
+
+### Hardware tiers
+
+- **Static**: Free for everyone.
+- **ZeroGPU (`zero-a10g`)**: Dynamic GPU allocation. Gradio-only, PyTorch-first.
+  - **Conflicts**: `huggingface/skills` states free personal accounts can host up to 2 ZeroGPU Spaces. `sickn33/agentic-awesome-skills` states ZeroGPU requires a PRO/Team/Enterprise plan. Check the current Hugging Face documentation for the latest gating rules.
+- **`cpu-basic`**: 2 vCPU / 16 GB.
+  - **Conflicts**: `huggingface/skills` states this requires a paid plan. `sickn33/agentic-awesome-skills` states it is free. Verify current pricing.
+- **Dedicated GPU**: Billed by the hour. Requires `canPay=True`.
+
+## 2. Look for an existing demo first
+
+Search for prior art before building:
+```bash
+hf spaces search &quot;&lt;model name or task&gt;&quot; --sdk gradio --limit 10
+```
+Read the `app.py` and `requirements.txt` of similar Spaces to find working patterns.
+
+## 3. Decide SDK and hardware
+
+- **Default for public ML demo**: Gradio + ZeroGPU.
+- **Non-PyTorch main model**: Dedicated GPU.
+- **Tiny/CPU-bound model**: `cpu-basic` (if available for the account tier) or ZeroGPU with a no-op decorated function.
+- **Browser-side ML**: Static.
+- **Non-Python stack**: Docker.
+
+### Sourcing the model
+
+- **GitHub repo**: Clone locally. If it has a Gradio demo, adapt it to ZeroGPU.
+- **HF model repo**: Read README, follow linked GitHub.
+- **Paper/Blog**: Look for official implementations.
+
+## 4. Create the Space
+
+```bash
+hf repos create &lt;namespace&gt;/&lt;name&gt; --type space --space-sdk &lt;gradio|docker|static&gt; \
+    [--flavor zero-a10g|cpu-basic|&lt;paid-flavor&gt;] \
+    --public|--private|--protected \
+    --exist-ok
+```
+
+## 5. Fallback for hardware limits
+
+If the user cannot pay for the required hardware:
+- **Conflicts**: `huggingface/skills` recommends creating a Static Space and requesting a community grant. `sickn33/agentic-awesome-skills` recommends creating a `cpu-basic` Space, coding for ZeroGPU, and requesting a grant. Choose the path that matches the current platform capabilities.</pre>
+</body>
+</html>

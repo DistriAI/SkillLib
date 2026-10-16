@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>arboreto</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">gene-regulatory-network-inference</a> / arboreto</p><h1>arboreto</h1><p class="meta">combined</p><p>The three copies overlap on the core task (GRN inference with GRNBoost2/GENIE3 via Dask), but each contains material steps the others lack. K-Dense-AI provides a pinned, tested compatibility stack, the Dask query-planning workaround, sparse/SciPy constraints, and a bundled wrapper with validation. FreedomIntelligence provides broader usage patterns (single-cell, bulk TF filtering, comparative conditions, pySCENIC integration) and cluster client examples. aipoch provides a different CLI entrypoint and a high-level feature/parameter summary. Crowning one would hide real alternatives and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/arboreto/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/arboreto/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/arboreto/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/arboreto/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/arboreto/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/arboreto/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Arboreto: Gene Regulatory Network Inference
+
+## When to use
+Use Arboreto to rank candidate regulator-target associations from bulk or single-cell expression data. GRNBoost2 fits stochastic gradient boosting regressions; GENIE3 fits random forests. These are observational predictive associations, not proof of direct binding or causal regulation.
+
+## Installation and compatibility
+
+### Pinned stack (recommended for reproducibility)
+The following exact stack passed dense and sparse GRNBoost2, dense GENIE3, and wrapper smoke tests on macOS arm64 with Python 3.11.11:
+
+```bash
+uv venv --python 3.11 .venv-arboreto
+uv pip install --python .venv-arboreto/bin/python \
+  &#x27;arboreto==0.1.6&#x27; &#x27;dask[complete]==2024.7.1&#x27; &#x27;distributed==2024.7.1&#x27; \
+  &#x27;numpy==1.26.4&#x27; &#x27;pandas==2.2.3&#x27; &#x27;scikit-learn==1.5.2&#x27; &#x27;scipy==1.13.1&#x27;
+```
+
+For this pinned Dask version, select its legacy dataframe backend **before importing Arboreto or `dask.dataframe`**:
+
+```python
+import dask
+dask.config.set({&quot;dataframe.query-planning&quot;: False})
+from arboreto.algo import grnboost2, genie3
+```
+
+Sparse targets use `.A` inside Arboreto 0.1.6; this attribute was removed in SciPy 1.14. Keep the tested SciPy pin for sparse inference.
+
+### Unpinned installation (simpler, but verify compatibility)
+```bash
+uv pip install arboreto
+```
+
+Dependencies: scipy, scikit-learn, numpy, pandas, dask, distributed.
+
+## Workflow
+
+1. Select biologically comparable cells/samples; document normalization, filtering, batch handling, organism, identifier namespace, and expression layer.
+2. Prepare **rows = observations, columns = genes**. Exclude sample IDs from expression values. Require unique gene names, numeric finite values, and a TF list with a nonempty overlap. All-zero/constant genes provide no useful targets.
+3. Choose GRNBoost2 for an efficient starting analysis, GENIE3 for method comparison, or `diy` for explicit regressor settings.
+4. Run a small subset first in the pinned environment, then scale worker counts to available memory. Keep the `if __name__ == &quot;__main__&quot;:` guard in process-based scripts.
+5. Inspect worker warnings and target coverage, save the full ranked network, and assess stability across seeds and resampled observations before prioritizing edges.
+
+## Run the bundled wrapper
+
+From the skill directory, with a TSV containing gene headers and numeric rows:
+
+```bash
+.venv-arboreto/bin/python scripts/basic_grn_inference.py expression_data.tsv network.tsv \
+  --tf-file tfs.txt --seed 777 --workers 2 --limit 5000
+```
+
+Add `--index-col 0` only if the first column contains cell/sample identifiers. The wrapper rejects duplicate headers, nonnumeric or nonfinite values, empty TF overlap, invalid limits, and wholly empty results. It reports TF overlap and uses a fresh bounded Dask client that closes on error. The default is one worker; increase it after a successful pilot. Without a TF file, **all genes** are candidate regulators.
+
+Output is a headerless TSV in `TF`, `target`, `importance` order. For downstream consumers that require column headers (including pySCENIC adjacency loading), write a separate copy with `header=True`.
+
+## Minimal Python example
+
+```python
+import dask
+dask.config.set({&quot;dataframe.query-planning&quot;: False})
+import numpy as np
+import pandas as pd
+from arboreto.algo import grnboost2
+from distributed import Client, LocalCluster
+
+if __name__ == &quot;__main__&quot;:
+    rng = np.random.default_rng(123)
+    values = rng.normal(size=(32, 4))
+    values[:, 2] = 3 * values[:, 0] + rng.normal(scale=0.1, size=32)
+    matrix = pd.DataFrame(values, columns=[&quot;TF1&quot;, &quot;TF2&quot;, &quot;G1&quot;, &quot;G2&quot;])
+    with LocalCluster(n_workers=1, threads_per_worker=1,
+                      dashboard_address=None) as cluster, Client(cluster) as client:
+        network = grnboost2(expression_data=matrix, tf_names=[&quot;TF1&quot;, &quot;TF2&quot;],
+                            seed=777, client_or_address=client)
+    assert not network.empty
+    assert not (network[&quot;TF&quot;] == network[&quot;target&quot;]).any()
+    network.to_csv(&quot;network.tsv&quot;, sep=&quot;\t&quot;, index=False, header=False)
+```
+
+## Distributed computing
+
+**Local (default)** - Uses all available cores automatically:
+```python
+network = grnboost2(expression_data=matrix)
+```
+
+**Custom local client** - Control resources:
+```python
+from distributed import LocalCluster, Client
+
+local_cluster = LocalCluster(n_workers=10, memory_limit=&#x27;8GB&#x27;)
+client = Client(local_cluster)
+
+network = grnboost2(expression_data=matrix, client_or_address=client)
+
+client.close()
+local_cluster.close()
+```
+
+**Cluster computing** - Connect to remote Dask scheduler:
+```python
+from distributed import Client
+
+client = Client(&#x27;tcp://scheduler:8786&#x27;)
+network = grnboost2(expression_data=matrix, client_or_address=client)
+```
+
+## Common use cases
+
+### Single-cell RNA-seq Analysis
+```python
+import pandas as pd
+from arboreto.algo import grnboost2
+
+if __name__ == &#x27;__main__&#x27;:
+    sc_data = pd.read_csv(&#x27;scrna_counts.tsv&#x27;, sep=&#x27;\t&#x27;)
+    network = grnboost2(expression_data=sc_data, seed=42)
+    high_confidence = network[network[&#x27;importance&#x27;] &gt; 0.5]
+    high_confidence.to_csv(&#x27;grn_high_confidence.tsv&#x27;, sep=&#x27;\t&#x27;, index=False)
+```
+
+### Bulk RNA-seq with TF Filtering
+```python
+from arboreto.utils import load_tf_names
+from arboreto.algo import grnboost2
+
+if __name__ == &#x27;__main__&#x27;:
+    expression_data = pd.read_csv(&#x27;rnaseq_tpm.tsv&#x27;, sep=&#x27;\t&#x27;)
+    tf_names = load_tf_names(&#x27;human_tfs.txt&#x27;)
+    network = grnboost2(
+        expression_data=expression_data,
+        tf_names=tf_names,
+        seed=123
+    )
+    network.to_csv(&#x27;tf_target_network.tsv&#x27;, sep=&#x27;\t&#x27;, index=False)
+```
+
+### Comparative Analysis (Multiple Conditions)
+```python
+from arboreto.algo import grnboost2
+
+if __name__ == &#x27;__main__&#x27;:
+    conditions = [&#x27;control&#x27;, &#x27;treatment_24h&#x27;, &#x27;treatment_48h&#x27;]
+    for condition in conditions:
+        data = pd.read_csv(f&#x27;{condition}_expression.tsv&#x27;, sep=&#x27;\t&#x27;)
+        network = grnboost2(expression_data=data, seed=42)
+        network.to_csv(f&#x27;{condition}_network.tsv&#x27;, sep=&#x27;\t&#x27;, index=False)
+```
+
+## Output interpretation
+
+| Column | Description |
+|--------|-------------|
+| `TF` | Candidate predictor gene, restricted only if a TF list was supplied |
+| `target` | Gene whose expression was predicted |
+| `importance` | Regulatory importance score (higher = stronger) |
+
+**Filtering strategy**:
+- Top N links per target gene
+- Importance threshold (e.g., &gt; 0.5)
+- Statistical significance testing (permutation tests)
+
+## Integration with pySCENIC
+
+Arboreto is a core component of the SCENIC pipeline for single-cell regulatory network analysis:
+
+```python
+# Step 1: Use arboreto for GRN inference
+from arboreto.algo import grnboost2
+network = grnboost2(expression_data=sc_data, tf_names=tf_list)
+
+# Step 2: Use pySCENIC for regulon identification and activity scoring
+# (See pySCENIC documentation for downstream analysis)
+```
+
+## Reproducibility
+
+Always set a seed for reproducible results:
+```python
+network = grnboost2(expression_data=matrix, seed=42)
+```
+
+## Conflicts
+
+- **K-Dense-AI/scientific-agent-skills** requires a pinned stack and the Dask query-planning workaround; **FreedomIntelligence/OpenClaw-Medical-Skills** and **aipoch/medical-research-skills** show unpinned installation without the workaround.
+- **K-Dense-AI/scientific-agent-skills** and **FreedomIntelligence/OpenClaw-Medical-Skills** use `scripts/basic_grn_inference.py`; **aipoch/medical-research-skills** uses `scripts/infer_network.py` with `--algo`.
+- **K-Dense-AI/scientific-agent-skills** warns about PyPI 0.1.6 metadata graph issues and SciPy 1.14 `.A` removal; the other two copies do not include these constraints.</pre>
+</body>
+</html>

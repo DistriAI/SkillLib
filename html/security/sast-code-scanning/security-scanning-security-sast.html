@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>security-scanning-security-sast</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">sast-code-scanning</a> / security-scanning-security-sast</p><h1>security-scanning-security-sast</h1><p class="meta">combined</p><p>The first copy is the operational procedure: it contains the actual tool selection, installation commands, configuration files, custom Semgrep rules, and vulnerability pattern examples. The second copy is a wrapper that strips out the procedure and instead mandates reading an external &#x27;detailed guide&#x27; and adds generic limitations. Neither copy is a faithful reproduction of the other; the first has the steps the second lacks, and the second has the external-reference constraint and limitations the first lacks. Crowning the first would hide the second&#x27;s explicit requirement to consult the detailed guide, while crowning the second would hide the actual scanning steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/security-scanning-security-sast/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/security-scanning-security-sast/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/security-scanning-security-sast/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/security-scanning-security-sast/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/security-scanning-security-sast/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/security-scanning-security-sast/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: security-scanning-security-sast
+description: Static Application Security Testing (SAST) for code vulnerability analysis across multiple languages and frameworks
+metadata:
+  globs: &quot;**/*.py, **/*.js, **/*.ts, **/*.java, **/*.rb, **/*.go, **/*.rs, **/*.php&quot;
+  keywords: sast, static analysis, code security, vulnerability scanning, bandit, semgrep, eslint, sonarqube, codeql, security patterns, code review, ast analysis
+---
+# SAST Security Plugin
+
+Static Application Security Testing (SAST) for comprehensive code vulnerability detection across multiple languages, frameworks, and security patterns.
+
+## Detailed Guide
+
+Read [the detailed guide](references/detailed-guide.md) before executing this skill. It retains the complete procedure and reference material. Treat its safety, prerequisites, and validation requirements as mandatory. For focused work, load the relevant sections; for end-to-end work, read the guide completely.
+
+## Use this skill when
+
+Use for code review security analysis, injection vulnerabilities, hardcoded secrets, framework-specific patterns, custom security policy enforcement, pre-deployment validation, legacy code assessment, and compliance (OWASP, PCI-DSS, SOC2).
+
+**Specialized tools**: Use `security-secrets.md` for advanced credential scanning, `security-owasp.md` for Top 10 mapping, `security-api.md` for REST/GraphQL endpoints.
+
+## Do not use this skill when
+
+- You only need runtime testing or penetration testing
+- You cannot access the source code or build outputs
+- The environment forbids third-party scanning tools
+
+## Safety
+
+- Avoid uploading proprietary code to external services without approval.
+- Require review before enabling auto-fix or blocking releases.
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+## Instructions
+
+1. Identify the languages, frameworks, and scope to scan.
+2. Select SAST tools and configure rules for the codebase.
+3. Run scans in CI or locally with reproducible settings.
+4. Triage findings, prioritize by severity, and propose fixes.
+
+## SAST Tool Selection
+
+### Python: Bandit
+
+```bash
+pip install bandit
+bandit -r . -f json -o bandit-report.json
+bandit -r . -ll -ii -f json  # High/Critical only
+```
+
+**Configuration**: `.bandit`
+```yaml
+exclude_dirs: [&#x27;/tests/&#x27;, &#x27;/venv/&#x27;, &#x27;/.tox/&#x27;, &#x27;/build/&#x27;]
+tests: [B201, B301, B302, B303, B304, B305, B307, B308, B312, B323, B324, B501, B502, B506, B602, B608]
+skips: [B101]
+```
+
+### JavaScript/TypeScript: ESLint Security
+
+```bash
+npm install --save-dev eslint @eslint/plugin-security eslint-plugin-no-secrets
+eslint . --ext .js,.jsx,.ts,.tsx --format json &gt; eslint-security.json
+```
+
+**Configuration**: `.eslintrc-security.json`
+```json
+{
+  &quot;plugins&quot;: [&quot;@eslint/plugin-security&quot;, &quot;eslint-plugin-no-secrets&quot;],
+  &quot;extends&quot;: [&quot;plugin:security/recommended&quot;],
+  &quot;rules&quot;: {
+    &quot;security/detect-object-injection&quot;: &quot;error&quot;,
+    &quot;security/detect-non-literal-fs-filename&quot;: &quot;error&quot;,
+    &quot;security/detect-eval-with-expression&quot;: &quot;error&quot;,
+    &quot;security/detect-pseudo-random-prng&quot;: &quot;error&quot;,
+    &quot;no-secrets/no-secrets&quot;: &quot;error&quot;
+  }
+}
+```
+
+### Multi-Language: Semgrep
+
+```bash
+pip install semgrep
+semgrep --config=auto --json --output=semgrep-report.json
+semgrep --config=p/security-audit --json
+semgrep --config=p/owasp-top-ten --json
+semgrep ci --config=auto  # CI mode
+```
+
+**Custom Rules**: `.semgrep.yml`
+```yaml
+rules:
+  - id: sql-injection-format-string
+    pattern: cursor.execute(&quot;... %s ...&quot; % $VAR)
+    message: SQL injection via string formatting
+    severity: ERROR
+    languages: [python]
+    metadata:
+      cwe: &quot;CWE-89&quot;
+      owasp: &quot;A03:2021-Injection&quot;
+
+  - id: dangerous-innerHTML
+    pattern: $ELEM.innerHTML = $VAR
+    message: XSS via innerHTML assignment
+    severity: ERROR
+    languages: [javascript, typescript]
+    metadata:
+      cwe: &quot;CWE-79&quot;
+
+  - id: hardcoded-aws-credentials
+    patterns:
+      - pattern: $KEY = &quot;AKIA...&quot;
+      - metavariable-regex:
+          metavariable: $KEY
+          regex: &quot;(aws_access_key_id|AWS_ACCESS_KEY_ID)&quot;
+    message: Hardcoded AWS credentials detected
+    severity: ERROR
+    languages: [python, javascript, java]
+
+  - id: path-traversal-open
+    patterns:
+      - pattern: open($PATH, ...)
+      - pattern-not: open(os.path.join(SAFE_DIR, ...), ...)
+      - metavariable-pattern:
+          metavariable: $PATH
+          patterns:
+            - pattern: $REQ.get(...)
+    message: Path traversal via user input
+    severity: ERROR
+    languages: [python]
+
+  - id: command-injection
+    patterns:
+      - pattern-either:
+          - pattern: os.system($CMD)
+          - pattern: subprocess.call($CMD, shell=True)
+      - metavariable-pattern:
+          metavariable: $CMD
+          patterns:
+            - pattern-either:
+                - pattern: $X + $Y
+                - pattern: f&quot;...{$VAR}...&quot;
+    message: Command injection via shell=True
+    severity: ERROR
+    languages: [python]
+```
+
+### Other Language Tools
+
+**Java**: `mvn spotbugs:check`
+**Ruby**: `brakeman -o report.json -f json`
+**Go**: `gosec -fmt=json -out=gosec.json ./...`
+**Rust**: `cargo clippy -- -W clippy::unwrap_used`
+
+## Vulnerability Patterns
+
+### SQL Injection
+
+**VULNERABLE**: String formatting/concatenation with user input in SQL queries
+
+**SECURE**:
+```python
+cursor.execute(&quot;SELECT * FROM users WHERE id = %s&quot;, (user_id,))
+User.objects.filter(id=user_id)  # ORM
+```
+
+### Cross-Site Scripting (XSS)
+
+**VULNERABLE**: Direct HTML manipulation with unsanitized user input (innerHTML, outerHTML, document.write)
+
+**SECURE**:
+```javascript
+element.textContent = userInput;
+&lt;div&gt;{userInput}&lt;/div&gt;
+import DOMPurify from &#x27;dompurify&#x27;;
+element.innerHTML = DOMPurify.sanitize(userInput);
+```
+
+### Hardcoded Secrets
+
+**VULNERABLE**: Hardcoded API keys</pre>
+</body>
+</html>

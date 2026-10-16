@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>accessibility</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">web-accessibility-audit</a> / accessibility</p><h1>accessibility</h1><p class="meta">combined</p><p>The two skills cover the same domain but have distinct, non-overlapping material steps. The first skill (addyosmani) provides a specific &#x27;Evidence-led audit workflow&#x27; involving Lighthouse/axe tools, accessibility-tree snapshots, and a re-run verification loop, which the second skill lacks. The second skill (LeoYeAI) provides a &#x27;5-Step Accessibility Process&#x27; with a semantic HTML decision tree, specific ARIA usage rules (Golden Rule), and a detailed React/TypeScript focus-trap implementation, which the first skill lacks. Additionally, they target different WCAG versions (2.2 vs 2.1). Combining them creates a complete skill that covers both the audit/verification process and the implementation patterns.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/addyosmani/web-quality-skills">addyosmani/web-quality-skills</a></td><td><code>skills/accessibility/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/accessibility/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/addyosmani/web-quality-skills">addyosmani/web-quality-skills</a></td><td><code>skills/accessibility/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/accessibility/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: accessibility
+description: Audit and implement web accessibility following WCAG 2.2 guidelines. Use for a11y audits, WCAG compliance, screen reader support, and keyboard navigation.
+---
+
+# Web Accessibility (WCAG 2.2)
+
+## 1. Evidence-Led Audit Workflow
+When a rendered page is available:
+1. Run a live Lighthouse Accessibility audit (or axe CLI if live tools are unavailable).
+2. Use failed audit nodes to localize the relevant component.
+3. Inspect the accessibility tree for names, roles, and landmarks.
+4. Fix the source, then re-run the audit and manual keyboard interaction.
+
+*Note: Automated tools detect only a subset of barriers. A score of 100 is not conformance.*
+
+## 2. Implementation: The 5-Step Process
+
+### Step 1: Semantic HTML Foundation
+Use the correct element for the job. Do not use `div` for interactive elements.
+- **Navigation:** `&lt;a href&gt;`
+- **Actions:** `&lt;button&gt;`
+- **Grouping:** `&lt;article&gt;`, `&lt;section&gt;`, `&lt;nav&gt;`, `&lt;aside&gt;`
+
+### Step 2: ARIA (The Golden Rule)
+Use ARIA only when HTML cannot express the pattern.
+- **Wrong:** `&lt;button role=&quot;button&quot;&gt;` (Redundant)
+- **Right:** `&lt;div role=&quot;dialog&quot; aria-modal=&quot;true&quot;&gt;` (Fills semantic gap)
+- **Common:** `aria-label`, `aria-describedby`, `aria-live`, `aria-expanded`.
+
+### Step 3: Keyboard Navigation &amp; Focus Management
+All interactive elements must be keyboard accessible.
+- **Native:** Prefer `&lt;button&gt;` and `&lt;a&gt;` for free keyboard support.
+- **Custom:** If using `div[role=&quot;button&quot;]`, add `tabindex=&quot;0&quot;` and handle `Enter`/`Space`.
+- **Focus Traps:** In dialogs, save previous focus, trap Tab/Shift+Tab, and restore focus on close.
+
+### Step 4: Color Contrast (WCAG 2.2)
+- **Normal text:** 4.5:1 (AA) / 7:1 (AAA)
+- **Large text:** 3:1 (AA) / 4.5:1 (AAA)
+- **UI Components:** 3:1
+- **Focus Indicators:** Must have 3:1 contrast against the background.
+
+### Step 5: Forms &amp; Text Alternatives
+- **Labels:** Every input needs a visible `&lt;label&gt;`. Placeholders are not labels.
+- **Images:** Descriptive `alt` text for content; `alt=&quot;&quot;` for decorative.
+- **Icons:** Icon buttons need `aria-label` or visually hidden text.
+
+## 3. Code Patterns
+
+### Focus Management (React/TS Example)
+```typescript
+useEffect(() =&gt; {
+  const previousFocus = document.activeElement;
+  const firstFocusable = dialogRef.current?.querySelector(&#x27;button, [href], input&#x27;);
+  firstFocusable?.focus();
+
+  const handleKeyDown = (e: KeyboardEvent) =&gt; {
+    if (e.key === &#x27;Escape&#x27;) onClose();
+    // Implement focus trap logic for Tab
+  };
+
+  document.addEventListener(&#x27;keydown&#x27;, handleKeyDown);
+  return () =&gt; {
+    document.removeEventListener(&#x27;keydown&#x27;, handleKeyDown);
+    (previousFocus as HTMLElement)?.focus();
+  };
+}, []);
+```
+
+### Visually Hidden Text
+```css
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+```</pre>
+</body>
+</html>

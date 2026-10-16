@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>write</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">academic-paper-drafting</a> / write</p><h1>write</h1><p class="meta">combined</p><p>The two skills share the name &#x27;write&#x27; but perform different tasks. The first is a meta-skill for authoring agent skills (defining structure, triggers, and token efficiency), while the second is a domain-specific skill for drafting academic paper sections in LaTeX with specific quality checks and humanization passes. They do not overlap in procedure or intent, so crowning one would hide the other&#x27;s distinct utility.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/authoring/write-skills/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/16-hsantanna88-clo-author/dot-claude/skills/write/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/authoring/write-skills/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/16-hsantanna88-clo-author/dot-claude/skills/write/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Write
+
+This skill handles two distinct workflows based on context:
+
+## 1. Authoring Agent Skills
+Use this when creating or revising `SKILL.md` files.
+- **Trigger:** The frontmatter `description` must clearly state what the skill does and when to use it.
+- **Token Economy:** Keep the main file short. Use `references/` for long docs and `scripts/` for fragile operations.
+- **Procedures:** Write imperative rules and decision points, not essays. Match the procedure to the deliverable&#x27;s shape.
+- **Validation:** Test the skill on a fresh agent run to ensure predictability.
+
+## 2. Drafting Academic Papers
+Use this when drafting sections of a research paper.
+- **Context:** Read existing drafts, notes, and bibliography before writing.
+- **Routing:** Select the section (intro, strategy, results, conclusion, abstract) based on user input.
+- **Standards:**
+  - Introduction: 1000-1500 words, hook to roadmap.
+  - Results: 800-1500 words, effect sizes with units.
+  - Abstract: 100-150 words, question to implication.
+- **LaTeX Conventions:** Use `\citet{}` for textual and `\citep{}` for parenthetical citations. Use `booktabs` for tables.
+- **Quality Check:** Ensure all equations are labeled, citations exist in the bibliography, and no banned hedging phrases are used.
+- **Humanizer:** Apply a pass to strip AI-specific patterns (e.g., &#x27;delve&#x27;, &#x27;leverage&#x27;, rule-of-three) before finalizing.</pre>
+</body>
+</html>

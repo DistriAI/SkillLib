@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>rehabilitation-analyzer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">rehabilitation-progress-analysis</a> / rehabilitation-analyzer</p><h1>rehabilitation-analyzer</h1><p class="meta">combined</p><p>The first copy is a thin wrapper that defers to a missing detailed guide and only lists high-level triggers and limitations. The second copy contains the actual procedure: data sources, validation thresholds, analysis algorithms, report templates, safety boundaries, and error handling. Because the first copy lacks the executable steps and the second copy lacks the explicit risk metadata and clarification-stop rule, crowning one would hide a real alternative. The combined instruction preserves the executable procedure while retaining the safety and clarification constraints from the first copy.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/rehabilitation-analyzer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/rehabilitation-analyzer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/rehabilitation-analyzer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/rehabilitation-analyzer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/rehabilitation-analyzer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/rehabilitation-analyzer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Rehabilitation Analyzer
+
+Analyze rehabilitation training data, identify recovery patterns, evaluate progress, and provide personalized rehabilitation suggestions. Do not treat output as a substitute for professional medical advice, environment-specific validation, or expert review. Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+## When to Use
+- Analyze rehabilitation training records, functional recovery trends, or phase progression.
+- Analyze ROM, muscle strength, pain, adherence, or goal attainment.
+- Generate rehabilitation reports, trend analyses, or training plan optimization suggestions.
+
+## Data Sources
+Read the following files if present:
+- `data/rehabilitation-tracker.json` — main rehabilitation profile.
+- `data/rehabilitation-logs/YYYY-MM/YYYY-MM-DD.json` — daily training logs.
+
+Validate data before analysis:
+- Confirm files exist.
+- Verify data structure integrity.
+- Require at least 3 functional assessments or 10 days of training records; otherwise report insufficient data.
+
+## Execution Steps
+
+### 1. Data Reading
+Load the main profile and relevant daily logs. Extract user profile, rehabilitation goals, exercise logs, functional assessments, phase progression, pain diary, and statistics.
+
+### 2. Functional Trend Analysis
+- **ROM:** Analyze measurements over time, calculate improvement rate (degrees/week), identify plateaus or regressions, and estimate time to target ROM.
+- **Muscle Strength:** Track MMT score changes, identify improvement patterns, compare recovery speed across muscle groups, and assess imbalances.
+- **Balance:** Analyze balance test scores, single-leg stand time, stability, and fall risk changes.
+
+### 3. Pain Pattern Analysis
+- Analyze morning and post-activity pain trends.
+- Identify aggravation and relief patterns.
+- Correlate pain with training intensity, specific exercises, activity type, and time factors.
+- Use a 7-day moving average for pain trend judgment: improvement if pain decreases ≥20%, stable if change &lt;20%, worsening if pain increases ≥20%.
+
+### 4. Adherence Calculation
+- Overall adherence = (actual training sessions / planned training sessions) × 100%.
+- Calculate weekly, monthly, and per-exercise-type adherence.
+- Rating: excellent ≥90%, good 75–89%, fair 60–74%, needs improvement &lt;60%.
+
+### 5. Goal Attainment Assessment
+- Calculate completion percentage for each goal.
+- Estimate attainment time using linear extrapolation: predicted time = current date + ((target value − current value) / improvement rate).
+- Identify lagging goals and provide adjustment suggestions.
+
+### 6. Phase Progression Assessment
+- Evaluate current phase goal completion.
+- Readiness score = (achieved phase goals / total phase goals) × 100%.
+- Readiness ≥80%: recommend advancing to next phase.
+- Readiness 60–79%: consider advancing with caution.
+- Readiness &lt;60%: recommend continuing current phase.
+
+### 7. Report Generation
+Produce a rehabilitation progress report containing:
+1. Progress summary (overall rating, duration, sessions completed, adherence, phase progress).
+2. Functional improvement trends (ROM, strength, balance).
+3. Pain control status (average level, trend, patterns, triggers, suggestions).
+4. Training adherence (overall, planned vs actual, rating, missed-session analysis).
+5. Goal attainment (achieved, in-progress, lagging goals).
+6. Phase progression (current phase, goal completion, readiness assessment).
+7. Personalized suggestions (training, goal adjustment, phase transition, precautions).
+8. Next assessment date and focus.
+
+Also provide a brief progress summary with key metrics and 1–2 core suggestions.
+
+## Safety and Privacy
+- Store all rehabilitation data locally; do not upload to cloud servers or share with third parties.
+- Keep personal health information confidential; data files should not contain personally identifiable information.
+- Do not modify raw data; analysis results must be based on real data.
+- Do not provide specific rehabilitation prescriptions, replace professional guidance, diagnose injuries or complications, adjust phase plans, predict prognosis timing, or handle acute pain or injuries.
+- Provide data analysis, trend identification, progress tracking, general suggestions, professional consultation reminders, and report generation only.
+- Remind users to follow rehabilitation therapist guidance and seek medical attention for pain aggravation or functional regression.
+
+## Error Handling
+- **File not found:** Prompt user to start rehabilitation tracking.
+- **Insufficient data:** Report current assessment count and training days; recommend continued recording.
+- **Data structure error:** Recommend reinitializing the rehabilitation profile.
+- **Calculation error:** Log the error and provide basic data display.
+- **Report generation failure:** Provide a simplified report or raw data export.</pre>
+</body>
+</html>

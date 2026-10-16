@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>stitch</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">stitch-design-system-guidance</a> / stitch</p><h1>stitch</h1><p class="meta">combined</p><p>The two copies target the same Google Stitch workflow but encode different, non-reproducible procedures. Leonxlnx/taste-skill is a semantic, anti-generic design-taste generator that produces a DESIGN.md with atmosphere, banned AI clichés, typography bans, hero rules, and motion philosophy. bergside/awesome-design-skills is a brand-specific, enterprise drag-and-drop design-system authoring skill with fixed tokens (Ubuntu/Oswald, #072C2C, etc.), accessibility-first rules, and a required output structure. Neither is a shortened or wrapped version of the other; crowning one would hide a real alternative. They agree on the high-level goal (produce Stitch-ready design guidance) and on the need for explicit anti-patterns and component states, but they conflict on palette, typography, tone, and output structure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Leonxlnx/taste-skill">Leonxlnx/taste-skill</a></td><td><code>skills/stitch-skill/SKILL.md</code></td></tr><tr><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/stitch/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Leonxlnx/taste-skill">Leonxlnx/taste-skill</a></td><td><code>skills/stitch-skill/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/stitch/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: stitch
+description: Generate Stitch-ready design-system guidance that is either a semantic anti-generic DESIGN.md or a brand-specific enterprise guideline, depending on the target project.
+---
+
+# Stitch Design System Skill
+
+## Purpose
+Produce implementation-ready design guidance for Google Stitch. Choose the mode that matches the project:
+- **Semantic Taste Mode** (Leonxlnx/taste-skill): for premium, anti-generic, creative interfaces.
+- **Enterprise Brand Mode** (bergside/awesome-design-skills): for clean, high-contrast, data-driven drag-and-drop workflows.
+
+## Mode Selection
+1. If the user provides a brand, fixed tokens, or an enterprise/data-driven context, use Enterprise Brand Mode.
+2. If the user asks for premium, creative, anti-slop, or taste-driven design, use Semantic Taste Mode.
+3. If unclear, ask one clarifying question about the intended visual register.
+
+## Semantic Taste Mode
+### 1. Define the Atmosphere
+- Density: 1–10 (default 4)
+- Variance: 1–10 (default 8)
+- Motion: 1–10 (default 6)
+- Adapt to the user&#x27;s vibe description.
+
+### 2. Map the Color Palette
+- Maximum 1 accent color, saturation below 80%.
+- BANNED: AI purple/blue neon, purple button glows, neon gradients.
+- Use absolute neutral bases (Zinc/Slate) with high-contrast singular accents.
+- Never use pure black (#000000); use Off-Black, Zinc-950, or Charcoal.
+- One palette for the entire output.
+
+### 3. Establish Typography Rules
+- BANNED: Inter for premium/creative contexts; generic serifs (Times New Roman, Georgia, Garamond, Palatino).
+- Preferred: Geist, Outfit, Cabinet Grotesk, Satoshi.
+- If serif is needed for editorial/creative: Fraunces, Gambarino, Editorial New, Instrument Serif only.
+- Serif is BANNED in dashboards or software UIs.
+- Dashboard constraint: Sans-Serif pairings only (Geist + Geist Mono or Satoshi + JetBrains Mono).
+- High-density override (density &gt; 7): all numbers use Monospace.
+- Body: relaxed leading, max 65 characters per line.
+
+### 4. Define the Hero Section
+- Inline Image Typography: embed small contextual photos between words/letters at type-height, rounded.
+- No overlapping text or images.
+- BANNED: &quot;Scroll to explore&quot;, &quot;Swipe down&quot;, scroll arrows, bouncing chevrons.
+- Centered Hero BANNED when variance exceeds 4; use Split Screen, Left-Aligned, or Asymmetric Whitespace.
+- Maximum one primary CTA; no secondary &quot;Learn more&quot; links.
+
+### 5. Describe Component Stylings
+- Buttons: tactile push feedback on active; no neon outer glows; no custom cursors.
+- Cards: only when elevation communicates hierarchy; tint shadows to background hue; for high-density, use border-top dividers or negative space.
+- Inputs: label above, helper text optional, error below.
+- Loading: skeletal loaders matching layout dimensions; no generic circular spinners.
+- Empty states: composed compositions indicating how to populate data.
+- Error states: clear, inline reporting.
+
+### 6. Define Layout Principles
+- No overlapping elements; no absolute-positioned content stacking.
+- BANNED: generic &quot;3 equal cards horizontally&quot;; use 2-column Zig-Zag, asymmetric grid, or horizontal scroll.
+- CSS Grid over Flexbox math; never use calc() percentage hacks.
+- Contain layouts with max-width constraints (e.g., 1400px centered).
+- Full-height sections: min-h-[100dvh], never h-screen.
+
+### 7. Define Responsive Rules
+- Every design must work across all viewports.
+
+### 8. Motion Philosophy
+- Specify animation engine, spring physics, and perpetual micro-interactions.
+
+### 9. Anti-Patterns
+- Explicit list of banned AI design clichés.
+
+## Enterprise Brand Mode
+### Brand
+Everything you need – data, apps, and AI in an intuitive drag and drop interface to automate your workflows.
+
+### Style Foundations
+- Visual style: clean, high-contrast, enterprise.
+- Typography: primary=Ubuntu, display=Oswald, mono=Ubuntu Mono; weights 100–900.
+- Color tokens: primary=#072C2C, secondary=#FF5F03, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#EDEADE, text=#111827.
+- Spacing: comfortable density mode.
+
+### Accessibility
+- WCAG 2.2 AA, keyboard-first interactions, visible focus states.
+
+### Writing Tone
+- Confident, helpful, friendly, professional.
+
+### Rules: Do
+- Prefer semantic tokens over raw values.
+- Preserve visual hierarchy.
+- Keep interaction states explicit.
+
+### Rules: Don&#x27;t
+- Avoid low contrast text.
+- Avoid inconsistent spacing rhythm.
+- Avoid decorative motion without purpose.
+- Avoid ambiguous labels.
+- Avoid mixing multiple visual metaphors.
+- Avoid inaccessible hit areas.
+
+### Guideline Authoring Workflow
+1. Restate the design intent in one sentence before proposing rules.
+2. Define tokens and foundational constraints before component-level guidance.
+3. Specify component anatomy, states, variants, and interaction behavior.
+4. Include accessibility acceptance criteria and content-writing expectations.
+5. Add anti-patterns and migration notes for existing inconsistent UI.
+6. End with a QA checklist that can be executed in code review.
+
+### Required Output Structure
+- Context and goals
+- Design tokens and foundations
+- Component-level rules (anatomy, variants, states, responsive behavior)
+- Accessibility requirements and testable acceptance criteria
+- Content and tone standards with examples
+- Anti-patterns and prohibited implementations
+- QA checklist
+
+### Component Rule Expectations
+- Define required states: default, hover, focus-visible, active, disabled, loading, error.
+- Describe interaction behavior for keyboard, pointer, and touch.
+- State spacing, typography, and color-token usage explicitly.
+- Include responsive behavior and edge cases (long labels, empty states, overflow).
+
+### Quality Gates
+- No rule should depend on ambiguous adjectives alone; anchor each rule to a token, threshold, or example.
+- Every accessibility statement must be testable in implementation.
+- Prefer system consistency over one-off local optimizations.
+- Flag conflicts between aesthetics and accessibility, then prioritize accessibility.
+
+### Example Constraint Language
+- Use &quot;must&quot; for non-negotiable rules and &quot;should&quot; for recommendations.
+- Pair every do-rule with at least one concrete don&#x27;t-example.
+- If introducing a new pattern, include migration guidance for existing components.
+
+## Conflicts
+- **Leonxlnx/taste-skill** bans Inter and generic serifs and mandates unique fonts; **bergside/awesome-design-skills** mandates Ubuntu/Oswald/Ubuntu Mono.
+- **Leonxlnx/taste-skill** bans AI purple/blue neon and uses a taste-spectrum atmosphere model; **bergside/awesome-design-skills** uses fixed enterprise tokens and a WCAG 2.2 AA-first structure.
+- **Leonxlnx/taste-skill** produces a DESIGN.md with semantic visual descriptions; **bergside/awesome-design-skills** produces a structured guideline with a QA checklist and token-based rules.</pre>
+</body>
+</html>

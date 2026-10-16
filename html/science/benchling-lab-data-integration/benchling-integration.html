@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>benchling-integration</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">benchling-lab-data-integration</a> / benchling-integration</p><h1>benchling-integration</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a high-quality, specific implementation guide with version-pinned SDK examples (1.25.0) and critical warnings about API versioning (V2 vs V3) and SDK conventions (e.g., `estimated_count` behavior, `fields` serialization). However, the FreedomIntelligence and aipoch copies provide broader scope coverage, specifically detailing Benchling Apps, AWS EventBridge event-driven integrations, and Data Warehouse SQL queries, which are only briefly mentioned or omitted in the K-Dense copy. The K-Dense copy also contains specific &#x27;gotchas&#x27; (like the lack of a `users/me` route) that the others lack. Combining them yields a complete skill that covers both the deep SDK mechanics and the broader platform integration capabilities.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/benchling-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/benchling-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/benchling-integration/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/benchling-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/benchling-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/benchling-integration/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: benchling-integration
+description: Benchling Python SDK and REST API integration for registry entities, inventory, ELN entries, workflows, Benchling Apps, and Data Warehouse queries. Use when automating lab data with benchling-sdk or the v2 API.
+license: MIT
+allowed-tools: Read Write Edit Bash
+compatibility: Requires Python 3.9+, benchling-sdk 1.25.0, network access, a Benchling tenant with API access, and API key or OAuth app credentials.
+metadata:
+  version: &quot;1.8&quot;
+  last-reviewed: &quot;2026-09-30&quot;
+  skill-author: Combined (K-Dense, FreedomIntelligence, aipoch)
+  openclaw:
+    primaryEnv: BENCHLING_API_KEY
+    envVars:
+    - name: BENCHLING_TENANT_URL
+      required: true
+      description: Benchling tenant base URL.
+    - name: BENCHLING_API_KEY
+      required: false
+      description: API key auth (alternative to OAuth).
+    - name: BENCHLING_CLIENT_ID
+      required: false
+      description: OAuth app client id.
+    - name: BENCHLING_CLIENT_SECRET
+      required: false
+      description: OAuth app client secret.
+---
+
+# Benchling Integration
+
+## When to use
+
+Use this skill for Benchling registry entities, sequence imports, inventory, ELN entries, workflow tasks, apps, event-driven integrations, and warehouse analytics.
+
+**Important:** Examples target **benchling-sdk 1.25.0** and the **v2** API. Do not mechanically rewrite to V3 without confirming tenant availability, as V3 is in early access for many endpoints.
+
+## Workflow
+
+1. **Identify Tenant &amp; Auth**: Determine the tenant URL and authentication method. Use OAuth for background apps, API Key for scripts.
+2. **Resolve IDs**: Read schemas to resolve folder, registry, and status IDs. A valid Python model does not guarantee biological correctness.
+3. **Read Before Write**: Fetch a small filtered page to verify permissions and data structure.
+4. **Construct Payload**: Use typed SDK models. For imports, retain external IDs for reconciliation.
+5. **Execute &amp; Verify**: Perform the operation and read back the result. Check async status carefully (completed polling can still mean `FAILED`).
+
+## Setup &amp; Authentication
+
+```bash
+uv pip install &quot;benchling-sdk==1.25.0&quot;
+```
+
+### API Key (Scripts)
+```python
+import os
+from benchling_sdk.benchling import Benchling
+from benchling_sdk.auth.api_key_auth import ApiKeyAuth
+
+benchling = Benchling(
+    url=os.environ[&quot;BENCHLING_TENANT_URL&quot;].rstrip(&quot;/&quot;),
+    auth_method=ApiKeyAuth(os.environ[&quot;BENCHLING_API_KEY&quot;])
+)
+```
+
+### OAuth Client Credentials (Apps)
+```python
+from benchling_sdk.auth.client_credentials_oauth2 import ClientCredentialsOAuth2
+
+benchling = Benchling(
+    url=tenant_url,
+    auth_method=ClientCredentialsOAuth2(
+        client_id=os.environ[&quot;BENCHLING_CLIENT_ID&quot;],
+        client_secret=os.environ[&quot;BENCHLING_CLIENT_SECRET&quot;],
+        token_url=f&quot;{tenant_url}/oauth/token&quot;,
+    ),
+)
+```
+
+## Core Capabilities
+
+### 1. Registry &amp; Entities
+
+**Create DNA Sequence:**
+```python
+from benchling_sdk.models import DnaSequenceCreate
+
+# Note: Use either entity_registry_id OR naming_strategy, not both.
+created = benchling.dna_sequences.create(
+    DnaSequenceCreate(
+        name=&quot;My Plasmid&quot;,
+        bases=&quot;ATCGATCG&quot;,
+        is_circular=True,
+        folder_id=&quot;fld_abc123&quot;,
+        # entity_registry_id=&quot;src_abc123&quot;, 
+        # naming_strategy=&quot;NEW_IDS&quot;,
+    )
+)
+```
+
+**Update Entity:**
+```python
+from benchling_sdk.models import DnaSequenceUpdate
+
+updated = benchling.dna_sequences.update(
+    dna_sequence_id=&quot;seq_abc123&quot;, # Use dna_sequence_id for DNA updates
+    dna_sequence=DnaSequenceUpdate(
+        name=&quot;Updated Name&quot;
+    )
+)
+```
+
+**Pagination &amp; Counting:**
+```python
+# list() returns pages; iterate twice to reach objects.
+for page in benchling.dna_sequences.list(page_size=10):
+    for seq in page:
+        print(seq.id, seq.name)
+    break
+
+# WARNING: estimated_count is a property, not a method, and may raise NotImplementedError.
+# Do not rely on it for guaranteed counts.
+```
+
+### 2. Inventory Management
+
+**Create Container:**
+```python
+from benchling_sdk.models import ContainerCreate
+
+container = benchling.containers.create(
+    ContainerCreate(
+        name=&quot;Sample Tube 001&quot;,
+        parent_storage_id=&quot;box_abc123&quot;,
+    )
+)
+```
+
+**Move vs Transfer:**
+- **Move**: `ContainerUpdate(parent_storage_id=...)` changes location only.
+- **Transfer**: A separate operation that changes contents and quantities.
+
+### 3. ELN &amp; Workflows
+
+**Create Entry:**
+```python
+from benchling_sdk.models import EntryCreate
+
+entry = benchling.entries.create(
+    EntryCreate(
+        name=&quot;Experiment 1&quot;,
+        folder_id=&quot;fld_abc123&quot;,
+    )
+)
+```
+
+**Workflow Tasks:**
+- Creation requires `workflow_task_group_id`.
+- Updates use `workflow_task_id`.
+
+### 4. Advanced Integrations
+
+**Event-Driven (AWS EventBridge):**
+Configure Benchling to publish events to AWS EventBridge for downstream automation. Ensure your Lambda functions or other consumers handle the event schema correctly.
+
+**Data Warehouse:**
+Use the Benchling Data Warehouse for SQL-based analytics. Connect via standard SQL clients using the warehouse credentials provided in your Benchling settings.
+
+## Important SDK Conventions
+
+- **Fields Serialization**: Import `fields` from `benchling_sdk.helpers.serialization_helpers`. Input format is `{&quot;field_name&quot;: {&quot;value&quot;: value}}`.
+- **ID Naming**: Use `dna_sequence_id` for DNA updates, `workflow_task_id` for workflow updates.
+- **Entry Methods**: `create_entry`, `get_entry_by_id`, `list_entries`, `update_entry`.
+- **No `users/me`**: There is no documented v2 `users/me` route or SDK `users.get_me()`. Use specific resource lists to verify access.</pre>
+</body>
+</html>

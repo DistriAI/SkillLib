@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-source-leak</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">source-leak-recon</a> / hunt-source-leak</p><h1>hunt-source-leak</h1><p class="meta">combined</p><p>Both copies describe the same hunt-source-leak procedure (quick-win path probes, source map discovery, Swagger/OpenAPI discovery, secret grep), but each contains material steps the other lacks. The uphiago copy adds a Pitfalls section (fake source maps served as HTML, BusyBox/Alpine grep -P fallback, crt.sh rate limiting) and a reference to a React extraction pipeline. The sickn33 copy adds a mandatory authorization confirmation gate and a critical operational rule to re-derive content-hashed bundle names live because a 404 on an old .map URL does not mean remediation. Crowning one copy would hide either the environment pitfalls or the authorization/build-rotation constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-source-leak/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-source-leak/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-source-leak/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-source-leak/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-source-leak/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-source-leak/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-source-leak
+description: Hunt source code and build artifact leakage — JavaScript source maps, Swagger/OpenAPI JSON, .env/.git exposure, webpack chunks, robots.txt/security.txt, build-info files, asset-manifest.json, .DS_Store. Use at the START of every recon session.
+version: 1.2.0
+license: MIT
+category: security
+risk: offensive
+tags: [source, leak, hunt, redteam, security]
+---
+
+# HUNT-SOURCE-LEAK — Source Code &amp; Build Artifact Leakage
+
+## Authorization Gate (Mandatory)
+
+Before running any command that probes a target:
+1. Ask the user to state the exact target URL, IP, account, or resource.
+2. Ask the user to confirm written authorization and the permitted scope.
+3. Show the exact command(s) and explain their expected effect.
+4. Wait for explicit confirmation in the current conversation.
+
+Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## Crown Jewel Targets
+
+Source map exposing TypeScript source = see all API routes, auth logic, secrets. Swagger/OpenAPI JSON = complete API surface map.
+
+**Highest-value findings:**
+- `.js.map` source maps — reconstruct full TypeScript/ES6 source code → find hardcoded API keys, internal endpoints, auth logic bypasses
+- `swagger.json` / `openapi.json` — complete REST API specification with all endpoints, parameters, auth schemes, and internal route names
+- `.env` / `.env.production` — APP_KEY, DB_PASSWORD, API_KEY, SECRET_KEY in plaintext
+- `.git/` exposure — `git clone` the entire source history → all past hardcoded secrets
+- `asset-manifest.json` / `_next/static/` — all JS bundle paths → systematic source map discovery
+- `build-info` / `info.json` — git commit hash, build timestamp, dependency versions → CVE targeting
+
+## Pitfalls (Read Before Probes)
+
+### 1. Fake Source Maps — HTML Serving as .map
+
+Some SPAs serve `index.html` for any unhandled route, including `.js.map` URLs. The URL ends in `.map` and returns HTTP 200, but the content is HTML.
+
+**Detect before processing:**
+```bash
+head -c 80 /tmp/map_file
+# &quot;&lt;!DOCTYPE&quot; or &quot;&lt;html&quot; = faux map (SPA serving HTML)
+# &quot;{&quot; or &quot;)))}&quot; = real source map
+
+python3 -c &quot;
+with open(&#x27;/tmp/map_file&#x27;) as f:
+    d = f.read()
+if d.strip().startswith(&#x27;{&#x27;): print(&#x27;Real source map&#x27;)
+elif &#x27;&lt;!DOCTYPE&#x27; in d or &#x27;&lt;html&#x27; in d: print(&#x27;FAUX — SPA serving HTML&#x27;)
+else: print(f&#x27;Unknown, first 80b: {repr(d[:80])}&#x27;)
+&quot;
+```
+
+**Fallback:** Download raw JS bundles and grep directly.
+
+### 2. BusyBox / Alpine grep -P
+
+On minimal containers (Alpine Linux), `grep -P` is NOT available. Use Python3 `re` instead:
+
+```bash
+python3 -c &quot;import sys, re; print(*(re.findall(r&#x27;pattern&#x27;, sys.stdin.read())), sep=&#x27;\n&#x27;)&quot; &lt; file
+```
+
+### 3. crt.sh Rate Limiting
+
+The crt.sh API rate-limits aggressively. Wait 10-15s between queries. Use `&amp;limit=20` to reduce response size: `https://crt.sh/?q=%25.TARGET&amp;output=json&amp;limit=20`
+
+### 4. Content-Hashed Bundle Rotation
+
+Always resolve the CURRENT build hash before testing, and again before re-verifying. Bundle filenames are content-hashed and rotate on every deploy. A `.map` URL recorded yesterday can 404 today while the map is still fully exposed under a new name. **A 404 at the old URL is not remediation** — it is a new build.
+
+```bash
+HASH=$(curl -s &quot;https://$TARGET/&quot; | grep -oE &#x27;main\.[a-f0-9]+\.js&#x27; | head -1)
+curl -s -o /dev/null -w &#x27;%{http_code} %{size_download} %{content_type}\n&#x27; \
+  &quot;https://$TARGET/static/js/${HASH}.map&quot;
+```
+
+Tell the client explicitly in the report: **redeploying does not fix source map exposure.** Only `GENERATE_SOURCEMAP=false` (or stripping `.map` at deploy) plus a CDN purge closes it. Same rule applies to any content-hashed artifact: chunk files, CSS maps, `asset-manifest.json`, and staging equivalents.
+
+## Phase 1 — Quick Wins (Run First)
+
+```bash
+for PATH in \
+  &quot;/.env&quot; \
+  &quot;/.env.production&quot; \
+  &quot;/.env.local&quot; \
+  &quot;/.git/HEAD&quot; \
+  &quot;/swagger.json&quot; \
+  &quot;/api/swagger.json&quot; \
+  &quot;/v1/swagger.json&quot; \
+  &quot;/openapi.json&quot; \
+  &quot;/api/openapi.json&quot; \
+  &quot;/api-docs&quot;; do
+  STATUS=$(curl --max-time 30 --connect-timeout 10 -s -o /tmp/sl_test -w &quot;%{http_code}&quot; &quot;https://$TARGET$PATH&quot;)
+  if [ &quot;$STATUS&quot; = &quot;200&quot; ]; then
+    echo &quot;[+] HIT: https://$TARGET$PATH&quot;
+    head -5 /tmp/sl_test
+    echo &quot;---&quot;
+  fi
+done
+```
+
+## Phase 2 — Source Map Discovery
+
+See `references/react-api-extraction.md` for the full React SPA source-map API extraction pipeline.
+
+```bash
+# Step 1: Get asset manifest to find all JS bundle paths
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/asset-manifest.json&quot; | python3 -m json.tool 2&gt;/dev/null
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/static/js/main.*.js&quot; 2&gt;/dev/null | head -3
+
+# Next.js
+BUILD_ID=$(curl --max-time 30 --connect-timeout 10 -s https://$TARGET/ | grep -Eo &#x27;&quot;buildId&quot;:&quot;\K[^&quot;]+&#x27;)
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/_next/static/$BUILD_ID/_buildManifest.js&quot; | head -5
+
+# Step 2: For each JS bundle, check for source map reference at end of file
+for JS_URL in $(curl --max-time 30 --connect-timeout 10 -s https://$TARGET/ | grep -Eo &#x27;src=&quot;[^&quot;]*\.js&quot;&#x27; | sed &#x27;s/src=&quot;//;s/&quot;//&#x27;); do
+  LAST_LINE=$(curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET$JS_URL&quot; | tail -1)
+  echo &quot;$LAST_LINE&quot; | grep -q &quot;sourceMappingURL&quot; &amp;&amp; echo &quot;[+] Source map: $JS_URL&quot;
+done
+
+# Step 3: Download and reconstruct source from .map files
+JS_URL=&quot;https://$TARGET/static/js/main.abc123.js&quot;
+MAP_URL=&quot;${JS_URL}.map&quot;
+curl --max-time 30 --connect-timeout 10 -s &quot;$MAP_URL&quot; | python3 -c &quot;
+import sys, json, os
+data = json.load(sys.stdin)
+sources = data.get(&#x27;sources&#x27;, [])
+contents = data.get(&#x27;sourcesContent&#x27;, [])
+for i, (src, content) in enumerate(zip(sources, contents)):
+    if content:
+        path = &#x27;/tmp/sourcemap_extract/&#x27; + src.replace(&#x27;../&#x27;,&#x27;&#x27;).replace(&#x27;./&#x27;,&#x27;&#x27;).replace(&#x27;webpack://&#x27;,&#x27;&#x27;)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, &#x27;w&#x27;) as f:
+            f.write(content)
+        print(f&#x27;[+] Extracted: {src}&#x27;)
+&quot;
+
+# Step 4: Grep extracted source for secrets
+grep -r &quot;API_KEY\|SECRET\|PASSWORD\|TOKEN\|PRIVATE&quot; /tmp/sourcemap_extract/ 2&gt;/dev/null
+grep -r &quot;process\.env\.&quot; /tmp/sourcemap_extract/ 2&gt;/dev/null | grep -v &quot;NEXT_PUBLIC_&quot; | head -20
+grep -r &quot;http://internal\|localhost\|127\.0\.0\.1\|10\.\|172\.\|192\.168&quot; /tmp/sourcemap_extract/ 2&gt;/dev/null | head -20
+```
+
+## Phase 3 — Swagger / OpenAPI Discovery
+
+```bash
+SWAGGER_PATHS=(
+  &quot;/swagger.json&quot; &quot;/swagger.yaml&quot; &quot;/swagger/&quot;
+  &quot;/api/swagger.json&quot; &quot;/api/swagger.yaml&quot;
+  &quot;/v1/swagger.json&quot; &quot;/v2/swagger.json&quot; &quot;/v3/swagger.json&quot;
+  &quot;/openapi.json&quot; &quot;/openapi.yaml&quot;
+  &quot;/api/openapi.json&quot; &quot;/api-docs&quot; &quot;/api-docs.json&quot;
+  &quot;/api/v1/swagger.json&quot; &quot;/api/v2/swagger.json&quot;
+  &quot;/rest/swagger.json&quot; &quot;/rest/api-docs&quot;
+  &quot;/.well-known/openapi.json&quot;
+  &quot;/graphql/schema.json&quot;
+)
+for P in &quot;${SWAGGER_PATHS[@]}&quot;; do
+  STATUS=$(curl --max-time 30 --connect-timeout 10 -s -o /tmp/sw_test -w &quot;%{http_code}&quot; &quot;https://$TARGET$P&quot;)
+  if [ &quot;$STATUS&quot; = &quot;200&quot; ]; then
+    echo &quot;[+] Swagger/OpenAPI: https://$TARGET$P&quot;
+    head -20 /tmp/sw_test
+  fi
+done
+```</pre>
+</body>
+</html>

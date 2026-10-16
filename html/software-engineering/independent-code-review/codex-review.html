@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>codex-review</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">independent-code-review</a> / codex-review</p><h1>codex-review</h1><p class="meta">combined</p><p>The two copies describe different procedures for the same skill name. The jezweb copy is a concrete, self-contained workflow that runs the Codex CLI in headless mode, selects a scope flag, pipes a bundled prompt, saves a timestamped report to .jez/reviews/, and summarizes findings. The sickn33 copy is a thin wrapper around an external BenedictKing/codex-review package, adds CHANGELOG generation, and includes installation and safety caveats. Neither copy is a reproduction of the other, and crowning one would hide a real alternative (local CLI review vs external package with CHANGELOG).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/dev-tools/skills/codex-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/codex-review/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/dev-tools/skills/codex-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/codex-review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/codex-review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/codex-review/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Codex Review
+
+Run an independent code review using the OpenAI Codex CLI. The goal is a second opinion from a different model family on recent changes, a PR, a commit, or the whole app.
+
+## When to Use
+- After a meaningful change, before committing or shipping.
+- Before opening a PR, to self-review with an independent reviewer.
+- When reviewing large-scale refactoring.
+- When the user explicitly asks for an &quot;independent&quot; or &quot;second opinion&quot; review.
+
+Do NOT use for trivial changes, research questions, or architecture discussions.
+
+## Preflight
+1. Confirm Codex CLI is installed:
+   ```bash
+   which codex
+   ```
+   If missing, tell the user to install it and stop.
+2. Confirm auth: the first `codex review` call will fail clearly if not logged in. If that happens, instruct the user to run `codex login` and stop.
+
+## Determine Scope
+Pick the scope flag based on user intent:
+
+| User intent | Flag |
+|---|---|
+| &quot;codex review&quot; / &quot;review the app&quot; / default | no flag (reviews whole app at current HEAD) |
+| &quot;review my changes&quot; / &quot;review uncommitted&quot; | `--uncommitted` |
+| &quot;review this branch vs main&quot; / &quot;review the PR&quot; | `--base main` (or the branch they name) |
+| &quot;review commit abc123&quot; | `--commit abc123` |
+
+Default is whole-app review. If ambiguous, ask once.
+
+## Run the Review
+Use the Codex CLI in headless mode. Pipe a neutral review prompt via stdin to avoid shell escaping:
+
+```bash
+mkdir -p .jez/reviews
+TS=$(date +%Y-%m-%d-%H%M)
+OUT=&quot;.jez/reviews/codex-${TS}.md&quot;
+
+# Example: uncommitted changes
+cat prompt.md | codex review --uncommitted - 2&gt;&amp;1 | tee &quot;$OUT&quot;
+```
+
+Other scopes:
+```bash
+# Vs base branch
+cat prompt.md | codex review --base main - 2&gt;&amp;1 | tee &quot;$OUT&quot;
+
+# Specific commit
+cat prompt.md | codex review --commit abc123 - 2&gt;&amp;1 | tee &quot;$OUT&quot;
+
+# Current HEAD
+cat prompt.md | codex review - 2&gt;&amp;1 | tee &quot;$OUT&quot;
+```
+
+Let the review run; it can take several minutes on a large diff.
+
+## Optional: CHANGELOG Generation
+If the user requests CHANGELOG generation, ensure the generated CHANGELOG matches the actual diff and does not rewrite unrelated release history. Keep CHANGELOG.md in the project root and use conventional commit messages.
+
+## Summarise for the User
+1. Print the output path: `Report saved to .jez/reviews/codex-&lt;timestamp&gt;.md`
+2. Read the saved report and extract the top findings (anything under **Critical** and **High**).
+3. Show them inline in the chat, with file:line references intact.
+4. Offer to action specific findings: &quot;Want me to fix the SQL injection in `auth.ts:42`?&quot;
+
+## Rules
+- **Advisory only.** Never auto-apply Codex&#x27;s suggestions. Read the findings, discuss with the user, fix with their approval.
+- **Don&#x27;t leak the host model&#x27;s reasoning into the prompt.** The prompt is deliberately neutral — Codex reviews the code, not the host model&#x27;s narrative about the code.
+- **Save to `.jez/reviews/`**, never `.claude/` (protected directory).
+- **One report per run.** Don&#x27;t overwrite — the timestamp makes each run unique so the user can compare.
+- **Report what Codex actually found.** Don&#x27;t soften, editorialise, or skip findings you disagree with. If you think Codex is wrong about something, say so as your own opinion after showing what Codex said.
+- **Confirm provider/data/cost scope** before sending private source externally; no implicit commit, push or publication.
+- **Do not treat the output as a substitute** for environment-specific validation, testing, or expert review.
+- **Stop and ask for clarification** if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+## Verification
+The skill is working if:
+- Preflight correctly detects a missing `codex` binary.
+- The right scope flag is chosen based on user intent.
+- The report file appears in `.jez/reviews/` with a sensible timestamp.
+- The file contains severity-prioritised findings with file:line refs.
+- The host model surfaces the top findings without auto-fixing them.</pre>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>embedding-strategies</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">embedding-model-selection</a> / embedding-strategies</p><h1>embedding-strategies</h1><p class="meta">combined</p><p>The three copies share the same model comparison table, pipeline diagram, and most templates, but they disagree on implementation details. The sickn33 copy adds input validation to chunk_by_tokens, fixes an infinite-loop edge case, and replaces the buggy BGE prefix check with an explicit query_prefix parameter. The foryourhealth111 and rmyndharis copies contain a bug in LocalEmbedder.embed_query (checking a string against an integer return value) and a potential infinite loop in chunk_by_tokens. Because the copies overlap but each has material steps or constraints the others lack, and they disagree on the correct way to handle model-specific prefixes and chunking edge cases, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/embedding-strategies/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/embedding-strategies/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/embedding-strategies/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/embedding-strategies/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/embedding-strategies/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/embedding-strategies/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/embedding-strategies/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-data-engineering-platform/skills/embedding-strategies/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/embedding-strategies/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: embedding-strategies
+description: Select and optimize embedding models for semantic search and RAG applications. Use when choosing embedding models, implementing chunking strategies, or optimizing embedding quality for specific domains.
+---
+
+# Embedding Strategies
+
+Guide to selecting and optimizing embedding models for vector search applications.
+
+## When to Use This Skill
+
+- Choosing embedding models for RAG
+- Optimizing chunking strategies
+- Fine-tuning embeddings for domains
+- Comparing embedding model performance
+- Reducing embedding dimensions
+- Handling multilingual content
+
+## Core Concepts
+
+### 1. Embedding Model Comparison
+
+| Model | Dimensions | Max Tokens | Best For |
+|-------|------------|------------|----------|
+| **text-embedding-3-large** | 3072 | 8191 | High accuracy |
+| **text-embedding-3-small** | 1536 | 8191 | Cost-effective |
+| **voyage-2** | 1024 | 4000 | Code, legal |
+| **bge-large-en-v1.5** | 1024 | 512 | Open source |
+| **all-MiniLM-L6-v2** | 384 | 256 | Fast, lightweight |
+| **multilingual-e5-large** | 1024 | 512 | Multi-language |
+
+### 2. Embedding Pipeline
+
+```
+Document → Chunking → Preprocessing → Embedding Model → Vector
+                ↓
+        [Overlap, Size]  [Clean, Normalize]  [API/Local]
+```
+
+## Templates
+
+### Template 1: OpenAI Embeddings
+
+```python
+from openai import OpenAI
+from typing import List
+import numpy as np
+
+client = OpenAI()
+
+def get_embeddings(
+    texts: List[str],
+    model: str = &quot;text-embedding-3-small&quot;,
+    dimensions: int = None
+) -&gt; List[List[float]]:
+    &quot;&quot;&quot;Get embeddings from OpenAI.&quot;&quot;&quot;
+    # Handle batching for large lists
+    batch_size = 100
+    all_embeddings = []
+
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i:i + batch_size]
+
+        kwargs = {&quot;input&quot;: batch, &quot;model&quot;: model}
+        if dimensions:
+            kwargs[&quot;dimensions&quot;] = dimensions
+
+        response = client.embeddings.create(**kwargs)
+        embeddings = [item.embedding for item in response.data]
+        all_embeddings.extend(embeddings)
+
+    return all_embeddings
+
+
+def get_embedding(text: str, **kwargs) -&gt; List[float]:
+    &quot;&quot;&quot;Get single embedding.&quot;&quot;&quot;
+    return get_embeddings([text], **kwargs)[0]
+
+
+# Dimension reduction with OpenAI
+def get_reduced_embedding(text: str, dimensions: int = 512) -&gt; List[float]:
+    &quot;&quot;&quot;Get embedding with reduced dimensions (Matryoshka).&quot;&quot;&quot;
+    return get_embedding(
+        text,
+        model=&quot;text-embedding-3-small&quot;,
+        dimensions=dimensions
+    )
+```
+
+### Template 2: Local Embeddings with Sentence Transformers
+
+```python
+from sentence_transformers import SentenceTransformer
+from typing import List, Optional
+import numpy as np
+
+class LocalEmbedder:
+    &quot;&quot;&quot;Local embedding with sentence-transformers.&quot;&quot;&quot;
+
+    def __init__(
+        self,
+        model_name: str = &quot;BAAI/bge-large-en-v1.5&quot;,
+        device: str = &quot;cpu&quot;,
+        query_prefix: str = &quot;&quot;
+    ):
+        self.model = SentenceTransformer(model_name, device=device)
+        self.query_prefix = query_prefix  # Choose from the selected model card.
+
+    def embed(
+        self,
+        texts: List[str],
+        normalize: bool = True,
+        show_progress: bool = False
+    ) -&gt; np.ndarray:
+        &quot;&quot;&quot;Embed texts with optional normalization.&quot;&quot;&quot;
+        embeddings = self.model.encode(
+            texts,
+            normalize_embeddings=normalize,
+            show_progress_bar=show_progress,
+            convert_to_numpy=True
+        )
+        return embeddings
+
+    def embed_query(self, query: str) -&gt; np.ndarray:
+        &quot;&quot;&quot;Embed a query with the explicitly configured model prefix.&quot;&quot;&quot;
+        return self.embed([self.query_prefix + query])[0]
+
+    def embed_documents(self, documents: List[str]) -&gt; np.ndarray:
+        &quot;&quot;&quot;Embed documents for indexing.&quot;&quot;&quot;
+        return self.embed(documents)
+
+
+# E5 model with instructions
+class E5Embedder:
+    def __init__(self, model_name: str = &quot;intfloat/multilingual-e5-large&quot;):
+        self.model = SentenceTransformer(model_name)
+
+    def embed_query(self, query: str) -&gt; np.ndarray:
+        return self.model.encode(f&quot;query: {query}&quot;)
+
+    def embed_document(self, document: str) -&gt; np.ndarray:
+        return self.model.encode(f&quot;passage: {document}&quot;)
+```
+
+### Template 3: Chunking Strategies
+
+```python
+from typing import List, Tuple
+import re
+
+def chunk_by_tokens(
+    text: str,
+    chunk_size: int = 512,
+    chunk_overlap: int = 50,
+    tokenizer=None
+) -&gt; List[str]:
+    &quot;&quot;&quot;Chunk text by token count.&quot;&quot;&quot;
+    if not isinstance(chunk_size, int) or not isinstance(chunk_overlap, int):
+        raise ValueError(&quot;chunk size and overlap must be integers&quot;)
+    if chunk_size &lt;= 0 or not 0 &lt;= chunk_overlap &lt; chunk_size:
+        raise ValueError(&quot;require chunk_size &gt; 0 and 0 &lt;= overlap &lt; chunk_size&quot;)
+    if tokenizer is None:
+        import tiktoken
+        tokenizer = tiktoken.get_encoding(&quot;cl100k_base&quot;)
+
+    tokens = tokenizer.encode(text)
+    chunks = []
+
+    start = 0
+    while start &lt; len(tokens):
+        end = start + chunk_size
+        chunk_tokens = tokens[start:end]
+        chunk_text = tokenizer.decode(chunk_tokens)
+        chunks.append(chunk_text)
+        if end &gt;= len(tokens):
+            break
+        start = end - chunk_overlap
+
+    return chunks
+
+
+def chunk_by_sentences(
+    text: str,
+    max_chunk_size: int = 1000,
+    min_chunk_size: int = 100
+) -&gt; List[str]:
+    &quot;&quot;&quot;Chunk text by sentences, respecting size limits.&quot;&quot;&quot;
+    import nltk
+    sentences = nltk.sent_tokenize(text)
+
+    chunks = []
+    current_chunk = []
+    current_size = 0
+
+    for sentence in sentences:
+        sentence_size = len(sentence)
+
+        if current_size + sentence_size &gt; max_chunk_size and current_chunk:
+            chunks.append(&quot; &quot;.join(current_chunk))
+            current_chunk = []
+            current_size = 0
+
+        current_chunk.append(sentence)
+        current_size += sentence_size
+
+    if current_chunk:
+        chunks.append(&quot; &quot;.join(current_chunk))
+
+    return chunks
+```
+
+## Conflicts
+
+- sickn33/agentic-awesome-skills uses an explicit query_prefix parameter in LocalEmbedder, while foryourhealth111-pixel/Vibe-Skills and rmyndharis/antigravity-skills use a buggy check (if &quot;bge&quot; in self.model.get_sentence_embedding_dimension()) that compares a string to an integer.
+- sickn33/agentic-awesome-skills adds input validation and an early break to chunk_by_tokens to prevent infinite loops, while the other two copies lack these safeguards.
+- sickn33/agentic-awesome-skills references a resources/implementation-playbook.md file that the other copies do not mention.</pre>
+</body>
+</html>

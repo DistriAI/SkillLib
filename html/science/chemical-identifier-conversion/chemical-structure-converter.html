@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>chemical-structure-converter</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">chemical-identifier-conversion</a> / chemical-structure-converter</p><h1>chemical-structure-converter</h1><p class="meta">combined</p><p>Both copies describe the same chemical-structure-converter skill, but the aipoch/medical-research-skills copy contains material operational steps and constraints the LeoYeAI copy lacks: an explicit input validation gate, a Quick Check command, a numbered workflow, CLI usage and parameter table, output requirements, error handling with PubChem/ChemSpider fallbacks, batch summary requirements, and database versioning guidance. The LeoYeAI copy adds integration/upstream-downstream skill context and a more detailed &#x27;When to Use&#x27; section. Crowning one would hide the other&#x27;s real alternative content.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/chemical-structure-converter/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/chemical-structure-converter/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/chemical-structure-converter/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/chemical-structure-converter/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: chemical-structure-converter
+description: Convert between IUPAC names, SMILES strings, molecular formulas, and common names for chemical compounds. Supports SMILES validation, batch processing, structure standardization, and cheminformatics database preparation for drug discovery workflows.
+license: MIT
+author: AIPOCH
+---
+
+# Chemical Structure Converter
+
+Interconvert between different chemical structure representations including IUPAC names, SMILES strings, molecular formulas, and common names. Essential for cheminformatics workflows, database standardization, and compound registration in drug discovery and chemical research.
+
+**Key Capabilities:**
+- **Multi-Format Conversion**: IUPAC names, SMILES, InChI, molecular formulas
+- **SMILES Validation**: Validate SMILES syntax for structural correctness
+- **Batch Processing**: Process multiple compounds for database standardization
+- **Identifier Lookup**: Retrieve all available identifiers for known compounds
+- **Structure Standardization**: Normalize chemical representations for consistency
+
+## When to Use
+
+**✅ Use this skill when:**
+- Standardizing chemical databases with mixed naming conventions
+- Preparing compound libraries for virtual screening or cheminformatics analysis
+- Converting structures from publications (IUPAC names) to machine-readable formats (SMILES)
+- Validating SMILES strings before using in computational chemistry tools
+- Registering new compounds in chemical inventory systems
+- Matching compounds across different databases with different identifier types
+- Creating structure-activity relationship (SAR) tables with consistent formatting
+
+**❌ Do NOT use when:**
+- Needing 3D structure generation or conformer search → Use molecular modeling software (RDKit, OpenBabel)
+- Performing quantum chemistry calculations → Use Gaussian, ORCA, or similar packages
+- Working with reaction schemes or multi-step synthesis → Use reaction planning tools
+- Requiring patent structure searching → Use specialized patent databases (SciFinder, STN)
+- Converting biological sequences (DNA, protein) → Use bioinformatics tools
+- Needing spectral data prediction (NMR, MS) → Use specialized prediction software
+
+## Integration with Other Skills
+
+**Upstream Skills:**
+- `chemical-storage-sorter`: Classify chemicals by hazard group before storage registration
+- `adme-property-predictor`: Convert structures to standardized formats before ADME prediction
+- `safety-data-sheet-reader`: Extract chemical names from SDS for structure lookup
+
+**Downstream Skills:**
+- `molecular-docking-predictor`: Convert compound libraries to 3D structures for docking
+- `bio-ontology-mapper`: Map chemical structures to standardized ontologies (ChEBI, PubChem)
+- `lab-inventory-tracker`: Register standardized chemical identifiers in inventory
+
+**Complete Workflow:**
+```
+Literature/Patent → chemical-structure-converter → adme-property-predictor → molecular-docking-predictor → Hit Selection
+```
+
+## Input Validation
+
+This skill accepts: compound names (common or IUPAC), SMILES strings, or InChI identifiers. Batch input via CSV or plain text list is also supported.
+
+If the request does not involve converting or validating chemical structure identifiers — for example, asking to predict biological activity, perform docking, or interpret spectra — do not proceed. Instead respond:
+&gt; &quot;Chemical Structure Converter is designed to interconvert chemical identifiers (names, SMILES, formulas). Please provide a compound name or SMILES string. For other cheminformatics tasks, use a more appropriate tool.&quot;
+
+## Quick Check
+
+```bash
+python -m py_compile scripts/main.py
+python scripts/main.py --help
+```
+
+## Workflow
+
+1. Confirm the input identifier type (name, SMILES, IUPAC) and desired output format.
+2. Validate that the request matches the documented scope; stop if the task requires unsupported assumptions.
+3. Run the script or apply the documented conversion path with only the inputs available.
+4. Return a structured result separating assumptions, deliverables, risks, and unresolved items.
+5. If execution fails or inputs are incomplete, switch to the fallback path and state exactly what blocked full completion.
+
+**Fallback:** If no identifier is provided, respond: &quot;No chemical identifier provided. Please supply a compound name (`--name`), SMILES string (`--smiles`), or IUPAC name (`--iupac`). Cannot convert without an input identifier.&quot;
+
+## Core Capabilities
+
+### 1. Multi-Format Conversion
+
+```python
+from scripts.main import ChemicalStructureConverter
+converter = ChemicalStructureConverter()
+data = converter.name_to_identifiers(&quot;aspirin&quot;)
+# → IUPAC: 2-acetoxybenzoic acid, SMILES: CC(=O)Oc1ccccc1C(=O)O, Formula: C9H8O4, MW: 180.16
+```
+
+| From → To | Use Case |
+|-----------|----------|
+| **Name → SMILES** | Literature to database |
+| **SMILES → IUPAC** | Machine to human readable |
+| **IUPAC → SMILES** | Chemical registration |
+| **SMILES → Formula** | Quick MW calculation |
+
+**Best Practices:**
+- ✅ Use canonical SMILES for database storage (ensures uniqueness)
+- ✅ Validate conversions with known reference compounds
+- ✅ Preserve stereochemistry during conversions (use @/@@ in SMILES)
+- ✅ Check tautomeric forms - different representations may exist
+
+### 2. SMILES Validation
+
+```python
+is_valid, message = converter.validate_smiles(&quot;CC(=O)Oc1ccccc1C(=O)O&quot;)
+# → True, &quot;Valid SMILES syntax&quot;
+```
+
+| Check | Example Error |
+|-------|---------------|
+| **Parentheses** | `C(=O` — missing closing |
+| **Ring closures** | `C1CC` — ring not closed |
+| **Atom validity** | `@` — invalid character |
+
+### 3. Batch Processing
+
+```python
+for compound in compound_list:
+    data = converter.name_to_identifiers(compound)
+    if not data:
+        print(f&quot;Warning: &#x27;{compound}&#x27; not found in database&quot;)
+```
+
+## CLI Usage
+
+```text
+# Convert by compound name
+python scripts/main.py --name aspirin
+
+# Convert SMILES to IUPAC
+python scripts/main.py --smiles &quot;CC(=O)Oc1ccccc1C(=O)O&quot;
+
+# Validate SMILES
+python scripts/main.py --smiles &quot;CCO&quot; --validate
+
+# List all compounds
+python scripts/main.py --list
+```
+
+## Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `--name`, `-n` | string | No | Compound name |
+| `--smiles`, `-s` | string | No | SMILES string |
+| `--iupac`, `-i` | string | No | IUPAC name |
+| `--validate` | flag | No | Validate SMILES syntax |
+| `--list`, `-l` | flag | No | List available compounds |
+
+## Output Requirements
+
+Every final response must make these explicit:
+
+- Objective or requested deliverable
+- Inputs used (identifier type and value) and assumptions introduced
+- Conversion method applied
+- Core result: all available identifiers (SMILES, IUPAC, formula, MW)
+- Constraints and risks (local database limited; novel compounds may not be found)
+- Unresolved items and next-step checks (validate against PubChem for critical work)
+
+## Error Handling
+
+- If no identifier is provided, list the required input options and request clarification.
+- If a compound is not found in the local database, flag it and provide direct lookup URLs: `https://pubchem.ncbi.nlm.nih.gov/compound/{compound_name}` and `https://www.chemspider.com/Search.aspx?q={compound_name}`. For programmatic lookup, query the PubChem REST API: `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{name}/JSON`. The script should automatically query this endpoint when a compound is not found locally.
+- If `scripts/main.py` fails, report the failure point and provide manual fallback guidance.
+- Do not fabricate SMILES strings, molecular weights, or identifiers.
+- **Batch mode:** Include a summary line: `X/N compounds converted successfully, Y failed (list failed compound names).`
+- **Database versioning:** The local compound database version is tracked in `DB_VERSION` in `scripts/main.py`. To add compounds, update the `COMPOUND_DB` dict and increment `DB_VERSION`.
+
+## Common Pitfalls
+
+- **Ambiguous names**: Use CAS numbers or specific synonyms for unambiguous lookup
+- **Stereochemistry**: Preserve @/@@ markers during conversion; verify with reference structures
+- **Tautomers**: Different tautomeric forms may yield different SMILES; canonicalize before comparison
+- **Local database limits**: Novel or rare compounds may not be in the local database; use external APIs for lookup</pre>
+</body>
+</html>

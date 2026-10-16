@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>azure-functions</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">azure-functions-development</a> / azure-functions</p><h1>azure-functions</h1><p class="meta">combined</p><p>The two copies cover different aspects of Azure Functions. The first copy (BagelHole) is a practical, step-by-step guide for creating function apps, configuring triggers/bindings, and deploying using Azure CLI, with specific code examples in Python and Node.js. The second copy (sickn33) is a high-level wrapper that points to an external &#x27;detailed guide&#x27; and focuses on expert patterns like Durable Functions, cold start optimization, and the isolated worker model, which are not covered in the first copy. Neither is a reproduction of the other; they are complementary. Combining them provides a complete skill covering both deployment mechanics and advanced architectural patterns.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>infrastructure/cloud-azure/azure-functions/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/azure-functions/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>infrastructure/cloud-azure/azure-functions/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/azure-functions/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/azure-functions/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-devops-cloud/skills/azure-functions/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/azure-functions/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: azure-functions
+description: Build, deploy, and optimize Azure Functions. Covers app creation, triggers, bindings, Durable Functions, and production patterns for .NET, Python, and Node.js.
+license: MIT
+metadata:
+  author: combined
+  version: &quot;1.0&quot;
+---
+
+# Azure Functions
+
+Build and deploy serverless applications with Azure Functions. This skill covers function app creation, trigger and binding configuration, deployment strategies, and advanced patterns like Durable Functions and cold start optimization.
+
+## When to Use
+
+- You need event-driven compute that scales automatically to zero.
+- You are building APIs, webhooks, or background processing pipelines.
+- You want per-execution billing without managing servers.
+- You need to respond to Azure service events (Blob Storage, Service Bus, Cosmos DB changes).
+- You are implementing lightweight microservices or scheduled tasks.
+- You need to orchestrate complex workflows using Durable Functions.
+- You are optimizing for cold start latency or VNet integration.
+
+## Prerequisites
+
+```bash
+# Install Azure CLI
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+# Install Azure Functions Core Tools v4
+npm install -g azure-functions-core-tools@4
+
+# Verify installation
+func --version
+
+# Login
+az login
+az account set --subscription &quot;my-subscription-id&quot;
+
+# Create supporting resources
+az group create --name functions-rg --location eastus
+
+az storage account create \
+  --name myfuncstorageacct \
+  --resource-group functions-rg \
+  --location eastus \
+  --sku Standard_LRS
+```
+
+## Function App Creation
+
+### Consumption Plan (Pay-per-execution)
+
+```bash
+# Python function app on Consumption plan
+az functionapp create \
+  --resource-group functions-rg \
+  --consumption-plan-location eastus \
+  --runtime python \
+  --runtime-version 3.11 \
+  --functions-version 4 \
+  --name myapp-func \
+  --storage-account myfuncstorageacct \
+  --os-type Linux
+```
+
+### Premium Plan (VNet integration, no cold start)
+
+```bash
+# Create Premium plan
+az functionapp plan create \
+  --resource-group functions-rg \
+  --name myapp-premium-plan \
+  --location eastus \
+  --sku EP1 \
+  --is-linux true
+
+# Create function app on Premium plan
+az functionapp create \
+  --resource-group functions-rg \
+  --plan myapp-premium-plan \
+  --runtime python \
+  --runtime-version 3.11 \
+  --functions-version 4 \
+  --name myapp-premium-func \
+  --storage-account myfuncstorageacct
+```
+
+## Trigger and Binding Examples
+
+### HTTP Trigger -- Python
+
+```python
+# function_app.py (v2 programming model)
+import azure.functions as func
+import json
+import logging
+
+app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
+
+@app.route(route=&quot;users/{userId}&quot;, methods=[&quot;GET&quot;])
+def get_user(req: func.HttpRequest) -&gt; func.HttpResponse:
+    user_id = req.route_params.get(&quot;userId&quot;)
+    logging.info(f&quot;Fetching user: {user_id}&quot;)
+
+    if not user_id:
+        return func.HttpResponse(
+            json.dumps({&quot;error&quot;: &quot;userId is required&quot;}),
+            status_code=400,
+            mimetype=&quot;application/json&quot;
+        )
+
+    user = {&quot;id&quot;: user_id, &quot;name&quot;: &quot;Jane Doe&quot;, &quot;email&quot;: &quot;jane@example.com&quot;}
+    return func.HttpResponse(
+        json.dumps(user),
+        status_code=200,
+        mimetype=&quot;application/json&quot;
+    )
+```
+
+### Blob Trigger -- Python
+
+```python
+@app.blob_trigger(arg_name=&quot;blob&quot;, path=&quot;uploads/{name}&quot;,
+                   connection=&quot;AzureWebJobsStorage&quot;)
+def process_upload(blob: func.InputStream):
+    logging.info(f&quot;Processing blob: {blob.name}, Size: {blob.length} bytes&quot;)
+    content = blob.read()
+    # Process file content here
+```
+
+### Timer Trigger -- Python
+
+```python
+@app.timer_trigger(schedule=&quot;0 */5 * * * *&quot;, arg_name=&quot;timer&quot;,
+                    run_on_startup=False)
+def cleanup_job(timer: func.TimerRequest):
+    if timer.past_due:
+        logging.warning(&quot;Timer is past due&quot;)
+    logging.info(&quot;Running scheduled cleanup&quot;)
+    # Cleanup logic here
+```
+
+## Advanced Patterns
+
+### Durable Functions
+
+Use Durable Functions for orchestrating complex workflows. This involves defining an orchestrator function and activity functions. Ensure you have the Durable Functions extension installed in your function app.
+
+### Cold Start Optimization
+
+- Use the Premium Plan to avoid cold starts.
+- Keep function code lightweight.
+- Use `run_on_startup` for timer triggers to warm up the instance.
+- Optimize dependencies to reduce startup time.
+
+### Isolated Worker Model
+
+- Use the isolated worker model for better performance and isolation.
+- In Python, use the `azure-functions` package with the v2 programming model.
+- In Node.js, use the `@azure/functions` package with the v4 programming model.
+
+## Production Best Practices
+
+- Use appropriate authentication levels for HTTP triggers.
+- Implement logging and monitoring using Application Insights.
+- Handle errors gracefully and implement retry policies.
+- Use environment variables for configuration.
+- Test functions locally using Azure Functions Core Tools.
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

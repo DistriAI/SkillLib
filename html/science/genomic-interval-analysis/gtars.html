@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gtars</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">genomic-interval-analysis</a> / gtars</p><h1>gtars</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a rigorous, version-pinned audit and trust-gate procedure (exact 0.10.0 pins, SHA-256 verification, coordinate/strand/assembly data contract, and a local validator). The other three copies (Vibe-Skills, medical-research-skills, and OpenClaw-Medical-Skills) are high-level usage guides that provide the actual API and CLI workflows (overlap, coverage, tokenization, refget, fragment processing) but lack the safety and data-integrity constraints. The Vibe-Skills and OpenClaw copies are nearly identical and contain a typo in the Python install command (`uv uv pip install`), while the medical-research-skills copy is a summarized version of the same guide. Because the K-Dense copy lacks the practical API examples and the other copies lack the critical safety and data-contract steps, crowning one would hide a real alternative procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/gtars/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/gtars/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/gtars/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/gtars/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/gtars/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/gtars/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/gtars/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/gtars/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: gtars
+description: High-performance toolkit for genomic interval analysis in Rust with Python bindings. Use for genomic regions, BED files, coverage tracks, overlap detection, tokenization for ML, or fragment analysis.
+license: MIT
+---
+
+# Gtars: Genomic Tools and Algorithms in Rust
+
+## Overview
+Gtars is a high-performance Rust toolkit for manipulating, analyzing, and processing genomic interval data. It provides specialized tools for overlap detection, coverage analysis, tokenization for machine learning, and reference sequence management.
+
+## Safety and Data Contract
+Before any operation, apply this contract:
+1. **Coordinates:** BED intervals are 0-based and half-open: `[start, end)`. Require `0 &lt;= start &lt; end &lt;= contig_length`. Gtars coordinates are `u32`, so reject values above `4,294,967,295`.
+2. **Assembly:** record an assembly accession/version and the SHA-256 of the exact chromosome-sizes or refget sequence-collection metadata. Never infer assembly from filenames or `chr` prefixes.
+3. **Contigs:** compare names exactly. `1` and `chr1`, alternate loci, decoys, and mitochondrial aliases are not interchangeable.
+4. **Sorting:** preserve the original file, then sort a copy by chromosome-sizes order and numeric start/end when the operation requires it. Python `RegionSet(path)` currently sorts lexicographically by contig and start while loading; do not rely on original row order afterward. Construction does not merge overlapping intervals; call `reduce()` explicitly when that is intended.
+5. **Strand:** BED6 uses `+`, `-`, or `.`. `Region.rest` retains trailing BED fields, but a file-backed Python `RegionSet` currently initializes its separate `strands` vector to `*`. `sort()` reorders regions without reordering that vector, and several set operations drop strand. Preserve and validate strand externally when it is scientifically meaningful.
+6. **Duplicates/adjacency:** choose policies explicitly. `reduce()` and consensus merge overlapping **and adjacent** intervals; ordinary half-open overlap does not treat `[0,10)` and `[10,20)` as overlapping.
+
+## Installation and Trust Gate
+The Python wheel contains a PyO3 native extension. Treat installation as code execution:
+1. Confirm the official PyPI/crates.io/GitHub owner and immutable version.
+2. Review filenames, platform tags, release provenance, license, and SHA-256. Verify checksums from the exact release.
+3. Never run an untrusted prebuilt binary, wheel, source tree, Cargo build script, or archive installer. Use isolation and CPU/RAM/disk/time limits.
+4. Keep a lockfile and artifact hashes with the analysis manifest.
+
+After review, create an isolated Python environment:
+```bash
+uv venv --python 3.11 .venv-gtars
+uv pip install --dry-run --python .venv-gtars/bin/python &quot;gtars==0.10.0&quot;
+uv pip install --python .venv-gtars/bin/python &quot;gtars==0.10.0&quot;
+.venv-gtars/bin/python -c &quot;import gtars; assert gtars.__version__ == &#x27;0.10.0&#x27;; print(gtars.__version__)&quot;
+```
+
+For the CLI (source-reviewed template):
+```bash
+cargo install gtars-cli --version 0.10.0 --locked
+gtars --version
+gtars --help
+```
+
+For a Rust project, pin the wrapper and enable only required features:
+```toml
+[dependencies]
+gtars = { version = &quot;=0.10.0&quot;, default-features = false, features = [
+  &quot;core&quot;, &quot;overlaprs&quot;, &quot;uniwig&quot;, &quot;tokenizers&quot;, &quot;refget&quot;
+] }
+```
+
+## Core Capabilities and Workflows
+
+### 1. Overlap Detection and IGD Indexing
+Efficiently detect overlaps between genomic intervals using the Integrated Genome Database (IGD) data structure.
+
+**Quick example:**
+```python
+import gtars
+
+# Load two region sets
+peaks = gtars.RegionSet.from_bed(&quot;chip_peaks.bed&quot;)
+promoters = gtars.RegionSet.from_bed(&quot;promoters.bed&quot;)
+
+# Find overlaps
+overlapping_peaks = peaks.filter_overlapping(promoters)
+
+# Export results
+overlapping_peaks.to_bed(&quot;peaks_in_promoters.bed&quot;)
+```
+
+### 2. Coverage Track Generation
+Generate coverage tracks from sequencing data with the uniwig module.
+
+**Quick example:**
+```bash
+# Generate WIG coverage at a given resolution
+gtars uniwig generate --input atac_fragments.bed --output coverage.wig --resolution 10
+
+# Generate BigWig coverage for genome browser visualization
+gtars uniwig generate --input atac_fragments.bed --output coverage.bw --format bigwig
+```
+
+### 3. Genomic Tokenization
+Convert genomic regions into discrete tokens for machine learning applications.
+
+**Quick example:**
+```python
+from gtars.tokenizers import TreeTokenizer
+import gtars
+
+# Load regions and build a tokenizer from BED
+regions = gtars.RegionSet.from_bed(&quot;training_peaks.bed&quot;)
+tokenizer = TreeTokenizer.from_bed_file(&quot;training_peaks.bed&quot;)
+
+# Tokenize each region into a discrete representation
+tokens = [tokenizer.tokenize(r.chromosome, r.start, r.end) for r in regions]
+print(tokens[:5])
+```
+
+### 4. Reference Sequence Management
+Handle reference genome sequences and compute digests following the GA4GH refget protocol.
+
+**Quick example:**
+```python
+# Load reference and extract sequences
+store = gtars.RefgetStore.from_fasta(&quot;hg38.fa&quot;)
+sequence = store.get_subsequence(&quot;chr1&quot;, 1000, 2000)
+```
+
+### 5. Fragment Processing
+Split and analyze fragment files, particularly useful for single-cell genomics data.
+
+**Quick example:**
+```bash
+# Split fragments by clusters
+gtars fragsplit cluster-split --input fragments.tsv --clusters clusters.txt --output-dir ./by_cluster/
+```
+
+### 6. Fragment Scoring
+Score fragment overlaps against reference datasets.
+
+**Quick example:**
+```bash
+# Score fragments against reference
+gtars scoring score --fragments fragments.bed --reference reference.bed --output scores.txt
+```
+
+## Python vs CLI Usage
+**Use Python API when:**
+- Integrating with analysis pipelines
+- Need programmatic control
+- Working with complex data structures
+
+**Use CLI when:**
+- Batch processing large files
+- Shell scripting workflows
+- Quick one-off analyses</pre>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>brand-monitoring</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">brand-mention-and-abuse-monitoring</a> / brand-monitoring</p><h1>brand-monitoring</h1><p class="meta">combined</p><p>The two copies overlap in name and broad intent but define different procedures. The first is a strategy skill for setting up proactive brand-abuse monitoring (domains, marketplaces, paid search, app stores, dark web) with manual checks, vendor selection, cadence, and escalation to brand-protection. The second is an execution skill for tracking brand mentions on Reddit, Google News, YouTube, and DuckDuckGo using a Python script, with sentiment, trend, crisis, and competitor comparison outputs. Neither is a shortened or wrapped version of the other; choosing one would hide a real alternative workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/strategies/brand/brand-monitoring/SKILL.md</code></td></tr><tr><td><a href="https://github.com/nexscope-ai/eCommerce-Skills">nexscope-ai/eCommerce-Skills</a></td><td><code>brand-monitoring/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/strategies/brand/brand-monitoring/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/nexscope-ai/eCommerce-Skills">nexscope-ai/eCommerce-Skills</a></td><td><code>brand-monitoring/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: brand-monitoring
+description: Monitor brand mentions and detect brand abuse, impersonation, trademark infringement, and counterfeits. Use for mention tracking, sentiment, crisis detection, and setting up proactive brand-abuse monitoring.
+---
+
+# Brand Monitoring
+
+Use this skill when the user wants to monitor brand mentions, detect trademark infringement, set up brand monitoring, or track brand sentiment. For enforcement, takedown, or evidence collection, use a brand-protection skill.
+
+## Initial Assessment
+
+1. Read root contextus.md when present and load only relevant modules. Without it, use available project material or user-provided facts and ask for missing information.
+2. Identify scope: domains, social media, marketplaces, paid search, app stores, web, dark web, and mention platforms such as Reddit, Google News, YouTube, and DuckDuckGo.
+3. Identify budget: manual vs automated; DIY vs vendor.
+4. Identify risk level: high-value brand, prior incidents, or preventive.
+
+## What to Monitor
+
+| Channel | Threats / Signals |
+|---------|-------------------|
+| Domains | Typosquatting, brand+ai, brand+app, impersonation sites |
+| Social media | Fake accounts, impersonation, unauthorized use, brand mentions |
+| Marketplaces | Counterfeit products, unauthorized sellers (Amazon, eBay, Temu) |
+| Paid search | Competitors bidding on brand terms; impersonator ads |
+| App stores | Fake apps, trademark misuse |
+| Web | Phishing sites, spoofed pages |
+| Mention platforms | Reddit, Google News, YouTube, DuckDuckGo mentions, sentiment, trends |
+
+## Manual Monitoring
+
+| Method | Frequency |
+|--------|-----------|
+| Search | Brand name + variants (brand+ai, brand+app, brand+official) |
+| Google Alerts | Brand name, product names |
+| Social search | X, LinkedIn, Instagram for brand mentions |
+| Marketplace search | Amazon, eBay for counterfeit listings |
+
+Document findings. Escalate to brand-protection for takedown when infringement is confirmed.
+
+## Automated Mention Monitoring
+
+Use the provided script when available:
+
+```bash
+python3 scripts/monitor.py &quot;YourBrand&quot;
+```
+
+With competitors and platform selection:
+
+```bash
+python3 scripts/monitor.py &#x27;{
+  &quot;brand&quot;: &quot;YourBrand&quot;,
+  &quot;competitors&quot;: [&quot;CompA&quot;, &quot;CompB&quot;],
+  &quot;platforms&quot;: [&quot;reddit&quot;, &quot;google_news&quot;]
+}&#x27;
+```
+
+Demo mode:
+
+```bash
+python3 scripts/monitor.py --demo
+```
+
+Supported platforms and stability:
+
+| Platform | Method | Stability |
+|----------|--------|-----------|
+| Reddit | Public JSON API | Rate limited |
+| Google News | RSS Feed | Stable |
+| DuckDuckGo | Instant Answer API | Stable |
+| YouTube | HTML/RSS | Unstable |
+
+Analysis dimensions:
+
+| Dimension | Method | Output |
+|-----------|--------|--------|
+| Volume | Mention count | Trend graph |
+| Sentiment | NLP analysis | Sentiment score |
+| Sources | Platform breakdown | Source distribution |
+| Keywords | Topic extraction | Word cloud |
+| Competitors | Share of voice | Comparison chart |
+
+## Automated Brand-Abuse Tools
+
+| Capability | Description |
+|------------|-------------|
+| AI detection | Machine learning, image recognition, NLP to detect abuse across channels |
+| Multi-channel | Domains, social, marketplaces, paid search, dark web |
+| Enforcement | Case management, takedown workflows, platform integrations |
+| Trademark watch | USPTO, trademark office monitoring; litigation insights |
+
+Vendor types: BrandShield, Tracer Protect, CompuMark, CounterFind. Evaluate by coverage, enforcement rate, and budget.
+
+## Monitoring Cadence
+
+| Level | Cadence | Use |
+|-------|---------|-----|
+| Basic | Weekly search; Google Alerts | Low-risk; preventive |
+| Standard | Daily alerts; monthly marketplace check | Moderate risk |
+| Enterprise | Real-time monitoring; dedicated vendor | High-value brand; prior incidents |
+
+## Crisis Detection
+
+| Alert Level | Trigger | Action |
+|-------------|---------|--------|
+| Normal | &lt; 20% negative | Continue monitoring |
+| Warning | 20-40% negative | Investigate sources |
+| Crisis | &gt; 40% negative | Immediate response needed |
+
+## Monitoring Workflow
+
+1. Set up brand keywords and variants.
+2. Monitor selected channels and platforms.
+3. Analyze sentiment and mention volume.
+4. Detect anomalies, negative spikes, or abuse signals.
+5. Generate alerts and reports.
+6. Escalate confirmed infringement to brand-protection.
+
+## Output Format
+
+- Monitoring plan: channels, cadence, tools.
+- Search queries: brand + variants for manual check.
+- Alert setup: Google Alerts, social, mention-platform alerts.
+- Mention report: total mentions, platform breakdown, sentiment, trend, keywords, competitor comparison.
+- Escalation path: when to use brand-protection for takedown.
+
+## Related Skills
+
+- brand-protection: Report, takedown, evidence collection—use when infringement is found.
+- domain-selection: Defensive registration; brand variants.
+- branding: Brand asset consistency; what to protect.</pre>
+</body>
+</html>

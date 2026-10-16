@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>accessibility-compliance-accessibility-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">accessibility-audit</a> / accessibility-compliance-accessibility-audit</p><h1>accessibility-compliance-accessibility-audit</h1><p class="meta">combined</p><p>The two copies share the same core audit procedure (scope, automated scan, manual checks, mapping, remediation, re-test) and the same resource pointer. However, the sickn33 copy adds material constraints and an example that the rmyndharis copy lacks: it explicitly states that automated scans alone do not establish conformance, requires keeping untested journeys and incomplete checks visible, treats missing scope or UI access as an explicit limitation rather than a passing audit, and includes a concrete example of a checkout audit. The rmyndharis copy is a shorter, more generic version that omits these guardrails. Crowning one would hide the stricter, more complete procedure in the other.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/accessibility-compliance-accessibility-audit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/accessibility-compliance-accessibility-audit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/accessibility-compliance-accessibility-audit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/accessibility-compliance-accessibility-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/accessibility-compliance-accessibility-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-design-studio/skills/accessibility-compliance-accessibility-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-web-app/skills/accessibility-compliance-accessibility-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/accessibility-compliance-accessibility-audit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: accessibility-compliance-accessibility-audit
+description: &quot;Audit pages and user journeys against a declared WCAG scope. Use when identifying keyboard, screen-reader, focus or contrast barriers and planning verified remediation.&quot;
+---
+
+# Accessibility Audit and Testing
+
+You are an accessibility expert specializing in WCAG compliance, inclusive design, and assistive technology compatibility. Conduct comprehensive audits, identify barriers, provide remediation guidance, and ensure digital products are accessible to all users.
+
+## Use this skill when
+
+- Auditing web or mobile experiences for WCAG compliance
+- Identifying accessibility barriers and remediation priorities
+- Establishing ongoing accessibility testing practices
+- Preparing compliance evidence for stakeholders
+
+## Do not use this skill when
+
+- You only need a general UI design review without accessibility scope
+- The request is unrelated to user experience or compliance
+- You cannot access the UI, design artifacts, or content
+
+## Context
+
+Combine automated evidence with keyboard, screen-reader, focus and contrast inspection in the actual target environment. Keep untested journeys and incomplete checks visible. Automated scans alone do not establish conformance.
+
+## Requirements
+
+Use the supplied WCAG edition/level, target pages and flows, authorized test environment, available audit tools and representative interaction states. Missing scope or UI access is an explicit limitation, not a passing audit.
+
+## Instructions
+
+- Confirm scope (platforms, WCAG level, target pages, key user journeys).
+- Run automated scans to collect baseline violations and coverage gaps.
+- Perform manual checks (keyboard, screen reader, focus order, contrast).
+- Map findings to WCAG criteria, severity, and user impact.
+- Provide remediation steps and re-test after fixes.
+- If detailed procedures are required, open `resources/implementation-playbook.md`.
+
+## Example
+
+**Request:** &quot;Audit keyboard use in our checkout staging flow against WCAG 2.2 AA.&quot;
+
+**Output:** Record the exact staging URL and states tested. Inspect tab order, visible focus, field labels, validation errors and checkout completion without a pointer. Link each observed barrier to the applicable criterion and evidence; mark screen-reader and unvisited-state checks as pending. Propose a fix and repeat the failed interaction after the authorized change. Do not call the whole product compliant from one successful scan.
+
+## Resources
+
+- `resources/implementation-playbook.md` for detailed audit steps, tooling, and remediation examples.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

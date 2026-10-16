@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ai-ml</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">ai-ml-skill-routing</a> / ai-ml</p><h1>ai-ml</h1><p class="meta">combined</p><p>The two copies are different routing documents for the same broad AI/ML domain. The first is a production-oriented workflow bundle that orchestrates named skills across LLM integration, RAG, agents, ML pipelines, observability, and security, and it includes explicit selection/completion constraints and checklists. The second is a research-oriented index of 27 AI/ML skills focused on papers, benchmarks, frameworks, and model training, with a simple select-and-read instruction. Neither copy is a reproduction of the other, and crowning one would hide a real alternative: production workflow orchestration versus research skill discovery.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ai-ml/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/43-wentorai-research-plugins/skills/domains/ai-ml/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ai-ml/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/43-wentorai-research-plugins/skills/domains/ai-ml/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/ai-ml/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/ai-ml/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: ai-ml
+---
+
+# AI/ML Skill Routing
+
+Select the routing mode that matches the user&#x27;s request, then follow the corresponding steps.
+
+## Production AI/ML Workflow
+
+Use this mode when the user is building LLM applications, RAG systems, AI agents, ML pipelines, AI-powered features, or AI observability.
+
+1. Select only the phases needed for the requested product. This workflow does not authorize delegation, hosted calls, deployment, background jobs, or external messages.
+2. Read the actual selected skill and available tool schema.
+3. Define task-level quality, retrieval/source checks, data permissions, latency/currency limits, and failure recovery before implementation.
+4. Verify each used capability in the target environment. Unchecked checklist items are not completed because an instruction exists.
+
+### Phase 1: AI Application Design
+- Skills: ai-product, ai-engineer, ai-agents-architect, llm-app-patterns
+- Actions: define AI use cases, choose models, design system architecture, plan data flows, define success metrics.
+
+### Phase 2: LLM Integration
+- Skills: llm-application-dev-ai-assistant, llm-application-dev-langchain-agent, llm-application-dev-prompt-optimize, gemini-api-dev
+- Actions: select LLM provider, set up API access, implement prompt templates, configure model parameters, add streaming support, implement error handling.
+
+### Phase 3: RAG Implementation
+- Skills: rag-engineer, rag-implementation, embedding-strategies, vector-database-engineer, similarity-search-patterns, hybrid-search-implementation
+- Actions: design data pipeline, choose embedding model, set up vector database, implement chunking strategy, configure retrieval, add reranking, implement caching.
+
+### Phase 4: AI Agent Development
+- Skills: autonomous-agents, autonomous-agent-patterns, crewai, langgraph, multi-agent-patterns, computer-use-agents
+- Actions: design agent architecture, define agent roles, implement tool integration, set up memory systems, configure orchestration, add human-in-the-loop.
+
+### Phase 5: ML Pipeline Development
+- Skills: ml-engineer, mlops-engineer, machine-learning-ops-ml-pipeline, ml-pipeline-workflow, data-engineer
+- Actions: design ML pipeline, set up data processing, implement model training, configure evaluation, set up model registry, deploy models.
+
+### Phase 6: AI Observability
+- Skills: langfuse, manifest, evaluation, llm-evaluation
+- Actions: set up tracing, configure logging, implement evaluation, monitor performance, track costs, set up alerts.
+
+### Phase 7: AI Security
+- Skills: prompt-engineering, security-scanning-security-sast
+- Actions: implement input validation, add output filtering, configure rate limiting, set up access controls, monitor for abuse, implement audit logging.
+
+### Checklists
+- LLM Integration: API keys secured, rate limiting configured, error handling implemented, streaming enabled, token usage tracked.
+- RAG System: data pipeline working, embeddings generated, vector search optimized, retrieval accuracy tested, caching implemented.
+- AI Agents: agent roles defined, tools integrated, memory working, orchestration tested, error handling robust.
+- Observability: tracing enabled, metrics collected, evaluation running, alerts configured, dashboards created.
+- Quality Gates: all AI features tested, performance benchmarks met, security measures in place, observability configured, documentation complete.
+
+## Research AI/ML Skill Index
+
+Use this mode when the user needs ML experiments, model training, deep learning, NLP, computer vision, paper reproduction, benchmarks, or AI research workflows.
+
+Select the skill matching the user&#x27;s need, then read its SKILL.md.
+
+| Skill | Description |
+|-------|-------------|
+| ai-agent-papers-guide | Curated 2024-2026 AI agent research papers collection |
+| ai-model-benchmarking | Benchmark AI models across 60+ academic evaluation suites and metrics |
+| anomaly-detection-papers-guide | Industrial anomaly detection methods and benchmark papers |
+| autonomous-agents-papers-guide | Daily-updated collection of autonomous AI agent papers |
+| computer-vision-guide | Apply computer vision research methods, models, and evaluation tools |
+| deep-learning-papers-guide | Annotated deep learning paper implementations with code walkthroughs |
+| dl-transformer-finetune | Build transformer fine-tuning plans for classification and generation |
+| domain-adaptation-papers-guide | Comprehensive collection of domain adaptation research papers |
+| generative-ai-guide | Curated guide to generative AI covering LLMs and diffusion models |
+| graph-learning-papers-guide | Conference papers on graph neural networks and graph learning |
+| huggingface-api | Search and discover ML models, datasets, and Spaces on Hugging Face |
+| huggingface-inference-guide | Run NLP and CV model inference via Hugging Face free-tier API |
+| keras-deep-learning | Build and debug deep learning models with Keras and TensorFlow backend |
+| kolmogorov-arnold-networks-guide | Papers and tutorials on KAN learnable activation networks |
+| llm-evaluation-guide | Evaluate and benchmark large language models for research applications |
+| llm-from-scratch-guide | Build a ChatGPT-like LLM from scratch using PyTorch step by step |
+| ml-pipeline-guide | Build and deploy reproducible production ML pipelines for research |
+| nlp-toolkit-guide | NLP analysis with perplexity scoring, burstiness, and entropy metrics |
+| npcpy-research-guide | All-in-one Python library for NLP, agents, and knowledge graphs |
+| prompt-engineering-research | Systematic prompt engineering methods for AI-assisted academic research workflows |
+| pytorch-guide | Avoid common PyTorch mistakes and apply robust training patterns |
+| pytorch-lightning-guide | PyTorch Lightning framework for scalable model training and research |
+| reinforcement-learning-guide | Reinforcement learning fundamentals, algorithms, and research |
+| responsible-ai-guide | Resources for trustworthy, fair, and ethical AI research |
+| tensorflow-guide | TensorFlow best practices for tf.function, GPU memory, and deployment |
+| transformer-architecture-guide | Guide to Transformer architectures for NLP and computer vision |
+| vmas-simulator-guide | Vectorized multi-agent reinforcement learning simulator |
+
+## Conflicts
+- sickn33/agentic-awesome-skills defines a multi-phase production workflow with explicit constraints on delegation, hosted calls, deployment, background jobs, external messages, and checklist completion. brycewang-stanford/Auto-Empirical-Research-Skills provides a flat research skill index with a simple select-and-read instruction and no such constraints.</pre>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pptx-posters</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">pptx-poster-generation</a> / pptx-posters</p><h1>pptx-posters</h1><p class="meta">combined</p><p>The copies describe three materially different procedures for the same skill name. K-Dense-AI/scientific-agent-skills defines a strict, local, macro-free .pptx pipeline driven by a JSON manifest, exact pinned dependencies, and hard gates. foryourhealth111-pixel/Vibe-Skills and FreedomIntelligence/OpenClaw-Medical-Skills define an HTML/CSS poster workflow that uses AI-generated visuals and exports to PDF or PPTX. aipoch/medical-research-skills defines a simpler script-based converter from abstracts or PDFs to .pptx with templates. Because the core generation method, required assets, and validation steps conflict, crowning one copy would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pptx-posters/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pptx-posters/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/pptx-posters/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pptx-posters/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pptx-posters/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pptx-posters/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/pptx-posters/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pptx-posters/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># PPTX Posters
+
+## Scope
+Use this skill when the requested deliverable is a PowerPoint research/conference poster or slide deck. Do not use it for original research writing, figure fabrication, or unspecified poster requests.
+
+## Choose a Workflow
+Select one of the following workflows based on the user&#x27;s explicit request and available assets:
+
+### Workflow A: Strict Local .pptx (Manifest-Driven)
+Use when exact physical, printer, accessibility, provenance, and package-security checks are required.
+1. Confirm the author has supplied exact poster content and source records.
+2. Confirm conference and printer requirements.
+3. Install exact dependencies: `python-pptx==1.0.2`, `Pillow==12.3.0`, `lxml==6.1.3`.
+4. Build a JSON manifest from the template, resolving all tokens and approvals.
+5. Validate the manifest and local assets using the provided scripts.
+6. Generate the .pptx file locally.
+7. Perform manual author review and printer checks.
+
+### Workflow B: HTML/CSS Poster (AI-Visuals)
+Use when the user requests an HTML-based poster or needs quick iteration with AI-generated visuals.
+1. Plan visual elements (hero, methods, results, conclusions).
+2. Generate visuals using AI tools, ensuring poster-readable font sizes (80pt+ labels, 120pt+ numbers) and high contrast.
+3. Assemble visuals into the HTML template.
+4. Add text content, keeping total word count between 300-800 words.
+5. Export to PDF via browser print or convert to PPTX.
+
+### Workflow C: Script-Based Converter
+Use when converting a paper abstract or PDF into a structured poster or slide deck.
+1. Validate the input source (abstract text or PDF).
+2. Extract and structure content into layout sections.
+3. Run the conversion script with the desired format and template.
+4. Review the output for layout and citation accuracy.
+
+## Common Constraints
+- Do not fabricate missing material, figures, or citations.
+- Ensure all text is readable at poster viewing distances.
+- Verify final output against conference and printer requirements.
+- If inputs are incomplete, request only the minimum additional information needed.</pre>
+</body>
+</html>

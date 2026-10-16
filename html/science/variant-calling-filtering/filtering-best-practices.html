@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>filtering-best-practices</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">variant-calling-filtering</a> / filtering-best-practices</p><h1>filtering-best-practices</h1><p class="meta">combined</p><p>The two skills cover the same domain but have distinct, non-overlapping material. The first copy (OpenClaw) provides a concise decision tree and a comprehensive reference for GATK hard filter thresholds and bcftools expression syntax. The second copy (GPTomics) provides a deeper methodological framework, including VQSR mechanics, VETS, NVScoreVariants, and specific warnings about version compatibility and the &#x27;missing-annotation-passes&#x27; rule. Neither is a simple reproduction of the other; the first is a &#x27;how-to&#x27; reference, while the second is a &#x27;why and when&#x27; guide with more advanced tooling. Combining them provides a complete skill that covers both the basic execution and the advanced decision-making logic.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/filtering-best-practices/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/filtering-best-practices/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/filtering-best-practices/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/filtering-best-practices/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Variant Filtering Best Practices
+
+## 1. Method Selection
+
+**Governing Principle:** Site-level filtering (is the site real?) and genotype-level filtering (is the genotype trustworthy?) are orthogonal. SNPs and indels must be filtered separately.
+
+**Decision Tree:**
+1. **Somatic Data:** Use GATK `FilterMutectCalls`. Do NOT use VQSR or germline hard filters.
+2. **Germline Data:**
+   - **Large Cohort (Human, &gt;30 exomes or WGS):** Use VQSR or VETS (BETA). 
+     - *Note:* VQSR requires truth sets (HapMap/Omni/Mills). Do not use DP as an annotation for exomes.
+   - **Small Cohort (Single exome/panel):** 
+     - *Preferred:* NVScoreVariants (if GPU available) or VETS.
+     - *Fallback:* GATK Hard Filters (see thresholds below).
+   - **Non-Model Organism:** Use Hard Filters.
+
+## 2. GATK Hard Filter Thresholds
+
+Use `gatk VariantFiltration` for small cohorts or when ML tools are unavailable.
+
+**SNPs:**
+```bash
+gatk VariantFiltration \
+    -R reference.fa \
+    -V raw_snps.vcf \
+    -O filtered_snps.vcf \
+    --filter-expression &quot;QD &lt; 2.0&quot; --filter-name &quot;QD2&quot; \
+    --filter-expression &quot;FS &gt; 60.0&quot; --filter-name &quot;FS60&quot; \
+    --filter-expression &quot;MQ &lt; 40.0&quot; --filter-name &quot;MQ40&quot; \
+    --filter-expression &quot;MQRankSum &lt; -12.5&quot; --filter-name &quot;MQRankSum-12.5&quot; \
+    --filter-expression &quot;ReadPosRankSum &lt; -8.0&quot; --filter-name &quot;ReadPosRankSum-8&quot; \
+    --filter-expression &quot;SOR &gt; 3.0&quot; --filter-name &quot;SOR3&quot;
+```
+
+**Indels:**
+```bash
+gatk VariantFiltration \
+    -R reference.fa \
+    -V raw_indels.vcf \
+    -O filtered_indels.vcf \
+    --filter-expression &quot;QD &lt; 2.0&quot; --filter-name &quot;QD2&quot; \
+    --filter-expression &quot;FS &gt; 200.0&quot; --filter-name &quot;FS200&quot; \
+    --filter-expression &quot;ReadPosRankSum &lt; -20.0&quot; --filter-name &quot;ReadPosRankSum-20&quot; \
+    --filter-expression &quot;SOR &gt; 10.0&quot; --filter-name &quot;SOR10&quot;
+```
+
+## 3. bcftools Filtering
+
+Use `bcftools filter` for custom expressions or when GATK is not available.
+
+**Hard Filter (Remove):**
+```bash
+bcftools filter -e &#x27;QUAL&lt;30&#x27; input.vcf.gz -o filtered.vcf
+```
+
+**Soft Filter (Mark):**
+```bash
+bcftools filter -s &#x27;LowQual&#x27; -e &#x27;QUAL&lt;30&#x27; input.vcf.gz -o marked.vcf
+```
+
+**Common Expressions:**
+- Basic: `QUAL&gt;30 &amp;&amp; DP&gt;10`
+- Genotype-level: `FMT/DP&gt;10 &amp;&amp; FMT/GQ&gt;20`
+- Allele Balance: `GT=&quot;het&quot; -&gt; (AD[1]/(AD[0]+AD[1]) &gt; 0.2 &amp;&amp; AD[1]/(AD[0]+AD[1]) &lt; 0.8)`
+
+## 4. Quality Metrics Reference
+
+| Metric | Meaning | Good Value (SNP) | Good Value (Indel) |
+|--------|---------|------------------|--------------------|
+| QD | Quality by Depth | &gt;2 | &gt;2 |
+| FS | Fisher Strand | &lt;60 | &lt;200 |
+| MQ | Mapping Quality | &gt;40 | &gt;40 |
+| MQRankSum | MQ Rank Sum | &gt;-12.5 | &gt;-20 |
+| ReadPosRankSum | Read Position | &gt;-8 | &gt;-20 |
+| SOR | Strand Odds Ratio | &lt;3 | &lt;10 |
+
+## 5. Version Compatibility
+
+- **GATK:** 4.6+ (Note: CNNScoreVariants is deprecated; use NVScoreVariants).
+- **bcftools:** 1.19+
+- **cyvcf2:** 0.30+
+
+Always verify installed versions with `gatk --list` and `bcftools --version` before scripting.</pre>
+</body>
+</html>

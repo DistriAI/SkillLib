@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>open-notebook</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">open-notebook-automation</a> / open-notebook</p><h1>open-notebook</h1><p class="meta">combined</p><p>The two skills cover the same tool (Open Notebook) but diverge significantly in implementation details and API contracts. The K-Dense skill is more rigorous, pinning a specific version (v1.14.0), providing bundled Python helpers, and explicitly correcting common API misconceptions (e.g., model types are &#x27;language&#x27; not &#x27;llm&#x27;). The FreedomIntelligence skill is a broader overview that includes raw REST API examples for features like podcast generation and search, but it uses a potentially unstable &#x27;main&#x27; branch reference and contains API calls that appear inconsistent with the more detailed K-Dense documentation (e.g., using &#x27;model_ids&#x27; for registration vs &#x27;models[]&#x27; with explicit types). Because the K-Dense skill contains critical safety/versioning constraints and helper usage that the other lacks, while the FreedomIntelligence skill provides raw endpoint examples for features (podcasts, search) that are truncated or less detailed in the K-Dense copy, neither is a complete superset. Combining them allows an agent to use the safe, versioned deployment and helper approach from K-Dense while referencing the raw API patterns from FreedomIntelligence for features not fully detailed in the K-Dense snippet.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/open-notebook/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/open-notebook/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/open-notebook/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/open-notebook/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: open-notebook
+description: Automate Open Notebook (self-hosted NotebookLM alternative) for research ingestion, chat, and podcast generation. Use for REST API automation, provider configuration, and bundled helper scripts.
+license: MIT
+metadata:
+  version: &quot;1.5&quot;
+  skill-author: K-Dense Inc.
+---
+
+# Open Notebook
+
+## Overview
+Open Notebook is a self-hosted, open-source alternative to Google NotebookLM. It supports source ingestion (PDFs, web, audio, video), cited chat, vector search, and multi-speaker podcasts. This skill targets v1.14.0.
+
+## Quick Start
+
+### Installation
+Use Docker Compose. **Do not use `main` branch**; pin to a specific release tag for reproducibility.
+
+```bash
+curl --fail --location --output docker-compose.yml \
+  https://raw.githubusercontent.com/lfnovo/open-notebook/v1.14.0/docker-compose.yml
+```
+
+**Critical Configuration:**
+1. Edit `docker-compose.yml` to replace the literal `OPEN_NOTEBOOK_ENCRYPTION_KEY=change-me...` with `${OPEN_NOTEBOOK_ENCRYPTION_KEY:?Set OPEN_NOTEBOOK_ENCRYPTION_KEY}`.
+2. Export the variable in your shell: `export OPEN_NOTEBOOK_ENCRYPTION_KEY=&quot;your-secret&quot;`.
+3. Optionally set `OPEN_NOTEBOOK_PASSWORD` for Bearer token auth.
+
+```bash
+docker compose up -d
+```
+
+- UI: `http://localhost:8502`
+- API: `http://localhost:5055/api`
+
+### Configure AI Providers
+1. Go to **Manage → Models** in the UI.
+2. Add credentials and test the connection.
+3. Discover models. Note: Discovery returns `name` and `provider` but often lacks `model_type`.
+4. Register models explicitly. You must specify `model_type` as one of: `language`, `embedding`, `speech_to_text`, `text_to_speech`. **Do not use** `llm`, `stt`, or `tts`.
+
+## Core Features
+
+### Using Bundled Helpers (Recommended)
+The K-Dense skill provides Python helpers in `scripts/`. Use these for reliable interaction.
+
+```python
+from notebook_management import create_notebook
+from source_ingestion import add_text_source, wait_for_processing
+from chat_interaction import build_context, create_chat_session, send_chat_message
+
+# Create notebook
+notebook = create_notebook(&quot;Research&quot;, &quot;Description&quot;)
+
+# Add source
+source = add_text_source(notebook[&quot;id&quot;], &quot;Title&quot;, &quot;Content&quot;, process_async=True)
+wait_for_processing(source[&quot;id&quot;])
+
+# Chat
+built = build_context(notebook[&quot;id&quot;], source_ids=[source[&quot;id&quot;]])
+session = create_chat_session(notebook[&quot;id&quot;], &quot;Session&quot;)
+answer = send_chat_message(session[&quot;id&quot;], &quot;Question&quot;, built[&quot;context&quot;])
+```
+
+### Raw REST API Examples
+If not using helpers, use the following patterns:
+
+**Create Notebook:**
+```python
+import requests
+BASE_URL = &quot;http://localhost:5055/api&quot;
+resp = requests.post(f&quot;{BASE_URL}/notebooks&quot;, json={&quot;name&quot;: &quot;Test&quot;, &quot;description&quot;: &quot;Desc&quot;})
+```
+
+**Add Source (Web URL):**
+```python
+resp = requests.post(f&quot;{BASE_URL}/sources&quot;, data={&quot;url&quot;: &quot;https://example.com&quot;, &quot;notebook_id&quot;: notebook_id, &quot;process_async&quot;: &quot;true&quot;})
+```
+
+**Search:**
+```python
+# Vector search
+results = requests.post(f&quot;{BASE_URL}/search&quot;, json={&quot;query&quot;: &quot;term&quot;, &quot;search_type&quot;: &quot;vector&quot;}).json()
+```
+
+**Podcast Generation:**
+```python
+# Requires episode and speaker profile IDs
+job = requests.post(f&quot;{BASE_URL}/podcasts/generate&quot;, json={&quot;notebook_id&quot;: notebook_id, &quot;episode_profile_id&quot;: ep_id, &quot;speaker_profile_ids&quot;: [sp_id]})
+```
+
+## Conflicts &amp; Notes
+- **Versioning:** Always pin the Docker image/compose file to a specific tag (e.g., v1.14.0). The `main` branch may contain breaking changes.
+- **Model Types:** The API is strict about `model_type` values. Use `language`, not `llm`.
+- **Encryption:** The encryption key encrypts provider credentials, not source documents. It must be stable across restarts.</pre>
+</body>
+</html>

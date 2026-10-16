@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>research-lookup</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">scholarly-evidence-lookup</a> / research-lookup</p><h1>research-lookup</h1><p class="meta">combined</p><p>The three copies share the name and the broad goal of gathering current research, but they implement different procedures. The K-Dense copy is a Parallel-first manuscript pipeline with a 60-reference target, context file, academic search passes, and Extract verification. The Vibe-Skills and OpenClaw copies are nearly identical Perplexity/OpenRouter lookup skills that add automatic model selection and a scientific-schematics visualization step. Because the K-Dense copy lacks the Perplexity model-selection and schematic steps, and the Perplexity copies lack the Parallel academic pipeline and verification workflow, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/research-lookup/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/research-lookup/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/research-lookup/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/research-lookup/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/research-lookup/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/research-lookup/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: research-lookup
+description: &quot;Compiles current scholarly evidence for a scientific manuscript or research brief. Supports a Parallel-first academic pipeline for manuscript packets and a Perplexity/OpenRouter lookup path for fast or deep research queries, with optional scientific schematics for visual communication.&quot;
+---
+
+# Research Lookup
+
+Compile external evidence for a scientific manuscript or research brief. Choose the backend based on the user&#x27;s request and available credentials.
+
+## Scope and boundaries
+
+Use this skill when the user explicitly wants:
+- literature and background research for a manuscript
+- many high-quality academic references
+- evidence supporting or contradicting a scientific claim
+- a structured evidence matrix or claim-to-source map
+- current studies, methods precedent, mechanisms, limitations, or research gaps
+- fast bounded web lookup or technical documentation
+- statistical data, recent developments, or expert opinions
+
+Do not activate it for casual factual questions that do not need research, private or unpublished material, or a claim that can be answered from user-provided files.
+
+This skill compiles external evidence. It cannot supply the user&#x27;s unpublished study data, decide what their Results show, or guarantee systematic-review completeness.
+
+## Backend selection
+
+| Need | Backend | Selection |
+|---|---|---|
+| Manuscript literature and references | Parallel Search + Extract | Default; use `--academic` |
+| Fast bounded web lookup | Parallel Search | Use `--no-academic` |
+| Deep/exhaustive multi-source report | Parallel Research | Explicit `--force-backend research` |
+| OpenAI-compatible synthesis with research basis | Parallel Chat | Explicit `--force-backend chat` |
+| Optional alternative academic search | Perplexity via OpenRouter | Explicit or enabled failure fallback |
+| Fast Perplexity lookup | Perplexity Sonar Pro Search | Automatic for straightforward queries |
+| Deep Perplexity reasoning | Perplexity Sonar Reasoning Pro | Automatic for complex analytical queries |
+
+## Parallel-first manuscript workflow
+
+### 1. Capture manuscript context
+
+Use the user&#x27;s available context to constrain retrieval:
+- research question or hypothesis
+- study type
+- population or biological/technical system
+- intervention or exposure
+- comparator
+- outcomes
+- field and date range
+- target journal, if known
+
+The script accepts a JSON object through `--context-file`. Do not invent missing study details. A bare topic is supported, but the packet will flag its section briefs as broad.
+
+### 2. Run the academic evidence pipeline
+
+From the repository root:
+
+```bash
+python skills/research-lookup/scripts/research_lookup.py \
+  &quot;Evidence relevant to the manuscript&#x27;s research question&quot; \
+  --academic \
+  --target-references 60 \
+  --context-file manuscript-context.json \
+  --packet-dir sources/manuscript-research \
+  --json
+```
+
+The academic pipeline runs bounded `advanced` Search passes for:
+1. recent peer-reviewed primary studies
+2. systematic reviews, meta-analyses, and consensus evidence
+3. seminal and foundational publications
+4. methods, protocols, validation, benchmarks, and mechanisms
+5. contradictory, null, negative, replication, and limitation evidence
+6. an unrestricted companion search when filtered passes do not reach the target
+
+It prioritizes PubMed/PMC, Europe PMC, Crossref, OpenAlex, Semantic Scholar, arXiv/bioRxiv/medRxiv, major journals, and authoritative institutional sources.
+
+### 3. Verify promising sources with Parallel Extract
+
+Search candidates are deduplicated and ranked before batched extraction. Extraction requests source-supported:
+- authors, year, venue, DOI, and PMID
+- publication and study design
+- population/system and sample size
+- methods, intervention/exposure, comparator, and outcomes
+
+## Perplexity/OpenRouter lookup workflow
+
+Use Perplexity&#x27;s Sonar models through OpenRouter for fast or deep research queries.
+
+### Automatic model selection
+
+- **Sonar Pro Search** (`perplexity/sonar-pro-search`): Use for straightforward information lookup, simple fact-finding, recent publication searches, basic protocol lookups, and statistical data retrieval.
+- **Sonar Reasoning Pro** (`perplexity/sonar-reasoning-pro`): Use for deep analytical reasoning, complex multi-step queries, and synthesis of conflicting evidence.
+
+### Core capabilities
+
+1. **Academic Research Queries**: Query for recent papers, studies, and reviews. Expected response includes a summary of key findings, citation of 3-5 most relevant papers, key statistics, research gaps, and links to full papers.
+2. **Technical and Methodological Information**: Find detailed procedures, specifications, and methodologies. Expected response includes step-by-step procedures, required materials, critical parameters, troubleshooting, and references.
+3. **Statistical and Data Information**: Look up current statistics, survey results, and research data. Expected response includes current statistics with dates and sources, methodology, confidence intervals, comparisons, and citations.
+4. **Citation and Reference Assistance**: Locate relevant papers and studies for citation. Expected response includes 5-10 most influential papers, complete citation information, brief descriptions, citation impact metrics, and journal rankings.
+
+## Visual enhancement with scientific schematics
+
+When creating documents with this skill, consider adding scientific diagrams and schematics to enhance visual communication.
+
+If your document does not already contain schematics or diagrams:
+- Use the scientific-schematics skill to generate AI-powered publication-quality diagrams
+- Describe your desired diagram in natural language
+- The AI will generate, review, and refine the schematic
+
+For new documents, scientific schematics should be generated by default to visually represent key concepts, workflows, architectures, or relationships described in the text.
+
+How to generate schematics:
+```bash
+python scripts/generate_schematic.py &quot;your diagram description&quot; -o figures/output.png
+```
+
+When to add schematics:
+- Research information flow diagrams
+- Query processing workflow illustrations
+- Model selection decision trees
+- System integration architecture diagrams
+- Information retrieval pipeline visualizations
+- Knowledge synthesis frameworks
+- Any complex concept that benefits from visualization
+
+## Conflicts
+
+- K-Dense-AI/scientific-agent-skills uses Parallel as the default backend and treats Perplexity as optional; foryourhealth111-pixel/Vibe-Skills and FreedomIntelligence/OpenClaw-Medical-Skills use Perplexity as the primary backend.
+- K-Dense-AI/scientific-agent-skills targets a 60-verified-reference manuscript packet with a context file and multi-pass academic search; the other two copies do not specify a reference target or context file.
+- foryourhealth111-pixel/Vibe-Skills and FreedomIntelligence/OpenClaw-Medical-Skills include a scientific-schematics visualization step; K-Dense-AI/scientific-agent-skills does not.</pre>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>social-content</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">social-media-content-creation</a> / social-content</p><h1>social-content</h1><p class="meta">combined</p><p>The three copies overlap on the core social media strategy workflow (context gathering, platform selection, content pillars, and repurposing), but they disagree on the agent&#x27;s capabilities and contain material steps the others lack. The LeoYeAI/openclaw-marketing-skills copy is the most complete standalone procedure, including a specific check for a product marketing context file and a detailed engagement routine. The LeoYeAI/openclaw-master-skills copy provides significantly more granular platform-specific constraints (best times, character limits, and &#x27;what doesn&#x27;t work&#x27; lists) and assumes direct access to a scheduling platform. The sickn33 copy is a wrapper that delegates to a separate guide and adds a &#x27;critical&#x27; risk flag. Because the first copy lacks the scheduling assumption and the second lacks the context file check, crowning one would hide a real alternative procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/social-content/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/social-content/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/social-content/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/social-content/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/social-content/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/social-content/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/social-content/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/social-content/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/social-content/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: social-content
+description: &quot;When the user wants help creating, scheduling, or optimizing social media content for LinkedIn, Twitter/X, Instagram, TikTok, Facebook, or other platforms. Use for content creation, repurposing, and scheduling tasks.&quot;
+---
+
+# Social Content
+
+You are an expert social media strategist. Your goal is to help create engaging content that builds audience, drives engagement, and supports business goals.
+
+## Before Creating Content
+
+**Check for product marketing context first:**
+If `.agents/product-marketing-context.md` exists, read it before asking questions. Use that context and only ask for information not already covered.
+
+Gather this context (ask if not provided):
+1. **Goals:** Primary objective, desired action, personal vs. company brand.
+2. **Audience:** Target reach, active platforms, engagement preferences, and problems to address.
+3. **Brand Voice:** Tone, topics to avoid, and style guidelines.
+4. **Resources:** Time available, existing content to repurpose, and video capabilities.
+
+## Platform Strategy
+
+Use the following constraints for each platform:
+
+| Platform | Best For | Frequency | Key Constraints |
+|----------|----------|-----------|-----------------|
+| LinkedIn | B2B, thought leadership | 3-5x/week | 1,200-1,500 chars; links in comments; hook before &#x27;see more&#x27;. |
+| Twitter/X | Tech, real-time | 3-10x/day | Under 100 chars for high engagement; strong thread hooks. |
+| Instagram | Visual, lifestyle | 1-2 posts + Stories | Reels get 2x reach; 10-slide carousels; hook in first frame. |
+| TikTok | Brand awareness | 1-4x/day | Vertical 9:16; under 30s; hook in 1-2s; use trending sounds. |
+| Facebook | Communities, local | 1-2x/day | Native video; avoid external links; focus on groups. |
+
+## Content Pillars Framework
+
+Build content around 3-5 pillars. For a SaaS founder, a common split is:
+- **Industry Insights (30%):** Trends, data, predictions.
+- **Behind-the-Scenes (25%):** Building the company, lessons learned.
+- **Educational (25%):** How-tos, frameworks, tips.
+- **Personal (15%):** Stories, values, hot takes.
+- **Promotional (5%):** Product updates, offers.
+
+## Hook Formulas
+
+- **Curiosity:** &quot;I was wrong about [common belief].&quot;
+- **Story:** &quot;Last week, [unexpected thing] happened.&quot;
+- **Value:** &quot;How to [desirable outcome] (without [common pain]):&quot;
+- **Contrarian:** &quot;Unpopular opinion: [bold statement]&quot;
+
+## Repurposing &amp; Scheduling
+
+1. **Create pillar content** (blog, video, podcast).
+2. **Extract key insights** (3-5 per piece).
+3. **Adapt to each platform** using the format tips above.
+4. **Schedule across the week** to spread distribution.
+5. **Update and reshare** evergreen content.
+
+## Engagement Strategy
+
+- **Daily Routine (30 min):** Respond to comments, comment on 5-10 target accounts, share with insight, and send 2-3 DMs.
+- **Quality Comments:** Add new insight or share a related experience; avoid generic praise.
+- **Relationships:** Identify 20-50 key accounts and engage consistently.
+
+## Conflicts
+
+- **LeoYeAI/openclaw-marketing-skills** requires checking for a local context file, while **LeoYeAI/openclaw-master-skills** assumes direct access to a scheduling platform.
+- **sickn33/agentic-awesome-skills** treats this as a &#x27;critical&#x27; risk task requiring a separate detailed guide, whereas the other two treat it as a standard marketing workflow.</pre>
+</body>
+</html>

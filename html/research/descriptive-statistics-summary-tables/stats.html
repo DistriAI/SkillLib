@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>stats</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">descriptive-statistics-summary-tables</a> / stats</p><h1>stats</h1><p class="meta">combined</p><p>The two skills share the name &#x27;stats&#x27; but perform different tasks. The davepoon/buildwithclaude skill is a project-management tool that displays phase progress, plan execution metrics, requirements completion, and git history stats. The brycewang-stanford skill is an econometrics tool for generating publication-quality descriptive statistics, balance tables, and correlation matrices for empirical research. They do not overlap in procedure or intent, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/stats/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/67-econfin-workflow-toolkit/stats/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/stats/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/67-econfin-workflow-toolkit/stats/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Stats
+
+This skill covers two distinct uses of the term &#x27;stats&#x27;.
+
+## 1. Project Statistics (GSD)
+
+Display comprehensive project statistics including phase progress, plan execution metrics, requirements completion, git history stats, and project timeline.
+
+### Process
+1. Execute the stats workflow from the GSD plugin&#x27;s workflows/stats.md end-to-end.
+2. Use Read and Bash tools to gather and display the statistics.
+
+## 2. Descriptive Statistics &amp; Summary Tables (Econometrics)
+
+Generate publication-quality summary statistics tables, balance tables, and correlation matrices for empirical research.
+
+### When to Use
+- Before any regression: Summarize your sample to understand distributions and detect issues.
+- For the &quot;Data&quot; section of papers: Standard Table 1 with means, SDs, and sample sizes.
+- Treatment/control comparison: Balance tables with t-tests or normalized differences.
+- Variable relationships: Correlation matrices for initial exploration.
+
+### Summary Statistics Table (Table 1)
+
+#### Python
+```python
+import pandas as pd
+
+desc = df[[&#x27;income&#x27;, &#x27;age&#x27;, &#x27;education&#x27;, &#x27;hours_worked&#x27;]].describe().T
+desc = desc[[&#x27;count&#x27;, &#x27;mean&#x27;, &#x27;std&#x27;, &#x27;min&#x27;, &#x27;25%&#x27;, &#x27;50%&#x27;, &#x27;75%&#x27;, &#x27;max&#x27;]]
+desc.columns = [&#x27;N&#x27;, &#x27;Mean&#x27;, &#x27;SD&#x27;, &#x27;Min&#x27;, &#x27;P25&#x27;, &#x27;Median&#x27;, &#x27;P75&#x27;, &#x27;Max&#x27;]
+print(desc.round(3).to_string())
+```
+
+#### R
+```r
+library(modelsummary)
+
+datasummary(income + age + education + hours_worked ~
+            N + Mean + SD + Min + Median + Max,
+            data = df,
+            output = &quot;table1.tex&quot;)
+```
+
+#### Stata
+```stata
+estpost summarize income age education hours_worked, detail
+esttab using &quot;table1.tex&quot;, cells(&quot;count mean(fmt(3)) sd(fmt(3)) min max&quot;) ///
+    nomtitle nonumber label replace title(&quot;Summary Statistics&quot;)
+```
+
+### Balance Tables (Treatment vs Control)
+
+#### Normalized Differences
+Preferred over t-tests for balance assessment (Imbens &amp; Rubin 2015): Δ = (X̄₁ − X̄₀) / √(S₁² + S₀²). Rule: |Δ| &lt; 0.25 is acceptable.
+
+#### Python
+```python
+import numpy as np
+
+def normalized_diff(treated, control):
+    return (treated.mean() - control.mean()) / \
+           np.sqrt(treated.var() + control.var())
+```
+
+#### R
+```r
+library(cobalt)
+bal.tab(treatment ~ income + age + education + female,
+        data = df, thresholds = c(m = 0.25),
+        stats = c(&quot;mean.diffs&quot;, &quot;variance.ratios&quot;))
+```
+
+#### Stata
+```stata
+iebaltab income age education female, grpvar(treatment) ///
+    save(&quot;balance.xlsx&quot;) replace rowvarlabel ///
+    pttest starsnoadd normdiff
+```
+
+### Correlation Matrix
+
+#### Python
+```python
+import scipy.stats as stats
+
+vars = [&#x27;income&#x27;, &#x27;age&#x27;, &#x27;education&#x27;, &#x27;hours_worked&#x27;]
+corr = df[vars].corr()
+```
+
+#### R
+```r
+library(modelsummary)
+datasummary_correlation(df[, c(&quot;income&quot;, &quot;age&quot;, &quot;education&quot;, &quot;hours_worked&quot;)],
+                        output = &quot;correlation.tex&quot;)
+```
+
+#### Stata
+```stata
+pwcorr income age education hours_worked, star(0.05) sig
+```
+
+### Missing Data Summary
+
+#### Python
+```python
+missing = df.isnull().sum()
+missing_pct = (missing / len(df) * 100).round(2)
+missing_report = pd.DataFrame({&#x27;N_Missing&#x27;: missing, &#x27;Pct_Missing&#x27;: missing_pct})
+missing_report = missing_report[missing_report.N_Missing &gt; 0].sort_values(&#x27;Pct_Missing&#x27;, ascending=False)
+print(missing_report)
+```</pre>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>python-pro</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">python-development</a> / python-pro</p><h1>python-pro</h1><p class="meta">combined</p><p>The three copies overlap on the goal of producing modern, type-safe, production-ready Python, but they are not interchangeable. Jeffallan/claude-skills is a concrete implementation skill with a strict workflow (mypy --strict, black, ruff, pytest &gt;90% coverage), explicit MUST/MUST NOT constraints, code examples, and reference files. rmyndharis/antigravity-skills and sickn33/agentic-awesome-skills are nearly identical broad persona/capability skills targeting Python 3.12+ with uv, ruff, pydantic, FastAPI, and a 4-step high-level instruction set. Crowning one would hide a real alternative: the first is a procedural checklist, while the other two are a capability profile. They also disagree on the target Python version (3.11+ vs 3.12+) and on tooling emphasis (black + ruff vs ruff replacing black, plus uv).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/python-pro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/python-pro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/python-pro/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/python-pro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/python-pro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/python-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/python-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-python-api-builder/skills/python-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/python-pro/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: python-pro
+description: Use when building modern Python applications requiring type safety, async programming, or robust error handling. Generates type-annotated Python code, configures mypy in strict mode, writes pytest test suites with fixtures and mocking, and validates code with ruff (and black where required). Invoke for type hints, async/await patterns, dataclasses, dependency injection, logging configuration, and structured error handling.
+---
+
+# Python Pro
+
+Modern Python specialist focused on type-safe, async-first, production-ready code.
+
+## When to Use This Skill
+
+- Writing type-safe Python with complete type coverage
+- Implementing async/await patterns for I/O operations
+- Setting up pytest test suites with fixtures and mocking
+- Creating Pythonic code with comprehensions, generators, context managers
+- Building packages with modern project structure (pyproject.toml)
+- Performance optimization and profiling
+
+## Do Not Use This Skill When
+
+- You need guidance for a non-Python stack
+- You only need basic syntax tutoring
+- You cannot modify Python runtime or dependencies
+
+## Core Workflow
+
+1. **Analyze codebase** — Review structure, dependencies, type coverage, test suite. Confirm runtime, dependencies, and performance targets.
+2. **Design interfaces** — Define protocols, dataclasses, type aliases. Choose patterns (async, typing, tooling) that match requirements.
+3. **Implement** — Write Pythonic code with full type hints and error handling.
+4. **Test** — Create comprehensive pytest suite with &gt;90% coverage.
+5. **Validate** — Run `mypy --strict`, `ruff`, and `black` (if the project uses black).
+   - If mypy fails: fix type errors reported and re-run before proceeding.
+   - If tests fail: debug assertions, update fixtures, and iterate until green.
+   - If ruff/black reports issues: apply auto-fixes, then re-validate.
+6. **Profile and tune** — Profile for latency, memory, and correctness; tune as needed.
+
+## Constraints
+
+### MUST DO
+- Type hints for all function signatures and class attributes
+- PEP 8 compliance with black formatting (or ruff format where black is not used)
+- Comprehensive docstrings (Google style)
+- Test coverage exceeding 90% with pytest
+- Use `X | None` instead of `Optional[X]` (Python 3.10+)
+- Async/await for I/O-bound operations
+- Dataclasses over manual __init__ methods
+- Context managers for resource handling
+
+### MUST NOT DO
+- Skip type annotations on public APIs
+- Use mutable default arguments
+- Mix sync and async code improperly
+- Ignore mypy errors in strict mode
+- Use bare except clauses
+- Hardcode secrets or configuration
+- Use deprecated stdlib modules (use pathlib not os.path)
+
+## Tooling Notes
+
+- Use `uv` for package management when available; otherwise use pip/poetry.
+- Use `ruff` for linting and formatting; use `black` if the project already depends on it.
+- Use `mypy --strict` for static type checking.
+- Use `pytest` with fixtures, mocking, and parametrize for testing.
+
+## Output Templates
+
+When implementing Python features, provide:
+1. Module file with complete type hints
+2. Test file with pytest fixtures
+3. Type checking confirmation (mypy --strict passes)
+4. Brief explanation of Pythonic patterns used
+
+## Conflicts
+
+- **Jeffallan/claude-skills** targets Python 3.11+ and mandates black formatting alongside ruff. **rmyndharis/antigravity-skills** and **sickn33/agentic-awesome-skills** target Python 3.12+ and position ruff as replacing black, isort, and flake8. This combined skill supports both: use black if the project requires it, otherwise use ruff format.
+- **Jeffallan/claude-skills** provides a detailed 5-step workflow with explicit validation gates. **rmyndharis/antigravity-skills** and **sickn33/agentic-awesome-skills** provide a 4-step high-level instruction set. This combined skill merges both: the detailed workflow is the primary procedure, and the high-level steps are folded into it.
+- **Jeffallan/claude-skills** includes explicit MUST DO / MUST NOT constraints and code examples. **rmyndharis/antigravity-skills** and **sickn33/agentic-awesome-skills** list capabilities and behavioral traits without those hard constraints. This combined skill retains the hard constraints from Jeffallan/claude-skills and the capability breadth from the other two.</pre>
+</body>
+</html>

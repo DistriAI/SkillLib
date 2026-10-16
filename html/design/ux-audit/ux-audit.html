@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ux-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">ux-audit</a> / ux-audit</p><h1>ux-audit</h1><p class="meta">combined</p><p>The two copies define different procedures for the same skill name. The first is an interaction-first live walkthrough that requires an Interaction Manifest, hard gates (console/network/a11y/perf), and a verdict state machine. The second is a static screen audit based on Nielsen&#x27;s heuristics and mobile UX checklists, with a letter-grade output. Neither is a reproduction of the other, and crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/dev-tools/skills/ux-audit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ux-audit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/dev-tools/skills/ux-audit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ux-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/ux-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/ux-audit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># UX Audit
+
+## When to Use
+Use this skill to audit a live web app or mobile screens for usability issues. Choose the mode that matches the task:
+- **Live Walkthrough** for a running app where interaction is possible.
+- **Static Screen Audit** for design files, screenshots, or code without a running instance.
+
+## Mode 1: Live Walkthrough (Interaction-First)
+
+### Verdict States
+The audit ends in exactly one of:
+- **Pass** — Critical = 0, High = 0, all hard gates green, Interaction Manifest complete.
+- **Conditional Pass** — Critical = 0, High = 0, all hard gates green, but Medium/Low present.
+- **Fail** — at least one Critical or High finding, OR a hard gate red.
+- **Incomplete** — Interaction Manifest missing required entries, a phase wasn&#x27;t run, OR the audit-the-audit meta-check fires. Not legal to upgrade to Pass even if everything observed looked fine.
+
+### Hard Gates
+These auto-fail the audit. They cannot be downgraded.
+
+| Gate | Threshold | Severity if violated |
+|------|-----------|----------------------|
+| Console errors during walkthrough | &gt; 0 | Critical |
+| Console warnings during walkthrough | &gt; 0 | High |
+| Network 5xx | &gt; 0 | Critical |
+| Network 403 / 404 on authenticated pages | &gt; 0 | High |
+| Layout collapse at any tested viewport / pane combo | &gt; 0 | High |
+| axe-core Critical violations on any audited page | &gt; 0 | Critical |
+| axe-core Serious violations on any audited page | &gt; 0 | High |
+| LCP on representative route | &gt; 4.0s | High |
+| CLS on representative route | &gt; 0.25 | High |
+| INP on representative route | &gt; 500ms | High |
+| Required Interaction Manifest entry missing | n/a | Incomplete |
+| Manifest median gap between entries &lt; 0.5s | n/a | Incomplete |
+
+### Phases (in order)
+1. **Pre-flight** — Persona Lock, browser tool, URL, viewport, capability tests.
+2. **Discovery** — sitemap, thread inventory, element inventory.
+3. **Walkthrough** — Interaction Manifest, threads, element exhaustion, multi-pane stress, first-time-user lens, live interaction smoke.
+4. **Polish** — visual polish sweep, component perfection checklist.
+5. **Stress** — scenario battery (11 scenarios) + extended stress recipes.
+6. **Verdict** — verdict state, hard-gate scorecard, perfection roadmap, findings with reproduction.
+7. **Fix-and-verify** — patch findings, re-walk affected slices, update report.
+
+### Persona Lock
+Source the persona in this order:
+1. **Argument** — if the user provided one.
+2. **Project personas** — read existing persona files.
+3. **Ask once** — &quot;Who uses this app and what are they trying to get done?&quot;
+
+Capture: role, tech comfort, time pressure, emotional state, device context. Lock the persona by writing the chosen persona at the top of the audit report.
+
+## Mode 2: Static Screen Audit (Nielsen&#x27;s Heuristics)
+
+### Nielsen&#x27;s 10 Usability Heuristics
+1. **Visibility of System Status** — Loading states, success/error feedback, progress indicators, active navigation state, real-time data timestamps.
+2. **Match Between System and Real World** — User language, recognizable icons, locale-appropriate number/date formats.
+3. **User Control and Freedom** — Back navigation, confirmation for destructive actions, undo, dismissible modals, no dark patterns.
+4. **Consistency and Standards** — Same action = same appearance, consistent color meanings, text hierarchy, consistent card styling, spacing grid.
+5. **Error Prevention** — Visually distinct destructive buttons, validation on blur, explicit confirmation for dangerous actions, visible input constraints.
+6. **Recognition Rather Than Recall** — Labels on icons, visible current state, recent/frequent items, placeholder text showing format.
+7. **Flexibility and Efficiency** — Key actions within 3 taps, pull-to-refresh, touch targets &gt;= 44x44px, frequent actions in easy-to-reach zones.
+8. **Aesthetic and Minimalist Design** — One primary task per screen, no decorative clutter, information pyramid, max-4-items card density, one hero metric per page.
+9. **Help Users Recover from Errors** — Plain-language error messages, fix suggestions, partial failure isolation, retry buttons, field-specific form errors.
+10. **Help and Documentation** — Empty states guide action, onboarding for first-time features, tooltips for complex metrics.
+
+### Mobile-Specific UX Checks
+- **Touch &amp; Gesture** — Touch targets &gt;= 44x44px, &gt;= 8px between targets, no hover-dependent interactions, visible swipe affordances.
+- **Performance Perception** — Skeleton screens within 300ms, optimistic updates, above-the-fold first, no layout shift.
+- **Safe Areas** — Content not hidden behind notch/Dynamic Island, bottom content not behind home indicator, BottomNav safe padding.
+
+### Dark Pattern Prevention
+- No forced bottom sheets on entry.
+- No exit-prevention dialogs.
+- Every screen has a way to go back/dismiss.
+- CTA labels clearly describe the action.
+- No manipulative graphics.
+
+## Output Format
+
+### For Live Walkthrough
+1. **Verdict State** — Pass, Conditional Pass, Fail, or Incomplete.
+2. **Hard-Gate Scorecard** — Table of gate results.
+3. **Findings** — Each with reproduction steps, evidence path, and suspected code location.
+4. **Perfection Roadmap** — Prioritized list of improvements.
+
+### For Static Screen Audit
+1. **Score** — A+ to F rating with breakdown.
+2. **Critical Issues** — Must fix (blocks usability).
+3. **Major Issues** — Should fix (degrades experience).
+4. **Minor Issues** — Nice to fix (polish).
+5. **Recommendations** — Specific code changes for each issue.
+
+## Conflicts
+- **jezweb/claude-skills** requires live interaction and an Interaction Manifest; a static sweep cannot produce a verdict.
+- **sickn33/agentic-awesome-skills** audits screens using Nielsen&#x27;s heuristics and mobile UX checklists; does not require live interaction or an Interaction Manifest.
+- **jezweb/claude-skills** uses a verdict state machine (Pass/Conditional Pass/Fail/Incomplete) based on hard gates.
+- **sickn33/agentic-awesome-skills** uses an A+ to F score with Critical/Major/Minor issues.</pre>
+</body>
+</html>

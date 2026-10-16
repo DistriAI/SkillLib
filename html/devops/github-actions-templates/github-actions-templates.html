@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>github-actions-templates</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">github-actions-templates</a> / github-actions-templates</p><h1>github-actions-templates</h1><p class="meta">combined</p><p>The two copies overlap in purpose (GitHub Actions workflow templates) but disagree on the core procedure. The first copy is a catalog of ready-to-paste YAML patterns (test, Docker, K8s, matrix, reusable, security) with generic best practices. The second copy is a security-hardened procedure that forbids the first copy&#x27;s style: it requires inspecting the repo, reading specific local resources, pinning actions to full commit SHAs, setting persist-credentials: false, adding timeouts, and explicitly warns against publishing untrusted artifacts or labeling placeholders as deployments. Crowning the first copy would hide the second&#x27;s mandatory security constraints and verification steps; crowning the second would hide the first&#x27;s concrete multi-stack templates. They must be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/github-actions-templates/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/github-actions-templates/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/github-actions-templates/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/github-actions-templates/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/github-actions-templates/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-devops-cloud/skills/github-actions-templates/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/github-actions-templates/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: github-actions-templates
+description: Create production-ready, security-hardened GitHub Actions workflows for testing, building, and deploying applications.
+---
+
+# GitHub Actions Templates
+
+## When to Use
+- Automate testing, building, and deployment.
+- Build Docker images and push to registries.
+- Deploy to Kubernetes or other targets.
+- Implement matrix builds for multiple environments.
+
+## Do Not Use When
+- The task is unrelated to GitHub Actions.
+- You need a different CI/CD tool.
+
+## Inputs &amp; Preparation
+1. Inspect the repository&#x27;s actual scripts, lockfile, supported runtimes, required check names, and release policy.
+2. Read `resources/implementation-playbook.md` and `references/common-workflows.md` if available before choosing job boundaries.
+3. Identify the immutable artifact, destination, workload identity, rollout, and rollback checks for deployment.
+
+## Security Requirements
+- Pin all third-party actions to full commit SHAs (e.g., `actions/checkout@93cb6efe...`), not major versions.
+- Set `persist-credentials: false` on checkout steps.
+- Set `timeout-minutes` on all jobs.
+- Use secrets for sensitive data; keep production credentials absent from untrusted validation jobs.
+- Review every third-party action at its full commit SHA.
+- Treat logs and uploaded artifacts as possible data-exposure paths.
+- Do not publish artifacts produced by arbitrary untrusted code in a privileged context.
+- Bind accepted artifacts to their exact source and producing workflow.
+
+## Workflow Patterns
+
+### Test Workflow
+```yaml
+name: Test
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@&lt;FULL_SHA&gt;
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@&lt;FULL_SHA&gt;
+        with:
+          node-version: &#x27;22&#x27;
+          cache: npm
+      - run: npm ci
+      - run: npm test
+```
+
+### Matrix Builds
+- Add a matrix only for versions and operating systems the project supports.
+- Keep dependencies reproducible.
+- Identify failing combinations.
+- Avoid hiding failures with blanket `continue-on-error`.
+- Test required-check behavior when jobs are conditionally skipped.
+
+### Build and Publication
+- Build an artifact from the tested commit and record its identity.
+- Publication needs a separate trusted job with the minimum registry permission.
+- Do not add registry credentials to the matrix.
+
+### Deployment
+- Use the project&#x27;s protected release path.
+- Verify that a named GitHub environment actually configures reviewers.
+- Do not label a placeholder echo command as a successful deployment.
+- For Kubernetes: configure AWS credentials, update kubeconfig, apply manifests, and verify rollout status.
+
+### Reusable Workflows
+- Use `workflow_call` for common patterns.
+- Pass inputs and secrets explicitly.
+
+## Verification
+1. Exercise one passing change and one deliberate test failure on a topic branch.
+2. Confirm the failing check prevents downstream publication.
+3. Inspect tokens, runner isolation, caches, and artifact boundaries.
+
+## Limitations
+- This skill supplies patterns, not an installed deployment program.
+- Repository policy, runner trust, and environment settings must be inspected.
+
+## Sources
+- [GitHub secure workflow guidance](https://docs.github.com/en/actions/reference/security/secure-use)</pre>
+</body>
+</html>

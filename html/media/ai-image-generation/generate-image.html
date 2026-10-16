@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>generate-image</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">media</a> / <a href="index.html">ai-image-generation</a> / generate-image</p><h1>generate-image</h1><p class="meta">combined</p><p>Both copies describe the same OpenRouter-based image generation skill, but they disagree on the model catalog, default model, and parameter surface. The K-Dense copy is a newer, more detailed revision (v3.3) that lists Gemini 3.1 Flash, Seedream, Recraft, GPT-Image, and Riverflow, and includes detailed parameter validation, resolution/quality/background constraints, and a &#x27;look at the image&#x27; verification step. The Vibe-Skills copy is an older revision that lists FLUX.2 Pro/Flex and Gemini 3.1 Flash Image Preview, and includes a more explicit manual API key setup procedure and example use cases for scientific documents. Because the model lists and defaults conflict, crowning one would hide the alternative model set and the specific setup steps present only in the other.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/generate-image/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/generate-image/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/generate-image/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/generate-image/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: generate-image
+description: Generates or edits images with AI models through the OpenRouter Image API. Use for photos, illustrations, artwork, concept art, visual assets, logos, and image editing or compositing from reference images. For flowcharts, circuits, pathways, and other technical diagrams, use the scientific-schematics skill instead.
+license: MIT
+compatibility: Requires Python 3.9+ and network access to openrouter.ai. Image generation requires the OPENROUTER_API_KEY credential.
+allowed-tools: Read Write Edit Bash
+metadata:
+  version: &quot;3.3&quot;
+  skill-author: K-Dense Inc.
+---
+
+# Generate Image
+
+Generate and edit images through OpenRouter&#x27;s Image API.
+
+## When to use
+
+**Use this skill for:** photos and photorealistic images, illustrations and artwork, concept art, presentation and poster visuals, logos and vector marks, image editing, and compositing from reference images.
+
+**Use `scientific-schematics` instead for:** flowcharts, circuit diagrams, biological pathways, system architecture diagrams, CONSORT diagrams, and other technical schematics.
+
+## API key
+
+Generation requires an OpenRouter key. The script resolves it in this order:
+
+1. `--api-key`
+2. the `OPENROUTER_API_KEY` environment variable
+3. `OPENROUTER_API_KEY=` in a `.env` file, searching the working directory upward, then the script&#x27;s own directory
+
+If none is present the script exits with setup instructions. Keys: https://openrouter.ai/keys
+
+`--list-models`, `--model-info`, and `--dry-run` need no key.
+
+## Quick start
+
+```bash
+# Generate
+python scripts/generate_image.py &quot;A beautiful sunset over mountains&quot;
+
+# Edit an existing image
+python scripts/generate_image.py &quot;Make the sky purple&quot; -i photo.jpg -o edited.png
+```
+
+Run these commands from the skill directory; input and output paths resolve from the working directory. Output defaults to `generated_image.&lt;ext&gt;`, using each image&#x27;s returned media type (or `.bin` when unknown). An explicit output suffix is kept, with a warning on mismatch; the script does not transcode. OpenRouter and upstream costs are printed separately when supplied.
+
+**Then look at the image.** Read the file back and check it before using it anywhere: composition, aspect ratio, and any text are all things models get wrong silently.
+
+## Choosing a model
+
+Default: `google/gemini-3.1-flash-image`.
+
+| Need | Model |
+| --- | --- |
+| General quality, prompt adherence | `google/gemini-3.1-flash-image` |
+| Highest Gemini tier | `google/gemini-3-pro-image` |
+| Cheap iteration | `google/gemini-3.1-flash-lite-image` (1K only), `openai/gpt-image-1-mini` |
+| Photoreal control, seeded generation | `bytedance-seed/seedream-4.5` |
+| Several images per request | `bytedance-seed/seedream-4.5`, `openai/gpt-image-2` (up to 10) |
+| Vector / SVG output | `recraft/recraft-v4.1-vector` |
+| Transparent background | `openai/gpt-image-1` with `--background transparent` |
+| Legible text inside the image | `recraft/recraft-v4.1`, `sourceful/riverflow-v2.5-pro` |
+
+[references/models.md](references/models.md) carries the reviewed capability and pricing snapshot. The live listing is authoritative and free:
+
+```bash
+python scripts/generate_image.py --list-models            # every model and its allowed values
+python scripts/generate_image.py --list-models gemini     # filtered by substring
+python scripts/generate_image.py --model-info openai/gpt-image-1   # one model, plus pricing
+```
+
+## Parameter support varies by model
+
+This is the main thing to get right. Models advertise different parameter sets **and different allowed values**. The CLI conservatively rejects unadvertised options; individual providers may ignore or normalize some fields. The generic guide can lag the discovery records.
+
+The script checks the model catalogue and requires at least one provider endpoint to accept the complete combination before generation. Model capabilities are a union across endpoints, not a promise that every provider supports them. Unsupported requests fail locally with legal values.
+
+Current examples of capability differences (reviewed 2026-09-30):
+
+- `--resolution`: Gemini 3.1 Flash accepts `512`, `1K`, `2K`, `4K`; Flash Lite and Krea accept only `1K`. Seedream 5.0 Lite accepts `2K`/`4K`, while 5.0 Pro accepts `1K`/`2K`.
+- `--output-format`: Riverflow 2.5 Pro accepts `png`/`jpeg`/`webp`; its Fast variant accepts only `jpeg`. Recraft vector models accept `svg`. OpenAI models do not advertise this flag.
+- `--quality`: GPT Image 2.5 Flare/Sunburst also accept `xhigh`/`max`; Grok 2.0 accepts only `low`/`medium`. Inspect the specific model before selecting a quality value.
+- `--background transparent` is **not available** on `gpt-image-2` or `gpt-5.4-image-2`. It is advertised on GPT Image 1 and 2.5. Do not combine transparency with JPEG; when no output format is selectable, inspect the returned file for an actual alpha channel.
+- `--aspect-ratio`: GPT-5 Image and Mini now accept `1:1`, `3:2`, `2:3`, `auto`; GPT-5.4 Image 2 also accepts wider ratios. None accept a resolution flag in this snapshot.
+- `--n` is an upper bound, not a guarantee: providers may return fewer images.
+
+## Common Usage Patterns
+
+### Basic generation
+```bash
+python scripts/generate_image.py &quot;Your prompt here&quot;
+```
+
+### Specify model
+```bash
+python scripts/generate_image.py &quot;A cat in space&quot; --model &quot;google/gemini-3.1-flash-image&quot;
+```
+
+### Custom output path
+```bash
+python scripts/generate_image.py &quot;Abstract art&quot; --output artwork.png
+```
+
+### Edit an existing image
+```bash
+python scripts/generate_image.py &quot;Make the background blue&quot; --input photo.jpg
+```
+
+### Edit with a specific model
+```bash
+python scripts/generate_image.py &quot;Add sunglasses to the person&quot; --input portrait.png --model &quot;google/gemini-3.1-flash-image&quot;
+```
+
+### Edit with custom output
+```bash
+python scripts/generate_image.py &quot;Remove the text from the image&quot; --input screenshot.png --output cleaned.png
+```
+
+### Multiple images
+Run the script multiple times with different prompts or output paths:
+```bash
+python scripts/generate_image.py &quot;Image 1 description&quot; --output image1.png
+python scripts/generate_image.py &quot;Image 2 description&quot; --output image2.png
+```
+
+## Script Parameters
+
+- `prompt` (required): Text description of the image to generate, or editing instructions
+- `--input` or `-i`: Input image path for editing (enables edit mode)
+- `--model` or `-m`: OpenRouter model ID (default: google/gemini-3.1-flash-image)
+- `--output` or `-o`: Output file path (default: generated_image.png)
+- `--api-key`: OpenRouter API key (overrides .env file)
+
+## Example Use Cases
+
+### For Scientific Documents
+```bash
+# Generate a conceptual illustration for a paper
+python scripts/generate_image.py &quot;Microscopic view of cancer cells being attacked by immunotherapy agents, scientific illustration style&quot; --output figures/immunotherapy_concept.png
+
+# Create a visual for a presentation
+python scripts/generate_image.py &quot;DNA double helix structure with highlighted mutation site, modern scientific visualization&quot; --output slides/dna_mutation.png
+```
+
+### For Presentations and Posters
+```bash
+# Title slide background
+python scripts/generate_image.py &quot;Abstract blue and white background with subtle molecular patterns, professional presentation style&quot; --output slides/background.png
+
+# Poster hero image
+python scripts/generate_image.py &quot;Laboratory setting with modern equipment, photorealistic, well-lit&quot; --output poster/hero.png
+```
+
+### For General Visual Content
+```bash
+# Website or documentation images
+python scripts/generate_image.py &quot;Professional team collaboration around a digital whiteboard, modern office&quot; --output docs/team_collaboration.png
+
+# Marketing materials
+python scripts/generate_image.py &quot;Futuristic AI brain concept with glowing neural networks&quot; --output marketing/ai_concept.png
+```
+
+## Error Handling
+
+The script provides clear error messages for:
+- Missing API key (with setup instructions)
+- API errors (with status codes)
+- Unexpected response formats
+- Missing dependencies (requests library)
+
+If the script fails, read the error message and address the issue before retrying.
+
+## Notes
+
+- Images are returned as base64-encoded data URLs and automatically saved as PNG files
+- The script supports both generation and editing modes
+
+## Conflicts
+
+- **K-Dense-AI/scientific-agent-skills::skills/generate-image/SKILL.md** sets the default model to `google/gemini-3.1-flash-image`, while **foryourhealth111-pixel/Vibe-Skills::bundled/skills/generate-image/SKILL.md** sets it to `google/gemini-3.1-flash-image-preview`.
+- **K-Dense-AI/scientific-agent-skills::skills/generate-image/SKILL.md** lists Seedream, Recraft, GPT-Image, and Riverflow as available models, while **foryourhealth111-pixel/Vibe-Skills::bundled/skills/generate-image/SKILL.md** lists FLUX.2 Pro and FLUX.2 Flex instead.
+- **K-Dense-AI/scientific-agent-skills::skills/generate-image/SKILL.md** includes detailed parameter validation and model-specific capability constraints, while **foryourhealth111-pixel/Vibe-Skills::bundled/skills/generate-image/SKILL.md** does not.
+- **K-Dense-AI/scientific-agent-skills::skills/generate-image/SKILL.md** instructs the agent to read the file back and check the image after generation, while **foryourhealth111-pixel/Vibe-Skills::bundled/skills/generate-image/SKILL.md** does not.
+- **foryourhealth111-pixel/Vibe-Skills::bundled/skills/generate-image/SKILL.md** includes a manual API key setup procedure that is not present in the K-Dense copy.</pre>
+</body>
+</html>

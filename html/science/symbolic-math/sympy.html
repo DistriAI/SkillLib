@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sympy</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">symbolic-math</a> / sympy</p><h1>sympy</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the upstream source (it carries the version, last-reviewed date, and upstream-version metadata) and contains material steps the other copies omit: an installation section with pinned SymPy 1.14.0 and mpmath constraints, a compatibility note, and a &#x27;Best Practices&#x27; section covering exact arithmetic, evalf, lambdify, solver selection, and input-trust warnings. The other three copies are near-identical reproductions of the same core capability examples but lack those installation and best-practice steps, so crowning one of them would hide the real alternative provided by the K-Dense copy.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/sympy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/sympy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/sympy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/crystallographic-wyckoff-position-analysis/environment/skills/sympy/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/sympy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/sympy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/sympy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/crystallographic-wyckoff-position-analysis/environment/skills/sympy/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/sympy/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/sympy/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/sympy/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: sympy
+description: Performs exact symbolic mathematics with SymPy for algebra, calculus, equation solving, symbolic linear algebra, physics, and lambdify or LaTeX code generation. Use when a task needs symbolic results, explicit assumptions, or exact arithmetic; use NumPy or SciPy for purely numerical workloads.
+license: https://github.com/sympy/sympy/blob/master/LICENSE
+metadata:
+  skill-author: K-Dense Inc.
+---
+
+# SymPy - Symbolic Mathematics in Python
+
+## Overview
+
+SymPy is a Python library for symbolic mathematics that enables exact computation using mathematical symbols rather than numerical approximations. This skill provides comprehensive guidance for performing symbolic algebra, calculus, linear algebra, equation solving, physics calculations, and code generation using SymPy.
+
+## Installation
+
+Core SymPy requires Python 3.9+. SymPy 1.14.0 requires mpmath&gt;=1.1,&lt;1.4; use the compatible 1.3.0, not the newer 1.4.x release.
+
+```bash
+uv pip install &quot;sympy==1.14.0&quot;
+# Optional: for lambdify and plotting examples
+uv pip install numpy scipy matplotlib
+```
+
+Check your version:
+
+```python
+import sympy
+print(sympy.__version__)
+```
+
+## When to Use This Skill
+
+Use this skill when:
+- Solving equations symbolically (algebraic, differential, systems of equations)
+- Performing calculus operations (derivatives, integrals, limits, series)
+- Manipulating and simplifying algebraic expressions
+- Working with matrices and linear algebra symbolically
+- Doing physics calculations (mechanics, quantum mechanics, vector analysis)
+- Number theory computations (primes, factorization, modular arithmetic)
+- Geometric calculations (2D/3D geometry, analytic geometry)
+- Converting mathematical expressions to executable code (Python, C, Fortran)
+- Generating LaTeX or other formatted mathematical output
+- Needing exact mathematical results (e.g., `sqrt(2)` not `1.414...`)
+
+## Core Capabilities
+
+Seven capability areas are documented in references/core_capabilities.md:
+
+1. **Symbolic computation basics** — symbols, expressions, simplification, substitution.
+2. **Calculus** — differentiation, integration, limits, series.
+3. **Equation solving** — `solve`, `solveset`, linear and nonlinear systems, ODEs.
+4. **Matrices and linear algebra** — see references/matrices-linear-algebra.md.
+5. **Physics and mechanics** — see references/physics-mechanics.md.
+6. **Advanced mathematics** — see references/advanced-topics.md.
+7. **Code generation and output** — see references/code-generation-printing.md.
+
+Deeper treatment of the first three is in references/core-capabilities.md.
+
+### 1. Symbolic Computation Basics
+
+**Creating symbols and expressions:**
+```python
+from sympy import symbols, Symbol
+x, y, z = symbols(&#x27;x y z&#x27;)
+expr = x**2 + 2*x + 1
+
+# With assumptions
+x = symbols(&#x27;x&#x27;, real=True, positive=True)
+n = symbols(&#x27;n&#x27;, integer=True)
+```
+
+**Simplification and manipulation:**
+```python
+from sympy import simplify, expand, factor, cancel
+simplify(sin(x)**2 + cos(x)**2)  # Returns 1
+expand((x + 1)**3)  # x**3 + 3*x**2 + 3*x + 1
+factor(x**2 - 1)    # (x - 1)*(x + 1)
+```
+
+### 2. Calculus
+
+**Derivatives:**
+```python
+from sympy import diff
+diff(x**2, x)        # 2*x
+diff(x**4, x, 3)     # 24*x (third derivative)
+diff(x**2*y**3, x, y)  # 6*x*y**2 (partial derivatives)
+```
+
+**Integrals:**
+```python
+from sympy import integrate, oo
+integrate(x**2, x)              # x**3/3 (indefinite)
+integrate(x**2, (x, 0, 1))      # 1/3 (definite)
+integrate(exp(-x), (x, 0, oo))  # 1 (improper)
+```
+
+**Limits and Series:**
+```python
+from sympy import limit, series
+limit(sin(x)/x, x, 0)  # 1
+series(exp(x), x, 0, 6)  # 1 + x + x**2/2 + x**3/6 + x**4/24 + x**5/120 + O(x**6)
+```
+
+### 3. Equation Solving
+
+**Algebraic equations:**
+```python
+from sympy import solveset, solve, Eq
+solveset(x**2 - 4, x)  # {-2, 2}
+solve(Eq(x**2, 4), x)  # [-2, 2]
+```
+
+**Systems of equations:**
+```python
+from sympy import linsolve, nonlinsolve
+linsolve([x + y - 2, x - y], x, y)  # {(1, 1)} (linear)
+nonlinsolve([x**2 + y - 2, x + y**2 - 3], x, y)  # (nonlinear)
+```
+
+**Differential equations:**
+```python
+from sympy import Function, dsolve, Derivative
+f = symbols(&#x27;f&#x27;, cls=Function)
+dsolve(Derivative(f(x), x) - f(x), f(x))  # Eq(f(x), C1*exp(x))
+```
+
+### 4. Matrices and Linear Algebra
+
+**Matrix creation and operations:**
+```python
+from sympy import Matrix, eye, zeros
+M = Matrix([[1, 2], [3, 4]])
+M_inv = M**-1  # Inverse
+M.det()        # Determinant
+M.T            # Transpose
+```
+
+**Eigenvalues and eigenvectors:**
+```python
+eigenvals = M.eigenvals()  # {eigenvalue: multiplicity}
+eigenvects = M.eigenvects()  # [(eigenval, mult, [eigenvectors])]
+P, D = M.diagonalize()  # M = P*D*P^-1
+```
+
+**Solving linear systems:**
+```python
+A = Matrix([[1, 2], [3, 4]])
+b = Matrix([5, 6])
+x = A.solve(b)  # Solve Ax = b
+```
+
+### 5. Physics and Mechanics
+
+**Classical mechanics:**
+```python
+from sympy.physics.mechanics import dynamicsymbols, LagrangesMethod
+from sympy import symbols
+
+q = dynamicsymbols(&#x27;q&#x27;)
+m, g, l = symbols(&#x27;m g l&#x27;)
+
+L = m*(l*q.diff())**2/2 - m*g*l*(1 - cos(q))
+LM = LagrangesMethod(L, [q])
+```
+
+**Vector analysis:**
+```python
+from sympy.physics.vector import ReferenceFrame, dot, cross
+N = ReferenceFrame(&#x27;N&#x27;)
+v1 = 3*N.x + 4*N.y
+v2 = 1*N.x + 2*N.z
+dot(v1, v2)  # Dot product
+cross(v1, v2)  # Cross product
+```
+
+**Quantum mechanics:**
+```python
+from sympy.physics.quantum import Ket, Bra, Commutator
+psi = Ket(&#x27;psi&#x27;)
+A = Operator(&#x27;A&#x27;)
+comm = Commutator(A, B).doit()
+```
+
+### 6. Advanced Mathematics
+
+- **Geometry:** 2D/3D analytic geometry, points, lines, circles, polygons, transformations
+- **Number Theory:** Primes, factorization, GCD/LCM, modular arithmetic, Diophantine equations
+- **Combinatorics:** Permutations, combinations, partitions, group theory
+- **Logic and Sets:** Boolean logic, set theory, finite and infinite sets
+- **Statistics:** Probability distributions, random variables, expectation, variance
+- **Special Functions:** Gamma, Bessel, orthogonal polynomials, hypergeometric functions
+- **Polynomials:** Polynomial algebra, roots, factorization, Groebner bases
+
+### 7. Code Generation and Output
+
+**Convert to executable functions:**
+```python
+from sympy import lambdify
+import numpy as np
+
+expr = x**2 + 2*x + 1
+f = lambdify(x, expr, &#x27;numpy&#x27;)
+```
+
+## Working with SymPy: Best Practices
+
+### 1. Always Define Symbols First
+
+```python
+from sympy import symbols
+x, y, z = symbols(&#x27;x y z&#x27;)
+```
+
+### 2. Use Assumptions for Better Simplification
+
+```python
+from sympy import symbols, sqrt
+x = symbols(&#x27;x&#x27;, positive=True, real=True)
+sqrt(x**2)  # Returns x (not Abs(x)) due to positive assumption
+```
+
+Common assumptions: `real`, `positive`, `negative`, `integer`, `rational`, `complex`, `even`, `odd`
+
+### 3. Use Exact Arithmetic
+
+```python
+from sympy import Rational, S
+expr = Rational(1, 2) * x
+expr = S(1)/2 * x
+```
+
+### 4. Numerical Evaluation When Needed
+
+```python
+from sympy import pi, sqrt
+result = sqrt(8) + pi
+result.evalf()    # 5.96371554103586
+result.evalf(50)  # Request 50 decimal digits
+```
+
+### 5. Convert to NumPy for Performance
+
+```python
+from sympy import symbols, lambdify
+import numpy as np
+x = symbols(&quot;x&quot;)
+expr = x**2 + 1
+f = lambdify(x, expr, &#x27;numpy&#x27;)
+results = f(np.arange(1000))
+```
+
+### 6. Use Appropriate Solvers
+
+- `solveset`: Algebraic equations (primary)
+- `linsolve`: Linear systems
+- `nonlinsolve`: Nonlinear systems
+- `dsolve`: Differential equations
+- `solve`: General purpose; supports some problems `solveset` does not
+
+Declare the solution domain: `solveset` defaults to complex numbers, so use `domain=S.Reals` for real-only questions. A returned `ConditionSet` means an unresolved solution condition, not that no solutions exist; distinguish it from `EmptySet`. A numerical `nsolve` result is a local root found from a starting point, not proof that every root was found.
+
+### 7. Preserve mathematical meaning and input trust
+
+Use assumptions only when justified by the problem. An unconstrained symbol is complex; `sqrt(x**2)` need not equal `x`, and logarithm/power identities depend on branches. Assumption predicates can return `None` (unknown). Keep excluded denominator zeros when cancelling factors, and verify candidate solutions in the original expression and requested domain. `==` compares symbolic structure; use `Eq` to build an equation and targeted simplification to verify an identity.
+
+`parse_expr`, string `sympify`, and `lambdify` can execute code. Accept only trusted input.</pre>
+</body>
+</html>

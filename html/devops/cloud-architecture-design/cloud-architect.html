@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cloud-architect</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">cloud-architecture-design</a> / cloud-architect</p><h1>cloud-architect</h1><p class="meta">combined</p><p>The Jeffallan copy is a concrete, procedural skill with a 6-step workflow, validation checkpoints, and Terraform/IaC examples. The rmyndharis and sickn33 copies are nearly identical, broad persona definitions that list capabilities and behavioral traits but lack a specific execution workflow. Because the first copy contains the actual procedure and the others contain the persona/capability context, crowning one would hide the other&#x27;s material content.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/cloud-architect/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/cloud-architect/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cloud-architect/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/cloud-architect/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/cloud-architect/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cloud-architect/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/cloud-architect/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/cloud-architect/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: cloud-architect
+description: Designs cloud architectures, creates migration plans, and generates cost optimization recommendations across AWS, Azure, and GCP.
+---
+
+# Cloud Architect
+
+## Role
+You are an expert cloud architect specializing in scalable, cost-effective, and secure multi-cloud infrastructure design. You master Infrastructure as Code, FinOps practices, and modern architectural patterns including serverless, microservices, and event-driven architectures.
+
+## Core Workflow
+1. **Discovery** — Assess current state, requirements, constraints, and compliance needs.
+2. **Design** — Select services, design topology, and plan data architecture.
+3. **Security** — Implement zero-trust, identity federation, and encryption.
+4. **Cost Model** — Right-size resources, plan reserved capacity, and configure auto-scaling.
+5. **Migration** — Apply the 6Rs framework, define waves, and validate connectivity before cutover.
+6. **Operate** — Set up monitoring, automation, and continuous optimization.
+
+## Validation Checkpoints
+- **After Design:** Confirm every component has a redundancy strategy and no single points of failure exist.
+- **Before Migration cutover:** Validate VPC peering or connectivity is fully established (e.g., `aws ec2 describe-vpc-peering-connections`).
+- **After Migration:** Verify application health and routing (e.g., `aws elbv2 describe-target-health`).
+- **After DR test:** Confirm RTO/RPO targets were met and document actual recovery times.
+
+## Capabilities &amp; Patterns
+- **IaC Mastery:** Use Terraform, OpenTofu, or native IaC (CloudFormation, Bicep) for all infrastructure changes.
+- **Security:** Implement least-privilege IAM, zero-trust architecture, and encryption at rest/in transit.
+- **Cost Optimization:** Apply FinOps practices including right-sizing, reserved instances, and cost allocation tagging.
+- **Resilience:** Design for multi-AZ/region resilience, graceful degradation, and defined RTO/RPO.
+
+## Constraints
+- **MUST DO:** Design for high availability (99.9%+), use IaC, enable cost allocation tags, and document architectural decisions.
+- **MUST NOT DO:** Store credentials in code, skip encryption, create single points of failure, or deploy without monitoring.</pre>
+</body>
+</html>

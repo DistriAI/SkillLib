@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>mcp-server-security</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">mcp-server-hardening</a> / mcp-server-security</p><h1>mcp-server-security</h1><p class="meta">combined</p><p>The second copy (sickn33) is a mirror of the first (BagelHole) but contains a significant, conflicting modification in Section 3.3 (Securing stdio Transport). The original suggests using `npx` with Node permission flags, while the mirror explicitly warns against `npx -y` and Node flags as a complete boundary, recommending absolute paths to reviewed binaries and separate sandboxing instead. Because the mirror corrects a potential security weakness in the original, crowning the original would hide a safer, more robust alternative, and crowning the mirror would lose the original&#x27;s specific configuration context. Therefore, they must be combined to reflect the stricter, corrected guidance.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>security/ai/mcp-server-security/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/mcp-server-security/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>security/ai/mcp-server-security/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/mcp-server-security/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/mcp-server-security/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/mcp-server-security/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: mcp-server-security
+description: Secure Model Context Protocol (MCP) servers with transport encryption, tool authorization, input validation, and audit logging for safe AI agent integrations.
+license: MIT
+metadata:
+  author: devops-skills
+  version: &quot;1.1&quot;
+---
+
+# MCP Server Security
+
+Comprehensive hardening guide for Model Context Protocol (MCP) servers. MCP is the open standard for connecting AI agents to external tools, data sources, and services. Because MCP servers execute real actions on real infrastructure, they are a high-value attack surface. This skill covers every layer of defense you need before exposing an MCP server to agents in production.
+
+## 1. When to Use This Skill
+
+Apply this skill whenever you are:
+- Deploying an MCP server that exposes tools (filesystem, database, API) to AI agents.
+- Connecting an agent runtime to one or more MCP servers over stdio, SSE, or Streamable HTTP transport.
+- Building a multi-tenant platform where multiple users share the same MCP server.
+- Passing sensitive data (PII, credentials, internal documents) through MCP resources.
+- Operating in a regulated environment (SOC 2, HIPAA, PCI-DSS) where tool invocations must be auditable.
+
+## 2. MCP Threat Model
+
+| Threat | Vector | Impact |
+|---|---|---|
+| Unauthorized tool access | Agent calls tools the user should not have access to | Privilege escalation, data breach |
+| Prompt injection via resources | Malicious content in MCP resources influences agent behavior | Arbitrary tool execution |
+| Data exfiltration via results | Tool results leak sensitive data back to an untrusted agent | Data loss, compliance violation |
+| SSRF via MCP tools | Agent tricks a tool into making internal network requests | Internal service compromise |
+| Credential theft | API keys or tokens stored insecurely on the MCP server | Full account takeover |
+| Denial of service | Agent floods server with tool calls or huge payloads | Service unavailability |
+| Man-in-the-middle | Unencrypted transport between agent and MCP server | Eavesdropping, request tampering |
+| Supply chain compromise | Malicious MCP server package or plugin | Arbitrary code execution |
+
+## 3. Transport Security
+
+### 3.1 TLS for Streamable HTTP and SSE Transports
+
+Every MCP server exposed over HTTP must terminate TLS. Never run plain HTTP in production.
+
+**Nginx reverse proxy with TLS termination for an MCP server:**
+
+```nginx
+# /etc/nginx/sites-enabled/mcp-server.conf
+server {
+    listen 443 ssl http2;
+    server_name mcp.internal.example.com;
+
+    ssl_certificate     /etc/ssl/certs/mcp-server.crt;
+    ssl_certificate_key /etc/ssl/private/mcp-server.key;
+    ssl_protocols       TLSv1.3;
+    ssl_ciphers         TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256;
+    ssl_prefer_server_ciphers on;
+    ssl_session_timeout 1d;
+    ssl_session_tickets off;
+
+    # HSTS header
+    add_header Strict-Transport-Security &quot;max-age=63072000; includeSubDomains&quot; always;
+
+    location / {
+        proxy_pass http://127.0.0.1:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection &quot;upgrade&quot;;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # SSE-specific: disable buffering so events stream immediately
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 86400s;
+    }
+}
+```
+
+### 3.2 mTLS Between Agent and Server
+
+For high-security environments, require the agent (client) to present a certificate.
+
+```nginx
+# Add to the server block above
+ssl_client_certificate /etc/ssl/certs/agent-ca.crt;
+ssl_verify_client on;
+ssl_verify_depth 2;
+```
+
+**Generate a client certificate for an agent:**
+
+```bash
+# Create CA (one-time)
+openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:P-256 \
+  -days 365 -noenc -keyout ca-key.pem -out ca-cert.pem \
+  -subj &quot;/CN=MCP Agent CA&quot;
+
+# Create agent client cert signed by the CA
+openssl req -newkey ec -pkeyopt ec_paramgen_curve:P-256 \
+  -noenc -keyout agent-key.pem -out agent-csr.pem \
+  -subj &quot;/CN=agent-orchestrator-01&quot;
+
+openssl x509 -req -in agent-csr.pem -CA ca-cert.pem -CAkey ca-key.pem \
+  -CAcreateserial -out agent-cert.pem -days 90
+```
+
+### 3.3 Securing stdio Transport
+
+For local stdio-based servers, the attack surface is the process boundary itself.
+
+**Critical Constraint:** Do not launch moving `npx -y` packages or rely solely on Node.js permission flags (`--experimental-permission`) as a complete host-permission boundary. Node flags do not fully isolate network, process creation, or file system writes outside the specified roots.
+
+**Recommended Configuration:**
+Use an already reviewed, version-pinned local server entrypoint and a separately enforced sandbox (e.g., Docker, Firejail, or OS-level sandboxing).
+
+```json
+{
+  &quot;mcpServers&quot;: {
+    &quot;reviewed-filesystem&quot;: {
+      &quot;command&quot;: &quot;/absolute/path/to/node&quot;,
+      &quot;args&quot;: [&quot;/absolute/path/to/reviewed-server/index.js&quot;, &quot;/absolute/path/to/approved-data&quot;]
+    }
+  }
+}
+```
+
+**Steps:**
+1. Replace every path with an existing reviewed runtime and server binary.
+2. Bind the content/version of the server code (e.g., via checksums or package manager locks).
+3. Test actual denied reads/writes/egress in isolation before enabling the server in production.
+
+## 4. Authentication and Authorization
+
+### 4.1 OAuth 2.1 Integration
+
+MCP&#x27;s Streamable HTTP transport supports OAuth 2.1 for client authentication. Configure your server to validate bearer tokens on every request.
+
+```typescript
+// src/auth.ts - OAuth 2.1 token validation middleware for an MCP server
+import express from &quot;express&quot;;
+import jwt from &quot;jsonwebtoken&quot;;
+
+// Middleware to validate JWTs from the Authorization header
+// Ensure the issuer and audience are strictly validated.
+```</pre>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sample</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">sample-skill</a> / sample</p><h1>sample</h1><p class="meta">combined</p><p>The two copies are unrelated sample skills that happen to share the name &#x27;sample&#x27;. The first is a Unity API connectivity and primitive-creation test module with specific guardrails, routing rules, and skill signatures. The second is a Python text-processing reference implementation demonstrating skill structure, CLI usage, and output formatting. Neither is a reproduction, shortening, or wrapper of the other; they cover entirely different domains (Unity game object manipulation vs. text file processing) and contain material steps the other lacks. Crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/sample/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/skill-tester/assets/sample-skill/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/sample/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/skill-tester/assets/sample-skill/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Sample Skill Reference
+
+This skill demonstrates two distinct sample implementations. Choose the relevant section based on your task.
+
+## Unity API Connectivity Testing
+
+Use this section when testing Unity REST server reachability or smoke-testing connectivity.
+
+### Guardrails
+- **Operating Mode** (v1.9 three-tier):
+  - **Approval** (default): query skills (`get_scene_info`, `find_objects_by_name`) run directly. Creators/mutators (`create_cube`, `create_sphere`, `set_object_position`, `set_object_rotation`, `set_object_scale`) are FullAuto — on `MODE_RESTRICTED`, run the grant protocol.
+  - **Auto** / **Bypass**: SemiAuto and FullAuto run directly.
+  - Auto-forbidden in this module: `delete_object` (`SkillOperation.Delete`). It is reachable only under Bypass or via a user-managed Allowlist entry; the grant flow returns `MODE_FORBIDDEN`.
+- **Surface profile**: write skills count as GameObject authoring; both `guide` and `noSceneAuthoring` profiles hide them and answer `SURFACE_EXCLUDED`. Query skills stay available in every profile.
+- **DO NOT**: Sample skills are basic test/demo skills — do not use them for production work. `sample_create` is a simplified version of `gameobject_create` — prefer the full gameobject module. `sample_hello` / `sample_ping` are connectivity test skills only.
+- **Routing**: For actual GameObject operations → use `gameobject` module. For server health check → use Python helper&#x27;s `unity_skills.health()`.
+
+### Skills
+- `create_cube`: Create a cube primitive. Parameters: `x`, `y`, `z`, `name`
+- `create_sphere`: Create a sphere primitive. Parameters: `x`, `y`, `z`, `name`
+- `delete_object`: Delete object by name. Parameters: `objectName`
+- `find_objects_by_name`: Find objects containing string. Parameters: `nameContains` (`name` is also accepted as a compatibility alias)
+- `set_object_position`: Set object position. Parameters: `objectName`, `x`, `y`, `z`
+- `set_object_rotation`: Set object rotation. Parameters: `objectName`, `x`, `y`, `z`
+- `set_object_scale`: Set object scale. Parameters: `objectName`, `x`, `y`, `z`
+- `get_scene_info`: Get current scene information. Parameters: None.
+
+Exact names, parameters, defaults, and returns are defined by `GET /skills/schema` or `unity_skills.get_skill_schema()`, not by this file.
+
+## Text Processing Reference
+
+Use this section when demonstrating basic skill structure with text file processing.
+
+### Core Functionality
+- **Word Count Analysis**: Count total words, unique words, and word frequency
+- **Character Statistics**: Analyze character count, line count, and special characters
+- **Text Transformations**: Convert text to uppercase, lowercase, or title case
+- **File Processing**: Process single text files or batch process directories
+- **Dual Output Formats**: Generate results in both JSON and human-readable formats
+
+### Usage
+- Basic Text Analysis: `python text_processor.py analyze document.txt`
+- Text Transformation: `python text_processor.py transform document.txt --mode uppercase`
+- Batch Processing: `python text_processor.py batch text_files/ --output results/`
+
+### Configuration
+- `--format`: Output format (json, text)
+- `--verbose`: Enable verbose output and progress reporting
+- `--output`: Specify output file or directory
+- `--encoding`: Specify text file encoding (default: utf-8)
+
+### Architecture
+- **TextProcessor Class**: Core processing logic and statistics calculation
+- **OutputFormatter Class**: Handles dual output format generation
+- **FileManager Class**: Manages file I/O operations and batch processing
+- **CLI Interface**: Command-line argument parsing and user interaction
+
+### Error Handling
+- File not found or permission errors
+- Invalid encoding or corrupted text files
+- Memory limitations for very large files
+- Output directory creation and write permissions
+- Invalid command-line arguments and parameters
+
+### Limitations
+- Complex text analysis (sentiment, language detection)
+- Advanced file format support (PDF, Word documents)
+- Database integration or external API calls
+- Parallel processing for very large datasets
+
+## Conflicts
+- **Besty0728/Unity-Skills** defines Unity-specific skills with guardrails, operating modes, and routing to the gameobject module.
+- **LeoYeAI/openclaw-master-skills** defines a Python text processor with CLI commands, dual output formats, and a modular class architecture.
+These are unrelated sample skills that share only the name &#x27;sample&#x27;.</pre>
+</body>
+</html>

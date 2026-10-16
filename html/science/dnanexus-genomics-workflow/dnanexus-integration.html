@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>dnanexus-integration</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">dnanexus-genomics-workflow</a> / dnanexus-integration</p><h1>dnanexus-integration</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a distinct, high-fidelity operational procedure that includes specific version pinning (dxpy 0.415.0), a strict &#x27;Operating Contract&#x27; for security and cost control, and specific CLI-based workflows (e.g., `dx upload` with compression flags). The other three copies (Vibe-Skills, aipoch, OpenClaw) are nearly identical to each other, providing a high-level overview and Python SDK examples but lacking the operational safety constraints and specific CLI nuances of the K-Dense version. Because the K-Dense version contains critical operational steps (preflight checks, specific authentication handling, and cost controls) that the others lack, and the others provide a different (more SDK-focused) entry point, crowning one would hide the alternative approach. The combined instruction merges the operational safety of K-Dense with the SDK examples of the others.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/dnanexus-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/dnanexus-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/dnanexus-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/dnanexus-integration/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/dnanexus-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/dnanexus-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/dnanexus-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/dnanexus-integration/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: dnanexus-integration
+description: Builds and operates reproducible genomics workloads on DNAnexus using dx CLI, dxpy, and workflow tools. Includes safety contracts for data and cost control.
+license: MIT
+compatibility: Requires DNAnexus account, Python 3.11+, dx-toolkit/dxpy.
+---
+
+# DNAnexus Integration
+
+## Purpose
+Use this skill to build, run, and operate DNAnexus workloads. It covers CLI/SDK automation, app development, data transfer, and workflow execution.
+
+## Operating Contract (Safety &amp; Cost)
+1. **Start Read-Only**: Confirm user, project ID, and target before mutation.
+2. **Confirm Billable/Destructive Actions**: Obtain explicit confirmation before launches, large transfers, deletions, or permission changes.
+3. **Token Security**: Never print, log, or persist `DX_SECURITY_CONTEXT` or API tokens. Do not run `dx env` in captured logs.
+4. **Untrusted Data**: Treat project names and paths as untrusted. Quote shell arguments.
+5. **Cost Control**: Use explicit output folders, cost limits, and bounded waits.
+
+## Install and Authenticate
+Install the CLI in an isolated environment:
+```bash
+uv tool install &quot;dxpy==0.415.0&quot;
+dx --version
+```
+For Python projects:
+```bash
+uv add &quot;dxpy==0.415.0&quot;
+```
+Authenticate:
+```bash
+dx login
+dx whoami
+dx select
+```
+
+## Safe Preflight
+Before acting, gather context:
+```bash
+dx --version
+dx whoami
+dx pwd
+dx ls
+```
+- Resolve project names to immutable `project-...` IDs.
+- Check file state (`open`/`closed`) and access levels.
+- Inspect executable help: `dx run &lt;executable&gt; -h`.
+
+## Core Workflows
+
+### 1. Data Operations
+**CLI (Preferred for control):**
+```bash
+dx upload &quot;sample.fastq.gz&quot; --path &quot;project-xxxx:/raw/&quot; --property &quot;sample_id=S001&quot;
+dx download &quot;project-xxxx:/results/sample.bam&quot; --output &quot;sample.bam&quot;
+```
+*Note: Upload Agent compresses by default. Use `--do-not-compress` for byte-for-byte preservation.*
+
+**Python SDK (dxpy):**
+```python
+import dxpy
+
+# Upload
+input_file = dxpy.upload_local_file(&quot;sample.fastq&quot;, project=&quot;project-xxxx&quot;)
+
+# Search (Use name_mode for globs)
+files = dxpy.find_data_objects(
+    classname=&quot;file&quot;,
+    name=&quot;*.bam&quot;,
+    name_mode=&quot;glob&quot;,
+    project=&quot;project-xxxx&quot;
+)
+
+# Download
+dxpy.download_dxfile(files[0][&quot;id&quot;], &quot;output.bam&quot;)
+```
+
+### 2. App Development
+- Generate skeleton: `dx-app-wizard`
+- Configure `dxapp.json` for inputs/outputs and dependencies.
+- Build and deploy: `dx build` or `dx build --app`.
+
+### 3. Job Execution
+**CLI:**
+```bash
+dx run my-applet --input-file &quot;file-xxxx&quot; --name &quot;my-job&quot;
+dx watch job-xxxx
+```
+
+**Python SDK:**
+```python
+import dxpy
+
+applet = dxpy.DXApplet(&quot;applet-xxxx&quot;)
+job = applet.run({&quot;reads&quot;: dxpy.dxlink(input_file.get_id())})
+job.wait_on_done()
+
+# Get output
+output_id = job.describe()[&quot;output&quot;][&quot;aligned_reads&quot;][&quot;$dnanexus_link&quot;]
+```
+
+### 4. Workflow Languages
+- Use `dxCompiler` for WDL/CWL.
+- Use `dx build --nextflow` for Nextflow imports.
+
+## References
+- `references/app-development.md`
+- `references/data-operations.md`
+- `references/job-execution.md`
+- `references/python-sdk.md`
+- `references/configuration.md`</pre>
+</body>
+</html>

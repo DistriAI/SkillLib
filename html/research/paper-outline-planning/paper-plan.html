@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>paper-plan</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">paper-outline-planning</a> / paper-plan</p><h1>paper-plan</h1><p class="meta">combined</p><p>Both copies implement the same paper-plan workflow (extract claims, choose venue/structure, draft section-by-section outline, review via Codex MCP), but they disagree on key parameters and each contains material steps the other lacks. The wanshuiyin copy adds a detailed optional style-ref helper, gap report, AAAI page rules, and fallback paths; the brycewang copy adds an explicit Workflow with a Claims-Evidence Matrix, paper-type templates, and a different reviewer model. Crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/paper-plan/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/paper-plan/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/paper-plan/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/paper-plan/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex/paper-plan/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex-claude-review/paper-plan/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex-gemini-review/paper-plan/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex/paper-plan/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex-claude-review/paper-plan/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex-gemini-review/paper-plan/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: paper-plan
+description: &quot;Generate a structured paper outline from review conclusions and experiment results. Use when user says \&quot;写大纲\&quot;, \&quot;paper outline\&quot;, \&quot;plan the paper\&quot;, \&quot;论文规划\&quot;, or wants to create a paper plan before writing.&quot;
+argument-hint: &quot;[topic-or-narrative-doc] [— style-ref: &lt;source&gt;]&quot;
+allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, Skill, mcp__codex__codex, mcp__codex__codex-reply
+---
+
+# Paper Plan: From Review Conclusions to Paper Outline
+
+Generate a structured, section-by-section paper outline from: **$ARGUMENTS**
+
+## Constants
+
+- **REVIEWER_MODEL** — Model used via Codex MCP for outline review. Must be an OpenAI model. Use the model configured for the current environment (e.g., `gpt-6-astra` or `gpt-5.4`).
+- **TARGET_VENUE = `ICLR`** — Default venue. User can override (e.g., `/paper-plan &quot;topic&quot; — venue: NeurIPS`). Supported: `ICLR`, `NeurIPS`, `ICML`, `CVPR`, `ACL`, `AAAI`, `ACM`, `IEEE_JOURNAL` (IEEE Transactions / Letters), `IEEE_CONF` (IEEE conferences).
+- **MAX_PAGES** — Page limit. For ML conferences: main body to Conclusion end (excluding references, appendix). ICLR=9, NeurIPS=9, ICML=8, AAAI=7 technical-content pages plus references unless the current AAAI CFP says otherwise. **For IEEE venues: references ARE included in page count.** IEEE journal Transactions ≈ 12-14 pages total, Letters ≈ 4-5 pages total; IEEE conference ≈ 5-8 pages total (including references).
+
+## Inputs
+
+The skill expects one or more of these in the project directory:
+
+1. **NARRATIVE_REPORT.md** or **STORY.md** — research narrative with claims and evidence
+2. **review-stage/AUTO_REVIEW.md** — auto-review loop conclusions *(fall back to `./AUTO_REVIEW.md` if not found)*
+3. **Experiment results** — JSON files in `figures/`, screen logs, tables
+4. **idea-stage/IDEA_REPORT.md** — from idea-discovery pipeline (if applicable) *(fall back to `./IDEA_REPORT.md` if not found)*
+5. **Compact files** (if available): `idea-stage/IDEA_CANDIDATES.md` *(fall back to `./IDEA_CANDIDATES.md` if not found)*, `findings.md`, `EXPERIMENT_LOG.md` — preferred over full files when present, saves context window
+
+If none exist, ask the user to describe the paper&#x27;s contribution in 3-5 sentences.
+
+## Orchestra-Guided Writing Overlay
+
+Keep the existing `insleep` workflow and outputs, but use the shared references below to improve the quality of the story and outline.
+
+- Read `../shared-references/writing-principles.md` when framing the one-sentence contribution, Abstract, Introduction, Related Work, or hero figure.
+- Read `../shared-references/venue-checklists.md` before freezing the outline for a specific venue.
+- Only load these references when needed; do not paste their full contents into the working draft.
+
+## Optional: Style reference (`— style-ref: &lt;source&gt;`, opt-in)
+
+Lets the user steer the **structural** layout of the outline (section ordering, subsection density, theorem-environment density, figure budget, citation style) toward a reference paper. **Default OFF — when the user does not pass `— style-ref`, do nothing differently from before.**
+
+Only when `— style-ref: &lt;source&gt;` appears in `$ARGUMENTS`, run the helper FIRST, before drafting the outline:
+
+```bash
+# Resolve $STYLE_HELPER via the canonical strict-safe chain (see
+# shared-references/integration-contract.md §2). Policy A — gate:
+# unresolved helper means --style-ref cannot be satisfied, so abort.
+cd &quot;$(git rev-parse --show-toplevel 2&gt;/dev/null || pwd)&quot; || exit 1
+if [ -z &quot;${ARIS_REPO:-}&quot; ] &amp;&amp; [ -f .aris/installed-skills.txt ]; then
+    ARIS_REPO=$(awk -F&#x27;\t&#x27; &#x27;$1==&quot;repo_root&quot;{print $2; exit}&#x27; .aris/installed-skills.txt 2&gt;/dev/null) || true
+fi
+if [ -z &quot;${ARIS_REPO:-}&quot; ] &amp;&amp; [ -f &quot;$HOME/.aris/repo&quot; ]; then
+    ARIS_REPO=$(cat &quot;$HOME/.aris/repo&quot; 2&gt;/dev/null) || true
+fi
+STYLE_HELPER=&quot;.aris/tools/extract_paper_style.py&quot;
+[ -f &quot;$STYLE_HELPER&quot; ] || STYLE_HELPER=&quot;tools/extract_paper_style.py&quot;
+[ -f &quot;$STYLE_HELPER&quot; ] || { [ -n &quot;${ARIS_REPO:-}&quot; ] &amp;&amp; STYLE_HELPER=&quot;$ARIS_REPO/tools/extract_paper_style.py&quot;; }
+[ -f &quot;$STYLE_HELPER&quot; ] || {
+  echo &quot;ERROR: extract_paper_style.py not resolved at .aris/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.aris/repo.&quot; &gt;&amp;2
+  echo &quot;       Fix: rerun bash tools/install_aris.sh or smart_update.sh (refreshes ~/.aris/repo), export ARIS_REPO, or copy the helper to tools/.&quot; &gt;&amp;2
+  echo &quot;       --style-ref cannot be satisfied; aborting.&quot; &gt;&amp;2
+  exit 1
+}
+STYLE_STATUS=0
+CACHE=$(python3 &quot;$STYLE_HELPER&quot; --source &quot;&lt;source&gt;&quot;) || STYLE_STATUS=$?
+case &quot;$STYLE_STATUS&quot; in
+  0) ;;                                       # use $CACHE/style_profile.md as structural guidance
+  2) echo &quot;warning: style-ref skipped (missing optional dep)&quot; &gt;&amp;2 ;;
+  3) echo &quot;error: --style-ref source failed; aborting outline&quot; &gt;&amp;2 ; exit 1 ;;
+  *) echo &quot;error: helper failed unexpectedly; aborting outline&quot; &gt;&amp;2 ; exit 1 ;;
+esac
+```
+
+Sources accepted: local TeX dir / file, local PDF, arXiv id (`2501.12345` or `arxiv:2501.12345`), http(s) URL. Overleaf URLs and project IDs are rejected — clone via `/overleaf-sync setup &lt;id&gt;` first and pass the local clone path.
+
+**Strict rules** (full contract in `tools/extract_paper_style.py` docstring):
+
+- Use `style_profile.md` as **structural** guidance only when proposing the outline&#x27;s section list, subsection counts, theorem density, figure budget.
+- **Never copy prose, claims, examples, section names verbatim, or terminology** from anything reachable through the cache. The user&#x27;s narrative is the only source of substance.
+- **Never pass `— style-ref` (or the cache contents) to reviewer / auditor sub-agents.** Cross-model review independence (`../shared-references/reviewer-independence.md`) requires reviewers see only the artifact and the user&#x27;s prompt.
+
+### Gap Report (`GAP_REPORT.md`, auto-emitted when style-ref is on)
+
+When `— style-ref:` succeeded AND any of `figures/`, `results/`, `data/`, `tables/`, `sec/`, `NARRATIVE_REPORT.md`, `CLAIMS_FROM_RESULTS.md` exists in the project, **also** emit a gap report before drafting the outline. The gap report maps the exemplar&#x27;s section topics to available project artifacts.
+
+## Workflow
+
+### Step 1: Extract Claims and Evidence
+
+**First check for `CLAIMS_FROM_RESULTS.md`** — if it exists (generated by `/result-to-claim` at the end of Workflow 2), use it as the starting point for claims. This file contains validated claims already mapped to experiment evidence. Merge with any additional claims from the narrative documents below.
+
+If `CLAIMS_FROM_RESULTS.md` does not exist, extract claims from scratch:
+
+Read all available narrative documents and extract:
+
+1. **Core claims** (3-5 main contributions)
+2. **One-sentence contribution** (the single sentence that best states what the paper contributes)
+3. **Evidence** for each claim (which experiments, which metrics, which figures)
+4. **Known weaknesses** (from reviewer feedback)
+5. **Suggested framing** (from review conclusions)
+
+Build a **Claims-Evidence Matrix**:
+
+```markdown
+| Claim | Evidence | Status | Section |
+|-------|----------|--------|---------|
+| [claim 1] | [exp A, metric B] | Supported | §3.2 |
+| [claim 2] | [exp C] | Partially supported | §4.1 |
+```
+
+### Step 2: Determine Paper Type and Structure
+
+Based on TARGET_VENUE and paper content, classify and select structure.
+
+Before committing to a structure, apply the narrative principle from `../shared-references/writing-principles.md`:
+
+- The paper should tell one coherent technical story.
+- By the end of the Introduction, the outline should make the **What**, **Why**, and **So What** explicit.
+- Front-load the most important material: title, abstract, introduction, and hero figure. Reviewers often form a judgment before reading the full method.
+
+**IMPORTANT**: The section count is FLEXIBLE (5-8 sections). Choose what fits the content best. The templates below are starting points, not rigid constraints.
+
+**Empirical/Diagnostic paper:**
+```
+1. Introduction (1.5 pages)
+2. Related Work (1 page)
+3. Method / Setup (1.5 pages)
+4. Experiments (3 pages)
+5. Analysis / Discussion (1 page)
+6. Conclusion (0.5 pages)
+```
+
+**Theory + Experiments paper:**
+```
+1. Introduction (1.5 pages)
+2. Related Work (1 page)
+3. Preliminaries &amp; Modeling (1.5 pages)
+4. Experiments (1.5 pages)
+5. Theory Part A (1.5 pages)
+6. Theory Part B (1.5 pages)
+7. Conclusion (0.5 pages)
+— Total: 9 pages
+```
+Theory papers often need 7 sections (splitting theory into estimation + optimization, or setup + analysis). The total page budget MUST sum to MAX_PAGES.
+
+Theory papers should:
+- Include **proof sketch** locations (not just theorem statements)
+- Plan a **comparison table** of prior theoretical bounds vs. this paper&#x27;s bounds
+- Identify which proofs go in appendix vs. main body
+
+**Method paper:**
+```
+1. Introduction (1.5 pages)
+2. Related Work (1 page)
+3. Method (2 pages)
+4. Experiments (2.5 pages)
+5. Ablation / Analysis (1 page)
+6. Conclusion (0.5 pages)
+```
+
+### Step 3: Section-by-Section Planning
+
+For each section, specify:
+
+```markdown
+### §0 Abstract
+- **What we achieve**: [the paper&#x27;s specific contribution, not field-level background]
+- **Why it matters / is hard**: [why this problem is important and non-trivial]
+- **How we do it**: [approach in one sentence]
+- **Evidence**: [what supports the claim]
+- **Most remarkable result**: [strongest quantitative or theoretical result]
+- **Estimated length**: 150-250 words
+- **Self-contained check**: can a reader understand this without the paper?
+
+### §1 Introduction
+- **Opening hook**: [1-2 sentences that motivate the problem]
+- **Gap / challenge**: [what&#x27;s missing in prior work, and why prior work is insufficient]
+- **One-sentence contribution**: [the main takeaway of the paper]
+- **Approach overview**: [high-level description of the method]
+- **Contributions list**: [bulleted list of 3-5 contributions]
+- **Estimated length**: 1-1.5 pages
+
+### §2 Related Work
+- **Themes**: [2-4 thematic clusters]
+- **Positioning**: [how this work differs from each cluster]
+- **Estimated length**: 0.5-1 page
+
+### §3 Method / Setup
+- **Key components**: [list of method components]
+- **Figure plan**: [which figures illustrate which components]
+- **Estimated length**: 1-2 pages
+
+### §4 Experiments
+- **Datasets / benchmarks**: [list]
+- **Baselines**: [list]
+- **Metrics**: [list]
+- **Key results table**: [planned table structure]
+- **Estimated length**: 2-3 pages
+
+### §5 Analysis / Discussion
+- **Ablations**: [planned ablation studies]
+- **Qualitative analysis**: [planned qualitative examples]
+- **Limitations**: [honest limitations]
+- **Estimated length**: 0.5-1 page
+
+### §6 Conclusion
+- **Summary**: [1-2 sentences]
+- **Future work**: [1-2 sentences]
+- **Estimated length**: 0.5 pages
+```
+
+### Step 4: Review and Refine
+
+- Send the outline to the reviewer model via Codex MCP for feedback.
+- Incorporate reviewer feedback into the outline.
+- Ensure the total page budget sums to MAX_PAGES.
+- Verify that all claims in the Claims-Evidence Matrix are addressed in the outline.
+
+## Conflicts
+
+- **wanshuiyin/Auto-claude-code-research-in-sleep** sets REVIEWER_MODEL to `gpt-6-astra`; **brycewang-stanford/Auto-Empirical-Research-Skills** sets it to `gpt-5.4`. Use the model configured for the current environment.
+- **wanshuiyin/Auto-claude-code-research-in-sleep** includes AAAI=7 technical-content pages plus references; **brycewang-stanford/Auto-Empirical-Research-Skills** omits AAAI from the MAX_PAGES list. Include AAAI when the venue is AAAI.
+- **wanshuiyin/Auto-claude-code-research-in-sleep** expects `review-stage/AUTO_REVIEW.md` with fallback to `./AUTO_REVIEW.md`; **brycewang-stanford/Auto-Empirical-Research-Skills** expects `GPT54_AUTO_REVIEW.md`. Check for both filenames.
+- **wanshuiyin/Auto-claude-code-research-in-sleep** includes an optional `— style-ref` helper and `GAP_REPORT.md`; **brycewang-stanford/Auto-Empirical-Research-Skills** does not. Include the style-ref option when available.
+- **brycewang-stanford/Auto-Empirical-Research-Skills** includes an explicit Work</pre>
+</body>
+</html>

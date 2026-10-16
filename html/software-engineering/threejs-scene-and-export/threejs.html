@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>threejs</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">threejs-scene-and-export</a> / threejs</p><h1>threejs</h1><p class="meta">combined</p><p>The three copies cover different Three.js workflows. MengTo/Skills is a general web-design skill for building and debugging interactive 3D scenes (setup, render loop, controls, performance, cleanup). benchflow-ai/skillsbench is a specialized scene-graph parsing and export skill (part partitioning, mesh baking, InstancedMesh expansion, per-part OBJ export, URDF articulation). sickn33/agentic-awesome-skills is a high-level wrapper that defers to a detailed guide and gives a generic example workflow. None is a reproduction of the others; each has material steps the others lack, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/MengTo/Skills">MengTo/Skills</a></td><td><code>agent-skills/web-design/threejs/SKILL.md</code></td></tr><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/threejs-structure-parser/environment/skills/threejs/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/threejs-skills/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/MengTo/Skills">MengTo/Skills</a></td><td><code>agent-skills/web-design/threejs/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/threejs-structure-parser/environment/skills/threejs/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/threejs-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/threejs-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/threejs-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/threejs-to-obj/environment/skills/threejs/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: threejs
+description: Use when building, debugging, or exporting Three.js 3D scenes on the web, including interactive scenes, scene-graph parsing, mesh baking, and OBJ/URDF export.
+---
+
+# Three.js — Scene Building and Export Skill
+
+## When to use
+- Building interactive 3D scenes: product spins, hero scenes, shaders, 3D data viz.
+- Parsing a Three.js scene graph for export: part partitioning, mesh baking, InstancedMesh expansion, per-part OBJ export, URDF articulation.
+- Debugging performance, resource leaks, or resize issues in WebGL scenes.
+
+## Core mental model
+- Create a `Scene`, `Camera` (Perspective/Orthographic), and `WebGLRenderer`.
+- `Mesh` = `Geometry` + `Material`; add lights for non-unlit materials.
+- Render loop: `requestAnimationFrame(animate)` → update time-based animations, controls, mixers → `renderer.render(scene, camera)`.
+
+## Scene building (interactive web)
+1. Setup renderer: `new THREE.WebGLRenderer({ canvas, antialias, alpha })`; `renderer.setSize(width, height, false)`; `renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))`.
+2. Camera: `camera.aspect = width / height; camera.updateProjectionMatrix()`.
+3. Scene graph: `scene.add(object)`; use `object.position/rotation/scale`.
+4. Load assets: `GLTFLoader`, `TextureLoader`, `DRACOLoader`.
+5. Controls: `OrbitControls`, `PointerLockControls`, or custom pointer handlers.
+6. Cleanup in SPAs: `geometry.dispose()`, `material.dispose()`, `texture.dispose()`, `renderer.dispose()`; remove event listeners; cancel RAF.
+7. Handle resize: update renderer size, pixel ratio, camera aspect, and projection matrix.
+8. Respect `prefers-reduced-motion`: render a still frame or slow updates.
+
+## Scene-graph parsing and export
+1. Load the module, call `createScene()`, then `updateMatrixWorld(true)`.
+2. Treat named `THREE.Group` nodes as parts/links.
+3. Assign each mesh to its nearest named ancestor.
+4. Do not merge meshes from nested named groups into parents.
+5. Skip empty parts; sort part names for determinism.
+6. Bake world transforms into geometry before export:
+   - `root.updateMatrixWorld(true)`
+   - `geom = mesh.geometry.clone(); geom.applyMatrix4(mesh.matrixWorld)`
+   - If indexed, convert to non-indexed; compute vertex normals if missing.
+7. Expand `InstancedMesh` by multiplying `matrixWorld` with each instance matrix.
+8. Convert Y-up to Z-up if needed: `geom.applyMatrix4(new THREE.Matrix4().makeRotationX(-Math.PI / 2))`.
+9. Export per-part OBJ: collect meshes owned by each part, do not traverse into child named groups, merge baked geometries, write `&lt;part&gt;.obj`.
+10. For URDF: use named groups as links; parent is nearest named ancestor; joint type defaults to `fixed` unless evidence suggests `revolute`/`prismatic`; sort link and joint names.
+
+## Common pitfalls
+- Not handling resize → stretched/cropped rendering.
+- Too high devicePixelRatio → mobile GPU meltdown.
+- Leaking WebGL resources (not disposing) → crashes after route changes.
+- Loading huge textures/models → slow start; use compressed textures, Draco/KTX2, smaller maps.
+- Using too many lights/shadows → expensive; fake lighting with baked textures when possible.
+- Forgetting to bake world transforms before export → incorrect geometry positions.
+- Merging nested named groups → incorrect part partitioning.
+
+## What to ask the user
+- Is this decorative (hero) or functional 3D (product viewer)?
+- Target devices: mobile? older iPhones?
+- Asset format availability (glTF, HDRI, textures) and file size constraints.
+- Accessibility/reduced motion requirements.
+- For export: desired output format (OBJ, URDF), axis convention, and part naming rules.</pre>
+</body>
+</html>

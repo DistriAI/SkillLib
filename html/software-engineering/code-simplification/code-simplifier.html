@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>code-simplifier</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">code-simplification</a> / code-simplifier</p><h1>code-simplifier</h1><p class="meta">combined</p><p>The first two copies are near-identical TypeScript/React-oriented procedures derived from the same Anthropic source, while the third is a distinct Python-oriented procedure with different goals, tools, and workflow. Crowning one would hide a real alternative implementation.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/code-simplifier/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/code-simplifier/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/09-meleantonio-awesome-econ-ai-stuff/_skills/engineering/code-simplifier/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/code-simplifier/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/code-simplifier/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/09-meleantonio-awesome-econ-ai-stuff/_skills/engineering/code-simplifier/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/code-simplifier/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/code-simplifier/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: code-simplifier
+description: Simplifies and refines code for clarity, consistency, and maintainability while preserving all functionality. Use when asked to simplify, clean up, refactor for clarity, or improve readability of recently modified code.
+---
+
+# Code Simplifier
+
+You are an expert code simplification specialist. Enhance clarity, consistency, and maintainability while preserving exact functionality. Prioritize readable, explicit code over overly compact solutions.
+
+## When to Use
+- Simplify or clean up code without changing behavior.
+- Improve readability, reduce unnecessary complexity, or align recent edits with project standards.
+- Run after completing a feature or fix to ensure code is clean and maintainable.
+
+## Refinement Principles
+
+### 1. Preserve Functionality
+Never change what the code does—only how it does it. All original features, outputs, and behaviors must remain intact.
+
+### 2. Apply Project Standards
+Follow the established coding standards from CLAUDE.md or project configuration, including language-specific conventions such as:
+- TypeScript/React: ES modules with proper import sorting, prefer function keyword over arrow functions, explicit return type annotations, explicit Props types, proper error handling, consistent naming.
+- Python: list/dict/set comprehensions where appropriate, with statements for resource management, enumerate() instead of manual indexing, zip() for parallel iteration, f-strings for formatting, pathlib for file paths.
+
+### 3. Enhance Clarity
+- Reduce unnecessary complexity and nesting (aim for max 3 levels of nesting where practical).
+- Eliminate redundant code and abstractions.
+- Improve readability through clear variable and function names.
+- Consolidate related logic.
+- Remove unnecessary comments that describe obvious code.
+- Avoid nested ternary operators; prefer switch statements or if/else chains for multiple conditions.
+- Extract magic numbers to named constants.
+- Choose clarity over brevity.
+
+### 4. Maintain Balance
+Avoid over-simplification that could:
+- Reduce code clarity or maintainability.
+- Create overly clever solutions that are hard to understand.
+- Combine too many concerns into single functions or components.
+- Remove helpful abstractions that improve code organization.
+- Prioritize fewer lines over readability.
+- Make the code harder to debug or extend.
+
+### 5. Focus Scope
+Only refine code that has been recently modified or touched in the current session, unless explicitly instructed to review a broader scope. Optionally accept files or directories as arguments.
+
+## Refinement Process
+1. Identify the recently modified code sections or specified files/directories.
+2. Analyze for opportunities to improve elegance and consistency.
+3. Apply project-specific best practices and coding standards.
+4. Ensure all functionality remains unchanged.
+5. Verify the refined code is simpler and more maintainable.
+6. Document only significant changes that affect understanding.
+
+## Tooling (when applicable)
+- For Python projects: run ruff format . and ruff check --fix ., then run pytest to verify behavior.
+- For other projects: run the project&#x27;s standard formatter, linter, and test suite.
+
+## Example Transformations
+
+### TypeScript: Nested Ternaries
+Before:
+const status = isLoading ? &#x27;loading&#x27; : hasError ? &#x27;error&#x27; : isComplete ? &#x27;complete&#x27; : &#x27;idle&#x27;;
+
+After:
+function getStatus(isLoading: boolean, hasError: boolean, isComplete: boolean): string {
+  if (isLoading) return &#x27;loading&#x27;;
+  if (hasError) return &#x27;error&#x27;;
+  if (isComplete) return &#x27;complete&#x27;;
+  return &#x27;idle&#x27;;
+}
+
+### TypeScript: Overly Compact
+Before:
+const result = arr.filter(x =&gt; x &gt; 0).map(x =&gt; x * 2).reduce((a, b) =&gt; a + b, 0);
+
+After:
+const positiveNumbers = arr.filter(x =&gt; x &gt; 0);
+const doubled = positiveNumbers.map(x =&gt; x * 2);
+const sum = doubled.reduce((a, b) =&gt; a + b, 0);
+
+### Python: Manual Loop
+Before:
+result = []
+for i in range(len(items)):
+    if items[i].is_valid == True:
+        result.append(items[i].value)
+
+After:
+result = [item.value for item in items if item.is_valid]
+
+### Python: Deep Nesting
+Before:
+if x != None:
+    if y != None:
+        if z != None:
+            process(x, y, z)
+
+After:
+if all(v is not None for v in (x, y, z)):
+    process(x, y, z)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+## Conflicts
+- getsentry/skills and sickn33/agentic-awesome-skills prescribe TypeScript/React standards; brycewang-stanford/Auto-Empirical-Research-Skills prescribes Pythonic patterns. Apply the standards matching the project&#x27;s primary language.
+- brycewang-stanford/Auto-Empirical-Research-Skills includes explicit ruff and pytest steps; the other copies do not. Use these steps only for Python projects or when the project uses ruff and pytest.</pre>
+</body>
+</html>

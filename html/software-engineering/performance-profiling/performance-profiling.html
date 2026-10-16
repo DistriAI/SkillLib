@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>performance-profiling</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">performance-profiling</a> / performance-profiling</p><h1>performance-profiling</h1><p class="meta">combined</p><p>The three copies share the name &#x27;performance-profiling&#x27; but target three different domains: Apple platform apps (Instruments/MetricKit), web performance (Lighthouse/Core Web Vitals), and computational simulations (Python scripts for scaling/memory). None is a reproduction of the others; each contains material steps, tools, and constraints the others lack.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/MengTo/Skills">MengTo/Skills</a></td><td><code>agent-skills/codex/performance-profiling/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/performance-profiling/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/performance-profiling/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/MengTo/Skills">MengTo/Skills</a></td><td><code>agent-skills/codex/performance-profiling/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/performance-profiling/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/performance-profiling/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/performance-profiling/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/performance-profiling/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Performance Profiling
+
+Use this skill to diagnose performance issues systematically, pick the right profiling workflow, apply targeted fixes, and verify the change with real measurements.
+
+## Domain Selection
+
+Determine the target domain before proceeding:
+
+- **Apple Platform Apps**: Use Instruments, Xcode diagnostics, and MetricKit. Profile on device with Release builds.
+- **Web Applications**: Use Lighthouse, DevTools, and RUM. Focus on Core Web Vitals (LCP, INP, CLS).
+- **Computational Simulations**: Use Python scripts for timing, scaling, and memory analysis. Requires Python 3.8+.
+
+## Workflow
+
+1. **Baseline**: Measure current state using the appropriate tool for the domain.
+2. **Identify**: Find the bottleneck using domain-specific analysis.
+3. **Fix**: Apply the smallest targeted fix that addresses the measured bottleneck.
+4. **Validate**: Re-profile to confirm the improvement.
+
+## Apple Platform Apps
+
+- Profile on device with Release configuration.
+- Use Time Profiler for CPU/hangs, Allocations/Leaks for memory, App Launch for launch time, Energy Log for battery/thermal.
+- Add `os_signpost` markers for ongoing timing visibility.
+- Use MetricKit for production monitoring of launch, responsiveness, and memory.
+
+## Web Applications
+
+- Measure Core Web Vitals: LCP (&lt;2.5s), INP (&lt;200ms), CLS (&lt;0.1).
+- Use Lighthouse for page load, Bundle analyzer for bundle size, DevTools for runtime and memory.
+- Prioritize: enable compression, lazy load images, code split routes, cache static assets.
+
+## Computational Simulations
+
+- Run timing analyzer on simulation logs to identify dominant phases.
+- Run scaling analyzer on multi-run data to assess parallel efficiency.
+- Run memory profiler on simulation parameters to estimate memory requirements.
+- Run bottleneck detector to combine analyses and get actionable recommendations.
+
+## Ground Rules
+
+- Profile with representative data, not empty databases or toy assets.
+- Keep measurements before and after the fix so the outcome is concrete.
+- Do not guess at problems; profile first.
+- Fix the biggest issue, not micro-optimizations.</pre>
+</body>
+</html>

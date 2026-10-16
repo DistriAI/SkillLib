@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scientific-schematics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">scientific-diagram-generation</a> / scientific-schematics</p><h1>scientific-schematics</h1><p class="meta">combined</p><p>The four copies describe the same generate-review-refine loop for scientific diagrams, but they disagree on the underlying models, the stopping rule, and the available CLI parameters. K-Dense-AI/scientific-agent-skills is the most complete and current (Nano Banana 2 + Gemini 3.7 Flash, max 2 iterations, explicit review-failure handling, data-leaves-machine warning, raster-only output caveat). foryourhealth111-pixel/Vibe-Skills and FreedomIntelligence/OpenClaw-Medical-Skills are older variants (Nano Banana Pro / Nano Banana 2 with Gemini 3 Pro / Gemini 3.1 Pro Preview) that omit the max-iteration cap and the review-error contract. aipoch/medical-research-skills diverges further: it names a code-capable LLM generator (default google/gemini-2.0-flash-001) with separate --generator and --reviewer overrides, requires pillow and matplotlib, and only documents journal/poster doc-types. Because each copy carries material steps or constraints the others lack, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scientific-schematics/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scientific-schematics/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/scientific-schematics/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/scientific-schematics/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scientific-schematics/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/scientific-schematics/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/scientific-schematics/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/scientific-schematics/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: scientific-schematics
+description: Generates publication-quality scientific diagrams from a natural-language description using an iterative generate-review-refine loop. Supports neural network architectures, system diagrams, flowcharts, biological pathways, and complex scientific visualizations.
+allowed-tools: Read Write Edit Bash
+license: MIT
+metadata:
+  version: &quot;1.10&quot;
+  skill-author: K-Dense Inc.
+---
+
+# Scientific Schematics and Diagrams
+
+## Overview
+
+Transform complex scientific concepts into clear visual representations for publication. The skill runs an iterative loop: generate a diagram, review it against a document-type quality threshold, and refine if needed.
+
+**How it works:**
+- Describe your diagram in natural language.
+- A generation model creates a PNG draft from the specified components and relationships.
+- A review model evaluates quality against the document-type threshold.
+- If the score is below threshold or the review requests improvement, the prompt is refined and the diagram is regenerated.
+- The loop stops when the threshold is met, the max iteration count is reached, or a stopping condition triggers.
+- Versioned images and a review log are saved for manual verification.
+
+## Quality Thresholds by Document Type
+
+| Document Type | Threshold | Description |
+|---------------|-----------|-------------|
+| journal | 8.5/10 | Nature, Science, peer-reviewed journals |
+| conference | 8.0/10 | Conference papers |
+| thesis | 8.0/10 | Dissertations, theses |
+| grant | 8.0/10 | Grant proposals |
+| preprint | 7.5/10 | arXiv, bioRxiv, etc. |
+| report | 7.5/10 | Technical reports |
+| poster | 7.0/10 | Academic posters |
+| presentation | 6.5/10 | Slides, talks |
+| default | 7.5/10 | General purpose |
+
+## Configuration
+
+Set your OpenRouter API key:
+```bash
+export OPENROUTER_API_KEY=&#x27;your_api_key_here&#x27;
+```
+
+Get an API key at: https://openrouter.ai/keys
+
+**Data leaves the machine.** Your prompt is sent to OpenRouter to generate the image, and the generated image is sent back for quality review. Both are subject to OpenRouter&#x27;s data policies and those of the underlying model providers. Do not describe unpublished data, patient information, or anything under embargo in the prompt.
+
+## Dependencies
+
+- Python 3.10+
+- Python packages: `requests` (required); `pillow` and `matplotlib` (required if using the code-capable LLM generator path)
+- Environment: `OPENROUTER_API_KEY` (required)
+
+## Quick Start
+
+Run from this skill directory:
+
+```bash
+# Generate for journal paper (highest quality threshold: 8.5/10)
+python scripts/generate_schematic.py &quot;CONSORT participant flow diagram with 500 screened, 150 excluded, 350 randomized&quot; -o figures/consort.png --doc-type journal
+
+# Generate for presentation (lower threshold: 6.5/10 - faster)
+python scripts/generate_schematic.py &quot;Transformer encoder-decoder architecture showing multi-head attention&quot; -o figures/transformer.png --doc-type presentation
+
+# Generate for poster (moderate threshold: 7.0/10)
+python scripts/generate_schematic.py &quot;MAPK signaling pathway from EGFR to gene transcription&quot; -o figures/mapk_pathway.png --doc-type poster
+
+# Custom max iterations (max 2)
+python scripts/generate_schematic.py &quot;Complex circuit diagram with op-amp, resistors, and capacitors&quot; -o figures/circuit.png --iterations 2 --doc-type journal
+```
+
+### Optional Model Overrides
+
+If your pipeline supports separate generator and reviewer models:
+
+```bash
+python scripts/generate_schematic.py &quot;Krebs cycle&quot; --doc-type journal --generator anthropic/claude-3.5-sonnet
+
+python scripts/generate_schematic.py &quot;Flowchart of a clinical trial enrollment pipeline&quot; \
+  --doc-type poster \
+  --generator google/gemini-2.0-flash-001 \
+  --reviewer google/gemini-2.0-flash-001
+```
+
+## Pipeline Stages
+
+1. **Generation**: The generation model creates an initial image following scientific diagram best practices.
+2. **Review**: The review model evaluates quality against the document-type threshold and returns a numeric score and actionable critique.
+3. **Decision**: If quality &gt;= threshold and no improvement is requested, the run is DONE.
+4. **Refinement**: If below threshold or improvement is requested, the prompt is improved based on the critique and the diagram is regenerated.
+5. **Repeat**: Until quality meets threshold OR max iterations reached (default max 2).
+
+## Output
+
+- Versioned images (`name_v1.png`, `name_v2.png`), a copy of the latest successful version at the path you asked for, and `name_review_log.json` with the score, critique, and any early-stop reason.
+- Save diagrams under `figures/` using `-o figures/name.png`, then inspect every label and relationship before including them in a paper or poster.
+
+**What the output is:** a raster PNG at whatever resolution the image model returns. This skill has no vector path and no DPI control. If a journal demands PDF, EPS, or 300 dpi TIFF, convert the PNG downstream and check the result at final print size.
+
+## Review Failure Handling
+
+When the review cannot run (rate limit, content filter, unexpected response shape), the image is still generated and saved, but no score is invented. The log records `&quot;score&quot;: null` with the reason in `&quot;review_error&quot;`. `&quot;reviewed&quot;: false` means the reviewer did not return a usable response; a prose answer with no parsable score can have `&quot;reviewed&quot;: true`. `&quot;final_reviewed&quot;` remains false without a numeric score, and the run prints `Review unavailable - image kept, quality not verified`. Treat that image as unchecked and inspect it yourself before spending on another generation. A generation failure ends the loop without automatic replay; if an earlier draft exists, it is retained with its score and the failure in the log.
+
+## AI Generation Best Practices
+
+**Effective Prompts for Scientific Diagrams:**
+
+Good prompts (specific, detailed):
+- &quot;CONSORT flowchart showing participant flow from screening (n=500) through randomization to final analysis&quot;
+- &quot;Transformer neural network architecture with encoder stack on left, decoder stack on right, showing multi-head attention and cross-attention connections&quot;
+- &quot;Biological signaling cascade: EGFR receptor → RAS → RAF → MEK → ERK → nucleus, with phosphorylation steps labeled&quot;
+- &quot;Block diagram of IoT system: sensors → microcontroller → WiFi module → cloud server → mobile app&quot;
+
+Avoid vague prompts:
+- &quot;Make a flowchart&quot; (too generic)
+- &quot;Neural network&quot; (which type? what components?)
+- &quot;Pathway diagram&quot; (which pathway? what molecules?)
+
+**Key elements to include:**
+- **Type**: Flowchart, architecture diagram, pathway, circuit, etc.
+- **Components**: Specific elements to include
+- **Flow/Direction**: How elements connect (left-to-right, top-to-bottom)
+- **Labels**: Key annotations or text to include
+- **Style**: Any specific visual requirements
+
+**Scientific Quality Guidelines** (automatically applied):
+- Clean white/light background
+- High contrast for readability
+- Clear, readable labels (minimum 10pt)
+- Professional typography (sans-serif fonts)
+- Colorblind-friendly colors (Okabe-Ito palette)
+- Proper spacing to prevent crowding
+- Scale bars, legends, axes where appropriate
+
+## When to Use This Skill
+
+- Creating neural network architecture diagrams (Transformers, CNNs, RNNs, etc.)
+- Illustrating system architectures and data flow diagrams
+- Drawing methodology flowcharts for study design (CONSORT, PRISMA)
+- Visualizing algorithm workflows and processing pipelines
+- Creating circuit diagrams and electrical schematics
+- Depicting biological pathways and molecular interactions
+- Generating network topologies and hierarchical structures
+- Illustrating conceptual frameworks and theoretical models
+- Designing block diagrams for technical papers
+
+## Conflicts
+
+- **K-Dense-AI/scientific-agent-skills** specifies Nano Banana 2 for generation and Gemini 3.7 Flash for review, with a hard cap of 2 iterations and a detailed review-failure contract. **foryourhealth111-pixel/Vibe-Skills** specifies Nano Banana Pro + Gemini 3 Pro with no explicit iteration cap. **FreedomIntelligence/OpenClaw-Medical-Skills** specifies Nano Banana 2 + Gemini 3.1 Pro Preview with no explicit iteration cap. **aipoch/medical-research-skills** specifies a code-capable LLM generator (default google/gemini-2.0-flash-001) with separate --generator and --reviewer overrides, requires pillow and matplotlib, and only documents journal and poster doc-types.
+- The stopping rule differs: K-Dense-AI/scientific-agent-skills stops when quality &gt;= threshold AND no improvement verdict, or max 2 iterations; the other copies stop when quality &gt;= threshold or an internal stopping condition, without a documented max-iteration cap.
+- aipoch/medical-research-skills documents only two doc-types (journal, poster); the other three document the full nine-row threshold table.</pre>
+</body>
+</html>

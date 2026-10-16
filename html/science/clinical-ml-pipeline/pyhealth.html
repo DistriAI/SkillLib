@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pyhealth</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">clinical-ml-pipeline</a> / pyhealth</p><h1>pyhealth</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a distinct, version-pinned (PyHealth 2.0.2) procedure with specific scientific and API constraints (e.g., MIMIC-III table casing, leakage warnings, specific task semantics). The other three copies (Vibe-Skills, aipoch, OpenClaw) are near-identical mirrors of a different, more generic &#x27;Healthcare AI Toolkit&#x27; skill that uses a different API style (e.g., `mortality_prediction_mimic4_fn` vs `MortalityPredictionMIMIC3`) and lacks the version-specific safety checks. Crowning one would hide the alternative API approach and the specific version constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pyhealth/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pyhealth/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/pyhealth/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pyhealth/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pyhealth/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pyhealth/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/pyhealth/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pyhealth/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: pyhealth
+description: Builds and validates PyHealth clinical machine-learning pipelines for EHR, signals, imaging, and medical codes. Use for PyHealth dataset loading, MIMIC-III/IV, eICU or OMOP prediction tasks, patient-level evaluation, mortality/readmission/length-of-stay modeling, medication recommendation, sleep staging, Trainer checkpoints, and ICD/ATC/NDC/RxNorm mapping.
+---
+
+# PyHealth
+
+Targets **PyHealth 2.0.2** (or latest stable if 2.0.2 is unavailable). The pipeline is `Dataset -&gt; Task -&gt; Model -&gt; Trainer -&gt; Metrics`.
+
+## When to use
+
+Use for clinical prediction with PyHealth, including EHR sequences, physiological signals, imaging tasks, or medical-code lookup. Establish the cohort, prediction time, observation window, outcome horizon, and unit of evaluation before modeling.
+
+## Install and smoke-test
+
+```bash
+uv run --no-project --isolated --python 3.12 --with pyhealth==2.0.2 python assets/starter_pipeline.py --demo --epochs 1
+```
+
+## Workflow
+
+1. **Inspect the installed version and dataset configuration.** Both MIMIC-III and MIMIC-IV use lowercase table selectors in 2.0.2. MIMIC-III files remain uppercase.
+2. **Check task semantics and required tables.** `MortalityPredictionMIMIC3` predicts death in the *next admission*, excludes the last admission, and requires diagnoses, procedures and prescriptions in the current admission. It is not a current-stay early-warning model.
+3. **Create supervised samples.** `base.set_task(task)` returns a processed dataset with input/output schemas. Inspect raw task output as well as processed samples.
+4. **Partition by patient and verify overlap, class counts and observation windows.** `split_by_patient(..., seed=42)` is random, not chronological or stratified. It does not prevent within-visit temporal leakage or preprocessing leakage.
+5. **Choose a schema-compatible model and run one batch before training.** Construct it from the training sample dataset. Transformer uses `embedding_dim`, not `hidden_dim`; arguments are model-specific.
+6. **Declare validation metrics and the exact monitor.** Supply `metrics=[...]` to `Trainer`; the monitor must be a returned key. An absent key raises an error. Use `monitor_criterion=&quot;min&quot;` for loss, `&quot;max&quot;` for AUC/accuracy.
+7. **Evaluate the held-out test set once the model choice is fixed.** Report prevalence, patient counts, discrimination, calibration, threshold policy and uncertainty as appropriate.
+
+## MIMIC-III prototype
+
+```python
+from pyhealth.datasets import MIMIC3Dataset, get_dataloader, split_by_patient
+from pyhealth.tasks import MortalityPredictionMIMIC3
+from pyhealth.models import Transformer
+from pyhealth.trainer import Trainer
+
+base = MIMIC3Dataset(
+    root=&quot;https://storage.googleapis.com/pyhealth/Synthetic_MIMIC-III/&quot;,
+    tables=[&quot;diagnoses_icd&quot;, &quot;procedures_icd&quot;, &quot;prescriptions&quot;],
+    cache_dir=&quot;./cache/mimic3&quot;, num_workers=1, dev=True,
+)
+samples = base.set_task(MortalityPredictionMIMIC3())
+train, val, test = split_by_patient(samples, [0.6, 0.2, 0.2], seed=42)
+loaders = [get_dataloader(part, batch_size=16, shuffle=(i == 0))
+           for i, part in enumerate((train, val, test))]
+model = Transformer(dataset=train, embedding_dim=8)
+trainer = Trainer(model=model, metrics=[&quot;accuracy&quot;], device=&quot;cpu&quot;)
+trainer.train(train_dataloader=loaders[0], val_dataloader=loaders[1],
+              epochs=1, monitor=&quot;accuracy&quot;, monitor_criterion=&quot;max&quot;)
+print(trainer.evaluate(loaders[2]))
+```
+
+## Critical API and scientific checks
+
+- **MIMIC-IV:** `MIMIC4Dataset(ehr_root=..., ehr_tables=[...])`; the simpler `MIMIC4EHRDataset(root=..., tables=[...])` is also available. The root contains both `hosp/` and `icu/`, not just `hosp/`.
+- **Caches exist by default.** `cache_dir=None` selects the user cache directory; a supplied path selects its root. Cache identity does not hash raw file contents or custom task source. Use a fresh cache root after changing data/config/task code.
+- **Patient access:** `patient.get_events(event_type=..., filters=[(...)])`, not `patient.visits` or `visit.get_code`.
+
+## Conflicts
+
+- **K-Dense-AI/scientific-agent-skills** uses the class-based task API (e.g., `MortalityPredictionMIMIC3`) and pins PyHealth 2.0.2, while **foryourhealth111-pixel/Vibe-Skills**, **aipoch/medical-research-skills**, and **FreedomIntelligence/OpenClaw-Medical-Skills** use a function-based API (e.g., `mortality_prediction_mimic4_fn`) and do not pin a version.
+- **K-Dense-AI/scientific-agent-skills** includes specific warnings about data leakage and cache identity, which are absent in the other copies.
+- The other three copies include a &#x27;Performance&#x27; claim (3x faster than pandas) and a &#x27;Deployment&#x27; stage in the pipeline, which are not present in the K-Dense-AI copy.</pre>
+</body>
+</html>

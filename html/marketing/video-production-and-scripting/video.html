@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>video</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">video-production-and-scripting</a> / video</p><h1>video</h1><p class="meta">combined</p><p>The two skills cover different halves of the video workflow. The first (coreyhaines31) is a production skill focused on generating and rendering video using AI models (Veo, Runway) and programmatic frameworks (Remotion, Hyperframes). The second (kostja94) is a content/strategy skill focused on writing scripts, structuring hooks, and optimizing for short-form vs. long-form platforms. They do not reproduce each other; they are complementary. Combining them provides a complete workflow from script to render.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/video/SKILL.md</code></td></tr><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/content/video/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/video/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/content/video/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: video
+description: &quot;When the user wants to create, generate, or produce video content, or plan video marketing strategy and scripts. Use for AI video generation, programmatic video (Remotion/Hyperframes), video scripting, hooks, and platform optimization.&quot;
+metadata:
+  version: 1.0.0
+---
+
+# Video Production &amp; Strategy
+
+You are an expert video producer and strategist. You help users plan, script, and produce professional video content.
+
+## 1. Strategy &amp; Scripting
+
+**Initial Assessment:**
+- **Format**: Short-form (15-60s) vs Long-form (3-15+ min).
+- **Goal**: Awareness, consideration, conversion, or education.
+- **Platform**: TikTok, Reels, YouTube, etc.
+
+**Script Structure (Short-Form):**
+1. **Hook (0-3s)**: Critical for retention (71% decide here). Use story, contrarian, question, or result-focused hooks.
+2. **Problem (3-15s)**: Define the pain point.
+3. **Solution (15-45s)**: Provide value.
+4. **CTA (final 5s)**: Call to action.
+
+**Script Structure (Long-Form):**
+1. **Hook (0-30s)**: Promise of value.
+2. **Intro (30-60s)**: Context.
+3. **Body**: Sections with transitions.
+4. **Outro**: Recap and CTA.
+
+## 2. Production Approach
+
+Choose the right tool based on the script and assets:
+
+| Approach | Best For | Tools |
+|----------|----------|-------|
+| **Programmatic** | Templated, data-driven, batch video | Remotion, Hyperframes |
+| **AI Generation** | Original footage from prompts | Veo 3, Runway, Kling |
+| **AI Avatars** | Talking-head presenter | HeyGen, Synthesia |
+| **Editing** | Repurposing long-form to short | Descript, Opus Clip |
+
+### Programmatic Video (Code-based)
+
+**Hyperframes (HTML/CSS):**
+- Best for agents (plain HTML).
+- `npx hyperframes init my-video`
+- Render: `npx hyperframes render -o output.mp4`
+
+**Remotion (React):**
+- Best for complex animations and scale (Lambda).
+- `npx create-video@latest`
+
+### AI Video Generation
+
+- **Veo 3**: Top quality, synced audio.
+- **Runway/Kling**: Creative visuals, B-roll.
+
+## 3. Execution Workflow
+
+1. **Context**: Check for product marketing context files (e.g., `.agents/product-marketing.md`).
+2. **Script**: Draft the script using the structure above. Optimize hooks for the specific platform (e.g., 2s hook for TikTok, 3-5s for YouTube Shorts).
+3. **Asset Prep**: Gather screenshots, logos, or generate B-roll using AI models.
+4. **Production**: 
+   - If templated: Build with Hyperframes or Remotion.
+   - If creative: Generate scenes with Veo/Runway.
+   - If presenter: Use HeyGen/Synthesia.
+5. **Render &amp; Export**: Render to MP4 and optimize for platform specs.</pre>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>stock-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">stock-technical-analysis</a> / stock-analysis</p><h1>stock-analysis</h1><p class="meta">combined</p><p>The two skills share the name and the broad goal of stock analysis, but they are materially different procedures. The anbeime/skill copy is a China/A-share focused technical analysis workflow that fetches data via a local script, computes MA/MACD/RSI, identifies gaps and support/resistance, predicts a 3-day move, and outputs buy/sell advice with risk disclaimers. The LeoYeAI/openclaw-master-skills copy is a US/crypto focused multi-tool suite built on Yahoo Finance that performs 8-dimension scoring, portfolio management, watchlists/alerts, dividend analysis, hot/trend scanning, and rumor/early-signal detection. Neither copy is a shortened or wrapped version of the other; crowning one would hide a real alternative workflow and a different set of capabilities.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/stock-analysis/stock-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/stock-analysis/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/stock-analysis/stock-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/stock-analysis/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: stock-analysis
+description: Analyze stocks and cryptocurrencies using technical indicators, portfolio tools, watchlists, dividend metrics, trend scanning, and rumor detection. Supports A-share/China, US, and crypto tickers.
+---
+
+# Stock Analysis
+
+## Task Goal
+- Perform stock and crypto analysis for user-provided tickers.
+- Support technical analysis, portfolio management, watchlists/alerts, dividend analysis, trend detection, and rumor/early-signal detection.
+- Trigger when the user asks to analyze a stock, predict a short-term move, manage a portfolio, check alerts, scan trends, or find rumors.
+
+## Prerequisites
+- Python 3 with requests, numpy, and pandas installed.
+- uv installed for running the LeoYeAI script suite.
+- Optional: Twitter/X authentication via bird CLI for social sentiment.
+
+## Standard Workflow
+
+1. **Identify and validate the ticker**
+   - Accept A-share codes (e.g., 000001, sh600000, 000001.SZ), HK codes (e.g., 00700.HK), US tickers (e.g., AAPL), and crypto pairs (e.g., BTC-USD).
+   - Use the stock code format reference for A-share codes.
+
+2. **Fetch market data**
+   - For A-share/China technical analysis, run `scripts/fetch_stock_data.py --stock_code &lt;code&gt; --days 30` to get real-time quotes and historical K-line data.
+   - For US/crypto analysis, use the LeoYeAI scripts which pull from Yahoo Finance, CoinGecko, and Google News.
+
+3. **Compute technical indicators**
+   - Run `scripts/analyze_stock.py --data_file &lt;file&gt;` to calculate MA5/MA10/MA20/MA60, MACD, RSI, support/resistance levels, gap analysis, volume analysis, and trend judgment.
+   - For US stocks, also run the 8-dimension scoring via `uv run {baseDir}/scripts/analyze_stock.py &lt;ticker&gt;`.
+
+4. **Analyze current trend**
+   - Evaluate moving-average alignment, MACD crossovers, RSI overbought/oversold states, volume confirmation, K-line patterns, and gap support/resistance.
+   - For US stocks, incorporate the 8-dimension score breakdown.
+
+5. **Predict short-term movement**
+   - For A-share/China analysis, provide a 3-day forecast with probability estimates for up/down/sideways and strength.
+   - For US/crypto, provide signal-based outlooks from the scoring model.
+
+6. **Generate actionable output**
+   - For A-share/China: give buy/hold/sell/observe advice, entry/exit price ranges, stop-loss/take-profit levels, and gap-related operational tips.
+   - For US/crypto: provide portfolio summaries, watchlist alerts, dividend metrics, trending lists, and rumor impact scores.
+   - Always include a risk disclaimer stating that analysis is for reference only and does not constitute investment advice.
+
+## Portfolio Management
+- Create portfolios: `uv run {baseDir}/scripts/portfolio.py create &quot;Name&quot;`
+- Add assets: `uv run {baseDir}/scripts/portfolio.py add &lt;ticker&gt; --quantity &lt;n&gt; --cost &lt;price&gt;`
+- View portfolio: `uv run {baseDir}/scripts/portfolio.py show`
+- Analyze portfolio: `uv run {baseDir}/scripts/analyze_stock.py --portfolio &quot;Name&quot; --period weekly`
+
+## Watchlist and Alerts
+- Add to watchlist: `uv run {baseDir}/scripts/watchlist.py add &lt;ticker&gt; [--target &lt;price&gt;] [--stop &lt;price&gt;] [--alert-on signal]`
+- View watchlist: `uv run {baseDir}/scripts/watchlist.py list`
+- Check alerts: `uv run {baseDir}/scripts/watchlist.py check [--notify]`
+- Remove from watchlist: `uv run {baseDir}/scripts/watchlist.py remove &lt;ticker&gt;`
+
+## Dividend Analysis
+- Analyze dividends: `uv run {baseDir}/scripts/dividends.py &lt;ticker&gt;`
+- Compare dividend stocks: `uv run {baseDir}/scripts/dividends.py &lt;ticker1&gt; &lt;ticker2&gt; --output json`
+
+## Trend and Rumor Scanning
+- Hot Scanner: `python3 {baseDir}/scripts/hot_scanner.py [--no-social] [--json]`
+- Rumor Scanner: `python3 {baseDir}/scripts/rumor_scanner.py`
+- Best practice: run Rumor Scanner at 07:00 before US market open.
+
+## Notes
+- Technical analysis is based on historical data and does not guarantee future performance.
+- Real-time data may be delayed; verify with actual trading data.
+- Combine technical analysis with fundamental analysis and market context for comprehensive judgment.
+- All recommendations must include risk warnings.
+
+## Conflicts
+- anbeime/skill focuses on A-share/China technical analysis with a 3-day forecast and gap analysis; LeoYeAI/openclaw-master-skills focuses on US/crypto multi-tool analysis with 8-dimension scoring, portfolio, watchlist, dividend, hot-scanner, and rumor-scanner features.
+- anbeime/skill requires requests, numpy, and pandas; LeoYeAI/openclaw-master-skills requires uv and uses uv run.
+- anbeime/skill outputs a fixed 3-day prediction with buy/sell advice; LeoYeAI/openclaw-master-skills outputs multi-dimension scores, portfolio summaries, alerts, and rumor impact scores.</pre>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>simpy</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">discrete-event-simulation</a> / simpy</p><h1>simpy</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a distinct, more rigorous methodology skill (version 1.6) that adds installation pinning, bounded execution guards, RNG separation, and validation steps not present in the others. The other three copies (zLanqing, foryourhealth111, FreedomIntelligence) are near-identical reproductions of a simpler API reference, with foryourhealth111 adding a routing boundary. Because the K-Dense copy contains material steps and constraints the others lack, and the others contain a routing boundary the K-Dense copy lacks, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/simpy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/simpy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/simpy/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/simpy/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/simpy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/simpy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/simpy/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/simpy/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: simpy
+description: Process-based discrete-event simulation framework in Python. Use for building, inspecting, and analyzing bounded simulations with processes, queues, and resources.
+license: MIT
+---
+
+# SimPy - Discrete-Event Simulation
+
+## Routing Boundary
+Use this skill only for SimPy or explicit discrete-event simulation work. Do not use for generic simulation, Monte Carlo, or agent-based modeling unless SimPy is explicitly requested.
+
+## Setup
+1. Create a reproducible environment: `uv venv --python 3.13` and `uv pip install &quot;simpy==4.1.2&quot;`.
+2. Verify the version: `python -c &quot;import importlib.metadata; print(importlib.metadata.version(&#x27;simpy&#x27;))&quot;`.
+
+## Model Workflow
+1. **Define Purpose:** State the decision, system boundary, entities, and time units.
+2. **Conceptual Model:** Record assumptions, distributions, and routing logic.
+3. **Implement Generators:** Define processes as Python generator functions using `yield`.
+4. **Bound Execution:** Use explicit time and entity caps. Never call `env.run()` on endless processes without a guard.
+5. **Separate RNGs:** Use local `random.Random` instances for distinct stochastic sources.
+6. **Instrument:** Observe state after transitions and test that monitoring does not alter event order.
+7. **Validate:** Test deterministic edge cases and conservation identities.
+
+## Core Concepts
+- **Environment:** `simpy.Environment()` manages the simulation clock.
+- **Processes:** Functions with `yield` statements. Start with `env.process(func())`.
+- **Resources:** Use `simpy.Resource` for capacity limits, `simpy.Container` for bulk materials, and `simpy.Store` for object storage.
+
+## Minimal Bounded Example
+```python
+import random
+import simpy
+
+HORIZON = 480.0
+arrival_rng = random.Random(101)
+env = simpy.Environment()
+server = simpy.Resource(env, capacity=2)
+
+def customer():
+    with server.request() as req:
+        yield req
+        yield env.timeout(arrival_rng.expovariate(1 / 6.0))
+
+def arrivals():
+    for _ in range(10_000):
+        if env.now &gt;= HORIZON: return
+        yield env.timeout(arrival_rng.expovariate(1 / 4.0))
+        env.process(customer())
+
+env.process(arrivals())
+env.run(until=HORIZON)
+```</pre>
+</body>
+</html>

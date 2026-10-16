@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>slack-gif-creator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">media</a> / <a href="index.html">slack-gif-creation</a> / slack-gif-creator</p><h1>slack-gif-creator</h1><p class="meta">combined</p><p>The copies split into two distinct, non-reproducible procedures. The anthropics/skills and LeoYeAI copies describe a low-level workflow using PIL ImageDraw primitives, core.gif_builder, core.easing, and core.frame_composer, with guidance on drawing polished graphics from scratch. The davepoon and Prat011 copies describe a high-level workflow using pre-built animation primitives from templates.* (shake, bounce, spin, pulse, fade, zoom, explode, wiggle, slide) and a different set of validators (check_slack_size, validate_dimensions). Each group contains material steps and constraints the other lacks (e.g., drawing-from-scratch guidance vs. composable template functions; different validator APIs; different Slack parameter ranges). Crowning one would hide a real alternative implementation.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/slack-gif-creator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/slack-gif-creator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>slack-gif-creator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/slack-gif-creator/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/slack-gif-creator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/slack-gif-creator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>slack-gif-creator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/slack-gif-creator/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/slack-gif-creator/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>slack-gif-creator/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>slack-gif-creator/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Slack GIF Creator
+
+Create animated GIFs optimized for Slack. Choose the approach that fits the task: use pre-built animation primitives for quick, composable motion, or draw frames from scratch with PIL for custom graphics.
+
+## Slack Requirements
+
+**Message GIFs:**
+- Dimensions: 480x480
+- FPS: 15-20 (or 10-30; lower FPS reduces file size)
+- Colors: 128-256 (or 48-128; fewer colors reduce file size)
+- Duration: 2-5 seconds
+- Max size: ~2MB
+
+**Emoji GIFs:**
+- Dimensions: 128x128
+- FPS: 10-12 (or 10-30; lower FPS reduces file size)
+- Colors: 32-48 (or 48-128; fewer colors reduce file size)
+- Duration: 1-2 seconds (keep under 3 seconds)
+- Max size: 64KB (strict)
+
+**Emoji GIF strategies:**
+- Limit to 10-15 frames total
+- Use 32-48 colors maximum
+- Keep designs simple
+- Avoid gradients
+- Validate file size frequently
+
+## Approach A: Pre-Built Animation Primitives
+
+Use composable template functions for common motion effects.
+
+### Validators
+
+```python
+from core.gif_builder import GIFBuilder
+from core.validators import check_slack_size, validate_dimensions, validate_gif, is_slack_ready
+
+builder = GIFBuilder(width=128, height=128, fps=10)
+# ... add frames ...
+info = builder.save(&#x27;emoji.gif&#x27;, num_colors=48, optimize_for_emoji=True)
+
+passes, info = check_slack_size(&#x27;emoji.gif&#x27;, is_emoji=True)
+passes, info = validate_dimensions(128, 128, is_emoji=True)
+all_pass, results = validate_gif(&#x27;emoji.gif&#x27;, is_emoji=True)
+if is_slack_ready(&#x27;emoji.gif&#x27;, is_emoji=True):
+    print(&quot;Ready to upload!&quot;)
+```
+
+### Animation Primitives
+
+Apply these to any object in any combination:
+
+- **Shake:** `from templates.shake import create_shake_animation`
+- **Bounce:** `from templates.bounce import create_bounce_animation`
+- **Spin/Rotate:** `from templates.spin import create_spin_animation, create_loading_spinner`
+- **Pulse/Heartbeat:** `from templates.pulse import create_pulse_animation, create_attention_pulse`
+- **Fade:** `from templates.fade import create_fade_animation, create_crossfade`
+- **Zoom:** `from templates.zoom import create_zoom_animation, create_explosion_zoom`
+- **Explode/Shatter:** `from templates.explode import create_explode_animation, create_particle_burst`
+- **Wiggle/Jiggle:** `from templates.wiggle import create_wiggle_animation, create_excited_wiggle`
+- **Slide:** `from templates.slide import create_slide_animation, create_multi_slide`
+
+## Approach B: Draw Frames from Scratch with PIL
+
+Use PIL ImageDraw primitives for custom graphics.
+
+### Core Workflow
+
+```python
+from core.gif_builder import GIFBuilder
+from PIL import Image, ImageDraw
+
+builder = GIFBuilder(width=128, height=128, fps=10)
+
+for i in range(12):
+    frame = Image.new(&#x27;RGB&#x27;, (128, 128), (240, 248, 255))
+    draw = ImageDraw.Draw(frame)
+    # Draw your animation using PIL primitives
+    builder.add_frame(frame)
+
+builder.save(&#x27;output.gif&#x27;, num_colors=48, optimize_for_emoji=True)
+```
+
+### Drawing Primitives
+
+```python
+draw.ellipse([x1, y1, x2, y2], fill=(r, g, b), outline=(r, g, b), width=3)
+draw.polygon(points, fill=(r, g, b), outline=(r, g, b), width=3)
+draw.line([(x1, y1), (x2, y2)], fill=(r, g, b), width=5)
+draw.rectangle([x1, y1, x2, y2], fill=(r, g, b), outline=(r, g, b), width=3)
+```
+
+**Do not use:** Emoji fonts (unreliable across platforms).
+
+### Making Graphics Look Good
+
+- Use thicker lines: always set `width=2` or higher for outlines and lines.
+- Add visual depth: use gradients for backgrounds, layer multiple shapes.
+- Make shapes interesting: add highlights, rings, patterns, glows.
+- Pay attention to colors: use vibrant, complementary colors with contrast.
+- For complex shapes: use combinations of polygons and ellipses, calculate points for symmetry, add details.
+
+### Working with User-Uploaded Images
+
+- Use directly (e.g., &quot;animate this&quot;, &quot;split this into frames&quot;)
+- Use as inspiration (e.g., &quot;make something like this&quot;)
+
+```python
+from PIL import Image
+uploaded = Image.open(&#x27;file.png&#x27;)
+```
+
+## Utilities (Approach B)
+
+### GIFBuilder
+
+```python
+builder = GIFBuilder(width=128, height=128, fps=10)
+builder.add_frame(frame)
+builder.add_frames(frames)
+builder.save(&#x27;out.gif&#x27;, num_colors=48, optimize_for_emoji=True, remove_duplicates=True)
+```
+
+### Validators
+
+```python
+from core.validators import validate_gif, is_slack_ready
+passes, info = validate_gif(&#x27;my.gif&#x27;, is_emoji=True, verbose=True)
+if is_slack_ready(&#x27;my.gif&#x27;):
+    print(&quot;Ready!&quot;)
+```
+
+### Easing Functions
+
+```python
+from core.easing import interpolate
+t = i / (num_frames - 1)
+y = interpolate(start=0, end=400, t=t, easing=&#x27;ease_out&#x27;)
+# Available: linear, ease_in, ease_out, ease_in_out, bounce_out, elastic_out, back_out
+```
+
+### Frame Helpers
+
+```python
+from core.frame_composer import (
+    create_blank_frame,
+    create_gradient_background,
+    draw_circle,
+    draw_text,
+    draw_star
+)
+```
+
+## Animation Concepts (Approach B)
+
+- **Shake/Vibrate:** Offset position with `math.sin()` or `math.cos()`; add small random variations.
+- **Pulse/Heartbeat:** Scale size with `math.sin(t * frequency * 2 * math.pi)`; scale between 0.8 and 1.2.
+- **Bounce:** Use `interpolate()` with `easing=&#x27;bounce_out&#x27;` for landing, `easing=&#x27;ease_in&#x27;` for falling.
+- **Spin/Rotate:** Use `image.rotate(angle, resample=Image.BICUBIC)`; use sine wave for wobble.
+- **Fade In/Out:** Adjust alpha channel or use `Image.blend(image1, image2, alpha)`.
+- **Slide:** Move from off-screen to target; use `interpolate()` with `easing=&#x27;ease_out&#x27;`.
+
+## Conflicts
+
+- **anthropics/skills and LeoYeAI/openclaw-master-skills** specify FPS 10-30, Colors 48-128, and duration under 3 seconds for emoji GIFs, while **davepoon/buildwithclaude and Prat011/awesome-llm-skills** specify FPS 10-12, Colors 32-48, and duration 1-2 seconds, plus a strict 64KB size limit and strategies to avoid gradients.
+- **anthropics/skills and LeoYeAI/openclaw-master-skills** instruct drawing from scratch with PIL and say not to assume pre-packaged graphics exist, while **davepoon/buildwithclaude and Prat011/awesome-llm-skills** provide pre-built template functions and do not include from-scratch drawing guidance.
+- **anthropics/skills and LeoYeAI/openclaw-master-skills** expose `core.easing.interpolate` and `core.frame_composer` helpers, while **davepoon/buildwithclaude and Prat011/awesome-llm-skills** expose `check_slack_size` and `validate_dimensions` validators and template-based animation functions instead.</pre>
+</body>
+</html>

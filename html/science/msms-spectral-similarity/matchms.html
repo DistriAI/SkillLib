@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>matchms</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">msms-spectral-similarity</a> / matchms</p><h1>matchms</h1><p class="meta">combined</p><p>The K-Dense copy is the most technically current and safe, pinning matchms 0.33.1 and correcting removed APIs (ModifiedCosine, add_losses, SpectrumProcessor callability). However, the other copies contain material steps and constraints that K-Dense lacks or presents differently: explicit import/export function names (load_from_mgf, save_as_msp), a broader list of similarity functions (FingerprintSimilarity, MetadataMatch), a packaged script execution path (similarity_pipeline.py), and a different dependency pinning strategy (matchms&gt;=0.20,&lt;1.0 vs ==0.33.1). Crowning K-Dense would hide the alternative workflow of using the packaged script and the broader similarity function set. The copies disagree on the correct similarity class name (ModifiedCosine vs ModifiedCosineGreedy) and the version pin, which are real conflicts.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/matchms/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/matchms/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/matchms/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/matchms/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/matchms/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/matchms/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/matchms/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/matchms/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: matchms
+description: Processes, cleans, compares, and searches tandem mass spectra with matchms. Use for MS/MS file I/O, metadata harmonization, peak filtering, spectral similarity, library matching, score matrices, and molecular-similarity networks. Use pyopenms instead for LC-MS feature detection or proteomics pipelines.
+allowed-tools: Read Write Edit Bash
+license: Apache-2.0
+compatibility: Requires Python &gt;=3.10,&lt;3.15, uv, and matchms 0.33.1. Local file workflows need no credentials; metabolomics-USI loading requires network access.
+metadata:
+  version: &quot;2.3&quot;
+  last-reviewed: &quot;2026-10-01&quot;
+  skill-author: K-Dense Inc.
+---
+
+# Matchms
+
+## Purpose and Scope
+
+Matchms is a Python package for importing, cleaning, processing, and comparing tandem mass spectra. This skill targets **matchms 0.33.1**, released 2026-06-08, verified again on 2026-10-01. Older tutorials can use removed names; see the migration reference.
+
+Use matchms for:
+
+- MS/MS library search and query-versus-reference scoring
+- Metadata harmonization, adduct/precursor handling, and peak filtering
+- Cosine, modified-cosine, neutral-loss, approximate, and entropy scoring
+- Structured score matrices, top-hit extraction, and spectral networks
+- MGF, MSP, mzML, mzXML, JSON, mzSpecLib, and metabolomics-USI workflows
+
+Do not use matchms as a replacement for:
+
+- LC-MS feature detection, chromatographic alignment, peptide identification, or protein quantification — use pyopenms
+- Vendor raw-file conversion — convert to mzML/mzXML first
+- A validated compound-identification protocol — similarity is evidence, not proof of identity
+
+## Install the Verified Release
+
+Create or activate an environment, then install the release used by this skill:
+
+```bash
+uv pip install &quot;matchms==0.33.1&quot;
+```
+
+Verify the runtime:
+
+```bash
+uv run python -c &quot;import matchms; print(matchms.__version__)&quot;
+```
+
+Matchms 0.33.1 supports Python 3.10-3.14 and installs RDKit as a regular dependency. The old `matchms[chemistry]` extra is not part of the current package metadata.
+
+## Operating Workflow
+
+1. **Inspect the inputs.** Record format, spectrum count, MS level, precursor coverage, ion mode, peak counts, and identifier fields.
+2. **Load with metadata harmonization enabled** by default. Retain original files: disabling the flag in 0.33.1 still harmonizes metadata keys.
+3. **Apply the same peak-processing steps** to query and reference spectra. Keep metadata enrichment separate when reference annotations are richer.
+4. **Drop invalid spectra explicitly.** Many `require_*` filters return `None`.
+5. **Choose the score from the scientific question**, not from convenience. Modified and neutral-loss scores require valid `precursor_mz`.
+6. **Estimate `len(references) * len(queries)` before scoring.** A sparse result container does not automatically avoid computing every requested pair.
+7. **Report score settings and evidence.** Include tolerance **and units**, preprocessing, score name, number of matched peaks when available, and candidate metadata. The cosine-family `tolerance` is an absolute m/z window in Da, not ppm; a precursor filter with `tolerance_type=&quot;ppm&quot;` does not change fragment tolerance.
+8. **Validate top hits visually and chemically.** Use mirror plots, precursor agreement, ion/adduct compatibility, and orthogonal evidence.
+
+## Current API Guardrails
+
+These points prevent the most common failures from pre-0.33 examples:
+
+- Use `ModifiedCosineGreedy` or `ModifiedCosineHungarian`; `ModifiedCosine` was removed in 0.32.0.
+- Do not call `add_losses()`. It was removed in 0.27.0; use `spectrum.losses`, `spectrum.compute_losses(...)`, or `NeutralLossesCosine` directly.
+- `SpectrumProcessor` is not callable. Use `process_spectrum()` or `process_spectra()`. The single-spectrum call mutates by default; pass a clone when preserving the original.
+- `process_spectra()` returns `(processed_spectra, processing_report)`.
+- `Scores.scores` is a `StackedSparseArray`, often with separate structured fields such as `CosineGreedy_score` and `CosineGreedy_matches`.
+- `scores_by_query()` returns `(reference_spectrum, score_record)` pairs, not reference indices.
+- Prefer `spectra` in parameter names. The legacy spelling `spectrums` is deprecated.
+- Never load pickle files from an untrusted source; unpickling can execute code.
+
+See `references/migration.md` for a complete old-to-current mapping.
+
+## Quick Start: Clean and Search a Library
+
+```python
+from math import isfinite
+
+from matchms import SpectrumProcessor, calculate_scores
+from matchms.filtering import (
+    default_filters,
+    normalize_intensities,
+    require_minimum_number_of_peaks,
+    require_precursor_mz,
+    select_by_relative_intensity,
+)
+from matchms.importing import load_spectra
+from matchms.similarity import ModifiedCosineGreedy
+
+
+def load_and_process(path):
+    spectra = [default_filters(spectrum) for spectrum in load_spectra(path)]
+    processor = SpectrumProcessor(
+        [
+            (require_precursor_mz, {&quot;minimum_accepted_mz&quot;: 10.0}),
+            normalize_intensities,
+            (select_by_relative_intensity, {&quot;intensity_from&quot;: 0.01}),
+            (require_minimum_number_of_peaks, {&quot;n_required&quot;: 5}),
+        ]
+    )
+    processed, _ = processor.process_spectra(
+        spectra,
+        progress_bar=False,
+        create_report=False,
+    )
+    return [s for s in processed if isfinite(s.get(&quot;precursor_mz&quot;))]
+
+
+references = load_and_process(&quot;library.msp&quot;)
+queries = load_and_process(&quot;queries.mgf&quot;)
+
+metric = ModifiedCosineGreedy(tolerance=0.02)
+scores = calculate_scores(
+    references=references,
+    queries=queries,
+    similarity_function=metric,
+)
+
+score_name = &quot;ModifiedCosineGreedy_score&quot;
+matches_name = &quot;ModifiedCosineGreedy_matches&quot;
+for query in queries:
+    ranked = scores.scores_by_query(query, name=score_name, sort=True)
+    for reference, values in ranked[:5]:
+        print(
+            query.get(&quot;spectrum_id&quot;, query.get(&quot;id&quot;)),
+            reference.get(&quot;spectrum_id&quot;, reference.get(&quot;id&quot;)),
+            values[&quot;score&quot;],
+            values[&quot;matches&quot;],
+        )
+```
+
+## Importing and Exporting
+
+Load spectra from multiple file formats and export processed data:
+
+```python
+from matchms.importing import load_from_mgf, load_from_mzml, load_from_msp, load_from_json
+from matchms.exporting import save_as_mgf, save_as_msp, save_as_json
+
+# Import spectra
+spectra = list(load_from_mgf(&quot;spectra.mgf&quot;))
+spectra = list(load_from_mzml(&quot;data.mzML&quot;))
+spectra = list(load_from_msp(&quot;library.msp&quot;))
+
+# Export processed spectra
+save_as_mgf(spectra, &quot;output.mgf&quot;)
+save_as_json(spectra, &quot;output.json&quot;)
+```
+
+**Supported formats:**
+- mzML and mzXML (raw mass spectrometry formats)
+- MGF (Mascot Generic Format)
+- MSP (spectral library format)
+- JSON (GNPS-compatible)
+- metabolomics-USI references
+- Pickle (Python serialization)
+
+For detailed importing/exporting documentation, consult `references/importing_exporting.md`.
+
+## Spectrum Filtering and Processing
+
+Apply comprehensive filters to standardize metadata and refine peak data:
+
+```python
+from matchms.filtering import default_filters, normalize_intensities
+from matchms.filtering import select_by_relative_intensity, require_minimum_number_of_peaks
+
+# Apply default metadata harmonization filters
+spectrum = default_filters(spectrum)
+
+# Normalize peak intensities
+spectrum = normalize_intensities(spectrum)
+
+# Filter peaks by relative intensity
+spectrum = select_by_relative_intensity(spectrum, intensity_from=0.01, intensity_to=1.0)
+
+# Require minimum peaks
+spectrum = require_minimum_number_of_peaks(spectrum, n_required=5)
+```
+
+**Filter categories:**
+- **Metadata processing**: Harmonize compound names, derive chemical structures, standardize adducts, correct charges
+- **Peak filtering**: Normalize intensities, select by m/z or intensity, remove precursor peaks
+- **Quality control**: Require minimum peaks, validate precursor m/z, ensure metadata completeness
+- **Chemical annotation**: Add fingerprints, derive InChI/SMILES, repair structural mismatches
+
+Matchms provides 40+ filters. For the complete filter reference, consult `references/filtering.md`.
+
+## Calculating Spectral Similarities
+
+Compare spectra using various similarity metrics:
+
+```python
+from matchms import calculate_scores
+from matchms.similarity import CosineGreedy, ModifiedCosineGreedy, CosineHungarian
+
+# Calculate cosine similarity (fast, greedy algorithm)
+scores = calculate_scores(references=library_spectra,
+                         queries=query_spectra,
+                         similarity_function=CosineGreedy())
+
+# Calculate modified cosine (accounts for precursor m/z differences)
+scores = calculate_scores(references=library_spectra,
+                         queries=query_spectra,
+                         similarity_function=ModifiedCosineGreedy(tolerance=0.1))
+
+# Get best matches
+best_matches = scores.scores_by_query(query_spectra[0], sort=True)[:10]
+```
+
+**Available similarity functions:**
+- **CosineGreedy/CosineHungarian**: Peak-based cosine similarity with different matching algorithms
+- **ModifiedCosineGreedy/ModifiedCosineHungarian**: Cosine similarity accounting for precursor mass differences
+- **NeutralLossesCosine**: Similarity based on neutral loss patterns
+- **FingerprintSimilarity**: Molecular structure similarity using fingerprints
+- **MetadataMatch**: Compare user-defined metadata fields
+- **PrecursorMzMatch/ParentMassMatch**: Simple mass-based filtering
+
+For detailed similarity function documentation, consult `references/similarity.md`.
+
+## Building Processing Pipelines
+
+Create reproducible, multi-step analysis workflows:
+
+```python
+from matchms import SpectrumProcessor
+from matchms.filtering import default_filters, normalize_intensities
+from matchms.filtering import select_by_relative_intensity, remove_peaks_around_precursor_mz
+
+# Define a processing pipeline
+processor = SpectrumProcessor([
+    default_filters,
+    normalize_intensities,
+    lambda s: select_by_relative_intensity(s, intensity_from=0.01),
+    lambda s: remove_peaks_around_precursor_mz(s, mz_tolerance=17)
+])
+
+# Apply to all spectra
+processed_spectra, _ = processor.process_spectra(spectra)
+```
+
+## Working with Spectrum Objects
+
+The core `Spectrum` class contains mass spectral data:
+
+```python
+from matchms import Spectrum
+import numpy as np
+
+# Create a spectrum
+mz = np.array([100.0, 150.0, 200.0, 250.0])
+intensities = np.array([0.1, 0.5, 0.9, 0.3])
+metadata = {&quot;precursor_mz&quot;: 250.5, &quot;ionmode&quot;: &quot;positive&quot;}
+
+spectrum = Spectrum(mz=mz, intensities=intensities, metadata=metadata)
+
+# Access spectrum properties
+print(spectrum.peaks.mz)           # m/z values
+print(spectrum.peaks.intensities)  # Intensity values
+print(spectrum.get(&quot;precursor_mz&quot;)) # Metadata field
+
+# Visualize spectra
+spectrum.plot()
+spectrum.plot_against(reference_spectrum)
+```
+
+## Metadata Management
+
+Standardize and harmonize spectrum metadata:
+
+```python
+# Metadata is automatically harmonized
+spectrum.set(&quot;Precursor_mz&quot;, 250.5)  # Gets harmonized to lowercase key
+print(spectrum.get(&quot;precursor_mz&quot;))   # Returns 250.5
+
+# Derive chemical information
+from matchms.filtering import derive_inchi_from_smiles, derive_inchikey_from_inchi
+from matchms.filtering import add_fingerprint
+
+spectrum = derive_inchi_from_smiles(spectrum)
+spectrum = derive_inchikey_from_inchi(spectrum)
+spectrum = add_fingerprint(spectrum, fingerprint_type=&quot;morgan&quot;, nbits=2048)
+```
+
+## Common Workflows
+
+For typical mass spectrometry analysis workflows, including:
+- Loading and preprocessing spectral libraries
+- Matching unknown spectra against reference libraries
+- Quality control and validation of spectral data
+
+## Packaged Script Execution
+
+If a packaged script is available (e.g., `scripts/similarity_pipeline.py`), use it for reproducible, bounded deliverables:
+
+```bash
+cd &quot;path/to/matchms&quot;
+python -m py_compile scripts/similarity_pipeline.py
+python scripts/similarity_pipeline.py --help
+```
+
+Example run plan:
+1. Confirm the user input, output path, and any required config values.
+2. Ed</pre>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>vitest</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">vitest-setup-and-testing</a> / vitest</p><h1>vitest</h1><p class="meta">combined</p><p>The copies cover different parts of the Vitest workflow. jezweb/claude-skills is a procedural setup skill that detects project type, installs dependencies, generates vitest.config.ts, and scaffolds test files. antfu/skills and LeoYeAI/openclaw-master-skills are reference catalogs that point to external reference files for API details, mocking, coverage, and workspaces. sickn33/agentic-awesome-skills provides inline patterns for writing tests, mocking, and in-source testing. No single copy contains the full procedure plus the reference material, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/dev-tools/skills/vitest/SKILL.md</code></td></tr><tr><td><a href="https://github.com/antfu/skills">antfu/skills</a></td><td><code>skills/vitest/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/vitest-skill/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/vitest/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/dev-tools/skills/vitest/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/antfu/skills">antfu/skills</a></td><td><code>skills/vitest/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/vitest-skill/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/vitest/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/vitest-skill/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/vitest-skill/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: vitest
+description: &quot;Set up Vitest testing in any project and write tests using Vitest&#x27;s Jest-compatible API. Detects project type, generates vitest.config.ts, test setup, utilities, and sample tests. Covers mocking patterns, coverage config, workspace setup, Jest migration, and in-source testing. Use whenever the user mentions adding tests, setting up Vitest, configuring tests, migrating from Jest, fixing testing infrastructure, or asks &#x27;how do I test this&#x27;.&quot;
+license: MIT
+---
+
+# Vitest Setup and Testing
+
+Detect the project type, generate the right Vitest configuration, produce working test infrastructure, and provide reference patterns for writing tests.
+
+## Workflow
+
+1. **Detect** — scan the project to determine type and existing setup
+2. **Configure** — generate vitest.config.ts tailored to the environment
+3. **Scaffold** — create test setup, utilities, and a sample test
+4. **Wire up** — add package.json scripts and TypeScript config
+5. **Write tests** — use Vitest API patterns for unit, component, and in-source tests
+
+## Step 1: Detect Project Type
+
+Read these files to determine the project:
+
+```
+package.json          → dependencies, scripts, type field
+tsconfig.json         → paths, compiler options
+wrangler.toml         → Cloudflare Workers project
+vite.config.ts        → existing Vite setup (extend, don&#x27;t replace)
+vitest.config.ts      → already configured? just fill gaps
+jest.config.*         → migration candidate
+src/                  → source structure
+```
+
+Classify as one of:
+
+| Type | Signals | Environment |
+|------|---------|-------------|
+| **Cloudflare Workers** | wrangler.toml, @cloudflare/workers-types, cloudflare vite plugin | `node` with Workers-specific setup |
+| **React (Vite)** | @vitejs/plugin-react, react-dom | `jsdom` or `happy-dom` |
+| **React (SSR/TanStack Start)** | @tanstack/start, vinxi | Split: `node` for server, `jsdom` for client |
+| **Node/Hono API** | hono, express, no react-dom | `node` |
+| **Library** | exports field, no framework deps | `node` |
+
+If a `vite.config.ts` already exists, extend it rather than creating a separate vitest.config.ts — Vitest reads Vite config natively.
+
+## Step 2: Install Dependencies
+
+Generate the install command based on detected type. Use the project&#x27;s package manager (check for pnpm-lock.yaml, yarn.lock, bun.lockb, or package-lock.json).
+
+```bash
+# Base (always)
+pnpm add -D vitest
+
+# React projects — add jsdom and Testing Library
+pnpm add -D @vitest/coverage-v8 jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event
+
+# Workers projects — add Cloudflare test utilities
+pnpm add -D @vitest/coverage-v8 @cloudflare/vitest-pool-workers
+
+# Node/Hono projects
+pnpm add -D @vitest/coverage-v8
+
+# If migrating from Jest, also remove:
+pnpm remove jest ts-jest @types/jest jest-environment-jsdom babel-jest
+```
+
+## Step 3: Generate vitest.config.ts
+
+### Cloudflare Workers
+
+```typescript
+import { defineWorkersConfig } from &quot;@cloudflare/vitest-pool-workers/config&quot;;
+
+export default defineWorkersConfig({
+  test: {
+    globals: true,
+    poolOptions: {
+      workers: {
+        wrangler: { configPath: &quot;./wrangler.toml&quot; },
+      },
+    },
+  },
+});
+```
+
+If the project uses the Cloudflare Vite plugin (`@cloudflare/vite-plugin`), integrate into the existing vite.config.ts instead:
+
+```typescript
+/// &lt;reference types=&quot;vitest/config&quot; /&gt;
+import { defineConfig } from &quot;vite&quot;;
+import { cloudflare } from &quot;@cloudflare/vite-plugin&quot;;
+
+export default defineConfig({
+  plugins: [cloudflare()],
+  test: {
+    globals: true,
+  },
+});
+```
+
+### React (Vite)
+
+```typescript
+/// &lt;reference types=&quot;vitest/config&quot; /&gt;
+import { defineConfig } from &quot;vite&quot;;
+import react from &quot;@vitejs/plugin-react&quot;;
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true,
+    environment: &quot;jsdom&quot;,
+    setupFiles: [&quot;./src/test/setup.ts&quot;],
+    css: true,
+  },
+});
+```
+
+If a vite.config.ts already exists, add the `test` block to it rather than creating a new file.
+
+### Node / Hono API
+
+```typescript
+import { defineConfig } from &quot;vitest/config&quot;;
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: &quot;node&quot;,
+  },
+});
+```
+
+### With Coverage (add to any config)
+
+```typescript
+  test: {
+    // ... existing config
+    coverage: {
+      provider: &quot;v8&quot;,
+      reporter: [&quot;text&quot;, &quot;html&quot;, &quot;lcov&quot;],
+      exclude: [
+        &quot;node_modules/&quot;,
+        &quot;**/*.config.*&quot;,
+        &quot;**/*.d.ts&quot;,
+        &quot;**/test/**&quot;,
+      ],
+    },
+  },
+```
+
+## Step 4: Generate Test Setup File
+
+Create `src/test/setup.ts` (React projects only):
+
+```typescript
+import &quot;@testing-library/jest-dom/vitest&quot;;
+```
+
+That single import adds all the custom matchers (toBeInTheDocument, toHaveTextContent, etc.) and registers the Vitest `expect.extend` automatically.
+
+## Step 5: Add TypeScript Config
+
+Add to `tsconfig.json` compilerOptions:
+
+```json
+{
+  &quot;compilerOptions&quot;: {
+    &quot;types&quot;: [&quot;vitest/globals&quot;]
+  }
+}
+```
+
+For projects with multiple tsconfig files (e.g. tsconfig.app.json + tsconfig.node.json), add to the one that covers test files — usually the root tsconfig.json or create a tsconfig.test.json that extends it.
+
+## Step 6: Add Package.json Scripts
+
+```json
+{
+  &quot;scripts&quot;: {
+    &quot;test&quot;: &quot;vitest&quot;,
+    &quot;test:run&quot;: &quot;vitest run&quot;,
+    &quot;test:coverage&quot;: &quot;vitest run --coverage&quot;,
+    &quot;test:ui&quot;: &quot;vitest --ui&quot;
+  }
+}
+```
+
+Don&#x27;t overwrite existing scripts — merge with what&#x27;s there.
+
+## Step 7: Generate Sample Test
+
+Write one test file that demonstrates the right patterns for this specific project. Place it next to real source code, not in a separate `__tests__` directory.
+
+### For a Hono API route (e.g. `src/routes/health.ts`):
+
+```typescript
+import { describe, it, expect } from &quot;vitest&quot;;
+import { app } from &quot;../index&quot;;
+
+describe(&quot;GET /health&quot;, () =&gt; {
+  it(&quot;returns 200 with status ok&quot;, async () =&gt; {
+    const res = await app.request(&quot;/health&quot;);
+    expect(res.status).toBe(200);
+
+    const body = await res.json();
+    expect(body).toEqual({ status: &quot;ok&quot; });
+  });
+});
+```
+
+### For a React component (e.g. `src/components/Button.tsx`):
+
+```typescript
+import { describe, it, expect } from &quot;vitest&quot;;
+import { render, screen } from &quot;@testing-library/react&quot;;
+import Button from &quot;./Button&quot;;
+
+describe(&quot;Button&quot;, () =&gt; {
+  it(&quot;renders with label&quot;, () =&gt; {
+    render(&lt;Button label=&quot;Click me&quot; /&gt;);
+    expect(screen.getByText(&quot;Click me&quot;)).toBeDefined();
+  });
+});
+```
+
+## Test Writing Patterns
+
+### Basic Test
+
+```typescript
+import { describe, it, expect, vi, beforeEach } from &#x27;vitest&#x27;;
+import { Calculator } from &#x27;./calculator&#x27;;
+
+describe(&#x27;Calculator&#x27;, () =&gt; {
+  let calc: Calculator;
+  beforeEach(() =&gt; { calc = new Calculator(); });
+
+  it(&#x27;adds two numbers&#x27;, () =&gt; {
+    expect(calc.add(2, 3)).toBe(5);
+  });
+
+  it(&#x27;throws on divide by zero&#x27;, () =&gt; {
+    expect(() =&gt; calc.divide(10, 0)).toThrow();
+  });
+});
+```
+
+### Mocking (vi instead of jest)
+
+```typescript
+import { vi } from &#x27;vitest&#x27;;
+
+// Mock module
+vi.mock(&#x27;./database&#x27;, () =&gt; ({
+  getUser: vi.fn().mockResolvedValue({ name: &#x27;Alice&#x27; }),
+  saveUser: vi.fn().mockResolvedValue(true),
+}));
+
+// Mock function
+const mockFn = vi.fn();
+mockFn.mockReturnValue(42);
+mockFn.mockResolvedValue({ data: &#x27;test&#x27; });
+
+// Spy
+const spy = vi.spyOn(console, &#x27;log&#x27;).mockImplementation(() =&gt; {});
+expect(spy).toHaveBeenCalledWith(&#x27;message&#x27;);
+spy.mockRestore();
+
+// Timers
+vi.useFakeTimers();
+vi.advanceTimersByTime(1000);
+vi.runAllTimers();
+vi.useRealTimers();
+```
+
+### In-Source Testing
+
+```typescript
+// src/math.ts — tests alongside code!
+export function add(a: number, b: number) { return a + b; }
+export function multiply(a: number, b: number) { return a * b; }
+
+if (import.meta.vitest) {
+  const { it, expect } = import.meta.vitest;
+  it(&#x27;adds&#x27;, () =&gt; { expect(add(2, 3)).toBe(5); });
+  it(&#x27;multiplies&#x27;, () =&gt; { expect(multiply(3, 4)).toBe(12); });
+}
+```
+
+### Snapshot Testing
+
+```typescript
+it(&#x27;serializes user&#x27;, () =&gt; {
+  expect(serializeUser(user)).toMatchSnapshot();
+});
+
+it(&#x27;inline snapshot&#x27;, () =&gt; {
+  expect(serializeUser(user)).toMatchInlineSnapshot(`
+    { &quot;name&quot;: &quot;Alice&quot;, &quot;email&quot;: &quot;alice@test.com&quot; }
+  `);
+});
+```
+
+### Anti-Patterns
+
+| Bad | Good | Why |
+|-----|------|-----|
+| `jest.fn()` | `vi.fn()` | Vitest uses `vi` |
+| `jest.mock()` | `vi.mock()` | Different namespace |
+| No type safety | TypeScript + strict | Vitest is TS-first |
+
+## Quick Reference
+
+| Task | Command |
+|------|---------|
+| Run once | `npx vitest run` |
+| Watch | `npx vitest` (default) |
+| UI | `npx vitest --ui` |
+| Coverage | `npx vitest --coverage` |
+| Specific file | `npx vitest run src/math.test.ts` |
+| Filter | `npx vitest run -t &quot;adds&quot;` |
+
+## Reference Topics
+
+For detailed API and feature references, consult the Vitest documentation or the reference files listed in the antfu/skills catalog:
+
+- Configuration: Vitest and Vite config integration, defineConfig usage
+- CLI: Command line interface, commands and options
+- Test API: test/it function, modifiers like skip, only, concurrent
+- Describe API: describe/suite for grouping tests and nested suites
+- Expect API: Assertions with toBe, toEqual, matchers and asymmetric matchers
+- Hooks: beforeEach, afterEach, beforeAll, afterAll, aroundEach
+- Mocking: Mock functions, modules, timers, dates with vi utilities
+- Snapshots: Snapshot testing with toMatchSnapshot and inline snapshots
+- Coverage: Code coverage with V8 or Istanbul providers
+- Test Context: Test fixtures, context.expect, test.extend for custom fixtures
+- Concurrency: Concurrent tests, parallel execution, sharding
+- Filtering: Filter tests by name, file patterns, tags
+- Test Tags: Label tests with tags to filter runs and apply shared options
+- Reporters: Built-in reporters, default selection, CI/output config
+- Benchmarking: Write benchmarks with the bench fixture (Tinybench)
+- Vi Utilities: vi helper: mock, spyOn, fake timers, hoisted, waitFor
+- Environments: Test environments: node, jsdom, happy-dom, custom
+- Type Testing: Type-level testing with expectTypeOf and assertType
+- Projects: Multi-project workspaces, different configs per project
+
+## Limitations
+
+- Use this skill only when the task clearly matches its upstream source and local project context.
+- Verify commands, generated code, dependencies, credentials, and external service behavior before applying changes.
+- Do not treat examples as a substitute for environment-specific tests, security review, or user approval for destructive or costly actions.</pre>
+</body>
+</html>

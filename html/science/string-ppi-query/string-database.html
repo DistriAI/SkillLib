@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>string-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">string-ppi-query</a> / string-database</p><h1>string-database</h1><p class="meta">combined</p><p>Both skills describe the same task (querying the STRING database for PPIs and enrichment) and reference the same underlying files (`scripts/string_api.py`, `references/string_reference.md`). However, they disagree on the specific API surface: the first copy uses a `StringClient` class with methods like `map_id` and `get_network_image`, while the second copy uses standalone functions like `string_map_ids` and `string_network`. The second copy also provides significantly more detail on parameters (e.g., `required_score` thresholds, `network_flavor` options) and use cases. Because the code interfaces are incompatible and the second copy contains material steps/constraints (specific thresholds, flavors) missing from the first, crowning one would hide the alternative implementation or lose critical parameter details.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/string-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/string-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/string-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/string-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: string-database
+description: Query the STRING database for protein-protein interactions, ID mapping, enrichment, and visualization.
+---
+
+# STRING Database Skill
+
+## Overview
+Access the STRING REST API to map identifiers, retrieve PPI networks, run enrichment, and generate visualizations. The skill provides Python helpers in `scripts/string_api.py` and documentation in `references/string_reference.md`.
+
+## Dependencies
+- Python &gt;= 3.8
+- `requests`, `pandas`
+
+## Implementation Note
+The specific API surface may vary between versions of this skill. Check `scripts/string_api.py` to determine if the interface is class-based (`StringClient`) or function-based (`string_*`).
+
+## Core Operations
+
+### 1. Identifier Mapping
+Convert gene/protein names to STRING identifiers.
+- **Class-based**: `client.map_id(identifier=&quot;TP53&quot;, species=9606)`
+- **Function-based**: `string_map_ids(&#x27;TP53&#x27;, species=9606)`
+- **Parameters**: `species` (NCBI taxon ID), `limit` (matches per query).
+
+### 2. Network Retrieval
+Fetch interaction edges with confidence scores.
+- **Class-based**: `client.get_network_image(...)` or similar network methods.
+- **Function-based**: `string_network(proteins, species=9606, required_score=400)`
+- **Parameters**:
+  - `required_score`: Confidence threshold (0-1000). Recommended: 400 (medium), 700 (high).
+  - `network_type`: `&#x27;functional&#x27;` (default) or `&#x27;physical&#x27;`.
+  - `add_nodes`: Expand network by N neighbors (0-10).
+
+### 3. Interaction Partners
+Find top interaction partners for a protein.
+- **Function-based**: `string_interaction_partners(&#x27;TP53&#x27;, species=9606, limit=10, required_score=700)`
+
+### 4. Enrichment Analysis
+Run GO/KEGG/Reactome/Pfam enrichment.
+- **Class-based**: `client.get_ppi_enrichment(identifiers=[...])`
+- **Function-based**: `string_enrichment(...)` (check `scripts/string_enrichment.py` or `string_api.py` for exact function name).
+
+### 5. Visualization
+Generate static network images (PNG/SVG).
+- **Class-based**: `client.get_network_image(identifiers=[...], output_file=&quot;net.png&quot;, add_color_nodes=10)`
+- **Function-based**: `string_network_image(proteins, species=9606, network_flavor=&#x27;evidence&#x27;)`
+- **Flavors** (if supported): `&#x27;evidence&#x27;` (default), `&#x27;confidence&#x27;`, `&#x27;actions&#x27;`.
+
+## Best Practices
+- Always map identifiers first to ensure canonical STRING IDs.
+- Use `caller_identity` (class-based) or appropriate headers to identify your application.
+- Filter by `required_score` to balance sensitivity and specificity.</pre>
+</body>
+</html>

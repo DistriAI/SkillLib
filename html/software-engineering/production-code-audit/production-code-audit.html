@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>production-code-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">production-code-audit</a> / production-code-audit</p><h1>production-code-audit</h1><p class="meta">combined</p><p>The two copies overlap heavily in the audit workflow (discovery, line-by-line issue detection, prioritized fixes, verification, and examples), but they disagree on the core operating mode and safety constraints. The sickn33 copy is framed as an autonomous, end-to-end transformation that directly fixes issues and adds infrastructure, and it defers to a separate detailed guide. The LeoYeAI copy explicitly defines a default read-only audit mode, requires fixes to be applied on a dedicated branch with a draft PR, and adds specific constraints for secrets handling and test execution. Crowning one copy would hide the other&#x27;s real alternative workflow and safety rules, so the correct decision is to combine them and surface the conflicts.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/production-code-audit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/production-code-audit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/production-code-audit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/production-code-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/production-code-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/production-code-audit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: production-code-audit
+description: &quot;Deep-scan a codebase, understand its architecture and patterns, then produce a comprehensive audit report with prioritized fixes. Optionally apply changes on a feature branch with a PR for review. Covers security, performance, error handling, logging, testing, and documentation.&quot;
+---
+
+# Production Code Audit
+
+## Overview
+
+Analyze a codebase to understand its architecture, patterns, and purpose, then produce a detailed audit report with prioritized findings. Optionally apply fixes on a dedicated branch for review via pull request. This skill scans for issues across security, performance, architecture, and quality.
+
+## Safety &amp; Workflow
+
+&gt; **Important:** This skill operates in two modes:
+&gt; 1. **Audit mode (default):** Read-only scan that produces a report. No files are modified.
+&gt; 2. **Fix mode:** When the user explicitly requests fixes, create a new branch (e.g., `audit/production-hardening`), apply changes there, and open a draft PR for review. Never push directly to main.
+&gt;
+&gt; **Secrets handling:** If hardcoded secrets are discovered, flag them in the report with file and line number. Do NOT remove or commit secrets. Advise the user to rotate the credential and use environment variables. Never log or exfiltrate secret values.
+&gt;
+&gt; **Test execution:** Only run tests in a sandboxed or CI environment. Ask the user before executing tests locally if the project has external dependencies (databases, APIs, etc.).
+
+## When to Use This Skill
+
+- Use when user says &quot;audit my codebase&quot; or &quot;make this production-ready&quot;
+- Use when preparing for production deployment
+- Use when code needs to meet corporate/enterprise standards
+
+## How It Works
+
+### Step 1: Codebase Discovery
+
+**Scan and understand the codebase:**
+
+1. **Read source files** - Scan project files (respect .gitignore, skip node_modules/vendor/dist)
+2. **Identify tech stack** - Detect languages, frameworks, databases, tools
+3. **Understand architecture** - Map out structure, patterns, dependencies
+4. **Identify purpose** - Understand what the application does
+5. **Find entry points** - Locate main files, routes, controllers
+6. **Map data flow** - Understand how data moves through the system
+
+### Step 2: Comprehensive Issue Detection
+
+**Scan line-by-line for all issues:**
+
+**Architecture Issues:**
+- Circular dependencies
+- Tight coupling
+- God classes (&gt;500 lines or &gt;20 methods)
+- Missing separation of concerns
+- Poor module boundaries
+- Violation of design patterns
+
+**Security Vulnerabilities:**
+- SQL injection (string concatenation in queries)
+- XSS vulnerabilities (unescaped output)
+- Hardcoded secrets (API keys, passwords in code)
+- Missing authentication/authorization
+- Weak password hashing (MD5, SHA1)
+- Missing input validation
+- CSRF vulnerabilities
+- Insecure dependencies
+
+**Performance Problems:**
+- N+1 query problems
+- Missing database indexes
+- Synchronous operations that should be async
+- Missing caching
+- Inefficient algorithms (O(n²) or worse)
+- Large bundle sizes
+- Unoptimized images
+- Memory leaks
+
+**Code Quality Issues:**
+- High cyclomatic complexity (&gt;10)
+- Code duplication
+- Magic numbers
+- Poor naming conventions
+- Missing error handling
+- Inconsistent formatting
+- Dead code
+- TODO/FIXME comments
+
+**Testing Gaps:**
+- Missing tests for critical paths
+- Low test coverage (&lt;80%)
+- No edge case testing
+- Flaky tests
+- Missing integration tests
+
+**Production Readiness:**
+- Missing environment variables
+- No logging/monitoring
+- No error tracking
+- Missing health checks
+- Incomplete documentation
+- No CI/CD pipeline
+
+### Step 3: Fixes and Optimizations (Fix Mode Only)
+
+**When the user explicitly requests fixes, apply them on a new branch:**
+
+```bash
+git checkout -b audit/production-hardening
+```
+
+1. **Refactor architecture** - Break up god classes, fix circular dependencies
+2. **Fix security issues** - Use parameterized queries, flag secrets for rotation, add validation
+3. **Optimize performance** - Fix N+1 queries, add caching, optimize algorithms
+4. **Improve code quality** - Reduce complexity, remove duplication, fix naming
+5. **Add missing tests** - Write tests for untested critical paths
+6. **Add production infrastructure** - Logging, monitoring, health checks
+7. **Optimize everything** - Bundle size, images, database queries
+8. **Add documentation** - README, API docs, architecture docs
+
+### Step 4: Verify and Report
+
+**After making all changes:**
+
+1. Run all tests to ensure nothing broke
+2. Verify all security issues are fixed
+3. Measure performance improvements
+4. Generate comprehensive report
+5. Provide before/after metrics
+
+## Examples
+
+### Example 1: Autonomous Codebase Transformation
+
+```markdown
+User: @production-code-audit make this production-ready
+
+AI: I&#x27;ll scan your entire codebase and transform it to production-grade quality.
+
+**Phase 1: Discovering Codebase** (analyzing 247 files)
+- Detected: Node.js + Express + PostgreSQL + React
+- Architecture: MVC pattern with REST API
+- Purpose: E-commerce platform
+- Entry points: server.js, src/index.tsx
+
+**Phase 2: Scanning for Issues** (line-by-line analysis)
+
+Found 127 issues:
+- 🔴 CRITICAL: 8 issues
+- 🟠 HIGH: 23 issues  
+- 🟡 MEDIUM: 41 issues
+- 🔵 LOW: 55 issues
+
+**Phase 3: Fixing Issues Automatically**
+
+🔴 CRITICAL FIXES (8/8 completed):
+
+1. ✅ Fixed SQL injection in UserRepository.findByEmail()
+   - Before: String concatenation in query
+   - After: Parameterized query with $1 placeholder
+
+2. ✅ Removed hardcoded database password from config/database.ts
+   - Before: password: &#x27;SuperSecret123!&#x27;
+   - After: password: process.env.DB_PASSWORD
+
+3. ✅ Added authentication to admin routes
+   - Before: No auth middleware
+   - After: authenticateToken + requireRole(&#x27;admin&#x27;)
+
+4. ✅ Fixed weak password hashing (MD5 → bcrypt)
+   - Before: crypto.createHash(&#x27;md5&#x27;)
+   - After: bcrypt.hash(password, 12)
+
+5. ✅ Fixed circular dependency: OrderService ↔ PaymentService
+   - Before: Direct imports causing cycle
+   - After: Event-based decoupling with EventBus
+
+6. ✅ Added input validation to all API endpoints
+   - Before: No validation
+   - After: Zod schemas validating all inputs
+
+7. ✅ Fixed authentication bypass in auth middleware
+   - Before: next() called on missing token
+   - After: Returns 401 error
+
+8. ✅ Fixed mass assignment vulnerability in UserController
+   - Before: Accepts all fields from req.body
+   - After: Whitelist of allowed fields only
+
+🟠 HIGH PRIORITY FIXES (23/23 completed):
+
+9. ✅ Fixed N+1 query in OrderService.getOrdersWithItems()
+   - Before: Loop with individual queries (2.8s)
+   - After: Single query with joins (45ms)
+   - Performance: 98% improvement
+
+10. ✅ Refactored UserService god class (850 lines → 4 focused services)
+    - UserAuthenticationService (login, logout, password)
+    - UserProfileService (CRUD operations)
+    - UserNotificationService (email, SMS)
+    - UserPermissionService (roles, permissions)
+
+11. ✅ Added Redis caching for product queries
+    - Before: Database query every request
+    - After: Cache with 1-hour TTL
+    - Performance: 95% faster
+
+12. ✅ Optimized bundle size
+    - Before: 850KB (gzipped: 280KB)
+    - After: 380KB (gzipped: 120KB)
+    - Improvement: 55% reduction
+
+13. ✅ Added database indexes
+    - orders(user_id, status, created_at)
+    - products(category, price)
+    - Query performance: 98% improvement
+
+[... 11 more high-priority fixes ...]
+
+🟡 MEDIUM PRIORITY FIXES (41/41 completed):
+[... all medium fixes ...]
+
+🔵 LOW PRIORITY IMPROVEMENTS (55/55 completed):
+[... all low improvements ...]
+
+**Phase 4: Adding Production Infrastructure**
+
+✅ Added structured logging (Winston)
+✅ Added error tracking (Sentry)
+✅ Added health check endpoints (/health, /ready)
+✅ Added monitoring (Prometheus metrics)
+✅ Added rate limiting (Redis-based)
+✅ Added API documentation (Swagger/OpenAPI)
+✅ Added comprehensive README
+✅ Added deployment guide
+✅ Added CI/CD pipeline (.github/workflows)
+
+**Phase 5: Verification**
+
+✅ All tests passing (1,247 tests)
+✅ Test coverage: 42% → 87%
+✅ Security scan: 0 vulnerabilities
+✅ Performance: API response time 3.2s → 180ms
+✅ Bundle size: 850KB → 380KB
+✅ Lighthouse score: 62 → 94
+
+**TRANSFORMATION COMPLETE**
+
+Your codebase is now production-ready with enterprise-grade quality:
+
+📊 Metrics:
+- Issues fixed: 127/127 (100%)
+- Test coverage: 87% (target: 80%+)
+- API performance: 94% improvement
+- Security: OWASP Top 10 compliant
+- Code quality: Grade A-
+
+📁 Files changed: 89 files
+📝 Lines changed: +3,247 / -1,892
+
+🚀 Ready for production deployment!
+```
+
+### Example 2: Automatic Security Hardening
+
+```markdown
+User: @production-code-audit secure this codebase
+
+AI: Scanning for security vulnerabilities...
+
+**Security Scan Complete**
+
+Found 15 security issues:
+- 🔴 CRITICAL: 5
+- 🟠 HIGH: 7
+- 🟡 MEDIUM: 3
+
+**Fixing all security issues automatically...**
+
+🔴 CRITICAL (5/5 fixed):
+
+1. ✅ SQL Injection in UserRepository
+```typescript
+// Before (VULNERABLE)
+const query = `SELECT * FROM users WHERE email = &#x27;${email}&#x27;`;
+
+// After (SECURE)
+const query = &#x27;SELECT * FROM users WHERE email = $1&#x27;;
+await db.query(query, [email]);
+```
+
+2. ✅ Hardcoded Secrets Removed
+```typescript
+// Before (INSECURE)
+const tokenSigningKey = &#x27;[redacted weak value]&#x27;;
+
+// After (SECURE)
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) throw new Error(&#x27;JWT_SECRET required&#x27;);
+```
+
+3. ✅ Authentication Added to Admin Routes
+```typescript
+// Before (VULNERABLE)
+router.delete(&#x27;/api/admin/users/:id&#x27;, deleteUser);
+
+// After (SECURE)
+router.delete(&#x27;/api/admin/users/:id&#x27;,
+  authenticateToken,
+  requireRole(&#x27;admin&#x27;),
+  deleteUser
+```</pre>
+</body>
+</html>

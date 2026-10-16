@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>data-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">data-analysis</a> / data-analysis</p><h1>data-analysis</h1><p class="meta">combined</p><p>The two skills share the name &#x27;data-analysis&#x27; but describe different procedures. The first is a general statistical methodology guide focused on decision framing, statistical rigor, and avoiding analytical pitfalls. The second is a specific, end-to-end R workflow for empirical research, including file structure, specific packages (fixest, modelsummary), and publication-ready output standards. Neither is a reproduction of the other; they are complementary but distinct approaches to data analysis.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/data-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/data-analysis/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/data-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/data-analysis/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/15-Felpix-Studios-social-science-research/skills/data-analysis/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/41-sticerd-eee-sewage-econometrics-check/skills/data-analysis/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/14-luischanci-claude-code-research-starter/dot-claude/skills/data-analysis/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/28-maxwell2732-paper-replicate-agent-demo/dot-claude/skills/data-analysis/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: data-analysis
+description: Comprehensive data analysis skill covering statistical methodology and an end-to-end R workflow for empirical research.
+---
+
+## When to Load
+User asks about analyzing data, finding patterns, statistical testing, or running an R-based empirical analysis.
+
+## Core Principle
+Analysis without a decision is just arithmetic. Always clarify: **What would change if this analysis shows X vs Y?**
+
+## Methodology First
+Before touching data:
+1. **What decision** is this analysis supporting?
+2. **What would change your mind?**
+3. **What data do you actually have**?
+4. **What timeframe** is relevant?
+
+## Statistical Rigor Checklist
+- [ ] Sample size sufficient?
+- [ ] Comparison groups fair?
+- [ ] Multiple comparisons adjusted?
+- [ ] Effect size meaningful?
+- [ ] Uncertainty quantified?
+
+## Analytical Pitfalls to Catch
+- Simpson&#x27;s Paradox
+- Survivorship bias
+- Comparing unequal periods
+- p-hacking
+- Correlation in time series
+- Aggregating percentages
+
+## R Workflow (If using R)
+
+### Phase 1: Setup and Data Loading
+1. Read `.claude/rules/r-code-conventions.md` if present.
+2. Create R script in `scripts/R/` with proper header.
+3. Load packages (`library()`, never `require()`).
+4. Set seed: `set.seed(42)`.
+5. Load and inspect dataset.
+
+### Phase 2: Exploratory Data Analysis
+- Generate summary statistics, distributions, and relationships.
+- Save diagnostic figures to `output/diagnostics/`.
+
+### Phase 3: Main Analysis
+- Use `fixest` for panel data, `lm`/`glm` for cross-section.
+- Cluster standard errors appropriately.
+- Report effect sizes.
+
+### Phase 4: Publication-Ready Output
+- **Tables:** Use `modelsummary` or `stargazer`. Export as `.tex` and `.html`.
+- **Figures:** Use `ggplot2` with project theme. Export as `.pdf` and `.png`.
+
+### Phase 5: Save and Review
+1. `saveRDS()` for all key objects.
+2. Run `r-reviewer` agent on the script if available.
+3. Address critical issues.
+
+## Output Standards
+1. **Lead with the insight**.
+2. **Quantify uncertainty**.
+3. **State limitations**.
+4. **Recommend next steps**.
+
+## Red Flags to Escalate
+- User wants to &quot;prove&quot; a predetermined conclusion.
+- Sample size too small.
+- Data quality issues.
+- Uncontrollable confounders.</pre>
+</body>
+</html>

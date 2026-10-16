@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hf-cloud-aws-context-discovery</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">aws-context-discovery</a> / hf-cloud-aws-context-discovery</p><h1>hf-cloud-aws-context-discovery</h1><p class="meta">combined</p><p>The huggingface/skills copy is the upstream source, but the sickn33/agentic-awesome-skills copy is not a faithful reproduction. It adds a security layer (never open or print credentials, SSO token caches, or secret env vars; use masked CLI metadata commands like aws configure list-profiles and aws configure get region) and a Limitations section that the upstream copy lacks. The upstream copy, by contrast, explicitly permits reading ~/.aws/config and ~/.aws/credentials as plain INI files and relies on AWS_PROFILE/AWS_REGION/AWS_DEFAULT_REGION env vars for region resolution, which the mirror copy omits. Crowning the upstream copy would hide the mirror&#x27;s credential-safety constraints, and crowning the mirror would hide the upstream&#x27;s env-var resolution steps and raw-config reading guidance. The copies overlap heavily on the core discovery flow (profile, region, sts get-caller-identity, SSO ARN detection, reporting format) but each has material steps the other lacks, so combine is correct.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/huggingface/skills">huggingface/skills</a></td><td><code>skills/hf-cloud-aws-context-discovery/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hf-cloud-aws-context-discovery/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/huggingface/skills">huggingface/skills</a></td><td><code>skills/hf-cloud-aws-context-discovery/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hf-cloud-aws-context-discovery/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hf-cloud-aws-context-discovery/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hf-cloud-aws-context-discovery/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hf-cloud-aws-context-discovery
+description: Discover the user&#x27;s local AWS context (active profile, region, account ID, caller identity) at the start of any AWS task. Use this skill before any other AWS work. Never guess the region or account ID.
+---
+
+# AWS Context Discovery
+
+Before doing any AWS work, read the user&#x27;s local AWS config. Don&#x27;t guess the region, and don&#x27;t ask the user for things their config already answers. Never open or print ~/.aws/credentials, credential-process output, secret environment variables, access keys, session tokens, or SSO token caches.
+
+## When to Use
+
+- Establish the effective AWS profile, region, account, and caller before AWS work.
+- Diagnose expired SSO sessions, missing profiles, or configuration overrides.
+- Provide verified context to later SageMaker planning and deployment skills.
+
+## What to discover
+
+Run these at the start of the AWS work and remember the results for the rest of the session.
+
+### 1. Active profile
+
+Use a profile the user explicitly named in their prompt. Otherwise, check the AWS_PROFILE env var, else default. If the named profile doesn&#x27;t exist in aws configure list-profiles, surface that clearly.
+
+### 2. Region
+
+Resolution order — stop at the first one that produces a value:
+1. Region the user explicitly named in this conversation
+2. AWS_REGION env var
+3. AWS_DEFAULT_REGION env var
+4. Region reported by aws configure list --profile &quot;$profile&quot;
+5. Region reported by aws configure get region --profile &quot;$profile&quot;
+6. Ask the user — but only after the first five have failed
+
+Do not fall back to us-east-1 or any other hardcoded default.
+
+### 3. Credentials, account ID, caller ARN
+
+```bash
+aws sts get-caller-identity --profile &quot;$profile&quot; --region &quot;$region&quot;
+```
+
+Three purposes in one call: confirms credentials are valid (stop if not), returns the Account ID (needed for ARN construction), returns the Arn of the caller.
+
+### 4. Identify SSO / assumed-role principals
+
+The Arn field tells you what kind of principal this is. The pattern matters because it determines what IAM operations the caller can do.
+
+| ARN pattern | Type | IAM write capability |
+|---|---|---|
+| arn:aws:iam::&lt;acct&gt;:user/&lt;name&gt; | IAM user | Depends on attached policies |
+| arn:aws:sts::&lt;acct&gt;:assumed-role/AWSReservedSSO_&lt;...&gt;/&lt;email&gt; | SSO assumed-role | Typically none — can&#x27;t create/modify IAM roles |
+| arn:aws:sts::&lt;acct&gt;:assumed-role/&lt;role&gt;/&lt;session&gt; | Regular assumed-role | Depends on the role |
+
+If the caller is SSO, surface this immediately before later skills hit iam:CreateRole and fail:
+
+&gt; Heads up: you&#x27;re authenticated via SSO (AWSReservedSSO_&lt;PermissionSet&gt;_...). SSO principals usually can&#x27;t create IAM roles directly. If we need a SageMaker execution role, I&#x27;ll look for an existing one first — if none exists, you&#x27;ll need to ask whoever manages your AWS access to create one.
+
+This is the highest-leverage thing this skill does. Surfacing it now turns a confusing mid-deployment error into a five-second conversation.
+
+## Commands to run
+
+```bash
+# Profiles and masked effective metadata; never read credential files directly
+aws configure list-profiles
+aws configure list --profile &quot;$profile&quot;
+aws configure get region --profile &quot;$profile&quot;
+
+# Validate credentials and get identity
+aws sts get-caller-identity --profile &quot;$profile&quot; --region &quot;$region&quot;
+```
+
+aws configure list masks credential values and identifies their source. Prefer these metadata commands over parsing AWS files or inspecting secret-bearing environment variables. If you need to read raw config (e.g. to list profiles), ~/.aws/config is a plain INI file — read-only. If the CLI cannot resolve a profile or region without exposing credentials, stop and ask the user for the non-secret profile or region value.
+
+## What to report back
+
+One or two lines, not a wall of text:
+
+&gt; Working with profile my-profile in eu-west-1, account 123456789012. You&#x27;re authenticated via SSO, so we&#x27;ll need to use an existing IAM role rather than create one.
+
+Don&#x27;t ask the user to confirm the region you just read from their config — they configured it; that is the confirmation.
+
+If something is wrong (credentials expired, profile doesn&#x27;t exist, no region anywhere), stop and surface the specific error before continuing.
+
+## Limitations
+
+- Discovery may reveal account IDs, role ARNs, or profile names; report only what the task needs and never expose secrets or session tokens.
+- STS identity checks require network access and valid credentials.
+- A valid identity does not imply permission to change resources.</pre>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>seek-and-analyze-video</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">video-intelligence-analysis</a> / seek-and-analyze-video</p><h1>seek-and-analyze-video</h1><p class="meta">combined</p><p>Both copies describe the same Memories.ai LVMM skill, but they are not interchangeable. The first copy is a routing-oriented reference that maps intent to 21 API commands and emphasizes a wait-for-processing step and caption_video vs chat_video trade-offs. The second copy is a workflow-oriented guide that adds API key setup, a marketing-context check, five named modes, and concrete Python-style workflow examples. Crowning one would hide the other&#x27;s material steps (setup/context in the second; routing/wait semantics in the first).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/seek-and-analyze-video/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/seek-and-analyze-video/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/seek-and-analyze-video/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/seek-and-analyze-video/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/seek-and-analyze-video/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/seek-and-analyze-video/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: seek-and-analyze-video
+description: &quot;Seek and analyze video content using Memories.ai Large Visual Memory Model for persistent video intelligence&quot;
+---
+
+# Seek and Analyze Video
+
+Use this skill when the user wants to search for, import, or analyze video content from TikTok, YouTube, or Instagram, summarize meetings or lectures from recordings, build a searchable knowledge base from video content, or research social media trends and creators.
+
+## Before Starting
+
+1. Check for context first: if `marketing-context.md` exists, read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+2. API Setup Required: This skill requires a Memories.ai API key. Guide users to:
+   - Visit https://memories.ai to create an account
+   - Get API key from dashboard (free tier: 100 credits, Plus: $15/month for 5,000 credits)
+   - Set environment variable: `export MEMORIES_API_KEY=your_key_here`
+3. Gather context (ask if not provided):
+   - Current state: what video content, which platforms, existing libraries or starting fresh
+   - Goals: what insights, one-time analysis or persistent knowledge base, individual videos or cross-video research
+   - Video-specific context: topics, hashtags, creators, use case, namespace needs
+
+## How It Works
+
+### Step 1: Intent Detection
+
+Read the workflow router and match the user&#x27;s request to one of the primary modes:
+- Quick Video Analysis: one-time analysis without persistent storage
+- Social Media Research: discovering and analyzing videos across platforms
+- Knowledge Base Building: creating searchable libraries from video content
+- Meeting &amp; Lecture Notes: extracting structured notes from recordings
+- Memory Management: organizing text insights and cross-video knowledge
+
+### Step 2: Reference Loading
+
+Load the appropriate reference file for the matched intent (e.g., video_qa.md for video questions, social_research.md for social media research).
+
+### Step 3: Workflow Execution
+
+Follow the step-by-step workflow: upload/import -&gt; wait for processing -&gt; analyze/chat -&gt; present results.
+
+## Core Workflows
+
+### Workflow 1: Analyze a Video URL
+
+When to use: User provides a YouTube, TikTok, Instagram, or Vimeo URL.
+
+Process:
+1. Validate URL format and platform support
+2. Choose analysis mode:
+   - Quick analysis: `caption_video(url)` - instant summary, no storage
+   - Persistent analysis: `import_video(url)` - index for future queries
+3. Wait for processing to complete before querying
+4. Extract key information (summary, transcript, action items)
+5. Generate structured output
+
+Example:
+```python
+# Quick analysis (no storage)
+result = caption_video(&quot;https://youtube.com/watch?v=...&quot;)
+
+# Persistent indexing (builds knowledge base)
+video_id = import_video(&quot;https://youtube.com/watch?v=...&quot;)
+# Wait for processing
+summary = query_video(video_id, &quot;Summarize the key points&quot;)
+```
+
+### Workflow 2: Social Media Video Research
+
+When to use: User wants to find and analyze videos by topic, hashtag, or creator.
+
+Process:
+1. Define search parameters: platform (tiktok, youtube, instagram), query (topic, hashtag, or creator handle), count
+2. Execute search: `search_social(platform, query, count)`
+3. Import discovered videos for deep analysis
+4. Wait for processing
+5. Generate competitive insights or trend report
+
+Example:
+```python
+# Find competitor content
+videos = search_social(&quot;tiktok&quot;, &quot;#SaaSmarketing&quot;, count=20)
+
+# Analyze top performers
+for video in videos[:5]:
+    import_video(video[&#x27;url&#x27;])
+
+# Wait for processing, then cross-video analysis
+insights = chat_personal(&quot;What content themes are working?&quot;)
+```
+
+### Workflow 3: Build Video Knowledge Base
+
+When to use: User needs searchable library across multiple videos.
+
+Process:
+1. Import videos with tags for organization
+2. Store supplementary text memories (notes, insights)
+3. Enable cross-video semantic search
+4. Query entire library for insights
+
+Example:
+```python
+# Import video library with tags
+import_video(url1, tags=[&quot;product-demo&quot;, &quot;Q1-2026&quot;])
+import_video(url2, tags=[&quot;product-demo&quot;, &quot;Q2-2026&quot;])
+
+# Store text insights
+create_memory(&quot;Key insight from demos...&quot;, tags=[&quot;product-demo&quot;])
+
+# Query across all tagged content
+insights = chat_personal(&quot;Compare Q1 vs Q2 product demos&quot;)
+```
+
+### Workflow 4: Extract Meeting Notes
+
+When to use: User needs structured notes from recorded meetings or lectures.
+
+Process:
+1. Import meeting recording
+2. Wait for processing
+3. Request structured extraction:
+   - Action items with owners
+   - Key decisions made
+   - Discussion topics
+   - Timestamps for important moments
+4. Format as structured output
+
+## Best Practices
+
+- Always wait for video processing to complete before querying
+- Use `caption_video` for quick analysis (no upload needed)
+- Use `chat_video` for deep, multi-turn analysis (requires upload)
+- Use `search_audio` to find specific moments or quotes in a video
+- Use `memory_add` to store important findings for later retrieval
+
+## Common Pitfalls
+
+- Problem: Querying a video before processing completes
+  Solution: Always use the `wait` command after upload before any analysis
+- Problem: Uploading a video when only a quick caption is needed
+  Solution: Use `caption_video` for one-off analysis; only upload for repeated queries
+
+## Limitations
+
+- Video processing takes 1-5 minutes depending on length
+- Free tier limited to 100 credits
+- Social media import requires public content
+- Audio search only works on processed videos
+
+## Related Skills
+
+- Video analysis tools for one-shot analysis
+- Web search skills for non-video content research</pre>
+</body>
+</html>

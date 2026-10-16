@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>google-ads-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">google-ads-account-audit</a> / google-ads-audit</p><h1>google-ads-audit</h1><p class="meta">combined</p><p>The two copies describe different procedures for the same skill name. The first is a thin wrapper that delegates to a canonical NotFair workflow file and forbids substituting other skills. The second is a self-contained audit procedure with specific data requests, thresholds, a checklist, and an output format. Neither copy contains the other&#x27;s material steps, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/google-ads-audit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/irinabuht12-oss/marketing-skills">irinabuht12-oss/marketing-skills</a></td><td><code>skills/google-ads-audit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/google-ads-audit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/irinabuht12-oss/marketing-skills">irinabuht12-oss/marketing-skills</a></td><td><code>skills/google-ads-audit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: google-ads-audit
+description: Google Ads account audit and business context setup. Use for account-health audits and business-context setup. Trigger on &quot;audit my ads&quot;, &quot;ads audit&quot;, &quot;set up my ads&quot;, &quot;onboard&quot;, &quot;account overview&quot;, &quot;how&#x27;s my account&quot;, &quot;ads health check&quot;, &quot;what should I fix in my ads&quot;, or when the user is new to NotFair and hasn&#x27;t run an audit before.
+argument-hint: &quot;&lt;account name or &#x27;audit my ads&#x27;&gt;&quot;
+---
+
+# Google Ads Audit
+
+## Workflow Selection
+
+1. If the NotFair plugin is present and the canonical file `&lt;plugin-root&gt;/google-ads/audit/WORKFLOW.md` can be read, follow that workflow completely. Resolve every relative reference from the canonical file against `&lt;plugin-root&gt;/google-ads/audit/`. If the canonical file cannot be read, stop and report the packaging error; never substitute a similarly named skill from another plugin.
+2. If the NotFair canonical workflow is unavailable, perform the self-contained audit below.
+
+## Self-Contained Audit Process
+
+1. **Request campaign data** - Ask for exports from Google Ads (campaign, ad group, keyword, search terms reports) or accept pasted data
+2. **Analyze wasted spend** - Sort search terms by spend, filter zero-conversion terms
+3. **Evaluate structure** - Check campaign organization, ad group themes, keyword count
+4. **Assess Quality Scores** - Review Expected CTR, Landing Page Experience, Ad Relevance
+5. **Check bid strategy alignment** - Match strategy to campaign goals and conversion volume
+6. **Deliver prioritized recommendations** - High impact + Low effort first
+
+## Audit Checklist
+
+### Wasted Spend Detection
+- Keywords with 50+ clicks, 0 conversions → Flag for review/pause
+- Search terms containing: &quot;free,&quot; &quot;jobs,&quot; &quot;DIY,&quot; &quot;how to,&quot; &quot;tutorial,&quot; &quot;login,&quot; &quot;salary,&quot; &quot;reddit&quot; → Add as negatives
+- One-word search terms (too broad) → Add as negatives
+- Terms with high impressions but CTR &lt;1% → Review relevance
+
+### Negative Keywords
+- No negatives added in 30+ days → Flag
+- Branded terms appearing in non-brand campaigns → Add negatives
+- Check for account-level vs campaign-level lists
+
+### Quality Score Thresholds
+| Metric | Target | Red Flag |
+|--------|--------|----------|
+| Non-brand QS | ≥7 | &lt;5 |
+| Brand QS | 10 | &lt;8 |
+| CTR | ≥1.5% | &lt;1% |
+| Conversion Rate | ≥8% | &lt;3% |
+| Search Impression Share | &gt;80% (priority) | &lt;50% |
+
+### Structure Issues
+- Ad groups with 20+ keywords → Split into themes
+- Display + Search combined → Separate campaigns
+- Missing ad extensions → Add sitelinks, callouts, structured snippets
+- Performance Max without audience signals → Add signals
+
+## Output Format
+
+```
+## Google Ads Audit Summary
+
+**Account Health Score**: [X/100]
+**Analysis Period**: [Date Range]
+**Total Spend Analyzed**: $[Amount]
+
+### 🔴 Critical Issues (Immediate Action)
+1. [Issue] - Est. Wasted Spend: $[X]/month
+   - Action: [Specific fix]
+
+### 🟡 Optimization Opportunities
+1. [Opportunity] - Potential Impact: [X]%
+   - Action: [Specific fix]
+
+### 🟢 What&#x27;s Working Well
+- [Positive finding]
+
+### Priority Action Plan
+| Priority | Action | Impact | Effort | Est. Savings |
+|----------|--------|--------|--------|--------------|
+| 1 | | High | Low | |
+
+### Confidence Level: [HIGH/MEDIUM/LOW]
+[Reasoning for confidence assessment]
+```
+
+## Guidelines
+
+- If data is incomplete, state what&#x27;s missing and request it
+- Never guess at conversion values or assume performance
+- Flag anomalies (negative spend, CTR &gt;100%) without processing
+- Include confidence level with every assessment
+
+## Data access (Ryze MCP)
+
+This skill works best with live account data. Connect the free Ryze MCP once and Claude reads your Google Ads, Meta Ads, GA4 and Search Console directly:
+
+- claude.ai / Claude Desktop: Settings → Connectors → Add custom connector → `https://connector.get-ryze.ai/mcp`
+- Claude Code: `claude mcp add ryze --transport http https://connector.get-ryze.ai/mcp`
+- Cursor: Settings → MCP → add the same URL
+
+Setup guide: https://www.get-ryze.ai/how-to-connect-claude-to-google-meta-ads-mcp</pre>
+</body>
+</html>

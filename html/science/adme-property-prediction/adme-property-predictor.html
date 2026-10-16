@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>adme-property-predictor</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">adme-property-prediction</a> / adme-property-predictor</p><h1>adme-property-predictor</h1><p class="meta">combined</p><p>Both copies describe the same ADME prediction skill and share the Overview, Integration, and Absorption sections. However, the LeoYeAI copy contains material steps and constraints the aipoch copy lacks, specifically a detailed &#x27;When to Use&#x27; section with explicit do-not-use cases (biologics, prodrugs, clinical dosing), a &#x27;Common Issues and Solutions&#x27; troubleshooting section, and a &#x27;Distribution&#x27; section with specific property tables and best practices. The aipoch copy contains a generic &#x27;Workflow&#x27; and &#x27;Audit-Ready Commands&#x27; section that the LeoYeAI copy does not. Because the LeoYeAI copy is a more complete and specific version of the domain logic, but the aipoch copy provides a different structural wrapper (audit commands), they are not identical reproductions. The LeoYeAI copy is the &#x27;authentic&#x27; domain procedure, but the aipoch copy&#x27;s specific audit commands are a distinct procedural element. Given the instruction to &#x27;combine&#x27; when copies overlap but each has material steps the others lack, and the aipoch copy&#x27;s &#x27;Audit-Ready Commands&#x27; are not in the LeoYeAI copy, I will mark as combine to ensure the audit steps are preserved in the combined instruction, although the LeoYeAI copy is the primary source of the scientific logic.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/adme-property-predictor/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/adme-property-predictor/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/adme-property-predictor/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/adme-property-predictor/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: adme-property-predictor
+description: Predict ADME properties for drug candidates using cheminformatics models.
+license: MIT
+---
+
+# ADME Property Predictor
+
+## When to Use
+- Screening compound libraries for drug-like properties.
+- Prioritizing lead compounds based on predicted PK.
+- Identifying ADME liabilities.
+
+**Do NOT use when:**
+- Exact PK parameters needed for dosing (use experimental studies).
+- Biologics or prodrugs.
+- Clinical dosing decisions (experimental validation required).
+
+## Workflow
+1. Confirm user objective and inputs.
+2. Validate request scope.
+3. Run `python scripts/main.py` with validated inputs.
+4. Return structured results separating assumptions and deliverables.
+
+## Audit-Ready Commands
+```bash
+python -m py_compile scripts/main.py
+python scripts/main.py --help
+```
+
+## Core Capabilities
+
+### 1. Absorption (A) Prediction
+Predict HIA, Caco-2, Solubility, LogS, Lipinski, and Veber rules.
+
+```python
+from scripts.adme_predictor import ADMEPredictor
+predictor = ADMEPredictor()
+absorption = predictor.predict_absorption(smiles=&quot;CC(=O)Oc1ccccc1C(=O)O&quot;, properties=[&quot;all&quot;])
+```
+
+**Best Practices:**
+- Consider HIA and solubility together.
+- Use both rule-based and ML-based predictions for consensus.
+
+### 2. Distribution (D) Prediction
+Predict Vd, PPB, BBB, and fu.
+
+```python
+distribution = predictor.predict_distribution(smiles=&quot;CC(=O)Oc1ccccc1C(=O)O&quot;, properties=[&quot;vd&quot;, &quot;ppb&quot;, &quot;bbb&quot;])
+```
+
+**Best Practices:**
+- High PPB may require higher doses.
+- Low Vd indicates plasma retention.
+
+## Integration
+- **Upstream**: `chemical-structure-converter`, `lipinski-rule-filter`
+- **Downstream**: `drug-candidate-evaluator`, `toxicity-structure-alert`</pre>
+</body>
+</html>

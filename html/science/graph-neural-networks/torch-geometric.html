@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>torch-geometric</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">graph-neural-networks</a> / torch-geometric</p><h1>torch-geometric</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a highly specific, version-pinned (PyG 2.8.0.post1, PyTorch 2.14.1) guide with critical warnings about extension wheels and isolated nodes. The other two copies (Vibe-Skills and OpenClaw) are nearly identical, generic guides that use outdated installation commands (installing deprecated `torch_cluster` and `torch_spline_conv`) and lack the specific version constraints. Because the K-Dense copy contains unique, critical safety/versioning steps that the others lack, and the others contain a broader (though outdated) set of model examples, crowning one would hide the other&#x27;s content or propagate outdated installation advice.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/torch-geometric/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/torch-geometric/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/torch-geometric/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/torch-geometric/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/torch-geometric/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/torch-geometric/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/torch_geometric/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: torch-geometric
+description: Supports PyTorch Geometric (PyG) graph neural networks — node/link/graph classification, message passing (GCN, GAT, GraphSAGE, GIN), heterogeneous graphs, neighbor sampling, and custom datasets.
+---
+
+# PyTorch Geometric (PyG)
+
+PyG is the standard library for Graph Neural Networks built on PyTorch.
+
+## Installation
+
+**Critical:** Always pin versions. `torch-cluster` and `torch-spline-conv` are deprecated and should not be installed.
+
+```bash
+# Example for PyTorch 2.14.1 / PyG 2.8.0.post1
+uv pip install torch==2.14.1
+uv pip install torch-geometric==2.8.0.post1
+
+# Only install pyg-lib if neighbor sampling or spatial k-NN is required
+# Check https://data.pyg.org/whl/ for the correct wheel for your platform
+```
+
+## Core Concepts
+
+### Graph Data: `Data`
+
+```python
+from torch_geometric.data import Data
+
+data = Data(
+    x=node_features,      # [num_nodes, num_node_features]
+    edge_index=edge_index, # [2, num_edges] — COO format
+    y=labels
+)
+```
+
+**Edge Index Format:** `edge_index` is a `[2, num_edges]` tensor. `edge_index[0]` are source nodes, `edge_index[1]` are target nodes. For undirected graphs, include both directions.
+
+### Datasets
+
+```python
+from torch_geometric.datasets import Planetoid
+
+dataset = Planetoid(root=&#x27;./data/Cora&#x27;, name=&#x27;Cora&#x27;, split=&#x27;public&#x27;)
+data = dataset[0]
+```
+
+## Building GNNs
+
+### Message Passing
+
+GNNs follow: Transform -&gt; Propagate -&gt; Aggregate -&gt; Update.
+
+### Common Layers
+
+**GCNConv:**
+```python
+from torch_geometric.nn import GCNConv
+import torch.nn.functional as F
+
+class GCN(torch.nn.Module):
+    def __init__(self, num_features, num_classes):
+        super().__init__()
+        self.conv1 = GCNConv(num_features, 16)
+        self.conv2 = GCNConv(16, num_classes)
+
+    def forward(self, data):
+        x, edge_index = data.x, data.edge_index
+        x = self.conv1(x, edge_index)
+        x = F.relu(x)
+        x = F.dropout(x, training=self.training)
+        x = self.conv2(x, edge_index)
+        return F.log_softmax(x, dim=1)
+```
+
+**GATConv:**
+```python
+from torch_geometric.nn import GATConv
+
+class GAT(torch.nn.Module):
+    def __init__(self, num_features, num_classes):
+        super().__init__()
+        self.conv1 = GATConv(num_features, 8, heads=8, dropout=0.6)
+        self.conv2 = GATConv(8 * 8, num_classes, heads=1, concat=False, dropout=0.6)
+
+    def forward(self, data):
+        x, edge_index = data.x, data.edge_index
+        x = F.dropout(x, p=0.6, training=self.training)
+        x = F.elu(self.conv1(x, edge_index))
+        x = F.dropout(x, p=0.6, training=self.training)
+        x = self.conv2(x, edge_index)
+        return F.log_softmax(x, dim=1)
+```
+
+## Mini-Batch Processing
+
+Use `DataLoader` for batching. It concatenates graphs and provides a `batch` vector mapping nodes to their source graph.
+
+```python
+from torch_geometric.loader import DataLoader
+
+loader = DataLoader(dataset, batch_size=32, shuffle=True)
+for batch in loader:
+    # batch.batch maps nodes to graphs
+    pass
+```
+
+## Conflicts
+
+- **Installation:** K-Dense-AI warns against installing `torch_cluster` and `torch_spline_conv` (deprecated). Vibe-Skills and OpenClaw-Medical-Skills explicitly instruct to install them. **Resolution:** Follow K-Dense-AI; do not install deprecated packages.
+- **Versioning:** K-Dense-AI provides specific version pins (2.8.0.post1). Others are generic. **Resolution:** Always pin versions as per K-Dense-AI guidance.</pre>
+</body>
+</html>

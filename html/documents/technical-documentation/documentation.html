@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>documentation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">technical-documentation</a> / documentation</p><h1>documentation</h1><p class="meta">combined</p><p>The two copies overlap in scope (both cover creating and structuring technical documentation) but each contains material steps the other lacks. The mcollina copy is a self-contained Diátaxis procedure with type-specific patterns, validation checks, and a decision tree. The sickn33 copy is a workflow bundle that orchestrates other skills for API docs, architecture diagrams, READMEs, wikis, and changelogs, and includes quality gates and a scope/authorization constraint. Neither is a reproduction of the other, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mcollina/skills">mcollina/skills</a></td><td><code>skills/documentation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/documentation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/mcollina/skills">mcollina/skills</a></td><td><code>skills/documentation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/documentation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/documentation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/documentation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: documentation
+description: &quot;Creates, structures, and reviews technical documentation using the Diátaxis framework and a multi-phase workflow for API docs, architecture docs, READMEs, code comments, wikis, and changelogs. Use when a user needs to write or reorganize docs, structure a tutorial vs. a how-to guide, build reference docs or API documentation, create explanation pages, choose between Diátaxis documentation types, or improve existing documentation structure. Trigger terms include: documentation structure, Diátaxis, tutorials vs how-to guides, organize docs, user guide, reference docs, technical writing, API documentation, architecture docs, README, changelog.&quot;
+metadata:
+  tags: documentation, technical-writing, tutorials, guides, reference, diataxis, api-docs, architecture, readme, changelog
+---
+
+## When to use
+
+Use this skill when you need to create, review, or improve technical documentation. Examples include:
+- Creating user guides, tutorials, or how-to guides
+- API documentation and OpenAPI specs
+- Architecture documentation and diagrams
+- README files and getting-started guides
+- Code comments and JSDoc/TSDoc
+- Wikis, knowledge bases, and onboarding docs
+- Changelogs and release notes
+- Restructuring existing documentation to better serve different user needs and contexts
+
+## Instructions
+
+Always ask clarifying questions about the user&#x27;s context, audience, and goals **before** creating documentation.
+
+Select only the phases needed for the request; this bundle does not authorize every referenced skill or external publication. Verify each ID and local prerequisites before invocation. Preserve existing docs, distinguish proposed from accepted decisions, keep private data out of public examples, and run the project&#x27;s actual documentation checks.
+
+---
+
+### Step 1 — Identify the documentation type
+
+Use the following decision checklist based on user signals:
+
+| User signal | Documentation type |
+|---|---|
+| &quot;I&#x27;m new to X and want to learn it&quot; / &quot;walk me through&quot; | **Tutorial** |
+| &quot;How do I…?&quot; / &quot;I need to accomplish X&quot; | **How-to guide** |
+| &quot;What are the parameters/options/syntax for X?&quot; | **Reference** |
+| &quot;Why does X work this way?&quot; / &quot;Help me understand X&quot; | **Explanation** |
+
+Quick decision tree:
+- Is the user **learning by doing** for the first time? → Tutorial
+- Do they need to **solve a specific problem** they already understand? → How-to guide
+- Do they need **technical facts** to look up? → Reference
+- Do they want **conceptual background**? → Explanation
+
+---
+
+### Step 2 — Apply type-specific patterns
+
+#### Tutorials (learning-oriented)
+- **Title pattern:** Start with a verb — *&quot;Build your first X&quot;*, *&quot;Create a Y from scratch&quot;*
+- Structure: Goal → Prerequisites → Numbered steps → Immediate verifiable result at each step → Final outcome
+- Minimise explanation; maximise doing
+- Every step must produce a visible, testable result
+- **Validation:** A beginner must be able to complete the tutorial without external help
+
+**Example intro:**
+&gt; *&quot;In this tutorial, you will build a simple REST API using Express. By the end, you will have a running server that responds to GET requests. No prior Express experience is needed.&quot;*
+
+---
+
+#### How-to guides (problem-oriented)
+- **Title pattern:** Frame as a task — *&quot;How to configure X&quot;*, *&quot;How to deploy Y to Z&quot;*
+- Structure: Goal statement → Assumptions/prerequisites → Numbered steps → Expected result
+- Assume baseline knowledge; skip conceptual explanations
+- Allow for variation; note alternatives where they exist
+- **Validation:** An experienced user can complete the task without confusion or backtracking
+
+**Example intro:**
+&gt; *&quot;This guide shows how to add JWT authentication to an existing Express app. It assumes you have a working Express server and basic familiarity with middleware.&quot;*
+
+---
+
+#### Reference (information-oriented)
+- **Title pattern:** Name the thing — *&quot;Configuration options&quot;*, *&quot;API endpoints&quot;*, *&quot;CLI flags&quot;*
+- Structure: Consistent repeatable format per entry (name → type → default → description → example)
+- State facts; avoid instruction beyond minimal usage examples
+- Keep current; version-stamp if needed
+- **Validation:** A user can look up a specific fact in under 30 seconds without reading surrounding content
+
+**Example entry:**
+&gt; **`timeout`** *(integer, default: `5000`)*
+&gt; Maximum time in milliseconds to wait for a response before the request fails.
+&gt; *Example:* `{ timeout: 3000 }`
+
+---
+
+#### Explanations (understanding-oriented)
+- **Title pattern:** Frame as a concept — *&quot;How X works&quot;*, *&quot;Understanding Y&quot;*, *&quot;Why Z is designed this way&quot;*
+- Structure: Context → Core concept → Alternatives/trade-offs → Higher-level perspective
+- Avoid step-by-step instruction or technical specification
+- **Validation:** After reading, the user can explain the concept in their own words and understands the rationale behind design decisions
+
+**Example intro:**
+&gt; *&quot;Authentication and authorisation are often confused. This page explains the distinction, why both matter, and how common patterns (sessions, tokens, OAuth) approach each concern differently.&quot;*
+
+---
+
+### Step 3 — Maintain separation and integration
+
+- Keep each document a single type — don&#x27;t mix tutorial steps with reference tables or conceptual digressions
+- Cross-link between types: a tutorial can link to the relevant reference page; a how-to guide can link to an explanation for background
+- Use consistent headings and terminology across all types so users can navigate the full documentation system
+
+---
+
+### Step 4 — Workflow phases for broader documentation needs
+
+Select only the phases needed for the request.
+
+#### Phase 1: Documentation Planning
+1. Identify documentation needs
+2. Choose documentation tools
+3. Plan documentation structure
+4. Define style guidelines
+5. Set up documentation site
+
+#### Phase 2: API Documentation
+1. Extract API endpoints
+2. Generate OpenAPI specs
+3. Create API reference
+4. Add usage examples
+5. Set up auto-generation
+
+#### Phase 3: Architecture Documentation
+1. Create C4 diagrams
+2. Document architecture
+3. Generate sequence diagrams
+4. Document data flows
+5. Create deployment docs
+
+#### Phase 4: Code Documentation
+1. Extract code comments
+2. Generate JSDoc/TSDoc
+3. Create type documentation
+4. Document functions
+5. Add usage examples
+
+#### Phase 5: README and Getting Started
+1. Create README
+2. Write getting started guide
+3. Document installation
+4. Add usage examples
+5. Create troubleshooting guide
+
+#### Phase 6: Wiki and Knowledge Base
+1. Design wiki structure
+2. Create wiki pages
+3. Write onboarding guides
+4. Document processes
+5. Set up wiki site
+
+#### Phase 7: Changelog and Release Notes
+1. Extract commit history
+2. Categorize changes
+3. Generate changelog
+4. Create release notes
+5. Prepare updates; publish only to the explicitly authorized destination
+
+#### Phase 8: Documentation Maintenance
+1. Review documentation
+2. Update outdated content
+3. Fix broken links
+4. Add new features
+5. Gather feedback
+
+---
+
+### Step 5 — Validate before delivering
+
+| Type | Validation check |
+|---|---|
+| Tutorial | Can a beginner complete it end-to-end without external help? |
+| How-to guide | Does it solve the stated problem for an experienced user? |
+| Reference | Can the user find a specific fact in under 30 seconds? |
+| Explanation | Does the user understand the *why*, not just the *what*? |
+
+Quality gates:
+- [ ] All APIs documented
+- [ ] Architecture diagrams current
+- [ ] README up to date
+- [ ] Code comments helpful
+- [ ] Examples working
+- [ ] Links valid
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if requirements are ambiguous.</pre>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>deepchem</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">molecular-property-prediction</a> / deepchem</p><h1>deepchem</h1><p class="meta">combined</p><p>The two skills cover the same DeepChem domain but with materially different procedures. The K-Dense copy is a strict, version-pinned scientific validation workflow (DeepChem 2.8.0, Python 3.11, explicit model/featurizer contracts, scaffold-split leakage checks, masked-label handling, and a bundled predict_solubility.py script). The OpenClaw copy is a broader, version-agnostic tutorial with a featurizer decision tree, a dataset-size model-selection table, and code examples for loaders, splitters, and multiple model families. Neither is a reproduction of the other; crowning one would hide the other&#x27;s real alternative steps (e.g., the OpenClaw dataset-size table and the K-Dense explicit model contracts and pinned installation).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/deepchem/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/deepchem/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/deepchem/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/deepchem/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># DeepChem Molecular Property Prediction
+
+## When to use
+Use for molecular property prediction, SMILES/graph featurization, MoleculeNet benchmarks, ADMET/toxicity/solubility tasks, and explicitly configured encoder transfer. Also covers materials and sequence adapters when their data/model contracts are met.
+
+## Version and environment
+- Target DeepChem 2.8.0 (stable PyPI) with Python 3.11 for the tested CPU stack. Do not mix latest docs with a stable installation.
+- Use an isolated environment:
+  ```bash
+  uv venv --python 3.11 .venv-deepchem
+  uv pip install --python .venv-deepchem/bin/python \
+    &#x27;deepchem==2.8.0&#x27; &#x27;torch==2.14.1&#x27; &#x27;transformers==5.18.0&#x27; \
+    &#x27;torch-geometric==2.8.0.post1&#x27;
+  ```
+- For GPU training, install the correct framework build per official platform instructions. GCN/GAT/AttentiveFP/Torch MPNN additionally require mutually compatible DGL and DGL-LifeSci.
+- Check release installation docs and requirements; DeepChem attempts optional imports at package import time and can log skipped modules.
+
+## Workflow
+1. Define compound identity, assay conditions, target units, and missing labels. Parse SMILES and retain a record of rejected rows. Audit duplicate structures and repeated measurements before splitting.
+2. Match the representation to the model using the featurizer decision tree and model contracts below. Fit a numeric baseline first; dataset size alone does not select the best architecture.
+3. Choose a scaffold, temporal, or grouped holdout for the deployment question. Preserve exact split IDs, inspect scaffold overlap and per-task class support, and reject empty splits. Scaffold splitting does not eliminate all leakage.
+4. Fit preprocessing on training data only. Preserve dataset.w masks. Normalize continuous targets only, and invert those transforms for metrics/predictions.
+5. Select model settings/epochs on validation data and evaluate the final holdout once. Report per-task support, uncertainty across planned repeats, and baseline comparisons. AUC requires both observed classes.
+6. Predict using the training representation and transforms. Preserve identifiers, original target units, and applicability limits. Successful fitting is not evidence of prospective scientific performance.
+
+## Featurizer selection
+- Graph neural networks: MolGraphConvFeaturizer (standard GNN), DMPNNFeaturizer (message passing), GroverFeaturizer (pretrained).
+- Traditional ML: CircularFingerprint (fast baseline), RDKitDescriptors (interpretable), MordredDescriptors (maximum coverage).
+- Deep learning (non-graph): CircularFingerprint (dense networks), SmilesToImage (CNN).
+- Sequence models: SmilesToSeq.
+- 3D structure analysis: CoulombMatrix.
+- Small datasets (&lt;1K): CircularFingerprint or RDKitDescriptors.
+- Medium datasets (1K-100K): CircularFingerprint or graph featurizers.
+- Large datasets (&gt;100K): Graph featurizers (MolGraphConvFeaturizer, DMPNNFeaturizer).
+- Transfer learning: Pretrained model featurizers (GroverFeaturizer).
+
+## Model selection
+- &lt;1K samples: SklearnModel (RandomForest) with CircularFingerprint.
+- 1K-100K: GBDTModel or MultitaskRegressor with CircularFingerprint.
+- &gt;100K: GCNModel, AttentiveFPModel, DMPNNModel with MolGraphConvFeaturizer.
+- Transfer learning: ChemBERTa, GROVER, MolFormer with model-specific featurizers.
+- Crystal structures: CGCNNModel, MEGNetModel with structure-based featurizers.
+- Protein sequences: ProtBERT with sequence-based featurizers.
+
+## Essential model contracts
+| Model path | Input |
+|---|---|
+| Fingerprint baseline or MultitaskRegressor | Explicit CircularFingerprint(size=2048) |
+| Torch GCN/GAT | MolGraphConvFeaturizer() |
+| Torch AttentiveFP/MPNN | MolGraphConvFeaturizer(use_edges=True) |
+| DMPNN | DMPNNFeaturizer(); binary tasks need n_classes=2 |
+| GROVER | GroverFeaturizer plus matching encoder checkpoint/configuration |
+| HF wrapper | SMILES strings, actual network object and tokenizer object |
+
+MoleculeNet&#x27;s &#x27;ECFP&#x27; alias is 1024 bits, while the fingerprint class defaults to 2048. &#x27;GraphConv&#x27; is legacy ConvMolFeaturizer, incompatible with Torch GCN. &#x27;Raw&#x27; defaults to RDKit Mol objects; use DummyFeaturizer() for raw strings. Import Torch MPNN/GROVER from deepchem.models.torch_models.
+
+Stable HuggingFaceModel returns logits and its training loss ignores sample weights. The bundled HF transfer script accepts one fully observed, unweighted binary/regression task and rejects sparse multitask datasets. A model ID or model_dir is not itself a loaded pretrained model.
+
+## Data loading
+- CSVLoader: Tabular data with molecular identifiers.
+- SDFLoader: Molecular structure files.
+- FASTALoader: Protein/DNA sequences.
+- ImageLoader: Molecular images.
+- JsonLoader: JSON-formatted datasets.
+
+## Data splitting
+- ScaffoldSplitter: Split by molecular scaffolds (prevents leakage).
+- ButinaSplitter: Clustering-based molecular splitting.
+- MaxMinSplitter: Maximize diversity between sets.
+- RandomSplitter: Random splitting.
+- RandomStratifiedSplitter: Preserves class distributions.
+
+## Bundled scripts
+The primary executable end-to-end example is predict_solubility.py with a custom CSV and query SMILES: validate complete continuous targets, create 2048-bit fingerprints, scaffold-split, fit training-target normalization, train a Torch MultitaskRegressor, then print original-unit metrics and predictions. Its Python training function returns (model, test, transformers). It does not invoke the separate random-forest reference baseline or GridHyperparamOpt template.
+
+The command prints results; it does not export split IDs, rejected-row tables or a prediction file. Bad custom rows stop loading rather than becoming a saved rejection audit. Persist data provenance, split IDs and outputs explicitly when adapting it for research. Qualitative assay/applicability assessment remains the agent&#x27;s work.
+
+## Conflicts
+- K-Dense-AI/scientific-agent-skills pins DeepChem 2.8.0 and Python 3.11; OpenClaw-Medical-Skills gives no version pin.
+- K-Dense-AI/scientific-agent-skills states dataset size alone does not select the best architecture; OpenClaw-Medical-Skills provides a dataset-size-based model selection table.
+- K-Dense-AI/scientific-agent-skills includes explicit model contracts and a bundled script; OpenClaw-Medical-Skills does not.</pre>
+</body>
+</html>

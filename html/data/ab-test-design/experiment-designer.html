@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>experiment-designer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">ab-test-design</a> / experiment-designer</p><h1>experiment-designer</h1><p class="meta">combined</p><p>Both copies describe the same core A/B test design and interpretation workflow, but each contains material steps the other lacks. The first copy provides a detailed two-phase process, explicit output structure, quality checks, and anti-patterns (HARKing, early stopping, multiple testing). The second copy adds ICE prioritization, a concrete sample-size calculator script, stopping rules, and statistical interpretation guardrails. Crowning one would hide the other&#x27;s unique prioritization and tooling steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-advanced/skills/experiment-designer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/experiment-designer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-advanced/skills/experiment-designer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/experiment-designer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/experiment-designer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Experiment Designer
+
+Design, prioritize, and evaluate product experiments with clear hypotheses and defensible decisions.
+
+## When To Use
+- A/B and multivariate experiment planning
+- Hypothesis writing and success criteria definition
+- Sample size and minimum detectable effect planning
+- Experiment prioritization with ICE scoring
+- Reading statistical output for product decisions
+
+## Required Inputs
+Work from what is given. If any input is missing, fill the gap with a reasonable assumption marked *(assumed, confirm)* and list those assumptions at the end. Ask a question first only when the core subject itself is missing.
+
+**For experiment design:**
+- Hypothesis (what change, what metric, what expected movement)
+- Current baseline metric value
+- Minimum detectable effect (MDE)
+- Available daily sample size
+
+**For results interpretation:**
+- Control and variant results
+- P-value or confidence interval
+- Run duration
+- Any anomalies observed
+
+## Core Workflow
+
+### 1. Write Hypothesis
+Use If/Then/Because format:
+- If we change `[intervention]`
+- Then `[metric]` will change by `[expected direction/magnitude]`
+- Because `[behavioral mechanism]`
+
+Hypothesis Quality Checklist:
+- [ ] Contains explicit intervention and audience
+- [ ] Specifies measurable metric change
+- [ ] States plausible causal reason
+- [ ] Includes expected minimum effect
+- [ ] Defines failure condition
+
+### 2. Define Metrics Before Running Test
+- Primary metric: single decision metric
+- Guardrail metrics: quality/risk protection (2-3 max)
+- Secondary metrics: diagnostics only
+
+### 3. Estimate Sample Size
+Use baseline conversion/mean, MDE, significance level (alpha), and power.
+
+```bash
+python3 scripts/sample_size_calculator.py --baseline-rate 0.12 --mde 0.02 --mde-type absolute
+```
+
+### 4. Prioritize Experiments with ICE
+- Impact: potential upside
+- Confidence: evidence quality
+- Ease: cost/speed/complexity
+
+ICE Score = (Impact * Confidence * Ease) / 10
+
+### 5. Launch with Stopping Rules
+- Decide fixed sample size or fixed duration in advance
+- Avoid repeated peeking without proper method
+- Monitor guardrails continuously
+- Set pre-defined success criteria before the test runs
+
+### 6. Interpret Results
+- Assess statistical significance (p &lt; 0.05 threshold)
+- Assess practical significance: was the lift meaningful for the business?
+- Interpret confidence intervals
+- Investigate confounding factors, novelty effects, and segment heterogeneity
+- Recommend: Ship / Iterate / Kill / Run follow-up test
+- Validate: Confirm the test ran for the full planned duration. Flag if stopped early. Confirm sample ratio mismatch did not occur.
+
+## Output Structure
+
+**[Design or Results header based on phase]**
+
+*Hypothesis:* &quot;If we [change], we expect [metric] to [move by X%] because [reason]&quot;
+*Primary metric:* [One metric only]
+*Guardrail metrics:* [2-3 max]
+*Required sample size:* [n per variant]
+*Estimated run time:* [days]
+*Pre-defined success threshold:* [specific number]
+*Design risk flags:* [any concerns]
+
+**Results (Phase 2 only):**
+*Statistical significance:* [p-value and conclusion]
+*Practical significance:* [lift size vs. business threshold]
+*Recommendation:* Ship / Iterate / Kill / Follow-up — [rationale]
+
+## Statistical Interpretation Guardrails
+- p-value &lt; alpha indicates evidence against null, not guaranteed truth.
+- Confidence interval crossing zero/no-effect means uncertain directional claim.
+- Wide intervals imply low precision even when significant.
+- Use practical significance thresholds tied to business impact.
+
+## Common Experiment Pitfalls
+- Underpowered tests leading to false negatives
+- Running too many simultaneous changes without isolation
+- Changing targeting or implementation mid-test
+- Stopping early on random spikes
+- Ignoring sample ratio mismatch and instrumentation drift
+- Declaring success from p-value without effect-size context
+- Post-hoc success definitions (HARKing)
+- Multiple testing without correction
+
+## Tooling
+
+### `scripts/sample_size_calculator.py`
+Computes required sample size (per variant and total) from baseline rate, MDE, alpha, and power.
+
+Example:
+```bash
+python3 scripts/sample_size_calculator.py \
+  --baseline-rate 0.10 \
+  --mde 0.015 \
+  --mde-type absolute \
+  --alpha 0.05 \
+  --power 0.8
+```</pre>
+</body>
+</html>

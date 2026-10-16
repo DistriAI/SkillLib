@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nutrition-analyzer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">nutrition-data-analysis</a> / nutrition-analyzer</p><h1>nutrition-analyzer</h1><p class="meta">combined</p><p>The two copies share the same name and high-level purpose but diverge in how they instruct the agent. The first copy is a thin wrapper that defers to an external detailed guide and adds safety/limitation constraints. The second copy is a self-contained procedure with specific data file paths, analysis algorithms (RDA achievement thresholds, nutrient density scoring, Pearson correlation), and a detailed output report format. Neither copy contains the other&#x27;s material steps, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/nutrition-analyzer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/nutrition-analyzer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/nutrition-analyzer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/nutrition-analyzer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/nutrition-analyzer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/nutrition-analyzer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: nutrition-analyzer
+description: 分析营养数据、识别营养模式、评估营养状况，并提供个性化营养建议。支持与运动、睡眠、慢性病数据的关联分析。
+allowed-tools: Read, Grep, Glob, Write
+---
+
+# 营养分析器技能
+
+分析饮食和营养数据，识别营养模式，评估营养状况，并提供个性化营养改善建议。
+
+## 前置要求
+- 如果存在 references/detailed-guide.md，先读取该文件，将其中的安全、前置条件和验证要求视为强制。
+- 如果不存在外部指南，使用本文件中的完整流程。
+- 如果所需输入、权限、安全边界或成功标准缺失，停止并请求澄清。
+- 输出不替代环境特定的验证、测试或专家审查。
+
+## 触发条件
+- 营养趋势分析
+- 营养素摄入评估
+- 营养状况评估
+- 营养改善建议
+- 营养与其他健康指标的关联分析
+
+## 执行步骤
+
+### 步骤 1: 确定分析范围
+- 分析类型：趋势/评估/相关性/建议
+- 时间范围：周/月/季度/自定义
+- 分析深度：宏量营养素/微量营养素/全面分析
+
+### 步骤 2: 读取数据
+主要数据源：
+1. data-example/nutrition-tracker.json
+2. data-example/nutrition-logs/YYYY-MM/YYYY-MM-DD.json
+
+关联数据源：
+1. data-example/profile.json
+2. data-example/fitness-tracker.json
+3. data-example/sleep-tracker.json
+4. data-example/hypertension-tracker.json
+5. data-example/diabetes-tracker.json
+
+### 步骤 3: 数据分析
+
+**趋势分析**：
+- 线性回归计算趋势斜率
+- 移动平均平滑波动
+- 统计显著性检验
+
+**RDA达成率计算**：
+rda_achievement = (actual_intake / rda_value) * 100
+- &lt; 50%: 严重缺乏
+- 50-75%: 不足
+- 75-100%: 接近目标
+- 100-150%: 充足
+- &gt; 150%: 过量（注意安全上限UL）
+
+**营养密度评分**：
+nutrient_density_score = (vitamins_achieved / total_vitamins) * 40 + (minerals_achieved / total_minerals) * 30 + (fiber_achieved / fiber_rda) * 30
+
+**相关性分析**：
+- Pearson相关系数计算
+- 滞后相关性分析
+- 多变量回归分析
+
+### 步骤 4: 生成报告
+按以下结构输出：
+1. 分析周期
+2. 宏量营养素趋势（卡路里、蛋白质、脂肪、纤维）
+3. 维生素状况趋势
+4. 矿物质趋势
+5. 特殊营养素趋势（Omega-3、胆碱等）
+6. 饮食模式分析（食物类别分布、进食时间模式、饮食质量评分）
+7. 洞察与建议（关键洞察、营养素调整、食物选择、饮食习惯、补充剂建议）
+
+## 限制
+- 仅当任务明确匹配上述范围时使用。
+- 补充剂建议仅供参考，需标注相互作用警示。
+- 停止并请求澄清如果所需输入、权限、安全边界或成功标准缺失。</pre>
+</body>
+</html>

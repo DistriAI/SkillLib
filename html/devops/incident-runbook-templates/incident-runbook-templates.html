@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>incident-runbook-templates</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">incident-runbook-templates</a> / incident-runbook-templates</p><h1>incident-runbook-templates</h1><p class="meta">combined</p><p>The two copies share the same severity table, runbook structure, and most of the Service Outage template, but they disagree on safety-critical steps. The sickn33 copy adds a &#x27;Runbook prerequisites&#x27; section requiring binding of service/namespace/cluster context, approved incident authority, and evidence sources before adapting templates, and it explicitly states that thresholds and financial amounts are illustrative. It also replaces the direct &#x27;pg_terminate_backend&#x27; command with a guarded procedure requiring an exact authorized PID and the approved database runbook. The rmyndharis copy lacks these constraints and includes the direct termination command. Crowning one copy would hide the other&#x27;s safety constraints and the conflicting mitigation step.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/incident-runbook-templates/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/incident-runbook-templates/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/incident-runbook-templates/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/incident-runbook-templates/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/incident-runbook-templates/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/incident-runbook-templates/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: incident-runbook-templates
+description: Create structured incident response runbooks with step-by-step procedures, escalation paths, and recovery actions. Use when building runbooks, responding to incidents, or establishing incident response procedures.
+---
+
+# Incident Runbook Templates
+
+Production-ready templates for incident response runbooks covering detection, triage, mitigation, resolution, and communication.
+
+## Do not use this skill when
+
+- The task is unrelated to incident runbook templates
+- You need a different domain or tool outside this scope
+
+## Instructions
+
+- Clarify goals, constraints, and required inputs.
+- Apply relevant best practices and validate outcomes.
+- Provide actionable steps and verification.
+
+## Use this skill when
+
+- Creating incident response procedures
+- Building service-specific runbooks
+- Establishing escalation paths
+- Documenting recovery procedures
+- Responding to active incidents
+- Onboarding on-call engineers
+
+## Core Concepts
+
+### 1. Incident Severity Levels
+
+| Severity | Impact | Response Time | Example |
+|----------|--------|---------------|---------|
+| **SEV1** | Complete outage, data loss | 15 min | Production down |
+| **SEV2** | Major degradation | 30 min | Critical feature broken |
+| **SEV3** | Minor impact | 2 hours | Non-critical bug |
+| **SEV4** | Minimal impact | Next business day | Cosmetic issue |
+
+### 2. Runbook Structure
+
+```
+1. Overview &amp; Impact
+2. Detection &amp; Alerts
+3. Initial Triage
+4. Mitigation Steps
+5. Root Cause Investigation
+6. Resolution Procedures
+7. Verification &amp; Rollback
+8. Communication Templates
+9. Escalation Matrix
+```
+
+## Runbook prerequisites
+
+Bind service, namespace, cluster context, database, owners, approved incident authority, evidence sources and rollback revision before adapting these templates. Thresholds, financial amounts, impact percentages and resolution messages are illustrative, never observed incident facts. Read-only triage comes first; mutations require an approved service-specific response. Verify actual smoke/rollback scripts in the target project before using them. No script is bundled or implied by this template.
+
+## Runbook Templates
+
+### Template 1: Service Outage Runbook
+
+````markdown
+# [Service Name] Outage Runbook
+
+## Overview
+**Service**: Payment Processing Service
+**Owner**: Platform Team
+**Slack**: #payments-incidents
+**PagerDuty**: payments-oncall
+
+## Impact Assessment
+- [ ] Which customers are affected?
+- [ ] What percentage of traffic is impacted?
+- [ ] Are there financial implications?
+- [ ] What&#x27;s the blast radius?
+
+## Detection
+### Alerts
+- `payment_error_rate &gt; 5%` (PagerDuty)
+- `payment_latency_p99 &gt; 2s` (Slack)
+- `payment_success_rate &lt; 95%` (PagerDuty)
+
+### Dashboards
+- [Payment Service Dashboard](https://grafana/d/payments)
+- [Error Tracking](https://sentry.io/payments)
+- [Dependency Status](https://status.stripe.com)
+
+## Initial Triage (First 5 Minutes)
+
+### 1. Assess Scope
+```bash
+# Check service health
+kubectl get pods -n payments -l app=payment-service
+
+# Check recent deployments
+kubectl rollout history deployment/payment-service -n payments
+
+# Check error rates
+curl -s &quot;http://prometheus:9090/api/v1/query?query=sum(rate(http_requests_total{status=~&#x27;5..&#x27;}[5m]))&quot;
+```
+
+### 2. Quick Health Checks
+- [ ] Can you reach the service? `curl -I https://api.company.com/payments/health`
+- [ ] Database connectivity? Check connection pool metrics
+- [ ] External dependencies? Check Stripe, bank API status
+- [ ] Recent changes? Check deploy history
+
+### 3. Initial Classification
+| Symptom | Likely Cause | Go To Section |
+|---------|--------------|---------------|
+| All requests failing | Service down | Section 4.1 |
+| High latency | Database/dependency | Section 4.2 |
+| Partial failures | Code bug | Section 4.3 |
+| Spike in errors | Traffic surge | Section 4.4 |
+
+## Mitigation Procedures
+
+### 4.1 Service Completely Down
+```bash
+# Step 1: Check pod status
+kubectl get pods -n payments
+
+# Step 2: If pods are crash-looping, check logs
+kubectl logs -n payments -l app=payment-service --tail=100
+
+# Step 3: Check recent deployments
+kubectl rollout history deployment/payment-service -n payments
+
+# Step 4: ROLLBACK if recent deploy is suspect
+kubectl rollout undo deployment/payment-service -n payments
+
+# Step 5: Scale up if resource constrained
+kubectl scale deployment/payment-service -n payments --replicas=10
+
+# Step 6: Verify recovery
+kubectl rollout status deployment/payment-service -n payments
+```
+
+### 4.2 High Latency
+```bash
+# Step 1: Check database connections
+kubectl exec -n payments deploy/payment-service -- \
+  curl localhost:8080/metrics | grep db_pool
+
+# Step 2: Check slow queries (if DB issue)
+psql -h $DB_HOST -U $DB_USER -c &quot;
+  SELECT pid, now() - query_start AS duration, query
+  FROM pg_stat_activity
+  WHERE state = &#x27;active&#x27; AND now() - query_start &gt; interval &#x27;5 seconds&#x27;
+  ORDER BY duration DESC;&quot;
+
+# Step 3: Kill long-running queries if needed
+# No generic query termination: identify an exact authorized PID/database/owner,
+# reconfirm it is not our connection, then use the approved database runbook.
+
+# Step 4: Check external dependency latency
+curl -w &quot;@curl-format.txt&quot; -o /dev/null -s https://api.stripe.com/v1/health
+
+# Step 5: Enable circuit breaker if dependency is slow
+kubectl set env deployment/payment-service \
+  STRIPE_CIRCUIT_BREAKER_ENABLED=true -n payments
+```
+
+### 4.3 Partial Failures (Specific Errors)
+```bash
+# Step 1: Identify error pattern
+kubectl logs -n payments -l app=payment-service --tail=500 | \
+  grep -i error | sort | uniq -c | sort -rn | head -20
+
+# Step 2: Check error tracking
+# Go to Sentry: https://sentry.io/payments
+
+# Step 3: If specific endpoint, enable feature flag to disable
+curl -X POST https://api.company.com/internal/feature-flags \
+  -d &#x27;{&quot;flag&quot;: &quot;DISABLE_PROBLEMATIC_FEATURE&quot;, &quot;enabled&quot;: true}&#x27;
+
+# Step 4: If data issue, check recent data changes
+psql -h $DB_HOST -c &quot;
+  SELECT * FROM audit_log
+  WHERE table_name = &#x27;payment_methods&#x27;
+  AND created_at &gt; now() - interval &#x27;1 hour&#x27;;&quot;
+```
+
+### 4.4 Traffic Surge
+```bash
+# Step 1: Check current request rate
+kubectl top pods -n payments
+
+# Step 2: Scale horizontally
+kubectl scale deployment/payment-service -n payments --replicas=20
+
+# Step 3: Enable rate limiting
+kubectl set env deployment/payment-service \
+  RATE_LIMIT_ENABLED=true \
+  RATE_LIMIT_RPS=1000 -n payments
+
+# Step 4: If attack, block suspicious IPs
+kubectl apply -f - &lt;&lt;EOF
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: block-suspicious
+  namespace: payments
+spec:
+  podSelector:
+    matchLabels:
+      app: payment-service
+  ingress:
+EOF
+```
+````
+
+## Conflicts
+
+- rmyndharis/antigravity-skills: Section 4.2 Step 3 uses `psql -h $DB_HOST -U $DB_USER -c &quot;SELECT pg_terminate_backend(pid);&quot;` to kill long-running queries directly.
+- sickn33/agentic-awesome-skills: Section 4.2 Step 3 replaces direct termination with a guarded procedure requiring an exact authorized PID/database/owner and the approved database runbook.
+- sickn33/agentic-awesome-skills: Adds a &#x27;Runbook prerequisites&#x27; section requiring binding of service, namespace, cluster context, database, owners, approved incident authority, evidence sources, and rollback revision before adapting templates; states thresholds and financial amounts are illustrative.
+- rmyndharis/antigravity-skills: Lacks the &#x27;Runbook prerequisites&#x27; section and the illustrative-threshold disclaimer.</pre>
+</body>
+</html>

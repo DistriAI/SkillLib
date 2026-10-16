@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>anti-reversing-techniques</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">anti-reversing-analysis</a> / anti-reversing-techniques</p><h1>anti-reversing-techniques</h1><p class="meta">combined</p><p>The sickn33 copy contains the full text of the rmyndharis copy, but it also adds a mandatory confirmation gate, a risk label, and a Limitations section. The rmyndharis copy is a clean, self-contained version of the core procedure. Because the sickn33 copy adds material safety constraints (the confirmation gate) that the rmyndharis copy lacks, crowning one would hide a real alternative in terms of safety rigor. The core instructions are identical, but the safety wrapper differs.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/anti-reversing-techniques/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/anti-reversing-techniques/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/anti-reversing-techniques/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/anti-reversing-techniques/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/anti-reversing-techniques/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/anti-reversing-techniques/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: anti-reversing-techniques
+description: Understand anti-reversing, obfuscation, and protection techniques encountered during software analysis. Use when analyzing protected binaries, bypassing anti-debugging for authorized analysis, or understanding software protection mechanisms.
+risk: offensive
+source: community
+---
+
+&gt; **AUTHORIZED USE ONLY**: This skill contains dual-use security techniques. Before proceeding with any bypass or analysis:
+&gt; 1. **Verify authorization**: Confirm you have explicit written permission from the software owner, or are operating within a legitimate security context (CTF, authorized pentest, malware analysis, security research)
+&gt; 2. **Document scope**: Ensure your activities fall within the defined scope of your authorization
+&gt; 3. **Legal compliance**: Understand that unauthorized bypassing of software protection may violate laws (CFAA, DMCA anti-circumvention, etc.)
+&gt;
+&gt; **Legitimate use cases**: Malware analysis, authorized penetration testing, CTF competitions, academic security research, analyzing software you own/have rights to
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## Use this skill when
+
+- Analyzing protected binaries with explicit authorization
+- Conducting malware analysis or security research in scope
+- Participating in CTFs or approved training exercises
+- Understanding anti-debugging or obfuscation techniques for defense
+
+## Do not use this skill when
+
+- You lack written authorization or a defined scope
+- The goal is to bypass protections for piracy or misuse
+- Legal or policy restrictions prohibit analysis
+
+## Instructions
+
+1. Confirm written authorization, scope, and legal constraints.
+2. Identify protection mechanisms and choose safe analysis methods.
+3. Document findings and avoid modifying artifacts unnecessarily.
+4. Provide defensive recommendations and mitigation guidance.
+
+## Safety
+
+- Do not share bypass steps outside the authorized context.
+- Preserve evidence and maintain chain-of-custody for malware cases.
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+## Resources
+
+- `resources/implementation-playbook.md` for detailed techniques and examples.</pre>
+</body>
+</html>

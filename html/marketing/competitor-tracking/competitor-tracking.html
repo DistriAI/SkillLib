@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>competitor-tracking</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">competitor-tracking</a> / competitor-tracking</p><h1>competitor-tracking</h1><p class="meta">combined</p><p>The two skills share the name and the high-level goal of ongoing competitor monitoring, but they target different product categories and prescribe different procedures. The first is an ASO/mobile-app skill that relies on the Appeeky API to track app-store metadata, keyword rankings, ratings, chart positions, and pricing, and it outputs a weekly app-store competitive report. The second is a developer-tools marketing skill that tracks changelogs, pricing pages, positioning, content strategy, GitHub/community signals, and developer sentiment, and it outputs competitive battlecards. Neither copy is a shortened or wrapped version of the other; each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/competitor-tracking/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/competitor-tracking/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/competitor-tracking/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/competitor-tracking/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/competitor-tracking/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/competitor-tracking/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Competitor Tracking
+
+Use this skill when the user wants ongoing competitor monitoring. Determine the product category first: mobile apps (ASO) or developer tools (DevTools). Follow the relevant track below, or combine both if the user has both product types.
+
+## 1. Define the Watchlist
+1. Check for existing context files (e.g., app-marketing-context.md or a competitor list).
+2. Ask the user for the top 3–5 competitors and, where possible, their identifiers (App Store IDs for mobile; company/product names and URLs for DevTools).
+3. Ask for the review cadence (weekly is recommended for both).
+4. Ask what the user is most concerned about: keywords, ratings, creative, pricing, features, positioning, or community sentiment.
+
+## 2. Mobile App (ASO) Tracking
+Use the Appeeky API or equivalent app-store data source.
+
+### Metadata Changes (weekly)
+- Fetch title, subtitle, description, and screenshots for each tracked app.
+- Watch for title/subtitle changes (new keyword targeting or repositioning), description messaging shifts, and screenshot updates (new creative direction or A/B test winner).
+
+### Keyword Ranking Changes (weekly)
+- Fetch the competitor&#x27;s ranking keywords and the rank for shared keywords.
+- Watch for newly ranked keywords, dropped keywords (opportunity to capture), and competitors jumping above you for a shared keyword.
+
+### Ratings and Reviews (weekly)
+- Fetch current rating and recent reviews.
+- Watch for rating drops, surges of 1-star reviews around a specific complaint, and new positive reviews praising a feature you lack.
+
+### Chart Positions (weekly)
+- Fetch category top charts and market movers.
+- Watch for competitors entering or exiting the top 10 in your category and new entrants from chart rises.
+
+### Pricing and Paywall (every 4–6 weeks)
+- Manually check trial length, price changes, and new paywall formats or plans.
+
+### Weekly Report Template
+Produce a weekly report with: apps tracked, changes detected per competitor (metadata, keywords, rating, chart position, review themes), opportunities identified, threats, and action items.
+
+### Monthly Deep-Dive Triggers
+Run a full competitive analysis when a competitor jumps 10+ chart positions, changes their title, a new competitor enters the top 10, or your ranking drops on a keyword a competitor recently targeted.
+
+## 3. Developer Tools Tracking
+Use web, social, and community monitoring.
+
+### Competitor Identification
+- Classify competitors as direct, indirect, DIY alternatives, or platform alternatives.
+- Create a competitive landscape document with competitor profiles, feature matrix, pricing comparison, strengths/weaknesses, and trajectory.
+
+### Product and Features (weekly/monthly)
+- Track changelogs, release notes, new feature announcements, pricing changes, integration announcements, API changes, and SDK updates.
+- Subscribe to competitor newsletters, follow GitHub releases, monitor Twitter/blog, and set up alerts for launch/announcement keywords.
+
+### Pricing and Packaging
+- Track pricing page changes (use archive.org for history), new tier introductions, enterprise pricing signals, free tier changes, and usage-based vs seat-based shifts.
+- Analyze what is included in the free tier, upgrade triggers, overage handling, and enterprise motion.
+
+### Positioning and Messaging
+- Track homepage headline/hero, target audience, primary use cases, comparison pages, and case studies.
+- Analyze the problem they lead with, their unique angle, and how positioning has changed over time.
+
+### Content Strategy
+- Monitor blog frequency/topics, documentation quality, video/tutorial content, conference talks, and developer education initiatives.
+- Look for SEO plays, content gaps you can exploit, and successful content formats.
+
+### Community and Traction
+- Track GitHub stars/forks growth, issue volume and response time, contributor growth, and release frequency.
+- Track Discord/Slack member counts, forum activity, Stack Overflow tag activity, and Reddit mention frequency.
+
+### Developer Sentiment Monitoring
+- Set up social listening alerts for competitor brand mentions, negative sentiment, and comparison queries.
+- Track churn signals (&quot;migrating away from&quot;, &quot;looking for alternative&quot;), praise signals, and feature gaps (&quot;wish [competitor] had&quot;).
+- Analyze mention volume over 90 days, sentiment distribution, and co-mentions with your brand.
+
+### Competitive Battlecards
+Create battlecards for sales and marketing with: competitor overview, when you win, when they win, key differentiators, and recommended responses.
+
+## 4. Automation
+- Manual: set calendar reminders and run the relevant checks on schedule.
+- Semi-automated: build a script that fetches data weekly and diffs results against the previous week.
+- Agent-assisted: ask your agent to run the relevant checks and produce the report or battlecard update.
+
+## 5. Response Playbook
+- Competitor targets your top keyword/feature: defend your positioning and consider increasing investment.
+- Competitor drops a shared keyword/feature: double down and capture the gap.
+- Competitor upgrades creative/content: audit yours and update if needed.
+- Competitor rating/sentiment drops: highlight your stability or strengths while the gap is visible.
+- Competitor launches a feature you lack: note for roadmap and highlight your differentiating strengths.
+- New competitor enters your space: run a full competitive analysis on them.</pre>
+</body>
+</html>

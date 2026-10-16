@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>expo-brownfield</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">expo-brownfield-integration</a> / expo-brownfield</p><h1>expo-brownfield</h1><p class="meta">combined</p><p>The expo/skills copy is the upstream procedure and contains critical operational constraints the mirror omits, such as inspecting the host, preserving the native shell, and the explicit prohibition against running prebuild in a manually maintained native host. The sickn33 copy adds a hard version floor (SDK 55) and a specific create-expo-app command that the upstream copy does not state, while also disagreeing on prerequisites (Yarn vs. project package manager) and the integrated-approach rationale (hot reload vs. shared build ownership). Crowning one copy would hide either the safety constraints or the version pinning, so the copies must be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/expo/skills">expo/skills</a></td><td><code>plugins/expo/skills/expo-brownfield/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/expo-brownfield/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/expo/skills">expo/skills</a></td><td><code>plugins/expo/skills/expo-brownfield/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/expo-brownfield/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/expo-brownfield/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/expo-brownfield/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: expo-brownfield
+description: Integrate Expo and React Native into an existing native iOS or Android app. Use for brownfield, embedding a React Native screen in SwiftUI/UIKit or Kotlin, or AAR/XCFramework packaging. Covers isolated and integrated approaches. For building or distributing a purely native app with EAS, use eas-app-stores.
+---
+
+# Expo Brownfield
+
+A **brownfield** app is an existing native iOS or Android app that adopts React Native incrementally, as opposed to a **greenfield** app that is React Native from day one.
+
+## Inspect the host first
+
+Identify the existing app entry point, navigation owner, native build system, deployment targets, and any React Native runtime already linked. Record the installed Expo, React Native, and brownfield package versions from the lockfile. Adding EAS Build or Submit to a Swift app alone does not require React Native; route that task to `eas-app-stores`.
+
+Preserve the host&#x27;s SwiftUI `App` / UIKit window and native screens when embedding a feature. **Do not run prebuild in a manually maintained native host**, including during troubleshooting. An isolated Expo producer may use CNG; keep its generated `ios/` and `android/` separate from the consuming app.
+
+Expo supports two distinct ways to add React Native to a brownfield project:
+
+| Approach       | What ships to the native app                                        | When to choose                                                                   |
+| -------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Isolated**   | Prebuilt AAR / XCFramework                                          | Native team doesn&#x27;t need Node or RN tooling; RN code can live in a separate repo |
+| **Integrated** | React Native sources added to the existing Gradle / CocoaPods build | One team owns everything; comfortable with RN tooling; wants a single build      |
+
+For the full decision matrix, see [./references/comparison.md](./references/comparison.md).
+
+## Pick an approach
+
+Use these quick rules — fall through to `comparison.md` for anything ambiguous.
+
+- **Choose isolated** if the iOS/Android team must consume RN as a regular library dependency (AAR or XCFramework), without installing Node, Yarn, or the React Native build toolchain.
+- **Choose isolated** if RN code and native code live in separate repositories or release on independent cadences.
+- **Choose integrated** if a single team owns both the native and RN code and is willing to add React Native + Expo to the native project&#x27;s Gradle and CocoaPods setup.
+- Both approaches support Metro and Fast Refresh in Debug. Choose integrated for shared build ownership, not because isolated lacks live JS iteration.
+
+## References
+
+- ./references/brownfield-isolated.md -- Build RN as AAR/XCFramework and consume from the native app (BrownfieldActivity, ReactNativeViewController, ReactNativeView)
+- ./references/brownfield-integrated.md -- Add RN and Expo directly to existing Gradle and CocoaPods builds, preserving the native app shell
+- ./references/feature-integration.md -- Pass input, return results, dismiss, clean up listeners, and forward lifecycle events; includes a SwiftUI host example
+- ./references/comparison.md -- Decision criteria, trade-offs, and scenario mapping for choosing an approach
+- ./references/troubleshooting.md -- Metro connection, build, signing, and module-resolution issues common to both approaches
+
+More information available at https://docs.expo.dev/brownfield/overview/
+
+## Shared prerequisites
+
+Both approaches require, in the environment that _builds_ the React Native side:
+
+- **Node.js (LTS)** — runs the Expo CLI and JavaScript code.
+- The project&#x27;s package manager and lockfile — npm, Yarn, pnpm, or Bun. Do not switch package managers just to follow an example.
+
+The iOS build environment needs Xcode and CocoaPods (use the project&#x27;s Gemfile/Bundler setup when present). The isolated consuming app needs Xcode but no CocoaPods or RN tooling just to consume the artifacts.
+
+## Select compatible versions
+
+For an existing Expo/RN project, keep its selected SDK and use `npx expo install` to align dependencies. Do not upgrade it just to follow this skill. For a new producer, use the **current stable SDK** compatible with the host&#x27;s OS support, dependencies, and build toolchain; confirm the release is stable before selecting it.
+
+Before native setup, read [./references/version-compatibility.md](./references/version-compatibility.md) for matching native templates, toolchain/OS requirements, and build defaults across SDK versions. A purely native consumer has no Expo SDK version to pin, but must satisfy the artifact&#x27;s requirements.
+
+## Verify the feature in the host
+
+Open the RN screen with input, return a result to native, dismiss, and reopen with fresh input. Check listener cleanup and the host&#x27;s original navigation. Then build the host in Release with a Release artifact and Metro stopped. Rendering only in Expo Go or the producer&#x27;s example app does not validate the integration. See [./references/feature-integration.md](./references/feature-integration.md) for the complete acceptance scenario.
+
+## Submitting Feedback
+If you encounter errors, misleading or outdated information in this skill, report it so Expo can improve:
+```bash
+npx --yes submit-expo-feedback@latest --category skills --subject &quot;expo-brownfield&quot; &quot;&lt;actionable feedback&gt;&quot;
+```
+Only submit when you have something specific and actionable to report. Include as much relevant context as possible.
+If an AI agent repeatedly failed or the user had to take over an Expo task, load the expo-skill-feedback skill and follow its eval-candidate flow instead of reusing the command above.
+
+## Conflicts
+
+- **sickn33/agentic-awesome-skills** states Expo SDK 55 is the minimum supported version for brownfield integration and provides `npx create-expo-app@latest my-project --template default@sdk-55` to pin it, while **expo/skills** says to keep an existing project&#x27;s SDK and use the current stable SDK for a new producer without naming a minimum. Follow the upstream guidance to keep or select a stable SDK, and verify the minimum SDK against current official documentation before pinning.
+- **sickn33/agentic-awesome-skills** lists Yarn as a shared prerequisite, while **expo/skills** says to use the project&#x27;s existing package manager and lockfile and not to switch package managers just to follow an example. Use the project&#x27;s existing package manager.
+- **sickn33/agentic-awesome-skills** recommends integrated when you want hot reload and JS source maps to work seamlessly inside the existing native build, while **expo/skills** says both approaches support Metro and Fast Refresh in Debug and to choose integrated for shared build ownership. Choose integrated for shared build ownership, not because isolated lacks live JS iteration.</pre>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>senior-computer-vision</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">computer-vision-engineering</a> / senior-computer-vision</p><h1>senior-computer-vision</h1><p class="meta">combined</p><p>The two copies overlap in scope (object detection, segmentation, PyTorch, production deployment) but each contains material steps the other lacks. The first copy is a broad senior-engineering persona with generic MLOps/security/leadership guidance and placeholder scripts. The second copy is a concrete CV engineering skill with specific architectures (YOLO, Faster R-CNN, DETR, SAM), a step-by-step detection pipeline, dataset preparation commands, evaluation metrics, and an optimization/deployment workflow. Crowning one would hide the other&#x27;s real alternative content.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/senior-computer-vision/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/senior-computer-vision/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/senior-computer-vision/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/senior-computer-vision/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: senior-computer-vision
+description: Computer vision engineering skill for object detection, segmentation, and visual AI systems. Covers CNN and Vision Transformer architectures, YOLO/Faster R-CNN/DETR detection, Mask R-CNN/SAM segmentation, and production deployment with ONNX/TensorRT. Includes PyTorch, torchvision, Ultralytics, Detectron2, and MMDetection frameworks. Use when building detection pipelines, training custom models, optimizing inference, or deploying vision systems.
+---
+
+# Senior Computer Vision Engineer
+
+Production computer vision engineering skill for object detection, image segmentation, and visual AI system deployment.
+
+## Quick Start
+
+```bash
+# Generate training configuration for YOLO or Faster R-CNN
+python scripts/vision_model_trainer.py models/ --task detection --arch yolov8
+
+# Analyze model for optimization opportunities (quantization, pruning)
+python scripts/inference_optimizer.py model.pt --target onnx --benchmark
+
+# Build dataset pipeline with augmentations
+python scripts/dataset_pipeline_builder.py images/ --format coco --augment
+```
+
+## Core Expertise
+
+- **Object Detection**: YOLO family (v5-v11), Faster R-CNN, DETR, RT-DETR
+- **Instance Segmentation**: Mask R-CNN, YOLACT, SOLOv2
+- **Semantic Segmentation**: DeepLabV3+, SegFormer, SAM (Segment Anything)
+- **Image Classification**: ResNet, EfficientNet, Vision Transformers (ViT, DeiT)
+- **Video Analysis**: Object tracking (ByteTrack, SORT), action recognition
+- **3D Vision**: Depth estimation, point cloud processing, NeRF
+- **Production Deployment**: ONNX, TensorRT, OpenVINO, CoreML
+- **MLOps and DataOps**: Scalable system design, performance optimization, model monitoring, security and compliance, cost optimization
+
+## Tech Stack
+
+| Category | Technologies |
+|----------|--------------|
+| Frameworks | PyTorch, torchvision, timm |
+| Detection | Ultralytics (YOLO), Detectron2, MMDetection |
+| Segmentation | segment-anything, mmsegmentation |
+| Optimization | ONNX, TensorRT, OpenVINO, torch.compile |
+| Image Processing | OpenCV, Pillow, albumentations |
+| Annotation | CVAT, Label Studio, Roboflow |
+| Experiment Tracking | MLflow, Weights &amp; Biases |
+| Serving | Triton Inference Server, TorchServe |
+| Deployment | Docker, Kubernetes, AWS/GCP/Azure |
+| Databases | PostgreSQL, BigQuery, Snowflake, Pinecone |
+
+## Workflow 1: Object Detection Pipeline
+
+### Step 1: Define Detection Requirements
+
+Analyze the detection task requirements:
+
+```
+Detection Requirements Analysis:
+- Target objects: [list specific classes to detect]
+- Real-time requirement: [yes/no, target FPS]
+- Accuracy priority: [speed vs accuracy trade-off]
+- Deployment target: [cloud GPU, edge device, mobile]
+- Dataset size: [number of images, annotations per class]
+```
+
+### Step 2: Select Detection Architecture
+
+| Requirement | Recommended Architecture | Why |
+|-------------|-------------------------|-----|
+| Real-time (&gt;30 FPS) | YOLOv8/v11, RT-DETR | Single-stage, optimized for speed |
+| High accuracy | Faster R-CNN, DINO | Two-stage, better localization |
+| Small objects | YOLO + SAHI, Faster R-CNN + FPN | Multi-scale detection |
+| Edge deployment | YOLOv8n, MobileNetV3-SSD | Lightweight architectures |
+| Transformer-based | DETR, DINO, RT-DETR | End-to-end, no NMS required |
+
+### Step 3: Prepare Dataset
+
+```bash
+# COCO format (recommended)
+python scripts/dataset_pipeline_builder.py data/images/ \
+    --annotations data/labels/ \
+    --format coco \
+    --split 0.8 0.1 0.1 \
+    --output data/coco/
+
+# Verify dataset
+python -c &quot;from pycocotools.coco import COCO; coco = COCO(&#x27;data/coco/train.json&#x27;); print(f&#x27;Images: {len(coco.imgs)}, Categories: {len(coco.cats)}&#x27;)&quot;
+```
+
+### Step 4: Configure Training
+
+```bash
+# For Ultralytics YOLO
+python scripts/vision_model_trainer.py data/coco/ \
+    --task detection \
+    --arch yolov8m \
+    --epochs 100 \
+    --batch 16 \
+    --imgsz 640 \
+    --output configs/
+
+# For Detectron2
+python scripts/vision_model_trainer.py data/coco/ \
+    --task detection \
+    --arch faster_rcnn_R_50_FPN \
+    --framework detectron2 \
+    --output configs/
+```
+
+### Step 5: Train and Validate
+
+```bash
+# Ultralytics training
+yolo detect train data=data.yaml model=yolov8m.pt epochs=100 imgsz=640
+
+# Detectron2 training
+python train_net.py --config-file configs/faster_rcnn.yaml --num-gpus 1
+
+# Validate on test set
+yolo detect val model=runs/detect/train/weights/best.pt data=data.yaml
+```
+
+### Step 6: Evaluate Results
+
+| Metric | Target | Description |
+|--------|--------|-------------|
+| mAP@50 | &gt;0.7 | Mean Average Precision at IoU 0.5 |
+| mAP@50:95 | &gt;0.5 | COCO primary metric |
+| Precision | &gt;0.8 | Low false positives |
+| Recall | &gt;0.8 | Low missed detections |
+| Inference time | &lt;33ms | For 30 FPS real-time |
+
+## Workflow 2: Model Optimization and Deployment
+
+### Step 1: Benchmark Baseline Performance
+
+```bash
+python scripts/inference_optimizer.py model.pt \
+    --benchmark \
+    --input-size 640 640 \
+    --batch-sizes 1 4 8 16 \
+    --warmup 10 \
+    --iterations 100
+```
+
+### Step 2: Select Optimization Strategy
+
+| Deployment Target | Optimization Path |
+|-------------------|-------------------|
+| Cloud GPU | TensorRT, ONNX Runtime, batching |
+| Edge device | Quantization, pruning, OpenVINO |
+| Mobile | CoreML, TFLite, model distillation |
+
+## Production Patterns
+
+### Scalable Data Processing
+- Horizontal scaling architecture
+- Fault-tolerant design
+- Real-time and batch processing
+- Data quality validation
+- Performance monitoring
+
+### ML Model Deployment
+- Model serving with low latency
+- A/B testing infrastructure
+- Feature store integration
+- Model monitoring and drift detection
+- Automated retraining pipelines
+
+### Real-Time Inference
+- Batching and caching strategies
+- Load balancing
+- Auto-scaling
+- Latency optimization
+- Cost optimization
+
+## Best Practices
+
+### Development
+- Test-driven development
+- Code reviews and pair programming
+- Documentation as code
+- Version control everything
+- Continuous integration
+
+### Production
+- Monitor everything critical
+- Automate deployments
+- Feature flags for releases
+- Canary deployments
+- Comprehensive logging
+
+### Team Leadership
+- Mentor junior engineers
+- Drive technical decisions
+- Establish coding standards
+- Foster learning culture
+- Cross-functional collaboration
+
+## Performance Targets
+
+**Latency:**
+- P50: &lt; 50ms
+- P95: &lt; 100ms
+- P99: &lt; 200ms
+
+**Throughput:**
+- Requests/second: &gt; 1000
+- Concurrent users: &gt; 10,000
+
+**Availability:**
+- Uptime: 99.9%
+- Error rate: &lt; 0.1%
+
+## Security &amp; Compliance
+
+- Authentication &amp; authorization
+- Data encryption (at rest &amp; in transit)
+- PII handling and anonymization
+- GDPR/CCPA compliance
+- Regular security audits
+- Vulnerability management
+
+## Common Commands
+
+```bash
+# Development
+python -m pytest tests/ -v --cov
+python -m black src/
+python -m pylint src/
+
+# Training
+python scripts/train.py --config prod.yaml
+python scripts/evaluate.py --model best.pth
+
+# Deployment
+docker build -t service:v1 .
+kubectl apply -f k8s/
+helm upgrade service ./charts/
+
+# Monitoring
+kubectl logs -f deployment/service
+python scripts/health_check.py
+```
+
+## Reference Documentation
+
+- `references/computer_vision_architectures.md`: Advanced patterns, production implementation, performance optimization, scalability, security, case studies
+- `references/object_detection_optimization.md`: Step-by-step processes, architecture design, tool integration, performance tuning, troubleshooting
+- `references/production_vision_systems.md`: System design, implementation examples, configuration, deployment, monitoring
+
+## Senior-Level Responsibilities
+
+1. **Technical Leadership**: Drive architectural decisions, mentor team members, establish best practices, ensure code quality
+2. **Strategic Thinking**: Align with business goals, evaluate trade-offs, plan for scale, manage technical debt
+3. **Collaboration**: Work across teams, communicate effectively, build consensus, share knowledge
+4. **Innovation**: Stay current with research, experiment with new approaches, contribute to community, drive continuous improvement
+5. **Production Excellence**: Ensure high availability, monitor proactively, optimize performance, respond to incidents</pre>
+</body>
+</html>

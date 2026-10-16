@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>opentrons-integration</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">opentrons-protocol-authoring</a> / opentrons-integration</p><h1>opentrons-integration</h1><p class="meta">combined</p><p>The two skills cover the same domain but have significant, non-overlapping material and conflicting technical guidance. The K-Dense skill is a rigorous, version-pinned engineering guide (v2.3) that emphasizes safety, specific library versions (opentrons 10.0.0/9.0.0), and correct API 2.29+ structure (requirements vs metadata). The FreedomIntelligence skill is a broader, more tutorial-like guide that includes specific module loading examples (thermocycler, heater-shaker) and advanced liquid handling techniques (air gaps, flow rates) but uses outdated API patterns (apiLevel in metadata) and generic versioning advice. Crowning one would hide the other&#x27;s unique value: K-Dense&#x27;s safety/versioning rigor vs. FreedomIntelligence&#x27;s module/technique breadth.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/opentrons-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/opentrons-integration/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/opentrons-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/opentrons-integration/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: opentrons-integration
+description: Authors, reviews, migrates, simulates, and troubleshoots official Opentrons Python Protocol API v2 protocols for Flex and OT-2 robots. Covers structure, hardware, liquid handling, modules, and safety.
+license: MIT
+compatibility: Requires Python 3.10+ and uv. Flex targets opentrons 10.0.0 (API 2.29+); OT-2 targets opentrons 9.0.0 (API 2.28).
+---
+
+# Opentrons Integration
+
+## Overview
+Create production-minded Python Protocol API v2 protocols for Opentrons Flex and OT-2. This skill covers protocol structure, hardware configuration, liquid handling, module control, simulation, and safe deployment.
+
+## Safety Boundary
+Opentrons protocols control physical equipment. Never treat successful Python syntax or local simulation as permission to run on a robot.
+
+Before live execution:
+1. Simulate locally with the same pinned `opentrons` version used for authoring.
+2. Import the protocol into the correct Opentrons App and require successful analysis.
+3. Verify robot model, software, pipettes, mounts, modules, adapters, labware definitions, deck fixtures, tip count, source volumes, dead volumes, and destination capacity.
+4. Review the run preview and deck map with the operator.
+5. Perform a slow dry run with nonhazardous liquid when geometry, custom labware, or gripper moves are new.
+6. Keep the emergency stop accessible and follow site-specific safety procedures.
+
+## Versioning and Simulation
+- **Flex**: Use `opentrons==10.0.0` for simulation. Supports API 2.15–2.30.
+- **OT-2**: Use `opentrons==9.0.0` for simulation. Supports API 2.0–2.28.
+- **API Level**: For API 2.29+, `apiLevel` must be in `requirements`, not `metadata`.
+
+Simulate with:
+```bash
+# Flex
+uv run --no-project --isolated --python 3.12 --with &quot;opentrons==10.0.0&quot; opentrons_simulate protocol.py
+
+# OT-2
+uv run --no-project --isolated --python 3.12 --with &quot;opentrons==9.0.0&quot; opentrons_simulate protocol.py
+```
+
+## Protocol Structure
+
+### Flex (API 2.29+)
+```python
+from opentrons import protocol_api
+
+metadata = {
+    &quot;protocolName&quot;: &quot;Flex transfer&quot;,
+    &quot;author&quot;: &quot;Your Name&quot;,
+    &quot;description&quot;: &quot;Transfer buffer into a plate.&quot;
+}
+requirements = {&quot;robotType&quot;: &quot;Flex&quot;, &quot;apiLevel&quot;: &quot;2.29&quot;}
+
+def run(protocol: protocol_api.ProtocolContext) -&gt; None:
+    # Protocol logic
+    pass
+```
+
+### OT-2 (API 2.28)
+```python
+from opentrons import protocol_api
+
+metadata = {
+    &quot;protocolName&quot;: &quot;OT-2 transfer&quot;,
+    &quot;author&quot;: &quot;Your Name&quot;,
+    &quot;description&quot;: &quot;Transfer buffer into a plate.&quot;,
+    &quot;apiLevel&quot;: &quot;2.28&quot; # For &lt; 2.29, apiLevel can be in metadata
+}
+
+def run(protocol: protocol_api.ProtocolContext) -&gt; None:
+    # Protocol logic
+    pass
+```
+
+## Loading Hardware
+
+### Pipettes
+```python
+# Flex
+pipette = protocol.load_instrument(&#x27;p1000_single_flex&#x27;, &#x27;left&#x27;, tip_racks=[tip_rack])
+
+# OT-2
+pipette = protocol.load_instrument(&#x27;p1000_single_gen2&#x27;, &#x27;left&#x27;, tip_racks=[tip_rack])
+```
+
+### Labware
+```python
+# Deck slot
+plate = protocol.load_labware(&#x27;corning_96_wellplate_360ul_flat&#x27;, &#x27;D1&#x27;)
+
+# On module
+module = protocol.load_module(&#x27;temperature module gen2&#x27;, &#x27;D3&#x27;)
+plate = module.load_labware(&#x27;corning_96_wellplate_360ul_flat&#x27;)
+```
+
+### Modules
+```python
+# Temperature
+temp_module = protocol.load_module(&#x27;temperature module gen2&#x27;, &#x27;D3&#x27;)
+
+# Heater-Shaker
+hs_module = protocol.load_module(&#x27;heaterShakerModuleV1&#x27;, &#x27;D1&#x27;)
+
+# Thermocycler
+tc_module = protocol.load_module(&#x27;thermocyclerModuleV2&#x27;)
+```
+
+## Liquid Handling
+
+### Basic Operations
+```python
+pipette.pick_up_tip()
+pipette.aspirate(100, source[&#x27;A1&#x27;])
+pipette.dispense(100, dest[&#x27;B1&#x27;])
+pipette.drop_tip()
+```
+
+### Composite Operations
+```python
+# Transfer
+pipette.transfer(100, source[&#x27;A1&#x27;], dest[&#x27;B1&#x27;], new_tip=&#x27;always&#x27;)
+
+# Distribute
+pipette.distribute(50, source[&#x27;A1&#x27;], [dest[&#x27;A1&#x27;], dest[&#x27;A2&#x27;]], new_tip=&#x27;once&#x27;)
+
+# Consolidate
+pipette.consolidate(50, [source[&#x27;A1&#x27;], source[&#x27;A2&#x27;]], dest[&#x27;A1&#x27;], new_tip=&#x27;once&#x27;)
+```
+
+### Advanced Techniques
+```python
+# Mix
+pipette.mix(repetitions=3, volume=50, location=plate[&#x27;A1&#x27;])
+
+# Air Gap
+pipette.aspirate(100, source[&#x27;A1&#x27;])
+pipette.air_gap(20)
+pipette.dispense(120, dest[&#x27;A1&#x27;])
+
+# Flow Rate Control
+pipette.flow_rate.aspirate = 150
+pipette.flow_rate.dispense = 300
+```
+
+## Conflicts
+- **FreedomIntelligence/OpenClaw-Medical-Skills** suggests placing `apiLevel` in `metadata` and using the &quot;latest&quot; version. This is incorrect for modern Flex protocols (API 2.29+) where `apiLevel` belongs in `requirements`. Always pin versions and follow the structure defined in the K-Dense skill for API 2.29+.</pre>
+</body>
+</html>

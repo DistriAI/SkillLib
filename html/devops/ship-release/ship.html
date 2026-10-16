@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ship</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">ship-release</a> / ship</p><h1>ship</h1><p class="meta">combined</p><p>All three skills are named &#x27;ship&#x27; and share the high-level goal of preparing work for release, but they define materially different procedures. davepoon/buildwithclaude delegates to an external workflow file and focuses on PR creation and a continuation prompt. plugin87/ux-ui-agent-skills is a pre-release gate for a UI kit that runs specific accuracy/responsive/emoji scripts and drafts a README/changelog without tagging. LeoYeAI/openclaw-master-skills is a fully automated, non-interactive pipeline that detects the base branch, runs tests, reviews the diff, bumps VERSION, updates CHANGELOG, commits, pushes, and creates a PR, with extensive preamble and contributor-mode logic. No single copy is the procedure the others reproduce; each contains steps and constraints the others lack, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/ship/SKILL.md</code></td></tr><tr><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/ship/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/gstack/ship/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/ship/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/ship/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/gstack/ship/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: ship
+description: Ship workflow — detect base branch, run quality gates, review diff, bump version, update changelog, commit, push, and create PR. Use after implementation and verification are complete.
+argument-hint: &quot;[phase number or milestone, e.g., &#x27;4&#x27; or &#x27;v1.0&#x27;]&quot;
+allowed-tools:
+  - Read
+  - Bash
+  - Grep
+  - Glob
+  - Write
+  - Edit
+  - AskUserQuestion
+---
+
+## Step 0: Environment and Base Branch Detection
+
+1. If the project uses a gstack-style preamble, run the update-check and session-tracking commands first. If an upgrade is available, follow the inline upgrade flow. If the project does not use gstack, skip this sub-step.
+2. Detect the base branch:
+   - Check if a PR already exists for the current branch: `gh pr view --json baseRefName -q .baseRefName`. If it succeeds, use the printed branch name.
+   - If no PR exists, detect the repo&#x27;s default branch: `gh repo view --json defaultBranchRef -q .defaultBranchRef.name`.
+   - If both fail, fall back to `main`.
+3. Print the detected base branch. Use it in all subsequent git and gh commands.
+
+## Step 1: Quality Gate
+
+Run all applicable quality checks. If any check fails, stop and report the failures; do not proceed.
+
+- If the project has a UI-kit accuracy script, run it and report the real N/N result.
+- If the project has a responsive-verification script, run it and confirm no overflow at the required breakpoints.
+- If the project has an emoji or taste-surface check, run it.
+- Run the project&#x27;s standard test suite.
+
+## Step 2: Review Diff
+
+- Generate the diff against the detected base branch.
+- Review the diff for correctness, completeness, and any CRITICAL issues.
+- If CRITICAL issues are found, stop and present them to the user for a decision (fix, acknowledge, or skip).
+
+## Step 3: Version Bump and Changelog
+
+- Determine the bump level (major/minor/patch/micro) from the diff. If a MINOR or MAJOR bump is needed, ask the user to confirm. For MICRO or PATCH, auto-pick.
+- Update the VERSION file (or equivalent) with the new version.
+- Generate a CHANGELOG entry from the diff and the commits since the last tag.
+- If the project maintains a README with a version badge, &quot;current&quot; line, and changelog section, update those as well.
+
+## Step 4: Commit, Push, and Create PR
+
+- Stage all changes, including any uncommitted work.
+- Create a commit with an auto-generated message summarizing the changes.
+- Push the branch to the remote.
+- Create a PR targeting the detected base branch with an auto-generated body that includes the version bump, changelog entry, and test results.
+- Print the PR URL.
+
+## Step 5: Output and Continuation
+
+- Emit a ship status line (e.g., `## ✓ Phase N / Milestone v1.x Shipped — PR #123`) with the PR URL.
+- If the project uses a continuation pattern, emit a `## ▶ Next Up` heading with the next command and a `/clear` suggestion, noting that `/gsd:resume-work` or an equivalent restores position if the user changes their mind.
+- Include an &quot;Also available:&quot; section with relevant follow-up actions (e.g., cross-AI review, PR-specific actions).
+
+## Conflicts
+
+- **davepoon/buildwithclaude** delegates the entire procedure to an external workflow file and does not specify concrete steps; this combined instruction inlines the steps from the other two copies.
+- **plugin87/ux-ui-agent-skills** forbids destructive actions (no tag, no publish) and requires user confirmation before any git tag; **LeoYeAI/openclaw-master-skills** is non-interactive and auto-commits, pushes, and creates a PR. This combined instruction requires user confirmation only for MINOR/MAJOR version bumps and CRITICAL review findings, and does not perform git tag or publish steps.
+- **LeoYeAI/openclaw-master-skills** includes gstack preamble and contributor-mode field-report logic; this combined instruction includes the preamble as an optional sub-step and omits the contributor-mode logic, which is specific to the gstack tooling.</pre>
+</body>
+</html>

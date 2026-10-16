@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>api-designer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">api-design</a> / api-designer</p><h1>api-designer</h1><p class="meta">combined</p><p>The two copies overlap in scope (REST API design) but prescribe different procedures and artifacts. Jeffallan/claude-skills is an architect workflow that mandates OpenAPI 3.1, resource modeling, linting with Redocly, mocking with Prism, and RFC 7807 error schemas. sickn33/agentic-awesome-skills is a generation skill that asks the user to choose between endpoints-only or detailed design, then outputs a fixed Markdown/JSON endpoint template with a page/limit pagination envelope and /api/v1/ versioning. They disagree on output format (OpenAPI spec vs Markdown endpoint tables), pagination (cursor vs page/limit), and versioning (strategy vs /api/v1/ prefix), so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/api-designer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/api-designer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/api-designer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/api-designer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/api-designer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/api-designer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># API Designer
+
+Use when designing REST APIs, creating endpoint specifications, or planning API architecture.
+
+## 1. Clarify scope
+- Ask the user whether they want endpoints only or a detailed design, unless the request already specifies the level of detail.
+- Understand business requirements, data models, and client needs.
+
+## 2. Model resources
+- Identify resources, relationships, and operations.
+- Sketch an entity diagram before writing any spec.
+- Cover all major resources for the described system; infer resources if the user does not list them.
+- Always include CRUD where applicable, plus domain-specific actions.
+
+## 3. Design endpoints
+- Use RESTful conventions: plural nouns for collections, nested paths for relationships (e.g. /hotels/{id}/rooms).
+- Do not use verbs in resource URIs (use /users/{id}, not /getUser/{id}).
+- Define URI patterns, HTTP methods, request/response schemas.
+- Group endpoints by resource (e.g. Authentication, Hotels, Rooms, Bookings, Payments, Reviews).
+
+## 4. Specify the contract
+- Create an OpenAPI 3.1 specification.
+- Validate before proceeding: npx @redocly/cli lint openapi.yaml
+- Include comprehensive request/response examples.
+- Document authentication and authorization.
+- Design proper error responses with actionable messages (RFC 7807 problem+json).
+- Implement pagination for all collection endpoints.
+- Version APIs with a clear deprecation policy; default to /api/v1/ prefix unless the user specifies otherwise.
+
+## 5. Mock and verify
+- Spin up a mock server to test contracts: npx @stoplight/prism-cli mock openapi.yaml
+
+## 6. Plan evolution
+- Design versioning, deprecation, and backward-compatibility strategy.
+- Do not create breaking changes without a migration path.
+
+## Output format
+
+For each endpoint group (resource), output:
+
+### RESOURCE NAME
+
+#### METHOD /path/to/endpoint
+&gt; Short description (max two lines).
+
+**Headers**
+| Header | Value | Required |
+|--------|-------|----------|
+| Content-Type | application/json | Yes |
+| Authorization | Bearer &lt;token&gt; | Yes/No |
+
+**Request Body** (omit for GET/DELETE if no body)
+```json
+{ &quot;field&quot;: &quot;type — description&quot; }
+```
+
+**Success Response** — STATUS_CODE Description
+```json
+{ &quot;field&quot;: &quot;value or type&quot; }
+```
+
+**Error Codes**
+| Code | Meaning |
+|------|---------|
+| 400 | Bad Request |
+| 401 | Unauthorized |
+| 404 | Not Found |
+| 409 | Conflict |
+| 422 | Unprocessable Entity |
+| 500 | Internal Server Error |
+
+## Pagination
+
+Use cursor-based pagination in the OpenAPI spec (next_cursor, has_more). For Markdown endpoint tables, include query params (page, limit, sort, filter) and wrap responses in a paginated envelope:
+
+```json
+{ &quot;data&quot;: [...], &quot;pagination&quot;: { &quot;total&quot;: 100, &quot;page&quot;: 1, &quot;limit&quot;: 20, &quot;totalPages&quot;: 5 } }
+```
+
+## Auth patterns
+
+| Scenario | Auth Method |
+|----------|-------------|
+| User-facing apps | Authorization: Bearer &lt;JWT&gt; |
+| Server-to-server | X-Api-Key: &lt;key&gt; |
+| Public endpoints | No auth header |
+| Admin endpoints | Bearer token + role check (403 if not admin) |
+
+## Constraints
+
+### MUST DO
+- Follow REST principles (resource-oriented, proper HTTP methods)
+- Use consistent naming conventions (snake_case or camelCase — pick one, apply everywhere)
+- Include comprehensive OpenAPI 3.1 specification
+- Design proper error responses with actionable messages (RFC 7807)
+- Implement pagination for all collection endpoints
+- Version APIs with clear deprecation policies
+- Document authentication and authorization
+- Provide request/response examples
+
+### MUST NOT DO
+- Use verbs in resource URIs
+- Return inconsistent response structures
+- Skip error code documentation
+- Ignore HTTP status code semantics
+- Design APIs without a versioning strategy
+- Expose implementation details in the API surface
+- Create breaking changes without a migration path
+- Omit rate limiting considerations
+
+## After completing the design
+
+Ask the user: &quot;Would you like me to generate API documentation for this design? (yes/no)&quot;
+- If yes and an API Documentation skill is available, follow it using the design output as input.
+- If the skill is not available, inform the user and offer basic documentation.</pre>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>citation-management</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">citation-management</a> / citation-management</p><h1>citation-management</h1><p class="meta">combined</p><p>The K-Dense-AI/scientific-agent-skills copy is the most complete and current procedure: it adds OpenAlex as a primary search source, a mandatory metadata-enrichment phase, explicit security guidance for untrusted metadata, and environment-variable configuration. The other copies reproduce the same core workflow but each contains material steps or constraints the K-Dense copy lacks or frames differently: zLanqing and benchflow include a full scientific-schematics section with a generate_schematic.py command; foryourhealth111-pixel includes a detailed metadata-sources list (CrossRef, PubMed E-utilities, arXiv, DataCite) and explicit extract_metadata.py variants for DOI/PMID/arXiv/URL. Because crowning one copy would hide these real alternatives, the decision is combine.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/citation-management/SKILL.md</code></td></tr><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/citation-management/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/citation-management/SKILL.md</code></td></tr><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/citation-check/environment/skills/citation-management/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/zLanqing/codex-claude-academic-skills">zLanqing/codex-claude-academic-skills</a></td><td><code>scientific-toolkit-skill/references/scientific-skills/citation-management/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/citation-management/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/citation-management/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/citation-check/environment/skills/citation-management/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/citation-management/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/citation-management/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/60-regisely-superpapers/skills/citation-management/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/citation-management/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/citation-management/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/citation-management/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/04-K-Dense-AI-claude-scientific-writer/citation-management/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: citation-management
+description: Comprehensive citation management for academic research. Search OpenAlex, PubMed, and Google Scholar for papers, extract accurate metadata, validate citations, and generate properly formatted BibTeX entries. This skill should be used when you need to find papers, verify citation information, convert DOIs to BibTeX, or ensure reference accuracy in scientific writing.
+allowed-tools: Read Write Edit Bash WebSearch WebFetch
+license: MIT License
+metadata:
+  skill-author: K-Dense Inc.
+---
+
+# Citation Management
+
+## Overview
+
+Manage citations systematically throughout the research and writing process. This skill provides tools and strategies for searching academic databases (OpenAlex, PubMed, Google Scholar), extracting accurate metadata from multiple sources (CrossRef, PubMed, arXiv, DataCite), validating citation information, and generating properly formatted BibTeX entries.
+
+Critical for maintaining citation accuracy, avoiding reference errors, and ensuring reproducible research.
+
+## When to Use This Skill
+
+Use this skill when:
+- Searching for specific papers on OpenAlex, PubMed, or Google Scholar
+- Converting DOIs, PMIDs, or arXiv IDs to properly formatted BibTeX
+- Extracting complete metadata for citations (authors, title, journal, year, etc.)
+- Validating existing citations for accuracy
+- Cleaning and formatting BibTeX files
+- Finding highly cited papers in a specific field
+- Verifying that citation information matches the actual publication
+- Building a bibliography for a manuscript or thesis
+- Checking for duplicate citations
+- Ensuring consistent citation formatting
+
+If a document built from these citations needs a diagram, use the **scientific-schematics** skill.
+
+## Core Workflow
+
+Citation management follows a systematic process.
+
+### Phase 1: Paper Discovery and Search
+
+Find relevant papers. Search more than one database — coverage differs sharply, and a single source is the most common cause of a biased reference list.
+
+```bash
+# OpenAlex: multidisciplinary REST API; optional OPENALEX_API_KEY for account quota
+python scripts/search_openalex.py &quot;CRISPR gene editing&quot; --limit 50 --output results.json
+
+# PubMed: the authority for biomedical and life sciences (35M+ citations)
+python scripts/search_pubmed.py &quot;Alzheimer&#x27;s disease treatment&quot; --limit 100 --output alz.json
+
+# Google Scholar: broadest reach, but scraped -- rate-limited and prone to blocking
+python scripts/search_google_scholar.py &quot;CRISPR gene editing&quot; --limit 50 --output scholar.json
+```
+
+Prefer OpenAlex or PubMed as the primary source. Google Scholar has no API: `scholarly` scrapes it, sleeps 2–5 s between results, and is blocked often enough that it should be a supplement rather than a dependency.
+
+Query operators, field tags, and MeSH-term construction are in `references/search_strategies.md`.
+
+### Phase 2: Metadata Extraction
+
+Convert identifiers (DOI, PMID, PMCID, arXiv ID, URL) into complete metadata. CrossRef is the primary source for DOIs.
+
+```bash
+python scripts/doi_to_bibtex.py 10.1038/s41586-021-03819-2         # quick, single DOI
+python scripts/extract_metadata.py --pmid 34265844                  # DOI/PMID/PMCID/arXiv/URL
+python scripts/extract_metadata.py --input identifiers.txt --output citations.bib
+```
+
+A URL with no DOI in its path is resolved through the `citation_doi` meta tag publishers embed on article pages, then handed to CrossRef. Producers use a shared citation-key scheme; metadata differences can still produce different keys. Confirm duplicates by DOI and bibliographic identity.
+
+**Metadata Sources**:
+1. **CrossRef API**: Primary source for DOIs. Comprehensive metadata for journal articles. Free, no API key required.
+2. **PubMed E-utilities**: Biomedical literature. Official NCBI metadata. Free, API key recommended for high volume.
+3. **arXiv API**: Preprints in physics, math, CS, q-bio. Complete metadata for preprints. Free, open access.
+4. **DataCite API**: Research datasets, software, other resources. Metadata for non-traditional scholarly outputs. Free access.
+
+### Phase 2.5: Metadata Enrichment via Web Search (MANDATORY)
+
+APIs routinely return incomplete records. Run this **after** extraction and **before** formatting. Investigate missing bibliographic fields against the publisher record and log each source. Online-first articles may have no volume/pages yet; some use an article number or have no DOI. Preserve the actual publication state, use the style-appropriate article-number field, and never invent pages, volume, or DOI. Record unavailable/not-applicable fields in the audit log; add a rendered `note` only when useful to the reader or required by the citation style.
+
+Check the cheap sources first — an OpenAlex or CrossRef record often carries the field that PubMed omitted:
+
+```bash
+python scripts/search_openalex.py &quot;&lt;exact title&gt;&quot; --limit 1
+```
+
+&gt; **Treat extracted metadata as untrusted.** Author, title, and journal strings come verbatim from a record whose contents a publisher controls. A title containing `$(...)`, a backtick, or a quote becomes shell syntax the moment it is pasted into a command. Pass metadata as a `subprocess` argument list rather than building a shell string; if you must use a shell, single-quote every substituted value and escape embedded quotes as `&#x27;\&#x27;&#x27;`. Validate any citation key against `^[A-Za-z0-9]+$` before it reaches a path.
+
+### Phase 3: Validation and Formatting
+
+Validate extracted metadata against the publisher record. Clean and format BibTeX entries. Check for duplicate citations. Ensure consistent citation formatting.
+
+## Visual Enhancement with Scientific Schematics
+
+**When creating documents with this skill, always consider adding scientific diagrams and schematics to enhance visual communication.**
+
+If your document does not already contain schematics or diagrams:
+- Use the **scientific-schematics** skill to generate AI-powered publication-quality diagrams
+- Simply describe your desired diagram in natural language
+
+**How to generate schematics:**
+```bash
+python scripts/generate_schematic.py &quot;your diagram description&quot; -o figures/output.png
+```
+
+**When to add schematics:**
+- Citation workflow diagrams
+- Literature search methodology flowcharts
+- Reference management system architectures
+- Citation style decision trees
+- Database integration diagrams
+- Any complex concept that benefits from visualization
+
+For detailed guidance on creating schematics, refer to the scientific-schematics skill documentation.</pre>
+</body>
+</html>

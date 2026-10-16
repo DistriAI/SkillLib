@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>baoyu-post-to-wechat</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">wechat-official-account-publishing</a> / baoyu-post-to-wechat</p><h1>baoyu-post-to-wechat</h1><p class="meta">combined</p><p>The three copies are not a clean original-plus-derivative set. JimLiu/baoyu-skills is the most complete and includes the User Input Tools rule, remote API publishing keys, pre-flight check, and a 5-step article workflow. LeoYeAI/openclaw-master-skills is a near-mirror of JimLiu but adds Windows PowerShell EXTEND.md discovery and inline multi-account compatibility rules. anbeime/skill is a shorter variant that omits the md-to-wechat and check-permissions scripts, omits remote API keys, and instead adds a 7-step article workflow with explicit markdown-to-html skill discovery, plain-text slug creation, and a different EXTEND.md search order. Because each copy contains material steps or constraints the others lack, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/JimLiu/baoyu-skills">JimLiu/baoyu-skills</a></td><td><code>skills/baoyu-post-to-wechat/SKILL.md</code></td></tr><tr><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/content-creation-publisher/baoyu-post-to-wechat/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/baoyu-post-to-wechat/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/JimLiu/baoyu-skills">JimLiu/baoyu-skills</a></td><td><code>skills/baoyu-post-to-wechat/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/content-creation-publisher/baoyu-post-to-wechat/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/baoyu-post-to-wechat/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: baoyu-post-to-wechat
+description: Posts content to WeChat Official Account (微信公众号) via API or Chrome CDP. Supports article posting (文章) with HTML, markdown, or plain text input, and image-text posting (贴图/图文) with multiple images. Use when user mentions &quot;发布公众号&quot;, &quot;post to wechat&quot;, &quot;微信公众号&quot;, or &quot;贴图/图文/文章&quot;.
+---
+
+# Post to WeChat Official Account
+
+## User Input Tools
+
+When this skill prompts the user, follow this tool-selection rule (priority order):
+
+1. Prefer built-in user-input tools exposed by the current agent runtime — e.g., `AskUserQuestion`, `request_user_input`, `clarify`, `ask_user`, or any equivalent.
+2. Fallback: if no such tool exists, emit a numbered plain-text message and ask the user to reply with the chosen number/answer for each question.
+3. Batching: if the tool supports multiple questions per call, combine all applicable questions into a single call; if only single-question, ask them one at a time in priority order.
+
+## Language
+
+Respond in the user&#x27;s language. If they write in Chinese, reply in Chinese; if English, English. Keep technical tokens (paths, flags, field names) in English.
+
+## Script Directory
+
+`{baseDir}` = this SKILL.md&#x27;s directory. Resolve `${BUN_X}`: prefer `bun`; else `npx -y bun`; else suggest `brew install oven-sh/bun/bun`.
+
+| Script | Purpose |
+|--------|---------|
+| `scripts/wechat-browser.ts` | Image-text posts (图文) |
+| `scripts/wechat-article.ts` | Article posting via browser (文章) |
+| `scripts/wechat-api.ts` | Article posting via API (文章) |
+| `scripts/md-to-wechat.ts` | Markdown → WeChat-ready HTML with image placeholders |
+| `scripts/check-permissions.ts` | Verify environment &amp; permissions |
+
+## Preferences (EXTEND.md)
+
+Check these paths in order; first hit wins:
+
+| Path | Scope |
+|------|-------|
+| `.baoyu-skills/baoyu-post-to-wechat/EXTEND.md` | Project |
+| `${XDG_CONFIG_HOME:-$HOME/.config}/baoyu-skills/baoyu-post-to-wechat/EXTEND.md` | XDG |
+| `$HOME/.baoyu-skills/baoyu-post-to-wechat/EXTEND.md` | User home |
+
+Found → read, parse, apply. Not found → run first-time setup (`references/config/first-time-setup.md`) before anything else.
+
+**Minimum keys** (case-insensitive, accept `1/0` or `true/false`):
+
+| Key | Default | Mapping |
+|-----|---------|---------|
+| `default_author` | empty | Fallback for `author` when CLI/frontmatter not provided |
+| `need_open_comment` | `1` | `articles[].need_open_comment` in `draft/add` |
+| `only_fans_can_comment` | `0` | `articles[].only_fans_can_comment` in `draft/add` |
+
+**Recommended EXTEND.md**:
+
+```md
+default_theme: default
+default_color: blue
+default_publish_method: browser
+default_author: 宝玉
+need_open_comment: 1
+only_fans_can_comment: 0
+chrome_profile_path: /path/to/chrome/profile
+
+# Remote API publishing (optional) — only set if WeChat&#x27;s IP allowlist
+# excludes your local machine. See &quot;Remote API Method&quot; below.
+# remote_publish_host: server.example.com
+# remote_publish_user: deploy
+# remote_publish_port: 22
+# remote_publish_identity_file: ~/.ssh/id_ed25519
+# remote_publish_known_hosts_file: ~/.ssh/known_hosts
+# remote_publish_strict_host_key_checking: accept-new
+# remote_publish_connect_timeout: 10
+# remote_publish_proxy_jump: bastion.example.com
+```
+
+Raw `ssh` / `scp` options are intentionally not supported; only the typed keys above are honored. Authentication is SSH key only (no passwords).
+
+**Theme options**: default, grace, simple, modern. **Color presets**: blue, green, vermilion, yellow, purple, sky, rose, olive, black, gray, pink, red, orange (or hex).
+
+**Value priority**: CLI args → frontmatter → EXTEND.md (account-level → global) → skill defaults.
+
+## Multi-Account Support
+
+EXTEND.md supports an `accounts:` block for managing multiple Official Accounts. With 2+ entries, the workflow inserts a Step 0.5 to prompt for account selection (or auto-selects based on `default: true` or `--account &lt;alias&gt;`).
+
+Full details — compatibility rules, per-account keys, credential resolution, per-account Chrome profiles, CLI usage — in `references/multi-account.md`.
+
+## Pre-flight Check (Optional)
+
+Before first use, suggest the environment check (user can skip):
+
+```bash
+${BUN_X} {baseDir}/scripts/check-permissions.ts
+```
+
+Checks: Chrome, profile isolation, Bun, Accessibility, clipboard, paste keystroke, API credentials, Chrome conflicts.
+
+| Check fails | Fix |
+|-------------|-----|
+| Chrome | Install Chrome or set `WECHAT_BROWSER_CHROME_PATH` |
+| Profile dir | Shared profile at `baoyu-skills/chrome-profile` |
+| Bun runtime | `brew install oven-sh/bun/bun` or `npm install -g bun` |
+| Accessibility (macOS) | System Settings → Privacy &amp; Security → Accessibility → enable terminal app |
+| Clipboard copy | Ensure Swift/AppKit (macOS: `xcode-select --install`) |
+| Paste keystroke (Linux) | Install `xdotool` (X11) or `ydotool` (Wayland) |
+| API credentials | Follow guided setup in Step 2, or set in `.baoyu-skills/.env` |
+
+## Image-Text Posting (图文)
+
+Short posts with multiple images (up to 9):
+
+```bash
+${BUN_X} {baseDir}/scripts/wechat-browser.ts --markdown article.md --images ./images/
+${BUN_X} {baseDir}/scripts/wechat-browser.ts --title &quot;标题&quot; --content &quot;内容&quot; --image img.png --submit
+```
+
+Details: `references/image-text-posting.md`.
+
+## Article Posting Workflow (文章)
+
+```
+- [ ] Step 0: Load preferences (EXTEND.md)
+- [ ] Step 0.5: Resolve account (multi-account only — see references/multi-account.md)
+- [ ] Step 1: Determine input type
+- [ ] Step 2: Select method and configure credentials
+- [ ] Step 3: Resolve theme/color and validate metadata
+- [ ] Step 4: Publish to WeChat
+- [ ] Step 5: Report completion
+```
+
+### Step 1: Determine Input Type
+
+| Input Type | Detection | Action |
+|------------|-----------|--------|
+| HTML file | Path ends with `.html`, file exists | Skip to Step 3 |
+| Markdown file | Path ends with `.md`, file exists | Continue to Step 2 |
+| Plain text | Not a file path, or file doesn&#x27;t exist | Save to markdown, then Step 2 |
+
+**Plain Text Handling**:
+
+1. Generate slug from content (first 2-4 meaningful words, kebab-case)
+2. Create directory and save file:
+
+```bash
+mkdir -p &quot;$(pwd)/post-to-wechat/$(date +%Y-%m-%d)&quot;
+# Save content to: post-to-wechat/yyyy-MM-dd/[slug].md
+```
+
+3. Continue processing as markdown file
+
+**Slug Examples**:
+- &quot;Understanding AI Models&quot; → `understanding-ai-models`
+- &quot;人工智能的未来&quot; → `ai-future` (translate to English for slug)
+
+### Step 2: Select Method and Configure Credentials
+
+If the input is markdown, check for a markdown-to-html skill. If found, use it. If not found, show installation suggestion and ask the user to cancel or provide HTML manually.
+
+### Step 3: Resolve Theme/Color and Validate Metadata
+
+Resolve theme and color from CLI args, frontmatter, EXTEND.md, or skill defaults. Validate title, summary, and cover image.
+
+### Step 4: Publish to WeChat
+
+Use the selected method (API or browser) to publish the article.
+
+### Step 5: Report Completion
+
+Report the result to the user.
+
+## Conflicts
+
+- anbeime/skill::skills/content-creation-publisher/baoyu-post-to-wechat/SKILL.md checks only project and user EXTEND.md paths, while JimLiu/baoyu-skills and LeoYeAI/openclaw-master-skills also check an XDG config path.
+- anbeime/skill::skills/content-creation-publisher/baoyu-post-to-wechat/SKILL.md uses a 7-step article workflow with a separate markdown-to-html skill check, while JimLiu/baoyu-skills and LeoYeAI/openclaw-master-skills use a 5-step workflow that includes theme/color resolution and account resolution.
+- JimLiu/baoyu-skills::skills/baoyu-post-to-wechat/SKILL.md includes remote API publishing keys and a pre-flight check script, while anbeime/skill::skills/content-creation-publisher/baoyu-post-to-wechat/SKILL.md omits both.
+- LeoYeAI/openclaw-master-skills::skills/baoyu-post-to-wechat/SKILL.md includes Windows PowerShell EXTEND.md discovery, while JimLiu/baoyu-skills::skills/baoyu-post-to-wechat/SKILL.md and anbeime/skill::skills/content-creation-publisher/baoyu-post-to-wechat/SKILL.md do not.</pre>
+</body>
+</html>

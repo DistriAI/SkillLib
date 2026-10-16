@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>osint-methodology</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">osint-recon-methodology</a> / osint-methodology</p><h1>osint-methodology</h1><p class="meta">combined</p><p>The three copies are not simple reproductions of one another. The uphiago copy (v2.1) describes a 5-stage pipeline and includes specific operational tactics (identity-fabric mapping, JavaScript deep analysis, mobile/cloud attack surface, threat-actor pivots, crypto tracing, forensics) that the others omit. The elementalsouls copy (v2.3) describes a 6-stage pipeline (adding convergence and active validation) and includes specific structural artifacts (Finding schema, Source Hygiene, Confidence Upgrade Workflows table) that the others omit. The sickn33 copy is a mirror of the elementalsouls content (v2.3) but adds a distinct &#x27;Mandatory confirmation gate&#x27; requiring explicit user confirmation of the target and scope before any probing, which is a stricter constraint than the &#x27;soft scope check&#x27; in the other two. Because the copies disagree on the pipeline stage count (5 vs 6) and the authorization gate strictness (soft check vs mandatory confirmation), and each contains unique material steps, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/osint-methodology/SKILL.md</code></td></tr><tr><td><a href="https://github.com/elementalsouls/Claude-OSINT">elementalsouls/Claude-OSINT</a></td><td><code>skills/osint-methodology/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/osint-methodology/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/osint-methodology/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/elementalsouls/Claude-OSINT">elementalsouls/Claude-OSINT</a></td><td><code>skills/osint-methodology/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/osint-methodology/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/osint-methodology/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/osint-methodology/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># OSINT Methodology — External Red-Team Edition
+
+## 0. When to Use / When NOT
+
+**Use this skill when:**
+- Planning or executing external reconnaissance against an authorized target (red team, bug bounty in-scope, ASM engagement).
+- Mapping an organization&#x27;s external attack surface end-to-end (subdomains → assets → exposure → attack paths).
+- Investigating a person, entity, or threat actor where evidence discipline matters.
+- Tracing cryptocurrency flows, geolocating media, performing image/video forensics, or chronolocating events.
+- Building a structured OSINT campaign that needs reproducibility, severity grading, and clean handoffs.
+- Producing client-facing deliverables (exec summaries, technical reports, reproduction packages) from offensive engagements.
+
+**Do NOT use this skill when:**
+- The user is asking for active exploitation, post-exploitation, lateral movement, AD privilege escalation, malware development, or anything beyond reconnaissance.
+- The user is asking for blue-team / defensive content (SIEM rules, detection engineering).
+- The target&#x27;s authorization is unclear.
+
+## 1. Authorization &amp; Legal Posture
+
+This skill is intended for assets the operator owns or has written authorization to assess.
+
+**Mandatory Confirmation Gate:**
+Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+1. Ask the user to state the exact target URL, IP, account, or resource.
+2. Ask the user to confirm written authorization and the permitted scope.
+3. Show the exact command(s) and explain their expected effect.
+4. Wait for explicit confirmation in the current conversation.
+
+Without that confirmation, remain read-only and provide defensive guidance only.
+
+**Always-on guardrails (regardless of authorization):**
+- Never weaken auth, rate limits, banners, or any safety control that enforces scope on the target side.
+- Never run destructive probes (true SYN scans on production, masscan at line rate, fuzzing/brute-force) outside an explicit DEEP / `--aggressive` mode.
+- Never paste real PII, valid credentials, session tokens, API keys, or other secrets into cloud-hosted LLMs or third-party services.
+- Never take action against assets outside the documented scope, even if &quot;obviously related&quot;.
+
+## 2. Confidence Levels
+
+Every assertion you make during an engagement should carry a confidence level.
+
+| Level | Meaning | Examples |
+|---|---|---|
+| **TENTATIVE** | Plausible based on indirect evidence; unverified. | Snippet-only Google dork match; email pattern inferred from name; subdomain returned by one passive source only. |
+| **FIRM** | Directly observed but uncorroborated. | Subdomain that resolves to an IP; HEAD-confirmed bucket exists (private); CT-log entry shows certificate; Shodan banner returned. |
+| **CONFIRMED** | Multiple independent corroborations OR directly verified. | Live-validated token; bucket listable; three-source subdomain convergence. |
+
+**Rule of three for attribution:** 3 independent weak signals, OR 1 strong + 1 weak. Never single-source attribute.
+
+### 2.1 Confidence Upgrade Workflows
+
+| Asset type | TENTATIVE → FIRM | FIRM → CONFIRMED |
+|---|---|---|
+| Subdomain | ≥2 passive sources OR DNS resolves | Serves on a standard port AND banner/cert returned |
+| IP | ≥2 sources (passive DNS, ASN, Shodan) | TCP SYN-ACK or ICMP reply |
+| WebApp | URL extracted but not yet hit | HTTP returns 2xx/3xx/4xx AND content-length &gt; 0 |
+| Email | Name-pattern inferred OR snippet-only | Listed in Hunter/IntelX/breach, OR SMTP 250 (abort at DATA) |
+| Bucket | Permutation candidate + HEAD returns 200/301/403 (exists) | GET listing = CONFIRMED |
+| Credential / secret | Regex match in captured text | Read-only validator returns success (scope + account-ID documented) |
+| Person | Name from single source | Confirmed by second independent source |
+| SSO tenant | OIDC discovery endpoint returns metadata | Tenant GUID extracted AND domain ties back via MX/autodiscover/SP record |
+
+Default reporting posture: never claim CONFIRMED without explicit corroboration. When in doubt, downgrade.
+
+## 3. Output Format
+
+Each finding uses this schema:
+
+```
+Finding:
+  id:          &lt;stable hash or UUID&gt;
+  module:      &lt;technique that discovered it&gt;
+  asset_key:   &lt;typed key, e.g. sub:api.example.com&gt;
+  category:    &lt;e.g. SECRET_LEAK, OPEN_GRAPHQL_API, SSO_EXPOSURE&gt;
+  severity:    &lt;info|low|medium|high|critical&gt;
+  confidence:  &lt;tentative|firm|confirmed&gt;
+  title:       &lt;one-line summary&gt;
+  description: &lt;2-5 sentences&gt;
+  evidence:
+    url:       &lt;where found&gt;
+    timestamp: &lt;UTC ISO8601&gt;
+    sha256:    &lt;hash of any downloaded artifact&gt;
+    raw:       &lt;truncated to 2 KiB&gt;
+  references:  [&lt;CVE-ID, advisory URL, vendor doc&gt;]
+  remediation: &lt;action the asset owner can take&gt;
+```
+
+Always use UTC timestamps.
+
+## 4. Source Hygiene &amp; Citations
+
+For every artifact: **URL + UTC timestamp + SHA-256 + tool version + run_id**.
+
+- Hash all downloads with SHA-256.
+- Record the tool version and run_id for reproducibility.
+
+## 5. Recon Pipeline
+
+The pipeline consists of 6 stages:
+1. **Seed Discovery**: Initial footprinting and seed asset collection.
+2. **Asset Expansion**: Subdomain enumeration, IP mapping, and asset graph building.
+3. **Enrichment**: Banner grabbing, certificate analysis, and metadata extraction.
+4. **Exposure Analysis**: Identifying open ports, services, and potential vulnerabilities.
+5. **Convergence**: Correlating findings across sources to build a unified attack surface map.
+6. **Operator-Armed Active Validation**: Confirmed findings are validated with active, detection-aware probing.
+
+## 6. Operational Tactics
+
+- **Identity-Fabric Mapping**: Map Entra/Okta/ADFS/Google/SAML/M365 Teams+SharePoint+OAuth.
+- **API and Auth-Map Methodology**: Discover and map API endpoints and authentication flows.
+- **JavaScript Deep Analysis**: Analyze JS bundles for secrets, endpoints, and logic.
+- **Mobile Attack Surface**: Analyze APKs and mobile app endpoints.
+- **Cloud Attack Surface**: Enumerate cloud buckets and storage services.
+- **Breach×Identity Correlation**: Correlate breach data with identity fabric.
+- **Detectability Tagging**: Tag findings with detectability levels.
+- **Detection-Aware Probing**: Use back-off and persona rotation to minimize detection.
+- **WAF/CDN Bypass + Origin Discovery**: Identify and bypass WAF/CDN to reach origin servers.
+- **Vulnerability Prioritization**: Prioritize CVEs using EPSS and CISA KEV.
+- **Phishing Infrastructure Planning**: Plan phishing infrastructure and pretext development.
+- **Bug Bounty Submission**: Use templates for bug bounty submissions.
+- **Client Deliverable Templates**: Use templates for client reports with risk translation.
+- **Threat-Actor Investigation**: Investigate threat actors, including RU/CN pivots.
+- **Cryptocurrency Tracing**: Trace crypto flows.
+- **Image/Video Forensics**: Perform forensics on images and videos.
+- **Chronolocation**: Geolocate and chronolocate media.</pre>
+</body>
+</html>

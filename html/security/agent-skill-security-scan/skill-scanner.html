@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>skill-scanner</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">agent-skill-security-scan</a> / skill-scanner</p><h1>skill-scanner</h1><p class="meta">combined</p><p>The three copies overlap on the goal of scanning agent skills for security issues, but they are not interchangeable. getsentry/skills and sickn33/agentic-awesome-skills describe a similar multi-phase workflow with a bundled scan_skill.py, but they disagree on how the script is invoked, what the report contains, and which structural attacks to check. LeoYeAI/openclaw-master-skills is a different tool: it targets Clawdbot/MCP skills, uses a different entry point (skill_scanner.py), adds a Streamlit Web UI, and focuses on malware/spyware/crypto-mining rather than the prompt-injection and agent-behavior phases in the other two. Crowning one copy would hide real alternatives and conflicting parameters.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/skill-scanner/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/skill-scanner/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/skill-scanner/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/skill-scanner/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/skill-scanner/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/skill-scanner/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/skill-scanner/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Skill Security Scanner
+
+Scan agent skills for security issues before adoption. Detects prompt injection, malicious code, excessive permissions, secret exposure, supply chain risks, malware, spyware, crypto-mining, backdoors, and obfuscation.
+
+## When to Use
+- You need to evaluate a skill for prompt injection, malicious code, over-broad permissions, or supply-chain risk before adopting it.
+- You want a static scan plus manual review workflow for a skill directory.
+- The task is to decide whether a skill is safe enough to trust in an agent environment.
+- You need to scan Clawdbot or MCP skills for malware, spyware, crypto-miners, or malicious code patterns.
+
+## Requirements
+- Python 3.7+ for the LeoYeAI scanner; no additional dependencies beyond the standard library.
+- `uv` CLI for the getsentry/skills scanner, or an already-reviewed Python environment containing PyYAML for the sickn33/agentic-awesome-skills scanner.
+- Streamlit (optional) for the LeoYeAI Web UI.
+
+## Entry Points
+- **getsentry/skills:** `uv run scripts/scan_skill.py &lt;skill-directory&gt;`
+- **sickn33/agentic-awesome-skills:** `python3 &quot;&lt;installed-skill-dir&gt;/scripts/scan_skill.py&quot; &quot;&lt;authorized-inert-skill-directory&gt;&quot;`
+- **LeoYeAI/openclaw-master-skills:** `python skill_scanner.py /path/to/skill-folder`
+- **LeoYeAI Web UI:** `pip install streamlit &amp;&amp; streamlit run streamlit_ui.py`
+
+## Workflow
+
+### Phase 1: Input &amp; Discovery
+Determine the scan target:
+- If the user provides a skill directory path, use it directly.
+- If the user names a skill, look for it under `.agents/skills/&lt;name&gt;/`, `skills/&lt;name&gt;/`, `.claude/skills/&lt;name&gt;/`, `plugins/*/skills/&lt;name&gt;/`, or another repo-managed skill root with clear prior art.
+- If the user says &quot;scan all skills&quot;, discover all `*/SKILL.md` files and scan each.
+
+Validate the target contains a `SKILL.md` file. List the skill structure:
+```bash
+ls -la &lt;skill-directory&gt;/
+ls &lt;skill-directory&gt;/references/ 2&gt;/dev/null
+ls &lt;skill-directory&gt;/scripts/ 2&gt;/dev/null
+```
+
+### Phase 2: Automated Static Scan
+Run the bundled scanner appropriate to the installed copy:
+- getsentry/skills: `uv run scripts/scan_skill.py &lt;skill-directory&gt;`
+- sickn33/agentic-awesome-skills: `python3 &quot;&lt;installed-skill-dir&gt;/scripts/scan_skill.py&quot; &quot;&lt;authorized-inert-skill-directory&gt;&quot;`
+- LeoYeAI/openclaw-master-skills: `python skill_scanner.py /path/to/skill-folder`
+
+Parse the JSON output. The script produces findings with severity levels, URL analysis, and structure information. Use these as leads for deeper analysis.
+
+**Fallback**: If the script fails, proceed with manual analysis using Grep patterns from the reference files.
+
+**Scanner Coverage and Report Privacy** (sickn33/agentic-awesome-skills):
+- Use a private inert snapshot: this helper is static inspection, not an execution sandbox.
+- It refuses final symlinks/non-regular files and bounds a file to 1 MiB, a tree to 1,000 files / 16 MiB.
+- Hosts without guarded no-follow file opens report incomplete rather than silently following links.
+- Source payloads are omitted from the report; visible filenames and hostnames can still be confidential identifiers; inspect reports locally before sharing.
+- No target script, lifecycle hook, test, or external URL is executed.
+- A scan error or incomplete coverage exits nonzero, not a clean pass.
+
+### Phase 3: Frontmatter Validation
+Read the SKILL.md and check:
+- **Required fields**: `name` and `description` must be present.
+- **Name consistency**: `name` field should match the directory name.
+- **Tool assessment**: Review `allowed-tools` — is Bash justified? Are tools unrestricted (`*`)?
+- **Model override**: Is a specific model forced? Why?
+- **Description quality**: Does the description accurately represent what the skill does?
+
+### Phase 4: Prompt Injection Analysis
+Load `references/prompt-injection-patterns.md` for context (if present in the installed copy).
+
+Review scanner findings in the &quot;Prompt Injection&quot; category. For each finding:
+1. Read the surrounding context in the file.
+2. Determine if the pattern is **performing** injection (malicious) or **discussing/detecting** injection (legitimate).
+3. Skills about security, testing, or education commonly reference injection patterns — this is expected.
+
+**Critical distinction**: A security review skill that lists injection patterns in its references is documenting threats, not attacking. Only flag patterns that would execute against the agent running the skill.
+
+### Phase 5: Behavioral Analysis
+This phase is agent-only — no pattern matching. Read the full SKILL.md instructions and evaluate:
+
+**Description vs. instructions alignment**:
+- Does the description match what the instructions actually tell the agent to do?
+- A skill described as &quot;code formatter&quot; that instructs the agent to read ~/.ssh is misaligned.
+
+**Config/memory poisoning**:
+- Instructions to modify `CLAUDE.md`, `MEMORY.md`, `settings.json`, `.mcp.json`, or hook configurations.
+- Instructions to add itself to allowlists or auto-approve permissions.
+- Writing to `~/.claude/`, `~/.agents/`, or any agent configuration directory.
+- Scripts that append to global config files — the poisoned instructions persist after skill removal.
+
+**Scope creep**:
+- Instructions that exceed the skill&#x27;s stated purpose.
+- Unnecessary data gathering (reading files unrelated to the skill&#x27;s function).
+- Instructions to install other skills, plugins, or dependencies not mentioned in the description.
+
+**Information gathering**:
+- Reading environment variables beyond what&#x27;s needed.
+- Listing directory contents outside the skill&#x27;s scope.
+- Accessing git history, credentials, or user data unnecessarily.
+
+**Structural attacks** (check scanner output for these; applies to getsentry/skills and sickn33/agentic-awesome-skills):
+- **Symlinks**: Files that resolve outside the skill directory — can disguise reads of `~/.ssh/id_rsa`, `~/.aws/credentials`, etc. as &quot;example&quot; files.
+- **Frontmatter hooks**: `PostToolUse`/`PreToolUse` hooks in YAML — execute shell commands automatically, the model cannot prevent it.
+- **`!command` syntax**: Runs shell commands at skill load time during template expansion, before the model sees the prompt.
+- **Test files**: `conftest.py`, `test_*.py`, `*.test.js` — test runners auto-discover and execute these as side effects of `pytest` or `npm test`.
+- **npm lifecycle hooks**: `postinstall` scripts in bundled `package.json` — run automatically on `npm install`.
+- **Image metadata**: PNG files with text in metadata chunks (tEXt/iTXt) — multimodal LLMs can read hidden instructions from image metadata.
+
+### Phase 6: Script Analysis
+If the skill has a `scripts/` directory:
+1. Load `references/dangerous-code-patterns.md` for context (if present in the installed copy).
+2. Read each script file fully (do not skip any).
+3. Check scanner findings in the &quot;Malicious Code&quot; category.
+4. For each finding, evaluate:
+   - **Data exfiltration**: Does the script send data to external URLs? What data?
+   - **Reverse shells**: Socket connections with redirected input/output.
+   - **System modification**: File system changes, package installation, service manipulation.
+   - **Obfuscation**: Encoded payloads, dynamic code generation, eval/exec of non-literal strings.
+   - **Crypto-mining indicators**: Known mining pool URLs, miner binary names, high-CPU patterns.
+   - **Backdoors**: Hidden network listeners, credential harvesting, privilege escalation.
+
+### Phase 7: Report
+- Output findings in Markdown or JSON format (LeoYeAI/openclaw-master-skills supports both).
+- For getsentry/skills and sickn33/agentic-awesome-skills, the scanner outputs structured JSON with findings, URLs, structure info, and severity counts.
+- Evaluate intent and filter false positives; the script catches patterns mechanically.
+- Inspect reports locally before sharing, as visible filenames and hostnames can be confidential identifiers.
+
+## Conflicts
+- **getsentry/skills vs sickn33/agentic-awesome-skills**: The getsentry/skills copy requires `uv` and runs the script from the repository root; the sickn33/agentic-awesome-skills copy requires PyYAML in an already-reviewed environment and runs the script from the installed skill directory, explicitly rejecting implicit dependency download. The getsentry/skills copy lists structural attacks including symlinks, frontmatter hooks, `!command` syntax, test files, npm lifecycle hooks, and image metadata; the sickn33/agentic-awesome-skills copy omits several of these and instead emphasizes report privacy, file-size and tree-size bounds, and refusal of final symlinks/non-regular files.
+- **LeoYeAI/openclaw-master-skills vs getsentry/skills and sickn33/agentic-awesome-skills**: The LeoYeAI copy uses a different entry point (`skill_scanner.py`), targets Clawdbot/MCP skills, adds a Streamlit Web UI, and focuses on malware, spyware, crypto-miners, backdoors, and obfuscation rather than the prompt-injection and agent-behavior phases in the other two. It has no multi-phase workflow and no reference files for prompt-injection or dangerous-code patterns.</pre>
+</body>
+</html>

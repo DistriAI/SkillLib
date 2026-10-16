@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>analytics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">analytics-tracking-setup</a> / analytics</p><h1>analytics</h1><p class="meta">combined</p><p>The three copies are not reproductions of one procedure. The microsoft/power-platform-skills copy is a Process Mining routing skill that calls native functions like get_processes and get_process_overall_metrics_v2 and routes to specialist skills. The coreyhaines31/marketingskills copy is a marketing analytics tracking skill covering GA4, GTM, UTM parameters, event naming, and measurement principles. The sickn33/agentic-awesome-skills copy is a truncated mirror of the coreyhaines31 skill, missing the later sections on GA4, GTM, UTM, and debugging. Because the first copy addresses a completely different domain (process mining) and the other two address marketing analytics tracking, crowning one would hide a real alternative. The two marketing copies overlap but the coreyhaines31 version is more complete, while the sickn33 version is a truncated mirror.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/process-intelligence/skills/analytics/SKILL.md</code></td></tr><tr><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/analytics/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/analytics/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/process-intelligence/skills/analytics/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/analytics/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/analytics/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/analytics/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/analytics/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Analytics
+
+This skill covers two distinct domains. Determine which applies before proceeding.
+
+## A. Process Mining Analytics (microsoft/power-platform-skills)
+
+Use when a Process Mining overview, initial process selection, or an analytical follow-up needs routing.
+
+1. Reuse the selected process and fresh metadata. Otherwise call `get_processes {}`, resolve the returned `P` (ask on duplicates), then `get_process_details_v2 {processId:P}` when metadata is missing. An empty process list stops analysis.
+2. Call `get_process_overall_metrics_v2 {S,filterOptions:F}`. Omit absent filters. Report returned case/event/variant counts and mean `CaseDuration`/`CaseWaitingTime`; preserve native units. Missing metrics are not zero.
+3. Only for requested path concentration: `get_variants_with_metrics_v2 {S,filterOptions:F,itemsPerPage:5,itemsToSkip:0,metricToSortBy:&quot;CaseCount&quot;,sortOrder:&quot;Descending&quot;}`.
+
+Route follow-ups to specialist skills: investigate-process, analyze-performance, analyze-variants, analyze-drivers, compare-cohorts, derive-metric, analyze-objects.
+
+## B. Marketing Analytics Tracking (coreyhaines31/marketingskills)
+
+Use when the user wants to set up, improve, or audit analytics tracking and measurement (GA4, GTM, UTM, conversion tracking, event tracking).
+
+### Initial Assessment
+Check for product marketing context first (`.agents/product-marketing.md` or `.claude/product-marketing.md`). Understand business context, current state, and technical context.
+
+### Core Principles
+1. Track for decisions, not data.
+2. Start with the questions.
+3. Name things consistently (object-action format, lowercase with underscores).
+4. Maintain data quality.
+5. Compute, don&#x27;t eyeball: derive every total from row-level data; cross-check headline figures.
+6. Match observation windows: rate metrics divide matching closed windows.
+7. Recommend against the stated goal.
+
+### Tracking Plan
+Structure: Event Name | Category | Properties | Trigger | Notes.
+
+### Essential Events
+Marketing site: cta_clicked, form_submitted, signup_completed, demo_requested.
+Product/App: onboarding_step_completed, feature_used, purchase_completed, subscription_cancelled.
+
+### GA4 Implementation
+1. Create GA4 property and data stream.
+2. Install gtag.js or GTM.
+3. Enable enhanced measurement.
+4. Configure custom events.
+5. Mark conversions in Admin.
+
+### Google Tag Manager
+Use Tags, Triggers, and Variables. Push events to the data layer.
+
+### UTM Parameters
+Standard: utm_source, utm_medium, utm_campaign, utm_content, utm_term. Lowercase, consistent separators, document all UTMs.
+
+### Debugging and Validation
+Use GA4 DebugView, GTM Preview Mode, and browser extensions. Validate events fire on correct triggers, properties populate correctly, no duplicates, works across browsers and mobile.</pre>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>tdd-guide</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">tdd-workflow</a> / tdd-guide</p><h1>tdd-guide</h1><p class="meta">combined</p><p>The two copies overlap on the RED -&gt; GREEN -&gt; REFACTOR cycle and an 80% coverage target, but each contains material steps the other lacks. The first copy is a routing and discipline guide (no production code before a failing test, minimum test set, required edge cases, and explicit routing boundaries to other skills). The second copy is a tooling and generation guide (specific Python scripts for test generation, coverage analysis, and TDD phase validation, framework-specific examples, and input/limitation constraints). Crowning one would hide the other&#x27;s real alternative approach.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/tdd-guide/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/tdd-guide/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/tdd-guide/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/tdd-guide/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: tdd-guide
+description: Test-first development route for TDD, writing failing tests first, RED -&gt; GREEN -&gt; REFACTOR, and behavior-changing feature/bug/refactor work. Includes tooling for test generation, coverage analysis, and phase validation across Jest, Pytest, JUnit, Vitest, and Mocha.
+---
+
+# TDD Guide
+
+Use this skill for all feature work, bug fixes, and refactors that change behavior.
+
+## Routing Boundary
+
+Use this skill when the user wants to build or change behavior through tests:
+- TDD / test-driven development
+- write failing tests first
+- test-first implementation
+- RED -&gt; GREEN -&gt; REFACTOR
+
+Do not use it when tests are already failing and the user wants root cause; route that to `systematic-debugging`. Do not use it when the user only wants a test/coverage report; route that to `generating-test-reports`.
+
+## Core Rule
+
+No production code before a failing test.
+
+## Workflow
+
+1. RED
+- Write one failing test for one behavior.
+- Confirm the failure is expected.
+- Optionally run `tdd_workflow.py --phase red` to validate.
+
+2. GREEN
+- Implement the minimal code to pass.
+- Re-run tests and keep scope narrow.
+- Optionally run `tdd_workflow.py --phase green` to validate.
+
+3. REFACTOR
+- Improve structure/naming without changing behavior.
+- Keep all tests green.
+
+4. COVERAGE
+- Verify coverage target (recommended &gt;=80% for lines/functions/branches).
+- Add missing tests for edge/error paths.
+- Optionally run `coverage_analyzer.py` on LCOV/JSON/XML report to identify prioritized gaps (P0/P1/P2).
+
+## Minimum Test Set
+
+- Unit: public functions and core logic.
+- Integration: API/data/service boundaries.
+- E2E: critical user path only when relevant.
+
+## Required Edge Cases
+
+- Null/undefined input
+- Empty values
+- Invalid types
+- Boundary values
+- Error paths (network/DB/file)
+- Concurrency-sensitive behavior
+
+## Tooling (Optional)
+
+| Tool | Purpose | Usage |
+|------|---------|-------|
+| `test_generator.py` | Generate test cases from code/requirements | `python scripts/test_generator.py --input source.py --framework pytest` |
+| `coverage_analyzer.py` | Parse and analyze coverage reports | `python scripts/coverage_analyzer.py --report lcov.info --threshold 80` |
+| `tdd_workflow.py` | Guide red-green-refactor cycles | `python scripts/tdd_workflow.py --phase red --test test_auth.py` |
+| `fixture_generator.py` | Generate test data and mocks | `python scripts/fixture_generator.py --entity User --count 5` |
+
+## Input Requirements
+
+**For Test Generation:**
+- Source code (file path or pasted content)
+- Target framework (Jest, Pytest, JUnit, Vitest)
+- Coverage scope (unit, integration, edge cases)
+
+**For Coverage Analysis:**
+- Coverage report file (LCOV, JSON, or XML format)
+- Optional: Source code for context
+- Optional: Target threshold percentage
+
+**For TDD Workflow:**
+- Feature requirements or user story
+- Current phase (RED, GREEN, REFACTOR)
+- Test code and implementation status
+
+## Limitations
+
+- Unit test focus; integration and E2E tests require different patterns.
+- Static analysis; cannot execute tests or measure runtime behavior.
+- Best for TypeScript, JavaScript, Python, Java.
+- Report formats: LCOV, JSON, XML only.
+- Generated tests provide scaffolding; require human review for complex logic.</pre>
+</body>
+</html>

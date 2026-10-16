@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>muapi-media</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">media</a> / <a href="index.html">muapi-media-generation</a> / muapi-media</p><h1>muapi-media</h1><p class="meta">combined</p><p>The two skills cover the same MuAPI media generation workflow but differ significantly in scope and implementation. The first skill (davepoon) is strictly limited to image generation and relies on a bundled Python CLI script (`scripts/muapi_media.py`) that abstracts away the HTTP details. The second skill (sickn33) covers both image and video generation, uses raw `curl` and `jq` commands, and provides explicit API contract details (endpoints, headers) that the first skill hides behind the CLI. Because the first skill excludes video and the second includes it, and because the second provides the underlying API mechanics while the first provides a safer, higher-level wrapper, crowning one would hide a valid alternative approach (CLI vs. raw API) and a valid scope difference (image-only vs. image+video).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/muapi-media/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/muapi-media/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/muapi-media/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/muapi-media/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/muapi-media/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/muapi-media/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: muapi-media
+category: media
+description: Discover current MuAPI media models and run one explicitly confirmed asynchronous generation request with bounded polling. Supports image and video workflows.
+---
+
+# MuAPI Media
+
+Use MuAPI&#x27;s asynchronous API to generate images or videos. You can use the bundled `scripts/muapi_media.py` CLI for a simplified workflow or use raw `curl` commands for full control. The catalog and model schemas are authoritative; do not hard-code endpoints or parameters.
+
+## When to use this skill
+
+- The user wants to generate an image or video using MuAPI.
+- The user has explicitly approved a potentially billable request.
+- You need to discover the current model endpoints and schemas.
+
+## Setup
+
+Set the API key in the environment. Never pass it as a CLI argument or commit it:
+
+```bash
+export MUAPI_API_KEY=&quot;your-api-key&quot;
+```
+
+`MUAPI_BASE_URL` is optional and defaults to `https://api.muapi.ai`.
+
+## Workflow
+
+### 1. Discover current models
+
+**Option A: Using the CLI (Image only)**
+```bash
+python3 scripts/muapi_media.py models --category image --query flux
+```
+
+**Option B: Using curl (Image and Video)**
+```bash
+workdir=$(mktemp -d &quot;${TMPDIR:-/tmp}/muapi-media.XXXXXX&quot;)
+
+curl --fail --silent --show-error \
+  --header &quot;Accept: application/json&quot; \
+  &quot;https://api.muapi.ai/api/v1/models&quot; \
+  --output &quot;$workdir/models.json&quot;
+
+jq -r &#x27;.models[] | [.name, .category, .endpoint] | @tsv&#x27; &quot;$workdir/models.json&quot;
+```
+
+Select a model from the output. The `endpoint` field already includes the `/api/v1/` prefix.
+
+### 2. Validate Model Schema
+
+Fetch the specific model&#x27;s schema to determine required parameters.
+
+**Option B: Using curl**
+```bash
+export MUAPI_MODEL=&quot;&lt;model name&gt;&quot;
+
+curl --fail --silent --show-error \
+  --header &quot;Accept: application/json&quot; \
+  &quot;https://api.muapi.ai/api/v1/models/${MUAPI_MODEL}&quot; \
+  --output &quot;$workdir/model.json&quot;
+
+jq &#x27;.input_schema.schemas.input_data&#x27; &quot;$workdir/model.json&quot;
+```
+
+Check required fields, types, and limits. Do not guess parameters.
+
+### 3. Prepare Request
+
+Create a JSON file with the parameters confirmed by the model schema. Ensure `MUAPI_API_KEY` is not in this file.
+
+```json
+{
+  &quot;prompt&quot;: &quot;A clean product photograph&quot;,
+  &quot;aspect_ratio&quot;: &quot;1:1&quot;
+}
+```
+
+### 4. Confirm and Generate
+
+**Option A: Using the CLI**
+```bash
+python3 scripts/muapi_media.py generate \
+  &lt;model-name&gt; \
+  --params-file request.json \
+  --confirm-paid
+```
+
+**Option B: Using curl**
+```bash
+model_endpoint=$(jq -er --arg name &quot;$MUAPI_MODEL&quot; &#x27;.models[] | select(.name == $name) | .endpoint&#x27; &quot;$workdir/models.json&quot;)
+
+curl --fail --silent --show-error \
+  --request POST \
+  &quot;https://api.muapi.ai${model_endpoint}&quot; \
+  --header &quot;x-api-key: ${MUAPI_API_KEY}&quot; \
+  --header &quot;Content-Type: application/json&quot; \
+  --data &quot;@$workdir/request.json&quot; \
+  --output &quot;$workdir/submit.json&quot;
+
+request_id=$(jq -er &#x27;.request_id // .id&#x27; &quot;$workdir/submit.json&quot;)
+```
+
+### 5. Poll for Results
+
+Poll the prediction endpoint with a finite deadline.
+
+**Option B: Using curl**
+```bash
+result_url=&quot;https://api.muapi.ai/api/v1/predictions/${request_id}/result&quot;
+
+for attempt in $(seq 1 120); do
+  curl --fail --silent --show-error \
+    &quot;$result_url&quot; \
+    --header &quot;x-api-key: ${MUAPI_API_KEY}&quot; \
+    --output &quot;$workdir/result.json&quot;
+  
+  status=$(jq -r &#x27;.status // &quot;unknown&quot;&#x27; &quot;$workdir/result.json&quot;)
+  if [ &quot;$status&quot; == &quot;succeeded&quot; ] || [ &quot;$status&quot; == &quot;failed&quot; ]; then
+    break
+  fi
+  sleep 5
+done
+```
+
+## Safety Rules
+
+- Keep `MUAPI_API_KEY` server-side and out of logs, prompts, and committed files.
+- Never retry a generation POST automatically. Require fresh user confirmation for another paid request.
+- Poll only with GET and stop at a finite limit.
+- Preserve the catalog endpoint path; do not prepend `/api/v1/` if it is already present.
+- Download only HTTPS output URLs.
+- Require human review for sensitive or regulated content.</pre>
+</body>
+</html>

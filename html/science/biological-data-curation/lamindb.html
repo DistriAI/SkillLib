@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>lamindb</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">biological-data-curation</a> / lamindb</p><h1>lamindb</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a version-pinned, executable procedure (LaminDB 2.10.0) that explicitly warns against APIs present in the other copies (e.g., it states `curator.cat.add_ontology()` is absent in 2.10.0, while the other copies list it as a key workflow). The other three copies (Vibe-Skills, aipoch, OpenClaw) are nearly identical high-level overviews that lack the specific version constraints, failure patterns, and worked examples found in the K-Dense-AI copy. Because the K-Dense-AI copy contains critical version-specific constraints that contradict the general advice in the other copies, crowning one would hide the version-specific reality, while the others provide a broader conceptual overview. They must be combined to provide both the conceptual framework and the version-specific execution details.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/lamindb/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/lamindb/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/lamindb/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/lamindb/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/lamindb/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/lamindb/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/lamindb/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/lamindb/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: lamindb
+description: Manages biological datasets and models with LaminDB, including artifact registration, lineage tracking, schema validation, Bionty ontology annotation, query/search, collections, branches, storage, and workflow integrations. Use for reproducible biological data curation or a LaminDB lakehouse.
+---
+
+# LaminDB
+
+## Overview
+LaminDB is an open-source data framework for biology designed to make data queryable, traceable, reproducible, and FAIR (Findable, Accessible, Interoperable, Reusable). It provides a unified platform that combines lakehouse architecture, lineage tracking, feature stores, biological ontologies, LIMS, and ELN capabilities through a single Python API.
+
+## When to Use
+Use for registering biological datasets, curating DataFrame/AnnData metadata, querying annotated artifacts, and tracking scientific scripts or workflows. LaminDB stores metadata in SQLite/PostgreSQL and files in configured storage.
+
+## Version Constraints
+This skill targets **LaminDB 2.10.0 and Bionty 2.5.0**. The local examples were executed on Python 3.12, pandas 3.0.6, and AnnData 0.13.2. The LaminDB release caps AnnData at 0.13.2; preserve its dependency constraints. Install IPython for registry synonym helpers.
+
+## Workflow
+1. Confirm the intended instance, storage, and write scope with `lamin info`. Use a new local development directory for experiments.
+2. Define typed `Feature` records and a `Schema` for the biological data. Use registry-backed categorical dtypes for controlled vocabularies.
+3. Review the ontology source/version and organism. Standardize only reviewed synonyms and preserve unresolved annotations.
+4. In a script or notebook, start `ln.track()`, load registered inputs, validate, and save outputs. `curator.validate()` returns `None` on success and raises `ln.errors.ValidationError` on failure.
+5. Save through the curator or a schema-aware artifact constructor. Check the stored schema and round-trip content; finish a successful run with `ln.finish()`.
+6. Query metadata before loading content. Record artifact UIDs and schema/source provenance for reproducibility.
+
+## Local Worked Example
+Run in a dedicated environment and an empty project directory:
+
+```bash
+uv venv --python 3.12
+uv pip install &#x27;lamindb==2.10.0&#x27; &#x27;bionty==2.5.0&#x27; &#x27;ipython==9.17.1&#x27;
+source .venv/bin/activate
+lamin init --storage ./storage --name biology-demo --modules bionty
+```
+
+Save the following as `curate_qc.py`, then run `python curate_qc.py`:
+
+```python
+import pandas as pd
+import lamindb as ln
+
+ln.track(params={&quot;analysis&quot;: &quot;QC metadata curation&quot;})
+count = ln.Feature(name=&quot;gene_count&quot;, dtype=int).save()
+condition = ln.Feature(name=&quot;condition&quot;, dtype=str).save()
+schema = ln.Schema(
+    name=&quot;qc_metadata&quot;,
+    features=[count, condition],
+    maximal_set=True,  # reject extra columns
+).save()
+df = pd.DataFrame({
+    &quot;gene_count&quot;: [120, 130],
+    &quot;condition&quot;: [&quot;control&quot;, &quot;treated&quot;],
+})
+curator = ln.curators.DataFrameCurator(df, schema)
+curator.validate()  # raises on invalid data; do not use as an if condition
+artifact = curator.save_artifact(key=&quot;experiments/qc.parquet&quot;)
+assert artifact.schema == schema
+pd.testing.assert_frame_equal(artifact.load(), df)
+ln.finish()
+```
+
+## Core Objects and Contracts
+| Object | Purpose and important constraint |
+| --- | --- |
+| `Artifact` | A file/folder or serialized dataset; `cache()` gets a local path, `load()` materializes content, `open()` returns a format-specific accessor. |
+| `Feature` | A typed metadata field; save its definition before `artifact.features.set_values(...)`. |
+| `Schema` | Validation rules and feature membership; `maximal_set=True` rejects extras. `flexible=False` alone does not. |
+| `Record`, `ULabel` | Experimental entities and simple labels. A custom term is not an ontology assertion. |
+| `Run`, `Transform` | An execution and its code definition. Inputs are `run.input_artifacts`; outputs are `run.output_artifacts`. |
+| `Collection` | A versioned group of artifacts; iterate `collection.artifacts.all()`. |
+| `Project`, `Branch`, `Space` | Grouping, change organization, and access scope; branches do not replace permissions. |
+
+Use `@ln.flow()` for a workflow entry point and `@ln.step()` within it. Lineage captures tracked accesses, not arbitrary reads outside LaminDB.
+
+## Failure Patterns to Avoid
+- `Artifact.backed()`, `delete_cache()`, and `is_cached()` are absent in 2.10.0. Use the supported `open()`/`cache()` contracts and cache settings.
+- A Parquet `open()` result is a PyArrow dataset, not a byte stream. An AnnData accessor is a context manager; materialize a slice with `.to_memory()`.
+- There is no `Artifact.is_valid` query field. Query the exact `schema` used and retain validation evidence.
+- `curator.cat.add_ontology()` and `inspect_standardize()` are absent in 2.10.0. Define the feature&#x27;s Bionty dtype, use source-backed records, and use `cat.standardize()`. For AnnData use `curator.slots[&quot;obs&quot;].cat`, not `curator.cat`.
+- Bionty `from_values()` can omit unresolved values and return unsaved records. Check all values explicitly and save records before linking them.
+
+## Conflicts
+- **K-Dense-AI/scientific-agent-skills** states that `curator.cat.add_ontology()` is absent in LaminDB 2.10.0, while **foryourhealth111-pixel/Vibe-Skills**, **aipoch/medical-research-skills**, and **FreedomIntelligence/OpenClaw-Medical-Skills** list `.cat.add_ontology()` as a key workflow. The version-pinned constraint in K-Dense-AI is the authoritative step for the 2.10.0 environment.</pre>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>latchbio-integration</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">latchbio-workflow-integration</a> / latchbio-integration</p><h1>latchbio-integration</h1><p class="meta">combined</p><p>The K-Dense copy is a newer, more precise procedure (SDK 2.77.1, Python 3.9+, uv venv, remote registration default, LPath, MCP, staging/develop, and a strict development lifecycle). The Vibe-Skills and OpenClaw copies are near-identical older summaries (Python 3.8+, generic install, no LPath/MCP/staging details). They overlap heavily but each has material steps or constraints the others lack, and they disagree on Python version and installation/registration defaults, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/latchbio-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/latchbio-integration/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/latchbio-integration/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/latchbio-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/latchbio-integration/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/latchbio-integration/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: latchbio-integration
+description: Builds, registers, debugs, and operates bioinformatics workflows on Latch using the Python SDK, CLI, Latch Data and Registry, Nextflow, Snakemake, programmatic execution, and Latch MCP. Use when authoring or deploying Latch workflows, configuring resources or interfaces, moving data, integrating Registry, or launching and monitoring runs.
+license: MIT
+allowed-tools: Read Write Edit Bash
+compatibility: Requires network access and a Latch account. The current stable SDK requires Python 3.9+; Python 3.12 is recommended. Uses uv for installation. Docker is needed for local image builds, while remote registration is the CLI default.
+metadata:
+  version: &quot;2.3&quot;
+  last-reviewed: &quot;2026-09-30&quot;
+  skill-author: K-Dense Inc.
+---
+
+# LatchBio Integration
+
+## Current Baseline
+
+This skill targets **Latch SDK 2.77.1**, released September 17, 2026. The package metadata supports Python 3.9–3.12 and declares Python 3.9+.
+
+Review status: the SDK imports, documented signatures, CLI help, and selected workflow graph examples were checked locally with Python 3.12. Network-backed examples are illustrative: no authenticated registration, data mutation, launch, or MCP tool call was performed during this refresh.
+
+Treat the installed package and its changelog as authoritative when a guide disagrees with the SDK. Some Latch guides retain older Python ranges or compatibility-specific pre-release pins, especially the Snakemake v2 tutorial. Never combine commands or imports from different tracks without checking their version requirements.
+
+## When to Use
+
+Use this skill to:
+
+- Create or maintain Python SDK workflows and task graphs
+- Package and register Python, Nextflow, or Snakemake pipelines
+- Configure task CPU, memory, storage, GPU, caching, retries, and timeouts
+- Work with Latch Data through `LPath`, `LatchFile`, `LatchDir`, or the CLI
+- Read or update Latch Registry projects, tables, and records
+- Design workflow forms, launch plans, samplesheets, messages, and result links
+- Stage and debug workflow images with `latch register --staging` and `latch develop`
+- Launch and monitor workflows through Python or Latch MCP
+- Discover and use ready-to-run Latch workflows
+
+## Route to the Right Reference
+
+Read only the references needed for the task:
+
+| Need | Reference |
+|---|---|
+| Python workflows, tasks, maps, conditions, caching | `references/workflow-creation.md` |
+| `LPath`, legacy file types, Latch URLs, data CLI | `references/data-management.md` |
+| Registry reads, transactions, samplesheets | `references/registry.md` |
+| CPU, memory, storage, GPU, dynamic resources | `references/resource-configuration.md` |
+| Nextflow and Snakemake packaging | `references/nextflow-snakemake.md` |
+| Metadata, forms, launch plans, messages, automations | `references/ui-and-automation.md` |
+| Registration, development, execution, monitoring | `references/operations-and-debugging.md` |
+| Ready-to-use workflows and `latch.verified` | `references/verified-workflows.md` |
+| Remote MCP setup and tool workflow | `references/latch-mcp.md` |
+
+Before relying on a symbol, run `scripts/inspect_latch_sdk.py` against the target SDK version. It performs local imports only and does not authenticate or make network requests.
+
+## Installation and Authentication
+
+For a reproducible environment:
+
+```bash
+uv venv --python 3.12
+source .venv/bin/activate
+uv pip install &quot;latch==2.77.1&quot;
+```
+
+On Windows, use WSL for the documented Linux workflow tooling.
+
+Authenticate through the supported OAuth flow; do not read, print, copy, or parse `~/.latch/token` manually:
+
+```bash
+latch login
+latch workspace
+```
+
+Select a workspace non-interactively when its numeric ID is already known:
+
+```bash
+latch workspace --id 12345
+```
+
+`latch login` credentials are for the SDK and CLI. Latch MCP uses a separate OAuth authorization and its credentials cannot be reused for general SDK access.
+
+## Fast Path
+
+Create and remotely register the maintained subprocess template:
+
+```bash
+latch init covid-wf --template subprocess
+latch register --yes --open covid-wf
+```
+
+Remote image building is the default. Use `--no-remote` only when a local Docker daemon is available and a local build is intentional.
+
+## Minimal Python Workflow
+
+Keep workflow bodies declarative: invoke tasks and return their promises. Perform computation and side effects inside tasks.
+
+```python
+from latch import small_task, workflow
+
+
+@small_task
+def reverse_complement(sequence: str) -&gt; str:
+    table = str.maketrans(&quot;ACGTacgt&quot;, &quot;TGCAtgca&quot;)
+    return sequence.translate(table)[::-1]
+
+
+@workflow
+def reverse_complement_workflow(sequence: str) -&gt; str:
+    &quot;&quot;&quot;Reverse-complement a DNA sequence.
+
+    This minimal example handles A, C, G, and T bases.
+    &quot;&quot;&quot;
+    return reverse_complement(sequence=sequence)
+```
+
+Use `@workflow(metadata)` when the generated interface needs custom labels, sections, validation rules, samplesheets, or documentation links. Use `LatchFile` or `LatchDir` for automatic task input staging and output upload; use `LPath` for imperative remote path operations.
+
+## Recommended Development Lifecycle
+
+1. **Inspect compatibility**
+   - Confirm the installed SDK and Python version.
+   - Identify whether the project is Python, Nextflow, the legacy Snakemake flag path, or the separately pinned Snakemake v2 tutorial track.
+
+2. **Define a typed interface**
+   - Annotate every workflow and task input and output.
+   - Keep module import time free of network calls, data mutations, and secret retrieval. Isolate documented exceptions such as `workflow_reference`, which resolves the active workspace when its decorator is evaluated.
+   - Use dataclasses and enums for structured parameters.
+
+3. **Configure metadata and resources**
+   - Match metadata parameter keys to the workflow signature.
+   - Start with named task decorators, then use `custom_task` only when measured requirements justify it.
+
+4. **Validate in the execution image**
+
+   Fresh Nextflow and Snakemake projects should be validated in the execution image before registration. Use `latch register --staging` to build and test the image without publishing, then `latch develop` for interactive debugging.
+
+5. **Register and launch**
+   - Register the workflow with `latch register --yes --open`.
+   - Launch via CLI or Python SDK.
+   - Monitor runs and inspect logs.
+
+6. **Iterate and optimize**
+   - Review resource usage and adjust task decorators.
+   - Use caching and retries where appropriate.
+   - Update metadata and forms as the workflow evolves.
+
+## Conflicts
+
+- **Python version**: K-Dense-AI/scientific-agent-skills requires Python 3.9+ (3.12 recommended), while foryourhealth111-pixel/Vibe-Skills and FreedomIntelligence/OpenClaw-Medical-Skills state Python 3.8+.
+- **Installation**: K-Dense-AI/scientific-agent-skills pins `latch==2.77.1` and uses `uv venv --python 3.12`, while the other two install the latest `latch` without a pin and do not specify a Python version for the venv.
+- **Registration default**: K-Dense-AI/scientific-agent-skills makes remote image building the default and says to use `--no-remote` only with a local Docker daemon, while the other two list Docker as a prerequisite and do not specify the remote/local default.
+- **Token handling**: K-Dense-AI/scientific-agent-skills says to authenticate via OAuth and not parse `~/.latch/token`, while the other two do not address token handling.
+- **Additional features**: K-Dense-AI/scientific-agent-skills includes LPath, Latch MCP, staging/develop debugging, and a strict development lifecycle that the other two omit.</pre>
+</body>
+</html>

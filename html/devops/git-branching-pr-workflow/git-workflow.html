@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>git-workflow</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">git-branching-pr-workflow</a> / git-workflow</p><h1>git-workflow</h1><p class="meta">combined</p><p>The copies overlap on Conventional Commits and PR/branch basics, but each contains material steps the others lack. BagelHole and its mirror (sickn33) provide a full branching-strategy reference (Trunk, GitHub Flow, GitFlow), PR templates, branch protection, CODEOWNERS, and hooks. jezweb provides operational workflows for preparing PRs, cleaning merged branches, resolving conflicts, monorepo tags, .gitignore-first init, and private-repo license audit. brycewang provides a standards document with branch naming tables, daily/hotfix/release workflows, merge vs rebase policy, and conflict resolution steps. Crowning one would hide real alternatives, so the combined skill should include the reference material plus the operational workflows and standards.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>devops/release/git-workflow/SKILL.md</code></td></tr><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/dev-tools/skills/git-workflow/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/git-workflow/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/git-workflow/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/BagelHole/DevOps-Security-Agent-Skills">BagelHole/DevOps-Security-Agent-Skills</a></td><td><code>devops/release/git-workflow/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/dev-tools/skills/git-workflow/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/git-workflow/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/git-workflow/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/git-workflow/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/git-workflow/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: git-workflow
+description: Implement Git branching strategies, PR workflows, release management, and operational git tasks. Use when establishing version control workflows, preparing PRs, cleaning branches, resolving conflicts, or tagging releases.
+---
+
+# Git Workflow
+
+## When to Use
+- Establishing team Git workflows
+- Implementing branching strategies
+- Configuring pull request processes
+- Setting up release management
+- Preparing PRs, cleaning branches, resolving conflicts, or tagging releases
+
+## Prerequisites
+- Git installed
+- Repository hosting (GitHub, GitLab, Bitbucket)
+- Basic Git knowledge
+
+## Branching Strategies
+
+### Trunk-Based Development
+Best for: Continuous deployment, small teams, mature CI/CD.
+- Create short-lived feature branches from main.
+- Rebase frequently on main.
+- Merge quickly (same day ideally) and delete the branch.
+
+### GitHub Flow
+Best for: Continuous delivery, web applications.
+- Create feature branches from main.
+- Push and create a PR.
+- Merge via PR (squash recommended) and delete the branch.
+
+### GitFlow
+Best for: Scheduled releases, versioned products.
+- Use git flow init, feature, release, and hotfix commands.
+- Features merge to develop; releases merge to main and develop; hotfixes merge to main and develop.
+
+### Master/Develop/Release Model
+Best for: Teams that prefer explicit release branches and preserved history.
+- master: releasable state, no direct pushes, PR + CI + review required.
+- develop: latest integrated code, PR merges recommended, CI required.
+- feature, bugfix, hotfix, release branches: delete after completion.
+- Use merge --no-ff when merging feature branches to develop and develop to master.
+
+## Commit Conventions
+
+### Conventional Commits
+Format: &lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;\n\n&lt;body&gt;\n\n&lt;footer&gt;
+
+Types: feat, fix, docs, style, refactor, perf, test, chore.
+
+Subject rules:
+- Start with a verb: add, fix, update, remove, optimize.
+- No more than 50 characters.
+- No period at the end.
+
+Examples:
+- feat(auth): add OAuth2 login support
+- fix(api): handle null response from payment service
+- docs: update API documentation for v2 endpoints
+- refactor(db): optimize user query performance
+- feat(api)!: change response format for user endpoint
+
+### Commit Message Template
+Create ~/.gitmessage with subject (50 chars max), body (72 chars per line), and footer (Fixes #123, Co-authored-by). Configure with git config --global commit.template ~/.gitmessage.
+
+## Pull Request Workflow
+
+### PR Preparation
+1. Gather context: git log main..HEAD --oneline, git diff main...HEAD --stat, git status.
+2. Draft PR content: title under 70 chars describing the change; body summarises the why, lists key changes, adds test plan. Use commit history to write the summary.
+3. Push and create: git push -u origin HEAD; gh pr create --title &quot;...&quot; --body &quot;...&quot;.
+4. Verify: gh pr view --web.
+
+### PR Template
+Include sections: Description, Type of Change, Testing, Checklist, Related Issues, Screenshots.
+
+### Branch Protection Rules
+- Required PR reviews: 1 approving review, dismiss stale reviews, require code owner reviews.
+- Required status checks: ci/tests, ci/lint.
+- Restrictions: maintainers team only.
+- Enforce admins, required linear history, no force pushes, no deletions.
+
+### Code Owners
+Define .github/CODEOWNERS with default owners and path-specific owners for frontend, backend, infrastructure, and documentation.
+
+## Branch Cleanup
+1. Switch to main and pull latest: git checkout main &amp;&amp; git pull.
+2. List merged branches: git branch --merged main | grep -vE &#x27;^\*|main|master|develop&#x27;.
+3. Delete local merged branches: git branch --merged main | grep -vE &#x27;^\*|main|master|develop&#x27; | xargs -r git branch -d.
+4. Prune remote tracking refs: git fetch --prune.
+5. List remote branches with no local tracking (optional): git branch -r --merged origin/main | grep -vE &#x27;main|master|develop|HEAD&#x27;.
+
+## Merge Conflict Resolution
+1. Assess conflict scope: git fetch origin; git merge origin/main --no-commit --no-ff; git diff --name-only --diff-filter=U.
+2. For each conflicted file, read and resolve: keep both changes if in different areas; if architecturally incompatible, prefer main&#x27;s approach and re-apply the PR&#x27;s intent.
+3. If rebase is cleaner (few commits, no shared history): git rebase origin/main; resolve per commit; git rebase --continue.
+4. If rebase is messy: abort with git rebase --abort or git merge --abort; extract useful code with git show origin/branch:path/to/file &gt; /tmp/extracted.txt; apply changes manually; close original PR with explanation.
+5. Verify: run tests, check the diff.
+
+## Merge Strategy
+- Feature branch syncing develop: use rebase.
+- Feature branch merging to develop: use merge --no-ff.
+- develop merging to master: use merge --no-ff.
+- Do not rebase on public branches.
+
+## Release Workflows
+
+### Hotfix Workflow
+1. Create fix branch from master: git checkout master; git pull origin master; git checkout -b hotfix/critical-bug.
+2. Fix and commit: git add .; git commit -m &quot;fix(auth): fix authentication bypass vulnerability&quot;.
+3. Merge to master: git checkout master; git merge --no-ff hotfix/critical-bug; git tag -a v1.0.1 -m &quot;hotfix: fix authentication bypass vulnerability&quot;; git push origin master --tags.
+4. Sync to develop: git checkout develop; git merge --no-ff hotfix/critical-bug; git push origin develop.
+
+### Release Workflow
+1. Create release branch: git checkout develop; git checkout -b release/v1.0.0.
+2. Update version numbers and documentation.
+3. Commit version update: git add .; git commit -m &quot;chore(release): prepare release v1.0.0&quot;.
+4. Merge to master: git checkout master; git merge --no-ff release/v1.0.0; git tag -a v1.0.0 -m &quot;release: v1.0.0 official release&quot;; git push origin master --tags.
+5. Sync to develop: git checkout develop; git merge --no-ff release/v1.0.0; git push origin develop.
+
+## Monorepo Release Tags
+In monorepos, scope tags to the package: git tag {package-name}-v{semver}; git push origin {package-name}-v{semver}.
+
+## .gitignore-First Init
+When creating a new repo, create .gitignore BEFORE the first git add. Include node_modules/, dist/, .env, .env.local, *.log, .DS_Store, and project-specific ignores. Then git init &amp;&amp; git add . &amp;&amp; git commit -m &quot;Initial commit&quot;. If node_modules is already tracked: git rm -r --cached node_modules/; git commit -m &quot;Remove node_modules from tracking&quot;.
+
+## Private Repo License Audit
+Before publishing or sharing a private repo: gh repo view --json visibility -q &#x27;.visibility&#x27;. If PRIVATE, ensure LICENSE contains proprietary notice, package.json has &quot;license&quot;: &quot;UNLICENSED&quot; and &quot;private&quot;: true, and no CONTRIBUTING.md or &quot;contributions welcome&quot; in README.
+
+## Git Hooks
+Configure pre-commit hooks to run linting and tests before commits. Example: .git/hooks/pre-commit runs npm run lint and fails if linting fails.
+
+## Conflicts
+- BagelHole/DevOps-Security-Agent-Skills and sickn33/agentic-awesome-skills present GitFlow as a first-class strategy, while brycewang-stanford/Auto-Empirical-Research-Skills uses a master/develop/release model with --no-ff merges and does not mention git flow CLI.
+- jezweb/claude-skills recommends squash-merge for PRs and short-lived branches, while brycewang-stanford/Auto-Empirical-Research-Skills recommends merge --no-ff to preserve branch history.
+- jezweb/claude-skills scopes monorepo tags as {package-name}-v{semver}, while brycewang-stanford/Auto-Empirical-Research-Skills uses plain v{semver} tags on master.</pre>
+</body>
+</html>

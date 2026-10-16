@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hf-mem</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">hf-model-memory-estimation</a> / hf-mem</p><h1>hf-mem</h1><p class="meta">combined</p><p>The huggingface/skills copy is the upstream procedure, but the sickn33/agentic-awesome-skills copy adds material operational constraints (pinned reviewed version, credential handling, private cache, no credential printing) and a verification/limitations section that the upstream copy lacks. Crowning the upstream copy would hide those real alternative constraints, so the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/huggingface/skills">huggingface/skills</a></td><td><code>skills/hf-mem/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hf-mem/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/huggingface/skills">huggingface/skills</a></td><td><code>skills/hf-mem/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hf-mem/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hf-mem/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hf-mem/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hf-mem
+description: Hugging Face CLI to estimate the required memory to load Safetensors or GGUF model weights for inference from the Hugging Face Hub
+---
+
+`hf_mem` estimates the required memory for inference, including model weights and an optional KV cache, for Safetensors and GGUF for models on the Hugging Face Hub using HTTP Range requests i.e., without downloading or loading any weights locally.
+
+## When to use?
+
+- User asks how much VRAM or memory a model needs to run
+- User wants to know if a model fits on their GPU or a given instance
+- User references a Hugging Face model ID or URL and asks about inference requirements
+
+## What are the requirements?
+
+- `uv` installed (for `uvx`)
+- `HF_TOKEN` env var or `--hf-token` flag (for gated or private models only)
+- A reviewed pinned `hf-mem` package version and permission to access the requested model metadata. This skill does not bundle the executable.
+
+## How to run?
+
+The angle-bracket and square-bracket forms below are usage notation, not shell commands to paste literally. Quote actual model IDs and file paths. Inspect the selected package&#x27;s `--help`, choose a reviewed version (for example with `uvx --from &quot;hf-mem==REVIEWED_VERSION&quot; hf-mem ...`) and use a private cache where metadata is sensitive. Do not print credentials.
+
+Run with `--model-id` pointing to the Hugging Face Hub repository which will check that it either contains Safetensors (via `model.safetensors`, `model.safetensors.index.json` if sharded, or `model_index.json` for Diffusers) or GGUF model weights within.
+
+```bash
+uvx hf-mem --model-id &lt;model-id&gt; --json-output
+```
+
+If the repository contains GGUF model weights in multiple precisions / quantizations, the estimations will be on a per-file basis, whereas for inference you won&#x27;t load all of those but rather only a single precision. This being said, for GGUF you might as well need to provide `--gguf-file` to target the specific file (or path if sharded) you want to run.
+
+```bash
+uvx hf-mem --model-id &lt;model-id&gt; --gguf-file &lt;file-or-path&gt; --json-output
+```
+
+Additionally, `hf-mem` comes with an `--experimental` flag that will also calculate the KV cache memory requirements too, useful for large-language models, meaning it applies to LLMs (`...ForCausalLM`), VLMs (`...ForConditionalGeneration`), and GGUF models.
+
+As per the context window, it will be read from the default or overridden with `--max-model-len` a la vLLM. And, same goes for the KV cache precision, which will default to the model precision unless manually set via `--kv-cache-dtype` a la vLLM too.
+
+For Safetensors use as:
+
+```bash
+uvx hf-mem --model-id &lt;model-id&gt; --experimental [--max-model-len N] [--batch-size N] [--kv-cache-dtype auto|bfloat16|fp8|fp8_ds_mla|fp8_e4m3|fp8_e5m2|fp8_inc] --json-output
+```
+
+And, for GGUF use as:
+
+```bash
+uvx hf-mem --model-id &lt;model-id&gt; --gguf-file &lt;file-or-path&gt; --experimental [--max-model-len N] [--batch-size N] [--kv-cache-dtype auto|F32|F16|Q4_0|Q4_1|Q5_0|Q5_1|Q8_0|Q8_1|Q2_K|Q3_K|Q4_K|Q5_K|Q6_K|Q8_K|IQ2_XXS|IQ2_XS|IQ3_XXS|IQ1_S|IQ4_NL|IQ3_S|IQ2_S|IQ4_XS|I8|I16|I32|I64|F64|IQ1_M|BF16|TQ1_0|TQ2_0|MXFP4] --json-output
+```
+
+## Examples
+
+For Transformers with Safetensors weights:
+
+```bash
+uvx hf-mem --model-id MiniMaxAI/MiniMax-M2 --json-output
+```
+
+For Diffusers with Safetensors weights:
+
+```bash
+uvx hf-mem --model-id Qwen/Qwen-Image --json-output
+```
+
+For Sentence Transformers with Safetensors weights:
+
+```bash
+uvx hf-mem --model-id google/embeddinggemma-300m --json-output
+```
+
+With `--experimental` to include the KV cache estimation for LLMs and VLMs:
+
+```bash
+uvx hf-mem --model-id mistralai/Mistral-7B-v0.1 --experimental --json-output
+```
+
+And, for LLMs or VLMs with GGUF weights:
+
+```bash
+uvx hf-mem --model-id unsloth/Qwen3.5-397B-A17B-GGUF --gguf-file Q4_K_M --experimental --json-output
+```
+
+## Limitations
+
+- Use this skill only when the task clearly matches its upstream product or API scope.
+- Verify commands, API behavior, pricing, quotas, credentials, and deployment effects against current official documentation before making changes.
+- Do not treat generated examples as a substitute for environment-specific tests, security review, or user approval for destructive or costly actions.
+
+## Interpretation and verification
+
+Report the model revision, selected weight file or quantization, batch size, context length and KV-cache dtype alongside the estimate. Weight/header estimates are not a guarantee that a model fits: runtime workspaces, activations, allocator fragmentation, offloading and concurrent processes add memory. Confirm with the intended inference backend on target hardware before making a purchase or deployment decision. HTTP metadata access still contacts the Hub and can reveal private model identifiers; it does not run inference. Experimental KV estimates depend on supported architectures.</pre>
+</body>
+</html>

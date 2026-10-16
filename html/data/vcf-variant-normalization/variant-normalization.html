@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>variant-normalization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">vcf-variant-normalization</a> / variant-normalization</p><h1>variant-normalization</h1><p class="meta">combined</p><p>Both copies describe the same core task (normalizing VCF indels and splitting multiallelics with bcftools norm), but each contains material steps and constraints the other lacks. The first copy provides a broad, practical reference with many specific bcftools norm flags (-c modes, -d duplicate removal, -m+ join options, --atomize, --old-rec-tag) and Python cyvcf2 check scripts. The second copy provides the governing theoretical principle (parsimony + left-alignment), the explicit algorithm steps, version compatibility constraints, and a strong rationale for when normalization is mandatory. Crowning one would hide the other&#x27;s unique, valuable content.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/variant-normalization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/variant-normalization/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/variant-normalization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/variant-normalization/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: bio-variant-normalization
+description: Normalize indel representation, split multiallelic variants, and atomize MNPs using bcftools norm. Use when comparing variants from different callers, preparing VCF for downstream analysis, or database annotation.
+tool_type: cli
+primary_tool: bcftools
+---
+
+# Variant Normalization
+
+Left-align indels, enforce parsimony, split multiallelic sites, and atomize MNPs using bcftools norm.
+
+## Version Compatibility
+
+Reference examples tested with: bcftools 1.19+, cyvcf2 0.30+.
+
+Before using code patterns, verify installed versions match. If versions differ:
+- Python: `pip show &lt;package&gt;` then `help(module.function)` to check signatures
+- CLI: `&lt;tool&gt; --version` then `&lt;tool&gt; --help` to confirm flags
+
+The `--atomize`/`--old-rec-tag` flags require bcftools 1.12+ (`--keep-sum` requires 1.11+). Earlier versions require `vt decompose_blocksub` as an alternative.
+
+If code throws ImportError, AttributeError, or TypeError, introspect the installed package and adapt the example to match the actual API rather than retrying.
+
+## The Normalized Form (governing principle)
+
+A variant is **normalized** if and only if it is BOTH (Tan, Abecasis &amp; Kang 2015):
+
+1. **Parsimonious (minimal representation).** No base can be trimmed from either end of REF/ALT without creating a zero-length allele or changing the variant. Indels keep exactly ONE anchor base (VCF forbids empty alleles), so a deletion of `A` is written `REF=CA ALT=C`, not `REF=A ALT=`.
+2. **Left-aligned.** POS cannot be shifted further left while keeping the allele lengths and the reference-relative meaning unchanged.
+
+Both are required: parsimony alone leaves an indel positionally ambiguous inside a repeat; left-alignment alone can leave redundant shared bases. Together they define a single canonical `(CHROM, POS, REF, ALT)` key, and normalization is **idempotent** -- normalizing an already-normalized VCF changes nothing. That idempotence is what makes the key safe to join, merge, and match on.
+
+The algorithm (as in `vt normalize` and `bcftools norm`):
+- **Right-trim:** while all alleles end in the same base AND all have length &gt;= 2, drop the last base of each.
+- **Left-extend:** while any allele has length 0, prepend the reference base immediately to the left to every allele and decrement POS.
+- **Left-trim:** while all alleles start with the same base AND all have length &gt;= 2, drop the first base of each and increment POS.
+
+The right-trim-then-left-roll loop is exactly what shifts an indel through a repeat to its leftmost equivalent position.
+
+## When Normalization is Mandatory
+
+Not normalizing before certain operations leads to missed matches and false discordance. Normalization is required:
+
+- **Before comparing variants from different callers.** Each caller may represent the same indel at different positions or encode MNPs differently. Without normalization, identical variants appear discordant.
+- **Before database annotation.** dbSNP, ClinVar, and gnomAD store variants in canonical left-aligned, parsimonious representation. A right-aligned or non-parsimonious indel will fail to match its database entry.
+- **Before merging VCF files from different sources.** `bcftools merge` matches on CHROM/POS/REF/ALT; different representations of the same variant produce duplicate entries instead of a single merged record.
+- **Before any variant set operations.** Intersection (`bcftools isec`), complement, and union operations all rely on exact positional matching. Non-normalized variants silently fall through set comparisons.
+
+Normalization is generally safe to skip only when a single caller produced all variants and no cross-file comparison or database lookup is needed.
+
+## Why Left-Alignment Matters in Repeats (the silent miss)
+
+The same variant can be written multiple ways:
+
+```
+chr1  100  ATCG  A      (right-aligned)
+chr1  100  ATC   A      (left-aligned, parsimonious -- the canonical form)
+chr1  101  TCG   T      (shifted position, different anchor base)
+```
+
+The ambiguity is worst in homopolymers and tandem repeats. In reference `...AAAAAAA...`, a single-base `A` deletion is positionally ambiguous: deleting ANY one of the seven A&#x27;s yields the identical alternate haplotype, so different callers/aligners emit it at different POS. Left-alignment defines the canonical (leftmost) position, giving the one biological event one representation.
+
+The load-bearing consequence: a one-base-off (non-left-aligned) indel in a homopolymer is a valid VCF line that produces a **different** `(CHROM, POS, REF, ALT)` tuple. Annotation and matching keyed on that tuple then silently **miss** the dbSNP/ClinVar/gnomAD entry that sits at the canonical coordinate -- a clinically actionable variant is reported as absent or novel, with **no error thrown**. The VCF is structurally valid; the numbers are wrong. `bcftools merge` of a normalized and an un-normalized cohort likewise emits duplicate rows for the same event, inflating counts and splitting allele frequencies.
+
+Decision: always left-align + parsimony (`bcftools norm -f ref.fa`) against the EXACT downstream reference before annotation, database matching, set operations, or merging -- never rely on callers to emit canonical form.
+
+## Recommended Normalization Pipeline
+
+The order of operations matters. Performing these steps out of order can produce incorrect results (e.g., left-aligning a multiallelic record may normalize differently than splitting first, the
+[truncated]</pre>
+</body>
+</html>

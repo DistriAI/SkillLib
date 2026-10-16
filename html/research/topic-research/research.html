@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>research</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">topic-research</a> / research</p><h1>research</h1><p class="meta">combined</p><p>The two skills both perform research, but they define different procedures and outputs. mattpocock/skills is a lightweight, source-grounded investigation that delegates to a background agent and writes a single cited Markdown note. Weizhena/Deep-Research-skills is a multi-step preliminary research workflow that builds a framework, supplements it via a web-search agent, asks the user for existing fields, and outputs structured outline.yaml and fields.yaml files. Neither copy is a reproduction, shortening, or wrapper of the other; each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/engineering/research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Weizhena/Deep-Research-skills">Weizhena/Deep-Research-skills</a></td><td><code>skills/research-codex-en/research/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/engineering/research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Weizhena/Deep-Research-skills">Weizhena/Deep-Research-skills</a></td><td><code>skills/research-codex-en/research/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/Weizhena/Deep-Research-skills">Weizhena/Deep-Research-skills</a></td><td><code>skills/research-codex-zh/research/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/Weizhena/Deep-Research-skills">Weizhena/Deep-Research-skills</a></td><td><code>skills/research-en/research/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/Weizhena/Deep-Research-skills">Weizhena/Deep-Research-skills</a></td><td><code>skills/research-zh/research/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: research
+description: Investigate a topic against primary sources or build a preliminary research outline with structured fields. Use when the user wants a topic researched, docs or API facts gathered, or a research framework generated.
+---
+
+## Mode Selection
+
+Ask the user which mode to use:
+- **Source Investigation**: Investigate a question against high-trust primary sources and capture findings as a Markdown file.
+- **Preliminary Research Outline**: Generate a research framework, supplement it via web search, and output structured YAML files.
+
+## Mode A: Source Investigation
+
+1. Spin up a **background agent** to do the research, so you keep working while it reads.
+2. The agent investigates the question against **primary sources** (official docs, source code, specs, first-party APIs), not a secondary write-up. Follow every claim back to the source that owns it.
+3. Write the findings to a single Markdown file, citing each claim&#x27;s source.
+4. Save it where the repo already keeps such notes; match the existing convention, and if there is none, put it somewhere sensible and say where.
+
+## Mode B: Preliminary Research Outline
+
+### Step 1: Generate Initial Framework from Model Knowledge
+Based on the topic, use the model&#x27;s existing knowledge to generate:
+- Main research objects/items list in this domain
+- Suggested research field framework
+
+Output the framework and use request_user_input to confirm:
+- Need to add/remove items?
+- Does field framework meet requirements?
+
+### Step 2: Web Search Supplement
+Use request_user_input to ask for time range (e.g., last 6 months, since 2024, unlimited).
+
+**Parameter Retrieval**:
+- `{topic}`: User input research topic
+- `{YYYY-MM-DD}`: Current date
+- `{step1_output}`: Complete output from Step 1
+- `{time_range}`: User specified time range
+
+**Hard Constraint**: The following prompt must be strictly reproduced, only replacing variables in {xxx}, do not modify structure or wording.
+
+Launch 1 web-search-agent (background), **Prompt Template**:
+```
+## Task
+Research topic: {topic}
+Current date: {YYYY-MM-DD}
+
+Based on the following initial framework, supplement latest items and recommended research fields.
+
+## Existing Framework
+{step1_output}
+
+## Goals
+1. Verify if existing items are missing important objects
+2. Supplement items based on missing objects
+3. Continue searching for {topic} related items within {time_range} and supplement
+4. Supplement new fields
+
+## Output Requirements
+Return structured results directly (do not write files):
+
+### Supplementary Items
+- item_name: Brief explanation (why it should be added)
+...
+
+### Recommended Supplementary Fields
+- field_name: Field description (why this dimension is needed)
+...
+
+### Sources
+- [Source1](url1)
+- [Source2](url2)
+```
+
+### Step 3: Ask User for Existing Fields
+Use request_user_input to ask if user has existing field definition file, if so read and merge.
+
+### Step 4: Generate Outline (Separate Files)
+Merge {step1_output}, {step2_output} and user&#x27;s existing fields, generate two files:
+
+**outline.yaml** (items + config):
+- topic: Research topic
+- items: Research objects list
+- execution:
+  - batch_size: Number of parallel agents (confirm with request_user_input)
+  - items_per_agent: Items per agent (confirm with request_user_input)
+  - output_dir: Results output directory (default: ./results)
+
+**fields.yaml** (field definitions):
+- Field categories and definitions
+- Each field&#x27;s name, description, detail_level
+- detail_level hierarchy: brief -&gt; moderate -&gt; detailed
+- uncertain: Uncertain fields list (reserved field, auto-filled in deep phase)
+
+### Step 5: Output and Confirm
+- Create directory: `./{topic_slug}/`
+- Save: `outline.yaml` and `fields.yaml`
+- Show to user for confirmation
+
+## Output Path
+```
+{current_working_directory}/{topic_slug}/
+  ├── outline.yaml    # items list + execution config
+  └── fields.yaml     # field definitions
+```
+
+## Follow-up Commands
+- `/research-add-items` - Supplement items
+- `/research-add-fields` - Supplement fields
+- `/research-deep` - Start deep research
+
+## Conflicts
+- mattpocock/skills requires primary-source verification and a single cited Markdown file; Weizhena/Deep-Research-skills produces structured YAML files without a Markdown report and does not mandate primary-source verification.
+- mattpocock/skills has no user-confirmation steps or time-range parameter; Weizhena/Deep-Research-skills requires multiple request_user_input confirmations and a time-range parameter.
+- mattpocock/skills saves output where the repo already keeps such notes; Weizhena/Deep-Research-skills saves to a fixed ./topic_slug/ directory.</pre>
+</body>
+</html>

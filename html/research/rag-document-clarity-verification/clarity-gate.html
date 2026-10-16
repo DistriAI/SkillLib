@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clarity-gate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">rag-document-clarity-verification</a> / clarity-gate</p><h1>clarity-gate</h1><p class="meta">combined</p><p>Both copies describe the same Clarity Gate v2.1 skill, but the LeoYeAI copy contains the actual operational procedure (validation codes, bundled scripts, hash/claim-ID algorithms, and structural requirements) while the sickn33 copy is a high-level wrapper that defers to a detailed guide and adds a mandatory HITL limitation. Neither is a pure reproduction of the other; the LeoYeAI copy is the more complete procedure, but the sickn33 copy adds the explicit HITL-mandatory constraint and scope boundaries that the LeoYeAI copy does not state in the same way, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/clarity-gate/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/clarity-gate/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/clarity-gate/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/clarity-gate/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/clarity-gate/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/clarity-gate/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: clarity-gate
+version: 2.1.3
+description: &gt;
+  Pre-ingestion verification for epistemic quality in RAG systems.
+  Ensures documents are properly qualified before entering knowledge bases.
+  Produces CGD (Clarity-Gated Documents) and validates SOT (Source of Truth) files.
+author: Francesco Marinoni Moretto
+license: CC-BY-4.0
+repository: https://github.com/frmoretto/clarity-gate
+spec_version: &quot;2.1&quot;
+---
+
+# Clarity Gate v2.1
+
+**Purpose:** Pre-ingestion verification system that enforces epistemic quality before documents enter RAG knowledge bases. Produces Clarity-Gated Documents (CGD) compliant with the Clarity Gate Format Specification v2.1.
+
+**Core Question:** &quot;If another LLM reads this document, will it mistake assumptions for facts?&quot;
+
+**Core Principle:** *&quot;Detection finds what is; enforcement ensures what should be. In practice: find the missing uncertainty markers before they become confident hallucinations.&quot;*
+
+## Critical Limitation
+
+&gt; **Clarity Gate verifies FORM, not TRUTH.**
+&gt;
+&gt; This skill checks whether claims are properly marked as uncertain—it cannot verify if claims are actually true.
+&gt;
+&gt; **Risk:** An LLM can hallucinate facts INTO a document, then &quot;pass&quot; Clarity Gate by adding source markers to false claims.
+&gt;
+&gt; **Solution:** HITL (Human-In-The-Loop) verification is **MANDATORY** before declaring PASS.
+
+## When to Use
+- Before ingesting documents into RAG systems
+- Before sharing documents with other AI systems
+- After writing specifications, state docs, or methodology descriptions
+- When a document contains projections, estimates, or hypotheses
+- Before publishing claims that haven&#x27;t been validated
+- When handing off documentation between LLM sessions
+
+## What This Skill Does NOT Do
+- Does not classify document types
+- Does not restructure documents
+- Does not add deep links or references
+- Does not evaluate writing quality
+- **Does not check factual accuracy autonomously** (requires HITL)
+
+## Specifications
+
+This skill implements and references:
+
+| Specification | Version | Location |
+|---------------|---------|----------|
+| Clarity Gate Format (Unified) | v2.1 | docs/CLARITY_GATE_FORMAT_SPEC.md |
+
+**Note:** v2.0 unifies CGD and SOT into a single `.cgd.md` format. SOT is now a CGD with an optional `tier:` block.
+
+## Validation Codes
+
+Clarity Gate defines validation codes for structural and semantic checks per FORMAT_SPEC v2.1:
+
+### HITL Claim Validation (§1.3.2-1.3.3)
+| Code | Check | Severity |
+|------|-------|----------|
+| **W-HC01** | Partial `confirmed-by`/`confirmed-date` fields | WARNING |
+| **W-HC02** | Vague source (e.g., &quot;industry reports&quot;, &quot;TBD&quot;) | WARNING |
+| **E-SC06** | Schema error in `hitl-claims` structure | ERROR |
+
+### Body Structure (§1.2.1)
+| Code | Check | Severity |
+|------|-------|----------|
+| **E-ST10** | Missing `## HITL Verification Record` when claims exist | ERROR |
+| **W-ST11** | Table rows don&#x27;t match `hitl-claims` count | WARNING |
+
+### SOT Table Validation (§3.1)
+| Code | Check | Severity |
+|------|-------|----------|
+| **E-TB01** | No `## Verified Claims` section | ERROR |
+| **E-TB02** | Table has no data rows | ERROR |
+| **E-TB03** | Required columns missing | ERROR |
+| **E-TB04** | Column order wrong | ERROR |
+| **E-TB05** | Empty cell in required column | ERROR |
+| **E-TB06** | Invalid date format in Verified column | ERROR |
+| **E-TB07** | Verified date in future (beyond 24h grace) | ERROR |
+
+## Bundled Scripts
+
+This skill includes Python scripts for deterministic computations per FORMAT_SPEC.
+
+### scripts/claim_id.py
+
+Computes stable, hash-based claim IDs for HITL tracking (per §1.3.4).
+
+```bash
+# Generate claim ID
+python scripts/claim_id.py &quot;Base price is $99/mo&quot; &quot;api-pricing/1&quot;
+# Output: claim-75fb137a
+
+# Run test vectors
+python scripts/claim_id.py --test
+```
+
+**Algorithm:**
+1. Normalize text (strip + collapse whitespace)
+2. Concatenate with location using pipe delimiter
+3. SHA-256 hash, take first 8 hex chars
+4. Prefix with &quot;claim-&quot;
+
+**Test vectors:**
+- `claim_id(&quot;Base price is $99/mo&quot;, &quot;api-pricing/1&quot;)` → `claim-75fb137a`
+- `claim_id(&quot;The API supports GraphQL&quot;, &quot;features/1&quot;)` → `claim-eb357742`
+
+### scripts/document_hash.py
+
+Computes document SHA-256 hash per FORMAT_SPEC §2.2-2.4 with full canonicalization.
+
+```bash
+# Compute hash
+python scripts/document_hash.py my-doc.cgd.md
+# Output: 7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730
+
+# Verify existing hash
+python scripts/document_hash.py --verify my-doc.cgd.md
+# Output: PASS: Hash verified: 7d865e...
+
+# Run normalization tests
+python scripts/document_hash.py --test
+```
+
+**Algorithm (per §2.2-2.4):**
+1. Extract content between opening `---\n` and `&lt;!-- CLARITY_GATE_END --&gt;`
+2. Remove `document-sha256` line from YAML frontmatter ONLY (with multiline continuation support)
+3. Canonicalize:
+   - Strip trailing whitespace per line
+   - Collapse 3+ consecutive newlines to 2
+   - Normalize final newline (exactly 1 LF)
+   - UTF-8 NFC normalization
+4. Compute SHA-256
+
+**Cross-platform normalization:**
+- BOM removed if present
+- CRLF to LF (Windows)
+- CR to LF (old Mac)
+- Boundary detection (prevents hash computation on content outside CGD structure)
+- Whitespace variations produce identical hashes (deterministic across platforms)
+
+## The Key Distinction
+
+Existing tools like UnScientify and HedgeHunter (CoNLL-2010) **detect** uncertainty markers already present in text (&quot;Is uncertainty expressed?&quot;).
+
+Clarity Gate **enforces** their presence where epistemically required (&quot;Should uncertainty be expressed but isn&#x27;t?&quot;).
+
+| Tool Type | Question | Example |
+|-----------|----------|---------|
+| **Detection** | &quot;Does this text contain hedges?&quot; | UnScientify/HedgeHunter |
+| **Enforcement** | &quot;Should uncertainty be expressed but isn&#x27;t?&quot; | Clarity Gate |
+
+## Procedure
+
+1. Read the detailed guide (references/detailed-guide.md) before executing. Treat its safety, prerequisites, and validation requirements as mandatory.
+2. For focused work, load the relevant sections; for end-to-end work, read the guide completely.
+3. Apply validation codes to the document structure.
+4. Use bundled scripts for deterministic claim ID and document hash computations.
+5. **HITL verification is MANDATORY before declaring PASS.**
+
+## Conflicts
+
+- **sickn33/agentic-awesome-skills** states HITL verification is MANDATORY before declaring PASS and lists explicit scope boundaries under &quot;What This Skill Does NOT Do.&quot;
+- **LeoYeAI/openclaw-master-skills** provides detailed validation codes, bundled scripts, and algorithmic steps but does not restate the HITL-mandatory constraint in the same explicit form.</pre>
+</body>
+</html>

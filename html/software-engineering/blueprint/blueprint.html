@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>blueprint</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">blueprint</a> / blueprint</p><h1>blueprint</h1><p class="meta">combined</p><p>The two copies use the same name for completely different tasks. The WordPress copy is a reference for authoring and validating WordPress Playground Blueprint JSON files. The sickn33 copy is a meta-skill for generating step-by-step construction plans for coding agents. They do not overlap in procedure, and crowning one would hide the other&#x27;s distinct purpose.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/WordPress/agent-skills">WordPress/agent-skills</a></td><td><code>skills/blueprint/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/blueprint/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/WordPress/agent-skills">WordPress/agent-skills</a></td><td><code>skills/blueprint/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/blueprint/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/blueprint/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/blueprint/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Blueprint
+
+This skill name covers two distinct tasks. Determine which one applies before proceeding.
+
+## Task A: WordPress Playground Blueprint JSON
+
+Use this when the deliverable is a WordPress Playground Blueprint JSON file or bundle.
+
+1. Create or edit a JSON file that conforms to the WordPress Playground Blueprint schema.
+2. Use only documented top-level properties: `$schema`, `landingPage`, `description`, `meta`, `preferredVersions`, `features`, `extraLibraries`, `constants`, `plugins`, `siteOptions`, `login`, and `steps`.
+3. Set `$schema` to `&quot;https://playground.wordpress.net/blueprint-schema.json&quot;`.
+4. Use `preferredVersions` with `php` (major.minor only, e.g. `&quot;8.3&quot;`) and `wp` (e.g. `&quot;latest&quot;`).
+5. Use shorthands (`login`, `plugins`, `siteOptions`, `constants`) for simple cases; use explicit `steps` when execution order matters.
+6. Use resource references (`wordpress.org/plugins`, `wordpress.org/themes`, `url`, `git:directory`, `literal`, `literal:directory`, `bundled`, `zip`) to point to files.
+7. For `git:directory`, set `refType` when using a branch or tag name.
+8. For `literal:directory`, use nested objects for subdirectories; do not use path separators in keys.
+9. Validate the file against the schema before use.
+
+## Task B: Construction Plan Generator
+
+Use this when the task is to turn a one-line objective into a step-by-step construction plan that a fresh coding agent can execute cold.
+
+1. Research: scan the codebase, read project memory, and run pre-flight checks.
+2. Design: break the objective into one-PR-sized steps, identify parallelism, and record model constraints.
+3. Draft: generate the plan from a structured template with branch workflow rules, CI policy, and rollback strategies.
+4. Review: review the plan against acceptance criteria; delegate only when explicitly authorized.
+5. Register: save the plan in an authorized project location.
+
+## Conflicts
+
+- WordPress/agent-skills: &#x27;blueprint&#x27; refers to a WordPress Playground JSON file format and its schema.
+- sickn33/agentic-awesome-skills: &#x27;blueprint&#x27; refers to a planning skill that generates multi-step construction plans for coding agents.
+
+Do not mix procedures from the two tasks. Select the task that matches the user&#x27;s deliverable.</pre>
+</body>
+</html>

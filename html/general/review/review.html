@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>review</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">review</a> / review</p><h1>review</h1><p class="meta">combined</p><p>The four copies share the name &#x27;review&#x27; but define four unrelated procedures. dzhng/skills is a closeout pass that sequences refactor-clean, code-review, and write-docs for a finished code change. davepoon/buildwithclaude is a cross-AI peer review of phase plans that invokes external CLIs and writes REVIEWS.md. LeoYeAI/openclaw-master-skills is an audit of Claude Code auto-memory for promotion, staleness, and consolidation. brycewang-stanford/Auto-Empirical-Research-Skills is a research-paper review router that dispatches critic agents for peer review, stress tests, and code replication. No copy is a reproduction of another; each contains material steps and constraints the others lack, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/auto-memory-pro/skills/review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/16-hsantanna88-clo-author/dot-claude/skills/review/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/auto-memory-pro/skills/review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/16-hsantanna88-clo-author/dot-claude/skills/review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/origin/skills/review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/cs-playwright-pro/skills/review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/cs-self-improving-agent/skills/review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/gstack/review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/playwright-pro/skills/review/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: review
+description: Unified review skill that routes to the appropriate review procedure based on the target and flags.
+argument-hint: &quot;[target] [--code] [--plans] [--memory] [--paper] [--peer [journal]] [--stress [journal]] [--methods] [--proofread] [--replicate [lang]] [--all]&quot;
+---
+
+# Review
+
+Routes to the appropriate review procedure based on the target and flags.
+
+## Routing Logic
+
+- `--code` or a code file path → **Code Closeout Review** (dzhng/skills procedure)
+- `--plans` or a phase plan path → **Cross-AI Plan Review** (davepoon/buildwithclaude procedure)
+- `--memory` → **Auto-Memory Audit** (LeoYeAI/openclaw-master-skills procedure)
+- `--paper` or a `.tex` file path → **Research Paper Review** (brycewang-stanford procedure)
+- `--all` or no target → Run all applicable reviews
+
+## Code Closeout Review
+
+1. **Scope.** Fix the diff under review and confirm it&#x27;s substantive; skip for trivial edits.
+2. **Shape.** Run refactor-clean first, while restructuring is cheap.
+3. **Diff.** Run code-review on the settled shape. A finding that forces a structural change sends you back to step 2.
+4. **Docs.** Run write-docs. Trace the link chain from the root README down to each doc; every link must resolve.
+5. **Report.** One verdict across all three passes — what each found, what you changed, what you left and why.
+
+## Cross-AI Plan Review
+
+1. **Detect CLIs.** Identify available external AI CLIs (Gemini, Claude, Codex, OpenCode, Qwen, Cursor).
+2. **Build review prompt.** Construct the review prompt for the phase plan.
+3. **Invoke each CLI.** Run each selected CLI independently.
+4. **Collect responses.** Gather all reviewer feedback.
+5. **Write REVIEWS.md.** Produce a structured REVIEWS.md with per-reviewer feedback.
+
+## Auto-Memory Audit
+
+1. **Locate memory directory.** Find the project&#x27;s auto-memory directory.
+2. **Read and analyze MEMORY.md.** Count lines, check against the 200-line limit, analyze for recurrence, staleness, consolidation, and promotion candidates.
+3. **Read topic files.** Cross-reference with MEMORY.md for duplicates.
+4. **Cross-reference with CLAUDE.md.** Check for duplicates, conflicts, and promotion candidates.
+5. **Generate report.** Output memory health, promotion candidates, stale entries, consolidation groups, conflicts, and recommendations.
+
+## Research Paper Review
+
+1. **Auto-detect by file type.** Route to comprehensive review, code review, or talk review.
+2. **Apply explicit flags.** Override auto-detect with `--peer`, `--stress`, `--methods`, `--proofread`, `--code`, `--replicate`, or `--all`.
+3. **Execute the selected mode.** Dispatch the appropriate critic agents and produce the structured report.
+
+## Conflicts
+
+- dzhng/skills sequences refactor-clean, code-review, and write-docs for a finished code change; loops back when a later pass reopens an earlier one.
+- davepoon/buildwithclaude invokes external AI CLIs to review phase plans and writes REVIEWS.md.
+- LeoYeAI/openclaw-master-skills audits Claude Code auto-memory for promotion, staleness, and consolidation.
+- brycewang-stanford/Auto-Empirical-Research-Skills routes to critic agents for peer review, stress tests, and code replication of research papers.</pre>
+</body>
+</html>

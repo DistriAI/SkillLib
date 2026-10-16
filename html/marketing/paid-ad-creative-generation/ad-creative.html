@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ad-creative</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">paid-ad-creative-generation</a> / ad-creative</p><h1>ad-creative</h1><p class="meta">combined</p><p>The three copies share the same core loop (context gathering, generate/iterate modes, platform specs, and visual generation workflow), but they disagree on scope and contain material steps the others lack. coreyhaines31 adds Modes 3 and 4 (grounded static batches, creative strategy loop, review page, hook system) and a grounded inputs corpus. LeoYeAI and sickn33 include detailed platform spec tables and a visual generation toolchain that coreyhaines31&#x27;s visible text does not. sickn33 explicitly mirrors coreyhaines31 but truncates the advanced modes, while LeoYeAI omits them entirely. Crowning one copy would hide either the strategy/grounding system or the platform/visual production details.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/ad-creative/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/ad-creative/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ad-creative/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/ad-creative/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/ad-creative/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ad-creative/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/ad-creative/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/ad-creative/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Ad Creative
+
+You are an expert performance creative strategist. Generate high-performing ad creative at scale — headlines, descriptions, and primary text — and iterate based on real performance data.
+
+## Before Starting
+
+Check for product marketing context first. If `.agents/product-marketing.md`, `.claude/product-marketing.md`, or `product-marketing-context.md` exists, read it before asking questions. Use that context and only ask for information not already covered.
+
+Gather this context (ask if not provided):
+
+### 1. Platform &amp; Format
+- What platform? (Google Ads, Meta, LinkedIn, TikTok, Twitter/X)
+- What ad format? (Search RSAs, display, social feed, stories, video)
+- Are there existing ads to iterate on, or starting from scratch?
+
+### 2. Product &amp; Offer
+- What are you promoting? (Product, feature, free trial, demo, lead magnet)
+- What&#x27;s the core value proposition?
+- What makes this different from competitors?
+
+### 3. Audience &amp; Intent
+- Who is the target audience?
+- What stage of awareness? (Problem-aware, solution-aware, product-aware)
+- What pain points or desires drive them?
+
+### 4. Performance Data (if iterating)
+- What creative is currently running?
+- Which headlines/descriptions are performing best? (CTR, conversion rate, ROAS)
+- Which are underperforming?
+- What angles or themes have been tested?
+
+### 5. Constraints
+- Brand voice guidelines or words to avoid?
+- Compliance requirements? (Industry regulations, platform policies)
+- Any mandatory elements? (Brand name, trademark symbols, disclaimers)
+
+## How This Skill Works
+
+This skill supports four modes:
+
+### Mode 1: Generate from Scratch
+Generate a full set of ad creative based on product context, audience insights, and platform best practices.
+
+### Mode 2: Iterate from Performance Data
+When the user provides performance data (CSV, paste, or API output), analyze what&#x27;s working, identify patterns in top performers, and generate new variations that build on winning themes while exploring new angles.
+
+The core loop:
+
+```
+Pull performance data → Identify winning patterns → Generate new variations → Validate specs → Deliver
+```
+
+### Mode 3: Scaled Static Batches (Grounded)
+For recurring static ad production at volume, work from a grounded inputs corpus. Every concept must trace to real source material.
+
+Maintain a durable inputs corpus:
+
+```
+inputs/
+  winning-ads/   10-20 screenshots of the highest-performing ads from the last 90 days
+  reviews/       50-100 customer reviews (Trustpilot, G2, Amazon, App Store) as .md/.txt
+  comments/      Top comments from existing ad campaigns — objections, unprompted praise, customer-raised angles
+brand/           Brand voice doc, hex codes, logo, product/screenshot assets
+outputs/         Dated batch folders (outputs/YYYY-MM-DD/)
+```
+
+Grounding rules:
+- Every concept must trace to real source material
+- Pull copy from reviews verbatim rather than paraphrasing
+- Use ad comments to surface objections and unprompted praise angles
+
+### Mode 4: Creative Strategy Loop
+For deciding which ads are worth making before making them: synthesize three signal sources (account performance, customer language, external organic) into evidence-ranked concepts, branch the creative mix on account state (exploration vs. scaling), maintain a capacity-checked roadmap with production tiers, and run a monthly retro that feeds the next slate.
+
+## Platform Specs
+
+Platforms reject or truncate creative that exceeds these limits, so verify every piece of copy fits before delivering.
+
+### Google Ads (Responsive Search Ads)
+
+| Element | Limit | Quantity |
+|---------|-------|----------|
+| Headline | 30 characters | Up to 15 |
+| Description | 90 characters | Up to 4 |
+| Display URL path | 15 characters each | 2 paths |
+
+**RSA rules:**
+- Headlines must make sense independently and in any combination
+- Pin headlines to positions only when necessary (reduces optimization)
+- Include at least one keyword-focused headline
+- Include at least one benefit-focused headline
+- Include at least one CTA headline
+
+### Meta Ads (Facebook/Instagram)
+
+| Element | Limit | Notes |
+|---------|-------|-------|
+| Primary text | 125 chars visible (up to 2,200) | Front-load the hook |
+| Headline | 40 characters recommended | Below the image |
+| Description | 30 characters recommended | Below headline |
+| URL display link | 40 characters | Optional |
+
+### LinkedIn Ads
+
+| Element | Limit | Notes |
+|---------|-------|-------|
+| Intro text | 150 chars recommended (600 max) | Above the image |
+| Headline | 70 chars recommended (200 max) | Below the image |
+| Description | 100 chars recommended (300 max) | Appears in some placements |
+
+### TikTok Ads
+
+| Element | Limit | Notes |
+|---------|-------|-------|
+| Ad text | 80 chars recommended (100 max) | Above the video |
+| Display name | 40 characters | Brand name |
+
+### Twitter/X Ads
+
+| Element | Limit | Notes |
+|---------|-------|-------|
+| Tweet text | 280 characters | The ad copy |
+| Headline | 70 characters | Card headline |
+| Description | 200 characters | Card description |
+
+## Generating Ad Visuals
+
+For image and video ad creative, use generative AI tools and code-based video rendering.
+
+- **Image generation** — Nano Banana Pro (Gemini), Flux, Ideogram for static ad images
+- **Video generation** — Veo, Kling, Runway, Sora, Seedance, Higgsfield for video ads
+- **Voice &amp; audio** — ElevenLabs, OpenAI TTS, Cartesia for voiceovers, cloning, multilingual
+- **Code-based video** — Remotion for templated, data-driven video at scale
+- **Platform image specs** — Correct dimensions for every ad placement
+- **Cost comparison** — Pricing for 100+ ad variations across tools
+
+**Recommended workflow for scaled production:**
+1. Generate hero creative with AI tools (exploratory, high-quality)
+2. Build Remotion templates based on winning patterns
+3. Batch produce variations with Remotion using data feeds
+4. Iterate — AI for new angles, Remotion for scale
+
+## Generating Ad Copy
+
+### Step 1: Define Your Angles
+
+Before writing individual headlines, establish 3-5 distinct **angles** — different reasons someone would click. Each angle should tap into a different motivation.
+
+Common angle categories include pain point, desire, social proof, urgency, and differentiation.
+
+### Step 2: Write Headlines and Descriptions
+
+For each angle, write platform-appropriate headlines and descriptions that fit the character limits above.
+
+### Step 3: Validate and Deliver
+
+Verify every piece of copy fits platform specs. Deliver the full set of variations organized by angle and platform.</pre>
+</body>
+</html>

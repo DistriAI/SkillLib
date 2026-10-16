@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>state-machine</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">component-state-visualization</a> / state-machine</p><h1>state-machine</h1><p class="meta">combined</p><p>The two skills share the name &#x27;state-machine&#x27; but perform fundamentally different tasks. The first (Owl-Listener) is a conceptual modeling skill for defining states, events, and transitions to ensure exhaustive behavior coverage. The second (jakubkrehel) is a practical implementation skill for building a temporary &#x27;throwaway&#x27; page with a switcher to visually inspect and debug a specific component&#x27;s states using mock data. They do not reproduce or shorten each other; they address different phases of the design/engineering workflow (specification vs. visualization/debugging).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>interaction-design/skills/state-machine/SKILL.md</code></td></tr><tr><td><a href="https://github.com/jakubkrehel/skills">jakubkrehel/skills</a></td><td><code>skills/state-machine/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>interaction-design/skills/state-machine/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/jakubkrehel/skills">jakubkrehel/skills</a></td><td><code>skills/state-machine/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># State Machine
+
+This skill covers two complementary approaches to handling UI component states: conceptual modeling and visual inspection.
+
+## 1. Conceptual Modeling (Specification)
+Use this when defining the behavior of a component to ensure exhaustiveness and predictability.
+
+1. **Identify Components**: Define States (modes), Events (triggers), Transitions (rules), Actions (side effects), and Guards (conditions).
+2. **Model the Flow**:
+   - List all possible states.
+   - List all events/triggers.
+   - Define valid transitions.
+   - Identify and prevent impossible states.
+   - Add guards for conditional transitions.
+   - Define entry/exit actions.
+3. **Best Practices**:
+   - Start with the happy path, then add error states.
+   - Ensure every state has an exit (no dead ends).
+   - Keep machines focused (one per concern).
+   - Document with visual diagrams.
+
+## 2. Visual Inspection (Implementation)
+Use this when you need to see and debug a specific component&#x27;s states in the browser.
+
+1. **Scope**: Select one component. Restate its purpose and data source.
+2. **Find States**: Read the code to identify existing branches (Data, Account, Feature). Do not add states the code cannot reach.
+3. **Build Throwaway Page**:
+   - Create a scratch route inside the app (client-side if using Next.js).
+   - Import the real component; do not rebuild it.
+   - Keep the page, fixtures, and switcher in one folder for easy deletion.
+4. **Feed Data**:
+   - Supply mock data at the data boundary (props or app data seam).
+   - Use product-shaped data (real names, timestamps, counts).
+   - Keep loading states pending until the switcher moves.
+5. **Add Switcher**:
+   - Add a grouped list or select to flip between states via a search param (e.g., `__state`).
+   - Keep the switcher visually distinct from the design system.
+6. **Verify &amp; Handover**:
+   - Load the page and flip through every state to ensure mock data renders.
+   - Hand over the URL and state list.
+7. **Cleanup**:
+   - Delete the page folder and any approved seams when done.
+   - Search for remaining references to ensure clean removal.</pre>
+</body>
+</html>

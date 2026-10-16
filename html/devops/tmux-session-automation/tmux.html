@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>tmux</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">tmux-session-automation</a> / tmux</p><h1>tmux</h1><p class="meta">combined</p><p>The two copies overlap on core tmux commands (sessions, windows, panes, send-keys, capture-pane) but each has material steps the other lacks. The first is a general reference covering session/window/pane management, keybindings, and a full workspace layout script. The second is a narrower, tool-specific skill for remote-controlling interactive CLIs via an isolated socket, with conventions for socket paths, safe literal sends, wait-for-text polling, Python REPL environment variables, and orchestrating multiple coding agents. Crowning one would hide the other&#x27;s real alternative workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/tmux/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/tmux/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/tmux/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/tmux/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/tmux/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/tmux/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: tmux
+description: Manage tmux sessions, windows, and panes for persistent remote workflows, interactive CLI control, and scripted terminal automation.
+---
+
+# tmux
+
+Use tmux for persistent terminal sessions, multi-pane layouts, and remote-controlling interactive CLIs. Prefer bash background mode for non-interactive long-running tasks.
+
+## Socket Conventions
+- For isolated automation, use a private socket: `SOCKET_DIR=&quot;${CLAWDBOT_TMUX_SOCKET_DIR:-${TMPDIR:-/tmp}/clawdbot-tmux-sockets}&quot;; mkdir -p &quot;$SOCKET_DIR&quot;; SOCKET=&quot;$SOCKET_DIR/clawdbot.sock&quot;`.
+- Pass `-S &quot;$SOCKET&quot;` to every tmux command when using a private socket.
+- For general use, the default socket is fine.
+
+## Session Management
+- Create detached session: `tmux new-session -d -s work`.
+- Create detached session with size and command: `tmux new-session -d -s build -x 220 -y 50 &quot;make all&quot;`.
+- Attach: `tmux attach -t work`.
+- List: `tmux list-sessions`.
+- Kill: `tmux kill-session -t work`.
+- Check existence: `tmux has-session -t work 2&gt;/dev/null`.
+- Kill all on a socket: `tmux -S &quot;$SOCKET&quot; list-sessions -F &#x27;#{session_name}&#x27; | xargs -r -n1 tmux -S &quot;$SOCKET&quot; kill-session -t`.
+- Kill server: `tmux -S &quot;$SOCKET&quot; kill-server`.
+
+## Window Management
+- New window: `tmux new-window -t work -n &quot;logs&quot;`.
+- New window with command: `tmux new-window -t work:3 -n &quot;server&quot; &quot;python -m http.server 8080&quot;`.
+- Select: `tmux select-window -t work:logs`.
+- Kill: `tmux kill-window -t work:logs`.
+- Move: `tmux move-window -s work:3 -t work:1`.
+
+## Pane Management
+- Split horizontal: `tmux split-window -h -t work:1`.
+- Split vertical: `tmux split-window -v -t work:1`.
+- Split with command: `tmux split-window -h -t work:1 &quot;tail -f /var/log/syslog&quot;`.
+- Select: `tmux select-pane -t work:1.0`.
+- Resize: `tmux resize-pane -t work:1.0 -R 20`.
+- Zoom: `tmux resize-pane -Z`.
+- Swap: `tmux swap-pane -s work:1.0 -t work:1.1`.
+- Kill: `tmux kill-pane -t work:1.1`.
+
+## Sending Input
+- Send command with Enter: `tmux send-keys -t work:1.0 &quot;ls -la&quot; Enter`.
+- Send literal text (safe for special characters): `tmux send-keys -t work:1.0 -l -- &quot;$cmd&quot;`.
+- Send control key: `tmux send-keys -t work:1.0 C-c`.
+- For Python REPLs, set `PYTHON_BASIC_REPL=1` before launching to avoid send-keys issues.
+
+## Capturing Output
+- Capture recent history: `tmux capture-pane -p -J -t work:1.0 -S -200`.
+- Filter output: `tmux capture-pane -p -t work:1.0 | grep &quot;ERROR&quot;`.
+- Wait for text: use a polling script or loop that checks `capture-pane` output for a pattern with a timeout.
+
+## Scripting a Workspace Layout
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+SESSION=&quot;dev&quot;
+tmux has-session -t &quot;$SESSION&quot; 2&gt;/dev/null &amp;&amp; { tmux attach -t &quot;$SESSION&quot;; exit 0; }
+tmux new-session -d -s &quot;$SESSION&quot; -n &quot;editor&quot; -x 220 -y 50
+tmux send-keys -t &quot;$SESSION:editor&quot; &quot;vim .&quot; Enter
+tmux split-window -h -t &quot;$SESSION:editor&quot;
+tmux send-keys -t &quot;$SESSION:editor.1&quot; &quot;npm test -- --watch&quot; Enter
+tmux new-window -t &quot;$SESSION&quot; -n &quot;server&quot;
+tmux send-keys -t &quot;$SESSION:server&quot; &quot;docker compose up&quot; Enter
+tmux split-window -v -t &quot;$SESSION:server&quot;
+tmux send-keys -t &quot;$SESSION:server.1&quot; &quot;tail -f logs/app.log&quot; Enter
+tmux new-window -t &quot;$SESSION&quot; -n &quot;shell&quot;
+tmux select-window -t &quot;$SESSION:editor&quot;
+tmux attach -t &quot;$SESSION&quot;
+```
+
+## Orchestrating Coding Agents
+- Create multiple sessions: `for i in 1 2 3; do tmux -S &quot;$SOCKET&quot; new-session -d -s &quot;agent-$i&quot;; done`.
+- Launch agents: `tmux -S &quot;$SOCKET&quot; send-keys -t agent-1 &quot;cd /tmp/project1 &amp;&amp; codex --yolo &#x27;Fix bug X&#x27;&quot; Enter`.
+- Poll for completion by checking for shell prompt in `capture-pane` output.
+- Use separate git worktrees for parallel fixes.
+
+## Configuration
+- Change prefix: `unbind C-b; set -g prefix C-a; bind C-a send-prefix`.
+- Enable mouse: `set -g mouse on`.
+- Start numbering at 1: `set -g base-index 1; setw -g pane-base-index 1`.
+- Renumber windows: `set -g renumber-windows on`.
+- Increase scrollback: `set -g history-limit 50000`.
+
+## Cleanup
+- Kill session: `tmux kill-session -t work`.
+- Kill all on socket: `tmux -S &quot;$SOCKET&quot; kill-server`.</pre>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>google-drive-automation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">google-drive-file-operations</a> / google-drive-automation</p><h1>google-drive-automation</h1><p class="meta">combined</p><p>The two copies implement the same high-level task (Google Drive file operations) through fundamentally different mechanisms. The davepoon copy is an MCP-based procedure that requires the Rube MCP server, Composio&#x27;s Google Drive toolkit, and specific RUBE_* and GOOGLEDRIVE_* tool calls. The sickn33 copy is a standalone, script-based procedure that uses local Python scripts (auth.py, drive.py) with OAuth and explicitly states that no MCP server is required. Because each copy contains material steps and constraints the other lacks (MCP tool sequences vs. local CLI commands), crowning one would hide a real alternative implementation.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/google-drive-automation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/google-drive-automation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/google-drive-automation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/google-drive-automation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/google-drive-automation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/google-drive-automation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Google Drive Automation
+
+Automate Google Drive file operations (upload, download, search, share, organize) using either an MCP-based or a standalone script-based approach.
+
+## Approach 1: MCP-based (Rube/Composio)
+
+**Prerequisites**:
+- Rube MCP connected (`RUBE_SEARCH_TOOLS` available).
+- Active Google Drive connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `googledrive`.
+
+**Setup**:
+1. Verify Rube MCP is available.
+2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `googledrive`.
+3. Complete Google OAuth if connection is not ACTIVE.
+
+**Workflows**:
+- **Upload/Download**: Use `GOOGLEDRIVE_FIND_FILE` to locate folders, `GOOGLEDRIVE_UPLOAD_FILE` (max 5MB) or `GOOGLEDRIVE_RESUMABLE_UPLOAD` for larger files, and `GOOGLEDRIVE_DOWNLOAD_FILE` for downloads.
+- **Search**: Use `GOOGLEDRIVE_FIND_FILE` with query strings (e.g., `name contains &#x27;report&#x27;`) and handle pagination via `nextPageToken`.
+- **Sharing**: Use `GOOGLEDRIVE_ADD_FILE_SHARING_PREFERENCE` to set permissions, specifying `type`, `role`, and `email_address` or `domain` as required.
+- **Folders**: Use `GOOGLEDRIVE_CREATE_FOLDER` to create folders and `GOOGLEDRIVE_MOVE_FILE` to organize files.
+
+## Approach 2: Standalone Scripts (OAuth)
+
+**Prerequisites**:
+- Google Workspace account (personal Gmail not supported).
+- Local scripts `scripts/auth.py` and `scripts/drive.py` available.
+
+**Setup**:
+1. Authenticate: `python scripts/auth.py login`.
+2. Check status: `python scripts/auth.py status`.
+
+**Workflows**:
+- **Search**: `python scripts/drive.py search &quot;query&quot;` (supports full-text, title, URL, and native query formats).
+- **List**: `python scripts/drive.py list [FOLDER_ID]`.
+- **Upload**: `python scripts/drive.py upload FILE_PATH [--folder FOLDER_ID] [--name NEW_NAME]`.
+- **Download**: `python scripts/drive.py download FILE_ID ./output/path` (note: Google Workspace files cannot be downloaded directly).
+- **Folders**: `python scripts/drive.py create-folder &quot;Name&quot; [--parent FOLDER_ID]`.
+- **Move/Copy/Rename**: Use `move`, `copy`, and `rename` subcommands with appropriate file and folder IDs.
+
+## Conflicts
+- **Repository**: davepoon/buildwithclaude vs. sickn33/agentic-awesome-skills
+- **Step**: The davepoon copy requires an MCP server and specific tool calls, while the sickn33 copy uses local Python scripts and explicitly excludes MCP dependencies. Choose the approach based on your environment&#x27;s MCP support and account type (Workspace vs. personal).</pre>
+</body>
+</html>

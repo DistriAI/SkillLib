@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pathml</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">computational-pathology-wsi</a> / pathml</p><h1>pathml</h1><p class="meta">combined</p><p>The K-Dense-AI copy is the only one that provides a version-pinned, reproducible installation and a correct, minimal API workflow for PathML 3.0.8 (using HESlide and SlideData.run). The other three copies (Vibe-Skills, medical-research-skills, OpenClaw-Medical-Skills) are nearly identical to each other but contain a critical API error: they use SlideData.from_slide() and Pipeline.run(), which the K-Dense copy explicitly states do not exist in the current stable release. They also recommend pathml[all], which the K-Dense copy warns against. Because the copies disagree on the core execution steps and installation constraints, crowning one would hide a real alternative (the incorrect API usage) that an agent might follow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pathml/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pathml/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/pathml/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pathml/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/pathml/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/pathml/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/pathml/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pathml/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: pathml
+description: &quot;Supports local computational pathology research with PathML: slide loading, preprocessing, h5path storage, multiplex quantification, and model inference. Use for whole-slide H&amp;E, CODEX, Vectra, and HoVer-Net workflows.&quot;
+license: MIT
+---
+
+# PathML
+
+## Scope and Safety
+Use PathML for local computational pathology research. It is beta research software, not a validated medical device. Do not use outputs for diagnosis or treatment. De-identify all patient data and use pseudonymous IDs before processing.
+
+## Installation
+Use Python 3.11. Install native prerequisites (OpenSlide, JDK 17) before the Python package.
+
+```bash
+uv venv --python 3.11
+source .venv/bin/activate
+uv pip install &quot;pathml==3.0.8&quot;
+```
+
+Do not use pathml[all]; the base distribution pins the required scientific stack.
+
+## Core Workflow
+PathML 3.0.8 uses slide convenience classes and SlideData.run(). It does not provide SlideData.from_slide().
+
+```python
+from pathml.core import HESlide
+from pathml.preprocessing import BoxBlur, Pipeline, TissueDetectionHE
+
+slide = HESlide(&quot;data/pseudonymous_slide.svs&quot;, backend=&quot;openslide&quot;)
+pipeline = Pipeline([
+    BoxBlur(kernel_size=5),
+    TissueDetectionHE(mask_name=&quot;tissue&quot;, min_region_size=5000),
+])
+
+slide.run(
+    pipeline,
+    distributed=False,
+    tile_size=512,
+    tile_stride=512,
+    level=0,
+    tile_pad=False,
+)
+slide.write(&quot;derived/pseudonymous_slide.h5path&quot;)
+```
+
+## Capabilities
+1. **Image Loading:** Supports 160+ formats (SVS, NDPI, DICOM, OME-TIFF). See references/image_loading.md.
+2. **Preprocessing:** Composable pipelines for stain normalization, tissue detection, and QC. See references/preprocessing.md.
+3. **Graph Construction:** Spatial graphs for cellular relationships. See references/graphs.md.
+4. **Machine Learning:** HoVer-Net and HACTNet integration with PyTorch. See references/machine_learning.md.
+5. **Multiparametric Imaging:** CODEX, Vectra, and MERFISH analysis. See references/multiparametric.md.
+6. **Data Management:** HDF5 storage for tiles and features. See references/data_management.md.
+
+## Conflicts
+- **Repository:** foryourhealth111-pixel/Vibe-Skills, aipoch/medical-research-skills, FreedomIntelligence/OpenClaw-Medical-Skills
+- **Conflicting Step:** These repositories use SlideData.from_slide() and pipeline.run(wsi), which are not valid in PathML 3.0.8. They also recommend pathml[all], which is not a valid extra in the current release.</pre>
+</body>
+</html>

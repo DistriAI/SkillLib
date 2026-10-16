@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>obsidian-bases</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">obsidian-bases-authoring</a> / obsidian-bases</p><h1>obsidian-bases</h1><p class="meta">combined</p><p>The copies overlap heavily on the .base YAML schema, filter syntax, property types, and formula examples, but each adds material steps or constraints the others lack. kepano/obsidian-skills provides the only explicit authoring workflow and validation checklist, including common YAML quoting and formula-reference errors. anbeime/skill and davepoon/buildwithclaude include a broader inline functions reference, while davepoon adds a &#x27;When to Use&#x27; section. sickn33/agentic-awesome-skills adds complete worked examples and a limitations section, but delegates the detailed procedure to an external reference file. Crowning one copy would hide the workflow/validation steps in kepano, the broader function tables in the other two, and the examples/limitations in sickn33.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kepano/obsidian-skills">kepano/obsidian-skills</a></td><td><code>skills/obsidian-bases/SKILL.md</code></td></tr><tr><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/obsidian-skills-integrated/obsidian-bases/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/obsidian-bases/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/obsidian-bases/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kepano/obsidian-skills">kepano/obsidian-skills</a></td><td><code>skills/obsidian-bases/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>skills/obsidian-skills-integrated/obsidian-bases/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/obsidian-bases/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/obsidian-bases/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/obsidian-bases/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/obsidian-bases/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/obsidian-bases/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/obsidian-skills/skills/obsidian-bases/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: obsidian-bases
+description: Create and edit Obsidian Bases (.base files) with views, filters, formulas, and summaries. Use when working with .base files, creating database-like views of notes, or when the user mentions Bases, table views, card views, filters, or formulas in Obsidian.
+---
+
+# Obsidian Bases Skill
+
+## When to Use
+- Creating database-like views of notes in Obsidian
+- Building task trackers, reading lists, or project dashboards
+- Filtering and organizing notes by properties or tags
+- Creating calculated/formula fields
+- Setting up table, card, list, or map views
+- Working with .base files in an Obsidian vault
+
+## Workflow
+1. Create the file: Create a .base file in the vault with valid YAML content
+2. Define scope: Add filters to select which notes appear (by tag, folder, property, or date)
+3. Add formulas (optional): Define computed properties in the formulas section
+4. Configure views: Add one or more views (table, cards, list, or map) with order specifying which properties to display
+5. Validate: Verify the file is valid YAML with no syntax errors. Check that all referenced properties and formulas exist. Common issues: unquoted strings containing special YAML characters, mismatched quotes in formula expressions, referencing formula.X without defining X in formulas
+6. Test in Obsidian: Open the .base file in Obsidian to confirm the view renders correctly. If it shows a YAML error, check quoting rules below
+
+## File Format
+Base files use the .base extension and contain valid YAML. They can also be embedded in Markdown code blocks.
+
+## Complete Schema
+```yaml
+# Global filters apply to ALL views in the base
+filters:
+  # Can be a single filter string
+  # OR a recursive filter object with and/or/not
+  and: []
+  or: []
+  not: []
+
+# Define formula properties that can be used across all views
+formulas:
+  formula_name: &#x27;expression&#x27;
+
+# Configure display names and settings for properties
+properties:
+  property_name:
+    displayName: &quot;Display Name&quot;
+  formula.formula_name:
+    displayName: &quot;Formula Display Name&quot;
+  file.ext:
+    displayName: &quot;Extension&quot;
+
+# Define custom summary formulas
+summaries:
+  custom_summary_name: &#x27;values.mean().round(3)&#x27;
+
+# Define one or more views
+views:
+  - type: table | cards | list | map
+    name: &quot;View Name&quot;
+    limit: 10                    # Optional: limit results
+    groupBy:                     # Optional: group results
+      property: property_name
+      direction: ASC | DESC
+    filters:                     # View-specific filters
+      and: []
+    order:                       # Properties to display in order
+      - file.name
+      - property_name
+      - formula.formula_name
+    summaries:                   # Map properties to summary formulas
+      property_name: Average
+```
+
+## Filter Syntax
+Filters narrow down results. They can be applied globally or per-view.
+
+### Filter Structure
+```yaml
+# Single filter
+filters: &#x27;status == &quot;done&quot;&#x27;
+
+# AND - all conditions must be true
+filters:
+  and:
+    - &#x27;status == &quot;done&quot;&#x27;
+    - &#x27;priority &gt; 3&#x27;
+
+# OR - any condition can be true
+filters:
+  or:
+    - file.hasTag(&quot;book&quot;)
+    - file.hasTag(&quot;article&quot;)
+
+# NOT - exclude matching items
+filters:
+  not:
+    - file.hasTag(&quot;archived&quot;)
+
+# Nested filters
+filters:
+  or:
+    - file.hasTag(&quot;tag&quot;)
+    - and:
+        - file.hasTag(&quot;book&quot;)
+        - file.hasLink(&quot;Textbook&quot;)
+    - not:
+        - file.hasTag(&quot;book&quot;)
+        - file.inFolder(&quot;Required Reading&quot;)
+```
+
+### Filter Operators
+| Operator | Description |
+|----------|-------------|
+| == | equals |
+| != | not equal |
+| &gt; | greater than |
+| &lt; | less than |
+| &gt;= | greater than or equal |
+| &lt;= | less than or equal |
+| &amp;&amp; | logical and |
+| \|\| | logical or |
+| ! | logical not |
+
+## Properties
+
+### Three Types of Properties
+1. Note properties - From frontmatter: note.author or just author
+2. File properties - File metadata: file.name, file.mtime, etc.
+3. Formula properties - Computed values: formula.my_formula
+
+### File Properties Reference
+| Property | Type | Description |
+|----------|------|-------------|
+| file.name | String | File name |
+| file.basename | String | File name without extension |
+| file.path | String | Full path to file |
+| file.folder | String | Parent folder path |
+| file.ext | String | File extension |
+| file.size | Number | File size in bytes |
+| file.ctime | Date | Created time |
+| file.mtime | Date | Modified time |
+| file.tags | List | All tags in file |
+| file.links | List | Internal links in file |
+| file.backlinks | List | Files linking to this file |
+| file.embeds | List | Embeds in the note |
+| file.properties | Object | All frontmatter properties |
+
+### The this Keyword
+- In main content area: refers to the base file itself
+- When embedded: refers to the embedding file
+- In sidebar: refers to the active file in main content
+
+## Formula Syntax
+Formulas compute values from properties. Defined in the formulas section.
+
+```yaml
+formulas:
+  # Simple arithmetic
+  total: &quot;price * quantity&quot;
+
+  # Conditional logic
+  status_icon: &#x27;if(done, &quot;✅&quot;, &quot;⏳&quot;)&#x27;
+
+  # String formatting
+  formatted_price: &#x27;if(price, price.toFixed(2) + &quot; dollars&quot;)&#x27;
+
+  # Date formatting
+  created: &#x27;file.ctime.format(&quot;YYYY-MM-DD&quot;)&#x27;
+
+  # Calculate days since created (use .days for Duration)
+  days_old: &#x27;(now() - file.ctime).days&#x27;
+
+  # Calculate days until due date
+  days_until_due: &#x27;if(due_date, (date(due_date) - today()).days, &quot;&quot;)&#x27;
+```
+
+## Functions Reference
+
+### Global Functions
+| Function | Signature | Description |
+|----------|-----------|-------------|
+| date() | date(string): date | Parse string to date. Format: YYYY-MM-DD HH:mm:ss |
+| duration() | duration(string): duration | Parse duration string |
+| now() | now(): date | Current date and time |
+| today() | today(): date | Current date (time = 00:00:00) |
+| if() | if(condition, trueResult, falseResult?) | Conditional |
+| min() | min(n1, n2, ...): number | Smallest number |
+| max() | max(n1, n2, ...): number | Largest number |
+| number() | number(any): number | Convert to number |
+| link() | link(path, display?): Link | Create a link |
+| list() | list(element): List | Wrap in list if not already |
+| file() | file(path): file | Get file object |
+| image() | image(path): image | Create image for rendering |
+| icon() | icon(name): icon | Lucide icon by name |
+| html() | html(string): html | Render as HTML |
+| escapeHTML() | escapeHTML(string): string | Escape HTML characters |
+
+### Any Type Functions
+| Function | Signature | Description |
+|----------|-----------|-------------|
+| isTruthy() | any.isTruthy(): boolean | Coerce to boolean |
+| isType() | any.isType(type): boolean | Check type |
+| toString() | any.toString(): string | Convert to string |
+
+## Complete Examples
+
+### Task Tracker Base
+```yaml
+filters:
+  and:
+    - file.hasTag(&quot;task&quot;)
+    - &#x27;file.ext == &quot;md&quot;&#x27;
+
+formulas:
+  days_until_due: &#x27;if(due, (date(due) - today()).days, &quot;&quot;)&#x27;
+  is_overdue: &#x27;if(due, date(due) &lt; today() &amp;&amp; status != &quot;done&quot;, false)&#x27;
+  priority_label: &#x27;if(priority == 1, &quot;🔴 High&quot;, if(priority == 2, &quot;🟡 Medium&quot;, &quot;🟢 Low&quot;))&#x27;
+
+properties:
+  status:
+    displayName: Status
+  formula.days_until_due:
+    displayName: &quot;Days Until Due&quot;
+  formula.priority_label:
+    displayName: Priority
+
+views:
+  - type: table
+    name: &quot;Active Tasks&quot;
+    filters:
+      and:
+        - &#x27;status != &quot;done&quot;&#x27;
+    order:
+      - file.name
+      - status
+      - formula.priority_label
+      - due
+      - formula.days_until_due
+    groupBy:
+      property: status
+      direction: ASC
+    summaries:
+      formula.days_until_due: Average
+
+  - type: table
+    name: &quot;Completed&quot;
+    filters:
+      and:
+        - &#x27;status == &quot;done&quot;&#x27;
+    order:
+      - file.name
+      - completed_date
+```
+
+### Reading List Base
+```yaml
+filters:
+  or:
+    - file.hasTag(&quot;book&quot;)
+    - file.hasTag(&quot;article&quot;)
+
+formulas:
+  reading_time: &#x27;if(pages, (pages * 2).toString() + &quot; min&quot;, &quot;&quot;)&#x27;
+  status_icon: &#x27;if(status == &quot;reading&quot;, &quot;📖&quot;, if(status == &quot;done&quot;, &quot;✅&quot;, &quot;📚&quot;))&#x27;
+  year_read: &#x27;if(finished_date, date(finished_date).year, &quot;&quot;)&#x27;
+
+properties:
+  author:
+    displayName: Author
+  formula.status_icon:
+    displayName: &quot;&quot;
+  formula.reading_time:
+    displayName: &quot;Est. Time&quot;
+
+views:
+  - type: cards
+    name: &quot;Library&quot;
+    order:
+      - cover
+      - file.name
+      - author
+      - formula.status_icon
+    filters:
+      not:
+        - &#x27;status == &quot;dropped&quot;&#x27;
+
+  - type: table
+    name: &quot;Reading List&quot;
+    filters:
+      and:
+        - &#x27;status == &quot;to-read&quot;&#x27;
+    order:
+      - file.name
+      - author
+      - pages
+      - formula.reading_time
+```
+
+### Daily Notes Index
+```yaml
+filters:
+  and:
+    - file.inFolder(&quot;Daily Notes&quot;)
+    - &#x27;/^\d{4}-\d{2}-\d{2}$/.matches(file.basename)&#x27;
+
+formulas:
+  word_estimate: &#x27;(file.size / 5).round(0)&#x27;
+  day_of_week: &#x27;date(file.basename).format(&quot;dddd&quot;)&#x27;
+
+properties:
+  formula.day_of_week:
+    displayName: &quot;Day&quot;
+  formula.word_estimate:
+    displayName: &quot;~Words&quot;
+
+views:
+  - type: table
+    name: &quot;Recent Notes&quot;
+    limit: 30
+    order:
+      - file.name
+      - formula.day_of_week
+      - formula.word_estimate
+      - file.mtime
+```
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+## Conflicts
+- davepoon/buildwithclaude uses a different days_old formula example: &#x27;((now() - file.ctime) / 86400000).round(0)&#x27; versus kepano/obsidian-skills and anbeime/skill using &#x27;(now() - file.ctime).days&#x27;.
+- kepano/obsidian-skills references an external FUNCTIONS_REFERENCE.md for the complete function list; anbeime/skill and davepoon/buildwithclaude include a broader inline functions reference instead.
+- sickn33/agentic-awesome-skills delegates the detailed procedure to references/detailed-guide.md and adds a limitations section; the other copies do not include this delegation or limitations block.</pre>
+</body>
+</html>

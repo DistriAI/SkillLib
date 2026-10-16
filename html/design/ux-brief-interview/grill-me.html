@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>grill-me</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">ux-brief-interview</a> / grill-me</p><h1>grill-me</h1><p class="meta">combined</p><p>The copies describe two different procedures that share a name. mattpocock/skills and sickn33/agentic-awesome-skills are the same thin wrapper that delegates to a separate &#x27;grilling&#x27; skill, while plugin87/ux-ui-agent-skills is a self-contained, detailed UX brief interrogation with specific question banks, a BRIEF.md output format, and a kit-dependency check. Crowning the thin wrapper would hide the substantive UX procedure, and crowning the UX procedure would hide the generic plan/design interview. They overlap in intent (relentless questioning) but disagree on scope, target, and output.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/productivity/grill-me/SKILL.md</code></td></tr><tr><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/grill-me/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/grill-me/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/productivity/grill-me/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/plugin87/ux-ui-agent-skills">plugin87/ux-ui-agent-skills</a></td><td><code>.claude/skills/grill-me/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/grill-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/grill-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/grill-me/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: grill-me
+description: A relentless interview to sharpen a plan, design, or UX brief.
+disable-model-invocation: true
+---
+
+## Step 0 — Check dependencies
+If the target is a UX/UI build and the kit is expected, check once:
+`ls ${CLAUDE_SKILL_DIR}/../../../tokens &gt;/dev/null 2&gt;&amp;1 &amp;&amp; echo KIT_OK || echo KIT_MISSING`
+On `KIT_MISSING`, say so plainly, point the user at the init command or plugin install, and stop. Do not guess file contents.
+
+## Step 1 — Read before you ask
+Before writing a single question:
+- Look for an existing brief, `CLAUDE.md`, `BRIEF.md`, or a `reference/` folder.
+- For UX work, look for an existing theme: `tokens/*.json`, `design-tokens.json`, `theme.css`. If one exists, the theme question is answered.
+- Look at neighbouring screens and components. Framework, conventions, and component inventory are usually visible.
+
+Every question you keep after this pass is one the code genuinely cannot answer.
+
+## Step 2 — The question bank
+Pick from these. Do not ask all of them.
+
+**Purpose and lead**
+- Who is this for, and what is the one task they came to finish?
+- What is the first thing their eye should land on?
+- What does success look like for them?
+
+**Content reality**
+- What does this look like with zero items? With one? With four hundred?
+- What is the longest string a real user will put in here?
+- Which numbers are real and which are placeholder?
+
+**Irreversible actions**
+- Which actions here destroy or cannot be undone, and what confirms them?
+- What happens when the action fails?
+
+**Theme and platform**
+- New theme or existing? If new: which direction, and does dark mode ship too?
+- What is the narrowest width this must survive?
+- Which framework is the deliverable — and does it need RTL, AA or AAA?
+
+**Scope and done**
+- How many screens or components exactly, and what is explicitly out of scope?
+- What has to be true before this is done?
+
+For non-UX plans or designs, adapt the bank to the domain: establish the intended outcome, challenge assumptions and dependencies, and stop when the user-defined decision criteria are resolved or the user ends the interview.
+
+## Step 3 — The rule on asking
+- **Maximum seven questions, asked in one round.**
+- **Every question must change the work.** If both answers produce the same build, it is not a question, it is a default — take it and say so.
+- **Never ask what you can choose well.** Taste is the job. Ask about intent, content, and constraint; decide the rest.
+
+## Step 4 — Everything unasked becomes a written assumption
+Each assumption gets a line: what was assumed, the default taken, and what it costs if it is wrong.
+
+## Step 5 — Output
+For UX work, write `BRIEF.md` next to the work in this shape:
+```
+# &lt;what is being built&gt;
+
+Goal            one sentence, from the user&#x27;s side
+User and task   who, and the task they came to finish
+Deliverables    exact list; N screens means N screens
+Lead            the one thing the eye lands on first
+Content reality empty / one / many, longest string, real vs placeholder
+Irreversible    which actions, what confirms them, what failure reads like
+Theme           source of truth, dark mode, brand direction
+Platform floor  narrowest width, framework, RTL, AA or AAA
+Out of scope    what this is deliberately not
+Assumptions     each with its default and its cost if wrong
+Done when       the gates that must pass, and whether /critique is part of the bar
+```
+
+For non-UX plans, summarize the resolved decisions and assumptions in the conversation or a plan document.
+
+## Step 6 — Then build, then prove it
+`/grill-me` -&gt; build -&gt; `/gate` -&gt; `/critique`. This command removes ambiguity. It does not produce quality, it does not score anything, and it is not a substitute for rendering the work and looking at it.
+
+## Limitations
+- Requires the upstream tool, account, API key, or local setup when the workflow names one.
+- Does not authorize destructive, production, paid, or external-message actions without explicit user approval.
+- Validate generated artifacts or recommendations against the user&#x27;s real sources before treating them as final.</pre>
+</body>
+</html>

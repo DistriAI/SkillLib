@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>seo-geo</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">seo-geo-optimization</a> / seo-geo</p><h1>seo-geo</h1><p class="meta">combined</p><p>Both copies address SEO and GEO, but they emphasize different, non-overlapping procedures. The ReScienceLab copy is a procedural workflow (audit scripts, keyword research, Princeton GEO methods, schema templates, validation). The sickn33 copy is a diagnostic framework (weighted citability/structure/authority/technical scores, llms.txt, RSL 1.0, platform-specific citation sources, and a different crawler list). Neither is a shortened or wrapped version of the other; crowning one would hide the other&#x27;s unique steps and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/ReScienceLab/opc-skills">ReScienceLab/opc-skills</a></td><td><code>.agents/skills/seo-geo/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/seo-geo/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/ReScienceLab/opc-skills">ReScienceLab/opc-skills</a></td><td><code>.agents/skills/seo-geo/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/seo-geo/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/seo-geo/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/seo-geo/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/ReScienceLab/opc-skills">ReScienceLab/opc-skills</a></td><td><code>skills/seo-geo/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># SEO/GEO Optimization
+
+## When to Use
+Use when the user wants to improve search visibility in traditional engines (Google, Bing) and AI search engines (ChatGPT, Perplexity, Gemini, Copilot, Claude), or when evaluating GEO, AI citations, llms.txt readiness, or crawler accessibility.
+
+## Step 1: Website Audit
+1. Run a basic technical SEO audit (title, meta, H1, robots, sitemap, load time). If a local script is available, use it; otherwise use curl to fetch the page and inspect meta tags, robots.txt, and sitemap.xml.
+2. Verify AI crawler access in robots.txt. Allow search-oriented AI crawlers (GPTBot, OAI-SearchBot, ChatGPT-User, ClaudeBot, PerplexityBot, Googlebot, Bingbot). Decide whether to block training crawlers (CCBot, anthropic-ai, Bytespider, cohere-ai) based on the user&#x27;s policy.
+3. Check for the presence and correctness of /llms.txt at the domain root. Ensure it lists key pages, descriptions, and authority/contact information.
+4. Check for RSL 1.0 (Really Simple Licensing) implementation and appropriate machine-readable licensing terms.
+
+## Step 2: Keyword Research
+1. Research target keywords for search volume, difficulty, and long-tail opportunities.
+2. Analyze competitor keyword strategies and international keyword conflicts.
+
+## Step 3: GEO Optimization (AI Search Engines)
+Apply both the Princeton GEO methods and the weighted GEO analysis criteria:
+
+### Princeton GEO Methods
+- Cite Sources (+40%): Add authoritative citations and references.
+- Statistics Addition (+37%): Include specific numbers and data points.
+- Quotation Addition (+30%): Add expert quotes with attribution.
+- Authoritative Tone (+25%): Use confident, expert language.
+- Easy-to-understand (+20%): Simplify complex concepts.
+- Technical Terms (+18%): Include domain-specific terminology.
+- Unique Words (+15%): Increase vocabulary diversity.
+- Fluency Optimization (+15-30%): Improve readability and flow.
+- Avoid keyword stuffing (-10%).
+- Best combination: Fluency + Statistics.
+
+### Weighted GEO Analysis Criteria
+1. Citability Score (25%): Optimal passage length 134-167 words. Use clear, quotable sentences with specific facts. Provide self-contained answer blocks. Put the direct answer in the first 40-60 words. Attribute claims with specific sources. Use &quot;X is...&quot; or &quot;X refers to...&quot; definitions. Include unique data points.
+2. Structural Readability (20%): Use clean H1-&gt;H2-&gt;H3 hierarchy. Use question-based headings. Keep paragraphs to 2-4 sentences. Use tables for comparative data. Use lists for step-by-step or multi-item content. Include FAQ sections with clear Q&amp;A format.
+3. Multi-Modal Content (15%): Include text + relevant images, video, infographics, charts, and interactive elements. Add structured data supporting media.
+4. Authority &amp; Brand Signals (20%): Include author byline with credentials, publication and last-updated dates, citations to primary sources, organization credentials, expert quotes with attribution, and entity presence in Wikipedia, Wikidata, Reddit, YouTube, and LinkedIn. Note that brand mentions correlate 3x more strongly with AI visibility than backlinks.
+5. Technical Accessibility (20%): Ensure server-side rendering (AI crawlers do not execute JavaScript). Verify AI crawler access in robots.txt. Check llms.txt and RSL 1.0.
+
+### Platform-Specific Optimization
+- Google AI Overviews: Focus on top-10 ranking pages (92% of citations) and passage optimization.
+- ChatGPT: Focus on entity presence and authoritative sources (Wikipedia 47.9%, Reddit 11.3%).
+- Perplexity: Focus on community validation and discussions (Reddit 46.7%, Wikipedia).
+- Bing Copilot: Focus on Bing index and authoritative sites.
+
+## Step 4: Traditional SEO Optimization
+1. Optimize meta tags (title, description, Open Graph, Twitter Cards) using the template: title with primary keyword and brand, description 150-160 chars, og:image 1200x630.
+2. Add JSON-LD schema markup: WebPage/Article for content, FAQPage for FAQs, Product for products, Organization for about pages, SoftwareApplication for tools.
+3. Check content: H1 contains primary keyword, images have alt text, internal links to related content, external links have rel=&quot;noopener noreferrer&quot;, mobile-friendly, page loads in &lt; 3 seconds.
+
+## Step 5: Validate &amp; Monitor
+1. Validate schema using Google Rich Results Test and Schema.org Validator.
+2. Check indexing status via site: queries on Google and Bing.
+3. Generate a report covering audit findings, GEO scores, keyword opportunities, and recommended actions.</pre>
+</body>
+</html>

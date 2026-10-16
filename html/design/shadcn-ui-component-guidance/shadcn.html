@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>shadcn</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">shadcn-ui-component-guidance</a> / shadcn</p><h1>shadcn</h1><p class="meta">combined</p><p>The two copies address different layers of the same skill. The bergside copy is a design-system authoring guide: it defines visual foundations (typography, color tokens, spacing), accessibility tone, and a workflow for writing design-system documentation. The sickn33 copy is an implementation/CLI guide: it covers the shadcn CLI, project context, component composition rules, Tailwind styling constraints, form patterns, and icon usage. Neither copy contains the other&#x27;s material steps, and crowning one would hide a real alternative. They overlap only in the general goal of producing consistent shadcn/ui output.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/shadcn/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/shadcn/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/shadcn/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/shadcn/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/shadcn/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-web-app/skills/shadcn/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/shadcn/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># shadcn/ui Skill
+
+## Purpose
+Provide both design-system guidance and implementation-ready component patterns for shadcn/ui projects.
+
+## When to Use
+- Adding new components from shadcn/ui or community registries.
+- Styling, composing, or debugging existing shadcn/ui components.
+- Initializing a new project or switching design system presets.
+- Authoring or reviewing design-system documentation for a shadcn/ui-based product.
+
+## CLI and Project Context
+- Run all CLI commands using the project&#x27;s package runner: `npx shadcn@latest`, `pnpm dlx shadcn@latest`, or `bunx --bun shadcn@latest` based on the project&#x27;s `packageManager`.
+- Retrieve project config and installed components with `npx shadcn@latest info --json`.
+- Get component documentation with `npx shadcn@latest docs &lt;component&gt;`.
+- Search registries before writing custom UI: `npx shadcn@latest search`.
+- Never decode or fetch preset codes manually; pass them directly to `npx shadcn@latest init --preset &lt;code&gt;`.
+
+## Design Foundations
+- Visual style: minimal, clean.
+- Typography: use the project&#x27;s configured font stack (commonly Geist for primary/display, Fira Code for mono) and a consistent type scale.
+- Color: use semantic tokens (`bg-primary`, `text-muted-foreground`, `bg-background`) rather than raw hex or Tailwind color values.
+- Spacing: follow a consistent spacing rhythm (e.g., 4/8/12/16/24/32) and avoid inconsistent gaps.
+- Accessibility: target WCAG 2.2 AA, keyboard-first interactions, and visible focus states.
+
+## Implementation Rules
+
+### Styling and Tailwind
+- Use `className` for layout, not for overriding component colors or typography.
+- Do not use `space-x-*` or `space-y-*`; use `flex` with `gap-*`.
+- Use `size-*` when width and height are equal.
+- Use `truncate` shorthand instead of `overflow-hidden text-ellipsis whitespace-nowrap`.
+- Do not use manual `dark:` color overrides; use semantic tokens.
+- Use `cn()` for conditional classes.
+- Do not set manual `z-index` on overlay components (Dialog, Sheet, Popover, etc.).
+
+### Forms and Inputs
+- Use `FieldGroup` + `Field` for form layout; never raw `div` with `space-y-*` or `grid gap-*`.
+- Use `InputGroupInput`/`InputGroupTextarea` inside `InputGroup`; never raw `Input`/`Textarea`.
+- Use `InputGroup` + `InputGroupAddon` for buttons inside inputs.
+- Use `ToggleGroup` for option sets of 2–7 choices.
+- Use `FieldSet` + `FieldLegend` for grouping related checkboxes/radios.
+- Field validation: `data-invalid` on `Field`, `aria-invalid` on the control. For disabled: `data-disabled` on `Field`, `disabled` on the control.
+
+### Component Composition
+- Items must be inside their Group: `SelectItem` → `SelectGroup`, `DropdownMenuItem` → `DropdownMenuGroup`, `CommandItem` → `CommandGroup`.
+- Use `asChild` (radix) or `render` (base) for custom triggers; check the `base` field from `npx shadcn@latest info`.
+- Dialog, Sheet, and Drawer always need a Title (`DialogTitle`, `SheetTitle`, `DrawerTitle`); use `className=&quot;sr-only&quot;` if visually hidden.
+- Use full Card composition: `CardHeader`/`CardTitle`/`CardDescription`/`CardContent`/`CardFooter`.
+- Button has no `isPending`/`isLoading`; compose with `Spinner` + `data-icon` + `disabled`.
+- `TabsTrigger` must be inside `TabsList`.
+- `Avatar` always needs `AvatarFallback`.
+
+### Use Components, Not Custom Markup
+- Check if a component exists before writing a styled `div`.
+- Callouts use `Alert`; empty states use `Empty`; toasts via `sonner` (`toast()`).
+- Use `Separator` instead of `&lt;hr&gt;` or `&lt;div className=&quot;border-t&quot;&gt;`.
+- Use `Skeleton` for loading placeholders; no custom `animate-pulse` divs.
+- Use `Badge` instead of custom styled spans.
+
+### Icons
+- Icons in `Button` use `data-icon=&quot;inline-start&quot;` or `data-icon=&quot;inline-end&quot;`.
+- Do not add sizing classes to icons inside components; components handle icon sizing via CSS.
+- Pass icons as objects, not string keys.
+
+## Design-System Authoring Workflow
+When generating design-system guidance for a shadcn/ui project:
+1. Restate the design intent in one sentence before proposing rules.
+2. Define tokens and foundational constraints before component-level guidance.
+3. Specify component anatomy, states, variants, and interaction behavior.
+4. Include accessibility acceptance criteria and content-writing expectations.
+5. Add anti-patterns and migration notes for existing inconsistent UI.
+6. End with a QA checklist that can be executed in code review.
+
+## Required Output Structure for Design-System Docs
+- Context and goals
+- Design tokens and foundations
+- Component-level rules (anatomy, variants, states, responsive behavior)
+- Accessibility requirements and testable acceptance criteria
+- Content and tone standards with examples
+- Anti-patterns and prohibited implementations
+- QA checklist
+
+## Component Rule Expectations
+- Define required states: default, hover, focus-visible, active, disabled, loading, error (as relevant).
+- Describe interaction behavior for keyboard, pointer, and touch.
+- State spacing, typography, and color-token usage explicitly.
+- Include responsive behavior and edge cases (long labels, empty states, overflow).
+
+## Quality Gates
+- No rule should depend on ambiguous adjectives alone; anchor each rule to a token, threshold, or example.
+- Every accessibility statement must be testable in implementation.
+- Prefer system consistency over one-off local optimizations.
+- Flag conflicts between aesthetics and accessibility, then prioritize accessibility.
+- Use &quot;must&quot; for non-negotiable rules and &quot;should&quot; for recommendations.
+- Pair every do-rule with at least one concrete don&#x27;t-example.
+- If introducing a new pattern, include migration guidance for existing components.
+
+## Conflicts
+- The bergside copy prescribes a fixed color palette (primary=#000000, secondary=#111111, success=#16A34A, warning=#D97706, danger=#DC2626, surface=#FFFFFF, text=#111827) and a fixed typography scale (12/14/16/20/24/32). The sickn33 copy does not prescribe a fixed palette or type scale and instead defers to the project&#x27;s shadcn config and semantic tokens. When authoring design-system docs, use the project&#x27;s actual tokens; when implementing components, use semantic tokens from the project config.</pre>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>semgrep-rule-variant-creator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">semgrep-rule-variant-creator</a> / semgrep-rule-variant-creator</p><h1>semgrep-rule-variant-creator</h1><p class="meta">combined</p><p>The trailofbits copy is the operational source: it defines the shipped workflow, the required arguments, the referencesDir resolution procedure, and the resume semantics. The sickn33 copy is a broader procedural guide that adds material the trailofbits copy does not contain: explicit When/When NOT to Use boundaries, an output directory layout, a table of rationalizations to reject, a strictness level, and a detailed four-phase workflow with applicability verdicts and test-first requirements. Because each copy has steps and constraints the other lacks, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/semgrep-rule-variant-creator/skills/semgrep-rule-variant-creator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/semgrep-rule-variant-creator/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/semgrep-rule-variant-creator/skills/semgrep-rule-variant-creator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/semgrep-rule-variant-creator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/semgrep-rule-variant-creator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/semgrep-rule-variant-creator/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: semgrep-rule-variant-creator
+description: Creates language variants of existing Semgrep rules. Use when porting a Semgrep rule to specified target languages. Takes an existing rule and target languages as input, produces independent rule+test directories for each language.
+---
+
+# Semgrep Rule Variant Creator
+
+Port an existing Semgrep rule to other languages, one independent test-driven cycle per language.
+
+## When to Use
+- Porting an existing Semgrep rule to one or more target languages.
+- Creating language-specific variants of a universal vulnerability pattern.
+- Expanding rule coverage across a polyglot codebase.
+
+## When NOT to Use
+- Creating a new Semgrep rule from scratch; use `semgrep-rule-creator` instead.
+- Running existing rules against code.
+- Languages where the vulnerability pattern fundamentally does not apply.
+- Minor syntax variations within the same language.
+
+## Inputs
+- Existing Semgrep rule: YAML file path or YAML rule content.
+- Target languages: one or more languages to port to.
+- Output directory: where the variant directories should land.
+
+## Output
+For each applicable target language, produce:
+```
+&lt;original-rule-id&gt;-&lt;language&gt;/
+├── &lt;original-rule-id&gt;-&lt;language&gt;.yaml
+└── &lt;original-rule-id&gt;-&lt;language&gt;.&lt;ext&gt;
+```
+
+## Workflow Invocation
+
+The trailofbits implementation ships as a dynamic workflow:
+
+```
+/semgrep-rule-variant-creator:port-rule-to-languages
+```
+
+Pass the required arguments:
+
+```json
+{
+  &quot;rulePath&quot;: &quot;&lt;path to the rule being ported&gt;&quot;,
+  &quot;languages&quot;: [&quot;Go&quot;, &quot;Java&quot;],
+  &quot;referencesDir&quot;: &quot;&lt;absolute path to the references directory&gt;&quot;,
+  &quot;outputDir&quot;: &quot;&lt;where the variant directories should land&gt;&quot;
+}
+```
+
+`referencesDir` must be a resolved absolute path. Resolve it in order, first hit wins:
+
+1. Claude Code: `ls -d -- &quot;${CLAUDE_PLUGIN_ROOT}/skills/semgrep-rule-variant-creator/references&quot;`
+2. Codex: the same command with `${CODEX_PLUGIN_ROOT}`, if that variable is set instead.
+3. Neither set: `find ~/.claude ~/.codex . -type d -path &#x27;*/semgrep-rule-variant-creator/skills/*/references&#x27; -print -quit 2&gt;/dev/null`
+
+Confirm the directory holds both reference files with `ls -1 -- &quot;&lt;that path&gt;&quot;`. Pass the path exactly as printed. If all three come back empty, stop and say so rather than assembling a path by hand.
+
+The rule travels as a path, not as text: every phase reads the file.
+
+## Four-Phase Cycle Per Language
+
+For each target language, complete the full cycle before moving to the next language.
+
+### Phase 1: Applicability Analysis
+Determine if the pattern applies to the target language.
+
+Analysis criteria:
+1. Does the vulnerability class exist in the target language?
+2. Does an equivalent construct exist?
+3. Are the semantics similar enough for meaningful detection?
+
+Verdict options:
+- `APPLICABLE` → Proceed with variant creation.
+- `APPLICABLE_WITH_ADAPTATION` → Proceed but significant changes needed.
+- `NOT_APPLICABLE` → Skip this language, document why.
+
+A `NOT_APPLICABLE` verdict goes to an independent refuter before the language is dropped.
+
+### Phase 2: Test Creation (Test-First)
+Always write tests before the rule.
+
+Create a test file with target language idioms:
+- Minimum 2 vulnerable cases (`ruleid:`).
+- Minimum 2 safe cases (`ok:`).
+- Include language-specific edge cases.
+
+### Phase 3: Rule Creation
+1. Analyze AST: `semgrep --dump-ast -l &lt;lang&gt; test-file`.
+2. Translate patterns to target language syntax.
+3. Update metadata: language key, message, rule ID.
+4. Adapt for idioms: handle language-specific constructs.
+
+### Phase 4: Validation
+```bash
+semgrep --validate --config rule.yaml
+semgrep --test --config rule.yaml test-file
+```
+
+Output MUST show `All tests passed`. Failed validation is retried up to three times rather than trusting one agent to iterate until green.
+
+## Strictness
+- Applicability analysis is mandatory.
+- Each language is independent; complete the full cycle before moving to the next.
+- Test-first for each variant.
+- 100% test pass required.
+
+## Rationalizations to Reject
+- &quot;Pattern structure is identical&quot; — different ASTs across languages; always dump AST for the target language.
+- &quot;Same vulnerability, same detection&quot; — data flow differs between languages; analyze target language idioms.
+- &quot;Rule doesn&#x27;t need tests since original worked&quot; — language edge cases differ; write new test cases.
+- &quot;Skip applicability — it obviously applies&quot; — some patterns are language-specific; complete applicability analysis first.
+- &quot;I&#x27;ll create all variants then test&quot; — errors compound; complete the full cycle per language.
+- &quot;Library equivalent is close enough&quot; — surface similarity hides differences; verify API semantics match.
+- &quot;Just translate the syntax 1:1&quot; — languages have different idioms; research target language patterns.
+
+## Resume Semantics
+
+If a run is interrupted while the session is still alive, relaunch it with:
+
+```
+Workflow({scriptPath: &quot;…&quot;, resumeFromRunId: &quot;&lt;runId&gt;&quot;, args: {…}})
+```
+
+Pass the same arguments again. Arguments are not saved with a run, so a resume that omits them fails the pre-flight check. With them, languages that finished replay from cache and only the unfinished ones re-run.
+
+Resume is same-session only. A session limit ends the session, and runs are stored under that session&#x27;s own directory, so the next session cannot reach them. A run id it cannot resolve is not an error — the workflow starts from scratch under that id and re-runs every language at full cost. Check the id is still there before counting on a resume:
+
+```
+ls -d ~/.claude/projects/*/*/subagents/workflows/*/
+```
+
+If you cannot confirm the id, or the session ended, re-invoke with the same arguments and point `outputDir` somewhere fresh. The script never deletes a directory, so a language that flipped to `NOT_APPLICABLE` on the second run leaves the first run&#x27;s variant behind.
+
+## Foundational Reference
+
+The `semgrep-rule-creator` skill is the authoritative reference for Semgrep rule creation fundamentals. Consult it for:
+- When to use taint mode vs pattern matching.
+- Test-first methodology.
+- Anti-patterns to avoid.
+- Iterating until tests pass.
+- Rule optimization.
+
+When porting a rule, you are applying these same principles in a new language context. If uncertain about rule structure or approach, refer to `semgrep-rule-creator` first.</pre>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>blog-writing-guide</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">sentry-blog-writing</a> / blog-writing-guide</p><h1>blog-writing-guide</h1><p class="meta">combined</p><p>The two copies share the same core Sentry voice, banned language, opening, and structure rules, but each contains material sections the other lacks. The getsentry copy adds detailed formatting-for-skimmability rules (paragraph breaks at contrast points, no em dashes) and an SEO-for-developer-content section (lead generic close specific, keywords in H2s, definitional section, FAQ). The sickn33 copy adds a When-to-Use section, Section Headings Must Convey Information, Technical Quality Standards (numbers over adjectives, code must work, diagrams, honesty over hype), Title Guidelines, The Closing, and a Post Types table. Because crowning one copy would hide real alternative guidance, the correct decision is combine.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/blog-writing-guide/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/blog-writing-guide/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/blog-writing-guide/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/blog-writing-guide/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/blog-writing-guide/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/blog-writing-guide/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: blog-writing-guide
+description: Write, review, and improve blog posts for the Sentry engineering blog following Sentry&#x27;s specific writing standards, voice, and quality bar. Use this skill whenever someone asks to write a blog post, draft a technical article, review blog content, improve a draft, write a product announcement, create an engineering deep-dive, or produce any written content destined for the Sentry blog or developer audience.
+---
+
+# Sentry Blog Writing Skill
+
+This skill enforces Sentry&#x27;s blog writing standards across every post — whether you&#x27;re helping an engineer write their first blog post or a marketer draft a product announcement.
+
+**The bar:** Every Sentry blog post should be something a senior engineer would share in their team&#x27;s Slack, or reference in a technical decision.
+
+## When to Use
+- You need to draft or edit a Sentry blog post.
+- The task involves technical storytelling, product announcements, or engineering deep-dives in Sentry&#x27;s blog voice.
+- You want blog content that is opinionated, specific, and technically credible rather than generic marketing copy.
+
+## The Sentry Voice
+
+**We sound like:** A senior developer at a conference afterparty explaining something they&#x27;re genuinely excited about — smart, specific, a little irreverent, deeply knowledgeable.
+
+**We don&#x27;t sound like:** A corporate blog, a press release, a sales deck, or an AI-generated summary.
+
+Be technically precise, opinionated, and direct. Humor is welcome but should serve the content, not replace it. Sarcasm works. One good joke per post is plenty.
+
+Use &quot;we&quot; (Sentry) and &quot;you&quot; (the reader). This is a conversation, not a paper.
+
+## Banned Language
+
+Never use these. They are automatic red flags:
+
+- &quot;We&#x27;re excited/thrilled to announce&quot; — just announce it
+- &quot;Best-in-class&quot; / &quot;industry-leading&quot; / &quot;cutting-edge&quot; — show, don&#x27;t tell
+- &quot;Seamless&quot; / &quot;seamlessly&quot; — nothing is seamless
+- &quot;Empower&quot; / &quot;leverage&quot; / &quot;unlock&quot; — say what you actually mean
+- &quot;Robust&quot; — describe what makes it robust instead
+- &quot;At [Company], we believe...&quot; — just state the belief
+- &quot;Streamline&quot; — everyone is streamlining, stop
+- Filler transitions: &quot;That being said,&quot; &quot;It&#x27;s worth noting that,&quot; &quot;At the end of the day,&quot; &quot;Without further ado,&quot; &quot;As you might know&quot;
+- &quot;In this blog post, we will explore...&quot; — be direct, just start
+
+## The Opening (First 2-3 Sentences)
+
+The opening must do one of two things: **state the problem** or **state the conclusion**. Never start with background, company history, or hype.
+
+**Good:** &quot;Two weeks before launch, we killed our entire metrics product. Here&#x27;s why pre-aggregating time-series metrics breaks down for debugging, and how we rebuilt the system from scratch.&quot;
+
+**Bad:** &quot;At Sentry, we&#x27;re always looking for ways to improve the developer experience. Today, we&#x27;re thrilled to share some exciting updates to our metrics product that we think you&#x27;ll love.&quot;
+
+## Structure: Follow the Reader&#x27;s Questions
+
+Structure every post around what the reader is actually wondering, not your internal narrative:
+
+1. **What problem does this solve?** (1-2 paragraphs max)
+2. **How does it actually work?** Not buttons-you-click, but underlying technology. (Bulk of the post — be specific)
+3. **What were the trade-offs or alternatives?** (This separates good from great)
+4. **How do I use/try/implement this?** (Concrete next steps)
+
+For engineering deep-dives, also address:
+5. **What did we try that didn&#x27;t work?** (Builds trust)
+6. **What are the known limitations?** (Shows intellectual honesty)
+
+## Section Headings Must Convey Information
+
+**Weak:** &quot;Background,&quot; &quot;Architecture,&quot; &quot;Results,&quot; &quot;Conclusion&quot;
+
+**Strong:** &quot;Why time-series pre-aggregation destroys debugging context,&quot; &quot;The scatter-gather approach to distributed GROUP BY,&quot; &quot;Where this breaks down: the cardinality wall&quot;
+
+## Formatting for Skimmability
+
+People scroll. Shorter paragraphs are almost always better for keeping people reading.
+
+**Break paragraphs at contrast points.** When a sentence introduces a &quot;but,&quot; &quot;however,&quot; or shifts perspective, start a new paragraph. Don&#x27;t bury the turn inside a block of text.
+
+**Bad:**
+&gt; Traditional monitoring tracks requests and latency. That works for stateless HTTP services. AI agents are different. A single run might involve multiple LLM calls, tool executions, and handoffs.
+
+**Good:**
+&gt; Traditional monitoring tracks requests and latency. That works for stateless HTTP services.
+&gt;
+&gt; AI agents are different. A single run might involve multiple LLM calls, tool executions, and handoffs.
+
+The line break before the contrasting point creates visual emphasis. This is standard in online writing even though it breaks traditional paragraph rules.
+
+**One idea per paragraph.** If a paragraph covers two distinct points, split it. Three-sentence paragraphs are fine. One-sentence paragraphs are fine for emphasis.
+
+**No em dashes.** Use commas, periods, or line breaks instead. Em dashes are fine in print but create visual clutter in blog formatting.
+
+## Technical Quality Standards
+
+**Numbers over adjectives.** If you make a performance claim, include the number.
+- Bad: &quot;This significantly reduced our error processing time.&quot;
+- Good: &quot;This reduced our p99 error processing time from 340ms to 45ms — a 7.5× improvement.&quot;
+
+**Code must work.** If a post includes code, test it. Include imports, configuration, and context. Comments should explain *why*, not *what*.
+
+**Diagrams for systems.** If you describe a system with more than two interacting components, include a diagram. Label with real service names, not generic boxes.
+
+**Honesty over hype.** Never overstate what a feature does. Acknowledge limitations. If something is in beta, say so. If a competitor does something well, it&#x27;s okay to note that. Do not claim AI features are more capable than they are — &quot;Seer suggests a likely root cause&quot; ≠ &quot;Seer finds the root cause.&quot;
+
+## SEO for Developer Content
+
+When targeting a competitive search query:
+
+**Lead generic, close specific.** The first 50-60% of the post should be tool-agnostic educational content (definitions, concepts, metrics, best practices). Introduce your product as an implementation example in the second half. Google ranks guides higher than product pages for informational queries.
+
+**Put keywords in H2s.** Generic headings are invisible to search. &quot;Key metrics for AI agent monitoring&quot; beats &quot;What to measure.&quot;
+
+**Include a definitional section.** For any head term (&quot;agent observability&quot;, &quot;error monitoring&quot;), top-ranking pages almost always have a &quot;What is X?&quot; section. Include one even if it feels basic.
+
+**Add an FAQ.** 3-4 questions targeting long-tail keywords at the bottom of the post. These can win featured snippets and People Also Ask boxes.
+
+## Title Guidelines
+
+The title is the highest-leverage sentence in the post. It must stop a developer scrolling through their RSS feed or Twitter.
+
+**Strong titles** make a specific claim, tell a story, or promise a specific payoff:
+- &quot;The metrics product we built worked. But we killed it and started over anyway&quot;
+- &quot;How we reduced release delays by 5% by fixing Salt&quot;
+- &quot;Your JavaScript bundle has 47% dead code. Here&#x27;s how to find it.&quot;
+
+**Weak titles** are vague announcements:
+- &quot;Introducing our new metrics product&quot;
+- &quot;Performance improvements in Sentry&quot;
+- &quot;AI-powered debugging with Seer&quot;
+
+## The Closing
+
+End with something useful — a link to docs, a way to try it, a call to give feedback. Never end with generic hype (&quot;We can&#x27;t wait to see what you build!&quot;) or recaps of what you just said.
+
+## Post Types
+
+| Type | Goal | Byline |
+|------|------|--------|
+| Engineering Deep Dive | Explain a technical system/decision so other engineers learn | The engineer(s) who built it. Always. |
+| Product Launch | Explain what shipped, why it matters, how to use it | PM, engineer, or DevEx. Not PMM unless marketing built it. |
+| Postmortem | Transparent failure analysis with timeline and fixes | Engineering leadership |
+| Data / Research | Original insights from Sentry&#x27;s unique data position | Data team, engineering, or research |
+| Tutorial | Step-by-step how-to for a specific task | DevEx or engineer |
+
+## AI Writing Patterns to Avoid
+
+LLM-generated prose has tells. Flag and rewrite these:
+
+**Staccato dramatic fragments.**
+- Bad: &quot;No errors. No warnings. Everything green.&quot;
+- Good: &quot;There were no errors, no warnings, everything looked fine.&quot;
+
+**Bumper-sticker slogans.** Replace with specific, grounded statements.</pre>
+</body>
+</html>

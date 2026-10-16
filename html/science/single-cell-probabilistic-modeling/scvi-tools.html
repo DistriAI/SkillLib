@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scvi-tools</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">single-cell-probabilistic-modeling</a> / scvi-tools</p><h1>scvi-tools</h1><p class="meta">combined</p><p>The three copies overlap on the core scvi-tools workflow (setup_anndata, train, get_latent_representation, Scanpy downstream, DE, save/load) and the modality-to-model mapping. However, they disagree on version pinning, Python/dependency requirements, and preprocessing details, and each contains material steps the others lack. K-Dense-AI pins scvi-tools 1.5.1, requires Python 3.12+, and includes a detailed count-validation and batch-aware HVG workflow plus release-boundary notes (JAX removal, spatial model maintenance). aipoch uses a looser Python 3.9+ requirement and includes a differential_expression example with mode/delta parameters. FreedomIntelligence provides a broader &#x27;when to use&#x27; list and theoretical foundations but lacks the version pinning and count-validation rigor. Crowning one would hide the version-specific constraints and the alternative dependency assumptions.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scvi-tools/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/scvi-tools/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/scvi-tools/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/scvi-tools/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/scvi-tools/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/scvi-tools/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># scvi-tools
+
+## When to Use
+Use scvi-tools for probabilistic, model-based single-cell analysis beyond standard Scanpy pipelines, including:
+- Batch correction and dataset integration (scVI)
+- Semi-supervised annotation and transfer learning (scANVI)
+- Uncertainty-aware differential expression
+- Multimodal integration (totalVI, MultiVI)
+- Specialized modalities: ATAC-seq, spatial transcriptomics, methylation, cytometry, RNA velocity, doublet detection
+
+## Model Selection by Modality
+| Task | Class | Required Input |
+| --- | --- | --- |
+| RNA integration | `scvi.model.SCVI` | Unnormalized RNA counts |
+| RNA annotation | `scvi.model.SCANVI` | Counts and partial labels |
+| CITE-seq | `scvi.model.TOTALVI` | RNA and protein counts, aligned cells |
+| RNA + ATAC integration | `scvi.model.MULTIVI` | Registered MuData with aligned modality representation |
+| ATAC accessibility | `scvi.model.PEAKVI` | Cells by peaks, binary/count accessibility |
+| Quantitative ATAC | `scvi.external.POISSONVI` | Region-level fragment counts |
+| Methylation | `scvi.external.METHYLVI`, `METHYLANVI` | MuData with methylated and total coverage counts |
+| Cytometry | `scvi.external.CYTOVI` | Transformed protein intensities |
+| Large cross-system effects | `scvi.external.SysVI` | Normalized, log-transformed expression |
+| RNA velocity | `scvi.external.VELOVI` | Preprocessed spliced/unspliced abundances |
+
+Read the corresponding references before using a specialized model:
+- [RNA models](references/models-scrna-seq.md)
+- [ATAC models](references/models-atac-seq.md)
+- [Multimodal models](references/models-multimodal.md)
+- [Spatial models](references/models-spatial.md)
+- [Specialized models](references/models-specialized.md)
+
+## Dependencies
+- `scvi-tools` (pin to a tested version; e.g., 1.5.1 for the K-Dense-AI workflow)
+- `python&gt;=3.12` (for scvi-tools 1.5.1; older versions may support 3.9+)
+- `pytorch&gt;=2.0`
+- `pytorch-lightning&gt;=2.0`
+- `anndata&gt;=0.8`
+- `scanpy&gt;=1.9`
+
+Installation:
+```bash
+uv pip install scvi-tools
+# Optional GPU extras
+uv pip install &quot;scvi-tools[cuda]&quot;
+```
+
+## Workflow
+1. Confirm modality, raw-data provenance, unique cell/feature IDs, feature order, batch/sample metadata, and the intended biological comparison.
+2. Perform QC and feature selection before model registration. Use count-aware HVG selection for count layers, and preserve a full-gene count object for later analyses outside the selected feature set.
+3. Register the exact data object with that model&#x27;s `setup_anndata` or `setup_mudata`; create and train the model. Setup is registration, not normalization.
+4. Inspect validation history, held-out fit, seed stability, batch mixing **and** retention of known biology. A well-mixed UMAP alone does not validate integration.
+5. Extract representations or model-specific normalized outputs; save the model, data, selected feature order, software versions, seed and training parameters.
+
+### Illustrative RNA Workflow
+Assumes `rna_counts.h5ad` contains measured, unnormalized counts in `.X`, with nonmissing `obs[&#x27;batch&#x27;]`.
+
+```python
+import numpy as np
+import scanpy as sc
+import scvi
+from scipy import sparse
+
+scvi.settings.seed = 0
+adata = sc.read_h5ad(&quot;rna_counts.h5ad&quot;)
+assert adata.obs_names.is_unique and adata.var_names.is_unique
+assert adata.obs[&quot;batch&quot;].notna().all()
+x = adata.X
+values = x.data if sparse.issparse(x) else np.asarray(x)
+assert np.isfinite(values).all() and (values &gt;= 0).all()
+assert np.allclose(values, np.rint(values))
+assert (np.asarray(x.sum(axis=1)).ravel() &gt; 0).all()
+adata.layers[&quot;counts&quot;] = x.copy()
+sc.pp.filter_genes(adata, min_cells=3)
+sc.pp.highly_variable_genes(
+    adata, layer=&quot;counts&quot;, flavor=&quot;seurat_v3&quot;, batch_key=&quot;batch&quot;,
+    n_top_genes=min(2000, adata.n_vars), subset=True,
+)
+adata = adata.copy()
+assert (np.asarray(adata.layers[&quot;counts&quot;].sum(axis=1)).ravel() &gt; 0).all()
+scvi.model.SCVI.setup_anndata(adata, layer=&quot;counts&quot;, batch_key=&quot;batch&quot;)
+model = scvi.model.SCVI(adata, n_latent=20, gene_likelihood=&quot;nb&quot;)
+model.train(max_epochs=400, early_stopping=True)
+adata.obsm[&quot;X_scVI&quot;] = model.get_latent_representation()
+sc.pp.neighbors(adata, use_rep=&quot;X_scVI&quot;)
+sc.tl.umap(adata)
+sc.tl.leiden(adata, flavor=&quot;igraph&quot;, n_iterations=2, directed=False)
+model.save(&quot;scvi_model&quot;, save_anndata=True)
+```
+
+### Differential Expression
+```python
+de = model.differential_expression(
+    groupby=&quot;cell_type&quot;,
+    group1=&quot;TypeA&quot;,
+    group2=&quot;TypeB&quot;,
+    mode=&quot;change&quot;,
+    delta=0.25,
+)
+print(de.head())
+```
+
+### Model Persistence
+```python
+model.save(&quot;./scvi_model&quot;, overwrite=True)
+model2 = scvi.model.SCVI.load(&quot;./scvi_model&quot;, adata=adata)
+```
+
+## Key Design Principles
+- **Raw counts required**: Models expect unnormalized count data for optimal performance. Do not feed raw RNA counts to SysVI or replace methylation coverage with ratios. Never reconstruct counts by exponentiating log-normalized data.
+- **Unified API**: Consistent interface across all models (setup → train → extract).
+- **AnnData-centric**: Seamless integration with the Scanpy ecosystem.
+- **GPU acceleration**: Automatic utilization of available GPUs via PyTorch.
+- **Batch correction**: Handle technical variation through covariate registration in `setup_anndata`.
+
+## Release Boundaries
+- JAX support, including `JaxSCVI`, was removed in scvi-tools 1.5.
+- `scvi.model.mlxSCVI` remains a separate optional Apple-silicon implementation; PyTorch MPS and MLX are different backends.
+- Spatial models and DIAGVI remain importable in 1.5.1, but upstream directs their ongoing maintenance to scVIVA-tools.
+
+## Theoretical Foundations
+scvi-tools is built on:
+- **Variational inference**: Approximate posterior distributions for scalable Bayesian inference
+- **Deep generative models**: VAE architectures that learn complex data distributions
+- **Amortized inference**: Shared neural networks for efficient learning across cells
+- **Probabilistic modeling**: Principled uncertainty quantification and statistical testing
+
+See `references/theoretical-foundations.md` for details.</pre>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>rebuttal</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">rebuttal-drafting</a> / rebuttal</p><h1>rebuttal</h1><p class="meta">combined</p><p>The two copies are the same rebuttal pipeline, but the wanshuiyin copy adds material steps and constraints the brycewang copy lacks: a reviewer backend routing convention (Codex vs Manual Review MCP with exact prompt fidelity and no fallback), a VENUE_MODE that changes output shape (single_document vs per_reviewer_thread), a stress-test round policy with a hard cap of 5 and pivotal-reviewer focus, and an HTML rendering gate for the rich draft. The brycewang copy is a shorter, earlier variant with a different reviewer model and a simpler single-round stress test. Crowning one would hide the manual-review routing and rendering steps that are real alternatives in the other copy.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/rebuttal/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/rebuttal/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/rebuttal/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/rebuttal/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/skills-codex/rebuttal/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/42-wanshuiyin-ARIS/skills/skills-codex/rebuttal/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: rebuttal
+description: &quot;Workflow 4: Submission rebuttal pipeline. Parses external reviews, enforces coverage and grounding, drafts a safe text-only rebuttal under venue limits, and manages follow-up rounds. Use when user says \&quot;rebuttal\&quot;, \&quot;reply to reviewers\&quot;, \&quot;ICML rebuttal\&quot;, \&quot;OpenReview response\&quot;, or wants to answer external reviews safely.&quot;
+argument-hint: &quot;[paper-path-or-review-bundle]&quot;
+allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, Skill, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
+---
+
+# Workflow 4: Rebuttal
+
+Prepare and maintain a grounded, venue-compliant rebuttal for: **$ARGUMENTS**
+
+## Scope
+
+This skill is optimized for:
+- **text-only rebuttal** under strict character/word limits (e.g. ICML single-document)
+- **per-reviewer thread responses** where each reviewer renders independently (e.g. OpenReview-style)
+- **multiple reviewers** with shared and reviewer-specific concerns
+- **follow-up rounds** after the initial rebuttal
+- safe drafting with **no fabrication**, **no overpromise**, and **full issue coverage**
+
+This skill does **not**:
+- run new experiments automatically
+- generate new theorem claims automatically
+- edit or upload a revised PDF
+- submit to OpenReview / CMT / HotCRP
+
+If the user already has new results, derivations, or approved commitments, the skill can incorporate them as **user-confirmed evidence**.
+
+## Lifecycle Position
+
+```text
+Workflow 1:   idea-discovery
+Workflow 1.5: experiment-bridge
+Workflow 2:   auto-review-loop (pre-submission)
+Workflow 3:   paper-writing
+Workflow 4:   rebuttal (post-submission external reviews)
+```
+
+## Constants
+
+- **VENUE = `ICML`** — Default venue. Override if needed.
+- **RESPONSE_MODE = `TEXT_ONLY`** — v1 default.
+- **REVIEWER_MODEL = `gpt-6-astra`** — Default model for the Codex backend. Used for internal stress-testing. Manual backend uses a model the user chooses — it must be a recognized model from a different family (OpenAI, Anthropic, Google, DeepSeek, Moonshot/Kimi, Qwen).
+- **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (xhigh). Override with `— reviewer: oracle-pro` for Oracle MCP, or `— reviewer: manual` for Manual Review MCP. If manual-review MCP is unavailable, stop and print the install command; do not fall back to Codex. See `shared-references/reviewer-routing.md`.
+- **MAX_INTERNAL_DRAFT_ROUNDS = 2** — draft → lint → revise.
+- **VENUE_MODE = `single_document`** — `single_document` for one shared author response, or `per_reviewer_thread` when each reviewer thread renders independently. Confirm the venue/interface before drafting if unclear. Affects Phase 4/7 output shape.
+- **STRESS_TEST_ROUNDS_BASE = 1** — One external reviewer critique round on the full response set. Add focused rounds for `reviewer_priority: pivotal` responses, terminating when the reviewer returns no new substantive issues. Hard cap at 5.
+- **MAX_FOLLOWUP_ROUNDS = 3** — per reviewer thread.
+- **AUTO_EXPERIMENT = false** — When `true`, automatically invoke `/experiment-bridge` to run supplementary experiments when the strategy plan identifies reviewer concerns that require new empirical evidence. When `false` (default), pause and present the evidence gap to the user for manual handling.
+- **QUICK_MODE = false** — When `true`, only run Phase 0-3 (parse reviews, atomize concerns, build strategy). Outputs `ISSUE_BOARD.md` + `STRATEGY_PLAN.md` and stops — no drafting, no stress test. Useful for quickly understanding what reviewers want before deciding how to respond.
+- **REBUTTAL_DIR = `rebuttal/`**
+- **RENDER_HTML = true** — When `true` (default), auto-render `rebuttal/REBUTTAL_DRAFT_rich.md` (the detailed reviewer-facing draft) to HTML after Phase 6 / Phase 8 finalization. Uses **full Codex review gate** (final pre-submission deliverable — reviewer-facing content, render fidelity matters). The plain-text `PASTE_READY.txt` is NOT rendered (it&#x27;s character-counted plain text by design). Set `false` to skip, or pass `— render html: false`.
+
+&gt; Override: `/rebuttal &quot;paper/&quot; — venue: NeurIPS, character limit: 5000`
+
+## Reviewer Calling Convention
+
+When calling the reviewer for stress-testing, branch on REVIEWER_BACKEND:
+
+**If REVIEWER_BACKEND = `codex`:**
+  Use `mcp__codex__codex` for new review threads.
+  Use `mcp__codex__codex-reply` for follow-up rounds (reuse threadId).
+
+**If REVIEWER_BACKEND = `manual`:**
+  Use `mcp__manual_review__review` for new review threads with:
+    prompt: [exact same prompt that would go to Codex]
+    config: {&quot;model_reasoning_effort&quot;: &quot;xhigh&quot;, &quot;executor_model&quot;: &quot;&lt;actual executor model&gt;&quot;, &quot;require_reviewer_model&quot;: true}
+  Save the returned `threadId`.
+  Use `mcp__manual_review__review_reply` for follow-up rounds with:
+    threadId: [saved manual-review threadId]
+    prompt: [follow-up prompt]
+    config: {&quot;model_reasoning_effort&quot;: &quot;xhigh&quot;, &quot;executor_model&quot;: &quot;&lt;actual executor model&gt;&quot;, &quot;require_reviewer_model&quot;: true}
+
+Prompt fidelity: the manual prompt must be exactly the same text that Codex would receive.
+Review tracing applies equally to both backends.
+
+## Required Inputs
+
+1. **Paper source** — PDF, LaTeX directory, or narrative summary
+2. **Raw reviews** — pasted text, markdown, or PDF with reviewer IDs
+3. **Venue rules** — venue name, character/word limit, text-only or revised PDF allowed, rendering mode (one shared response or independent reviewer threads)
+4. **Current stage** — initial rebuttal or follow-up round
+
+If venue rules, limit, or rendering mode are missing, **stop and ask** before drafting.
+
+## Safety Model
+
+Three hard gates — if any fails, do NOT finalize:
+
+1. **Provenance gate** — every factual statement maps to: `paper`, `review`, `user_confirmed_result`, `user_confirmed_derivation`, or `future_work`. No source = blocked.
+2. **Commitment gate** — every promise maps to: `already_done`, `approved_for_rebuttal`, or `future_work_only`. Not approved = blocked.
+3. **Coverage gate** — every reviewer concern ends in: `answered`, `deferred_intentionally`, or `needs_user_input`. No issue disappears.
+
+## Workflow
+
+### Phase 0: Resume or Initialize
+
+1. If `rebuttal/REBUTTAL_STATE.md` exists → resume from recorded phase
+2. Otherwise → create `rebuttal/`, initialize all output documents
+3. Load paper, reviews, venue rules, any user-confirmed evidence
+
+### Phase 1: Validate Inputs and Normalize Reviews
+
+1. Validate venue rules are explicit
+2. Normalize all reviewer text into `rebuttal/REVIEWS_RAW.md` (verbatim)
+3. Record metadata in `rebuttal/REBUTTAL_STATE.md`
+4. If ambiguous, pause and ask
+
+### Phase 2: Atomize and Classify Reviewer Concerns
+
+Create `rebuttal/ISSUE_BOARD.md`.
+
+For each atomic concern:
+- `issue_id` (e.g., R1-C2)
+- `reviewer`, `round`, `raw_anchor` (short quote)
+- `issue_type`: assumptions / theorem_rigor / novelty / empirical_support / baseline_comparison / complexity / practical_significance / clarity / reproducibility / other
+- `severity`: critical / major / minor
+- `reviewer_stance`: positive / swing / negative / unknown
+- `response_mode`: direct_clarification / grounded_evidence / nearest_work_delta / assumption_hierarchy / narrow_concession / future_work_boundary
+- `status`: open / answered / deferred / needs_user_input
+
+### Phase 3: Build Strategy Plan
+
+Create `rebuttal/STRATEGY_PLAN.md`.
+
+1. Identify 2-4 **global themes** resolving shared concerns
+2. Choose **response mode** per issue
+3. Build **character budget** (10-15% opener, 75-80% per-reviewer, 5-10% closing)
+4. Identify **blocked claims** (ungrounded or unapproved)
+5. If unresolved blockers → pause and present to user
+
+**QUICK_MODE exit**: If `QUICK_MODE = true`, stop here. Present `ISSUE_BOARD.md` + `STRATEGY_PLAN.md` to the user and summarize: how many issues per reviewer, shared vs unique concerns, recommended priorities, and evidence gaps. The user can then decide to continue with full rebuttal (`/rebuttal — quick mode: false`) or write manually.
+
+### Phase 3.5: Evidence Sprint (when AUTO_EXPERIMENT = true)
+
+**Skip entirely if `AUTO_EXPERIMENT` is `false` — instead, pause and present the evidence gaps to the user.**
+
+If the strategy plan identifies issues that require new empirical evidence (tagged `response_mode: grounded_evidence` with `evidence_source: needs_experiment`):
+
+1. Generate a mini experiment plan from the reviewer concerns:
+   - What to run (ablation, baseline comparison, scale-up, condition check)
+   - Success criterion (what result would satisfy the reviewer)
+   - Estimated GPU-hours
+
+2. Invoke `/experiment-bridge` with the mini plan:
+   ```
+   /experiment-bridge &quot;rebuttal/REBUTTAL_EXPERIMENT_PLAN.md&quot;
+   ```
+
+3. Wait for results, then update `ISSUE_BOARD.md` with the new evidence and re-run Phase 3 if the strategy changes.
+
+### Phase 4: Draft Rebuttal
+
+Draft the rebuttal according to VENUE_MODE:
+- `single_document`: one shared author response
+- `per_reviewer_thread`: independent response per reviewer thread
+
+Apply the character budget from Phase 3. Ensure every issue on the ISSUE_BOARD is addressed per the coverage gate.
+
+### Phase 5: Lint and Revise
+
+Run up to MAX_INTERNAL_DRAFT_ROUNDS of draft → lint → revise. Check provenance, commitment, and coverage gates after each round.
+
+### Phase 6: Stress Test
+
+Run STRESS_TEST_ROUNDS_BASE external reviewer critique rounds on the full response set. Add focused rounds for `reviewer_priority: pivotal` responses, terminating when the reviewer returns no new substantive issues. Hard cap at 5 rounds total.
+
+### Phase 7: Finalize and Render
+
+1. Finalize the rebuttal text.
+2. If RENDER_HTML is true, render `rebuttal/REBUTTAL_DRAFT_rich.md` to HTML using the full Codex review gate.
+3. Produce `PASTE_READY.txt` (plain text, character-counted).
+
+### Phase 8: Follow-Up Rounds
+
+Manage up to MAX_FOLLOWUP_ROUNDS per reviewer thread. For each follow-up, re-enter Phase 4 with the new reviewer comments, re-run lint and stress test as needed, and update the rebuttal.
+
+## Conflicts
+
+- **wanshuiyin/Auto-claude-code-research-in-sleep** sets REVIEWER_MODEL to `gpt-6-astra` and includes a REVIEWER_BACKEND constant with a manual-review MCP calling convention; **brycewang-stanford/Auto-Empirical-Research-Skills** sets REVIEWER_MODEL to `gpt-5.4` and has no manual-review backend or routing section.
+- **wanshuiyin/Auto-claude-code-research-in-sleep** defines STRESS_TEST_ROUNDS_BASE = 1 with a hard cap of 5 and focused rounds for pivotal reviewers; **brycewang-stanford/Auto-Empirical-Research-Skills** defines MAX_STRESS_TEST_ROUNDS = 1 with no cap or pivotal-reviewer logic.
+- **wanshuiyin/Auto-claude-code-research-in-sleep** adds VENUE_MODE (single_document vs per_reviewer_thread) and RENDER_HTML with a full Codex review gate; **brycewang-stanford/Auto-Empirical-Research-Skills** has neither constant nor rendering step.</pre>
+</body>
+</html>

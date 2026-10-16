@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>app-store-optimization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">app-store-optimization</a> / app-store-optimization</p><h1>app-store-optimization</h1><p class="meta">combined</p><p>The three copies overlap on core ASO tasks (keyword research, metadata optimization, description structure, and platform character limits) but each contains material steps the others lack. dpearson2699 focuses on Apple-specific strategy, Custom Product Pages, In-App Events, and a specific validation checkpoint for the keyword field. sickn33 provides a broad toolkit including Google Play, analytics, and specific JSON input/output schemas. LeoYeAI provides a detailed workflow for competitor analysis and a specific keyword scoring model with percentages. No single copy is a strict superset of the others; combining them captures the full range of strategic, tactical, and analytical steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dpearson2699/swift-ios-skills">dpearson2699/swift-ios-skills</a></td><td><code>skills/app-store-optimization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/app-store-optimization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/app-store-optimization/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/dpearson2699/swift-ios-skills">dpearson2699/swift-ios-skills</a></td><td><code>skills/app-store-optimization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/app-store-optimization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/app-store-optimization/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/app-store-optimization/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-mobile-app-builder/skills/app-store-optimization/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/app-store-optimization/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># App Store Optimization (ASO)
+
+## 1. Keyword Research
+1. **Define Scope**: Identify target audience, core functions, and competitive category.
+2. **Generate Seeds**: Use app features, user language, and store autocomplete.
+3. **Expand List**: Add modifiers (free, best), actions (track, create), and audiences (for teams).
+4. **Evaluate &amp; Score**: 
+   - **Relevance** (35%): Does it describe the app?
+   - **Volume** (25%): Estimated monthly searches.
+   - **Competition** (25%): Quality of ranking apps.
+   - **Conversion** (15%): Transactional intent.
+5. **Prioritize**: Rank by score. Primary keywords go to Title/Keyword Field; Secondary to Subtitle/Short Description.
+
+## 2. Metadata Optimization
+1. **Title**: Use `[Brand] - [Primary Keyword]` or `[Keyword] - [Brand]`. Max 30 chars (iOS) / 50 chars (Android).
+2. **Subtitle/Short Description**: Communicate primary value proposition. Max 30 chars (iOS) / 80 chars (Android).
+3. **Keyword Field (iOS)**: 
+   - Max 100 UTF-8 bytes.
+   - Comma-separated, no spaces after commas.
+   - No duplicates from Title/Subtitle.
+   - No plurals (Apple indexes both).
+   - No category names (Apple adds automatically).
+4. **Description**: 
+   - **Hook**: First 1-3 lines (pre-fold). Strongest benefit.
+   - **Features**: 4-6 bullets (use Unicode •). Focus on outcomes.
+   - **Social Proof**: Awards, press, user counts.
+   - **CTA**: Clear next step.
+5. **Validation**: Check character counts. Ensure no keyword stuffing (&gt;5% density). Verify no duplicate terms across indexed fields.
+
+## 3. Competitor Analysis
+1. Identify top 10 direct and indirect competitors.
+2. Extract keywords from their titles, subtitles, and first 100 words of descriptions.
+3. Build a keyword matrix to find gaps (keywords with &lt;40% competitor coverage).
+4. Analyze visual assets (icons, screenshots) for messaging patterns.
+
+## 4. Advanced Strategies (Apple)
+- **Custom Product Pages**: Create variants for different ad campaigns or audiences.
+- **In-App Events**: Promote new features or seasonal content to boost visibility.
+- **Review Prompts**: Use `RequestReviewAction` at moments of user success.
+
+## 5. Analytics &amp; Tracking
+- Track keyword rankings, impression-to-install conversion, and download velocity.
+- Calculate an ASO health score based on metadata quality, ratings, and conversion metrics.</pre>
+</body>
+</html>

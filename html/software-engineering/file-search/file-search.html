@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>file-search</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">file-search</a> / file-search</p><h1>file-search</h1><p class="meta">combined</p><p>The two skills cover the same core task (fast file search) but rely on different primary tools and workflows. The first skill (LeoYeAI) uses `fd` for filename search and `rg` for content search, while the second skill (aipoch) uses `rg --files` for both filename and content search. The second skill also includes extensive boilerplate for validation, safety, and output contracts that the first lacks. Because the first skill provides a distinct and often preferred tool (`fd`) for filename operations that the second omits, and the second provides a self-contained `rg`-only workflow, crowning one would hide a valid alternative approach. They are complementary rather than one being a strict reproduction of the other.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/file-search/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/file-search/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/file-search/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/file-search/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: file-search
+description: &quot;Fast file-name and content search using `fd` and `rg` (ripgrep).&quot;
+---
+
+# File Search Skill
+
+Fast file-name and content search using `fd` and `rg` (ripgrep).
+
+## Dependencies
+
+- `fd` (fd-find) for filename search.
+- `rg` (ripgrep) for content search.
+
+Install if missing:
+```bash
+# DNF
+sudo dnf install fd-find ripgrep
+# Or use your preferred package manager
+```
+
+## Find Files by Name
+
+Prefer `fd` for filename searches as it is optimized for this task.
+
+Search for files matching a pattern:
+```bash
+fd &quot;\.rs$&quot; /path/to/projects
+```
+
+Find files by exact name:
+```bash
+fd -g &quot;Cargo.toml&quot; /path/to/projects
+```
+
+*Alternative using only `rg` if `fd` is not available:*
+```bash
+rg --files --glob &quot;*.rs&quot; /path/to/projects
+```
+
+## Search File Contents
+
+Use `rg` for content searches.
+
+Search for a regex pattern across files:
+```bash
+rg &quot;TODO|FIXME&quot; /path/to/projects
+```
+
+Search with context lines:
+```bash
+rg -C 3 &quot;fn main&quot; /path/to/projects --type rust
+```
+
+## Workflow
+
+1. **Pre-check**: Ensure `fd` and `rg` are installed (`fd --version`, `rg --version`).
+2. **Filename Search**: Use `fd` with glob or regex patterns.
+3. **Content Search**: Use `rg` with regex patterns, adding `-C` for context and `--type` for filtering.
+4. **Validation**: Verify results match the intended scope.</pre>
+</body>
+</html>

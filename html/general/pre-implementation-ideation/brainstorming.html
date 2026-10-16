@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>brainstorming</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">pre-implementation-ideation</a> / brainstorming</p><h1>brainstorming</h1><p class="meta">combined</p><p>The four copies overlap on the high-level goal (understand intent before building) but disagree on the core procedure. obra/superpowers treats brainstorming as an open-ended, non-linear conversation with visual companions and spikes, and explicitly allows skipping the questions. foryourhealth111-pixel and sickn33/agentic-awesome-skills treat it as a strict, gated pipeline that ends in a written design doc and a handoff to a planning skill, forbidding implementation until approval. mohitagw15856 treats it as a divergent/convergent ideation exercise with a reject ledger, not a design pipeline. Crowning one would hide these real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/brainstorming/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/brainstorming/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-method/skills/brainstorming/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/brainstorming/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/brainstorming/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/brainstorming/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-method/skills/brainstorming/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/brainstorming/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/brainstorming/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/brainstorming/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/brainstorming/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/brainstorming/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/brainstorming/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/brainstorming/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Brainstorming
+
+## Purpose
+Use this skill before any creative work to clarify intent, explore options, and validate a direction before implementation.
+
+## 1. Assess Context
+- Review existing project files, docs, and recent commits if available.
+- Determine if the request is a quick, clear task (e.g., &quot;change color to blue&quot;) or if non-trivial details are missing.
+- If the task is trivial and clear, proceed directly to execution.
+- If the user prefers to skip questions, state significant technical choices in one line and proceed.
+
+## 2. Clarify Intent
+- Ask one question at a time to understand purpose, constraints, success criteria, and non-goals.
+- Prefer multiple-choice questions when possible, but use open-ended questions to let the user describe their vision in their own words.
+- Clarify non-functional requirements (performance, scale, security) and mark assumptions explicitly.
+- **Understanding Lock:** Before proposing designs, summarize your understanding (5-7 bullets) and ask for explicit confirmation. Do not proceed until confirmed.
+
+## 3. Explore Options
+- **Divergent Phase:** Generate a wide set of ideas (20-40) using distinct strategies (inversion, extremes, transplant, etc.). Avoid judgment during this phase.
+- **Convergent Phase:** Define 3-4 selection criteria based on the user&#x27;s situation. Score ideas coarsely and select a shortlist of 3-5 options, including one &quot;wildcard&quot; high-variance option.
+- **Design Approaches:** Propose 2-3 viable design approaches with trade-offs. Lead with your recommendation.
+
+## 4. Present Design
+- Present the design in sections of 200-300 words.
+- After each section, ask for feedback: &quot;Does this look right so far?&quot;
+- Cover architecture, components, data flow, error handling, and testing.
+- Maintain a Decision Log recording what was decided, alternatives considered, and why.
+
+## 5. Documentation &amp; Handoff
+- Write the validated design to a durable format (e.g., `docs/plans/YYYY-MM-DD-&lt;topic&gt;-design.md`).
+- Include the understanding summary, assumptions, decision log, and final design.
+- Commit the document to version control.
+- **Handoff:** Only after documentation is complete, transition to implementation planning (e.g., invoke a writing-plans skill or create an implementation plan).
+
+## Key Principles
+- One question at a time.
+- Assumptions must be explicit.
+- YAGNI ruthlessly.
+- Validate incrementally.
+- Do not implement until the design is approved and documented.</pre>
+</body>
+</html>

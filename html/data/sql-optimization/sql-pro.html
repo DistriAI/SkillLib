@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sql-pro</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">sql-optimization</a> / sql-pro</p><h1>sql-pro</h1><p class="meta">combined</p><p>The copies overlap on the core task of SQL optimization and query tuning, but they disagree on scope and procedure. Jeffallan/claude-skills provides a concrete, actionable workflow (Schema Analysis -&gt; Design -&gt; Optimize -&gt; Verify -&gt; Document) with specific constraints (e.g., sub-100ms target, covering indexes, set-based operations) and reference files. The other two copies (rmyndharis and sickn33) are nearly identical, broad persona definitions that list extensive capabilities (cloud-native, HTAP, security, DevOps) but lack the specific procedural steps and verification targets found in the Jeffallan copy. Crowning one would hide the alternative approach of broad capability definition vs. specific procedural execution.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/sql-pro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/sql-pro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/sql-pro/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/sql-pro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/sql-pro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/sql-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/sql-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-data-analytics/skills/sql-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-data-engineering-platform/skills/sql-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/sql-pro/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: sql-pro
+description: Optimizes SQL queries, designs database schemas, and troubleshoots performance issues. Use for complex queries, window functions, CTEs, indexing strategies, query plan analysis, and database dialect migration.
+---
+
+# SQL Pro
+
+## Core Workflow
+
+1. **Define Goals &amp; Schema Analysis** - Review database structure, indexes, query patterns, and performance bottlenecks. Define query goals, constraints, and expected outputs.
+2. **Design** - Create set-based operations using CTEs, window functions, and appropriate joins. Consider cloud-native and hybrid OLTP/OLAP patterns if applicable.
+3. **Optimize** - Analyze execution plans, implement covering indexes, and eliminate table scans. Apply filtering early in query execution.
+4. **Verify** - Run `EXPLAIN ANALYZE` and confirm no sequential scans on large tables. If the query does not meet the sub-100ms target (or specific workload target), iterate on index selection or query rewrite. Verify correctness and performance under load.
+5. **Document** - Provide query explanations, index rationale, and performance metrics (before/after).
+
+## Constraints
+
+### MUST DO
+- Analyze execution plans before recommending optimizations.
+- Use set-based operations over row-by-row processing.
+- Apply filtering early in query execution (before joins where possible).
+- Use EXISTS over COUNT for existence checks.
+- Handle NULLs explicitly in comparisons and aggregations.
+- Create covering indexes for frequent queries.
+- Test with production-scale data volumes.
+- Use read replicas or limits for exploratory analysis on production systems.
+
+### MUST NOT DO
+- Use SELECT * in production queries.
+- Use cursors when set-based operations work.
+- Ignore platform-specific optimizations when targeting a specific dialect.
+- Implement solutions without considering data volume and cardinality.
+- Run heavy queries on production without safeguards.
+
+## Output Templates
+
+When implementing SQL solutions, provide:
+1. Optimized query with inline comments.
+2. Required indexes with rationale.
+3. Execution plan analysis.
+4. Performance metrics (before/after).
+5. Platform-specific notes if applicable.
+
+## Conflicts
+
+- **Jeffallan/claude-skills** specifies a sub-100ms target and a 5-step workflow including a &#x27;Document&#x27; phase.
+- **rmyndharis/antigravity-skills** and **sickn33/agentic-awesome-skills** specify a 4-step workflow without a specific latency target and focus on a broader range of capabilities (cloud, security, DevOps) rather than a strict procedural checklist.</pre>
+</body>
+</html>

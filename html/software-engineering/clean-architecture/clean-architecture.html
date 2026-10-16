@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clean-architecture</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">clean-architecture</a> / clean-architecture</p><h1>clean-architecture</h1><p class="meta">combined</p><p>The wondelai copy is a full, self-contained procedure with a scoring rubric, concentric-circle rules, and concrete code patterns. The ciembor copy is a thin wrapper that defers to external files (clean-architecture.mini.md and clean-architecture.md) and does not contain the actual steps. They overlap in intent but the ciembor copy lacks the material steps present in wondelai, and wondelai does not reference the ciembor mini/full split. Crowning wondelai would hide the ciembor approach of using a mini rules file first; crowning ciembor would hide the detailed procedure. Therefore combine.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wondelai/skills">wondelai/skills</a></td><td><code>plugins/systems-architecture/skills/clean-architecture/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ciembor/agent-rules-books">ciembor/agent-rules-books</a></td><td><code>clean-architecture/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/wondelai/skills">wondelai/skills</a></td><td><code>plugins/systems-architecture/skills/clean-architecture/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ciembor/agent-rules-books">ciembor/agent-rules-books</a></td><td><code>clean-architecture/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wondelai/skills">wondelai/skills</a></td><td><code>clean-architecture/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/wondelai/skills">wondelai/skills</a></td><td><code>plugins/wondelai-skills/skills/clean-architecture/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: clean-architecture
+description: &#x27;Structure software around the Dependency Rule: source code dependencies point inward from frameworks to use cases to entities. Use when the user mentions &quot;architecture layers&quot;, &quot;dependency rule&quot;, &quot;ports and adapters (hexagonal)&quot;, &quot;onion architecture&quot;, &quot;screaming architecture&quot;, &quot;where should business logic go&quot;, &quot;decouple from the database&quot;, &quot;swap the framework without a rewrite&quot;, or &quot;keep business rules independent&quot;. Also trigger when deciding which layer code belongs in, isolating core logic from infrastructure, defining module boundaries, or debating whether the framework should call your code or the reverse. Covers component principles, boundaries, and SOLID. For code-level quality, see clean-code. For domain modeling, see domain-driven-design.&#x27;
+license: MIT
+metadata:
+  author: wondelai
+  version: &quot;1.4.0&quot;
+---
+
+# Clean Architecture Framework
+
+A disciplined approach to structuring software so that business rules remain independent of frameworks, databases, and delivery mechanisms. Apply these principles when designing system architecture, reviewing module boundaries, or advising on dependency management.
+
+## Core Principle
+
+**Source code dependencies must point inward — toward higher-level policies.** Nothing in an inner circle can know anything about an outer circle. This single rule produces systems that are testable and independent of frameworks, UI, database, and any external agency. Business rules are what matter; databases, web frameworks, and delivery mechanisms are details — when details depend on policies, you can defer decisions, swap implementations, and test business logic in isolation.
+
+## Scoring
+
+**Goal: 10/10.** Score one point for each of the seven Quick Diagnostic rows the architecture satisfies (0-7), then map to a 0-10 band: 6-7 satisfied = **9-10** (Dependency Rule holds, business logic is framework- and DB-independent); 4-5 = **6-8** (core is testable but some details leak inward); 2-3 = **3-5** (framework or persistence dictates structure); 0-1 = **0-2** (no boundaries — business rules live in controllers and ORM models). Report the score, the failed diagnostic rows, and the specific inversion needed to fix each.
+
+### 1. Dependency Rule and Concentric Circles
+
+**Core concept:** Organize the architecture as concentric circles — Entities (enterprise business rules) innermost, then Use Cases (application business rules), then Interface Adapters, with Frameworks and Drivers outermost. Source code dependencies always point inward.
+
+**Why it works:** When high-level policies don&#x27;t depend on low-level details, you can swap the database, web framework, or API style without touching business logic — the system becomes resilient to the most volatile parts of the stack.
+
+**Key insights:**
+- Inner circles cannot mention outer circle names — no classes, functions, variables, or data formats from outside
+- Data crossing a boundary must be in the form most convenient for the inner circle, never dictated by the outer
+- Dependency Inversion (interfaces defined inward, implemented outward) is the mechanism that enforces the rule
+- The number of circles is not fixed — four is typical; the rule stays the same
+- Frameworks are details, not architecture — they belong in the outermost circle
+
+**Code applications:**
+
+| Context | Pattern | Example |
+|---------|---------|---------|
+| **Layer direction** | Inner circles define interfaces; outer implement | `UserRepository` interface in Use Cases; `PostgresUserRepository` in Adapters |
+| **Data crossing** | DTOs cross boundaries, not ORM entities | Use Case returns `UserResponse` DTO, not an ActiveRecord model |
+| **Dependency direction** | Import arrows always point inward | Controller imports Use Case; Use Case never imports Controller |
+
+See [references/dependency-rule.md](references/dependency-rule.md) when an inner-circle import points outward and you need the four-circle code walkthrough, the data-crossing rules, and the four-step dependency-inversion procedure to fix it.
+
+### 2. Entities and Use Cases
+
+**Core concept:** Entities encapsulate enterprise-wide business rules — rules that would exist even without software. Use Cases contain application-specific rules that orchestrate the flow of data to and from Entities.
+
+**Why it works:** Separating what the business does (Entities) from how the application orchestrates it (Use Cases) lets you reuse Entities across applications and change application behavior without altering core business rules.
+
+**Key insights:**
+- Entities are not database rows — they are objects or pure functions encapsulating critical business rules
+- Use Cases accept Request Models and return Response Models — never framework objects
+- Each Use Case is a single application operation (`CreateOrder`, `ApproveExpense`)
+- The Interactor pattern: a Use Case class implements an input boundary interface and calls an output boundary interface
+- Changes to a Use Case should never affect an Entity; Entity changes may ripple to Use Cases
+
+**Code applications:**
+
+| Context | Pattern | Example |
+|---------|---------|---------|
+| **Entity design** | Critical business rules, zero framework dependencies | `Order.calculateTotal()` applies tax rules; knows nothing about HTTP |
+| **Request/Response** | Simple data structures cross the boundary | `CreateOrderRequest { items, customerId }` — no ORM models |
+| **Single responsibility** | One Use Case per operation | `PlaceOrder`, `CancelOrder`, `RefundOrder` as separate classes |
+| **Interactor** | Implements Input Port, calls Output Port | `PlaceOrderInteractor implements PlaceOrderInput` |
+
+See [references/entities-use-cases.md](references/entities-use-cases.md) when designing an Interactor or deciding what belongs in an Entity versus a Use Case — full Enterprise vs. Application Business Rules treatment with request/response model examples.
+
+### 3. Interface Adapters and Frameworks
+
+**Core concept:** Interface Adapters convert data between the inner circles and the outer circles. They translate data from the form most convenient for the inner circle to the form most convenient for the outer circle, and vice versa.
+
+**Key insights:**
+- Controllers, Presenters, Gateways, and Adapters all live in this layer
+- They are the only layer that may know about both the inner circles and the outer circles
+- They enforce the Dependency Rule by ensuring that inner circles never import outer-circle types
+
+### 4. Frameworks and Drivers
+
+**Core concept:** The outermost circle contains frameworks, databases, web servers, UIs, and other external agencies. These are the most volatile parts of the system and should have the least influence on the architecture.
+
+**Key insights:**
+- Frameworks call your code, not the reverse (Dependency Inversion)
+- Databases are details — the business logic should not know which database is being used
+- UIs are details — the business logic should not know whether the UI is a web app, mobile app, or CLI
+
+## Conflicts
+
+- **ciembor/agent-rules-books** instructs the agent to read `clean-architecture.mini.md` first and only consult `clean-architecture.md` for deeper tradeoffs, whereas **wondelai/skills** provides the full procedure inline with a 7-point diagnostic scoring rubric and no mini/full split. When both are available, prefer the inline full procedure from wondelai/skills for immediate application, and use the ciembor mini/full split only when a condensed rules reference is explicitly requested.</pre>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>onboarding</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">post-signup-onboarding</a> / onboarding</p><h1>onboarding</h1><p class="meta">combined</p><p>The three copies are not the same procedure. coreyhaines31/marketingskills is a detailed CRO playbook for optimizing post-signup onboarding, activation, and time-to-value. sickn33/agentic-awesome-skills is a truncated mirror of that same playbook, but it adds a different structure (flow design, multi-channel coordination, stalled-user handling, measurement, output formats, product-type patterns, experiment ideas) and omits several core concepts from the original (onboarding psychology, 10-component toolkit, activation models, MPTV reference). huytieu/COG-second-brain is a completely different onboarding skill: it is a personalization/setup routine for the COG second-brain product, not a CRO methodology. Because the copies overlap in the broad topic of onboarding but each contains material steps or constraints the others lack, and because the COG copy conflicts with the CRO copies on what the skill is for, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/onboarding/SKILL.md</code></td></tr><tr><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>.agents/skills/onboarding/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/onboarding/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/onboarding/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>.agents/skills/onboarding/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/onboarding/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/onboarding/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/onboarding/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>.claude/skills/onboarding/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>skills/onboarding/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Onboarding
+
+## Purpose
+This skill covers two distinct onboarding tasks. Determine which applies before proceeding:
+
+1. **CRO Onboarding** — optimize post-signup onboarding, user activation, first-run experience, or time-to-value for a product.
+2. **COG Personalization** — set up the COG second-brain for a specific user&#x27;s workflow.
+
+If the user is asking about product onboarding, activation, or time-to-value, follow the CRO Onboarding path. If the user is setting up COG, follow the COG Personalization path.
+
+---
+
+## CRO Onboarding
+
+### Initial Assessment
+
+Check for product marketing context first. If `.agents/product-marketing.md` exists (or `.claude/product-marketing.md`, or the legacy `product-marketing-context.md` filename in older setups), read it before asking questions. Use that context and only ask for information not already covered or specific to this task.
+
+Before providing recommendations, understand:
+
+1. **Product Context** — What type of product? B2B or B2C? Core value proposition?
+2. **Activation Definition** — What&#x27;s the &quot;aha moment&quot;? What action indicates a user &quot;gets it&quot;?
+3. **Current State** — What happens after signup? Where do users drop off?
+
+### Core Principles
+
+1. **Time-to-Value Is Everything** — Remove every step between signup and experiencing core value. Design the Minimum Path to Value (MPTV): the least number of steps to experience enough value to make a confident decision.
+2. **One Goal Per Session** — Focus the first session on one successful outcome. Save advanced features for later.
+3. **Do, Don&#x27;t Show** — Interactive &gt; Tutorial. Doing the thing &gt; Learning about the thing.
+4. **Progress Creates Motivation** — Show advancement. Celebrate completions. Make the path visible.
+
+### Onboarding Psychology
+
+- **Endowed Progress Effect** — People finish faster when progress is already started for them. A checklist that opens at &quot;20% done&quot; drives roughly +40% completion vs. starting at 0%. Give users a head start.
+- **Peak-End Rule** — Users remember an experience by its most intense moment and its end, not the average. Engineer a clear high point and end each session on a positive note.
+- **Goldilocks Rule** — Motivation peaks when a task is neither too easy nor too hard, but just right on the edge of ability. Tune early steps so they&#x27;re achievable but not trivial.
+- **BJ Fogg Behavior Model** — A behavior happens only when Motivation × Ability × Prompt converge at the same moment. If a step isn&#x27;t happening, one of the three is missing.
+- **Mario Kart Boosters &amp; Blockers** — Treat onboarding like a race track. Add boosters (pre-filled data, templates, quick wins, celebrations) and remove blockers (friction: required fields, dead ends, confusing empty states).
+
+### Onboarding Toolkit (10 Components)
+
+Use the fewest components that reach value:
+
+| Component | Purpose |
+|-----------|---------|
+| Welcome forms | Capture role/goal to personalize the path (keep short — Hick&#x27;s Law) |
+| Initial screens | First-run screens that orient and point to one clear action |
+| Drip emails | Multi-touch nurture — one concept per email, don&#x27;t overload |
+| Skippable tutorials | Optional guidance users can bypass — never trap them |
+| Videos | Show complex workflows visually |
+| Docs / help center | Self-serve reference for when users get stuck |
+| Onboarding calls | Human touch for complex or high-value accounts |
+| Data inputs | Getting the user&#x27;s real data in so value feels &quot;real&quot; |
+| Checklists | Ordered, value-first steps with visible progress |
+| Empty states | Guided first-action opportunities, not dead ends |
+
+### Defining Activation
+
+Judge activation by lead→customer conversion + 90-day retention, not lead volume. Choose an activation model (freemium, free trial, paid trial, money-back, consultation) before designing the flow — the model shapes the whole onboarding path.
+
+#### Find Your Aha Moment
+
+Find early value actions associated with later retention, using a defined cohort and timeline:
+
+1. Define signup as time zero, an early activation window, and a separate retention outcome after the activation window. Choose windows that fit the product cadence.
+2. Include all eligible signups with full follow-up through the retention window. Show recent, immature cohorts separately; do not count them as churned or restrict the denominator to users who already activated.
+3. Compare actions recorded within the early window. Exclude behavior during the retention outcome window.
+4. Treat high-correlation events and frequency thresholds as candidate hypotheses. Report counts, uncertainty, and acquisition/product segments; confirm the definition on a later mature cohort.
+
+#### Activation Metrics
+
+- % of signups who reach activation
+- Time to activation
+- Steps to activation
+- Activation by cohort/source
+
+### Onboarding Flow Design
+
+#### Immediate Post-Signup (First 30 Seconds)
+
+| Approach | Best For | Risk |
+|----------|----------|------|
+| Product-first | Simple products, B2C, mobile | Blank slate overwhelm |
+| Guided setup | Products needing personalization | Adds friction before value |
+| Value-first | Products with demo data | May not feel &quot;real&quot; |
+
+Whatever you choose: clear single next action, no dead ends, progress indication if multi-step.
+
+#### Onboarding Checklist Pattern
+
+When to use: multiple setup steps required, product has several features to discover, self-serve B2B products.
+
+Best practices: 3-7 items, order by value (most impactful first), start with quick wins, progress bar/completion %, celebration on completion, dismiss option (don&#x27;t trap users).
+
+#### Empty States
+
+Empty states are onboarding opportunities, not dead ends. Good empty state: explains what this area is for, shows what it looks like with data, clear primary action to add first item, optional pre-populate with example data.
+
+#### Tooltips and Guided Tours
+
+When to use: complex UI, features that aren&#x27;t self-evident, power features users might miss. Best practices: max 3-5 steps per tour, dismissable at any time, don&#x27;t repeat for returning users.
+
+### Multi-Channel Onboarding
+
+#### Email + In-App Coordination
+
+Trigger-based emails: welcome email (immediate), incomplete onboarding (24h, 72h), activation achieved (celebration + next step), feature discovery (days 3, 7, 14). Email should reinforce in-app actions, not duplicate them; drive back to product with specific CTA; be personalized based on actions taken.
+
+### Handling Stalled Users
+
+Detection: define &quot;stalled&quot; criteria (X days inactive, incomplete setup).
+
+Re-engagement tactics: 1) Email sequence — reminder of value, address blockers, offer help. 2) In-app recovery — welcome back, pick up where left off. 3) Human touch — for high-value accounts, personal outreach.
+
+### Measurement
+
+Key metrics: activation rate, time to activation, onboarding completion, Day 1/7/30 retention.
+
+Funnel analysis: track drop-off at each step (Signup → Step 1 → Step 2 → Activation → Retention). Identify biggest drops and focus there.
+
+### Output Format
+
+Onboarding Audit: for each issue, Finding → Impact → Recommendation → Priority.
+
+Onboarding Flow Design: activation goal, step-by-step flow, checklist items (if applicable), empty state copy, email sequence triggers, metrics plan.
+
+### Common Patterns by Product Type
+
+| Product Type | Key Steps |
+|--------------|-----------|
+| B2B SaaS | Setup wizard → First value action → Team invite → Deep setup |
+| Marketplace | Complete profile → Browse → First transaction → Repeat loop |
+| Mobile App | Permissions → Quick win → Push setup → Habit loop |
+| Content Platform | Follow/customize → Consume → Create → Engage |
+
+### Experiment Ideas
+
+When recommending experiments, consider tests for: flow simplification (step count, ordering), progress and motivation mechanics, personalization by role or goal, support and help availability.
+
+---
+
+## COG Personalization
+
+Read `.claude/skills/onboarding/SKILL.md` and execute it exactly as written — that file is the authoritative playbook. Then follow `.agents/rules/cog.md`.
+
+Antigravity substitution: where the playbook delegates to a `.claude/agents/&lt;name&gt;` worker, invoke `.agents/agents/&lt;name&gt;.md` via `invoke_subagent` instead.
+
+This path creates profile, interests, and watchlist files with guided setup for the COG second-brain product.</pre>
+</body>
+</html>

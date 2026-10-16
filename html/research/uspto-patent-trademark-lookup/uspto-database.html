@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>uspto-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">uspto-patent-trademark-lookup</a> / uspto-database</p><h1>uspto-database</h1><p class="meta">combined</p><p>The three copies overlap heavily on the USPTO API ecosystem, helper scripts, and basic search examples, but each contains material steps or constraints the others lack. The Vibe-Skills copy is the most detailed and includes a separate PatentsView API key registration step and a typo in the example. The aipoch copy adds explicit Python/dependency requirements, a script-oriented automation workflow, and a note about configuring timeouts/retries for large batches. The OpenClaw copy is nearly identical to Vibe-Skills but omits the separate PatentsView key step and uses a slightly different query syntax in the example. Because the copies disagree on authentication setup and the aipoch copy adds unique operational constraints, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/uspto-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/uspto-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/uspto-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/uspto-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/uspto-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/uspto-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: uspto-database
+description: Access USPTO APIs for patent/trademark searches, examination history (PEDS), assignments, citations, office actions, TSDR, for IP analysis and prior art searches.
+---
+
+# USPTO Database
+
+## Overview
+
+USPTO provides specialized APIs for patent and trademark data. Search patents by keywords/inventors/assignees, retrieve examination history via PEDS, track assignments, analyze citations and office actions, access TSDR for trademarks, for IP analysis and prior art searches.
+
+## When to Use This Skill
+
+- **Patent Search**: Finding patents by keywords, inventors, assignees, classifications, or dates
+- **Patent Details**: Retrieving full patent data including claims, abstracts, citations
+- **Trademark Search**: Looking up trademarks by serial or registration number
+- **Trademark Status**: Checking trademark status, ownership, and prosecution history
+- **Examination History**: Accessing patent prosecution data from PEDS (Patent Examination Data System)
+- **Office Actions**: Retrieving office action text, citations, and rejections
+- **Assignments**: Tracking patent/trademark ownership transfers
+- **Citations**: Analyzing patent citations (forward and backward)
+- **Litigation**: Accessing patent litigation records
+- **Portfolio Analysis**: Analyzing patent/trademark portfolios for companies or inventors
+- **Diligence**: Validate patent lifecycle signals such as maintenance-fee-related status or expiration indicators
+
+## USPTO API Ecosystem
+
+### Core APIs
+
+1. **PatentSearch API** - Modern ElasticSearch-based patent search (replaced legacy PatentsView in May 2025)
+   - Search patents by keywords, inventors, assignees, classifications, dates
+   - Access to patent data through June 30, 2025
+   - 45 requests/minute rate limit
+   - **Base URL**: `https://search.patentsview.org/api/v1/`
+
+2. **PEDS (Patent Examination Data System)** - Patent examination history
+   - Application status and transaction history from 1981-present
+   - Office action dates and examination events
+   - Use `uspto-opendata-python` Python library
+   - **Replaced**: PAIR Bulk Data (PBD) - decommissioned
+
+3. **TSDR (Trademark Status &amp; Document Retrieval)** - Trademark data
+   - Trademark status, ownership, prosecution history
+   - Search by serial or registration number
+   - **Base URL**: `https://tsdrapi.uspto.gov/ts/cd/`
+
+### Additional APIs
+
+4. **Patent Assignment Search** - Ownership records and transfers
+5. **Trademark Assignment Search** - Trademark ownership changes
+6. **Enriched Citation API** - Patent citation analysis
+7. **Office Action Text Retrieval** - Full text of office actions
+8. **Office Action Citations** - Citations from office actions
+9. **Office Action Rejection** - Rejection reasons and types
+10. **PTAB API** - Patent Trial and Appeal Board proceedings
+11. **Patent Litigation Cases** - Federal district court litigation data
+12. **Cancer Moonshot Data Set** - Cancer-related patents
+
+## Dependencies
+
+- Python `&gt;=3.9`
+- `requests &gt;=2.31.0`
+- `uspto-opendata-python &gt;=0.3.0`
+
+## Quick Start
+
+### API Key Registration
+
+USPTO APIs require an API key. Register at:
+**https://account.uspto.gov/api-manager/**
+
+The PatentSearch API key is provided by PatentsView. Register at:
+**https://patentsview.org/api-v01-information-page**
+
+Set the API keys as environment variables:
+```bash
+export USPTO_API_KEY=&quot;your_api_key_here&quot;
+export PATENTSVIEW_API_KEY=&quot;your_api_key_here&quot;
+```
+
+### Helper Scripts
+
+This skill includes Python scripts for common operations:
+
+- **`scripts/patent_search.py`** - PatentSearch API client for searching patents
+- **`scripts/peds_client.py`** - PEDS client for examination history
+- **`scripts/trademark_client.py`** - TSDR client for trademark data
+
+## Task 1: Searching Patents
+
+### Using the PatentSearch API
+
+The PatentSearch API uses a JSON query language with various operators for flexible searching.
+
+#### Basic Patent Search Examples
+
+**Search by keywords in abstract:**
+```python
+from scripts.patent_search import PatentSearchClient
+
+client = PatentSearchClient()
+
+# Search for machine learning patents
+results = client.search_patents({
+    &quot;patent_abstract&quot;: {&quot;_text_all&quot;: [&quot;machine&quot;, &quot;learning&quot;]}
+})
+
+for patent in results[&#x27;patents&#x27;]:
+    print(f&quot;{patent[&#x27;patent_number&#x27;]}: {patent[&#x27;patent_title&#x27;]}&quot;)
+```
+
+**Search by inventor:**
+```python
+results = client.search_by_inventor(&quot;John Smith&quot;)
+```
+
+**Search by assignee/company:**
+```python
+results = client.search_by_assignee(&quot;Google&quot;)
+```
+
+**Search by date range:**
+```python
+results = client.search_by_date_range(&quot;2024-01-01&quot;, &quot;2024-12-31&quot;)
+```
+
+**Search by CPC classification:**
+```python
+results = client.search_by_classification(&quot;H04N&quot;)  # Video/image tech
+```
+
+#### Advanced Patent Search
+
+Combine multiple criteria with logical operators:
+
+```python
+results = client.advanced_search(
+    keywords=[&quot;artificial&quot;, &quot;intelligence&quot;],
+    assignee=&quot;Microsoft&quot;,
+    start_date=&quot;2023-01-01&quot;,
+    end_date=&quot;2024-12-31&quot;,
+    cpc_codes=[&quot;G06N&quot;, &quot;G06F&quot;]  # AI and computing classifications
+)
+```
+
+#### Direct API Usage
+
+For complex queries, use the API directly:
+
+```python
+import requests
+
+url = &quot;https://search.patentsview.org/api/v1/patent&quot;
+headers = {
+    &quot;X-Api-Key&quot;: &quot;YOUR_API_KEY&quot;,
+    &quot;Content-Type&quot;: &quot;application/json&quot;
+}
+
+query = {
+    &quot;q&quot;: {
+        &quot;_and&quot;: [
+            {&quot;patent_date&quot;: {&quot;_gte&quot;: &quot;2024-01-01&quot;}},
+            {&quot;assignee_organization&quot;: {&quot;_text_any&quot;: [&quot;Google&quot;, &quot;Alphabet&quot;]}},
+            {&quot;cpc_subclass_id&quot;: [&quot;G06N&quot;, &quot;H04N&quot;]}
+        ]
+    },
+    &quot;f&quot;: [&quot;patent_number&quot;, &quot;patent_title&quot;, &quot;patent_date&quot;, &quot;inventor_name&quot;],
+    &quot;s&quot;: [{&quot;patent_date&quot;: &quot;desc&quot;}],
+    &quot;o&quot;: {&quot;per_page&quot;: 100, &quot;page&quot;: 1}
+}
+
+response = requests.post(url, headers=headers, json=query)
+results = response.json()
+```
+
+### Query Operators
+
+- **Equality**: `{&quot;field&quot;: &quot;value&quot;}` or `{&quot;field&quot;: {&quot;_eq&quot;: &quot;value&quot;}}`
+- **Comparison**: `_gt`, `_gte`, `_lt`, `_lte`, `_neq`
+- **Text search**: `_text_all`, `_text_any`, `_text_phrase`
+- **String matching**: `_begins`, `_contains`
+- **Logical**: `_and`, `_or`, `_not`
+
+**Best Practice**: Use `_text_*` operators for text fields (more performant than `_contains` or `_begins`)
+
+### Available Patent Endpoints
+
+- `/patent` - Granted patents
+- `/publication` - Pregrant publications
+- `/inventor` - Inventor records
+
+## Workflow
+
+1. **Search**: Use `scripts/patent_search.py` to locate relevant patent numbers/records from a text or fielded query.
+2. **History**: Use `scripts/peds_client.py` to retrieve prosecution/examination history (events, dates, and status signals).
+3. **Status checks**: Use retrieved metadata to assess maintenance-fee/expiration-related status where available.
+4. **Automation**: For batch queries or pipelines, ensure timeouts and retries are configured in the underlying clients.
+
+## Conflicts
+
+- **foryourhealth111-pixel/Vibe-Skills** instructs registering a separate PatentsView API key and setting `PATENTSVIEW_API_KEY`, while **FreedomIntelligence/OpenClaw-Medical-Skills** states all USPTO APIs require a single key from `https://account.uspto.gov/api-manager/` and does not mention a separate PatentsView key.
+- **foryourhealth111-pixel/Vibe-Skills** uses the query syntax `{&quot;_text_all&quot;: {&quot;patent_abstract&quot;: &quot;machine learning&quot;}}` while **FreedomIntelligence/OpenClaw-Medical-Skills** uses `{&quot;patent_abstract&quot;: {&quot;_text_all&quot;: [&quot;machine&quot;, &quot;learning&quot;]}}`. Verify the correct query structure against the current PatentSearch API documentation.
+- **aipoch/medical-research-skills** specifies explicit dependencies and recommends configuring timeouts/retries for large batches, which the other copies do not mention.</pre>
+</body>
+</html>

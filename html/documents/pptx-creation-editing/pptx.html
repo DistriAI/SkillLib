@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pptx</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">documents</a> / <a href="index.html">pptx-creation-editing</a> / pptx</p><h1>pptx</h1><p class="meta">combined</p><p>The anthropics/skills copy is the upstream, most complete procedure: it defines the pptxgenjs creation path with detailed footguns, the unzip/edit/zip editing path, and a validation script. The other three copies (Vibe-Skills, awesome-llm-skills, skillsbench) share a common base that uses an html2pptx workflow for creation and an ooxml unpack script for editing, and they include design principles and color palettes that the anthropics copy does not. Vibe-Skills additionally mandates a scientific-schematics step. Because the creation approach (pptxgenjs vs html2pptx) and the editing tooling (scripts/office vs ooxml/scripts) differ materially, crowning one copy would hide a real alternative workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/pptx/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/document-skills/pptx/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>document-skills/pptx/SKILL.md</code></td></tr><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/exceltable-in-ppt/environment/skills/pptx/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/pptx/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/document-skills/pptx/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>document-skills/pptx/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/exceltable-in-ppt/environment/skills/pptx/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/pptx/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/pptx/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/PPTX-Skill/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>document-skills/pptx/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/pptx/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/organize-messy-files/environment/skills/pptx/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/pptx-reference-formatting/environment/skills/pptx/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># PPTX creation, editing, and analysis
+
+A `.pptx` is a ZIP archive of XML files. Choose your approach by task:
+
+| Task | Approach |
+|---|---|
+| **Create** a new deck | Use either the `pptxgenjs` script approach or the `html2pptx` workflow (see below) |
+| **Edit** an existing deck, or build from a template | Unpack → edit `ppt/slides/slideN.xml` → repack |
+| **Read** content | `python -m markitdown deck.pptx` (one block per slide under `&lt;!-- Slide number: N --&gt;` markers) |
+
+## Reading and analyzing content
+
+### Text extraction
+```bash
+python -m markitdown path-to-file.pptx
+```
+
+### Raw XML access
+Raw XML access is required for: comments, speaker notes, slide layouts, animations, design elements, and complex formatting.
+
+#### Unpacking a file
+```bash
+python ooxml/scripts/unpack.py &lt;office_file&gt; &lt;output_dir&gt;
+```
+If the script doesn&#x27;t exist at this path, use `find . -name &quot;unpack.py&quot;` to locate it.
+
+#### Key file structures
+* `ppt/presentation.xml` - Main presentation metadata and slide references
+* `ppt/slides/slide{N}.xml` - Individual slide contents
+* `ppt/notesSlides/notesSlide{N}.xml` - Speaker notes for each slide
+* `ppt/comments/modernComment_*.xml` - Comments for specific slides
+* `ppt/slideLayouts/` - Layout templates for slides
+* `ppt/slideMasters/` - Master slide templates
+* `ppt/theme/` - Theme and styling information
+* `ppt/media/` - Images and other media files
+
+#### Typography and color extraction
+**When given an example design to emulate**: Always analyze the presentation&#x27;s typography and colors first:
+1. **Read theme file**: Check `ppt/theme/theme1.xml` for colors (`&lt;a:clrScheme&gt;`) and fonts (`&lt;a:fontScheme&gt;`)
+2. **Sample slide content**: Examine `ppt/slides/slide1.xml` for actual font usage (`&lt;a:rPr&gt;`) and colors
+3. **Search for patterns**: Use grep to find color (`&lt;a:solidFill&gt;`, `&lt;a:srgbClr&gt;`) and font references across all XML files
+
+## Creating a new PowerPoint presentation
+
+### Design Principles
+**CRITICAL**: Before creating any presentation, analyze the content and choose appropriate design elements:
+1. **Consider the subject matter**: What is this presentation about? What tone, industry, or mood does it suggest?
+2. **Check for branding**: If the user mentions a company/organization, consider their brand colors and identity
+3. **Match palette to content**: Select colors that reflect the subject
+4. **State your approach**: Explain your design choices before writing code
+
+**Requirements**:
+- State your content-informed design approach BEFORE writing code
+- Use web-safe fonts only: Arial, Helvetica, Times New Roman, Georgia, Courier New, Verdana, Tahoma, Trebuchet MS, Impact
+- Create clear visual hierarchy through size, weight, and color
+- Ensure readability: strong contrast, appropriately sized text, clean alignment
+- Be consistent: repeat patterns, spacing, and visual language across slides
+
+#### Color Palette Selection
+- Think beyond defaults; consider topic, industry, mood, energy level, target audience, brand identity
+- Build your palette: Pick 3-5 colors that work together
+- Ensure contrast: Text must be clearly readable on backgrounds
+
+### Approach A: pptxgenjs (from anthropics/skills)
+`pptxgenjs` is preinstalled — do not run `npm install` first; write the script and `require(&#x27;pptxgenjs&#x27;)` directly. Only if that require fails: `npm install pptxgenjs`.
+
+**Gotchas**:
+- **Set `pres.layout` before adding slides.** The default canvas is `LAYOUT_16x9` = **10&quot; × 5.625&quot;**, not 13.3&quot; wide. Coordinates past the edge are written, not clamped.
+- **Hex colors: never `#`, never 8 digits.** `color: &quot;FF0000&quot;`. Both `&quot;#FF0000&quot;` and alpha baked into the hex corrupt the file. For translucency: `transparency: 0-100` on fills and images, `opacity: 0.0-1.0` on shadows.
+- **pptxgenjs mutates option objects in place.** Never share one `shadow`/options object across two `add*` calls.
+- **Shadow `offset` must be ≥ 0** — a negative offset corrupts the file.
+- **`letterSpacing` is silently ignored** — the real option is `charSpacing`.
+- **Lists:** `bullet: true` on each item, never a literal `•`. Set `breakLine: true` on every array item except the last.
+- **One `new pptxgen()` per output file** — never reuse an instance.
+- **`rectRadius` only works on `ROUNDED_RECTANGLE`**, not `RECTANGLE`.
+- **Gradient fills aren&#x27;t supported** — use a gradient image as the background instead.
+- **Text boxes have built-in internal padding** — set `margin: 0` whenever text must align with a shape.
+- **Speaker notes go in `slide.addNotes(&quot;...&quot;)`** (plain text, once per slide), never in a text box on the slide.
+- **Keep charts native.** Use `addChart()` for everything PowerPoint can chart.
+- **Default charts render bare** — set `showTitle`, `showValue`, `chartColors`, and quiet the frame.
+- **On a stacked bar or column chart, `dataLabelPosition` must be `ctr`, `inEnd`, or `inBase`.** `outEnd` corrupts the file.
+- **A combo series using `secondaryValAxis`/`secondaryCatAxis` needs both `valAxes` and `catAxes` on the chart options, two entries each.**
+- **After `writeFile()`, run `python scripts/office/validate.py deck.pptx`.**
+- **Never reorder the children of `&lt;p:presentation&gt;`.**
+
+### Approach B: html2pptx (from Vibe-Skills, awesome-llm-skills, skillsbench)
+When creating a new PowerPoint presentation from scratch, use the **html2pptx** workflow to convert HTML slides to PowerPoint with accurate positioning.
+
+### Visual Enhancement with Scientific Schematics (from Vibe-Skills)
+**When creating documents with this skill, always consider adding scientific diagrams and schematics to enhance visual communication.**
+
+If your document does not already contain schematics or diagrams:
+- Use the **scientific-schematics** skill to generate AI-powered publication-quality diagrams
+- Simply describe your desired diagram in natural language
+
+**How to generate schematics:**
+```bash
+python scripts/generate_schematic.py &quot;your diagram description&quot; -o figures/output.png
+```
+
+## Editing an existing deck
+
+1. Unpack the presentation: `python ooxml/scripts/unpack.py deck.pptx unpacked/`
+2. Edit the relevant XML files (e.g., `unpacked/ppt/slides/slide1.xml`)
+3. Repack the presentation into a new `.pptx` file
+4. Validate the result if a validation script is available
+
+## Conflicts
+
+- **anthropics/skills** uses `pptxgenjs` for creating new decks; **foryourhealth111-pixel/Vibe-Skills**, **Prat011/awesome-llm-skills**, and **benchflow-ai/skillsbench** use an `html2pptx` workflow for creating new decks.
+- **anthropics/skills** uses `scripts/office/validate.py` and `scripts/office/soffice.py` for validation and conversion; the other copies use `ooxml/scripts/unpack.py` for unpacking and do not mention a validation script.
+- **foryourhealth111-pixel/Vibe-Skills** mandates generating scientific schematics via a `scientific-schematics` skill; the other copies do not include this step.</pre>
+</body>
+</html>

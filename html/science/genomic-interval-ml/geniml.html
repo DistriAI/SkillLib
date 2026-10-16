@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>geniml</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">genomic-interval-ml</a> / geniml</p><h1>geniml</h1><p class="meta">combined</p><p>The three copies cover the same high-level domain (Geniml for genomic interval ML) but diverge significantly in scope, safety, and technical detail. The K-Dense-AI copy is a rigorous, safety-focused operational guide with specific version pins (geniml 0.8.4, gtars 0.10.0), a &#x27;safety gate&#x27; for data validation, and explicit warnings about Zarr/AnnData incompatibility. The aipoch and FreedomIntelligence copies are broader feature overviews that include BEDspace (which K-Dense omits in the visible text) and provide different installation advice (unpinned vs pinned). The FreedomIntelligence copy contains a syntax error in its install command (`uv uv pip`). Because the K-Dense copy has critical safety and compatibility constraints that the others lack, and the others have feature coverage (BEDspace) and workflow examples that K-Dense lacks or truncates, no single copy is a complete reproduction of the others. Combining them yields a skill that is both safe and comprehensive.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/geniml/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/geniml/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/geniml/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/geniml/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Data Analysis/geniml/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/geniml/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: geniml
+description: &quot;Supports audited local Geniml genomic-interval workflows: validate BED and universe contracts, plan Region2Vec, BEDspace, or scEmbed runs, inspect model/tokenizer compatibility, and assess consensus universes.&quot;
+license: MIT
+compatibility: Requires Python 3.12 and uv for the tested geniml 0.8.4 / gtars 0.10.0 stack; scEmbed needs AnnData 0.12.19 with Zarr 2.18.7. Bundled planners are dependency-free and local-only.
+allowed-tools: Read Write Edit Bash Glob
+metadata:
+  version: &quot;1.5&quot;
+  skill-author: &quot;Combined&quot;
+  upstream-version: &quot;0.8.4&quot;
+---
+
+# Geniml
+
+Use Geniml for machine learning and statistical workflows over genomic interval sets. Treat coordinates, assemblies, token vocabularies, model artifacts, and sample grouping as explicit contracts.
+
+## Safety Gate
+
+Before importing Geniml or running an external binary:
+1. Work only with explicit local regular files. Reject URLs, FIFOs, devices, and symlinks.
+2. Validate BED structure and the declared assembly against a trusted local chromosome-sizes file.
+3. Bound file count, bytes, rows, workers, epochs, and output size.
+4. Separate train/validation/test by patient, donor, or biological replicate—not by BED row or cell alone.
+5. Inventory and checksum the universe, tokenizer, model, config, inputs, and metadata.
+6. Obtain explicit approval before any BEDbase or Hugging Face download.
+7. Keep logs aggregate and bounded to protect sensitive genomic data.
+
+## Coordinate and Assembly Contract
+
+BED intervals are **0-based, half-open** `[start, end)`. Do not mix with 1-based closed coordinates (VCF/GFF). Record assembly, contig naming, and coordinate convention for every corpus. Reject negative coordinates, `end &lt;= start`, and unknown contigs.
+
+## Install Reproducibly
+
+Use a separate project environment. The tested CPU stack uses Python 3.12:
+
+```bash
+uv venv --python 3.12
+uv pip install &quot;geniml==0.8.4&quot; &quot;gtars==0.10.0&quot;
+```
+
+For Region2Vec/scEmbed recipes, add:
+
+```bash
+uv pip install &quot;torch==2.14.1&quot; &quot;gensim==4.4.0&quot; &quot;huggingface-hub==2.0.0&quot; \
+  &quot;scanpy==1.12.4&quot; &quot;anndata==0.12.19&quot; &quot;zarr==2.18.7&quot;
+```
+
+For consensus recipes, add `pyBigWig==0.3.26` and `hmmlearn==0.3.3`. For BEDspace, ensure StarSpace binary is available. Never force incompatible installations with `--no-deps`.
+
+## Core Workflows
+
+### 1. Region2Vec (Region Embeddings)
+
+Train unsupervised embeddings of genomic regions using word2vec-style learning.
+
+```python
+from geniml.tokenization import hard_tokenization
+from geniml.region2vec import region2vec
+from geniml.evaluation import evaluate_embeddings
+
+# 1) Tokenize BED files against the universe
+hard_tokenization(
+    src_folder=&quot;bed_files/&quot;,
+    dst_folder=&quot;tokens/&quot;,
+    universe_file=&quot;universe.bed&quot;,
+    p_value_threshold=1e-9,
+)
+
+# 2) Train Region2Vec
+region2vec(
+    token_folder=&quot;tokens/&quot;,
+    save_dir=&quot;model/&quot;,
+    num_shufflings=1000,
+    embedding_dim=100,
+)
+
+# 3) Evaluate
+metrics = evaluate_embeddings(
+    embeddings_file=&quot;model/embeddings.npy&quot;,
+    labels_file=&quot;metadata.csv&quot;,
+)
+```
+
+### 2. BEDspace (Joint Region + Label Embeddings)
+
+Learn a shared vector space for region sets and metadata labels using StarSpace.
+
+**Workflow:**
+1. Preprocess regions and metadata.
+2. Train BEDspace model.
+3. Compute distances and query across regions and labels.
+
+### 3. scEmbed (Single-Cell ATAC-seq)
+
+Train embeddings for single-cell ATAC-seq data, compatible with Scanpy.
+
+```python
+import scanpy as sc
+from geniml.scembed import ScEmbed
+from geniml.io import tokenize_cells
+
+# 1) Load AnnData
+adata = sc.read_h5ad(&quot;scatac_data.h5ad&quot;)
+
+# 2) Tokenize cells
+tokenize_cells(
+    adata=&quot;scatac_data.h5ad&quot;,
+    universe_file=&quot;universe.bed&quot;,
+    output=&quot;tokens.parquet&quot;,
+)
+
+# 3) Train scEmbed
+model = ScEmbed(embedding_dim=100)
+model.train(dataset=&quot;tokens.parquet&quot;, epochs=100)
+
+# 4) Encode and attach to AnnData
+embeddings = model.encode(adata)
+adata.obsm[&quot;scembed_X&quot;] = embeddings
+
+# 5) Cluster with Scanpy
+sc.pp.neighbors(adata, use_rep=&quot;scembed_X&quot;)
+sc.tl.leiden(adata)
+sc.tl.umap(adata)
+```
+
+### 4. Consensus Peaks (Universe Building)
+
+Build reference peak sets from multiple BED files.
+
+```bash
+# Generate coverage
+cat bed_files/*.bed &gt; combined.bed
+uniwig -m 25 combined.bed chrom.sizes coverage/
+
+# Build universe (Coverage Cutoff method)
+geniml universe build cc \
+  --coverage-folder coverage/ \
+  --output-file universe.bed \
+  --cutoff 5 \
+  --merge 100 \
+  --filter-size 50
+```
+
+**Methods:** CC (Coverage Cutoff), CCF (Flexible), ML (Maximum Likelihood), HMM (Hidden Markov Model).
+
+## Utilities
+
+- **Tokenization**: Hard/soft tokenization patterns.
+- **Evaluation**: Silhouette, Davies-Bouldin metrics.
+- **BEDshift**: Region randomization/null-model generation.
+- **BBClient**: Caching for repeated BED access.
+- **Text2BedNN**: Neural search backend.</pre>
+</body>
+</html>

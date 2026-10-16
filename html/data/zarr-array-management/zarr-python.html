@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>zarr-python</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">data</a> / <a href="index.html">zarr-array-management</a> / zarr-python</p><h1>zarr-python</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a highly specific, version-pinned (Zarr 3.4.0) guide that includes a rigorous validation workflow (reopening, comparing values, checking metadata) and specific warnings about format 3 defaults. The other two copies (Vibe-Skills and OpenClaw-Medical-Skills) are identical to each other and provide a more general, version-agnostic guide with practical performance heuristics (1MB chunk size, access pattern alignment) that the K-Dense copy lacks. Because the K-Dense copy is a &#x27;procedure&#x27; for safe migration/creation while the others are &#x27;guides&#x27; for performance optimization, and they disagree on version requirements and default behaviors, combining them provides the most complete skill.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/zarr-python/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/zarr-python/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/zarr-python/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/zarr-python/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/zarr-python/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/zarr-python/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: zarr-python
+description: Stores and queries chunked N-D scientific arrays with Zarr-Python, including codecs, sharding, S3/GCS storage, and NumPy/Dask/Xarray integration. Use for array layout, bounded I/O, format migration, or scientific metadata preservation.
+allowed-tools: Read Write Edit Bash
+license: MIT license
+compatibility: Requires Python 3.11+ (3.12+ for Zarr 3.4.0) and zarr 3.x with NumPy 2+. Remote I/O needs network access, zarr[remote] and the protocol backend.
+metadata:
+  version: &quot;1.5&quot;
+  skill-author: K-Dense Inc.
+  last-reviewed: &quot;2026-10-01&quot;
+  upstream-version: &quot;3.4.0&quot;
+---
+
+# Zarr Python
+
+## When to use
+
+Use for chunked scientific arrays, hierarchical stores, codecs, sharding, partial reads, cloud object storage, and NumPy/Dask/Xarray interoperability. This guide targets **Zarr-Python 3.4.0** (released 2026-09-15) but includes general best practices for Zarr 3.x. The package version and on-disk format are separate: Zarr 3 reads/writes formats 2 and 3; new arrays default to format 3.
+
+## Install
+
+```bash
+# For Zarr 3.4.0 (Recommended for new projects)
+uv pip install &quot;zarr==3.4.0&quot; &quot;numpy==2.5.3&quot;
+
+# For general Zarr 3.x
+uv pip install zarr
+
+# Optional remote backends and migration CLI:
+uv pip install &quot;zarr[remote,cli]&quot; &quot;fsspec&quot; &quot;s3fs&quot; &quot;gcsfs&quot;
+```
+
+Commit the project&#x27;s resolved lockfile. Local examples use tiny synthetic arrays; remote snippets are illustrative and require a real authorized store.
+
+## Workflow
+
+1. **Inspect**: Check shape, dtype, axis names, coordinates, units, missing-value convention, format, and codec availability. Preserve sample IDs and axis order.
+2. **Choose Chunks**: 
+   - Aim for ~1MB per chunk for optimal performance (e.g., 512x512 for float32).
+   - Align chunk shape with access patterns (e.g., if reading rows, make chunks span columns).
+   - For sharding, choose shard dimensions that are multiples of chunk dimensions.
+   - Benchmark representative data.
+3. **Create Destination**: Use `overwrite=False` or `mode=&quot;w-&quot;` for new stores. Use `mode=&quot;r&quot;` for inspection. `&quot;w&quot;` destroys existing content.
+4. **Write Bounded Blocks**: Assign one writer per stored chunk (or shard). Serialize metadata, append, and resize operations. Avoid materializing the entire array in memory.
+5. **Validate**: Reopen read-only and compare values, dtype, shape, coordinates, units, masks, and metadata. An unwritten chunk reads as `fill_value`; a successful open alone does not prove data completeness.
+6. **Consolidate**: For completed group hierarchies, optionally consolidate metadata. Format-3 consolidation is experimental; refresh it after metadata changes.
+
+## Basic Array Roundtrip
+
+```python
+import numpy as np
+import zarr
+from zarr.codecs import BloscCodec
+
+expected = np.arange(96, dtype=&quot;float32&quot;).reshape(12, 8)
+z = zarr.create_array(
+    &quot;array.zarr&quot;, shape=expected.shape, dtype=expected.dtype,
+    chunks=(4, 4), zarr_format=3,
+    compressors=BloscCodec(cname=&quot;zstd&quot;, clevel=5, shuffle=&quot;bitshuffle&quot;),
+    dimension_names=(&quot;sample&quot;, &quot;feature&quot;),
+    attributes={&quot;units&quot;: &quot;arbitrary&quot;, &quot;source&quot;: &quot;synthetic example&quot;},
+)
+for start in range(0, z.shape[0], 4):
+    z[start:start + 4] = expected[start:start + 4]
+
+reopened = zarr.open_array(&quot;array.zarr&quot;, mode=&quot;r&quot;)
+np.testing.assert_array_equal(reopened[:], expected)
+assert reopened.dtype == expected.dtype
+assert reopened.metadata.dimension_names == (&quot;sample&quot;, &quot;feature&quot;)
+```
+
+**Note**: `create_array` takes either `data=` or `shape=` plus `dtype=`. The format-3 numeric default is a bytes serializer followed by **ZstdCodec**, not Blosc. Set a codec explicitly for reproducibility.
+
+## Creation and Indexing
+
+```python
+import numpy as np
+import zarr
+
+# Creation
+z = zarr.create_array(None, data=np.arange(80).reshape(10, 8), chunks=(2, 4))
+zeros = zarr.zeros((10, 8), chunks=(2, 4), dtype=&quot;f4&quot;)
+ones = zarr.ones((10, 8), chunks=(2, 4), dtype=&quot;f4&quot;)
+filled = zarr.full((10, 8), fill_value=42, chunks=(2, 4), dtype=&quot;i4&quot;)
+like = zarr.zeros_like(z)
+
+# Indexing
+# Coordinate indexing pairs corresponding coordinates
+np.testing.assert_array_equal(z.vindex[[0, 5], [2, 7]], [2, 47])
+# Orthogonal indexing is a product
+assert z.oindex[[0, 5], [2, 7]].shape == (2, 2)
+# Block indexing
+assert z.blocks[0, 0].shape == (2, 4)
+```
+
+**Warning**: Negative-step slices are unsupported. `np.asarray(z)`, `np.sum(z)`, or `z[:]` can materialize the entire logical dataset; use bounded selections or lazy reductions.
+
+## Resize and Append
+
+```python
+import numpy as np
+import zarr
+
+series = zarr.create_array(None, shape=(0, 8), chunks=(2, 8), dtype=&quot;f4&quot;)
+series.append(np.ones((2, 8), dtype=&quot;f4&quot;), axis=0)
+series.resize((4, 8))  # A tuple; append must match all non-appended dimensions.
+assert series.shape == (4, 8)
+```
+
+**Note**: Shrinking removes chunks outside the new shape, but values in retained boundary chunks can reappear on re-expansion. Resize is not secure erasure.
+
+## Chunking Strategies
+
+### Aligning Chunks with Access Patterns
+
+Chunk shape dramatically affects performance.
+
+```python
+# If accessing rows frequently (first dimension)
+z = zarr.zeros((10000, 10000), chunks=(10, 10000))  # Chunk spans columns
+
+# If accessing columns frequently (second dimension)
+z = zarr.zeros((10000, 10000), chunks=(10000, 10))  # Chunk spans rows
+
+# For mixed access patterns (balanced approach)
+z = zarr.zeros((10000, 10000), chunks=(1000, 1000))  # Square chunks
+```
+
+**Performance Example**: For a (200, 200, 200) array, reading along the first dimension:
+- Using chunks (1, 200, 200): ~107ms
+- Using chunks (200, 200, 1): ~1.65ms (65x faster!)
+
+### Sharding for Large-Scale Storage
+
+When arrays have millions of small chunks, use sharding to group chunks into larger storage objects.
+
+```python
+from zarr.codecs import ShardingCodec, BytesCodec
+from zarr.codecs.blosc import BloscCodec
+
+z = zarr.create_array(
+    store=&#x27;data.zarr&#x27;,
+    shape=(100000, 100000),
+    chunks=(100, 100),  # Small chunks for access
+    shards=(1000, 1000),  # Groups 100 chunks per shard
+    dtype=&#x27;f4&#x27;
+)
+```
+
+**Benefits**:
+- Reduces file system overhead from millions of small files.
+- Improves cloud storage performance (fewer object requests).
+
+**Important**: Entire shards must fit in memory before writing.
+
+## Compression
+
+Zarr applies compression per chunk.
+
+```python
+from zarr.codecs.blosc import BloscCodec
+from zarr.codecs import GzipCodec, ZstdCodec, BytesCodec
+
+# Configure Blosc codec
+z = zarr.create_array(
+    store=&#x27;data.zarr&#x27;,
+    shape=(1000, 1000),
+    chunks=(100, 100),
+    dtype=&#x27;f4&#x27;,
+    codecs=[BloscCodec(cname=&#x27;zstd&#x27;, clevel=5, shuffle=&#x27;shuffle&#x27;)]
+)
+
+# Use Gzip compression
+z = zarr.create_array(
+    store=&#x27;data.zarr&#x27;,
+    shape=(1000, 1000),
+    chunks=(100, 100),
+    dtype=&#x27;f4&#x27;,
+    codecs=[GzipCodec(level=6)]
+)
+
+# Disable compression
+z = zarr.create_array(
+    store=&#x27;data.zarr&#x27;,
+    shape=(1000, 1000),
+    chunks=(100, 100),
+    dtype=&#x27;f4&#x27;,
+    codecs=[BytesCodec()]
+)
+```
+
+**Tips**:
+- **Blosc** (default): Fast compression/decompression, good for interactive workloads.
+- **Zstandard**: Better compression ratios, slightly slower than LZ4.
+- **Gzip**: Maximum compression, slower performance.
+- **LZ4**: Fastest compression, lower ratios.</pre>
+</body>
+</html>

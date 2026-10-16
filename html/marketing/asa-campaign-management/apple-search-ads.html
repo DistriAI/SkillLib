@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>apple-search-ads</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">asa-campaign-management</a> / apple-search-ads</p><h1>apple-search-ads</h1><p class="meta">combined</p><p>The two skills cover the same domain (Apple Search Ads) but with distinct, non-overlapping material. The first skill (appeeky/aso-skills) focuses on strategic setup, campaign structure, keyword strategy, bidding heuristics, and creative product sets (CPP) routing. The second skill (LeoYeAI/openclaw-master-skills) focuses on technical implementation, specifically the Campaign Management API v5, OAuth authentication, JSON object structures for campaigns/ad groups, and attribution integration (AdServices/SKAdNetwork). Neither skill contains the other&#x27;s core steps; one is a strategy guide, the other is an API/automation toolkit. Combining them provides a complete workflow from strategy to execution.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/apple-search-ads/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/apple-search-ads/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/appeeky/aso-skills">appeeky/aso-skills</a></td><td><code>skills/apple-search-ads/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/apple-search-ads/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Apple Search Ads: Strategy &amp; API Execution
+
+## 1. Strategic Foundation
+
+### Why ASA
+- Highest intent channel (users in App Store).
+- Reliable conversion data (no ATT/SKAdNetwork limitations for direct attribution in many cases, though SKAN is used for privacy-preserving metrics).
+- Higher CPI but proportionally higher LTV.
+
+### Campaign Structure
+Organize campaigns by intent to protect budgets and isolate performance data:
+1. **Brand**: App name, developer name, misspellings. High bids ($2–5).
+2. **Competitor**: Top 5–10 competitor names. Moderate bids ($1–2).
+3. **Category**: Generic high-volume terms. Moderate bids ($0.80–1.50).
+4. **Discovery**: Search Match (no keywords). Low bids ($0.50–0.80).
+
+### Match Types &amp; Workflow
+- **Exact**: Proven, high-value terms.
+- **Broad**: Discovery of variations.
+- **Search Match**: Apple auto-matching. Use only in Discovery campaigns.
+- **Optimization Loop**: Mine Search Terms report weekly. Move top performers from Discovery/Broad to Exact match campaigns with higher bids. Add irrelevant terms as negatives.
+
+### Creative Product Sets (CPP)
+Link specific Custom Product Pages to ad groups to match creative to keyword intent (e.g., &quot;yoga app&quot; keyword → Yoga-themed CPP). This typically improves TTR and CVR by 15–30%.
+
+## 2. Technical Implementation (API v5)
+
+### Authentication
+Use OAuth 2.0 Client Credentials flow.
+1. Generate JWT signed with private key (ES256).
+2. Exchange JWT for access token at `https://appleid.apple.com/auth/oauth2/token`.
+3. Use `Authorization: Bearer {ACCESS_TOKEN}` and `X-AP-Context: orgId={ORG_ID}` headers.
+
+### Core API Endpoints
+- **Campaigns**: `POST /campaigns`, `GET /campaigns`, `PUT /campaigns/{id}`.
+- **Ad Groups**: `POST /campaigns/{id}/adgroups`.
+- **Keywords**: `POST /campaigns/{cId}/adgroups/{agId}/targetingkeywords/bulk`.
+- **Reports**: `POST /reports/campaigns/{cId}/searchterms` (for mining), `POST /reports/campaigns/{id}/impressionshare`.
+
+### Campaign Object Example
+```json
+{
+  &quot;name&quot;: &quot;MyApp - US - Brand&quot;,
+  &quot;adamId&quot;: 123456789,
+  &quot;countriesOrRegions&quot;: [&quot;US&quot;],
+  &quot;budgetAmount&quot;: {&quot;amount&quot;: &quot;1000&quot;, &quot;currency&quot;: &quot;USD&quot;},
+  &quot;dailyBudgetAmount&quot;: {&quot;amount&quot;: &quot;50&quot;, &quot;currency&quot;: &quot;USD&quot;},
+  &quot;supplySources&quot;: [&quot;APPSTORE_SEARCH_RESULTS&quot;],
+  &quot;billingEvent&quot;: &quot;TAPS&quot;,
+  &quot;status&quot;: &quot;ENABLED&quot;
+}
+```
+
+### Ad Group Targeting
+*Note: While some strategic guides suggest ASA is keyword-only, the API supports audience targeting dimensions.*
+```json
+{
+  &quot;name&quot;: &quot;Brand Keywords&quot;,
+  &quot;campaignId&quot;: 123456,
+  &quot;defaultBidAmount&quot;: {&quot;amount&quot;: &quot;1.50&quot;, &quot;currency&quot;: &quot;USD&quot;},
+  &quot;targetingDimensions&quot;: {
+    &quot;age&quot;: {&quot;included&quot;: [{&quot;minAge&quot;: 18}]},
+    &quot;deviceClass&quot;: {&quot;included&quot;: [&quot;IPHONE&quot;, &quot;IPAD&quot;]}
+  }
+}
+```
+
+## 3. Optimization &amp; Metrics
+
+### Key Metrics
+- **TTR** (Taps/Impressions): &gt;5% strong.
+- **CVR** (Installs/Taps): &gt;50% good.
+- **CPT** (Spend/Taps): Monitor for efficiency.
+- **ROAS**: Target 150%+.
+
+### Bid Optimization Signals
+- **Low Impression Share (&lt;50%)**: Increase bid.
+- **High TTR, Low CVR**: Improve product page/paywall.
+- **Low TTR**: Creative mismatch; adjust CPP or keywords.
+- **High CVR, Low Spend**: Increase bid/budget.
+
+### Automated Bidding
+Enable only after establishing a manual baseline and achieving 50+ conversions per ad group per week.
+
+## 4. Weekly Checklist
+1. Review Search Terms report.
+2. Promote top terms to Exact match campaigns.
+3. Add new negative keywords.
+4. Check impression share and adjust bids.
+5. Verify CPP relevance for top ad groups.</pre>
+</body>
+</html>

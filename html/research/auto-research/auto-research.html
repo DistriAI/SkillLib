@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>auto-research</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">auto-research</a> / auto-research</p><h1>auto-research</h1><p class="meta">combined</p><p>The three copies use the same name but describe three different procedures. dzhng/skills defines a local optimization loop that maps tunable parameters against a benchmark. huytieu/COG-second-brain is a thin pointer that delegates to a different playbook and subagents. sickn33/agentic-awesome-skills defines an external research workflow that requires explicit user consent before web search or ChatGPT consultation. None of the copies is a reproduction of the others, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/auto-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>.agents/skills/auto-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/auto-research/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/auto-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>.agents/skills/auto-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/auto-research/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/auto-research/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/auto-research/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>.claude/skills/auto-research/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>skills/auto-research/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Auto Research
+
+This skill covers three distinct workflows. Select the one that matches the user&#x27;s request.
+
+## Workflow A: Local Parameter Optimization (dzhng/skills)
+
+1. Recover the research state: objective, incumbent artifact, regression set, hypothesis queue, and remaining budget.
+2. Clarify success criteria: evaluator, metric, baseline, and required improvement. Define the smallest useful loop with one cheap task.
+3. Establish the active task&#x27;s baseline. Run the unchanged artifact once or reuse a compatible recorded result.
+4. Plan a small hypothesis batch. List distinct explanations of the bottleneck and the parameters that could test them.
+5. Test one hypothesis on the active task. Change one conceptual factor, record the prediction, and compare observation with prediction.
+6. Combine and promote compatible winners. Check interactions and remove one change at a time when attribution is unclear.
+
+## Workflow B: Delegated Strategic Research (huytieu/COG-second-brain)
+
+1. Read .claude/skills/auto-research/SKILL.md and execute it exactly as written.
+2. Follow .agents/rules/cog.md.
+3. Where the playbook delegates to a .claude/agents/&lt;name&gt; worker, invoke .agents/agents/&lt;name&gt;.md via invoke_subagent instead.
+
+## Workflow C: External Research with Explicit Consent (sickn33/agentic-awesome-skills)
+
+1. Propose the research boundary: state the source, exact query or redacted prompt, whether any local text would leave the machine, and the likely cost. Wait for user approval.
+2. Research: after approval, use web search or a browser session the user has explicitly selected and authorized. Do not install packages automatically or access browser cookies, other tabs, saved passwords, or sessions.
+3. Present: distill findings into concise options with sources.
+4. Await Approval: do not write code until the user says &quot;go ahead&quot; or picks an option.
+5. Implement: once approved, execute with confidence.
+
+### Conflicts
+
+- dzhng/skills::skills/engineering/auto-research/SKILL.md runs local experiments without requiring external web search or third-party consultation.
+- huytieu/COG-second-brain::.agents/skills/auto-research/SKILL.md does not define the procedure itself; it delegates to .claude/skills/auto-research/SKILL.md.
+- sickn33/agentic-awesome-skills::plugins/agentic-awesome-skills-claude/skills/auto-research/SKILL.md requires explicit user approval before any web search or ChatGPT submission and forbids sending context, files, or browser state without consent.</pre>
+</body>
+</html>

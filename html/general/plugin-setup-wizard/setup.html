@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>setup</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">plugin-setup-wizard</a> / setup</p><h1>setup</h1><p class="meta">combined</p><p>All four copies are named &#x27;setup&#x27; but they configure four unrelated systems: Power Automate CLI, the claude-ops plugin, an autoresearch experiment, and the Diverga research assistant. None is a reproduction of the others; each contains material steps and constraints the others lack, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/power-automate/skills/setup/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/claude-ops/skills/setup/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/autoresearch-agent/skills/setup/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/25-HosungYou-Diverga/skills/setup/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/power-automate/skills/setup/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/claude-ops/skills/setup/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/autoresearch-agent/skills/setup/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/25-HosungYou-Diverga/skills/setup/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/process-intelligence/skills/setup/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Setup
+
+This skill is a generic setup wizard. Determine which target system the user is configuring, then follow the matching section. Do not mix steps from different systems.
+
+## Power Automate CLI
+1. Check Node.js with `node --version`. If missing or below 18, guide the user to install Node.js 18+ for their OS, then re-check.
+2. Check Azure CLI with `az --version`. If missing, guide the user to install Azure CLI for their OS, then re-check.
+3. Check Azure login with `az account show`. If not logged in, run `az login` and confirm with `az account show`.
+4. Determine the Azure cloud with `az cloud show` and request a token for the matching Power Automate resource. Use `PA_CLOUD` and `PA_FLOW_RESOURCE` overrides for GCC, GCC High, or DoD tenants as documented.
+
+## claude-ops Plugin
+1. Run every Bash call with `run_in_background: true` and a short `description`.
+2. Install missing CLIs and configure environment variables for each selected channel (Telegram, WhatsApp, Email, Slack, Notion, Linear, Sentry, Vercel).
+3. Build the project registry and save user preferences to `$PREFS_PATH`.
+4. Use `AskUserQuestion` for every decision; never auto-skip a channel the user selected.
+
+## Autoresearch Experiment
+1. If arguments are provided, pass them to `setup_experiment.py` with `--domain`, `--name`, `--target`, `--eval`, `--metric`, `--direction`, and optional `--evaluator` and `--scope`.
+2. If no arguments are provided, collect domain, name, target file, eval command, metric, direction, evaluator, and scope one at a time, then run `setup_experiment.py`.
+3. Report the experiment path, branch name, baseline metric, and suggest `/ar:run` or `/ar:loop`.
+
+## Diverga Research Assistant
+1. Check for an existing `diverga-config.json`; if present, ask whether to update.
+2. Capture researcher discipline and experience level.
+3. Capture statistical software and academic database access.
+4. Configure Agent Teams and VS Arena mode, writing the selected settings to `diverga-config.json` and, if Agent Teams is enabled, setting `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in `~/.claude/settings.json`.
+
+## Conflicts
+- microsoft/power-platform-skills::plugins/power-automate/skills/setup/SKILL.md requires Azure CLI and cloud-specific token configuration; the other copies do not.
+- davepoon/buildwithclaude::plugins/claude-ops/skills/setup/SKILL.md requires `run_in_background: true` on every Bash call and messaging-channel configuration; the other copies do not.
+- LeoYeAI/openclaw-master-skills::skills/autoresearch-agent/skills/setup/SKILL.md creates an autoresearch experiment via `setup_experiment.py`; the other copies do not.
+- brycewang-stanford/Auto-Empirical-Research-Skills::skills/25-HosungYou-Diverga/skills/setup/SKILL.md captures a researcher profile and writes `diverga-config.json`; the other copies do not.</pre>
+</body>
+</html>

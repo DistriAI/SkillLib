@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>php-pro</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">php-idiomatic-performance</a> / php-pro</p><h1>php-pro</h1><p class="meta">combined</p><p>The three copies describe different procedures for the same skill name. Jeffallan/claude-skills is a framework-heavy enterprise workflow (Laravel/Symfony, PHPStan level 9, PHPUnit/Pest, DTOs, DI, migrations, REST/GraphQL) with explicit MUST/MUST NOT constraints and code templates. rmyndharis/antigravity-skills and sickn33/agentic-awesome-skills are nearly identical performance/idiomatic PHP guides focused on generators, SPL, memory, profiling, and built-in functions, with a preference to avoid third-party packages. These overlap in general PHP best practices but disagree on scope and constraints: one mandates framework tooling and static analysis, while the others prefer standard library and performance profiling. Crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/php-pro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/php-pro/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/php-pro/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/php-pro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/php-pro/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/php-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/php-pro/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/php-pro/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: php-pro
+description: Use when building or reviewing PHP applications. Covers two complementary modes: (1) enterprise framework development with Laravel/Symfony, strict typing, PHPStan, and tests; and (2) idiomatic high-performance PHP using generators, SPL, and built-in functions. Choose the mode that matches the task.
+---
+
+# PHP Pro
+
+Senior PHP developer with expertise in modern PHP 8.3+, Laravel, Symfony, and performance-focused idiomatic patterns.
+
+## Choose Your Mode
+
+- **Enterprise Framework Mode**: Use when the task involves Laravel, Symfony, Composer, Eloquent, Doctrine, migrations, REST/GraphQL APIs, or dependency injection.
+- **Performance/Idiomatic Mode**: Use when the task focuses on memory efficiency, generators, SPL data structures, profiling, or built-in PHP functions without heavy framework dependencies.
+
+## Enterprise Framework Mode
+
+### Core Workflow
+1. **Analyze architecture** — Review framework, PHP version, dependencies, and patterns.
+2. **Design models** — Create typed domain models, value objects, DTOs, and enums.
+3. **Implement** — Write strict-typed code with PSR-12 compliance, dependency injection, and repository patterns.
+4. **Secure** — Add validation, authentication, and protection against XSS/SQL injection.
+5. **Verify** — Run `vendor/bin/phpstan analyse --level=9`; fix all errors. Run `vendor/bin/phpunit` or `vendor/bin/pest`; enforce 80%+ coverage. Only deliver when both pass clean.
+
+### Constraints
+- MUST declare `strict_types=1` in every file.
+- MUST use type hints for all properties, parameters, and returns.
+- MUST follow PSR-12 coding standard.
+- MUST use readonly properties where applicable.
+- MUST validate all user input with typed requests.
+- MUST use dependency injection over global state.
+- MUST NOT skip type declarations or use `mixed` types unnecessarily.
+- MUST NOT store passwords in plain text (use bcrypt/argon2).
+- MUST NOT write SQL queries vulnerable to injection.
+- MUST NOT mix business logic with controllers.
+- MUST NOT hardcode configuration (use .env).
+- MUST NOT deploy without running tests and static analysis.
+- MUST NOT use `var_dump` in production code.
+
+### Code Patterns
+Deliver in this order: domain models, service/repository classes, controller/API endpoints, test files, and a brief explanation of architecture decisions.
+
+## Performance/Idiomatic Mode
+
+### Focus Areas
+- Generators and iterators for memory-efficient data processing.
+- SPL data structures (SplQueue, SplStack, SplHeap, ArrayObject).
+- Modern PHP 8+ features (match expressions, enums, attributes, constructor property promotion).
+- Type system mastery (union types, intersection types, never type, mixed type).
+- Advanced OOP patterns (traits, late static binding, magic methods, reflection).
+- Memory management and reference handling.
+- Stream contexts and filters for I/O operations.
+- Performance profiling and optimization techniques.
+
+### Approach
+1. Start with built-in PHP functions before writing custom implementations.
+2. Use generators for large datasets to minimize memory footprint.
+3. Apply strict typing and leverage type inference.
+4. Use SPL data structures when they provide clear performance benefits.
+5. Profile performance bottlenecks before optimizing.
+6. Handle errors with exceptions and proper error levels.
+7. Write self-documenting code with meaningful names.
+8. Test edge cases and error conditions thoroughly.
+
+### Constraints
+- Prefer PHP standard library and built-in functions over third-party packages.
+- Use external dependencies sparingly and only when necessary.
+- Focus on working code over explanations.
+- Ensure memory-efficient code using generators and iterators appropriately.
+- Provide type-safe implementations with full type coverage.
+- Follow PSR-compliant code and community standards.
+- Include comprehensive error handling with custom exceptions.
+- Ensure production-ready code with proper logging and monitoring hooks.
+
+## Conflicts
+- **Jeffallan/claude-skills** mandates PHPStan level 9 and PHPUnit/Pest with 80%+ coverage before delivery, while **rmyndharis/antigravity-skills** and **sickn33/agentic-awesome-skills** do not require static analysis or a coverage threshold.
+- **Jeffallan/claude-skills** targets Laravel/Symfony enterprise architecture with DI, repositories, and migrations, while **rmyndharis/antigravity-skills** and **sickn33/agentic-awesome-skills** focus on built-in PHP, generators, SPL, and performance profiling.
+- **rmyndharis/antigravity-skills** and **sickn33/agentic-awesome-skills** explicitly prefer PHP standard library and built-in functions over third-party packages, while **Jeffallan/claude-skills** assumes Composer-based framework dependencies.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

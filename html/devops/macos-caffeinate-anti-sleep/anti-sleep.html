@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>anti-sleep</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">macos-caffeinate-anti-sleep</a> / anti-sleep</p><h1>anti-sleep</h1><p class="meta">combined</p><p>The two copies implement the same goal but with materially different, non-interchangeable procedures. The davidondrej copy mandates a bundled LaunchAgent-based launcher (scripts/anti-sleep.sh) with strict rules against raw backgrounding, automatic replacement of active sessions, and a separate verify step. The sickn33 copy is a direct-caffeinate approach that explicitly recommends running in a visible cmux pane or as a background task, uses pgrep/pmset for verification, and includes a &#x27;gotcha&#x27; about the silent prompt. Crowning one would hide a real alternative (managed LaunchAgent vs. direct process).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/ops-and-setup/anti-sleep/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/anti-sleep/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/ops-and-setup/anti-sleep/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/anti-sleep/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/anti-sleep/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/anti-sleep/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: anti-sleep
+description: Keep a Mac awake for a set duration or while a process runs.
+---
+
+# Anti-Sleep (macOS caffeinate)
+
+## Method Selection
+
+1. **Managed Launcher (Preferred if available):** If the `scripts/anti-sleep.sh` launcher is present in the skill directory, use it. It creates a one-shot user LaunchAgent.
+   - **Never** launch `caffeinate` with raw `&amp;`, `nohup`, `disown`, or `launchctl submit` when using this method.
+   - Resolve `scripts/anti-sleep.sh` relative to this `SKILL.md`.
+
+2. **Direct Caffeinate (Fallback/Alternative):** If the launcher is not available or the user prefers a visible process, use direct `caffeinate` commands.
+   - Prefer running in a visible terminal or cmux pane so the user can `Ctrl+C`.
+   - If running in the background, ensure it does not block the foreground shell.
+
+## Workflow
+
+### 1. Inspect State
+- **Launcher:** Run `scripts/anti-sleep.sh status`.
+- **Direct:** Run `pgrep -fl caffeinate` to check for existing sessions.
+
+### 2. Handle Existing Sessions
+- **Launcher:** If an active session exists and a new duration is requested, automatically stop the old session (`scripts/anti-sleep.sh stop`). Do not ask for confirmation.
+- **Direct:** If an existing session is found, verify the PID and command. If it is the one to be replaced, stop it (`kill &lt;PID&gt;` or `Ctrl+C`). Do not use broad `pkill`.
+
+### 3. Start Anti-Sleep
+- **Launcher:**
+  - Timer: `scripts/anti-sleep.sh start &lt;seconds&gt; [flags]`
+  - Process: `scripts/anti-sleep.sh start-pid &lt;PID&gt; [flags]`
+- **Direct:**
+  - Timer: `caffeinate -d -i -t &lt;seconds&gt; [flags]`
+  - Process: `caffeinate -d -i -w &lt;PID&gt;` or `caffeinate -i &lt;command&gt;`
+
+**Default Flags:** `-d -i` (keep display on and prevent idle system sleep).
+- `-i`: Prevent idle system sleep.
+- `-d`: Prevent display sleep.
+- `-s`: Prevent system sleep on AC power (only works when plugged in).
+
+### 4. Verify
+- **Launcher:** In a **separate tool/shell call** after start, run `scripts/anti-sleep.sh verify`. Only report success if `STATUS=running` and `ASSERTIONS=active`.
+- **Direct:** Run `pgrep -fl caffeinate` to confirm the process and flags. Run `pmset -g assertions` to confirm `PreventUserIdleSystemSleep` and `PreventUserIdleDisplaySleep` are active.
+
+### 5. Report
+- Confirm to the user the PID, flags, and wall-clock expiry time.
+- **Gotcha (Direct):** `caffeinate` prints nothing and holds the prompt. It is not stuck. Verify with `pgrep`.
+
+## Stop Early
+- **Launcher:** `scripts/anti-sleep.sh stop`
+- **Direct:** `kill &lt;PID&gt;` or `Ctrl+C` in the pane.
+
+## Fallback
+- If `launchctl bootstrap` fails (Launcher method), use a visible persistent terminal or cmux pane.
+- If no persistent surface is available, tell the user instead of starting an unreliable background job.
+
+## Keyboard Backlight
+- `caffeinate` cannot keep the keyboard backlight on.
+- Manual fix: System Settings → Keyboard → “Turn keyboard backlight off after inactivity” → Never.</pre>
+</body>
+</html>

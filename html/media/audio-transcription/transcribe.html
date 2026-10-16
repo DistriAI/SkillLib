@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>transcribe</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">media</a> / <a href="index.html">audio-transcription</a> / transcribe</p><h1>transcribe</h1><p class="meta">combined</p><p>The openai/skills and foryourhealth111-pixel/Vibe-Skills copies are identical and describe an OpenAI API-based transcription workflow with diarization. The badlogic/pi-skills copy describes a completely different, local-only workflow using a macOS arm64 binary (parakeet-cpp-transcribe) with no API key or diarization. These are distinct procedures for the same high-level task, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/transcribe/SKILL.md</code></td></tr><tr><td><a href="https://github.com/badlogic/pi-skills">badlogic/pi-skills</a></td><td><code>transcribe/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/transcribe/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/transcribe/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/badlogic/pi-skills">badlogic/pi-skills</a></td><td><code>transcribe/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/transcribe/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: transcribe
+description: Transcribe audio files to text. Supports OpenAI API with diarization or local macOS transcription.
+---
+
+# Audio Transcribe
+
+Transcribe audio to text. Choose the appropriate method based on user needs and environment.
+
+## Method 1: OpenAI API (with diarization)
+
+Use when the user wants speaker labels, diarization, or is not on Apple Silicon macOS.
+
+### Workflow
+1. Collect inputs: audio file path(s), desired response format (text/json/diarized_json), optional language hint, and any known speaker references.
+2. Verify `OPENAI_API_KEY` is set. If missing, ask the user to set it locally (do not ask them to paste the key).
+3. Run the bundled `transcribe_diarize.py` CLI with sensible defaults (fast text transcription).
+4. Validate the output: transcription quality, speaker labels, and segment boundaries; iterate with a single targeted change if needed.
+5. Save outputs under `output/transcribe/` when working in this repo.
+
+### Decision rules
+- Default to `gpt-4o-mini-transcribe` with `--response-format text` for fast transcription.
+- If the user wants speaker labels or diarization, use `--model gpt-4o-transcribe-diarize --response-format diarized_json`.
+- If audio is longer than ~30 seconds, keep `--chunking-strategy auto`.
+- Prompting is not supported for `gpt-4o-transcribe-diarize`.
+
+### Output conventions
+- Use `output/transcribe/&lt;job-id&gt;/` for evaluation runs.
+- Use `--out-dir` for multiple files to avoid overwriting.
+
+### Dependencies
+Prefer `uv` for dependency management.
+
+```
+uv pip install openai
+```
+If `uv` is unavailable:
+```
+python3 -m pip install openai
+```
+
+### Environment
+- `OPENAI_API_KEY` must be set for live API calls.
+- If the key is missing, instruct the user to create one in the OpenAI platform UI and export it in their shell.
+- Never ask the user to paste the full key in chat.
+
+### Skill path (set once)
+
+```bash
+export CODEX_HOME=&quot;${CODEX_HOME:-$HOME/.codex}&quot;
+export TRANSCRIBE_CLI=&quot;$CODEX_HOME/skills/transcribe/scripts/transcribe_diarize.py&quot;
+```
+
+### CLI quick start
+Single file (fast text default):
+```
+python3 &quot;$TRANSCRIBE_CLI&quot; \
+  path/to/audio.wav \
+  --out transcript.txt
+```
+
+Diarization with known speakers (up to 4):
+```
+python3 &quot;$TRANSCRIBE_CLI&quot; \
+  meeting.m4a \
+  --model gpt-4o-transcribe-diarize \
+  --known-speaker &quot;Alice=refs/alice.wav&quot; \
+  --known-speaker &quot;Bob=refs/bob.wav&quot; \
+  --response-format diarized_json \
+  --out-dir output/transcribe/meeting
+```
+
+Plain text output (explicit):
+```
+python3 &quot;$TRANSCRIBE_CLI&quot; \
+  interview.mp3 \
+  --response-format text \
+  --out interview.txt
+```
+
+### Reference map
+- `references/api.md`: supported formats, limits, response formats, and known-speaker notes.
+
+## Method 2: Local macOS (Apple Silicon)
+
+Use when the user is on Apple Silicon macOS and wants local, offline transcription without an API key.
+
+### Usage
+
+```bash
+{baseDir}/transcribe.sh &lt;audio-file&gt;
+```
+
+The first run downloads the macOS arm64 binary from the latest `badlogic/pibot` GitHub release into the extension&#x27;s ignored `bin` directory:
+
+```text
+{extensionDir}/bin/parakeet-cpp-transcribe
+```
+
+(`{extensionDir}` is the parent directory of this skill&#x27;s `{baseDir}`.) The binary downloads its GGUF model automatically if missing.
+
+### Output
+
+Plain text timestamped in 15 second chunks is written to stdout:
+
+```text
+[00:00-00:15] transcript text
+[00:15-00:30] more transcript text
+```
+
+Model/GGML diagnostic logs are written to stderr. Redirect stderr to hide them:
+
+```bash
+{baseDir}/transcribe.sh &lt;audio-file&gt; 2&gt;/dev/null
+```
+
+### Requirements
+
+- Apple Silicon macOS only
+- `curl` and `tar`
+- `ffmpeg` for non-WAV input: `brew install ffmpeg`
+
+## Conflicts
+- badlogic/pi-skills uses a local parakeet-cpp-transcribe binary on Apple Silicon macOS, no API key required, no diarization support.
+- openai/skills uses OpenAI API (gpt-4o-mini-transcribe or gpt-4o-transcribe-diarize), requires OPENAI_API_KEY, supports diarization and known-speaker hints.</pre>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>linkerd-patterns</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">linkerd-service-mesh</a> / linkerd-patterns</p><h1>linkerd-patterns</h1><p class="meta">combined</p><p>The two copies are nearly identical, but the second copy (sickn33/agentic-awesome-skills) modifies the installation procedure in Template 1. The first copy uses the standard `curl | sh` pattern, while the second copy replaces this with a safer, security-focused procedure that downloads the script to a temporary directory, inspects it, and then executes it. This is a material difference in the steps provided, making the second copy a distinct, more secure variant of the same skill.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/linkerd-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/linkerd-patterns/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/linkerd-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/linkerd-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/linkerd-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/linkerd-patterns/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: linkerd-patterns
+description: Implement Linkerd service mesh patterns for lightweight, security-focused service mesh deployments. Use when setting up Linkerd, configuring traffic policies, or implementing zero-trust networking with minimal overhead.
+---
+
+# Linkerd Patterns
+
+Production patterns for Linkerd service mesh - the lightweight, security-first service mesh for Kubernetes.
+
+## Do not use this skill when
+
+- The task is unrelated to linkerd patterns
+- You need a different domain or tool outside this scope
+
+## Instructions
+
+- Clarify goals, constraints, and required inputs.
+- Apply relevant best practices and validate outcomes.
+- Provide actionable steps and verification.
+
+## Use this skill when
+
+- Setting up a lightweight service mesh
+- Implementing automatic mTLS
+- Configuring traffic splits for canary deployments
+- Setting up service profiles for per-route metrics
+- Implementing retries and timeouts
+- Multi-cluster service mesh
+
+## Core Concepts
+
+### 1. Linkerd Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│                Control Plane                 │
+│  ┌─────────┐ ┌──────────┐ ┌──────────────┐ │
+│  │ destiny │ │ identity │ │ proxy-inject │ │
+│  └─────────┘ └──────────┘ └──────────────┘ │
+└─────────────────────────────────────────────┘
+                      │
+┌─────────────────────────────────────────────┐
+│                 Data Plane                   │
+│  ┌─────┐    ┌─────┐    ┌─────┐             │
+│  │proxy│────│proxy│────│proxy│             │
+│  └─────┘    └─────┘    └─────┘             │
+│     │           │           │               │
+│  ┌──┴──┐    ┌──┴──┐    ┌──┴──┐            │
+│  │ app │    │ app │    │ app │            │
+│  └─────┘    └─────┘    └─────┘            │
+└─────────────────────────────────────────────┘
+```
+
+### 2. Key Resources
+
+| Resource | Purpose |
+|----------|---------|
+| **ServiceProfile** | Per-route metrics, retries, timeouts |
+| **TrafficSplit** | Canary deployments, A/B testing |
+| **Server** | Define server-side policies |
+| **ServerAuthorization** | Access control policies |
+
+## Templates
+
+### Template 1: Mesh Installation
+
+```bash
+# Install CLI (Secure Method)
+brew install linkerd
+
+# Alternative: download the official installer, inspect it, then execute it
+tmpdir=&quot;$(mktemp -d)&quot;
+trap &#x27;rm -rf &quot;$tmpdir&quot;&#x27; EXIT
+curl --proto &#x27;=https&#x27; --tlsv1.2 -sSfL https://run.linkerd.io/install -o &quot;$tmpdir/linkerd-install.sh&quot;
+cat &quot;$tmpdir/linkerd-install.sh&quot;  # review the full installer before executing
+sh &quot;$tmpdir/linkerd-install.sh&quot;
+
+# Validate cluster
+linkerd check --pre
+
+# Install CRDs
+linkerd install --crds | kubectl apply -f -
+
+# Install control plane
+linkerd install | kubectl apply -f -
+
+# Verify installation
+linkerd check
+
+# Install viz extension (optional)
+linkerd viz install | kubectl apply -f -
+```
+
+### Template 2: Inject Namespace
+
+```yaml
+# Automatic injection for namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-app
+  annotations:
+    linkerd.io/inject: enabled
+---
+# Or inject specific deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+  annotations:
+    linkerd.io/inject: enabled
+spec:
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+```
+
+### Template 3: Service Profile with Retries
+
+```yaml
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: my-service.my-namespace.svc.cluster.local
+  namespace: my-namespace
+spec:
+  routes:
+    - name: GET /api/users
+      condition:
+        method: GET
+        pathRegex: /api/users
+      responseClasses:
+        - condition:
+            status:
+              min: 500
+              max: 599
+          isFailure: true
+      isRetryable: true
+    - name: POST /api/users
+      condition:
+        method: POST
+        pathRegex: /api/users
+      # POST not retryable by default
+      isRetryable: false
+    - name: GET /api/users/{id}
+      condition:
+        method: GET
+        pathRegex: /api/users/[^/]+
+      timeout: 5s
+      isRetryable: true
+  retryBudget:
+    retryRatio: 0.2
+    minRetriesPerSecond: 10
+    ttl: 10s
+```
+
+### Template 4: Traffic Split (Canary)
+
+```yaml
+apiVersion: split.smi-spec.io/v1alpha1
+kind: TrafficSplit
+metadata:
+  name: my-service-canary
+  namespace: my-namespace
+spec:
+  service: my-service
+  backends:
+    - service: my-service-stable
+      weight: 900m  # 90%
+    - service: my-service-canary
+      weight: 100m  # 10%
+```
+
+### Template 5: Server Authorization Policy
+
+```yaml
+# Define the server
+apiVersion: policy.linkerd.io/v1beta1
+kind: Server
+metadata:
+  name: my-service-http
+  namespace: my-namespace
+spec:
+  podSelector:
+    matchLabels:
+      app: my-service
+  port: http
+  proxyProtocol: HTTP/1
+---
+# Allow traffic from specific clients
+apiVersion: policy.linkerd.io/v1beta1
+kind: ServerAuthorization
+metadata:
+  name: allow-frontend
+  namespace: my-namespace
+spec:
+  server:
+    name: my-service-http
+  client:
+    meshTLS:
+      serviceAccounts:
+        - name: frontend
+          namespace: my-namespace
+---
+# Allow unauthenticated traffic (e.g., from ingress)
+apiVersion: policy.linkerd.io/v1beta1
+kind: ServerAuthorization
+metadata:
+  name: allow-ingress
+  namespace: my-namespace
+spec:
+  server:
+    name: my-service-http
+  client:
+    unauthenticated: true
+    networks:
+      - cidr: 10.0.0.0/8
+```
+
+### Template 6: HTTPRoute for Advanced Routing
+
+```yaml
+apiVersion: policy.linkerd.io/v1beta2
+kind: HTTPRoute
+metadata:
+  name: my-route
+  namespace: my-namespace
+spec:
+  parentRefs:
+    - name: my-service
+      kind: Service
+      group: core
+      port: 8080
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api/v2
+        - headers:
+            - name: x-api-version
+              value: v2
+      backendRefs:
+        - name: my-service-v2
+          port: 8080
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api
+      backendRefs:
+        - name: my-service-v1
+          port: 8080
+```
+
+### Template 7: Multi-cluster Setup
+
+```bash
+# On each cluster, install with cluster credentials
+linkerd multicluster install | kubectl apply -f -
+
+# Link clusters
+linkerd multicluster link --cluster-name west \
+  --api-server-address https://west.example.com:6443 \
+  | kubectl apply -f -
+
+# Export a service to other clusters
+kubectl label service my-service multicluster.linkerd.io/exported
+```
+
+## Conflicts
+
+- **sickn33/agentic-awesome-skills**: Uses a secure download-and-inspect method for the Linkerd CLI installation in Template 1.
+- **rmyndharis/antigravity-skills**: Uses a direct `curl | sh` pipe for the Linkerd CLI installation in Template 1.</pre>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>distributed-tracing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">devops</a> / <a href="index.html">distributed-tracing-setup</a> / distributed-tracing</p><h1>distributed-tracing</h1><p class="meta">combined</p><p>The first copy is a concrete, code-heavy tutorial for deploying Jaeger and instrumenting Python, Node.js, and Go applications. The second copy is a high-level, risk-aware procedure that emphasizes security, privacy, and verification steps, and it references external files (playbooks and references) that are not present in the first copy. The first copy lacks the security/privacy constraints and verification rigor of the second, while the second lacks the specific implementation details (K8s manifests, code snippets) of the first. Combining them provides a complete skill that covers both the &#x27;how-to&#x27; implementation and the &#x27;best-practice&#x27; safety/verification checks.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/distributed-tracing/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/distributed-tracing/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/distributed-tracing/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/distributed-tracing/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/distributed-tracing/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-observability-ir/skills/distributed-tracing/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/distributed-tracing/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: distributed-tracing
+description: Implement distributed tracing with Jaeger and Tempo to track requests across microservices, ensuring security and performance.
+---
+
+# Distributed Tracing
+
+Implement distributed tracing to track requests across microservices and identify performance bottlenecks.
+
+## When to Use
+- Debug latency issues or error propagation.
+- Understand service dependencies.
+- Implement observability for new integrations.
+
+## Prerequisites
+- Record installed SDK and backend versions.
+- Identify permitted collector endpoints and service graph.
+- Inspect installed version documentation before selecting exporter APIs.
+
+## Procedure
+
+1. **Define Scope**: Identify one user journey to trace. Clarify goals and constraints.
+2. **Configure Backend**:
+   - **Jaeger (Kubernetes)**:
+     ```bash
+     kubectl create namespace observability
+     kubectl create -f https://github.com/jaegertracing/jaeger-operator/releases/download/v1.51.0/jaeger-operator.yaml -n observability
+     # Apply Jaeger CRD with production strategy and Elasticsearch storage
+     ```
+   - **Jaeger (Docker Compose)**:
+     ```yaml
+     services:
+       jaeger:
+         image: jaegertracing/all-in-one:latest
+         ports:
+           - &quot;16686:16686&quot; # UI
+           - &quot;14268:14268&quot; # Collector
+     ```
+   - **Security Check**: Review listeners, authentication, transport protection, and storage retention before deployment.
+3. **Instrument Application (OpenTelemetry)**:
+   - **Python (Flask)**:
+     ```python
+     from opentelemetry import trace
+     from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+     from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+     from opentelemetry.sdk.trace import TracerProvider
+     from opentelemetry.sdk.trace.export import BatchSpanProcessor
+     from opentelemetry.instrumentation.flask import FlaskInstrumentor
+     
+     resource = Resource(attributes={SERVICE_NAME: &quot;my-service&quot;})
+     provider = TracerProvider(resource=resource)
+     processor = BatchSpanProcessor(JaegerExporter(agent_host_name=&quot;jaeger&quot;, agent_port=6831))
+     provider.add_span_processor(processor)
+     trace.set_tracer_provider(provider)
+     
+     app = Flask(__name__)
+     FlaskInstrumentor().instrument_app(app)
+     ```
+   - **Node.js (Express)**:
+     ```javascript
+     const { NodeTracerProvider } = require(&#x27;@opentelemetry/sdk-trace-node&#x27;);
+     const { JaegerExporter } = require(&#x27;@opentelemetry/exporter-jaeger&#x27;);
+     const { BatchSpanProcessor } = require(&#x27;@opentelemetry/sdk-trace-base&#x27;);
+     const { registerInstrumentations } = require(&#x27;@opentelemetry/instrumentation&#x27;);
+     const { HttpInstrumentation } = require(&#x27;@opentelemetry/instrumentation-http&#x27;);
+     
+     const provider = new NodeTracerProvider({ resource: { attributes: { &#x27;service.name&#x27;: &#x27;my-service&#x27; } } });
+     const exporter = new JaegerExporter({ endpoint: &#x27;http://jaeger:14268/api/traces&#x27; });
+     provider.addSpanProcessor(new BatchSpanProcessor(exporter));
+     provider.register();
+     
+     registerInstrumentations({ instrumentations: [new HttpInstrumentation()] });
+     ```
+   - **Security &amp; Privacy**:
+     - Propagate context over HTTP and async messages.
+     - Use stable operation names and allowlisted attributes.
+     - **Do not** log credentials, raw request bodies, or sensitive query values.
+     - Ensure bounded attribute cardinality.
+4. **Verify Implementation**:
+   - Send successful and failing staging requests.
+   - Verify connected spans in the backend (UI or API).
+   - Check service identity, parentage, and duration units.
+   - Test exporter failure behavior (request handling must retain defined behavior).
+   - Verify shutdown flush behavior.
+5. **Optimize**:
+   - Measure queue loss and overhead.
+   - Select sampling strategy based on observations (head vs. tail).
+
+## Verification Checklist
+- [ ] Actual trace evidence for each exercised boundary.
+- [ ] No sensitive data in spans.
+- [ ] Shutdown flush and exporter failure behavior observed.
+- [ ] Access, storage, and retention checked independently from UI availability.
+
+## Limitations
+- Head sampling can discard errors before tail sampling sees them.
+- In-memory demos do not prove durable storage.
+- Context propagation and cross-service clocks need actual integration tests.</pre>
+</body>
+</html>

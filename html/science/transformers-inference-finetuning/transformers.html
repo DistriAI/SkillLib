@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>transformers</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">transformers-inference-finetuning</a> / transformers</p><h1>transformers</h1><p class="meta">combined</p><p>The K-Dense-AI copy is a much more specific, version-pinned, and security-aware procedure (Transformers 5.18.0, PyTorch-only, Hub version constraints, hf auth login, HF_TOKEN, trust_remote_code/revision, cache env vars, and a note that v5 removed several pipelines). The other two copies are near-identical generic guides that use older patterns (max_length, question-answering pipeline, HUGGINGFACE_TOKEN) and omit the v5 constraints. Because the K-Dense copy would hide the older but still common v4-style workflow, and the other two would hide the v5 constraints, crowning one would lose a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/transformers/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/transformers/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/transformers/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/K-Dense-AI/scientific-agent-skills">K-Dense-AI/scientific-agent-skills</a></td><td><code>skills/transformers/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/transformers/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/transformers/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: transformers
+description: Hugging Face Transformers for loading Hub models, running pipeline inference, text generation, and Trainer fine-tuning on NLP, vision, audio, and multimodal tasks. Applies when working with AutoModel, pipelines, tokenizers, generation configs, or TrainingArguments within Transformers.
+---
+
+# Transformers
+
+## Overview
+
+The Hugging Face Transformers library provides access to thousands of pre-trained models for tasks across NLP, computer vision, audio, and multimodal domains. Use this skill to load models, perform inference, and fine-tune on custom data.
+
+## Installation
+
+Install transformers and core dependencies in a dedicated environment:
+
+```bash
+uv venv --python 3.11 .venv-transformers
+uv pip install --python .venv-transformers/bin/python &quot;transformers[torch]&quot; &quot;torch&quot; &quot;huggingface-hub&quot; &quot;datasets&quot; &quot;accelerate&quot; &quot;peft&quot;
+```
+
+For vision tasks, add:
+```bash
+uv pip install timm pillow
+```
+
+For audio tasks, add:
+```bash
+uv pip install librosa soundfile
+```
+
+If targeting Transformers v5, pin the exact versions and note that v5 is PyTorch-only (TensorFlow and JAX backends were removed). Preserve the tighter constraint of Datasets when training. See the v5 migration guide for upgrades from v4.
+
+## Authentication
+
+Many models on the Hugging Face Hub are gated or private. Authenticate before loading them.
+
+**Recommended:** CLI login:
+```bash
+hf auth login
+```
+
+**Python:**
+```python
+from huggingface_hub import login
+login()  # Interactive prompt; do not hardcode tokens in scripts
+```
+
+**Servers / CI:** set `HF_TOKEN` in the environment (never commit tokens to git or shell profiles):
+```bash
+export HF_TOKEN=&quot;...&quot;
+```
+
+Get tokens at: https://huggingface.co/settings/tokens
+
+**Security:** Never paste tokens into notebooks, repos, or shared configs. Prefer `hf auth login` over exporting tokens in `.bashrc` or `.zshrc`. Use the narrowest token scope that works: `read` for private or gated model downloads, `write` only for uploads.
+
+## Transformers v5 Notes
+
+Transformers v5 is **PyTorch-only**. For upgrades from v4, see the v5 migration guide. In v5, `question-answering`, `summarization`, `translation*`, `text2text-generation`, `image-to-text`, and `visual-question-answering` pipelines were removed; use `text-generation` with appropriate prompts for these tasks.
+
+**Gated or custom architectures:** accept the model license on the Hub, then load with `trust_remote_code=True` only when required custom code has been reviewed; pin its full immutable commit with `revision` (and `code_revision` for a separate code repository).
+
+**Cache location:** set `HF_HOME` for all Hugging Face caches, or `HF_HUB_CACHE` just for Hub files. Use `HF_HUB_OFFLINE=1` only after required model snapshots are already cached.
+
+## Quick Start
+
+Use the Pipeline API for fast inference without manual configuration:
+
+```python
+from transformers import pipeline
+
+# Text generation (prefer max_new_tokens for causal LMs)
+generator = pipeline(&quot;text-generation&quot;, model=&quot;Qwen/Qwen2.5-1.5B&quot;)
+result = generator(&quot;The future of AI is&quot;, max_new_tokens=50)
+
+# Text classification
+classifier = pipeline(&quot;text-classification&quot;, model=&quot;distilbert/distilbert-base-uncased-finetuned-sst-2-english&quot;)
+result = classifier(&quot;This movie was excellent!&quot;)
+
+# Generative question answering (v5): verify responses against the supplied context.
+qa = pipeline(&quot;text-generation&quot;, model=&quot;Qwen/Qwen2.5-0.5B-Instruct&quot;)
+result = qa([{ &quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Context: AI means artificial intelligence. What does AI mean?&quot; }], max_new_tokens=32, do_sample=False)
+```
+
+## Core Capabilities
+
+### 1. Pipelines for Quick Inference
+
+Use for simple, optimized inference across many tasks. Supports text generation, classification, NER, image classification, object detection, audio classification, and more.
+
+**When to use**: Quick prototyping, simple inference tasks, no custom preprocessing needed.
+
+See `references/pipelines.md` for comprehensive task coverage and optimization.
+
+### 2. Model Loading and Management
+
+Load pre-trained models with fine-grained control over configuration, device placement, and precision.
+
+**When to use**: Custom model initialization, advanced device management, model inspection.
+
+See `references/models.md` for loading patterns and best practices.
+
+### 3. Text Generation
+
+Generate text with LLMs using various decoding strategies (greedy, beam search, sampling) and control parameters (temperature, top-k, top-p).
+
+**When to use**: Creative text generation, code generation, conversational AI, text completion.
+
+See `references/generation.md` for generation strategies and parameters.
+
+### 4. Training and Fine-Tuning
+
+Fine-tune pre-trained models on custom datasets using the Trainer API with automatic mixed precision, distributed training, and logging.
+
+**When to use**: Task-specific model adaptation, domain adaptation, improving model performance.
+
+See `references/training.md` for training workflows and best practices.
+
+### 5. Tokenization
+
+Convert text to tokens and token IDs for model input, with padding, truncation, and special token handling.
+
+**When to use**: Custom preprocessing pipelines, understanding model inputs, batch processing.
+
+See `references/tokenizers.md` for tokenization details.
+
+## Common Patterns
+
+### Pattern 1: Simple Inference
+For straightforward tasks, use pipelines:
+```python
+pipe = pipeline(&quot;task-name&quot;, model=&quot;model-id&quot;)
+output = pipe(input_data)
+```
+
+### Pattern 2: Custom Model Usage
+For advanced control, load model and tokenizer separately:
+```python
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained(&quot;model-id&quot;)
+model = AutoModelForCausalLM.from_pretrained(&quot;model-id&quot;, device_map=&quot;auto&quot;)
+
+inputs = tokenizer(&quot;text&quot;, return_tensors=&quot;pt&quot;)
+outputs = model.generate(**inputs, max_new_tokens=100)
+result = tokenizer.decode(outputs[0])
+```
+
+### Pattern 3: Fine-Tuning
+For task adaptation, use Trainer:
+```python
+from transformers import Trainer, TrainingArguments
+
+training_args = TrainingArguments(
+    output_dir=&quot;./results&quot;,
+    num_train_epochs=3,
+    per_device_train_batch_size=8,
+)
+
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=train_dataset,
+)
+
+trainer.train()
+```
+
+## Reference Documentation
+
+For detailed information on specific components:
+- **Pipelines**: `references/pipelines.md` - All supported tasks and optimization
+- **Models**: `references/models.md` - Loading, saving, and configuration
+- **Generation**: `references/generation.md` - Text generation strategies and parameters
+- **Training**: `references/training.md` - Fine-tuning with Trainer API
+- **Tokenizers**: `references/tokenizers.md` - Tokenization and preprocessing
+
+## Conflicts
+
+- **K-Dense-AI/scientific-agent-skills** pins Transformers 5.18.0 and states v5 is PyTorch-only, while **foryourhealth111-pixel/Vibe-Skills** and **FreedomIntelligence/OpenClaw-Medical-Skills** give a generic install without a version and do not mention the v5 backend removal.
+- **K-Dense-AI/scientific-agent-skills** uses `max_new_tokens` for causal LMs and notes that `question-answering`/`summarization`/`translation` pipelines were removed in v5, while **foryourhealth111-pixel/Vibe-Skills** and **FreedomIntelligence/OpenClaw-Medical-Skills** use `max_length` and show a `question-answering` pipeline.
+- **K-Dense-AI/scientific-agent-skills** recommends `hf auth login` and `HF_TOKEN`, while **foryourhealth111-pixel/Vibe-Skills** and **FreedomIntelligence/OpenClaw-Medical-Skills** recommend `HUGGINGFACE_TOKEN`.</pre>
+</body>
+</html>

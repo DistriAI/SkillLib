@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>paper-polish</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">academic-paper-polish</a> / paper-polish</p><h1>paper-polish</h1><p class="meta">combined</p><p>The two skills share the name and the high-level goal of improving an academic manuscript, but they define different procedures. The HKUSTDial skill is a language-level polishing method focused on preserving the author&#x27;s meaning, removing AI tone, and handling Chinese-to-English rewriting, with explicit rules against fabricating content and a conservative, single-pass workflow. The brycewang-stanford skill is a LaTeX-specific, 19-step proofreading and verification workflow that includes structural checks (titles, consistency, storyline, theoretical tension), a strict interactive approval loop for every issue, and file-scanning initialization. Neither copy is a reproduction or shortening of the other; crowning one would hide a real alternative approach to &#x27;paper polish&#x27;.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/HKUSTDial/Supervisor-Skills">HKUSTDial/Supervisor-Skills</a></td><td><code>skills/paper-polish/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/67-econfin-workflow-toolkit/paper-polish/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/HKUSTDial/Supervisor-Skills">HKUSTDial/Supervisor-Skills</a></td><td><code>skills/paper-polish/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/67-econfin-workflow-toolkit/paper-polish/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Paper Polish
+
+## Overview
+This skill polishes and verifies an existing academic manuscript. It supports two modes: a language-level polish that preserves the author&#x27;s meaning, and a structured LaTeX proofreading and verification pass. Choose the mode based on the user&#x27;s request and the manuscript format.
+
+## When to Use
+- The user asks to polish, proofread, check, or improve an existing draft.
+- The user wants to remove AI tone, fix awkward wording, or translate a Chinese manuscript into publishable English.
+- The user has a LaTeX paper and wants a comprehensive check of titles, consistency, citations, formatting, and structural coherence.
+
+## When NOT to Use
+- No prose exists yet and the user wants a section written from an idea.
+- The user wants the paper&#x27;s logic skeleton planned from scratch.
+- The user wants a full reviewer-style audit beyond polishing and proofreading.
+
+## Mode 1: Language-Level Polish
+
+### Overriding Rule: Stay Faithful to the Author&#x27;s Meaning
+- Never silently make an edit that changes scientific meaning.
+- Do not strengthen or weaken conclusions, turn correlations into causal claims, or drop qualifiers without explicit author confirmation.
+- Do not delete or heavily compress arguments; suggest cuts instead.
+- Pure language edits (grammar, word order, smoother phrasing with identical meaning) are safe to make freely.
+- Edits that might touch meaning must be flagged for the author to confirm.
+
+### Never Fabricate Content
+- Add no data, numbers, equations, results, citations, or method names not in the original.
+- If a passage lacks evidence, leave a parenthetical note to the author instead of inventing content.
+
+### Conservative by Default
+- Prefer the small edit over the big one, and no edit over the small one.
+- Do not &quot;improve&quot; hedged language into stronger claims.
+- If a structural rewrite is needed, stop and let the author choose between light polish and deep rewrite.
+
+### Polishing Pass
+1. Understand the passage&#x27;s purpose and role in the paper.
+2. Identify whether the problem is surface grammar or structural logic.
+3. Edit within the faithfulness rule, applying section-specific conventions.
+4. Deliver clean polished text and briefly state the main edits, flagging any that might have touched meaning.
+
+### Section Conventions
+- Introduction: positions the work.
+- Methods: enables reproduction.
+- Results: states observations in past tense.
+- Discussion: interprets and hedges.
+- Abstract: miniature paper.
+- Title: searchable and restrained.
+
+### AI-Tone Removal and Chinese-to-English Rewriting
+- Strip AI-generated phrasing and make the prose idiomatic.
+- For Chinese drafts, rewrite into submission-quality English while preserving the author&#x27;s meaning and hedging.
+
+## Mode 2: LaTeX Proofreading and Verification
+
+### Initialization
+1. Receive the paper directory path.
+2. Scan the directory to identify the main LaTeX file, bibliography file, results directory, and any PDF with original tables/figures.
+3. Read all files into context.
+4. Present an inventory and confirm with the user before proceeding.
+
+### Interaction Rule
+For every issue found in every check:
+1. Present the issue clearly (original vs. proposed change, or finding).
+2. Ask the user: &quot;Accept this change? (yes/no/edit)&quot;
+3. Wait for the user&#x27;s response before proceeding to the next issue.
+4. If &quot;yes&quot;, apply the change.
+5. If &quot;no&quot;, skip and move to the next issue.
+6. If &quot;edit&quot; or alternative text is provided, apply the user&#x27;s version.
+7. After all issues in a check are resolved, announce completion and move to the next check.
+
+### The 19 Checks
+Run these checks in order:
+1. Section and Subsection Titles: Optimize titles for academic rigor; no colons.
+2. Table and Figure Titles: Optimize captions for academic rigor; no colons.
+3. Internal Consistency of Arguments: Check for contradictory or inconsistent claims across sections.
+4. Introduction Logic and Flow: Ensure tight flow from motivation to findings to contributions.
+5. Storyline Coherence: Evaluate overall storyline; suggest moving non-essential tables to appendix.
+6. Theoretical Tension in Introduction Motivation: Ensure motivation establishes competing forces or perspectives that make the research question interesting ex ante.
+7. Concise Results Reporting: Check that results are reported concisely and without redundancy.
+8. Cross-Section Repetition: Identify and reduce unnecessary repetition across sections.
+9. Em-Dash Usage: Standardize em-dash usage per style guide.
+10. Auxiliary-Text-to-Footnote Conversion: Convert auxiliary text to footnotes where appropriate.
+11. Citation Formatting: Verify citation format and consistency.
+12. Reference List Completeness: Ensure all in-text citations appear in the bibliography and vice versa.
+13. Equation Numbering and Referencing: Check equation numbering and cross-references.
+14. Table and Figure Numbering: Verify sequential numbering and correct references.
+15. Spelling and Grammar: Run a final pass for spelling and grammar errors.
+16. Formatting Consistency: Check for consistent use of bold, italics, and other formatting.
+17. Margin and Layout Issues: Identify any layout problems that may affect compilation or readability.
+18. Compilation Warnings: Review LaTeX compilation log for warnings and errors.
+19. Final Read-Through: Perform a final holistic read for flow and clarity.
+
+## Conflicts
+- HKUSTDial/Supervisor-Skills::skills/paper-polish/SKILL.md does not mandate a per-issue interactive approval loop, while brycewang-stanford/Auto-Empirical-Research-Skills::skills/67-econfin-workflow-toolkit/paper-polish/SKILL.md requires it for every issue in every check.
+- HKUSTDial/Supervisor-Skills::skills/paper-polish/SKILL.md includes Chinese-to-English rewriting and AI-tone removal, which are not part of the brycewang-stanford/Auto-Empirical-Research-Skills::skills/67-econfin-workflow-toolkit/paper-polish/SKILL.md procedure.
+- brycewang-stanford/Auto-Empirical-Research-Skills::skills/67-econfin-workflow-toolkit/paper-polish/SKILL.md includes LaTeX-specific checks (e.g., em-dash usage, auxiliary-text-to-footnote conversion, compilation warnings) that are absent from the HKUSTDial/Supervisor-Skills::skills/paper-polish/SKILL.md procedure.</pre>
+</body>
+</html>

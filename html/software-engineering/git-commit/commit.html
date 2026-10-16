@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>commit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">git-commit</a> / commit</p><h1>commit</h1><p class="meta">combined</p><p>The three copies overlap on the core task of creating a git commit, but they diverge on scope and constraints. getsentry/skills is a focused, Sentry-specific conventional-commit procedure. sickn33/agentic-awesome-skills is also Sentry-specific but adds branch-protection policy, AI attribution rules, and a broader set of examples. brycewang-stanford/Auto-Empirical-Research-Skills is a generic commit-PR-merge workflow that does not use Sentry conventions and includes PR creation and merge steps the others lack. Crowning one would hide the alternative generic workflow and the extra Sentry constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/commit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/commit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/commit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/commit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/commit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/commit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/commit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-oss-maintainer/skills/commit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/commit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/41-sticerd-eee-sewage-econometrics-check/skills/commit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/14-luischanci-claude-code-research-starter/dot-claude/skills/commit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/28-maxwell2732-paper-replicate-agent-demo/dot-claude/skills/commit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: commit
+description: Create a git commit, optionally with Sentry-style conventional messages, and optionally continue to PR and merge.
+---
+
+# Commit
+
+## Before Committing
+
+1. Check the current branch:
+
+```bash
+git branch --show-current
+```
+
+If the branch is `main` or `master`, create a feature branch unless the user explicitly requested a direct commit. Re-check the branch and stop if it is still `main` or `master`.
+
+2. Inspect the working tree:
+
+```bash
+git status --short
+git diff --cached
+git diff --stat
+git log --oneline -5
+```
+
+Preserve unrelated staged or dirty work. Stage only the files relevant to the change. Do not use `git add -A`. Do not stage files containing secrets or local settings such as `.claude/settings.local.json`.
+
+3. Read repository policy. If the default branch is PR-only, create an authorized topic branch and use the repository&#x27;s native maintainer flow.
+
+## Message Rules
+
+If the repository uses Sentry-style conventional commits, use:
+
+```text
+&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;
+
+&lt;optional body&gt;
+
+&lt;optional footer&gt;
+```
+
+- Scope is optional. Add `!` before `:` for a breaking change.
+- Write the subject in imperative, present tense; capitalize it, omit the trailing period, and keep it at 70 characters or fewer.
+- Keep every line under 100 characters.
+- Use the body only when useful. Explain what changed and why, including previous behavior or motivation when it helps.
+- Never include customer or organization names, user emails, support ticket contents, secrets, or PII. Describe the technical symptom instead.
+
+Allowed types: `feat`, `fix`, `ref`, `perf`, `docs`, `test`, `build`, `ci`, `chore`, `style`, `meta`, `license`, and `revert`.
+
+Use `ref` for refactoring without behavior changes, `style` for formatting without logic changes, and `meta` for repository metadata.
+
+If the repository does not use Sentry conventions, write a descriptive message that explains why the change was made, not just what was changed.
+
+## Footers
+
+- `Fixes &lt;issue&gt;` closes an issue when merged.
+- `Refs &lt;issue&gt;` links an issue without closing it.
+- For breaking changes, add `BREAKING CHANGE: &lt;impact&gt;`.
+
+## AI Attribution
+
+Follow the repository&#x27;s attribution policy. If the repository requires AI attribution, add a `Co-Authored-By` line identifying the actual agent. Do not add phrases like &quot;Generated by AI&quot; or &quot;Written with Claude&quot; in the subject, body, or anywhere else in the commit message.
+
+## Creating the Commit
+
+Use separate `-m` arguments for paragraphs and footers. Never put literal `\n` sequences in a commit message or open an interactive editor.
+
+```bash
+git commit -m &quot;fix(api): Handle null response in user endpoint&quot; \
+  -m &quot;Return 404 when the user API finds a deleted account.&quot; \
+  -m &quot;Fixes SENTRY-5678&quot;
+```
+
+## Optional: Push, PR, and Merge
+
+If the user requests a PR and merge:
+
+1. Push the branch:
+
+```bash
+git push -u origin &lt;branch-name&gt;
+```
+
+2. Create a PR:
+
+```bash
+gh pr create --title &quot;&lt;short title&gt;&quot; --body &quot;$(cat &lt;&lt;&#x27;EOF&#x27;
+## Summary
+&lt;1-3 bullet points&gt;
+
+## Test plan
+&lt;checklist&gt;
+EOF
+)&quot;
+```
+
+3. Merge and clean up:
+
+```bash
+gh pr merge &lt;pr-number&gt; --merge --delete-branch
+git checkout main
+git pull
+```
+
+4. Report the PR URL and what was merged.
+
+## Principles
+
+- Each commit should be a single, stable, independently reviewable change.
+- The repository should be in a working state after each commit.
+- Direct-to-main instructions remain subordinate to server-side branch protection and required checks.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>image-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">spatial-transcriptomics-image-analysis</a> / image-analysis</p><h1>image-analysis</h1><p class="meta">combined</p><p>The two skills cover the same domain but diverge on scope and method. The first copy is a procedural recipe for Squidpy-based feature extraction and basic segmentation on Visium/H&amp;E data. The second copy is a strategic guide for imaging spatial transcriptomics (Xenium/MERFISH/CosMx) that prioritizes segmentation strategy selection (Cellpose, StarDist, Baysor, proseg) and includes critical warnings about segmentation artifacts and spillover. The first copy lacks the strategic decision-making and artifact warnings, while the second copy lacks the specific Visium feature extraction code and H&amp;E deconvolution steps found in the first. Combining them provides both the strategic framework for choosing a segmentation method and the concrete code for feature extraction.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/image-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/image-analysis/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/spatial-transcriptomics-analysis/bioSkills/image-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/image-analysis/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Image Analysis for Spatial Transcriptomics
+
+## 1. Strategic Segmentation Decision
+Before processing, determine the available signal (nuclear stain, membrane stain, or transcript points) to choose the appropriate segmentation method.
+- **Nuclear stain only (DAPI):** Use StarDist for round nuclei or Cellpose (nuclei mode). Note that whole-cell segmentation is inference.
+- **Nuclear + Membrane stain:** Use Cellpose (2-channel) or Mesmer/DeepCell for true whole-cell segmentation.
+- **Transcript points (Xenium/MERFISH):** Use Baysor or proseg for transcript-aware segmentation.
+- **Visium/H&amp;E:** Use Squidpy watershed or Cellpose for approximate boundaries.
+
+**Warning:** Segmentation is a hypothesis, not an observation. Over/under-segmentation and spillover can fabricate false co-expression and cell-cell communication signals. Treat the resulting cell-by-gene matrix as provisional and run contamination QC.
+
+## 2. Access Tissue Images
+```python
+import squidpy as sq
+import scanpy as sc
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage import io, filters, segmentation
+
+# For Visium data
+library_id = list(adata.uns[&#x27;spatial&#x27;].keys())[0]
+img_dict = adata.uns[&#x27;spatial&#x27;][library_id][&#x27;images&#x27;]
+hires = img_dict[&#x27;hires&#x27;]
+lowres = img_dict[&#x27;lowres&#x27;]
+scalef = adata.uns[&#x27;spatial&#x27;][library_id][&#x27;scalefactors&#x27;]
+
+# Create ImageContainer
+img = sq.im.ImageContainer(hires)
+```
+
+## 3. Segmentation
+### Option A: Squidpy Watershed (Baseline)
+```python
+sq.im.segment(img, layer=&#x27;image&#x27;, method=&#x27;watershed&#x27;, channel=0, thresh=0.5)
+seg_mask = img[&#x27;segmented_watershed&#x27;].values
+```
+
+### Option B: Cellpose (Generalist)
+```python
+from cellpose import models
+model = models.Cellpose(model_type=&#x27;nuclei&#x27;) # or &#x27;cyto&#x27; for whole cell
+image = img[&#x27;image&#x27;].values[:, :, 0]
+masks, flows, styles, diams = model.eval(image, diameter=30, channels=[0, 0])
+img.add_img(masks, layer=&#x27;cellpose_masks&#x27;)
+```
+
+### Option C: Transcript-based (Baysor/proseg)
+*Use CLI tools on the molecule table for imaging platforms like Xenium/MERFISH.*
+
+## 4. Extract Image Features (Visium/H&amp;E)
+```python
+sq.im.calculate_image_features(
+    adata,
+    img,
+    features=[&#x27;summary&#x27;, &#x27;histogram&#x27;, &#x27;texture&#x27;],
+    key_added=&#x27;img_features&#x27;,
+    spot_scale=1.0,
+    n_jobs=4,
+)
+```
+
+## 5. H&amp;E Color Deconvolution
+```python
+from skimage.color import rgb2hed
+hed = rgb2hed(hires)
+hematoxylin = hed[:, :, 0]
+eosin = hed[:, :, 1]
+```
+
+## 6. Morphological Features
+```python
+from skimage.measure import regionprops_table
+props = regionprops_table(seg_mask, intensity_image=hires[:, :, 0], properties=[&#x27;label&#x27;, &#x27;area&#x27;, &#x27;eccentricity&#x27;, &#x27;solidity&#x27;, &#x27;mean_intensity&#x27;])
+```
+
+## 7. Downstream Analysis
+Combine expression and image features for clustering, but validate results against segmentation QC metrics to avoid artifacts.</pre>
+</body>
+</html>

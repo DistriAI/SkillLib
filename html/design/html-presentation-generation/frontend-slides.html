@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>frontend-slides</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">html-presentation-generation</a> / frontend-slides</p><h1>frontend-slides</h1><p class="meta">combined</p><p>Both copies describe the same task (zero-dependency, animation-rich HTML presentations) but enforce different, non-interchangeable design systems. The first copy is a strict viewport-fitting and content-density procedure (100vh, clamp(), density limits, PPT conversion phases). The second copy is a design-philosophy and aesthetic procedure (style positions, 8-point grid, specific font stacks, 2026 trends, hardcoded interaction states). Neither is a simple reproduction of the other; combining them is necessary to capture both the structural invariants and the aesthetic constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/frontend-slides/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/frontend-slides/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/frontend-slides/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/frontend-slides/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/frontend-slides/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/frontend-slides/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: frontend-slides
+description: Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files.
+---
+
+# Frontend Slides
+
+Create zero-dependency, animation-rich HTML presentations that run entirely in the browser.
+
+## Core Principles
+1. **Zero Dependencies**: Single HTML files with inline CSS/JS.
+2. **Viewport Fitting (NON-NEGOTIABLE)**: Every slide MUST fit exactly within 100vh. No scrolling within slides.
+3. **Distinctive Design**: Avoid generic &#x27;AI slop.&#x27; Use creative, context-specific aesthetics.
+
+## Design Aesthetics
+- **Style Selection**: Choose a style position (e.g., Trust &amp; Professional, Future &amp; Depth) based on the presentation&#x27;s purpose.
+- **Typography**: Use distinctive fonts (e.g., Clash Display, Satoshi). Avoid generic fonts like Arial or Inter. Use significant weight and size contrast.
+- **Color &amp; Theme**: Commit to a cohesive aesthetic using CSS variables. Use complementary colors for guidance.
+- **Motion**: Use CSS animations for high-impact moments like staggered reveals.
+
+## Viewport Fitting Rules
+- Every `.slide` must have `height: 100vh; overflow: hidden;`.
+- Use `clamp()` for font sizes and spacing to ensure responsiveness.
+- Include `prefers-reduced-motion` support.
+- **Content Density Limits**:
+  - Title slide: 1 heading + 1 subtitle.
+  - Content slide: 1 heading + 4-6 bullets OR 2 paragraphs.
+  - Feature grid: Max 6 cards.
+  - Code slide: Max 8-10 lines.
+
+## System Integrity Constraints
+- **Spacing**: Use an 8-point grid (8, 12, 16, 24, 32, 40px) for padding and gaps.
+- **Corner Radius**: Default to 12px; use 24px or full for &#x27;Care&#x27; styles.
+- **Interaction States**: For static HTML, hardcode different interaction states (default, hover, selected) on similar components to show the full lifecycle.
+
+## Workflow
+1. **Detect Mode**: Determine if creating new, converting PPT, or enhancing existing.
+2. **Content Discovery**: Ask for purpose, length, and audience.
+3. **Design Exploration**: Generate visual previews of different aesthetic directions.
+4. **Generation**: Build the presentation following viewport and density rules.
+5. **Verification**: Ensure no slide overflows 100vh and all content fits within density limits.</pre>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>marketing-ideas</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">marketing-ideas</a> / marketing-ideas</p><h1>marketing-ideas</h1><p class="meta">combined</p><p>The copies overlap on the core task of generating marketing ideas for SaaS, but they disagree on the procedure and output. phuryn/pm-skills uses a fixed prompt to generate exactly 5 cost-effective ideas with channel, message, rationale, and cost efficiency. coreyhaines31 and LeoYeAI use a 139-idea library, ask clarifying questions, and suggest 3-5 ideas with a specific output format. sickn33 adds a mandatory Marketing Feasibility Score (MFS) calculation and a 140-idea library, requiring a different output format that includes the score and risk. Crowning one copy would hide the distinct scoring methodology and the different library sizes and output structures.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/phuryn/pm-skills">phuryn/pm-skills</a></td><td><code>pm-marketing-growth/skills/marketing-ideas/SKILL.md</code></td></tr><tr><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/marketing-ideas/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/marketing-ideas/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/marketing-ideas/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/phuryn/pm-skills">phuryn/pm-skills</a></td><td><code>pm-marketing-growth/skills/marketing-ideas/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/coreyhaines31/marketingskills">coreyhaines31/marketingskills</a></td><td><code>skills/marketing-ideas/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>skills/marketing-ideas/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/marketing-ideas/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-ideas/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/marketing-ideas/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/marketing-ideas/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/marketing-skills/references/marketing-ideas/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: marketing-ideas
+description: &quot;Generate prioritized, context-aware marketing ideas for SaaS products using a feasibility scoring system and a curated idea library.&quot;
+---
+# Marketing Ideas for SaaS
+
+You are a marketing strategist with a curated library of proven marketing ideas. Your goal is to select, score, and prioritize the right marketing strategies for the user&#x27;s specific situation, stage, and resources.
+
+## How to Use This Skill
+
+1. **Check for Context**: If a product marketing context file exists (e.g., `.agents/product-marketing.md`), read it. Otherwise, ask for:
+   - Product type &amp; ICP
+   - Stage (pre-launch / early / growth / scale)
+   - Budget &amp; team constraints
+   - Primary goal (traffic, leads, revenue, retention)
+
+2. **Shortlist Candidates**: Identify 6-10 potentially relevant ideas from the library. Eliminate ideas that clearly mismatch constraints.
+
+3. **Score Feasibility**: Apply the Marketing Feasibility Score (MFS) to each candidate.
+   - **MFS Formula**: `(Impact + Fit + Speed) - (Effort + Cost)`
+   - Each dimension is scored 1-5. Impact, Fit, and Speed are positive; Effort and Cost are negative.
+   - **Interpretation**:
+     - 10-13: Do now
+     - 7-9: Prioritize
+     - 4-6: Test selectively
+     - 1-3: Defer
+     - &lt;= 0: Do not recommend
+
+4. **Recommend Top Ideas**: Recommend only the top 3-5 ideas with MFS &gt; 0.
+
+## Output Format
+
+For each recommended idea, provide:
+
+- **Idea Name**: One-line description
+- **MFS Score**: The calculated score and interpretation
+- **Why It Fits**: Connection to their situation
+- **How to Start**: First 2-3 implementation steps
+- **Expected Outcome**: What success looks like
+- **Resources Needed**: Time, budget, skills required
+- **Primary Risk**: Key execution risk
+
+## Idea Library Categories
+
+- Content &amp; SEO
+- Competitor
+- Free Tools
+- Paid Ads
+- Social &amp; Community
+- Email
+- Partnerships
+- Events
+- PR &amp; Media
+- Launches
+- Product-Led
+- Content Formats
+- Unconventional
+- Platforms
+- International
+- Developer
+- Audience-Specific
+
+## Guardrails
+
+- Do not dump long lists.
+- Do not recommend unscored ideas.
+- Bias toward learning velocity and compounding channels.
+- Optimize for decision clarity, not creativity.</pre>
+</body>
+</html>

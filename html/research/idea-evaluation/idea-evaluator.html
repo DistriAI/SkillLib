@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>idea-evaluator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">idea-evaluation</a> / idea-evaluator</p><h1>idea-evaluator</h1><p class="meta">combined</p><p>The two copies share the name and the high-level goal of evaluating an idea, but they implement fundamentally different procedures. The HKUSTDial copy is a research-specific skill that scores a draft against a five-dimension framework, runs a fatal-flaws audit, checks lifecycle/capability, and returns a reviewer-style verdict. The sickn33 copy is a general-purpose orchestration skill that simulates a three-turn Pro/Con debate and returns a business-style verdict. Neither copy is a reproduction, shortening, or wrapper of the other; crowning one would hide a real alternative approach.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/HKUSTDial/Supervisor-Skills">HKUSTDial/Supervisor-Skills</a></td><td><code>skills/idea-evaluator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/idea-evaluator/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/HKUSTDial/Supervisor-Skills">HKUSTDial/Supervisor-Skills</a></td><td><code>skills/idea-evaluator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/idea-evaluator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/idea-evaluator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/idea-evaluator/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: idea-evaluator
+description: &gt;-
+  Evaluates a preliminary idea using either a structured research framework or a
+  multi-agent debate, depending on the idea&#x27;s domain and the user&#x27;s needs.
+  Returns a clear verdict on whether the idea is worth pursuing.
+---
+
+# Idea Evaluator
+
+## Overview
+
+This skill evaluates a preliminary idea from the perspective of a rigorous
+reviewer or an impartial judge. It supports two evaluation modes:
+
+1. **Research Mode:** Scores the idea against a five-dimension framework
+   (Higher, Faster, Stronger, Cheaper, Broader), runs a fatal-flaws audit,
+   checks lifecycle and capability matching, and returns a reviewer-style
+   verdict.
+2. **Debate Mode:** Orchestrates a three-turn debate between a Pro agent and a
+   Con agent, then delivers a business-style verdict.
+
+The goal is to kill weak ideas early and to shape promising ideas into stronger
+forms before significant investment begins.
+
+## When to Use This Skill
+
+- The user has a draft idea and asks whether it is worth pursuing.
+- The user asks for a novelty check, feasibility assessment, or scoring.
+- The user is comparing candidate ideas and needs a structured trade-off.
+- The user wants to stress-test an assumption before committing to code or a
+  paper scope.
+
+## When NOT to Use This Skill
+
+- The user has already implemented the idea and is writing the paper or
+  product documentation.
+- The user explicitly wants brainstorming of new ideas from scratch.
+- The user asks for review of an existing manuscript or codebase.
+
+## Core Procedure
+
+### Step 1: Classify the Idea and Select Mode
+
+Read the user&#x27;s idea description. In one paragraph, state whether the idea
+reads as a Novel Problem, Novel Method, or New Setting. Classify the research
+paradigm by method, not by department name:
+
+- **STEM:** Experiments, benchmarks, ablations, or model architectures. Use
+  **Research Mode**.
+- **Humanities:** Text analysis, archives, or conceptual argument. Use
+  **Research Mode** with substitute frameworks.
+- **Empirical Social Science:** Surveys, interviews, statistics, or fieldwork.
+  Use **Research Mode** with substitute frameworks.
+- **Finance/Economics:** Regressions, IV, DID, RDD, or panel data. Use
+  **Research Mode** with substitute frameworks.
+- **Law:** Statutes, cases, or doctrine. Use **Research Mode** with substitute
+  frameworks.
+- **General/Business/Product:** Features, apps, or projects without a specific
+  research paradigm. Use **Debate Mode**.
+
+If the paradigm is unclear, ask one question: &quot;Is the core method experiments,
+surveys, text analysis, theoretical derivation, or product development?&quot;
+
+### Step 2A: Research Mode – Fatal-Flaws Audit (Early Gate)
+
+Run the fatal-flaws audit before scoring. Identify at most two fatal flaws.
+For each, state the flaw, cite the detection rule, and recommend a concrete
+defense.
+
+**Ground the novelty flaw in real retrieval whenever possible.** Extract two
+or three keyword groups from the idea, search, and name the three to five
+closest published works with title, authors, and year. For each, state which
+axis actually differs. A similar title alone never establishes duplication.
+
+**A data-refuted core mechanism is an automatic CRITICAL.** If the user&#x27;s own
+reported data already show the core mechanism matched or beaten by a baseline,
+lock the verdict to Reject and Pivot.
+
+**Short-circuit rule.** If any fatal flaw is tagged CRITICAL, stop here and
+emit the verdict directly: Reject and Pivot. Do not run the five-dimension
+scoring, paradigm-shift probe, feasibility check, or integrity gate.
+
+If no CRITICAL flaw is found, continue to Step 3A.
+
+### Step 3A: Research Mode – Five-Dimension Scoring and Lifecycle Matching
+
+Score the idea against the five improvement dimensions: Higher, Faster,
+Stronger, Cheaper, Broader. Match the idea&#x27;s lifecycle against the user&#x27;s
+actual capability and available hours per week. Probe whether the idea has
+paradigm-shift potential.
+
+### Step 4A: Research Mode – Verdict
+
+Return one of three verdicts: Strong Accept, Accept with Revisions, or Reject
+and Pivot. Provide a rationale grounded in the scoring and fatal-flaws audit.
+
+### Step 2B: Debate Mode – Initialize the Debate
+
+Assume the role of the Orchestrator. Introduce the debate and clearly state
+the idea being evaluated. Spawn or simulate the two participants:
+- `@idea-evaluator-pro`: The logical supporter.
+- `@idea-evaluator-con`: The constructive critic.
+
+### Step 3B: Debate Mode – The Debate (3 Turns)
+
+Conduct a 3-turn debate where the Pro and Con agents respond to each other.
+- **Turn 1 (Initial Pitches):** Pro presents the strongest case for the idea.
+  Con presents the strongest immediate risks and flaws.
+- **Turn 2 (Rebuttals):** Pro addresses Con&#x27;s risks. Con challenges Pro&#x27;s
+  optimism.
+- **Turn 3 (Closing Statements):** Both agents summarize their final stance on
+  why the idea will succeed or fail.
+
+Ensure the agents do not blindly agree/disagree but base their arguments on
+logic, market realities, and technical feasibility.
+
+### Step 4B: Debate Mode – Final Verdict
+
+Once the debate concludes, the Orchestrator steps in as the Judge. Provide a
+comprehensive summary formatted with:
+- **Pros:** The strongest validated points in favor.
+- **Cons:** The most critical risks identified.
+- **Final Verdict:** A definitive recommendation (e.g., &quot;Strongly
+  Recommended&quot;, &quot;Proceed with Caution&quot;, &quot;Pivot Required&quot;, &quot;Not Worth
+  Building&quot;).
+- **Why:** A brief justification summarizing the debate outcome.
+
+## Best Practices
+
+- Ensure the Pro and Con agents directly address each other&#x27;s points during
+  rebuttals.
+- The Orchestrator must remain strictly neutral until the Final Verdict.
+- Don&#x27;t let the agents devolve into generic AI pleasantries; keep the debate
+  sharp and analytical.
+- Don&#x27;t skip the debate steps; the back-and-forth is crucial for deep
+  validation.
+- In Research Mode, ground novelty judgments in real retrieval whenever
+  possible.
+- In Research Mode, do not invent optimistic thresholds for data-refuted
+  mechanisms.
+
+## Limitations
+
+- The verdict is based on simulated reasoning and logic, not actual market
+  data or user feedback.
+- This skill is for brainstorming and validation, not a guarantee of business
+  success or research acceptance.
+- In Research Mode, &quot;not found&quot; in literature search does not prove novelty;
+  report it as &quot;no directly overlapping work retrieved under these keywords&quot;.
+
+## Conflicts
+
+- **HKUSTDial/Supervisor-Skills** uses a five-dimension framework, fatal-flaws
+  audit, and lifecycle/capability matching to produce a reviewer-style verdict.
+- **sickn33/agentic-awesome-skills** orchestrates a three-turn Pro/Con debate
+  and produces a business-style verdict.
+- **HKUSTDial/Supervisor-Skills** requires literature retrieval to ground
+  novelty judgments and routes non-STEM ideas to substitute frameworks.
+- **sickn33/agentic-awesome-skills** does not use dimension scoring, fatal-flaw
+  taxonomies, or literature retrieval; it relies on simulated multi-agent
+  debate and logical argumentation.</pre>
+</body>
+</html>

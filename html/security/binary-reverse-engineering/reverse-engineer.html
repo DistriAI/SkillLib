@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>reverse-engineer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">binary-reverse-engineering</a> / reverse-engineer</p><h1>reverse-engineer</h1><p class="meta">combined</p><p>The two copies share the same core reverse-engineering methodology, tool list, code patterns, and ethics sections, but they disagree on how authorization is enforced. The rmyndharis copy treats authorization as a clarification step within the response approach, while the sickn33 copy adds a mandatory confirmation gate that requires explicit written authorization and a read-only fallback before any probing or exploitation. Crowning one copy would hide the stricter authorization workflow, so the combined instruction should include both the methodology and the explicit confirmation gate.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/reverse-engineer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/reverse-engineer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/reverse-engineer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/reverse-engineer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/reverse-engineer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/reverse-engineer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Reverse Engineering Skill
+
+## Scope
+Use this skill for binary analysis, disassembly, decompilation, and software analysis tasks, including CTF challenges, security research, and understanding undocumented software. Do not use it for unrelated domains or tools outside this scope.
+
+## Authorization Gate
+Before running any command that probes, exploits, changes, persists on, extracts data from, or attempts credential access against a target:
+1. Ask the user to state the exact target URL, IP, account, or resource.
+2. Ask the user to confirm written authorization and the permitted scope.
+3. Show the exact command(s) and explain their expected effect.
+4. Wait for explicit confirmation in the current conversation.
+
+Without that confirmation, remain read-only and provide defensive guidance only. Prefer a sandbox, disposable VM, or controlled lab.
+
+## Common RE Scripting Environments
+- IDAPython (IDA Pro scripting)
+- Ghidra scripting (Java/Python via Jython)
+- r2pipe (radare2 Python API)
+- pwntools (CTF/exploitation toolkit)
+- capstone (disassembly framework)
+- keystone (assembly framework)
+- unicorn (CPU emulator framework)
+- angr (symbolic execution)
+- Triton (dynamic binary analysis)
+
+## Instructions
+- Clarify goals, constraints, and required inputs.
+- Apply relevant best practices and validate outcomes.
+- Provide actionable steps and verification.
+
+## Analysis Methodology
+
+### Phase 1: Reconnaissance
+1. File identification: Determine file type, architecture, compiler.
+2. Metadata extraction: Strings, imports, exports, resources.
+3. Packer detection: Identify packers, protectors, obfuscators.
+4. Initial triage: Assess complexity, identify interesting regions.
+
+### Phase 2: Static Analysis
+1. Load into disassembler: Configure analysis options appropriately.
+2. Identify entry points: Main function, exported functions, callbacks.
+3. Map program structure: Functions, basic blocks, control flow.
+4. Annotate code: Rename functions, define structures, add comments.
+5. Cross-reference analysis: Track data and code references.
+
+### Phase 3: Dynamic Analysis
+1. Environment setup: Isolated VM, network monitoring, API hooks.
+2. Breakpoint strategy: Entry points, API calls, interesting addresses.
+3. Trace execution: Record program behavior, API calls, memory access.
+4. Input manipulation: Test different inputs, observe behavior changes.
+
+### Phase 4: Documentation
+1. Function documentation: Purpose, parameters, return values.
+2. Data structure documentation: Layouts, field meanings.
+3. Algorithm documentation: Pseudocode, flowcharts.
+4. Findings summary: Key discoveries, vulnerabilities, behaviors.
+
+## Response Approach
+1. Clarify scope: Ensure the analysis is for authorized purposes.
+2. Understand objectives: What specific information is needed?
+3. Recommend tools: Suggest appropriate tools for the task.
+4. Provide methodology: Step-by-step analysis approach.
+5. Explain findings: Clear explanations with supporting evidence.
+6. Document patterns: Note interesting code patterns, techniques.
+
+## Code Pattern Recognition
+
+### Common Patterns
+```c
+// String obfuscation (XOR)
+for (int i = 0; i &lt; len; i++)
+    str[i] ^= key;
+
+// Anti-debugging (IsDebuggerPresent)
+if (IsDebuggerPresent())
+    exit(1);
+
+// API hashing (common in malware)
+hash = 0;
+while (*name)
+    hash = ror(hash, 13) + *name++;
+
+// Stack string construction
+char s[8];
+*(DWORD*)s = 0x6C6C6548;  // &quot;Hell&quot;
+*(DWORD*)(s+4) = 0x6F;     // &quot;o\0&quot;
+```
+
+### Calling Conventions
+- x86 cdecl: Args on stack, caller cleans.
+- x86 stdcall: Args on stack, callee cleans.
+- x64 Windows: RCX, RDX, R8, R9, then stack.
+- x64 System V: RDI, RSI, RDX, RCX, R8, R9, then stack.
+- ARM: R0-R3, then stack.
+
+## Security &amp; Ethics
+
+### Authorized Use Only
+- Security research with proper authorization.
+- CTF competitions and educational challenges.
+- Malware analysis for defensive purposes.
+- Vulnerability disclosure through responsible channels.
+- Understanding software for interoperability.
+
+### Never Assist With
+- Unauthorized access to systems.
+- Creating malware for malicious purposes.
+- Bypassing software licensing illegitimately.
+- Intellectual property theft.
+- Any illegal activities.
+
+## Example Interactions
+
+### CTF Binary Challenge
+1. Identify the binary type with `file` and `checksec`.
+2. Load in Ghidra or IDA and find `main()`.
+3. Look for string comparisons, crypto functions, and input validation logic.
+4. Set breakpoints on comparison functions in GDB.
+5. Examine memory at the comparison point to see the expected value.
+
+### Library Analysis
+1. Static analysis: list exports, find auth-related functions, and analyze exported functions in IDA or Ghidra.
+2. Dynamic analysis: hook API calls with Frida, monitor network traffic, and trace function parameters.
+3. Documentation: document function signatures, map data structures, and note security considerations.</pre>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>grill-with-docs</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">plan-grilling-with-docs</a> / grill-with-docs</p><h1>grill-with-docs</h1><p class="meta">combined</p><p>The first copy is the canonical, minimal instruction: call the Skill tool twice for &#x27;grilling&#x27; and &#x27;domain-modeling&#x27;. The second copy is a catalog wrapper that adds operational constraints (inspect existing ADR/glossary conventions, record only confirmed answers, mark open proposals as Proposed, preserve conflicting alternatives, review the diff) and a conditional guard for domain-modeling. These are material steps the first copy lacks, so crowning the first would hide a real alternative procedure.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/engineering/grill-with-docs/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/grill-with-docs/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/engineering/grill-with-docs/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/grill-with-docs/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/grill-with-docs/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/grill-with-docs/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: grill-with-docs
+description: A relentless interview to sharpen a plan or design, which also creates docs (ADR&#x27;s and glossary) as we go.
+disable-model-invocation: true
+---
+
+## Steps
+
+1. Inspect existing ADR and glossary conventions in the project before starting.
+2. Use the installed `grilling` procedure to ask one meaningful question at a time.
+3. Record only confirmed answers in authorized project docs. Mark open proposals as Proposed. Preserve conflicting alternatives.
+4. Use the `domain-modeling` procedure only if it is installed and relevant to the current plan or design. Do not invent a slash-command dependency.
+5. Review the resulting diff of the generated or updated docs before treating them as final.
+
+## Limitations
+
+- Requires the upstream tool, account, API key, or local setup when the workflow names one.
+- Does not authorize destructive, production, paid, or external-message actions without explicit user approval.
+- Validate generated artifacts or recommendations against the user&#x27;s real sources before treating them as final.</pre>
+</body>
+</html>

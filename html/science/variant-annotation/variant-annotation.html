@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>variant-annotation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">variant-annotation</a> / variant-annotation</p><h1>variant-annotation</h1><p class="meta">combined</p><p>The three skills cover the same high-level task but operate at different levels of abstraction and tooling. The first (aipoch) is a high-level wrapper for a Python script that queries ClinVar/dbSNP for clinical significance. The second (FreedomIntelligence) is a practical guide for using command-line tools (bcftools, VEP, SnpEff, ANNOVAR) to add annotations to VCF files. The third (GPTomics) is a deep-dive into the theoretical and practical pitfalls of variant annotation, focusing on reproducibility, transcript selection (MANE vs RefSeq), and normalization issues. No single copy contains the full procedure; the first lacks the CLI tooling details, the second lacks the deep theoretical context and specific clinical reporting standards (MANE), and the third lacks the simple &#x27;how-to&#x27; commands for basic annotation. Combining them provides a complete workflow from basic annotation to clinical-grade reproducibility.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/variant-annotation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/variant-annotation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/variant-annotation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/variant-annotation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/variant-interpretation-acmg/bioSkills/variant-annotation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>variant-calling/variant-annotation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Variant Annotation
+
+## 1. Preparation and Normalization
+Before annotation, ensure your VCF is normalized to avoid discordant results.
+```bash
+# Split multiallelics and left-align indels
+bcftools norm -f reference.fa -m-any input.vcf.gz -Oz -o normalized.vcf.gz
+```
+**Critical:** Confirm the genome build (GRCh37 vs GRCh38) of your VCF matches your annotation sources (e.g., gnomAD v2 is GRCh37, v3/v4 are GRCh38).
+
+## 2. Choose Annotation Strategy
+- **For Clinical Reporting:** Use MANE Select transcripts on GRCh38. Avoid `VEP --pick` as it is non-deterministic for clinical use.
+- **For Research:** Ensembl/GENCODE transcripts may be used, but document the transcript set used.
+
+## 3. Execute Annotation
+### Option A: Ensembl VEP (Recommended for Comprehensive Annotation)
+```bash
+vep -i normalized.vcf -o annotated.vcf \
+    --vcf \
+    --cache --offline \
+    --species homo_sapiens \
+    --assembly GRCh38 \
+    --mane_select \
+    --everything \
+    --fork 4
+```
+*Note: `--everything` includes SIFT, PolyPhen, HGVS, and frequencies. Add `--plugin CADD` or `--plugin dbNSFP` for additional predictors.*
+
+### Option B: SnpEff (Fast Batch Annotation)
+```bash
+snpEff ann GRCh38.105 normalized.vcf &gt; annotated.vcf
+# Add dbSNP/ClinVar
+SnpSift annotate dbsnp.vcf.gz annotated.vcf &gt; final_annotated.vcf
+```
+
+### Option C: Single Variant Query (Python)
+If you only need clinical significance for specific variants (rsID/HGVS), use the `VariantAnnotator` Python class from the aipoch skill:
+```python
+from scripts.main import VariantAnnotator
+annotator = VariantAnnotator()
+result = annotator.query_variant(&quot;rs80357410&quot;)
+```
+
+## 4. Interpretation and QC
+- **Reproducibility:** Record the exact tool versions, transcript set, and genome build used.
+- **HGVS:** Do not hand-derive HGVS strings from VCF POS. Rely on the engine&#x27;s output, but verify 3&#x27;-shifting for indels.
+- **Concordance:** If results differ between tools, check the transcript model and engine version. Discordance is common in indels and splice regions.
+
+## 5. Output
+Ensure the final VCF contains:
+- Consequence type (SO term)
+- HGVS cDNA and Protein changes
+- Population frequencies (gnomAD, 1000G)
+- Clinical significance (ClinVar, ACMG criteria if available)
+- Pathogenicity scores (CADD, REVEL, SIFT, PolyPhen)</pre>
+</body>
+</html>

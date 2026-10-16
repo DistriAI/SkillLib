@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ena-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">science</a> / <a href="index.html">ena-database-access</a> / ena-database</p><h1>ena-database</h1><p class="meta">combined</p><p>The copies overlap heavily on ENA data types, Portal vs Browser API roles, formats, and rate limits, but they disagree on operational details and each has material steps the others lack. The aipoch copy adds explicit dependencies, a User-Agent, a complete runnable script, and a concrete exponential-backoff implementation. The Vibe-Skills and OpenClaw copies add browser-based search modes (free text, BLAST, Rulespace), cross-reference and CRAM registry endpoints, and a bulk-download pattern. Crowning one copy would hide the runnable pipeline guidance in one and the broader endpoint/search coverage in the others.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/ena-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/ena-database/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/ena-database/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/ena-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Evidence Insight/ena-database/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/ena-database/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: ena-database
+description: &quot;Access European Nucleotide Archive via API/FTP. Retrieve DNA/RNA sequences, raw reads (FASTQ), genome assemblies by accession, for genomics and bioinformatics pipelines. Supports multiple formats.&quot;
+---
+
+# ENA Database
+
+## Overview
+
+The European Nucleotide Archive (ENA) is a public repository for nucleotide sequence data and associated metadata. Use REST APIs and FTP/Aspera to access DNA/RNA sequences, raw reads, genome assemblies, and functional annotations for genomics and bioinformatics pipelines.
+
+## When to Use
+
+Use this skill when you need to:
+
+- Retrieve nucleotide sequences or raw sequencing reads by accession
+- Search for samples, studies, runs, experiments, or assemblies by metadata criteria
+- Download FASTQ files or genome assemblies for analysis
+- Query taxonomic information for organisms
+- Access sequence annotations and functional data
+- Integrate ENA data into bioinformatics pipelines
+- Perform cross-reference searches to related databases
+- Bulk download datasets via FTP or Aspera
+
+## Dependencies
+
+- Python &gt;=3.9
+- requests &gt;=2.31.0
+- Optional: lxml &gt;=4.9.0 for XML parsing when using the Browser API
+
+## Data Types and Structure
+
+ENA organizes data into hierarchical object types:
+
+- **Studies/Projects**: Group related data and control release dates. Studies are the primary unit for citing archived data.
+- **Samples**: Units of biomaterial from which sequencing libraries were produced.
+- **Raw Reads**: Consist of Experiments (sequencing methods, library preparation, instrument details) and Runs (references to data files from a single sequencing run).
+- **Assemblies**: Genome, transcriptome, metagenome, or metatranscriptome assemblies at various completion levels.
+- **Sequences**: Assembled and annotated sequences in the EMBL Nucleotide Sequence Database.
+- **Analyses**: Results from computational analyses of sequence data.
+- **Taxonomy Records**: Taxonomic information including lineage and rank.
+
+## Programmatic Access
+
+Consult `references/api_reference.md` for detailed endpoint documentation.
+
+### Key APIs
+
+- **ENA Portal API** - Advanced search across all ENA data types. Use for complex queries and metadata searches. Documentation: https://www.ebi.ac.uk/ena/portal/api/doc
+- **ENA Browser API** - Direct retrieval of records and metadata by accession. Returns XML. Documentation: https://www.ebi.ac.uk/ena/browser/api/doc
+- **ENA Taxonomy REST API** - Query taxonomic information including lineage and rank.
+- **ENA Cross Reference Service** - Access related records from external databases. Endpoint: https://www.ebi.ac.uk/ena/xref/rest/
+- **CRAM Reference Registry** - Retrieve reference sequences by MD5 or SHA1 checksums. Endpoint: https://www.ebi.ac.uk/ena/cram/
+
+### Rate Limiting
+
+All APIs have a rate limit of 50 requests per second. Exceeding this returns HTTP 429 (Too Many Requests). Implement exponential backoff when receiving HTTP 429 responses. Batch requests when possible and use bulk download tools for large datasets instead of iterating API calls.
+
+## Searching and Retrieving Data
+
+### Browser-Based Search
+
+- Free text search across all fields
+- Sequence similarity search (BLAST integration)
+- Cross-reference search to find related records
+- Advanced search with Rulespace query builder
+
+### Programmatic Queries
+
+- Use Portal API for advanced searches at scale
+- Filter by data type, date range, taxonomy, or metadata fields
+- Download results as tabulated metadata summaries or XML records
+
+### Data Retrieval Formats
+
+**Metadata Formats:**
+- XML (native ENA format)
+- JSON (via Portal API)
+- TSV/CSV (tabulated summaries)
+
+**Sequence Data:**
+- FASTQ (raw reads)
+- BAM/CRAM (aligned reads)
+- FASTA (assembled sequences)
+- EMBL flat file format (annotated sequences)
+
+**Download Methods:**
+- Direct API download (small files)
+- FTP for bulk data transfer
+- Aspera for high-speed transfer of large datasets
+- enaBrowserTools command-line utility for bulk downloads
+
+## Example Usage
+
+The following script searches ENA for runs in a study via the Portal API, fetches one run&#x27;s record via the Browser API, and retrieves taxonomy lineage via the Taxonomy REST API.
+
+```python
+#!/usr/bin/env python3
+import sys
+import time
+import requests
+
+PORTAL_SEARCH = &quot;https://www.ebi.ac.uk/ena/portal/api/search&quot;
+BROWSER_XML = &quot;https://www.ebi.ac.uk/ena/browser/api/xml&quot;
+TAXONOMY = &quot;https://www.ebi.ac.uk/ena/taxonomy/rest&quot;
+
+SESSION = requests.Session()
+SESSION.headers.update({&quot;User-Agent&quot;: &quot;ena-database-skill/1.0&quot;})
+
+def get_with_backoff(url, params=None, max_retries=6, timeout=30):
+    delay = 1.0
+    for attempt in range(max_retries):
+        r = SESSION.get(url, params=params, timeout=timeout)
+        if r.status_code != 429:
+            r.raise_for_status()
+            return r
+        time.sleep(delay)
+        delay *= 2
+    r.raise_for_status()
+
+def search_runs_by_study(study_accession, limit=5):
+    params = {
+        &quot;result&quot;: &quot;read_run&quot;,
+        &quot;query&quot;: f&quot;study_accession={study_accession}&quot;,
+        &quot;format&quot;: &quot;json&quot;,
+        &quot;limit&quot;: limit,
+        &quot;fields&quot;: &quot;run_accession,study_accession,sample_accession,experiment_accession,tax_id,scientific_name,fastq_ftp&quot;
+    }
+    r = get_with_backoff(PORTAL_SEARCH, params=params)
+    return r.json()
+
+def fetch_run_xml(run_accession):
+    url = f&quot;{BROWSER_XML}/{run_accession}&quot;
+    r = get_with_backoff(url)
+    return r.text
+
+def fetch_taxonomy_lineage(tax_id):
+    url = f&quot;{TAXONOMY}/tax-id/{tax_id}&quot;
+    r = get_with_backoff(url)
+    return r.json()
+
+def main():
+    if len(sys.argv) &lt; 2:
+        print(&quot;Usage: python ena_example.py &lt;STUDY_ACCESSION&gt;  (e.g., PRJEB1234)&quot;, file=sys.stderr)
+        sys.exit(2)
+
+    study = sys.argv[1]
+    runs = search_runs_by_study(study_accession=study, limit=5)
+
+    if not runs:
+        print(f&quot;No runs found for study {study}&quot;)
+        return
+
+    print(f&quot;Found {len(runs)} runs for study {study}&quot;)
+    first = runs[0]
+    run_acc = first.get(&quot;run_accession&quot;)
+    tax_id = first.get(&quot;tax_id&quot;)
+
+    print(&quot;\nFirst run summary (Portal API JSON):&quot;)
+    for k in [&quot;run_accession&quot;, &quot;sample_accession&quot;, &quot;experiment_accession&quot;, &quot;scientific_name&quot;, &quot;tax_id&quot;, &quot;fastq_ftp&quot;]:
+        print(f&quot;  {k}: {first.get(k)}&quot;)
+
+    if run_acc:
+        xml = fetch_run_xml(run_acc)
+        print(&quot;\nBrowser API XML (first 600 chars):&quot;)
+        print(xml[:600])
+
+    if tax_id:
+        tax = fetch_taxonomy_lineage(tax_id)
+        print(&quot;\nTaxonomy lineage (ENA Taxonomy REST API):&quot;)
+        rec = tax[0] if isinstance(tax, list) and tax else tax
+        print(f&quot;  scientificName: {rec.get(&#x27;scientificName&#x27;)}&quot;)
+        print(f&quot;  rank: {rec.get(&#x27;rank&#x27;)}&quot;)
+        print(f&quot;  lineage: {rec.get(&#x27;lineage&#x27;)}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+```
+
+Run:
+
+```bash
+python ena_example.py PRJEB1234
+```
+
+## Common Use Cases
+
+**Retrieve raw sequencing reads by accession:**
+```python
+accession = &quot;ERR123456&quot;
+url = f&quot;https://www.ebi.ac.uk/ena/browser/api/xml/{accession}&quot;
+```
+
+**Search for all samples in a study:**
+```python
+study_id = &quot;PRJNA123456&quot;
+url = f&quot;https://www.ebi.ac.uk/ena/portal/api/search?result=sample&amp;query=study_accession={study_id}&amp;format=tsv&quot;
+```
+
+**Find assemblies for a specific organism:**
+```python
+organism = &quot;Escherichia coli&quot;
+url = f&quot;https://www.ebi.ac.uk/ena/portal/api/search?result=assembly&amp;query=tax_tree({organism})&amp;format=json&quot;
+```
+
+**Get taxonomic lineage:**
+```python
+taxon_id = &quot;562&quot;
+url = f&quot;https://www.ebi.ac.uk/ena/taxonomy/rest/tax-id/{taxon_id}&quot;
+```
+
+## Integration with Analysis Pipelines
+
+**Bulk Download Pattern:**
+1. Search for accessions matching criteria using Portal API
+2. Extract file URLs from search results
+3. Download files via FTP or using enaBrowserTools
+4. Process downloaded data in pipeline
+
+**BLAST Integration:**
+Integrate with EBI&#x27;s NCBI BLAST service (REST/SOAP API) for sequence similarity searches against ENA sequences.
+
+## Best Practices
+
+- Implement exponential backoff when receiving HTTP 429 responses
+- Batch requests when possible to stay within 50 req/sec limit
+- Use bulk download tools for large datasets instead of iterating API calls
+- Always cite using Study/Project accessions when referencing archived data
+
+## Conflicts
+
+- aipoch/medical-research-skills specifies Python &gt;=3.9, requests &gt;=2.31.0, optional lxml &gt;=4.9.0, and a User-Agent header; the other copies do not specify dependencies or User-Agent
+- aipoch/medical-research-skills provides a concrete exponential-backoff implementation with max_retries=6 and timeout=30; the other copies only recommend exponential backoff without parameters
+- Vibe-Skills and OpenClaw list browser-based search modes (free text, BLAST, Rulespace) and cross-reference/CRAM endpoints; aipoch omits these in the visible text
+- Vibe-Skills and OpenClaw include a bulk-download pattern and BLAST integration section; aipoch focuses on a runnable search-fetch-taxonomy script</pre>
+</body>
+</html>

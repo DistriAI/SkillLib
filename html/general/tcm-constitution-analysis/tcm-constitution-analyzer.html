@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>tcm-constitution-analyzer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">general</a> / <a href="index.html">tcm-constitution-analysis</a> / tcm-constitution-analyzer</p><h1>tcm-constitution-analyzer</h1><p class="meta">combined</p><p>The two copies are not a simple wrapper-and-procedure pair. The first copy (sickn33) is a thin wrapper that defers to a separate detailed guide and adds safety/limitation constraints, but it contains no executable steps, data paths, or algorithms. The second copy (FreedomIntelligence) contains the full procedure: specific data file paths, scoring formulas, constitution determination logic, and a detailed report template. Because the first copy&#x27;s safety constraints and the second copy&#x27;s procedural details are both material and not fully contained in the other, crowning one would hide a real alternative. The combined instruction merges the safety constraints from the first with the procedural steps from the second.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/tcm-constitution-analyzer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/tcm-constitution-analyzer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/tcm-constitution-analyzer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/tcm-constitution-analyzer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/tcm-constitution-analyzer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/tcm-constitution-analyzer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: tcm-constitution-analyzer
+description: 分析中医体质数据、识别体质类型、评估体质特征,并提供个性化养生建议。支持与营养、运动、睡眠等健康数据的关联分析。
+allowed-tools: Read, Grep, Glob, Write
+risk: critical
+source: community
+---
+
+# 中医体质辨识分析器技能
+
+分析中医体质数据,识别体质类型,评估体质特征,并提供个性化养生改善建议。
+
+## Safety &amp; Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+- 中药调理建议仅供中医师参考,不可自行抓药服用。
+
+## When to Use
+- 你需要根据中医体质分类标准评估用户体质，并识别主导体质与兼夹体质。
+- 你想结合营养、运动、睡眠等健康数据分析体质特征、风险和变化趋势。
+- 你需要面向个体化调理的养生建议、趋势跟踪和相关性分析结果。
+
+## 执行步骤
+
+### 步骤 1: 确定分析范围
+明确用户请求的分析类型:
+- 体质辨识评估
+- 体质特征查询
+- 养生建议获取
+- 趋势分析
+- 相关性分析
+
+### 步骤 2: 读取数据
+**主要数据源**:
+1. `data/constitutions.json` - 体质知识库
+2. `data/constitution-recommendations.json` - 养生建议库
+3. `data-example/tcm-constitution-tracker.json` - 体质追踪主数据
+4. `data-example/tcm-constitution-logs/YYYY-MM/YYYY-MM-DD.json` - 每日评估记录
+
+**关联数据源**:
+1. `data-example/profile.json` - 基础信息
+2. `data-example/nutrition-tracker.json` - 营养数据
+3. `data-example/fitness-tracker.json` - 运动数据
+4. `data-example/sleep-tracker.json` - 睡眠数据
+
+### 步骤 3: 数据分析
+
+**体质评分算法**:
+```python
+def calculate_constitution_scores(answers):
+    &quot;&quot;&quot;
+    基于《中医体质分类与判定》标准
+    计算公式: 转化分数 = [(原始分数 - 题目数) / (题目数 × 4)] × 100
+    &quot;&quot;&quot;
+    scores = {}
+    for constitution, questions in CONSTITUTION_QUESTIONS.items():
+        original_score = sum(answers[q] for q in questions)
+        question_count = len(questions)
+        converted_score = ((original_score - question_count) / (question_count * 4)) * 100
+        scores[constitution] = round(converted_score, 1)
+    return scores
+```
+
+**体质判定算法**:
+```python
+def determine_constitution_type(scores):
+    &quot;&quot;&quot;
+    判定逻辑:
+    1. 平和质: 得分 ≥ 60分 且 其他8种体质得分均 &lt; 40分
+    2. 偏颇体质: 得分最高的体质为判定结果
+    3. 兼夹体质: 次高分的体质得分 ≥ 40分
+    &quot;&quot;&quot;
+    peaceful_score = scores[&#x27;平和质&#x27;]
+    other_scores = {k: v for k, v in scores.items() if k != &#x27;平和质&#x27;}
+    if peaceful_score &gt;= 60 and all(s &lt; 40 for s in other_scores.values()):
+        return {&#x27;primary&#x27;: &#x27;平和质&#x27;, &#x27;secondary&#x27;: [], &#x27;type&#x27;: &#x27;balanced&#x27;}
+    sorted_scores = sorted(other_scores.items(), key=lambda x: x[1], reverse=True)
+    primary = sorted_scores[0][0]
+    secondary = [k for k, v in sorted_scores[1:3] if v &gt;= 40]
+    return {&#x27;primary&#x27;: primary, &#x27;secondary&#x27;: secondary, &#x27;type&#x27;: &#x27;compound&#x27; if secondary else &#x27;single&#x27;}
+```
+
+**趋势分析算法**:
+- 线性回归计算趋势
+- 移动平均平滑波动
+- 统计显著性检验
+
+### 步骤 4: 生成报告
+按照标准格式输出分析报告,包含:
+- 体质类型判定结果(主体质、兼夹体质)
+- 各体质评分表
+- 体质特征分析(形体、心理、发病倾向、适应能力)
+- 个性化养生建议(饮食、起居、运动、情志、穴位、中药)
+- 季节调养建议
+- 与其他健康指标的关联分析
+
+## 输出格式
+
+### 体质辨识评估报告
+
+```markdown
+# 中医体质辨识评估报告
+
+## 评估日期
+YYYY-MM-DD
+
+## 评估结果
+
+### 体质类型判定
+- **主体质**: [类型]
+- **兼夹体质**: [类型或无]
+- **体质类型**: [平和质/偏颇体质/兼夹体质]
+
+### 各体质评分
+| 体质类型 | 评分 | 判定 |
+|---------|------|------|
+| ... | ... | ... |
+
+## 体质特征分析
+[详细特征描述]
+
+## 养生建议
+### 饮食调养
+[宜食、忌食、推荐食谱]
+
+### 起居调摄
+[作息、环境、生活习惯]
+
+### 运动锻炼
+[推荐运动、频次、强度、注意事项]
+
+### 情志调摄
+[情绪管理方法]
+
+### 穴位保健
+[推荐穴位、位置、功效、方法]
+
+### 中药调理
+⚠️ **重要提醒**: 以下内容仅供中医师参考,不可自行抓药服用
+[推荐方剂、组成、用法、注意事项]
+
+## 季节调养建议
+[春、夏、秋、冬调养建议]
+
+## 与其他健康指标的关联
+[体质与营养、运动、睡眠、慢性病的相关性分析]
+```</pre>
+</body>
+</html>

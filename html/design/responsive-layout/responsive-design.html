@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>responsive-design</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">responsive-layout</a> / responsive-design</p><h1>responsive-design</h1><p class="meta">combined</p><p>The two skills cover the same topic but from different angles. The Owl-Listener skill is a high-level design strategy guide (strategies, patterns, input methods, best practices) that does not include implementation code. The LeoYeAI skill is a technical implementation guide focused on modern CSS features (container queries, fluid typography with clamp, CSS Grid) and includes specific code patterns. Neither is a reproduction of the other; the first lacks the technical depth of the second, and the second lacks the strategic design principles and input method adaptation of the first. Combining them provides a complete skill covering both strategy and implementation.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>ui-design/skills/responsive-design/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/responsive-design/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>ui-design/skills/responsive-design/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/responsive-design/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: responsive-design
+description: Design and implement adaptive layouts using modern CSS techniques and strategic design principles. Use when building interfaces that must serve multiple viewports and input methods.
+---
+# Responsive Design
+
+You are an expert in designing and implementing interfaces that adapt gracefully across devices and contexts.
+
+## Design Strategy
+
+1. **Choose a Strategy**:
+   - **Fluid**: Percentage-based widths, flexible within ranges.
+   - **Adaptive**: Distinct layouts at specific breakpoints.
+   - **Mobile-first**: Start with smallest, enhance upward.
+   - **Content-first**: Let content needs drive breakpoints.
+
+2. **Input Method Adaptation**:
+   - **Touch**: 44px minimum targets, gesture support.
+   - **Mouse**: Hover states, precise targeting.
+   - **Keyboard**: Focus indicators, logical tab order.
+   - **Voice**: Clear labels, logical structure.
+
+3. **Best Practices**:
+   - Design for content, not devices.
+   - Test on real devices, not just browser resize.
+   - Consider landscape and portrait.
+   - Account for slow connections.
+   - Test with accessibility tools at each breakpoint.
+
+## Implementation Techniques
+
+### 1. Breakpoint Strategy
+
+Use a mobile-first approach with content-based breakpoints. A common scale is:
+- Base: Mobile (&lt; 640px)
+- sm: 640px (Landscape phones, small tablets)
+- md: 768px (Tablets)
+- lg: 1024px (Laptops, small desktops)
+- xl: 1280px (Desktops)
+- 2xl: 1536px (Large desktops)
+
+*Note: Adjust breakpoints based on content needs rather than specific devices.*
+
+### 2. Container Queries
+
+Use container queries for component-level responsiveness independent of the viewport.
+
+```css
+.card-container {
+  container-type: inline-size;
+  container-name: card;
+}
+
+@container card (min-width: 400px) {
+  .card {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1rem;
+  }
+}
+```
+
+### 3. Fluid Typography &amp; Spacing
+
+Use `clamp()` for fluid scaling between min and max bounds.
+
+```css
+:root {
+  --text-base: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  --space-md: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+}
+```
+
+### 4. Layout Patterns
+
+- **CSS Grid**: Use `auto-fit` or `auto-fill` for responsive grids.
+  ```css
+  .grid-auto {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 1.5rem;
+  }
+  ```
+- **Flexbox**: For 1D distribution.
+- **Intrinsic Layouts**: Content-based sizing.
+
+### 5. Responsive Images
+
+- Use `srcset` for appropriate image resolution.
+- Use art direction for different crops per breakpoint.
+
+## Responsive Patterns
+
+- **Column drop**: Reduce columns at smaller sizes.
+- **Reflow**: Stack horizontal elements vertically.
+- **Off-canvas**: Hide secondary content behind toggle.
+- **Priority+**: Show most important, overflow the rest.</pre>
+</body>
+</html>

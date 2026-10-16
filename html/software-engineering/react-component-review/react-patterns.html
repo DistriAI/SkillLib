@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>react-patterns</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">react-component-review</a> / react-patterns</p><h1>react-patterns</h1><p class="meta">combined</p><p>The two copies overlap on React composition and performance, but each contains material steps the other lacks. jezweb/claude-skills is a Vite + Cloudflare-specific performance checklist with concrete anti-waterfall and bundle-size rules, while sickn33/agentic-awesome-skills is a broader React principles guide covering state management selection, TypeScript, testing, error boundaries, and file structure. Crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/frontend/skills/react-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/react-patterns/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/frontend/skills/react-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/react-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/react-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-web-app/skills/react-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/react-patterns/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: react-patterns
+description: &quot;React performance, composition, and architecture patterns. Use when writing, reviewing, or refactoring React components.&quot;
+---
+
+# React Patterns
+
+Use this skill when writing new React components, reviewing code for performance or architecture issues, or refactoring components that feel slow or tangled.
+
+## 1. Scope and Approach
+
+- Apply the rules as a checklist for new components, a review guide for existing code, or a refactoring playbook for slow or tangled components.
+- Profile before optimizing. Use React DevTools Profiler to confirm a bottleneck before applying a fix.
+- If the project uses Vite + Cloudflare Workers, prioritize the Vite-specific bundle and waterfall rules below.
+
+## 2. Eliminating Waterfalls (CRITICAL)
+
+Sequential async calls where they could be parallel are the top performance killer.
+
+- Await in sequence: replace `const a = await getA(); const b = await getB();` with `const [a, b] = await Promise.all([getA(), getB()]);`.
+- Fetch in child: hoist fetches to the highest common ancestor and pass data down.
+- Suspense cascade: use one Suspense boundary wrapping all async siblings instead of multiple boundaries that resolve sequentially.
+- Await before branch: move the await inside the branch so you do not fetch data you might not use.
+- Import then render: use `React.lazy()` + `&lt;Suspense&gt;` instead of awaiting a dynamic import before rendering.
+
+How to find them: search for `await` in components. If two awaits are independent, they should be parallel.
+
+## 3. Bundle Size (CRITICAL)
+
+- Barrel imports: import directly from the module path instead of a barrel file.
+- No code splitting: use `React.lazy(() =&gt; import(&#x27;./HeavyComponent&#x27;))` + `&lt;Suspense&gt;` for heavy components.
+- Third-party at load: load analytics or tracking after hydration in a `useEffect`.
+- Full library import: import only the needed function, e.g. `import debounce from &#x27;lodash/debounce&#x27;`.
+- Lucide tree-shaking: import explicit icons instead of `import * as Icons from &#x27;lucide-react&#x27;`.
+- Duplicate React: add `resolve.dedupe: [&#x27;react&#x27;, &#x27;react-dom&#x27;]` in vite.config.ts.
+
+How to find them: run `npx vite-bundle-visualizer` to inspect the bundle.
+
+## 4. Composition Architecture (HIGH)
+
+- Boolean prop explosion: replace many boolean props with explicit variant components.
+- Compound components: split complex components into parent + child components with shared context.
+- renderX props: use children and named slots instead of multiple render props.
+- Lift state: move shared state to a parent or context provider.
+- Provider implementation: expose an interface `{ state, actions, meta }` and hide implementation details.
+- Inline components: define child components outside the parent to avoid remounting on every render.
+
+The test: if a component has more than 5 boolean props, it needs composition, not more props.
+
+## 5. Re-render Prevention (MEDIUM)
+
+Only fix re-renders that cause visible jank or wasted computation.
+
+- Default object/array props: hoist default values to module scope.
+- Derived state in effect: derive during render with `useMemo` instead of setting state in an effect.
+- Object dependency: use primitive dependencies in `useEffect` when possible.
+- Subscribe to unused state: split context or use a selector such as `useSyncExternalStore`.
+- State for transient values: use `useRef` for values that change frequently but do not need re-render.
+- Inline callback props: use `useCallback` or a stable handler reference.
+
+How to find them: use React DevTools Profiler or `&lt;React.StrictMode&gt;` double-renders in dev.
+
+## 6. React 19 Specifics (MEDIUM)
+
+- Use `useActionState` for form submission state.
+- Use `useOptimistic` for optimistic UI updates.
+- Use `use` to read resources in render.
+- Leverage the React Compiler for automatic memoization and reduce manual `useMemo`/`useCallback` where appropriate.
+
+## 7. Component Design Principles
+
+- One responsibility per component.
+- Props down, events up.
+- Composition over inheritance.
+- Prefer small, focused components.
+- Classify components as Server, Client, Presentational, or Container based on data fetching and interactivity needs.
+
+## 8. Hook Patterns
+
+- Extract hooks when the same logic is needed in multiple places, e.g. `useLocalStorage`, `useDebounce`, `useFetch`, `useForm`.
+- Hooks at top level only.
+- Same hook order every render.
+- Custom hooks start with `use`.
+- Clean up effects on unmount.
+
+## 9. State Management Selection
+
+- Simple state: `useState`, `useReducer`.
+- Shared local state: Context.
+- Server state: React Query or SWR.
+- Complex global state: Zustand or Redux Toolkit.
+
+State placement:
+- Single component: `useState`.
+- Parent-child: lift state up.
+- Subtree: Context.
+- App-wide: global store.
+
+## 10. Performance Principles
+
+- Slow renders: profile first.
+- Large lists: virtualize.
+- Expensive calculation: `useMemo`.
+- Stable callbacks: `useCallback`.
+
+Optimization order:
+1. Check if actually slow.
+2. Profile with DevTools.
+3. Identify bottleneck.
+4. Apply targeted fix.
+
+## 11. Error Handling
+
+- App-wide error boundary at the root level.
+- Feature-level error boundary at the route or feature level.
+- Component-level error boundary around risky components.
+
+Error recovery:
+- Show fallback UI.
+- Log the error.
+- Offer a retry option.
+- Preserve user data.
+
+## 12. TypeScript Patterns
+
+- Use `interface` for component props.
+- Use `type` for unions and complex types.
+- Use generics for reusable components.
+- Use `ReactNode` for children, `MouseEventHandler` for event handlers, and `RefObject&lt;Element&gt;` for refs.
+
+## 13. Testing Principles
+
+- Unit tests: pure functions and hooks.
+- Integration tests: component behavior.
+- E2E tests: user flows.
+
+Test priorities:
+- User-visible behavior.
+- Edge cases.
+- Error states.
+- Accessibility.
+
+## 14. Anti-Patterns
+
+- Do not prop drill deeply; use context.
+- Do not build giant components; split them smaller.
+- Do not use `useEffect` for everything; prefer server components where appropriate.
+- Do not optimize prematurely; profile first.
+- Do not use index as key; use a stable unique ID.
+
+## 15. File Structure
+
+Use a clear file structure that separates components, hooks, utilities, and types. Reference the project&#x27;s existing conventions or a standard React file layout as a guide.
+
+## When to Use
+
+- Writing new React components or pages.
+- Reviewing code for performance issues.
+- Refactoring components with too many props or re-renders.
+- Debugging &quot;why is this slow?&quot; or &quot;why does this re-render?&quot;.
+- Building reusable component libraries.
+- Code review before merging.
+
+## Limitations
+
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

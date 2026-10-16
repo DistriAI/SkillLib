@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>linear</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">linear-issue-management</a> / linear</p><h1>linear</h1><p class="meta">combined</p><p>The copies describe two different integration paths for the same task. The openai and composio copies are identical and rely on the Linear MCP server with a structured 5-step workflow (setup, clarify, select tools, batch execute, summarize). The LeoYeAI copy relies on a local bash script (linear.sh) and the Linear GraphQL API, and it adds a detailed Git worktree workflow that ties Linear branch names to GitHub PR automation. Because the LeoYeAI copy contains material steps (bash commands, worktree creation, branch naming) that the MCP copies lack, and the MCP copies contain a structured tool-calling workflow that the bash copy lacks, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/linear/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/linear/SKILL.md</code></td></tr><tr><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>linear/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/linear/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/linear/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>linear/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Linear
+
+Manage issues, projects, and team workflows in Linear. Choose the integration method based on your environment: **MCP Server** (for Codex/agent-native tool calling) or **Bash Script** (for CLI/terminal workflows).
+
+## Method 1: Linear MCP Server (Codex/Agent)
+
+### Prerequisites
+- Linear MCP server connected via OAuth.
+- Access to relevant Linear workspace, teams, and projects.
+
+### Setup (if not configured)
+1. Add MCP: `codex mcp add linear --url https://mcp.linear.app/mcp`
+2. Enable remote MCP: Set `[features] rmcp_client = true` in `config.toml` or run `codex --enable rmcp_client`.
+3. Login: `codex mcp login linear`
+4. Restart Codex if prompted.
+
+*Windows/WSL Note:* If connection errors occur, configure MCP to run via WSL:
+```json
+{&quot;mcpServers&quot;: {&quot;linear&quot;: {&quot;command&quot;: &quot;wsl&quot;, &quot;args&quot;: [&quot;npx&quot;, &quot;-y&quot;, &quot;mcp-remote&quot;, &quot;https://mcp.linear.app/sse&quot;, &quot;--transport&quot;, &quot;sse-only&quot;]}}}
+```
+
+### Workflow
+1. **Clarify:** Define goal (triage, sprint planning, etc.) and scope (team, project, priority).
+2. **Select Tools:** Identify required MCP tools (e.g., `list_issues`, `create_issue`). Confirm identifiers (Issue ID, Team Key).
+3. **Execute:** Batch calls logically. Read first to build context, then create/update. Explain grouping logic for bulk ops.
+4. **Summarize:** Report results, gaps, and next actions.
+
+### Available Tools
+- **Issues:** `list_issues`, `get_issue`, `create_issue`, `update_issue`, `list_my_issues`, `list_issue_statuses`, `list_issue_labels`, `create_issue_label`
+- **Projects/Teams:** `list_projects`, `get_project`, `create_project`, `update_project`, `list_teams`, `get_team`, `list_users`
+- **Docs/Collab:** `list_documents`, `get_document`, `search_documentation`, `list_comments`, `create_comment`, `list_cycles`
+
+## Method 2: Bash Script (CLI)
+
+### Setup
+```bash
+export LINEAR_API_KEY=&quot;your-api-key&quot;
+export LINEAR_DEFAULT_TEAM=&quot;TEAM&quot; # Optional
+```
+
+### Quick Commands
+- **My Stuff:** `linear.sh my-issues`, `linear.sh my-todos`, `linear.sh urgent`
+- **Browse:** `linear.sh teams`, `linear.sh team &lt;KEY&gt;`, `linear.sh project &lt;name&gt;`, `linear.sh issue &lt;ID&gt;`, `linear.sh branch &lt;ID&gt;`
+- **Actions:** `linear.sh create &lt;TEAM&gt; &quot;Title&quot; [&quot;Desc&quot;]`, `linear.sh comment &lt;ID&gt; &quot;Text&quot;`, `linear.sh status &lt;ID&gt; &lt;status&gt;`, `linear.sh assign &lt;ID&gt; &lt;user&gt;`, `linear.sh priority &lt;ID&gt; &lt;level&gt;`
+- **Overview:** `linear.sh standup`, `linear.sh projects`
+
+### Git Workflow (Linear ↔ GitHub)
+**Always use Linear-derived branch names** for automatic status tracking.
+
+1. **Get Branch Name:**
+   ```bash
+   BRANCH=$(linear.sh branch TEAM-212)
+   # Returns: dev/team-212-fix-auth-timeout-bug
+   ```
+2. **Create Worktree:**
+   ```bash
+   cd /path/to/repo
+   git checkout main &amp;&amp; git pull origin main
+   git worktree add .worktrees/team-212 -b &quot;$BRANCH&quot; origin/main
+   cd .worktrees/team-212
+   ```
+3. **Work &amp; Push:**
+   ```bash
+   # Make changes
+   git add -A &amp;&amp; git commit -m &quot;fix: implement TEAM-212&quot;
+   git push -u origin &quot;$BRANCH&quot;
+   gh pr create --title &quot;TEAM-212: &lt;title&gt;&quot; --body &quot;Closes TEAM-212&quot;
+   ```
+
+**⚠️ Never modify files on main.** All changes happen in worktrees.
+
+## Priority Levels
+| Level | Value | Use for |
+|-------|-------|---------|
+| urgent | 1 | Production issues, blockers |
+| high | 2 | This week, important |
+| medium | 3 | This sprint/cycle |
+| low | 4 | Nice to have |
+| none | 0 | Backlog, someday |
+
+## Practical Workflows
+- **Sprint Planning:** Review open issues, pick top items by priority, create a new cycle with assignments.
+- **Bug Triage:** List critical/high-priority bugs, rank by impact, move top items to &quot;In Progress.&quot;
+- **Documentation Audit:** Search docs, open labeled &quot;documentation&quot; issues for gaps.
+- **Team Workload Balance:** Group active issues by assignee, flag high load, suggest redistributions.
+- **Release Planning:** Create a project with milestones, generate issues with estimates.
+- **Cross-Project Dependencies:** Find &quot;blocked&quot; issues, identify blockers, create linked issues.
+- **Automated Status Updates:** Find stale issues, add status comments.
+- **Smart Labeling:** Analyze unlabeled issues, suggest/apply labels.
+- **Sprint Retrospectives:** Generate report for last cycle, note completed vs. pushed work.
+
+## Tips
+- Batch operations for related changes.
+- Use natural queries when possible.
+- Break large updates into smaller batches to avoid rate limits.
+- Cache or reuse filters when listing frequently.
+
+## Troubleshooting
+- **Authentication:** Clear cookies, re-run OAuth (MCP) or verify API key (Bash).
+- **Tool Calling Errors:** Confirm model supports multiple tool calls (MCP) or check script permissions (Bash).
+- **Missing Data:** Refresh token, verify workspace access, check for archived projects.
+- **Performance:** Batch bulk operations, use specific filters.</pre>
+</body>
+</html>

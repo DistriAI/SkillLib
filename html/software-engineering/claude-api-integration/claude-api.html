@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>claude-api</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">claude-api-integration</a> / claude-api</p><h1>claude-api</h1><p class="meta">combined</p><p>The anthropics/skills copy is the upstream source and contains the core procedure, but the sickn33 copy adds a detailed &#x27;Language Detection&#x27; section and a &#x27;Which Surface Should I Use?&#x27; decision table that are absent from the first. The copies also disagree on the default model version (Opus 5.5 vs Opus 5) and the trigger logic (broad LLM-shaped tasks vs specific SDK imports). Combining is necessary to preserve the language detection steps and surface selection logic while acknowledging the model version conflict.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/claude-api/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/claude-api/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/claude-api/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/claude-api/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/claude-api/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/claude-api/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: claude-api
+description: Reference for the Claude API / Anthropic SDK. Use for model ids, pricing, params, streaming, tool use, MCP, agents, caching, and token counting.
+---
+
+# Building LLM-Powered Applications with Claude
+
+## When to Use
+- Use when building with the Claude API, Anthropic SDKs, or the Agent SDK.
+- Use when code imports `anthropic`, `@anthropic-ai/sdk`, or related Claude SDK packages.
+- Use for LLM-shaped tasks (agents, RAG, tool-use) if the provider is unstated or Claude.
+- Do not use for general coding work unrelated to Claude integrations or when other providers (OpenAI, Gemini, etc.) are explicitly named.
+
+## Before You Start
+Scan the target file for non-Anthropic provider markers (e.g., `import openai`, `gpt-4`). If found, stop and ask the user if they want to switch to Claude or keep the current provider. Do not edit non-Anthropic files with Anthropic SDK calls.
+
+## Language Detection
+1. **Infer from project files:**
+   - `*.py`, `requirements.txt` → Python
+   - `*.ts`, `*.tsx`, `package.json` → TypeScript
+   - `*.java`, `pom.xml` → Java
+   - `*.go`, `go.mod` → Go
+   - `*.rb`, `Gemfile` → Ruby
+   - `*.cs`, `*.csproj` → C#
+   - `*.php`, `composer.json` → PHP
+2. **If ambiguous:** Ask the user which language to use for the integration.
+3. **If unsupported:** Suggest cURL/raw HTTP examples.
+
+## Which Surface Should I Use?
+- **Single LLM call:** Use Claude API for classification, summarization, or extraction.
+- **Workflow:** Use Claude API + tool use for multi-step pipelines with code-controlled logic.
+- **Agent:** Use Agent SDK for built-in file/web/terminal access, permissions, and MCP support.
+
+## Defaults
+- **Model:** Use the latest stable Claude model (e.g., `claude-opus-5-5` or `claude-opus-5` depending on availability).
+- **Thinking:** Default to adaptive thinking (`thinking: {type: &quot;adaptive&quot;}`) for complex tasks.
+- **Streaming:** Default to streaming for long inputs/outputs to prevent timeouts. Use `.get_final_message()` if you don&#x27;t need individual events.
+
+## Output Requirement
+- Use the official Anthropic SDK for the project&#x27;s language.
+- Use raw HTTP only if the user explicitly requests it or no SDK exists.
+- Never guess SDK usage; verify against documentation or `shared/live-sources.md`.
+
+## Warning: API Drift
+Verify API shapes against current documentation, as several patterns changed in 2025-2026 (e.g., extended thinking parameters).</pre>
+</body>
+</html>

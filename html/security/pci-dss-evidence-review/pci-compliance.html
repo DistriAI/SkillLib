@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pci-compliance</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">pci-dss-evidence-review</a> / pci-compliance</p><h1>pci-compliance</h1><p class="meta">combined</p><p>The two copies overlap on PCI DSS scope, data minimization, and tokenization, but they serve different purposes and contain material steps the other lacks. The first copy is an implementation guide with the 12 core requirements, compliance levels, and code examples for sanitization and tokenization. The second copy is an evidence-review procedure for a scoped assessment, emphasizing data-flow mapping, verification of actual integration behavior, and producing a control/evidence/gap table. They also disagree on the use of custom encryption: the first provides a &#x27;Custom Tokenization&#x27; code snippet, while the second explicitly warns against building a custom card vault from an illustrative snippet. Crowning one would hide the other&#x27;s distinct approach to either implementation or assessment evidence.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/pci-compliance/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/pci-compliance/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/pci-compliance/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/pci-compliance/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/pci-compliance/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-privacy-compliance-engineering/skills/pci-compliance/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-secure-app-builder/skills/pci-compliance/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/pci-compliance/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># PCI DSS Compliance and Evidence Review
+
+## When to Use
+- Implementing PCI DSS compliance for payment systems.
+- Reviewing payment data flows for a scoped PCI assessment.
+- Preparing engineering control evidence for an assessor.
+
+## Inputs and Prerequisites
+- Identify merchant/service-provider role, acquiring institution, and processor integration.
+- Obtain current PCI SSC documents and confirm applicability with the assessor or acquirer.
+- Clarify goals, constraints, and required inputs for the specific system.
+
+## Procedure
+
+### 1. Map Data Flows and Scope
+- Map forms, APIs, storage, queues, logs, telemetry, backups, and support exports.
+- Identify all systems handling account data.
+- Determine PCI DSS compliance level based on transaction volume:
+  - **Level 1**: &gt; 6 million transactions/year (annual ROC required)
+  - **Level 2**: 1-6 million transactions/year (annual SAQ)
+  - **Level 3**: 20,000-1 million e-commerce transactions/year
+  - **Level 4**: &lt; 20,000 e-commerce or &lt; 1 million total transactions
+
+### 2. Implement Core Controls
+- **Network Security**: Install and maintain firewall configuration; do not use vendor-supplied defaults.
+- **Data Protection**: Protect stored cardholder data; encrypt transmission across public networks.
+- **Vulnerability Management**: Protect against malware; develop and maintain secure systems.
+- **Access Control**: Restrict access by business need-to-know; identify and authenticate users; restrict physical access.
+- **Monitoring**: Track and monitor all access; regularly test security systems.
+- **Policy**: Maintain an information security policy.
+
+### 3. Data Minimization and Tokenization
+- **Never Store**: Full track data, CVV/CVC, PIN/PIN block.
+- **Can Store (if encrypted)**: PAN, cardholder name, expiration date, service code.
+- **Tokenization**: Prefer provider-hosted collection (e.g., Stripe.js) to keep raw card data off the server. Verify that the application actually only receives tokens.
+- **Custom Encryption**: Do not build a custom card vault from illustrative snippets. If custom storage is unavoidable, use reviewed, qualified encryption utilities and document the risk.
+
+### 4. Logging and Redaction
+- Use allowlisted event fields in logs and responses.
+- Mask PAN in logs (e.g., first 6 and last 4 digits).
+- Remove prohibited fields (CVV, PIN) from logs and error messages.
+- Test nested errors and retries with synthetic data to ensure no sensitive data leaks.
+
+### 5. Evidence Collection and Gap Analysis
+- Map required controls to implementation evidence (network boundaries, configuration, access, monitoring).
+- Verify role and resource authorization together.
+- Produce a control/evidence/gap/owner table.
+- Keep unverified controls marked as gaps.
+- Treat SAQ eligibility and formal attestation as decisions requiring current guidance from the assessor or acquirer.
+
+## Verification
+- Data-flow inventory reconciled with actual integration and telemetry.
+- Access denial produces no payment or data side effect.
+- Redaction checked on nested data and exceptions.
+- Evidence tied to actual configuration and test results, with explicit gaps.
+
+## Limitations
+- Encryption, hosted checkout, or a passed scan alone does not prove compliance.
+- This skill does not certify compliance or determine assessment eligibility on its own.
+- Never use live cardholder data as a test fixture.</pre>
+</body>
+</html>

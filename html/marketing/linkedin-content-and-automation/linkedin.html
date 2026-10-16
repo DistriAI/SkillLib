@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>linkedin</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">linkedin-content-and-automation</a> / linkedin</p><h1>linkedin</h1><p class="meta">combined</p><p>The three copies cover different LinkedIn workflows. The first is a copywriting and optimization guide focused on post types, feed ranking, and SEO. The second is a content operations bundle for drafting, auditing, and publishing via the Publora API. The third is a CLI-based automation tool for scraping, messaging, and connection management via Linked API. None of these is a reproduction of the others; they are distinct tools for different aspects of LinkedIn marketing and automation.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/platforms/linkedin/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sergebulaev/linkedin-skills">sergebulaev/linkedin-skills</a></td><td><code>.codex-marketplace/linkedin-skills/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/linkedin-skill/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kostja94/marketing-skills">kostja94/marketing-skills</a></td><td><code>skills/platforms/linkedin/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sergebulaev/linkedin-skills">sergebulaev/linkedin-skills</a></td><td><code>.codex-marketplace/linkedin-skills/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/linkedin-skill/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/linkedin/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># LinkedIn Marketing &amp; Automation
+
+This skill covers three distinct areas of LinkedIn interaction: content creation, content operations, and account automation.
+
+## 1. Content Creation &amp; Optimization
+Use this section when the user wants to write or optimize LinkedIn post copy.
+
+- **Post Types**: Choose the right format (Text, Photo, Video, Article, Document, Poll, Newsletter) based on the goal. Match CTA and length to the form.
+- **Platform Positioning**: Maintain a professional tone suitable for B2B networking and career identity.
+- **Feed Ranking**: Optimize for the first line (hook) and on-topic depth. Avoid engagement bait and inauthentic patterns.
+- **SEO/GEO**: Use the Headline and About section for search visibility. Note that short feed posts are login-gated and not indexed by search engines, while Articles and Profiles are.
+
+## 2. Content Operations (Drafting &amp; Publishing)
+Use this section when the user wants to plan, draft, audit, or publish content using the Publora API.
+
+- **Workflow**: Follow the Draft → Approval → Publish pattern.
+- **Tools**: Use specific sub-skills for writing (`linkedin-post-writer`), commenting (`linkedin-comment-drafter`), and auditing (`linkedin-humanizer`).
+- **Publishing**: Use the Publora API for auto-posting. Ensure `PUBLORA_API_KEY` and `LINKEDIN_PLATFORM_ID` are configured in `.env`.
+- **Founders Edition**: If the user is a founder, use the dedicated founder angles and structural formulas from `references/founder-topics.md`.
+
+## 3. Account Automation (CLI)
+Use this section when the user wants to search, fetch data, send messages, or manage connections via the `linkedin` CLI.
+
+- **Setup**: Install `@linkedapi/linkedin-cli` and configure tokens using `linkedin setup`.
+- **Commands**: Use `linkedin person fetch`, `linkedin company search`, `linkedin message send`, etc.
+- **Output**: Always use `--json -q` for machine-readable output.
+- **Error Handling**: Check exit codes and the `success` field in JSON responses. Exit code 2 indicates authentication issues.
+
+## Conflicts
+- **Publishing Method**: `kostja94` does not specify an API, `sergebulaev` uses Publora, and `LeoYeAI` uses Linked API. Choose the method based on the user&#x27;s existing setup or preference.
+- **Scope**: `kostja94` is copy-only, `sergebulaev` is content-ops, and `LeoYeAI` is data/automation. Do not mix these workflows unless the user explicitly requests a combined action (e.g., &quot;Find 10 engineers and send them a personalized message based on this post copy&quot;).</pre>
+</body>
+</html>
