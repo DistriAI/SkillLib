@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>learn</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">learn</a> / learn</p><h1>learn</h1><p class="meta">combined</p><p>The two copies use the same skill name but define completely different procedures. The first copy is an adaptive tutoring workflow for teaching a user a topic (diagnose level, teach, practice, assess). The second copy is a meta-workflow for extracting reusable knowledge from the current session into a persistent SKILL.md file (evaluate, check existing, create, quality gate). They do not reproduce, shorten, or wrap each other; they are distinct tasks that happen to share the name &#x27;learn&#x27;.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/learn/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/learn/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/learn/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/learn/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/learn/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/learn/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: learn
+description: Handles two distinct &#x27;learn&#x27; workflows: (1) Adaptive tutoring to help a user learn a topic, and (2) Extracting reusable knowledge from the current session into a persistent skill file. Use the appropriate mode based on user intent.
+category: &quot;education/agent-tooling&quot;
+risk: &quot;safe&quot;
+---
+
+# Learn
+
+This skill covers two distinct workflows. Determine which one the user needs:
+
+1. **Tutoring Mode**: The user wants to learn, understand, practice, or be tutored on a topic.
+2. **Extraction Mode**: The user (or the agent) wants to capture non-obvious discoveries, workarounds, or workflows from the current session into a reusable skill file.
+
+## Mode 1: Adaptive Tutoring
+
+Use when the user asks to learn, understand, practice, drill, review, study, or be tutored on something.
+
+### Core Workflow
+1. **Diagnose**: Infer the learner&#x27;s current level and goal. Ask at most 1-3 short questions only if missing info materially changes the lesson. If the user wants to begin immediately, state a reasonable assumption and proceed.
+2. **Objective**: Choose a small next learning objective.
+3. **Teach**: Use concrete examples before abstractions. Keep the learner in the right difficulty band (beginner: simple vocab/worked examples; intermediate: comparison/practice; advanced: compression/edge cases).
+4. **Practice**: Give the learner an active task, question, or exercise. Use retrieval questions, prediction prompts, or debugging tasks.
+5. **Feedback**: Provide immediate, specific feedback. Explain why the right answer is right and why wrong answers fail.
+6. **Next Step**: Summarize the next recommended step.
+
+### Output Formats
+Choose the lightest format that satisfies the request: conversational lesson, study plan, markdown notes, exercises, code examples, or diagrams. Do not force output into apps or files unless requested.
+
+### Quality Bar
+- Lesson matches learner&#x27;s level and goal.
+- Explanation includes a concrete example.
+- Practice task is solvable from the lesson.
+- Answer/feedback is included when appropriate.
+- Next step is clear.
+
+## Mode 2: Skill Extraction
+
+Use when you discover something non-obvious, create a workaround, or develop a multi-step workflow that future sessions would benefit from.
+
+### Workflow Phases
+1. **Evaluate**: Ask:
+   - What did I just learn that wasn&#x27;t obvious?
+   - Would future-me benefit from this being documented?
+   - Was the solution non-obvious from documentation alone?
+   - Is this a multi-step workflow I&#x27;d repeat?
+   Continue only if YES to at least one.
+
+2. **Check Existing Skills**: Search for related skills to avoid duplication.
+   ```bash
+   ls .claude/skills/ 2&gt;/dev/null
+   grep -r -i &quot;KEYWORD&quot; .claude/skills/ 2&gt;/dev/null
+   ```
+   - Nothing related → Create new skill.
+   - Same trigger &amp; fix → Update existing skill.
+   - Partial overlap → Update with new variant.
+
+3. **Create Skill**: Create the skill file at `.claude/skills/[skill-name]/SKILL.md` with the following structure:
+   ```yaml
+   ---
+   name: descriptive-kebab-case-name
+   description: |
+     [Include specific triggers]
+     - What the skill does
+     - Specific trigger conditions
+     - When to use it
+   author: [Author]
+   version: 1.0.0
+   ---
+   
+   # Skill Name
+   
+   ## Problem
+   [Clear problem description]
+   
+   ## Context / Trigger Conditions
+   [When to use — exact error messages, symptoms, scenarios]
+   
+   ## Solution
+   [Step-by-step solution]
+   
+   ## Verification
+   [How to verify it worked]
+   
+   ## Example
+   [Concrete example]
+   
+   ## References
+   [Documentation links, related files]
+   ```
+
+4. **Quality Gates**: Verify:
+   - Description has specific trigger conditions.
+   - Solution was verified to work.
+   - Content is specific enough to be actionable.
+   - Content is general enough to be reusable.
+   - No sensitive information.
+   - Skill name is descriptive and uses kebab-case.
+
+### Output
+Report:
+```
+✓ Skill created: .claude/skills/[name]/SKILL.md
+  Trigger: [when to use]
+  Problem: [what it solves]
+```</pre>
+</body>
+</html>

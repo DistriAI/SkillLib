@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>agenttrace-session-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">session-audit</a> / agenttrace-session-audit</p><h1>agenttrace-session-audit</h1><p class="meta">combined</p><p>The two skills cover the same core workflow (discovery, reporting, CI gates) but contain distinct, non-overlapping material. The first copy (davepoon) provides specific guardrails regarding &#x27;capability levels&#x27; (Detailed/Aggregate/Limited) and treats Tool Steps as metadata-only, which is a critical constraint for interpreting data fidelity. The second copy (sickn33) adds a &#x27;Compare Attempts&#x27; step for semantic drift detection, specific &#x27;When to Use&#x27; triggers, and a &#x27;Common Pitfalls&#x27; section. Additionally, they disagree on the fallback command for the source repository (`cargo run` vs `go run`). Crowning one would hide either the data-fidelity constraints or the semantic-drift workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/agenttrace-session-audit/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/agenttrace-session-audit/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/agenttrace-session-audit/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/agenttrace-session-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/agenttrace-session-audit/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/agenttrace-session-audit/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: agenttrace-session-audit
+description: Audit local AI coding-agent sessions with agenttrace for cost, tokens, tool failures, latency, anomalies, health, diffs, and CI gates.
+category: observability
+license: MIT
+requires:
+  bins: [agenttrace]
+---
+
+# agenttrace Session Audit
+
+Use this skill when session logs need an operational read: spend, token burn, cache use, tool failures, retry loops, latency, health, anomalies, and CI gate readiness.
+
+## Workflow
+
+1. **Discovery &amp; Setup**
+   - Prefer the installed `agenttrace` binary when available on `PATH`.
+   - If the binary is not available and the current directory is the `luoyuctl/agenttrace` repository, use the appropriate build command for the language implementation (check `go.mod` or `Cargo.toml` to determine if `go run ./cmd/agenttrace` or `cargo run -q -p agenttrace --` is required).
+   - Start with discovery unless the user gave a specific file or directory:
+     ```bash
+     agenttrace --doctor
+     agenttrace --overview
+     ```
+   - If no sessions are detected, report the directories checked by `--doctor` and ask for the exported session file or log directory.
+
+2. **Human-Readable Audit**
+   - Use Markdown for concise reports:
+     ```bash
+     agenttrace --overview -f markdown -o agenttrace-overview.md
+     ```
+   - Lead with the highest-risk sessions and the reason they matter (critical anomalies, repeated tool failures, token/cost waste, long latency gaps, low health scores).
+
+3. **Single Session or Directory Inspection**
+   - For a specific export or session directory:
+     ```bash
+     agenttrace path/to/session-or-export.json
+     agenttrace --overview -d path/to/session-dir
+     ```
+   - For a single recent session (verify project/time/ID to ensure it is the correct run):
+     ```bash
+     agenttrace --latest
+     agenttrace --latest -f json
+     ```
+
+4. **Semantic Drift Comparison**
+   - When risk is semantic drift (e.g., wrong implementation path despite healthy metrics), pair the trace audit with a diff against a previous or known-good attempt.
+   - Look for changed files/commands diverging from intent, missing tests, repeated edits without reason, or lower cost from skipping exploration.
+
+5. **Automation &amp; CI Gates**
+   - For automation or CI, use JSON or health gates:
+     ```bash
+     agenttrace --overview -f json -o agenttrace-overview.json
+     agenttrace --overview --fail-under-health 80 --fail-on-critical --max-tool-fail-rate 15
+     ```
+   - Tune thresholds to the project; start with reporting-only commands while establishing baselines.
+
+## Report Focus &amp; Data Fidelity
+
+- **Capability Levels:** Report the session capability level (`Detailed`, `Aggregate`, or `Limited`) before relying on latency or step evidence.
+- **Metadata-Only Evidence:** Treat Tool Steps as metadata-only evidence. Do not imply that Aggregate or Limited sources have a complete execution trace.
+- **Missing Data:** Do not compare missing event-level evidence as zero latency or zero failures; mark it unavailable. If a parser cannot infer cost, model, or latency, say which field is missing.
+
+## Guardrails
+
+- Treat prompts, code, and session contents as local/private data. Do not upload logs to external services.
+- Do not invent metrics.
+- Do not overwrite user reports unless the user asked for that output path.
+- Avoid printing secrets found in prompts, tool output, environment variables, or logs.
+
+## Common Pitfalls
+
+- **No sessions found:** Run `agenttrace --doctor`, then point agenttrace at the exported file or log directory.
+- **Cheap but wrong refactor:** Compare the session against a prior attempt or known-good diff; cost metrics alone will miss semantic drift.
+- **CI fails too often:** Start with JSON or Markdown reporting, inspect normal baselines, then tighten thresholds.</pre>
+</body>
+</html>

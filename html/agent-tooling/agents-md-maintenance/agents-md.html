@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>agents-md</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">agents-md-maintenance</a> / agents-md</p><h1>agents-md</h1><p class="meta">combined</p><p>Both copies describe the same task (creating/maintaining AGENTS.md from repository evidence), but they disagree on core constraints and each contains material steps the other lacks. The getsentry copy imposes a hard line limit (under 60, never exceed 100), a fixed default section template, a mandatory CLAUDE.md symlink, and a required Co-Authored-By commit attribution block. The sickn33 copy explicitly rejects a universal line limit, fixed section list, symlink layout, and commit-attribution policy, and instead adds evidence-tracking, preservation of existing maintainer intent, reconciliation with other instruction files, safety boundaries, and a validation/handoff report. Crowning one would hide a real alternative approach.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/agents-md/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/agents-md/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/agents-md/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/agents-md/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/agents-md/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/agents-md/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: agents-md
+description: Create, revise, or audit AGENTS.md and related agent instruction files from repository evidence, verified commands, and correctly scoped instructions.
+---
+
+# Maintaining AGENTS.md
+
+Goal: concise, actionable agent instructions that help a coding agent change the repository correctly without rediscovering its workflow. Base every repository-specific command, path, and rule on evidence in the current checkout.
+
+## Workflow
+
+1. Preserve existing intent
+   - Read every instruction file that applies to the target path, including existing AGENTS.md files and relevant tool-specific files such as CLAUDE.md, GEMINI.md, .github/copilot-instructions.md, and .github/instructions/*.instructions.md.
+   - Improve an existing AGENTS.md in place when possible.
+   - Preserve accurate maintainer-authored rules and repository-specific policy.
+   - Do not replace another tool&#x27;s instruction file with a symlink unless the user requests it and repository evidence shows identical content is desired.
+   - Do not silently choose between conflicting instructions. Follow the higher-priority applicable rule, or ask when the intended policy cannot be established from the repository.
+
+2. Build a bounded evidence map
+   - Read the project overview and contribution guidance, such as README*, CONTRIBUTING*, and relevant docs.
+   - Read manifests, lockfiles, workspace files, task runners, and build config to identify supported tools and exact commands.
+   - Read CI workflows to learn required checks. Do not assume every CI or deployment job is safe or appropriate to run locally.
+   - Inspect representative source and test files for naming, layout, and test conventions.
+   - Identify generated files, migrations, vendored code, large fixtures, secrets boundaries, and production-only operations.
+   - Prefer rg --files and rg for discovery when available. Track the source of each non-obvious command or rule so unsupported claims do not enter the final file.
+
+3. Choose the instruction scope
+   - Use the root AGENTS.md for repository-wide guidance.
+   - Add or revise a nested AGENTS.md only when a subtree has materially different commands, architecture, conventions, or safety boundaries.
+   - Keep shared rules at the root and only differences in nested files.
+   - The nearest file does not silently erase unrelated ancestor rules. Do not copy the full root file into every package.
+
+4. Write high-signal guidance
+   - Choose headings that fit the repository instead of forcing a fixed template.
+   - Include the following only when supported by evidence:
+     - Repository map: the few directories and boundaries an agent must know.
+     - Setup and commands: exact install, development, build, lint, type-check, and test commands, with the working directory when it is not obvious.
+     - Focused validation: targeted checks for a small change and broader checks required before handoff.
+     - Change rules: generated-file ownership, migrations, schemas, APIs, dependencies, and cross-package coordination.
+     - Safety boundaries: secrets, production data, destructive commands, deployments, and operations that require explicit authorization.
+     - Contribution rules: repository-specific naming, formatting, commit, or pull-request requirements that affect implementation or handoff.
+   - Write direct, testable statements. Prefer exact commands over vague guidance.
+   - Link to maintained documentation instead of copying it.
+   - Distinguish required checks from optional, slow, privileged, or deployment-only checks.
+   - Use headings, bullets, and tables; avoid paragraphs.
+   - Use repo-relative paths; avoid vague references like &quot;see docs&quot;.
+   - List exact external files for setup, architecture, API specs, security, release, and policy docs when they exist.
+   - Prefer file-scoped test/lint/typecheck commands; include full builds only when no narrower command exists.
+   - Put commands in tables when there is more than one.
+   - Keep one rule per bullet.
+   - Keep rationale out unless it prevents a likely mistake.
+   - Do not restate linter, formatter, or typechecker config.
+   - Do not list installed skills or plugins.
+   - Do not include generic quality slogans.
+
+5. Validate before handoff
+   - Re-read each changed AGENTS.md completely.
+   - Remove contradictions, duplicate rules, placeholders, and stale claims.
+   - Confirm every mentioned file and directory exists.
+   - Cross-check commands against manifests or CI, and run safe, proportionate checks when useful.
+   - If nested files changed, confirm each contains only subtree-specific rules and does not conflict accidentally with the root.
+   - Review the diff as a maintainer: every added line should change an agent&#x27;s decision or prevent a realistic mistake.
+   - Report the files changed, evidence used, checks actually run, and unresolved uncertainty. Never say a command was tested when it was only read from config.
+
+## Anti-Patterns
+
+- welcome text, intros, conclusions, or pleasantries
+- long prose explaining why instructions matter
+- duplicated content from README.md, CONTRIBUTING.md, or policy docs
+- project-wide commands when file-scoped commands are available
+- nested AGENTS.md files that repeat root instructions
+- unsupported claims not backed by repository evidence
+
+## Conflicts
+
+- getsentry/skills specifies a hard line limit (under 60 lines; never exceed 100), a fixed default section template, a mandatory CLAUDE.md symlink, and a required Co-Authored-By commit attribution block. sickn33/agentic-awesome-skills explicitly rejects a universal line limit, fixed section list, symlink layout, and commit-attribution policy, and instead follows repository-specific maintainer intent. Follow the repository&#x27;s own conventions and maintainer intent when these constraints conflict.</pre>
+</body>
+</html>

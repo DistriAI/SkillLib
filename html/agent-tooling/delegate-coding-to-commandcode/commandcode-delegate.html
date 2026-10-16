@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>commandcode-delegate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">delegate-coding-to-commandcode</a> / commandcode-delegate</p><h1>commandcode-delegate</h1><p class="meta">combined</p><p>The sickn33 copy is a mirror of the amElnagdy skill (it even records source_repo: amElnagdy/delegate-skills) and reproduces its autonomy model, prerequisites, and loop. However, the mirror adds a material safety constraint the original lacks: before the first write-capable run, explain the unsandboxed full-trust mode and obtain explicit human acceptance. The original also contains a Codex-specific dispatch path (codex-background MCP delegate_run) that the mirror omits. Crowning one copy would hide either the consent gate or the Codex dispatch alternative, so the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/amElnagdy/delegate-skills">amElnagdy/delegate-skills</a></td><td><code>skills/commandcode-delegate/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/commandcode-delegate/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/amElnagdy/delegate-skills">amElnagdy/delegate-skills</a></td><td><code>skills/commandcode-delegate/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/commandcode-delegate/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/commandcode-delegate/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/commandcode-delegate/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: commandcode-delegate
+description: Delegate a bounded coding task to the Command Code CLI (cmd) as a background implementer, then review its diff and land it yourself. Use when the user explicitly asks to hand implementation work to Command Code. Do not use for small inline tasks or when the user wants the code written directly.
+license: MIT
+compatibility: Requires the Command Code CLI (cmd, or cmdc on Windows, from commandcode.ai) installed and authenticated, Node 22+, and git. The orchestrating agent must be able to run shell commands and read files. Shell examples assume bash/zsh (macOS/Linux).
+metadata:
+  version: 0.5.0
+---
+
+# Command Code Delegate
+
+You are the orchestrator. Hand a bounded coding task to the Command Code CLI (cmd), review what it produced, and land it yourself. You write the brief and own the judgment; Command Code does the typing in your working tree; you verify and commit.
+
+## When NOT to use this
+
+- The task is small enough to just do inline.
+- The cmd CLI is not installed or not authenticated (run cmd login).
+- You want to write the code yourself, or you only need a review.
+- You are on native Windows and cmdc --version does not work (use WSL).
+
+## Autonomy model
+
+Command Code headless mode has exactly two states:
+
+- Default (-p with no --yolo): read, grep, and glob work; every write, edit, and shell call is refused. This is the relay&#x27;s --read-only.
+- --yolo (alias --dangerously-skip-permissions): every tool is allowed anywhere the process can reach. There is no filesystem sandbox or path restriction. This is what an implementation run needs, so the relay passes it by default.
+
+--permission-mode auto-accept and --tools-all do not lift the headless write gate. An implementation run is a full-trust run: scope it with a tight brief and a clean working tree, not with a sandbox. If writes outside the target tree are unacceptable, use an OS-enforced sandbox or run inside a container.
+
+Before the first write-capable run, explain this unsandboxed full-trust mode and obtain explicit human acceptance. A request to delegate to Command Code is not by itself consent to host-wide access.
+
+## Prerequisites (check once)
+
+1. cmd --version succeeds and cmd status reports authenticated. If not, install Command Code and run cmd login.
+2. Confirm the CLI on PATH. On macOS/Linux, command -v cmd shows the active cmd. On native Windows, use cmdc --version; cmd is the system shell. The relay uses cmdc there and launches its npm .cmd shim through cmd.exe. COMMANDCODE_BIN remains an absolute-path override and must never point to the system command interpreter. The relay records the version it ran in result.json.
+3. You are in (or will point --cd at) the target git repository, and its tree is clean before you dispatch.
+
+## The loop
+
+Run these five steps per task. Steps 1, 4, and 5 are your judgment; 2 and 3 are mechanical.
+
+### 1. Write the brief
+
+Command Code sees only the text you send — no repo memory, no chat history, no shared context (beyond the repo&#x27;s own AGENTS.md, which it reads automatically). Everything the task needs goes in the brief: the goal, the current state, what to change, what to leave untouched, the project&#x27;s actual gate commands (discover them from the repo&#x27;s AGENTS.md/CLAUDE.md/Makefile — do not assume), and a report contract. Tell it that it will not commit (you will). Keep one task per brief.
+
+### 2. Dispatch
+
+For Codex orchestration of background work, install and configure the separate codex-background support utility first. If its MCP tools or registry are missing, stop and report the setup requirement; do not silently fall back to model-driven polling. Then invoke its registered delegate_run MCP tool once in place of the shell example below. Follow that skill for structured common arguments, unchanged provider flags and reattachment by runId. Keep the request pending until completion, then continue this skill&#x27;s review and landing steps. Other orchestrators keep the shell workflow below.
+
+Send the brief to Command Code with the bundled helper. It wraps cmd -p, captures the run, and writes a structured result.json — so your only job is &quot;run a command, read a file.&quot; (&lt;skill-dir&gt; is this skill&#x27;s installed directory — the folder containing this SKILL.md. If unsure where it landed, run find ~ -name relay.mjs -path &#x27;*commandcode-delegate*&#x27; and substitute the directory above it.)
+
+```bash
+node &quot;&lt;skill-dir&gt;/scripts/relay.mjs&quot; --brief brief.txt --cd /path/to/repo
+# read-only (review/diagnosis, no edits):   add --read-only
+# continue the exact session:               add --session &lt;sessionId&gt;  (from result.json; send only the delta brief)
+# fallback when no session id is available: add --continue-last
+# hard time limit (watchdog):               add --timeout 2h  (default: off; implementation runs routinely need 1-2h)
+```
+
+### 3. Read the result
+
+Read result.json from the relay output. Check the exit status, the diff, and any error output.
+
+### 4. Review the diff
+
+Review the diff produced by Command Code. Verify it matches the brief, does not touch out-of-scope files, and passes the project&#x27;s gate commands.
+
+### 5. Land the commit
+
+If the diff is acceptable, commit it yourself. If not, write a delta brief and re-dispatch, or fix it inline.
+
+## Conflicts
+
+- amElnagdy/delegate-skills includes a Codex orchestration path that requires the codex-background MCP delegate_run tool and stops if it is missing; sickn33/agentic-awesome-skills omits this path entirely.
+- sickn33/agentic-awesome-skills requires explicit human acceptance of the unsandboxed full-trust mode before the first write-capable run; amElnagdy/delegate-skills does not include this consent step.</pre>
+</body>
+</html>

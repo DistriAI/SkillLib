@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>perplexity</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">web-search</a> / perplexity</p><h1>perplexity</h1><p class="meta">combined</p><p>The two skills describe fundamentally different implementations of the &#x27;perplexity&#x27; skill. The first (softaworks) is a routing and policy skill for an agent using MCP tools (Perplexity Search/Ask), defining when to use them versus other tools like Context7 or Graphite, and explicitly prohibiting a specific research tool. The second (LeoYeAI) is a standalone CLI wrapper skill that executes a Node.js script to call the Perplexity API directly, requiring an API key. They do not reproduce each other; one is a decision framework for tool selection, and the other is a direct execution script. Combining them is necessary to capture both the high-level routing logic and the low-level API execution method.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/softaworks/agent-toolkit">softaworks/agent-toolkit</a></td><td><code>dist/plugins/perplexity/skills/perplexity/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/perplexity/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/softaworks/agent-toolkit">softaworks/agent-toolkit</a></td><td><code>dist/plugins/perplexity/skills/perplexity/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/perplexity/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/softaworks/agent-toolkit">softaworks/agent-toolkit</a></td><td><code>skills/perplexity/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: perplexity
+description: Web search and research using Perplexity AI. Supports MCP tool routing and direct API script execution.
+---
+
+# Perplexity Tools
+
+This skill provides two methods for using Perplexity: MCP tool routing for agent workflows and a direct CLI script for standalone API calls.
+
+## Method 1: MCP Tool Routing (Agent Workflows)
+
+Use this method when operating within an agent environment that has access to Perplexity MCP tools.
+
+### Tool Selection Chain
+1. **Context7 MCP**: For library/framework docs.
+2. **Graphite MCP**: For `gt` CLI mentions.
+3. **Nx MCP**: For workspace-specific questions.
+4. **Perplexity Search**: For generic searches.
+5. **Perplexity Ask**: For conversational answers.
+6. **Researcher Agent**: For deep multi-source research (use `/research &lt;topic&gt;`).
+7. **WebSearch**: Last resort.
+
+### Perplexity Search
+Use for generic searches, finding resources, or current best practices.
+
+**Default Parameters:**
+```typescript
+mcp__perplexity__perplexity_search({
+  query: &quot;your search query&quot;,
+  max_results: 3,
+  max_tokens_per_page: 512
+})
+```
+
+**Increased Limits (Sparingly):**
+```typescript
+mcp__perplexity__perplexity_search({
+  query: &quot;complex topic&quot;,
+  max_results: 5,
+  max_tokens_per_page: 1024
+})
+```
+
+### Perplexity Ask
+Use for conversational explanations or synthesizing information.
+
+```typescript
+mcp__perplexity__perplexity_ask({
+  messages: [
+    {
+      role: &quot;user&quot;,
+      content: &quot;Explain how postgres advisory locks work&quot;
+    }
+  ]
+})
+```
+
+### Prohibited
+- **NEVER use** `mcp__perplexity__perplexity_research`. Use the Researcher agent instead.
+
+## Method 2: Direct API Script (Standalone)
+
+Use this method when you have direct access to the Perplexity API key and need to run searches via a script.
+
+### Requirements
+- `PERPLEXITY_API_KEY` environment variable must be set.
+- Node.js must be installed.
+
+### Usage
+Single query:
+```bash
+node {baseDir}/scripts/search.mjs &quot;what&#x27;s happening in AI today&quot;
+```
+
+Batch queries:
+```bash
+node {baseDir}/scripts/search.mjs &quot;What is Perplexity?&quot; &quot;Latest AI news&quot; &quot;Best coffee in NYC&quot;
+```
+
+### Options
+- `--json`: Output raw JSON response.
+
+## Key Points
+- **MCP Context**: Always check for specific MCPs (Context7, Graphite, Nx) before using Perplexity MCP tools.
+- **API Context**: Use the script for direct, unmediated API calls when MCP tools are unavailable or inappropriate.
+- **Citations**: Both methods aim to provide grounded responses with citations where available.</pre>
+</body>
+</html>

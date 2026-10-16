@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>evaluation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">agent-evaluation</a> / evaluation</p><h1>evaluation</h1><p class="meta">combined</p><p>The second copy is a direct mirror of the first (it cites the first repository as its source), but it is not a faithful reproduction. It introduces specific, conflicting performance metrics (the &#x27;95% Finding&#x27; with 80/10/5 variance splits) that the first copy explicitly avoids by using qualitative descriptors (&#x27;Primary&#x27;, &#x27;Secondary&#x27;). It also includes specific model recommendations (Claude Sonnet 4.5, GPT-5.2) and a &#x27;risk: safe&#x27; metadata field absent from the original. Because the copies disagree on the quantitative basis for evaluation design, crowning one would hide a real alternative interpretation of the underlying research.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/evaluation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/evaluation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/evaluation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/evaluation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/evaluation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/evaluation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: evaluation
+description: &quot;Build evaluation frameworks for agent systems: deterministic checks, regression suites, multi-dimensional rubrics, and production monitoring.&quot;
+---
+
+# Evaluation Methods for Agent Systems
+
+Evaluate agent systems by focusing on outcomes rather than execution paths, as agents are non-deterministic and may take multiple valid routes to a goal.
+
+## When to Activate
+- Testing agent performance systematically
+- Validating context engineering choices
+- Catching regressions before deployment
+- Building quality gates for agent pipelines
+
+## Core Concepts
+
+### Performance Drivers
+When designing evaluation budgets, account for the primary drivers of performance variance:
+- **Token usage**: The primary driver. More exploration can improve performance until cost or context quality collapses.
+- **Tool calls**: Secondary driver. More tool use helps only when calls retrieve useful evidence.
+- **Model choice**: Secondary but multiplicative. Better models often use tokens and tools more efficiently.
+
+**Implications for Design:**
+- Set realistic token budgets that reflect production constraints.
+- Compare model upgrades against token increases to determine the most efficient path to improvement.
+- Validate multi-agent architectures against single-agent baselines to ensure the added token/tool overhead is justified.
+
+### Evaluation Challenges
+- **Non-Determinism**: Define outcome criteria (correctness, completeness) rather than checking for specific steps.
+- **Context-Dependent Failures**: Include simple, medium, complex, and very complex test cases to surface failures that emerge as context accumulates.
+- **Composite Quality**: Score dimensions independently to avoid averaging away critical signals.
+
+## Rubric Design
+
+Build multi-dimensional rubrics with descriptive levels (excellent to failed) for:
+1. **Factual accuracy**: Claims match ground truth.
+2. **Completeness**: Output covers requested aspects.
+3. **Citation accuracy**: Citations match claimed sources.
+4. **Source quality**: Uses appropriate primary sources.
+5. **Tool efficiency**: Uses right tools a reasonable number of times.
+
+**Scoring:**
+- Map assessments to numeric scores (0.0 to 1.0).
+- Apply per-dimension weights based on use-case priorities.
+- Set passing thresholds (e.g., 0.7 for general, 0.9 for high-stakes).
+
+## Methodologies
+
+1. **Deterministic Validation**: Run machine-checkable checks (schema validity, duplicate keys, manifest sync) before LLM judgment to fail fast.
+2. **LLM-as-Judge**: Use for scalable evaluation once deterministic checks are stable. Provide clear task descriptions, ground truth, and structured judgment scales.
+3. **Human Evaluation**: Use to catch edge cases, hallucinations on unusual queries, and subtle biases that automation misses.
+
+## Test Set Design
+- Start with small samples during early development to reveal large effects.
+- Sample from real usage patterns and include known edge cases.
+- Ensure coverage across all complexity levels.</pre>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>context-fundamentals</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">context-engineering-fundamentals</a> / context-fundamentals</p><h1>context-fundamentals</h1><p class="meta">combined</p><p>The copies overlap heavily on the anatomy of context (system prompts, tools, retrieval, history, outputs) and the core definition of context. However, they disagree on scope and contain material steps the others lack. The muratcankoylan copy is a conceptual onboarding skill that explicitly routes operational work to other skills and introduces specific principles (U-shaped attention curve, position-aware placement, iterative curation). The foryourhealth111 and sickn33 copies are broader, covering operational topics like attention mechanics, position encoding, and the 83.9% tool output statistic, which the first copy omits. Crowning one would hide either the operational depth or the specific conceptual routing logic.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/context-fundamentals/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/context-fundamentals/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/context-fundamentals/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/context-fundamentals/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/context-fundamentals/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/context-fundamentals/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/context-fundamentals/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/context-fundamentals/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: context-fundamentals
+description: &quot;Explains foundational concepts of context engineering: context anatomy, attention mechanics, and core principles. Use for conceptual onboarding and design reasoning. For operational work, apply the specific tactics described in the detailed topics or route to specialized skills if available.&quot;
+---
+
+# Context Engineering Fundamentals
+
+Context is the complete state available to a language model at inference time: system instructions, tool definitions, retrieved documents, message history, and tool outputs. Context engineering is the discipline of curating the smallest high-signal token set that maximizes the likelihood of desired outcomes.
+
+## When to Activate
+
+Activate this skill when:
+- Explaining what context is and how attention mechanics constrain agent behavior.
+- Onboarding new contributors to context engineering concepts.
+- Reasoning about a context-related design decision from first principles.
+- Designing new agent systems or modifying existing architectures.
+- Debugging unexpected agent behavior that may relate to context.
+
+## Core Concepts
+
+Treat context as a finite attention budget. Every token added competes for the model&#x27;s attention. The engineering problem is maximizing utility per token against the hard token limit and the U-shaped attention curve (which penalizes information placed in the middle of context).
+
+Apply these principles:
+1. **Informativity over exhaustiveness** — include only what matters for the current decision.
+2. **Position-aware placement** — place critical constraints at the beginning and end of context.
+3. **Progressive disclosure** — load skill names/summaries at startup; load full content only when activated.
+4. **Iterative curation** — context engineering is an ongoing discipline, not a one-time exercise.
+
+## Detailed Topics
+
+### The Anatomy of Context
+
+**System Prompts**
+Organize system prompts into distinct sections using XML tags or Markdown headers. Calibrate instruction altitude to balance brittle hardcoded logic with vague high-level guidance. Aim for heuristic-driven instructions: specific enough to guide behavior, flexible enough to generalize.
+
+**Tool Definitions**
+Write tool descriptions that answer: what the tool does, when to use it, and what it returns. Keep the tool set minimal. Consolidate overlapping tools because bloated tool sets create ambiguous decision points and consume disproportionate context after JSON serialization.
+
+**Retrieved Documents**
+Maintain lightweight identifiers (file paths, stored queries, web links) and load data into context dynamically using just-in-time retrieval. This mirrors human cognition: maintain an index, not a copy.
+
+**Message History**
+Message history serves as scratchpad memory where agents track progress and maintain task state. Effective management is critical for long-horizon task completion.
+
+**Tool Outputs**
+Tool outputs comprise the majority of tokens in typical agent trajectories (research shows they can reach ~84% of total context usage). This creates pressure for strategies like observation masking, compaction, and selective retention.
+
+### Context Windows and Attention Mechanics
+
+**The Attention Budget Constraint**
+Language models process tokens through attention mechanisms that create pairwise relationships. As context length increases, the model&#x27;s ability to capture these relationships gets stretched thin, creating an &quot;attention budget&quot; that depletes as context grows.
+
+**Position Encoding and Context Extension**
+Position encoding interpolation allows models to handle longer sequences but introduces degradation in token position understanding. Models show reduced precision for information retrieval and long-range reasoning compared to performance on shorter contexts.
+
+**The Progressive Disclosure Principle**
+Progressive disclosure manages context efficiently by loading information only as needed. At startup, agents load only names and summaries; full content is loaded when a specific task activates.</pre>
+</body>
+</html>

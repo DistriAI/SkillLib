@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ebay-product-research</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">ebay-product-research</a> / ebay-product-research</p><h1>ebay-product-research</h1><p class="meta">combined</p><p>The two copies describe the same high-level task (eBay product research) but provide materially different, non-overlapping procedures. The first is a natural-language prompt skill that instructs the agent to analyze completed listings, sell-through rates, competition density, seasonal demand, sourcing opportunities, fees, and trends, and to output structured recommendations. The second is a CLI-style tool with specific commands, parameters, marketplace selection, competitor monitoring, and a paid pricing model. Neither copy contains the other&#x27;s concrete steps or constraints, so crowning one would hide a real alternative workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/nexscope-ai/eCommerce-Skills">nexscope-ai/eCommerce-Skills</a></td><td><code>ebay-product-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ebay-product-research/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/nexscope-ai/eCommerce-Skills">nexscope-ai/eCommerce-Skills</a></td><td><code>ebay-product-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/ebay-product-research/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># eBay Product Research
+
+Research profitable products to sell on eBay by analyzing completed listings, sell-through rates, average selling prices, competition density, seasonal demand, and sourcing opportunities.
+
+## Inputs
+- Category (e.g., electronics, vintage watches)
+- Keyword (e.g., wireless earbuds)
+- Optional: seller ID for competitor analysis
+- Optional: price and cost for profit calculation
+- Optional: marketplace/site (US, UK, DE, AU)
+
+## Steps
+1. Identify the target category and keyword.
+2. Analyze completed listings to determine real selling prices and average selling price.
+3. Calculate sell-through rate and compare against category benchmarks.
+4. Assess competition density for the category and keyword.
+5. Identify seasonal demand patterns and trending products.
+6. If a seller ID is provided, perform competitor analysis for that seller.
+7. If price and cost are provided, calculate profit margin including eBay fees for the selected marketplace.
+8. Identify sourcing opportunities (arbitrage, wholesale, thrift) where applicable.
+9. Produce structured recommendations with actionable steps, benchmarks, and platform-specific guidance.
+
+## Output
+- Structured product recommendations
+- Sell-through rate and price benchmarks
+- Competition density assessment
+- Seasonal demand and trend notes
+- Profit margin estimate (when price/cost provided)
+- Sourcing opportunity notes
+
+## Conflicts
+- nexscope-ai/eCommerce-Skills: natural-language prompt skill; no CLI, no pricing, no marketplace parameter.
+- LeoYeAI/openclaw-master-skills: CLI-based tool with flags, competitor monitoring by seller ID, marketplace selection, and a paid per-use pricing model (¥8/次, first use free).</pre>
+</body>
+</html>

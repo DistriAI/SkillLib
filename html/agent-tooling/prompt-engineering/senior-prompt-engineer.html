@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>senior-prompt-engineer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">prompt-engineering</a> / senior-prompt-engineer</p><h1>senior-prompt-engineer</h1><p class="meta">combined</p><p>The two copies share the same three tool names (prompt_optimizer, rag_evaluator, agent_orchestrator) but disagree on their purpose and usage. The first copy frames the skill as a broad &#x27;Senior AI/ML Engineer&#x27; with generic MLOps patterns, Kubernetes deployment, and high-level performance targets, while the second copy provides specific, actionable workflows for prompt optimization, RAG evaluation metrics, and agent flow visualization. Because the first copy lacks the specific evaluation metrics and the second lacks the broader MLOps/deployment context, crowning one would hide the specific tooling details or the broader architectural guidance respectively.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/senior-prompt-engineer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/senior-prompt-engineer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/senior-prompt-engineer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/senior-prompt-engineer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: senior-prompt-engineer
+description: World-class prompt engineering and LLM system design. Use for prompt optimization, RAG evaluation, agent orchestration, and production AI architecture.
+---
+
+# Senior Prompt Engineer
+
+This skill covers prompt engineering patterns, LLM evaluation, and agentic system design for production-grade AI systems.
+
+## Quick Start
+
+### 1. Prompt Optimization
+Analyze prompts for token efficiency, clarity, and structure.
+
+```bash
+# Analyze a prompt file
+python scripts/prompt_optimizer.py prompt.txt --analyze
+
+# Generate an optimized version
+python scripts/prompt_optimizer.py prompt.txt --optimize --output optimized.txt
+
+# Count tokens for cost estimation
+python scripts/prompt_optimizer.py prompt.txt --tokens --model gpt-4
+```
+
+**Key Metrics:**
+- Token count and estimated cost
+- Clarity score (0-100)
+- Redundancy detection
+
+### 2. RAG Evaluation
+Evaluate Retrieval-Augmented Generation quality.
+
+```bash
+# Evaluate retrieval and generation quality
+python scripts/rag_evaluator.py --contexts retrieved.json --questions eval_set.json
+
+# Export detailed results
+python scripts/rag_evaluator.py --contexts retrieved.json --questions eval_set.json --output report.json --verbose
+```
+
+**Key Metrics:**
+- Context Relevance (target: &gt;0.80)
+- Answer Faithfulness
+- Retrieval Precision@5
+
+### 3. Agent Orchestration
+Validate and visualize agent workflows.
+
+```bash
+# Validate agent configuration
+python scripts/agent_orchestrator.py agent.yaml --validate
+
+# Visualize workflow (ASCII or Mermaid)
+python scripts/agent_orchestrator.py agent.yaml --visualize
+```
+
+**Validation Checks:**
+- Tool configuration (API keys, permissions)
+- Flow depth and potential infinite loops
+- Token estimation per run
+
+## Production Patterns
+
+### Scalable Data Processing
+- Horizontal scaling architecture
+- Fault-tolerant design
+- Real-time and batch processing
+
+### ML Model Deployment
+- Model serving with low latency
+- A/B testing infrastructure
+- Model monitoring and drift detection
+
+### Real-Time Inference
+- Batching and caching strategies
+- Load balancing and auto-scaling
+- Latency optimization
+
+## Best Practices
+
+### Development
+- Test-driven development
+- Documentation as code
+- Continuous integration
+
+### Production
+- Monitor everything critical
+- Feature flags for releases
+- Canary deployments
+
+## Performance Targets
+
+**Latency:**
+- P50: &lt; 50ms
+- P95: &lt; 100ms
+- P99: &lt; 200ms
+
+**Availability:**
+- Uptime: 99.9%
+- Error rate: &lt; 0.1%
+
+## Security &amp; Compliance
+
+- Authentication &amp; authorization
+- Data encryption (at rest &amp; in transit)
+- PII handling and anonymization
+- GDPR/CCPA compliance
+
+## Resources
+
+- Advanced Patterns: `references/prompt_engineering_patterns.md`
+- Evaluation Frameworks: `references/llm_evaluation_frameworks.md`
+- Agentic Design: `references/agentic_system_design.md`</pre>
+</body>
+</html>

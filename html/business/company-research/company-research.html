@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>company-research</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">company-research</a> / company-research</p><h1>company-research</h1><p class="meta">combined</p><p>The two skills share the name but perform different tasks. deanpeters/Product-Manager-Skills is a manual, PM-focused company profile that extracts executive quotes, product strategy, and org context from public sources for interviews, partnerships, or competitive analysis. browserbase/skills is an automated sales-discovery pipeline that uses the Browserbase Search API and a Plan→Research→Synthesize pattern to find target companies, score ICP fit, and emit a report plus CSV. They overlap only in the broad idea of researching companies; each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/deanpeters/Product-Manager-Skills">deanpeters/Product-Manager-Skills</a></td><td><code>skills/company-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/browserbase/skills">browserbase/skills</a></td><td><code>skills/company-research/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/deanpeters/Product-Manager-Skills">deanpeters/Product-Manager-Skills</a></td><td><code>skills/company-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/browserbase/skills">browserbase/skills</a></td><td><code>skills/company-research/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Company Research
+
+This skill covers two distinct workflows. Choose the one that matches the user&#x27;s intent.
+
+## Workflow A: PM Strategy &amp; Interview Brief (single company)
+
+Use when the user wants a company profile for interview prep, competitive analysis, partnership evaluation, or market-entry context.
+
+1. **Define Research Scope**
+   - Capture the company name, research purpose, and key questions.
+   - If the user already supplied the company and purpose, skip re-asking.
+
+2. **Gather Company Overview**
+   - Document name, headquarters, industry, founding year, size, and key historical milestones.
+   - Sources: company website, LinkedIn, Crunchbase/PitchBook, Wikipedia.
+
+3. **Extract Executive Quotes on Strategic Vision**
+   - Find recent quotes from CEO, COO, VP Product, or Group PM.
+   - Focus on product strategy, transformation initiatives, and organizational dynamics.
+
+4. **Synthesize Product &amp; Organizational Insights**
+   - Cover product strategy, recent launches, innovation focus, PLG approach, and how PM influences strategy.
+   - Use the Executive Insights Framework: Company Overview, Executive Quotes, Product Insights, Transformation Strategies, Organizational Impact, Future Roadmap, PLG.
+
+5. **Produce the Brief**
+   - Output a markdown brief using the template structure.
+   - Emphasize executive perspective and product-centric insights, not financial analysis or SWOT.
+
+## Workflow B: Sales ICP Discovery &amp; Scoring (multiple companies)
+
+Use when the user wants to find companies to sell to, build a target list, or do ICP/market research on prospects.
+
+**Prerequisites:** `BROWSERBASE_API_KEY` env var and `browse` CLI installed.
+
+1. **Deep Company Research**
+   - Understand the user&#x27;s company, product, and ICP.
+   - Ask for company name or URL if not provided.
+
+2. **Depth Mode Selection**
+   - Choose quick/deep/deeper based on the number of targets desired.
+
+3. **Discovery**
+   - Use `browse cloud search` with diverse queries to find target companies.
+   - Deduplicate URLs using `node {SKILL_DIR}/scripts/list_urls.mjs /tmp`.
+
+4. **Deep Research &amp; Scoring**
+   - For each target, use the Plan→Research→Synthesize pattern.
+   - Extract page content with `node {SKILL_DIR}/scripts/extract_page.mjs &quot;&lt;url&gt;&quot;`.
+   - Score ICP fit and write one markdown file per company to `{OUTPUT_DIR}/{company-slug}.md`.
+   - Apply anti-hallucination rules: never infer product description from design; quote or paraphrase specific homepage content; cap score at 3 if content is inaccessible.
+
+5. **Report &amp; CSV**
+   - Compile results with `node {SKILL_DIR}/scripts/compile_report.mjs {OUTPUT_DIR} --open`.
+   - Output a scored CSV and HTML report to the user&#x27;s Desktop.
+
+## Conflicts
+
+- **deanpeters/Product-Manager-Skills::skills/company-research/SKILL.md** is a single-company, PM-strategy brief using manual public-source synthesis. **browserbase/skills::skills/company-research/SKILL.md** is a multi-company, sales-ICP discovery pipeline using the Browserbase Search API and automated scripts. They are not interchangeable; select the workflow that matches the user&#x27;s goal.</pre>
+</body>
+</html>

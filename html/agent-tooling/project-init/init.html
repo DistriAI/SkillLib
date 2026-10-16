@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>init</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">project-init</a> / init</p><h1>init</h1><p class="meta">combined</p><p>All four skills are named init but perform unrelated initialization tasks: one sets up a task-manager works directory and Bash permissions, one creates or prunes an AGENTS.md file, one scaffolds a Playwright e2e environment, and one fills [FILL:] placeholders in a research project template. None is a reproduction of the others, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/agents-uc-taskmanager/skills/init/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mcollina/skills">mcollina/skills</a></td><td><code>skills/init/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/cs-playwright-pro/skills/init/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/29-quarcs-lab-project20XXy/dot-claude/skills/init/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/agents-uc-taskmanager/skills/init/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mcollina/skills">mcollina/skills</a></td><td><code>skills/init/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/cs-playwright-pro/skills/init/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/29-quarcs-lab-project20XXy/dot-claude/skills/init/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/origin/skills/init/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/playwright-pro/skills/init/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Project Init
+
+This skill covers four distinct initialization workflows. Choose the one that matches the user&#x27;s request.
+
+## Workflow A: uc-taskmanager init
+
+Use when the user says &quot;uctm init&quot;, &quot;initialize uctm&quot;, or asks to set up uc-taskmanager.
+
+1. Create a `works/` directory if it does not exist. Report whether it was created or already existed.
+2. Ask the user whether to auto-configure Bash permissions in `.claude/settings.local.json` (recommended).
+3. If approved, read `.claude/settings.local.json` (create if missing) and merge the required permission entries into `permissions.allow`, skipping any that already exist. Preserve existing `permissions.allow` and `permissions.deny` entries.
+4. Report the number of permissions added, skipped, or already configured.
+5. Show a summary confirming `works/` is ready and permissions are configured, and suggest the next command.
+
+## Workflow B: AGENTS.md init
+
+Use when creating, updating, or pruning an `AGENTS.md` file for a repository.
+
+1. Treat `AGENTS.md` as a living list of non-discoverable landmines and workflow gotchas, not a codebase overview.
+2. Apply a discoverability filter: before adding any line, ask whether an agent can discover it by reading the repo (README, code, config, scripts, directory tree). If yes, do not include it. If no, and it materially affects task success, cost, or safety, include it.
+3. Include only guidance that is non-discoverable, operationally significant, and actionable. Typical examples include non-standard tooling choices, command caveats, hidden constraints, and critical local conventions not encoded in lint/tests/config.
+4. Do not include tech stack summaries, directory structure overviews, architecture descriptions, generic best-practice advice, rules already enforced by tooling, or mandatory boilerplate headers unless the repo explicitly requires one.
+5. Prefer short, high-signal sections such as Scope &amp; routing, Non-discoverable commands, Landmines / do-not-touch areas, and Task-specific constraints. For large repos, recommend hierarchical AGENTS.md files near relevant modules.
+6. Check source files first: existing AGENTS.md, README.md, PROJECT.md, Cursor rules, Copilot instructions, GEMINI.md, CI/workflow files, and package manager config. If AGENTS.md exists, improve it incrementally instead of replacing it blindly.
+7. Maintain a maintenance mindset: prefer fixing the root cause in code/tooling, keep only the minimum instruction needed, and prune stale instructions aggressively.
+8. Before finalizing, verify each line is non-discoverable, still accurate, and materially reduces mistakes, cost, or time. Delete any line that fails these checks.
+
+## Workflow C: Playwright init
+
+Use when the user says &quot;set up playwright&quot;, &quot;add e2e tests&quot;, &quot;configure playwright&quot;, or asks to add test infrastructure.
+
+1. Analyze the project: check `package.json` for the framework, check for `tsconfig.json` to choose TypeScript or JavaScript, check if Playwright is already installed, check for existing test directories, and check for existing CI config.
+2. Install Playwright if not already installed, using `npm init playwright@latest -- --quiet` or manual install with `npm install -D @playwright/test` and `npx playwright install --with-deps chromium`.
+3. Generate `playwright.config.ts` adapted to the detected framework, setting the correct `baseURL` and `webServer.command` for Next.js, React (Vite), Vue/Nuxt, Angular, or no framework.
+4. Create the folder structure: `e2e/fixtures/`, `e2e/pages/`, `e2e/test-data/`, and `e2e/example.spec.ts`.
+5. Generate an example test that verifies the homepage loads and has visible navigation.
+6. Generate a CI workflow: if `.github/workflows/` exists, create `playwright.yml`; if `.gitlab-ci.yml` exists, add a Playwright stage.
+7. Update `.gitignore` to exclude `/test-results/`, `/playwright-report/`, `/blob-report/`, and `/playwright/.cache/` if not already present.
+8. Add npm scripts: `test:e2e`, `test:e2e:ui`, and `test:e2e:debug`.
+9. Run the example test with `npx playwright test`. Report the result and diagnose any failures before completing.
+10. Confirm what was created: config file path and key settings, test directory and example test, CI workflow, npm scripts, and how to run tests.
+
+## Workflow D: Research project template init
+
+Use when setting up a freshly cloned research project that contains `[FILL:]` placeholders.
+
+1. Scan all tracked files for `[FILL:` patterns and group them by file. Report how many placeholders exist and in which files.
+2. Ask the user for project information: project title, subtitle, authors (name, affiliation, ORCID, email, corresponding author status), abstract, keywords, project stage, data source description, repository URL, and project slug.
+3. Apply the values to each file: `index.qmd` (title, subtitle, authors, abstract, keywords), `README.md` (title, description, data section, repository URL, Quick Start clone URL), `CLAUDE.md` (Project Context table), `pyproject.toml` (name, description, authors), `_quarto.yml` (verify no placeholders), and `templates/chadManuscript/manuscript.tex` (author names and keywords).
+4. Re-scan for remaining `[FILL:]` placeholders and report how many remain and where.
+5. Run `bash scripts/render.sh` to regenerate `latex/index.tex` with the real content.
+6. Report a summary: files updated, placeholders filled, placeholders remaining, and render status.</pre>
+</body>
+</html>

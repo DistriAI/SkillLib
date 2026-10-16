@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>developer-growth-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">developer-growth-analysis</a> / developer-growth-analysis</p><h1>developer-growth-analysis</h1><p class="meta">combined</p><p>The three copies are nearly identical, but they disagree on the target agent and the chat history file path. The davepoon and ComposioHQ copies target Claude Code and read ~/.claude/history.jsonl, while the composio-community copy targets Codex and reads $CODEX_HOME/history.jsonl (defaulting to ~/.codex/history.jsonl). Because the file path is a core step, crowning one copy would hide a real alternative for the other agent.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/developer-growth-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>developer-growth-analysis/SKILL.md</code></td></tr><tr><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>developer-growth-analysis/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/developer-growth-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>developer-growth-analysis/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>developer-growth-analysis/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: developer-growth-analysis
+description: Analyzes your recent coding chat history to identify coding patterns, development gaps, and areas for improvement, curates relevant learning resources from HackerNews, and automatically sends a personalized growth report to your Slack DMs.
+---
+
+# Developer Growth Analysis
+
+This skill provides personalized feedback on your recent coding work by analyzing your chat interactions and identifying patterns that reveal strengths and areas for growth.
+
+## When to Use This Skill
+
+Use this skill when you want to:
+- Understand your development patterns and habits from recent work
+- Identify specific technical gaps or recurring challenges
+- Discover which topics would benefit from deeper study
+- Get curated learning resources tailored to your actual work patterns
+- Track improvement areas across your recent projects
+- Find high-quality articles that directly address the skills you&#x27;re developing
+
+## What This Skill Does
+
+This skill performs a six-step analysis of your development work:
+
+1. **Reads Your Chat History**: Accesses your local chat history from the past 24-48 hours to understand what you&#x27;ve been working on.
+2. **Identifies Development Patterns**: Analyzes the types of problems you&#x27;re solving, technologies you&#x27;re using, challenges you encounter, and how you approach different kinds of tasks.
+3. **Detects Improvement Areas**: Recognizes patterns that suggest skill gaps, repeated struggles, inefficient approaches, or areas where you might benefit from deeper knowledge.
+4. **Generates a Personalized Report**: Creates a comprehensive report showing your work summary, identified improvement areas, and specific recommendations for growth.
+5. **Finds Learning Resources**: Uses HackerNews to curate high-quality articles and discussions directly relevant to your improvement areas.
+6. **Sends to Your Slack DMs**: Automatically delivers the complete report to your own Slack direct messages.
+
+## How to Use
+
+Ask your agent to analyze your recent coding work:
+
+```
+Analyze my developer growth from my recent chats
+```
+
+Or be more specific about which time period:
+
+```
+Analyze my work from today and suggest areas for improvement
+```
+
+## Instructions
+
+When a user requests analysis of their developer growth or coding patterns from recent work:
+
+1. **Access Chat History**
+
+   Read the chat history from the appropriate file for your agent:
+   - **Claude Code**: `~/.claude/history.jsonl`
+   - **Codex**: `$CODEX_HOME/history.jsonl` (defaults to `~/.codex/history.jsonl`)
+
+   This file is in JSONL format where each line contains:
+   - `display`: The user&#x27;s message/request
+   - `project`: The project being worked on
+   - `timestamp`: Unix timestamp (in milliseconds)
+   - `pastedContents`: Any code or content pasted
+
+   Filter for entries from the past 24-48 hours based on the current timestamp.
+
+2. **Analyze Work Patterns**
+
+   Extract and analyze the following from the filtered chats:
+   - **Projects and Domains**: What types of projects was the user working on? (e.g., backend, frontend, DevOps, data, etc.)
+   - **Technologies Used**: What languages, frameworks, and tools appear in the conversations?
+   - **Problem Types**: What categories of problems are being solved? (e.g., performance optimization, debugging, feature implementation, refactoring, setup/configuration)
+   - **Challenges Encountered**: What problems did the user struggle with? Look for:
+     - Repeated questions about similar topics
+     - Problems that took multiple attempts to solve
+     - Questions indicating knowledge gaps
+     - Complex architectural decisions
+   - **Approach Patterns**: How does the user solve problems? (e.g., methodical, exploratory, experimental)
+
+3. **Identify Improvement Areas**
+
+   Based on the analysis, identify 3-5 specific areas where the user could improve. These should be:
+   - **Specific** (not vague like &quot;improve coding skills&quot;)
+   - **Evidence-based** (grounded in actual chat history)
+   - **Actionable** (practical improvements that can be made)
+   - **Prioritized** (most impactful first)
+
+   Examples of good improvement areas:
+   - &quot;Advanced TypeScript patterns (generics, utility types, type guards) - you struggled with type safety in [specific project]&quot;
+   - &quot;Error handling and validation - I noticed you patched several bugs related to missing null checks&quot;
+   - &quot;Async/await patterns - your recent work shows some race conditions and timing issues&quot;
+   - &quot;Database query optimization - you rewrote the same query multiple times&quot;
+
+4. **Generate Report**
+
+   Create a comprehensive report with this structure:
+
+   ```markdown
+   # Your Developer Growth Report
+
+   **Report Period**: [Yesterday / Today / [Custom Date Range]]
+   **Last Updated**: [Current Date and Time]
+
+   ## Work Summary
+
+   [2-3 paragraphs summarizing what the user worked on, projects touched, technologies used, and overall focus areas]
+
+   ## Improvement Areas (Prioritized)
+
+   ### 1. [Area Name]
+
+   **Why This Matters**: [Explanation of why this skill is important for the user&#x27;s work]
+
+   **What I Observed**: [Specific evidence from chat history showing this gap]
+
+   **Recommendation**: [Concrete step(s) to improve in this area]
+
+   **Time to Skill Up**: [Brief estimate of time required to improve]
+
+   [Repeat for each improvement area]
+
+   ## Curated Learning Resources
+
+   [List of HackerNews articles and discussions relevant to the improvement areas]
+
+   ## Action Items
+
+   [Specific, actionable steps the user can take]
+   ```
+
+5. **Find Learning Resources**
+
+   Use HackerNews to curate high-quality articles and discussions directly relevant to the identified improvement areas. Provide a reading list tailored to the user&#x27;s actual development work.
+
+6. **Send to Slack DMs**
+
+   Automatically deliver the complete report to the user&#x27;s own Slack direct messages so they can reference it anytime, anywhere.
+
+## Conflicts
+
+- **composio-community/awesome-codex-skills** specifies reading `$CODEX_HOME/history.jsonl` (defaults to `~/.codex/history.jsonl`) for Codex, while **davepoon/buildwithclaude** and **ComposioHQ/awesome-claude-skills** specify reading `~/.claude/history.jsonl` for Claude Code. The combined instruction above lists both paths so the agent can select the correct one based on the environment.</pre>
+</body>
+</html>

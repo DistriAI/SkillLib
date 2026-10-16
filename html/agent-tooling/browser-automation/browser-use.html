@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>browser-use</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">browser-automation</a> / browser-use</p><h1>browser-use</h1><p class="meta">combined</p><p>The two skills describe fundamentally different interfaces for the `browser-use` tool. The first (davidondrej) describes a Python-heredoc based CLI (`browser-use &lt;&lt;&#x27;PY&#x27;`) that uses a daemon, CDP directly, and specific helper functions like `new_tab()` and `page_info()`. It focuses on advanced CDP control, remote daemons, and specific local Chrome debugging workflows. The second (LeoYeAI) describes a command-line argument based CLI (`browser-use open &lt;url&gt;`, `browser-use click &lt;index&gt;`) that uses a state-based interaction model (getting indices from `state` and using them for clicks). These are mutually exclusive workflows; an agent following the first would fail if it tried to use the second&#x27;s commands, and vice versa. Therefore, they must be combined to provide a complete picture of the available interfaces.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/research-and-web/browser-use/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/browser-use/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/research-and-web/browser-use/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/browser-use/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: browser-use
+description: &quot;Direct browser control via CDP or CLI for web interaction: automation, scraping, testing, screenshots, and site/app work.&quot;
+homepage: https://browser-use.com
+---
+
+# Browser Use
+
+This skill supports two distinct interfaces for the `browser-use` tool: a **Python/CDP interface** for advanced control and a **CLI/State interface** for simple command-line automation. Choose the interface based on your task complexity and environment.
+
+## Interface 1: Python/CDP (Advanced)
+
+Use this interface when you need direct CDP access, complex session management, or when the environment supports Python heredocs.
+
+### Setup &amp; Diagnostics
+- Install via `uv` if not present.
+- Run `browser-use --doctor` for connection issues.
+- For local Chrome remote debugging issues, use `browser-use mac-approve` on macOS if prompted.
+
+### Usage Pattern
+Invoke using Python heredocs. Helpers are pre-imported.
+
+```bash
+browser-use &lt;&lt;&#x27;PY&#x27;
+# First navigation for a task
+new_tab(&quot;https://example.com&quot;)
+print(page_info())
+PY
+```
+
+### Key Rules
+- **Tab Management**: Use `new_tab(url)` for the first navigation. Reuse tabs with `switch_tab()` and inspect with `list_tabs()`. Do not create duplicate tabs for the same URL.
+- **Background vs Foreground**: The daemon attaches to a background tab by default. Screenshots and CDP input work in the background. Only call `activate_tab(target)` if the user explicitly asks or if a page pauses rendering while hidden.
+- **Scrolling**: If `scroll(...)` times out on a background tab, call `activate_tab(current_tab())`, retry the scroll once, then re-read position.
+- **Remote Daemons**: For parallel tasks or isolated environments, start a remote daemon:
+  ```bash
+  browser-use &lt;&lt;&#x27;PY&#x27;
+  start_remote_daemon(&quot;unique_name&quot;)
+  PY
+  
+  BU_NAME=unique_name browser-use &lt;&lt;&#x27;PY&#x27;
+  new_tab(&quot;https://example.com&quot;)
+  PY
+  ```
+  Remember to stop remote daemons when done to avoid billing: `stop_remote_daemon(&quot;unique_name&quot;)`.
+
+## Interface 2: CLI/State (Simple)
+
+Use this interface for straightforward command-line automation where you interact with elements by index.
+
+### Setup &amp; Diagnostics
+- Run `browser-use doctor` to verify installation.
+
+### Core Workflow
+1. **Navigate**: `browser-use open &lt;url&gt;`
+2. **Inspect**: `browser-use state` (Returns clickable elements with indices)
+3. **Interact**: Use indices from state (e.g., `browser-use click 5`, `browser-use input 3 &quot;text&quot;`)
+4. **Verify**: `browser-use state` or `browser-use screenshot`
+
+### Browser Modes
+- `--browser chromium`: Default, headless, isolated.
+- `--browser real`: Uses local Chrome. Add `--profile &quot;Default&quot;` to use existing logins.
+- `--browser remote`: Cloud-hosted browser.
+
+### Essential Commands
+```bash
+# Navigation
+browser-use open &lt;url&gt;
+browser-use back
+browser-use scroll down --amount 1000
+
+# State &amp; Data
+browser-use state
+browser-use screenshot path.png
+browser-use eval &quot;document.title&quot;
+browser-use get text &lt;index&gt;
+
+# Interaction
+browser-use click &lt;index&gt;
+browser-use input &lt;index&gt; &quot;text&quot;
+browser-use keys &quot;Enter&quot;
+
+# Session
+browser-use sessions
+browser-use close
+```
+
+## When Not to Use
+- If a plain HTTP request (`curl` or fetch) can retrieve the data, do not use the browser.
+- Use the browser only for interaction (click, type), JS rendering, logged-in sessions, or bot-protected pages.</pre>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>handoff</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">session-handoff</a> / handoff</p><h1>handoff</h1><p class="meta">combined</p><p>The four copies overlap on the goal of transferring context to a fresh agent, but they disagree on the artifact, the storage location, and the required steps. mattpocock/skills produces a compact document in the OS temp directory with a &#x27;suggested skills&#x27; section. davidondrej/skills produces a structured template in a fenced code block saved to a temp file or HANDOFF.md, with explicit core principles and a verification prompt. davepoon/buildwithclaude is a multi-artifact ritual that writes to ~/.origin/sessions/ and calls MCP tools for granular memory captures. openclaw/agent-skills produces a clipboard-ready prompt that avoids filesystem paths and instructs the receiving agent to perform an independent review. Because each copy contains material steps or constraints the others lack, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/productivity/handoff/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/agent-orchestration/handoff/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/origin/skills/handoff/SKILL.md</code></td></tr><tr><td><a href="https://github.com/openclaw/agent-skills">openclaw/agent-skills</a></td><td><code>skills/handoff/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/mattpocock/skills">mattpocock/skills</a></td><td><code>skills/productivity/handoff/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/agent-orchestration/handoff/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/origin/skills/handoff/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/openclaw/agent-skills">openclaw/agent-skills</a></td><td><code>skills/handoff/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/handoff/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/29-quarcs-lab-project20XXy/dot-claude/skills/handoff/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/handoff/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/handoff/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Handoff
+
+Capture the context a fresh agent needs to continue without re-asking, re-discovering, or repeating mistakes.
+
+## Core Principles
+
+1. **Describe state.** Write &quot;Auth is implemented; logout is not started,&quot; not &quot;Implement logout next.&quot; The next agent chooses actions from the context.
+2. **Link existing artifacts.** Reference PRDs, plans, ADRs, issues, commits, diffs, and design docs by path or URL instead of copying their content.
+3. **Preserve why.** Capture decisions, rejected approaches, and failures that code alone cannot explain.
+4. **Require verification.** Present claims as context to check against the actual code, not facts to trust blindly.
+5. **Redact secrets and PII.** Never include keys, tokens, passwords, or personal data. Name credential locations (e.g. &quot;.env.local, not committed&quot;), never values.
+6. **Keep only useful context.** Omit obvious, redundant, or explanatory material recoverable from code or project configuration.
+
+## Procedure
+
+1. Read existing project instructions (AGENTS.md or equivalent). Keep the handoff session-specific; do not repeat those instructions.
+2. Read and update any prior handoff instead of starting from scratch.
+3. Treat user-supplied arguments as the next session&#x27;s focus.
+4. Fill every template section; mark empty sections `None`.
+5. Output the handoff in one fenced code block and save the same content as described under **File Output**.
+
+## Output Format
+
+Use this template inside a single fenced code block:
+
+```
+# HANDOFF: &lt;short title of the work&gt;
+Generated: &lt;timestamp&gt; · Session focus: &lt;one line&gt;
+
+## 1. Goal
+&lt;The overall objective in 1–3 sentences.&gt;
+
+## 2. Why This Matters / Background
+&lt;Motivation, intended users, timing, constraints, and hard requirements not already in project configuration.&gt;
+
+## 3. Current State
+&lt;What is DONE, PARTIAL, and NOT STARTED. Describe status, not actions:&gt;
+
+## 4. Key Decisions (and why)
+&lt;Choices and reasoning, especially what cannot be recovered from code.&gt;
+
+## 5. Traps &amp; Dead Ends
+&lt;Failed approaches and pitfalls the next agent might repeat, with reasons.&gt;
+
+## 6. Relevant Files &amp; Pointers
+&lt;Paths with line ranges and specific contents; link external artifacts instead of copying them.&gt;
+
+## 7. Open Work (status, with dependencies)
+&lt;Remaining work and dependencies, stated as status rather than commands.&gt;
+
+## 8. Suggested Skills
+&lt;Name which skills the next agent should call the Skill tool for.&gt;
+
+---
+## Prompt for the Fresh Agent
+&lt;A short prompt with background context. Use declarative statements such as &quot;X is complete&quot; or &quot;Y has not started.&quot; Preserve this exact closing instruction:&gt;
+
+Before responding, read every file listed under &quot;Relevant Files &amp; Pointers&quot; above.
+Do not summarize, paraphrase, or claim you already have context — actually read each
+file. Treat every claim in this handoff as context to verify against the code, not
+facts to trust blindly. Then wait for my instructions before taking any action.
+```
+
+## File Output
+
+Save the same handoff outside the working tree, preferably in the OS temp directory: `$TMPDIR/handoff-&lt;random-8-chars&gt;.md` on macOS/Linux, or the system equivalent. If the user prefers an in-repo record, use `HANDOFF.md` in the project root.
+
+Report the absolute path. The user can start a fresh session with:
+
+```
+Read the file &lt;absolute-path&gt; to get the context, then wait for instructions.
+```
+
+## Conflicts
+
+- **mattpocock/skills** requires a &quot;suggested skills&quot; section; **davidondrej/skills**, **davepoon/buildwithclaude**, and **openclaw/agent-skills** do not include this section.
+- **davidondrej/skills** requires a specific 7-section template inside a single fenced code block; **mattpocock/skills** and **openclaw/agent-skills** do not use this template.
+- **davepoon/buildwithclaude** writes to `~/.origin/sessions/` and calls MCP capture tools; the other copies save to the OS temp directory, a project root, or the clipboard.
+- **openclaw/agent-skills** explicitly forbids filesystem paths in the handoff prompt and requires copying to the clipboard; the other copies save to a file and do not restrict paths in this way.
+- **davepoon/buildwithclaude** includes a pending-captures preview step and a project status file update; no other copy includes these steps.</pre>
+</body>
+</html>

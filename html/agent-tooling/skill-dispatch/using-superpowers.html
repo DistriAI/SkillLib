@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>using-superpowers</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">skill-dispatch</a> / using-superpowers</p><h1>using-superpowers</h1><p class="meta">combined</p><p>The copies overlap heavily on the core rule (invoke skills before any response), the red flags table, and skill priority. However, they disagree on the mechanism and contain material steps the others lack. The obra/superpowers copy is the canonical source but uses a different invocation model (announce and follow, no explicit Skill tool) and includes a Platform Adaptation section and a Subagent Stop guard. The other three copies (sickn33, LeoYeAI, FreedomIntelligence) are near-identical mirrors that explicitly mandate the use of the `Skill` tool and include a Graphviz flowchart. Crowning one would hide the real alternative between the &#x27;announce/follow&#x27; model and the &#x27;Skill tool&#x27; model.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/using-superpowers/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/using-superpowers/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/using-superpowers/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/using-superpowers/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/using-superpowers/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/using-superpowers/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/using-superpowers/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/using-superpowers/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/using-superpowers/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/using-superpowers/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: using-superpowers
+description: Use when starting any conversation - establishes how to find and use skills, requiring skill invocation before ANY response including clarifying questions
+---
+
+&lt;SUBAGENT-STOP&gt;
+If you were dispatched as a subagent to execute a specific task, ignore this skill.
+&lt;/SUBAGENT-STOP&gt;
+
+&lt;EXTREMELY-IMPORTANT&gt;
+If you think there is even a 1% chance a skill might apply to what you are doing, you ABSOLUTELY MUST invoke the skill.
+
+IF A SKILL APPLIES TO YOUR TASK, YOU DO NOT HAVE A CHOICE. YOU MUST USE IT.
+
+This is not negotiable. You cannot rationalize your way out of this.
+&lt;/EXTREMELY-IMPORTANT&gt;
+
+## How to Access Skills
+
+**In Claude Code:** Use the `Skill` tool. When you invoke a skill, its content is loaded and presented to you—follow it directly. Never use the Read tool on skill files.
+
+**In other environments:** Check your platform&#x27;s documentation for how skills are loaded.
+
+## The Rule
+
+**Invoke relevant or requested skills BEFORE any response or action** — including clarifying questions, exploring the codebase, or checking files. If it turns out wrong for the situation, you don&#x27;t have to use it.
+
+**Before entering plan mode:** if you haven&#x27;t already brainstormed, invoke the brainstorming skill first.
+
+Then announce &quot;Using [skill] to [purpose]&quot; and follow the skill exactly. If it has a checklist, create a todo per item.
+
+## Skill Priority
+
+When multiple skills apply, process skills come first — they set the approach, then implementation skills (frontend-design, etc.) carry it out. Brainstorming and systematic-debugging are Superpowers&#x27; most common process skills, but the rule holds for any of them.
+
+- &quot;Let&#x27;s build X&quot; → superpowers:brainstorming first, then implementation skills.
+- &quot;Fix this bug&quot; → superpowers:systematic-debugging first, then domain skills.
+
+## Skill Types
+
+**Rigid** (TDD, debugging): Follow exactly. Don&#x27;t adapt away discipline.
+
+**Flexible** (patterns): Adapt principles to context.
+
+The skill itself tells you which.
+
+## Red Flags
+
+These thoughts mean STOP—you&#x27;re rationalizing:
+
+| Thought | Reality |
+|---------|---------|
+| &quot;This is just a simple question&quot; | Questions are tasks. Check for skills. |
+| &quot;I need more context first&quot; | Skill check comes BEFORE clarifying questions. |
+| &quot;Let me explore the codebase first&quot; | Skills tell you HOW to explore. Check first. |
+| &quot;I can check git/files quickly&quot; | Files lack conversation context. Check for skills. |
+| &quot;Let me gather information first&quot; | Skills tell you HOW to gather information. |
+| &quot;This doesn&#x27;t need a formal skill&quot; | If a skill exists, use it. |
+| &quot;I remember this skill&quot; | Skills evolve. Read current version. |
+| &quot;This doesn&#x27;t count as a task&quot; | Action = task. Check for skills. |
+| &quot;The skill is overkill&quot; | Simple things become complex. Use it. |
+| &quot;I&#x27;ll just do this one thing first&quot; | Check BEFORE doing anything. |
+| &quot;This feels productive&quot; | Undisciplined action wastes time. Skills prevent this. |
+| &quot;I know what that means&quot; | Knowing the concept ≠ using the skill. Invoke it. |
+
+## Platform Adaptation
+
+If your harness appears here, read its reference file for special instructions:
+
+- Claude Code: `references/claude-code-tools.md`
+- Codex: `references/codex-tools.md`
+- Pi: `references/pi-tools.md`
+- Antigravity: `references/antigravity-tools.md`
+- Hermes Agent: `references/hermes-tools.md`
+- Muse: `references/muse-tools.md`
+
+## User Instructions
+
+User instructions (CLAUDE.md, AGENTS.md, GEMINI.md, etc, direct requests) take precedence over skills, which in turn override default behavior. Only skip skill workflows or instructions when your human partner has explicitly told you to.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

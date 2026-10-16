@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>biotech-pitch-deck-narrative</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">biotech-pitch-deck-narrative</a> / biotech-pitch-deck-narrative</p><h1>biotech-pitch-deck-narrative</h1><p class="meta">combined</p><p>The two copies overlap in purpose (biotech fundraising narrative) but each contains material steps the other lacks. The aipoch copy is a bounded, script-driven workflow with explicit stop conditions, a parameter table, and a risk/security checklist. The LeoYeAI copy is a content-generation workflow with a Python narrative engine, specific translation tables, a 7-part narrative architecture, and stage/audience calibration logic. Neither is a reproduction of the other; crowning one would hide a real alternative approach.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/biotech-pitch-deck-narrative/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/biotech-pitch-deck-narrative/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Academic Writing/biotech-pitch-deck-narrative/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/biotech-pitch-deck-narrative/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Biotech Pitch Deck Narrative
+
+## When to Use
+- Preparing biotech pitch decks, investor-facing section rewrites, or fundraising story structures.
+- Translating scientific and clinical data into investor-friendly narratives.
+- Preparing investor Q&amp;A scaffolds or risk-aware messaging.
+
+## Do NOT Use When
+- Scientific conference presentations (use technical language).
+- Regulatory submission documents (use formal FDA/EMA formats).
+- Internal R&amp;D communications (use full scientific detail).
+- Patent applications (use precise legal/scientific terminology).
+
+## Workflow
+
+1. **Confirm Scope and Inputs**
+   - Financing stage (pre-seed, seed, series-a, series-b, series-c, ipo).
+   - Investor audience (generalist-vc, biotech-specialist, pharma-corp).
+   - Available scientific evidence, clinical data, and market context.
+   - Non-negotiable claim boundaries and regulatory constraints.
+   - Whether the request is a full narrative, a single section rewrite, or high-level messaging guidance.
+
+2. **Validate Evidence and Stop Conditions**
+   - If scientific support or market context is missing, stop and request the minimum additional inputs.
+   - Do not invent data. All claims must be tied to supplied evidence.
+   - Explicitly note where evidence is missing or claims require validation.
+
+3. **Translate Science to Business Language**
+   - Convert technical concepts into investor-friendly language using translation strategies:
+     - &quot;CRISPR-Cas9 gene editing&quot; → &quot;Precision genetic medicine platform&quot;
+     - &quot;Phase II clinical data&quot; → &quot;De-risked asset with human proof-of-concept&quot;
+     - &quot;Off-target effects&quot; → &quot;Industry-leading specificity profile&quot;
+     - &quot;MOA via JAK-STAT pathway&quot; → &quot;Novel mechanism addressing root cause&quot;
+   - Preserve scientific accuracy while adapting tone for the target audience.
+
+4. **Build Narrative Architecture**
+   Structure the deck narrative in this order:
+   1. **Hook** (30 seconds): Why this, why now, why you.
+   2. **Problem**: Unmet medical need, current standard limitations, market size.
+   3. **Solution**: Technology/platform, mechanism of action, key differentiation.
+   4. **Traction**: Clinical data, partnerships, validation to date.
+   5. **Market**: Size, competition, your advantage.
+   6. **Team**: Track record, why you will succeed.
+   7. **Ask**: Funding amount, use of proceeds, milestones.
+
+5. **Optimize for Stage and Audience**
+   - **Seed** ($500K-$2M): Focus on team, vision, early validation.
+   - **Series A** ($10-30M): Focus on proof-of-concept data, IP position, market entry.
+   - **Series B** ($30-75M): Focus on Phase 2/3 data, BD traction, team expansion.
+   - **Series C/IPO** ($100M+): Focus on commercial execution, registration trials, launch prep, revenue path.
+   - Calibrate technical depth and risk framing for generalist vs. specialist investors.
+
+6. **Produce Output**
+   - Return a structured deck narrative that separates assumptions, value claims, evidence status, and open diligence gaps.
+   - Include stage- and audience-aware positioning cues.
+   - Explicitly note where evidence is missing or claims require validation.
+   - If using a script, run `python scripts/main.py --stage &lt;stage&gt; --audience &lt;audience&gt; --input &lt;path&gt; --output &lt;path&gt;`.
+   - If using a narrative engine, use `BiotechNarrativeEngine` to generate and calibrate the narrative.
+
+## Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `--stage` | string | No | `seed` | Financing stage |
+| `--audience` | string | No | `generalist-vc` | Target investor audience |
+| `--input` | string | No | - | Input deck or source file path |
+| `--output` | string | No | `optimized_narrative.json` | Output file path |
+
+## Security and Risk Checklist
+- [ ] No hardcoded credentials or API keys.
+- [ ] No unauthorized file system access.
+- [ ] Claims are tied to supplied evidence, not invented data.
+- [ ] Regulatory and clinical statements remain bounded.
+- [ ] Output path reviewed before overwrite.
+- [ ] Error handling does not imply completed diligence.
+- [ ] Market-sizing claims require user-supplied assumptions.
+- [ ] Legal and scientific review remains mandatory.
+
+## Conflicts
+- **aipoch/medical-research-skills**: Workflow is script-driven with explicit stop conditions; output is a JSON narrative scaffold.
+- **LeoYeAI/openclaw-master-skills**: Workflow is content-generation driven with a Python narrative engine and 7-part architecture; no explicit stop condition for missing evidence is defined in the visible text.</pre>
+</body>
+</html>

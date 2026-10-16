@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>crewai</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">crewai-multi-agent-orchestration</a> / crewai</p><h1>crewai</h1><p class="meta">combined</p><p>Both copies describe the same CrewAI framework, but they emphasize different, non-overlapping implementation paths. The Orchestra-Research copy is a code-first guide focused on inline Python definitions, CLI project creation, and core object parameters. The sickn33 copy is a configuration-first guide that emphasizes YAML-based agent/task definitions, the @CrewBase decorator pattern, and specific features like the &#x27;planning&#x27; flag and &#x27;manager_llm&#x27; configuration. Neither copy is a strict reproduction of the other; combining them provides a more complete picture of how to structure a CrewAI project (either via code or YAML) and which advanced features are available.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Orchestra-Research/AI-Research-SKILLs">Orchestra-Research/AI-Research-SKILLs</a></td><td><code>14-agents/crewai/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/crewai/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Orchestra-Research/AI-Research-SKILLs">Orchestra-Research/AI-Research-SKILLs</a></td><td><code>14-agents/crewai/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/crewai/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/crewai/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/crewai/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: crewai-orchestration
+description: Comprehensive guide to building multi-agent systems with CrewAI, covering both code-first and YAML-configured approaches.
+---
+
+# CrewAI Multi-Agent Orchestration
+
+## 1. Setup
+Install the framework and tools:
+```bash
+pip install &#x27;crewai[tools]&#x27;
+```
+
+## 2. Project Structure
+You can define agents and tasks either inline in Python or via YAML configuration files. YAML is recommended for larger projects to separate concerns.
+
+### Option A: Code-First (Inline)
+Define agents and tasks directly in your Python script:
+```python
+from crewai import Agent, Task, Crew, Process
+
+researcher = Agent(
+    role=&quot;Senior Research Analyst&quot;,
+    goal=&quot;Discover cutting-edge developments&quot;,
+    backstory=&quot;Expert analyst...&quot;,
+    verbose=True
+)
+
+research_task = Task(
+    description=&quot;Research {topic}&quot;,
+    expected_output=&quot;A detailed report&quot;,
+    agent=researcher
+)
+```
+
+### Option B: YAML-Configured (Recommended)
+Use `config/agents.yaml` and `config/tasks.yaml` with the `@CrewBase` decorator:
+```python
+from crewai.project import CrewBase, agent, task, crew
+
+@CrewBase
+class MyCrew:
+    agents_config = &#x27;config/agents.yaml&#x27;
+    tasks_config = &#x27;config/tasks.yaml&#x27;
+
+    @agent
+    def researcher(self):
+        return Agent(config=self.agents_config[&#x27;researcher&#x27;])
+
+    @crew
+    def crew(self):
+        return Crew(agents=self.agents, tasks=self.tasks, process=Process.sequential)
+```
+
+## 3. Core Components
+- **Agents**: Define `role`, `goal`, `backstory`, and optional `tools`.
+- **Tasks**: Define `description`, `expected_output`, and `agent`. Use `context` to pass outputs from previous tasks.
+- **Crews**: Group agents and tasks. Choose a `process` type.
+
+## 4. Process Types
+- **Sequential**: Tasks run in the order defined. Best for linear workflows.
+- **Hierarchical**: An auto-generated manager agent delegates tasks. Use `manager_llm` to specify the model for the manager.
+
+## 5. Advanced Features
+- **Memory**: Enable `memory=True` on Agents or Crews for short-term/long-term context.
+- **Planning**: Set `planning=True` on the Crew to generate a step-by-step execution plan before kickoff.
+- **Flows**: For event-driven, complex state management, consider using CrewAI Flows instead of standard Crews.
+
+## 6. Execution
+Run the crew with inputs:
+```python
+result = crew.kickoff(inputs={&quot;topic&quot;: &quot;AI Agents&quot;})
+print(result.raw)
+```</pre>
+</body>
+</html>

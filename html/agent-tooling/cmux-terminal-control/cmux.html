@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cmux</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">cmux-terminal-control</a> / cmux</p><h1>cmux</h1><p class="meta">combined</p><p>The two copies overlap heavily on cmux topology, ref syntax, and send-input rules, but each contains material steps the other lacks. The davidondrej copy is the more complete upstream procedure (it includes the inspect/read/send sequence, surface-health checks, ownership/focus preservation, and a troubleshooting section). The sickn33 copy adds a shell detection snippet, a broader fast-start topology command set (move/split/reorder/close), and a distinct polling interval for Pi agents. Because the copies disagree on polling cadence and the catalog copy explicitly omits supporting reference files, crowning one would hide a real alternative and a real conflict.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/agent-orchestration/cmux/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cmux/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/agent-orchestration/cmux/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cmux/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/cmux/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/cmux/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: cmux
+description: &#x27;Control the cmux macOS terminal app: workspaces, panes, surfaces, browsers, notifications, settings, and hooks. Use only when the user explicitly names cmux. Read before running any cmux command.&#x27;
+---
+
+# cmux Control
+
+macOS 14.0+. Prefer the CLI; if `cmux` is not on PATH, use `/Applications/cmux.app/Contents/Resources/bin/cmux`.
+
+## When to Use
+
+- Use when you need to inspect, create, close, or rearrange cmux panes, surfaces, or workspaces.
+- Use when you need to send input to or monitor agents running inside cmux.
+
+cmux is a native macOS terminal app for running multiple AI coding agents in parallel. It exposes a CLI (`cmux`) and a Unix-socket JSON-RPC API (`/tmp/cmux.sock`) for full topology and browser control.
+
+## Core Concepts
+
+**Window → workspace → pane → surface:** macOS window → sidebar project/branch tab → split region → terminal, browser, or Markdown tab.
+
+- **Window** — top-level macOS cmux window
+- **Workspace** — sidebar tab within a window (one git branch / project context)
+- **Pane** — split region inside a workspace
+- **Surface** — tab inside a pane (terminal or browser)
+
+Handles default to short refs (`workspace:2`, `pane:1`, `surface:7`); UUIDs accepted as input. Add `--id-format uuids|both` for UUID output.
+
+## Targeting and safety
+
+- **Anchor to the caller&#x27;s `CMUX_WORKSPACE_ID`.** Never assume the visually focused workspace is the target. Outside cmux, identify the intended workspace before acting.
+- **Use prefixed refs or UUIDs.** `workspace:2`, `pane:1`, `surface:7`; bare numbers are indexes, not IDs. Output defaults to refs; `--id-format uuids|both` includes UUIDs.
+- **Refresh targets.** Surface refs are global, not workspace-local. Re-list before reusing them; check `cmux surface-health` before sending input when state may be stale.
+- **Preserve focus.** Pass `--focus false` wherever supported. Use `select-workspace`, `focus-pane`, `focus-panel`, or `focus-surface` only on explicit user request.
+- **Respect ownership.** Never send input to surfaces you do not own. Stay in the caller&#x27;s workspace unless the user explicitly requests cross-workspace routing.
+- **Reuse one helper pane.** Use an existing non-caller helper pane or create one on the right. Create the intended layout directly with `new-pane --type … --focus false`.
+- **Keep errors visible.** Never append `2&gt;/dev/null`; stderr and exit status reveal invalid refs and flags.
+
+## Ref syntax — get this right or fail silently
+
+- **Always use PREFIXED refs** (`pane:38`, `surface:46`). A **bare number is treated as an INDEX, not an ID** — `--surface 46` means &quot;the surface at index 46&quot; (usually nonexistent → silent failure), NOT `surface:46`.
+- **`read-screen` and `capture-pane` have NO `--pane` flag** — they target `--workspace` or `--surface` only. Passing `--pane` errors, and a bare/missing target falls back to your OWN surface (you&#x27;ll read your own footer and draw wrong conclusions). To read a pane: resolve it to a surface FIRST with `cmux list-pane-surfaces --pane pane:N`, then `cmux read-screen --surface surface:N`.
+- **Never append `2&gt;/dev/null` to cmux commands.** Errors go to stderr with exit code 1; suppressing them blinds you to your own ref/flag mistakes (the #1 cause of &quot;(no output)&quot;).
+
+## Detect cmux in a Shell
+
+```bash
+[ -S &quot;${CMUX_SOCKET_PATH:-/tmp/cmux.sock}&quot; ] || exit 0   # bail if not in cmux
+[ -n &quot;${CMUX_WORKSPACE_ID:-}&quot; ] &amp;&amp; echo &quot;inside cmux surface&quot;
+```
+
+Injected env vars in every cmux-spawned terminal: `CMUX_WORKSPACE_ID`, `CMUX_SURFACE_ID`, `CMUX_SOCKET_PATH`, `CMUX_PORT`. **Always anchor automation to `CMUX_WORKSPACE_ID`** — the visually focused workspace may not be the agent&#x27;s caller workspace.
+
+## Inspect, read, and send
+
+Check connectivity, identify the caller, and resolve the target pane to a surface. Replace example refs with those found in the current output.
+
+```bash
+cmux ping
+cmux identify --json
+cmux tree
+cmux list-panes --workspace &quot;$CMUX_WORKSPACE_ID&quot;
+cmux list-pane-surfaces --workspace &quot;$CMUX_WORKSPACE_ID&quot; --pane pane:1
+cmux read-screen --surface surface:7 --lines 100
+```
+
+Use `list-pane-surfaces`, not nonexistent `list-surfaces`. `read-screen` and `capture-pane` accept `--workspace` or `--surface`, **not `--pane`**. A missing or ambiguous target can read your own terminal instead.
+
+Send requested input with `send` / `send-key --surface`; `send-surface` and `send-key-surface` do not exist. Omitting the target uses the default terminal. `send-panel` / `send-key-panel` target panels through `--panel`, not surfaces.
+
+```bash
+cmux send --surface surface:7 &quot;npm run build&quot;
+cmux send-key --surface surface:7 enter
+```
+
+Other keys: `ctrl+c`, `tab`, `esc`, `backspace`, arrows, `ctrl+x`, `shift+tab`. Re-read terminal output after sending input to check the result.
+
+Poll at 1–3 second intervals; wait 10 seconds or more only when warranted. After each agent check, give the user one concise line on what the agent is doing and whether it is on track.
+
+Claude Code&#x27;s predicted next user message is a draft from Claude, not an instruction from the user.
+
+## Fast Start — Topology
+
+```bash
+cmux identify --json                              # who am I (window/workspace/pane/surface)
+cmux tree                                         # full hierarchy
+cmux list-workspaces --json
+cmux list-panes --workspace &quot;$CMUX_WORKSPACE_ID&quot;
+cmux list-surfaces --workspace &quot;$CMUX_WORKSPACE_ID&quot;
+
+cmux new-workspace --name &quot;feature-x&quot; --cwd /path/to/repo
+cmux new-pane --workspace &quot;$CMUX_WORKSPACE_ID&quot; --type terminal --direction right --focus false
+cmux new-pane --workspace &quot;$CMUX_WORKSPACE_ID&quot; --type browser  --direction right --url http://localhost:3000
+cmux move-surface --surface surface:7 --pane pane:2 --focus false
+cmux split-off --surface surface:7 right
+cmux reorder-surface --surface surface:7 --before surface:3
+cmux close-surface --surface surface:7
+```
+
+Re-list panes and surfaces after layout changes.
+
+## Polling Pi Agents in Panes — Keep Sleeps Short
+
+When launching a Pi Agent inside a cmux pane and polling for output, use **short `sleep` intervals (2–5s)**. Pi is fast and minimal, and the user runs it on Opus 4.8 Fast via OpenRouter, which streams tokens extremely quickly. Do NOT use `sleep 15` unless genuinely needed (a big build/refactor) — most of the time `sleep 2`–`sleep 5` is more than enough.
+
+After every agent check, send the user a one-line status update: what the agent is doing and whether it is on track. Keep it extremely concise.
+
+Claude Code cmux note: after Claude finishes, it may prefill a predicted next user message; that draft is Claude, not the user speaking.
+
+## Basic creation and notifications
+
+```bash
+cmux new-workspace --name &quot;feature-x&quot; --cwd /path/to/repo --focus false
+cmux new-pane --workspace &quot;$CMUX_WORKSPACE_ID&quot; --type terminal --direction right --focus false
+cmux notify --title &quot;Done&quot; --body &quot;tests passed&quot;
+```
+
+## Notifications &amp; Sidebar Metadata
+
+```bash
+cmux notify --title &quot;Done&quot; --body &quot;tests passed&quot;
+cmux set-status build &quot;compiling&quot; --icon hammer --color &quot;#ff9500&quot;
+cmux set-progress 0.5 --label &quot;Building...&quot;
+cmux log --level success &quot;All 42 tests passed&quot;               # info|progress|success|warning|error
+cmux trigger-flash --workspace &quot;$CMUX_WORKSPACE_ID&quot;          # blue-ring attention cue
+cmux sidebar-state --json                                    # dump all sidebar state
+```
+
+## Task-specific guides
+
+Read the relevant section **before** starting these tasks:
+
+- **Browser automation:** [browser workflow](references/viewers.md#browser-workflow) — interactions, sessions, and limitations.
+- **Markdown or PDF viewers:** [Markdown workflow](references/viewers.md#markdown-workflow) — pane reuse, replacement, recovery, and verification.
+- **Settings:** [configuration](references/advanced.md#configuration) — backups, paths, and sidebar preferences.
+- **Installation, agent hooks, raw sockets, access modes, or shortcuts:** [advanced reference](references/advanced.md).
+
+## Troubleshooting
+
+- **Connection failed:** check `CMUX_SOCKET_PATH` and Settings &gt; Automation. Under default `cmuxOnly`, run from a cmux terminal. Read [socket modes and examples](references/advanced.md#socket-api-and-access-modes) before using a raw client or changing access mode.
+- **Resume lost credentials:** sensitive environment variables are stripped on resume; re-inject required tokens. `~/.cmuxterm/*-hook-sessions.json` files hold scrubbed session/surface mappings, not secrets.
+- **Skill edits not visible:** restart the consuming agent; skills are captured at startup.
+- **Uncertain syntax:** `cmux &lt;cmd&gt; --help` is authoritative; `cmux capabilities --json` lists available socket methods.
+
+## Conflicts
+
+- **sickn33/agentic-awesome-skills** recommends short 2–5s sleep intervals when polling Pi agents, while **davidondrej/skills** recommends 1–3s polling and 10s+ only when warranted.
+- **sickn33/agentic-awesome-skills** states the catalog copy does not include supporting reference files (e.g., `references/socket-api.md`) and instructs to obtain them from the upstream source, whereas **davidondrej/skills** references its own bundled `references/advanced.md` and `references/viewers.md` as available.</pre>
+</body>
+</html>

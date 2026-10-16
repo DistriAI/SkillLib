@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>context-degradation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">context-degradation</a> / context-degradation</p><h1>context-degradation</h1><p class="meta">combined</p><p>The two copies cover the same five degradation patterns but diverge on scope and actionable constraints. The muratcankoylan copy is a diagnostic and mitigation procedure with specific activation boundaries (explicitly excluding adjacent skills like context-fundamentals and context-optimization) and detailed recovery steps (e.g., truncating to before the poisoning point). The sickn33 copy is a broader educational overview that includes a sixth pattern (Context Confusion) and architectural mitigation strategies (compaction, masking, partitioning) that the first copy lacks. Because the first copy omits the confusion pattern and the second lacks the specific skill-routing and recovery constraints, crowning one would hide a real alternative approach to handling context failures.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/context-degradation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/context-degradation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/context-degradation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/context-degradation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/context-degradation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/context-degradation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: context-degradation
+description: &quot;Diagnose and mitigate context degradation patterns including lost-in-middle, poisoning, distraction, confusion, and clash.&quot;
+---
+
+# Context Degradation Patterns
+
+Diagnose and fix context failures before they cascade. Context degradation is a continuum manifesting through five distinct patterns: lost-in-middle, poisoning, distraction, confusion, and clash.
+
+## When to Activate
+
+Activate this skill when:
+- Agent performance degrades unexpectedly during long conversations.
+- Debugging cases where agents produce incorrect or irrelevant outputs.
+- Designing systems that must handle large contexts reliably.
+- Investigating &quot;lost in middle&quot; phenomena or context-related failures.
+
+Do not activate for:
+- Explaining foundational context mechanics without an active failure.
+- Applying token-efficiency tactics after the failure pattern is known.
+- Designing compression or handoff summary strategies.
+
+## Core Patterns and Mitigations
+
+### 1. Lost-in-Middle
+- **Signal:** Correct information exists in context but is ignored; responses contradict provided data.
+- **Cause:** U-shaped attention curve; middle positions suffer 10-40% reduced recall due to attention sinks (e.g., BOS token).
+- **Mitigation:** Place critical information at the beginning and end. Use explicit section headers and summary structures to create attention anchors.
+
+### 2. Context Poisoning
+- **Signal:** Degraded output quality on previously successful tasks; tool misalignment; persistent hallucinations.
+- **Cause:** Unverified claims (from tools, retrieval, or summaries) enter context and compound through self-reference.
+- **Mitigation:** Validate external inputs. Recover by truncating to before the poisoning point or restarting with verified-only context. Do not layer corrections over poisoned content.
+
+### 3. Context Distraction
+- **Signal:** Performance drops when irrelevant documents are present, even if clearly marked as irrelevant.
+- **Cause:** Models must attend to all provided context; irrelevant content competes for attention budget.
+- **Mitigation:** Curate aggressively. Use relevance filtering before loading. Move non-immediate information behind tool calls rather than pre-loading.
+
+### 4. Context Confusion
+- **Signal:** Model incorporates constraints from the wrong task or blends requirements from multiple sources.
+- **Cause:** Multiple task types or objectives in a single context window.
+- **Mitigation:** Isolate task contexts. Use explicit task segmentation and separate context windows to prevent cross-contamination.
+
+### 5. Context Clash
+- **Signal:** Model fails to determine which of multiple correct-but-contradictory sources applies.
+- **Cause:** Version conflicts or multi-source retrieval without precedence rules.
+- **Mitigation:** Establish source precedence. Mark contradictions explicitly. Filter outdated versions before they enter context.
+
+## Architectural Strategies
+
+- **Compaction:** Summarize long histories to reduce token count while preserving key state.
+- **Masking:** Hide irrelevant sections from the model&#x27;s attention when possible.
+- **Partitioning:** Split large contexts into manageable chunks with clear boundaries.
+- **Isolation:** Use separate context windows for distinct tasks or objectives.</pre>
+</body>
+</html>

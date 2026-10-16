@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>memory-systems</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">memory-architecture-design</a> / memory-systems</p><h1>memory-systems</h1><p class="meta">combined</p><p>The first copy (muratcankoylan) is a curated, decision-oriented skill that focuses on framework selection (Mem0, Zep, Letta, Cognee, LangMem), routing to adjacent skills, and a &#x27;start shallow&#x27; design heuristic. The second copy (sickn33) is a bulk mirror that includes specific benchmark numbers (DMR accuracy percentages, latency figures) and a more detailed theoretical breakdown of the memory spectrum (Working/Short-term/Long-term/Permanent) and the limitations of vector stores. The first copy lacks the specific performance data, while the second lacks the specific framework selection table and the routing logic to other skills. Combining them provides both the theoretical foundation and the practical selection criteria.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/memory-systems/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/memory-systems/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/memory-systems/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/memory-systems/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/memory-systems/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/memory-systems/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: memory-systems
+description: &quot;Design short-term, long-term, and graph-based memory architectures. Use when building agents that must persist across sessions, needing to maintain entity consistency across conversations, or implementing reasoning over accumulated knowledge.&quot;
+---
+
+# Memory System Design
+
+Memory provides the persistence layer that allows agents to maintain continuity across sessions and reason over accumulated knowledge. Simple agents rely entirely on context for memory, losing all state when sessions end. Sophisticated agents implement layered memory architectures that balance immediate context needs with long-term knowledge retention.
+
+## When to Activate
+
+Activate this skill when:
+- Building agents that must persist knowledge across sessions
+- Choosing between memory frameworks (Mem0, Zep/Graphiti, Letta, LangMem, Cognee)
+- Needing to maintain entity consistency across conversations
+- Implementing reasoning over accumulated knowledge
+- Designing memory architectures that scale in production
+- Evaluating memory systems against benchmarks (LoCoMo, LongMemEval, DMR)
+
+Do not activate for:
+- File-backed scratchpads: `filesystem-context`
+- Conversation compaction: `context-compression`
+- Token-efficiency tactics: `context-optimization`
+
+## Core Concepts
+
+Memory exists on a spectrum from immediate context to permanent storage:
+1. **Working Memory**: Context window, zero latency, volatile.
+2. **Short-Term Memory**: Session-persistent, searchable, volatile.
+3. **Long-Term Memory**: Cross-session persistent, structured, semi-permanent.
+4. **Permanent Memory**: Archival, queryable, permanent.
+
+Simple vector stores lack relationship and temporal structure. Knowledge graphs preserve relationships for reasoning. Temporal knowledge graphs add validity periods for time-aware queries. Default to the simplest layer that meets retrieval needs; add structure only when retrieval quality degrades or multi-hop reasoning is required.
+
+## Framework Selection
+
+Select a framework based on the dominant retrieval pattern:
+
+| Framework | Architecture | Best For | Trade-off |
+|-----------|-------------|----------|-----------|
+| **Mem0** | Vector store + graph memory | Multi-tenant systems, broad integrations | Less specialized for multi-agent |
+| **Zep/Graphiti** | Temporal knowledge graph | Enterprise relationship modeling + temporal reasoning | Advanced features cloud-locked |
+| **Letta** | Self-editing memory with tiered storage | Full agent introspection, stateful services | Complexity for simple use cases |
+| **Cognee** | Multi-layer semantic graph via ECL pipeline | Evolving agent memory, multi-hop reasoning | Heavier ingest-time processing |
+| **LangMem** | Memory tools for LangGraph | Teams already on LangGraph | Tightly coupled to LangGraph |
+
+## Benchmark Performance
+
+Consult these benchmarks to set expectations (treat as source-specific signals):
+
+| System | DMR Accuracy | Notes |
+|--------|-------------|-------|
+| Zep (Temporal KG) | ~94.8% | Best accuracy, fast retrieval (2.58s) |
+| MemGPT | ~93.4% | Good general performance |
+| GraphRAG | ~75-85% | 20-35% gains over baseline RAG |
+| Vector RAG | ~60-70% | Loses relationship structure |
+
+Key takeaway: Compare memory systems by retrieval shape, not brand. Start shallow, measure retrieval quality, then add semantic or graph structure only when a simpler layer fails.</pre>
+</body>
+</html>

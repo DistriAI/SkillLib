@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>root</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">create-agent-skills</a> / root</p><h1>root</h1><p class="meta">combined</p><p>These four skills all address the creation of agent skills, but they are distinct, non-interchangeable procedures. cangjie-skill is a specific pipeline for distilling long-form content (books/videos) into skills. agent-skills-platform is a general-purpose factory for creating skills from workflow descriptions with a focus on cross-platform export and security. Vibe-Skills is a governed runtime entry point for executing complex tasks with strict phase controls. context-engineering-collection is a reference library of patterns for building agent systems, not a step-by-step creation procedure. Because they cover different inputs, outputs, and execution models, crowning one would hide the others&#x27; unique value.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/kangarooking/cangjie-skill">kangarooking/cangjie-skill</a></td><td><code>SKILL.md</code></td></tr><tr><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>SKILL.md</code></td></tr><tr><td><a href="https://github.com/FrancyJGLisboa/agent-skills-platform">FrancyJGLisboa/agent-skills-platform</a></td><td><code>SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/kangarooking/cangjie-skill">kangarooking/cangjie-skill</a></td><td><code>SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FrancyJGLisboa/agent-skills-platform">FrancyJGLisboa/agent-skills-platform</a></td><td><code>SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/sergebulaev/linkedin-skills">sergebulaev/linkedin-skills</a></td><td><code>SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-marketing-skills">LeoYeAI/openclaw-marketing-skills</a></td><td><code>SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/SpaceZephyr/creator-buddy">SpaceZephyr/creator-buddy</a></td><td><code>SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/anbeime/skill">anbeime/skill</a></td><td><code>SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: agent-skill-creation-suite
+description: A meta-skill that routes to the appropriate skill creation or execution procedure based on the user&#x27;s input and intent.
+---
+
+# Agent Skill Creation Suite
+
+This skill acts as a router to determine the best method for creating or executing an agent skill based on the user&#x27;s request.
+
+## Routing Logic
+
+1.  **Analyze User Intent and Input:**
+    *   **Input is a long-form document (book, video, course):** Route to `cangjie-skill`.
+    *   **Input is a workflow description, script, or process to automate:** Route to `agent-skills-platform`.
+    *   **User wants to execute a complex, multi-phase task with strict governance:** Route to `vibe`.
+    *   **User is asking for architectural patterns or principles for building agent systems:** Route to `context-engineering-collection`.
+
+2.  **Execute the Routed Skill:**
+    *   Follow the specific instructions, phases, and output structures defined in the chosen skill&#x27;s SKILL.md.
+
+3.  **Handle Ambiguity:**
+    *   If the user&#x27;s intent is unclear, ask a clarifying question to determine the best route. For example: &quot;Are you trying to create a new skill from a document, automate a specific workflow, or execute a complex task?&quot;</pre>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>distribute-skill-to-all-agents</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">distribute-global-skill</a> / distribute-skill-to-all-agents</p><h1>distribute-skill-to-all-agents</h1><p class="meta">combined</p><p>The sickn33 copy is a mirror of the davidondrej procedure but it explicitly drops Cursor from the canonical set (4 locations vs 5), while the davidondrej copy adds Cursor-specific steps (per-skill symlink, never use skills-cursor, byte-count check across 5 paths). Crowning one would hide a real alternative: the davidondrej version is the more complete procedure, but the sickn33 version is a valid 4-agent variant for users without Cursor. The combined instruction preserves the 5-location workflow and flags the 4-vs-5 disagreement.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/skill-authoring/distribute-skill-to-all-agents/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/distribute-skill-to-all-agents/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/skill-authoring/distribute-skill-to-all-agents/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/distribute-skill-to-all-agents/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/distribute-skill-to-all-agents/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: distribute-skill-to-all-agents
+description: Distribute global skills across Codex, Claude Code, Pi, Hermes, and Cursor. Use for &quot;distribute this skill&quot;, &quot;sync skills across agents&quot;, or after creating or updating a global skill.
+---
+
+# Distribute a Skill Across All Agents
+
+A global skill must exist at all configured agent locations on the user&#x27;s Mac, directly or via symlink, for every agent to discover it.
+
+## Skill locations
+
+- **Codex / OpenAI Agents:** `~/.agents/skills/` is canonical. Author skills here first.
+- **Claude Code:** `~/.claude/skills/` → `~/.agents/skills/`; covered automatically.
+- **Pi Agent:** `~/.pi/agent/skills/` → `~/.agents/skills/`; covered automatically. The nested `/agent/` is required, not `~/.pi/skills/`.
+- **Hermes Agent:** `~/.hermes/skills/` is an independent copy; only Hermes needs copying.
+- **Cursor (IDE + CLI):** `~/.cursor/skills/` is a real folder that does not reliably read `~/.agents/skills/`. Add one symlink per skill. Never use `~/.cursor/skills-cursor/`; it holds Cursor&#x27;s built-ins.
+
+## Workflow
+
+1. **Author in `~/.agents/skills/&lt;skill-name&gt;/SKILL.md`**, following `effective-agent-skills`.
+2. **Verify the Claude symlink** (one-time check):
+   ```bash
+   ls -la ~/.claude/skills
+   # Expect: ~/.claude/skills -&gt; ~/.agents/skills
+   ```
+   If it is a real directory, copies have diverged — ask before touching.
+3. **Copy to Hermes**; Claude and Pi are covered by symlinks:
+   ```bash
+   SKILL=&lt;skill-name&gt;
+   cp -r ~/.agents/skills/$SKILL ~/.hermes/skills/
+   ```
+4. **Symlink into Cursor** (skip if it already exists):
+   ```bash
+   [ -e ~/.cursor/skills/$SKILL ] || ln -s ~/.agents/skills/$SKILL ~/.cursor/skills/$SKILL
+   ```
+   If a real Cursor copy exists and differs, compare versions and ask before replacing.
+5. **Verify matching byte counts at all configured locations**:
+   ```bash
+   for p in ~/.agents/skills/$SKILL ~/.claude/skills/$SKILL ~/.pi/agent/skills/$SKILL ~/.hermes/skills/$SKILL ~/.cursor/skills/$SKILL; do
+     echo &quot;$p: $(wc -c &lt; $p/SKILL.md) bytes&quot;
+   done
+   ```
+   All numbers must match. If Claude, Pi, or Cursor differs, investigate the symlink before proceeding.
+
+## Update an existing skill
+
+Re-copy from `~/.agents/skills/` to `~/.hermes/skills/`; Claude, Pi, and symlinked Cursor skills update automatically. `cp -r` overwrites by default. Use `rsync -a --delete` when nested files may have been removed:
+
+```bash
+rsync -a --delete ~/.agents/skills/$SKILL/ ~/.hermes/skills/$SKILL/
+```
+
+## Pitfalls
+
+- **`~/.pi/skills/` is the wrong global location.** Pi loads from `~/.pi/agent/skills/`; skills in the former are invisible orphans. Confirm with the user before deleting them.
+- **Do not copy into the Claude or Pi symlinks.** They already point to `~/.agents/skills/`; copying there errors with &quot;are identical&quot;. Only Hermes is independent. Do not replace it with a symlink unless the user asks.
+- **Project-local skills can override global skills** on collision (later-discovered wins), including `./.pi/agent/skills/` or `.pi/skills/` inside a repo. This workflow handles only global distribution.
+- **Hermes and Cursor load skills at session start.** Restart running sessions to discover a newly distributed skill.
+- **Filename casing matters** on case-sensitive volumes: use uppercase `SKILL.md`.
+
+## When not to use this skill
+
+- **Project-specific skill:** use repo-local `./.claude/skills/`, `./.pi/agent/skills/`, etc.
+- **Single-agent edit** (e.g. Hermes-only): patch that file directly without propagating.
+- **Global removal:** confirm with the user first; deletion is destructive. Remove from `~/.agents/skills/` (covers Claude and Pi), `~/.hermes/skills/`, and the `~/.cursor/skills/` symlink.
+
+## Conflicts
+
+- **davidondrej/skills** includes Cursor as a fifth canonical location with a per-skill symlink step and a 5-location byte-count verification; **sickn33/agentic-awesome-skills** omits Cursor and verifies only 4 locations. If the user does not use Cursor, skip step 4 and the Cursor entry in the verification loop.
+- **davidondrej/skills** states that both Hermes and Cursor load skills at session start; **sickn33/agentic-awesome-skills** states only Hermes snapshots at session start. Restart both if Cursor is in use.
+- **davidondrej/skills** provides an explicit `rm -rf` removal sequence; **sickn33/agentic-awesome-skills** requires showing the exact directories, confirming with the user, and using the user&#x27;s preferred safe deletion method. Prefer the confirm-first approach for destructive removals.</pre>
+</body>
+</html>

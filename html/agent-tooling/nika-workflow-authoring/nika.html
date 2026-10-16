@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nika</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">nika-workflow-authoring</a> / nika</p><h1>nika</h1><p class="meta">combined</p><p>Both copies describe the same Nika workflow engine, but they are not interchangeable. The davepoon copy is a deep authoring guide focused on the &#x27;native-first&#x27; law, the exec ledger, and specific builtin mappings (e.g., using nika:fetch instead of curl). The sickn33 copy is an operational guide focused on the Hermes agent context, installation, background execution, and specific error codes (NIKA-1704). The davepoon copy contains critical authoring constraints (the exec ledger) that the sickn33 copy lacks, while the sickn33 copy contains operational steps (background polling, installation) that the davepoon copy lacks. Combining them provides a complete skill for both authoring and running Nika workflows.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/nika/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/nika/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/nika/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/nika/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/nika/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/nika/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: nika
+description: &quot;Author and run repeatable AI workflows using Nika .nika.yaml files with cost controls and tamper-evident traces.&quot;
+category: automation
+requires:
+  bins: [nika]
+---
+
+# Nika Workflow Skill
+
+Nika captures repeatable AI tasks as `.nika.yaml` files, audits them before execution, and runs them with cost caps and tamper-evident traces.
+
+## 1. Setup &amp; Verification
+- Install Nika (human step): `brew install supernovae-st/tap/nika`.
+- Verify: `nika --version`.
+- Prove toolchain offline: `nika examples run 01-hello --model mock/echo`.
+
+## 2. Authoring Workflows
+1. **Start from a template**: `nika new --from &lt;template&gt; &lt;file&gt;.nika.yaml`.
+2. **Native-First Law**: Before writing any `exec:`, check if a builtin (`nika:fetch`, `nika:jq`, etc.) or MCP tool can replace it. 
+   - HTTP fetch → `invoke: nika:fetch`
+   - JSON shaping → `invoke: nika:jq`
+   - File I/O → `invoke: nika:read`/`nika:write`
+3. **Exec Ledger**: If `exec:` is unavoidable, add a row to the workflow header comment explaining why no native path exists.
+4. **Structure**: Use `infer:` for LLM calls, `exec:` for shell, `invoke:` for tools, `agent:` for multi-turn loops. Declare `depends_on` for data flow.
+
+## 3. Checking &amp; Cost Honesty
+- **Check**: `nika check &lt;file&gt;` (exit 0 = clean). Use `--native-strict` to fail on non-native execs.
+- **Cost**: `nika check` prints a cost ceiling. Local models are &quot;unpriced&quot;, not &quot;free&quot;.
+- **Explain**: `nika explain &lt;file&gt;` narrates the plan, waves, and cost floor.
+
+## 4. Execution
+- **Local/Offline**: `nika run &lt;file&gt; --model ollama/&lt;model&gt;` or `--model mock/echo`.
+- **Cloud/Budgeted**: `nika run &lt;file&gt; --model &lt;provider&gt;/&lt;model&gt; --max-cost-usd &lt;n&gt;`.
+- **Variables**: Pass inputs with `--var key=value`.
+- **Long Runs**: Use background execution and poll for status.
+- **Resume**: `nika run &lt;file&gt; --resume &lt;trace&gt; --answer &lt;task&gt;=&lt;value&gt;`.
+
+## 5. Verification &amp; Audit
+- **Traces**: Every run writes a hash-chained journal to `.nika/traces/`.
+- **Verify**: `nika trace verify &lt;trace&gt;` to check tamper-evidence.
+- **Golden Tests**: `nika test &lt;file&gt; --update` to create a deterministic golden file for CI.</pre>
+</body>
+</html>

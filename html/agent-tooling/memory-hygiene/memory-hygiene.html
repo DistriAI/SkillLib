@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>memory-hygiene</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">memory-hygiene</a> / memory-hygiene</p><h1>memory-hygiene</h1><p class="meta">combined</p><p>The two copies describe different memory-hygiene procedures for different systems. The first is a trust sweep of persistent notes that re-verifies environment-dependent claims, stamps last_verified/confidence, and proposes archiving drifted entries. The second is a vector-memory (LanceDB) maintenance workflow that audits, wipes, reseeds, disables auto-capture, and schedules monthly maintenance. They overlap only in the high-level idea of keeping memory clean, but each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>.agents/skills/memory-hygiene/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/memory-hygiene/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>.agents/skills/memory-hygiene/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/memory-hygiene/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>.claude/skills/memory-hygiene/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/huytieu/COG-second-brain">huytieu/COG-second-brain</a></td><td><code>skills/memory-hygiene/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: memory-hygiene
+description: Perform memory hygiene for either persistent knowledge notes or vector memory (LanceDB), depending on the target system.
+---
+
+# Memory Hygiene
+
+Choose the workflow that matches the memory system in use.
+
+## Workflow A: Persistent Knowledge Notes (COG second-brain)
+
+1. Read `.claude/skills/memory-hygiene/SKILL.md` and execute it exactly as written; that file is the authoritative playbook.
+2. Follow `.agents/rules/cog.md`.
+3. Where the playbook delegates to a `.claude/agents/&lt;name&gt;` worker, invoke `.agents/agents/&lt;name&gt;.md` via `invoke_subagent` instead.
+4. Re-verify environment-dependent claims against the live environment.
+5. Stamp each verified entry with `last_verified` and a confidence value.
+6. Propose archiving entries that have drifted from the live environment.
+
+## Workflow B: Vector Memory (Clawdbot / LanceDB)
+
+1. Audit current memory:
+   ```
+   memory_recall query=&quot;*&quot; limit=50
+   ```
+2. If memory is bloated, wipe it:
+   ```bash
+   rm -rf ~/.clawdbot/memory/lancedb/
+   ```
+   Then restart the gateway:
+   ```
+   clawdbot gateway restart
+   ```
+3. Reseed key facts from MEMORY.md:
+   ```
+   memory_store text=&quot;&lt;fact&gt;&quot; category=&quot;preference|fact|decision&quot; importance=0.9
+   ```
+4. Disable auto-capture to prevent future junk:
+   ```json
+   {
+     &quot;plugins&quot;: {
+       &quot;entries&quot;: {
+         &quot;memory-lancedb&quot;: {
+           &quot;config&quot;: {
+             &quot;autoCapture&quot;: false,
+             &quot;autoRecall&quot;: true
+           }
+         }
+       }
+     }
+   }
+   ```
+   Apply with `gateway action=config.patch`.
+5. Store only intentional content:
+   - User preferences, key decisions, important facts, lessons learned.
+   - Never store heartbeat status, transient info, raw message logs, or OAuth URLs/tokens.
+6. Keep entries concise (&lt;100 words), use appropriate categories, set importance 0.7–1.0, and store one concept per entry.
+7. Set up a monthly maintenance cron:
+   ```
+   cron action=add job={
+     &quot;name&quot;: &quot;memory-maintenance&quot;,
+     &quot;schedule&quot;: &quot;0 4 1 * *&quot;,
+     &quot;text&quot;: &quot;Monthly memory maintenance: 1) Wipe ~/.clawdbot/memory/lancedb/ 2) Parse MEMORY.md 3) Store key facts to fresh LanceDB 4) Report completion&quot;
+   }
+   ```
+
+## Conflicts
+
+- huytieu/COG-second-brain: The procedure is a trust sweep of persistent notes with re-verification, confidence stamping, and archiving proposals.
+- LeoYeAI/openclaw-master-skills: The procedure is a vector-memory maintenance cycle with audit, wipe, reseed, auto-capture disable, and monthly cron.</pre>
+</body>
+</html>

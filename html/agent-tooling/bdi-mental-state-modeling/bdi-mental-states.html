@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>bdi-mental-states</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">bdi-mental-state-modeling</a> / bdi-mental-states</p><h1>bdi-mental-states</h1><p class="meta">combined</p><p>Both copies describe the same BDI mental-state modeling procedure (endurants/perdurants, cognitive chains, world-state grounding, goal-directed planning, T2B2T, C4 notation, justification, temporal validity, compositional entities, LAG integration). The muratcankoylan copy is the more complete, curated procedure: it adds explicit activation boundaries (when not to use), stronger grounding constraints, and a fuller T2B2T pipeline. The sickn33 copy adds material steps the first lacks or truncates: a full C4 notation table, a Justification/Explainability section, Temporal Dimensions with SPARQL queries, Compositional Mental Entities, and an Integration Patterns section (LAG). Because each has material steps the other lacks, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/bdi-mental-states/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/bdi-mental-states/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/bdi-mental-states/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/bdi-mental-states/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/bdi-mental-states/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/bdi-mental-states/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: bdi-mental-states
+description: &quot;Model agent mental states with BDI concepts: beliefs, desires, intentions, RDF-to-belief transformations, rational agency traces, cognitive agents, BDI ontologies, and neuro-symbolic AI integration.&quot;
+---
+
+# BDI Mental State Modeling
+
+Transform external RDF context into agent mental states (beliefs, desires, intentions) using formal BDI ontology patterns. This skill enables agents to reason about context through cognitive architecture, supporting deliberative reasoning, explainability, and semantic interoperability within multi-agent systems.
+
+## When to Activate
+
+Activate this skill when:
+- Processing external RDF context into agent beliefs about world states
+- Modeling rational agency with perception, deliberation, and action cycles
+- Enabling explainability through traceable reasoning chains
+- Implementing BDI frameworks (SEMAS, JADE, JADEX)
+- Augmenting LLMs with formal cognitive structures (Logic Augmented Generation)
+- Coordinating mental states across multi-agent platforms
+- Tracking temporal evolution of beliefs, desires, and intentions
+- Linking motivational states to action plans
+
+Do not activate this skill for adjacent work owned by other skills:
+- General context-window explanations or attention mechanics: `context-fundamentals`.
+- Persistent user, entity, or conversation memory without formal BDI state: `memory-systems`.
+- Supervisor, swarm, or handoff topology decisions: `multi-agent-patterns`.
+- General agent evaluation rubrics or quality gates: `evaluation`.
+
+## Core Concepts
+
+### Mental Reality Architecture
+
+Separate mental states into two ontological categories because BDI reasoning requires distinguishing what persists from what happens:
+
+**Mental States (Endurants)** -- model these as persistent cognitive attributes that hold over time intervals:
+- `Belief`: Represent what the agent holds true about the world. Ground every belief in a world state reference.
+- `Desire`: Represent what the agent wishes to bring about. Link each desire back to the beliefs that motivate it.
+- `Intention`: Represent what the agent commits to achieving. An intention must fulfil a desire and specify a plan.
+
+**Mental Processes (Perdurants)** -- model these as events that create or modify mental states, because tracking causal transitions enables explainability:
+- `BeliefProcess`: Triggers belief formation/update from perception. Always connect to a generating world state.
+- `DesireProcess`: Generates desires from existing beliefs. Preserves the motivational chain.
+- `IntentionProcess`: Commits to selected desires as actionable intentions.
+
+### Cognitive Chain Pattern
+
+Wire beliefs, desires, and intentions into directed chains using bidirectional properties (`motivates`/`isMotivatedBy`, `fulfils`/`isFulfilledBy`) because this enables both forward reasoning (what should the agent do?) and backward tracing (why did the agent act?):
+
+```turtle
+:Belief_store_open a bdi:Belief ;
+    rdfs:comment &quot;Store is open&quot; ;
+    bdi:motivates :Desire_buy_groceries .
+
+:Desire_buy_groceries a bdi:Desire ;
+    rdfs:comment &quot;I desire to buy groceries&quot; ;
+    bdi:isMotivatedBy :Belief_store_open .
+
+:Intention_go_shopping a bdi:Intention ;
+    rdfs:comment &quot;I will buy groceries&quot; ;
+    bdi:fulfils :Desire_buy_groceries ;
+    bdi:isSupportedBy :Belief_store_open ;
+    bdi:specifies :Plan_shopping .
+```
+
+### World State Grounding
+
+Always ground mental states in world state references rather than free-text descriptions, because ungrounded beliefs break semantic querying and cross-agent interoperability:
+
+```turtle
+:Agent_A a bdi:Agent ;
+    bdi:perceives :WorldState_WS1 ;
+    bdi:hasMentalState :Belief_B1 .
+
+:WorldState_WS1 a bdi:WorldState ;
+    rdfs:comment &quot;Meeting scheduled at 10am in Room 5&quot; ;
+    bdi:atTime :TimeInstant_10am .
+
+:Belief_B1 a bdi:Belief ;
+    bdi:refersTo :WorldState_WS1 .
+```
+
+### Goal-Directed Planning
+
+Connect intentions to plans via `bdi:specifies`, and decompose plans into ordered task sequences using `bdi:precedes`, because this separation allows plan reuse across different intentions while keeping execution order explicit:
+
+```turtle
+:Intention_I1 bdi:specifies :Plan_P1 .
+
+:Plan_P1 a bdi:Plan ;
+    bdi:addresses :Goal_G1 ;
+    bdi:beginsWith :Task_T1 ;
+    bdi:endsWith :Task_T3 .
+
+:Task_T1 bdi:precedes :Task_T2 .
+:Task_T2 bdi:precedes :Task_T3 .
+```
+
+### T2B2T Paradigm
+
+Implement Triples-to-Beliefs-to-Triples as a bidirectional pipeline because agents must both consume external RDF context and produce new RDF assertions. Structure every T2B2T implementation in two explicit phases:
+
+**Phase 1: Triples-to-Beliefs** -- Translate incoming RDF triples into belief instances. Use `bdi:triggers` to connect the external world state to a `BeliefProcess`, and `bdi:generates` to produce the resulting belief. This preserves provenance from source data through to internal cognition:
+```turtle
+:WorldState_notification a bdi:WorldState ;
+    rdfs:comment &quot;Push notification: Payment request $250&quot; ;
+    bdi:triggers :BeliefProcess_BP1 .
+
+:BeliefProcess_BP1 a bdi:BeliefProcess ;
+    bdi:generates :Belief_payment_request .
+```
+
+**Phase 2: Beliefs-to-Triples** -- After BDI deliberation selects an intention and executes a plan, project the results back into RDF using `bdi:bringsAbout`. This closes the loop so downstream systems can consume agent outputs as standard linked data:
+```turtle
+:Intention_pay a bdi:Intention ;
+    bdi:specifies :Plan_payment .
+
+:PlanExecution_PE1 a bdi:PlanExecution ;
+    bdi:satisfies :Plan_payment ;
+    bdi:bringsAbout :WorldState_payment_complete .
+```
+
+### Notation Selection by Level
+
+Choose notation based on the C4 abstraction level being modeled, because mixing notations at the wrong level obscures rather than clarifies the cognitive architecture:
+
+| C4 Level | Notation | Mental State Representation |
+|----------|----------|----------------------------|
+| L1 Context | ArchiMate | Agent boundaries, external perception sources |
+| L2 Container | ArchiMate | BDI reasoning engine, belief store, plan executor |
+| L3 Component | UML | Mental state managers, process handlers |
+| L4 Code | UML/RDF | Belief/Desire/Intention classes, ontology instances |
+
+### Justification and Explainability
+
+Mental entities link to supporting evidence for traceable reasoning:
+
+```turtle
+:Belief_B1 a bdi:Belief ;
+    bdi:isJustifiedBy :Justification_J1 .
+
+:Justification_J1 a bdi:Justification ;
+    rdfs:comment &quot;Official announcement received via email&quot; .
+
+:Intention_I1 a bdi:Intention ;
+    bdi:isJustifiedBy :Justification_J2 .
+
+:Justification_J2 a bdi:Justification ;
+    rdfs:comment &quot;Location precondition satisfied&quot; .
+```
+
+### Temporal Dimensions
+
+Mental states persist over bounded time periods:
+
+```turtle
+:Belief_B1 a bdi:Belief ;
+    bdi:hasValidity :TimeInterval_TI1 .
+
+:TimeInterval_TI1 a bdi:TimeInterval ;
+    bdi:hasStartTime :TimeInstant_9am ;
+    bdi:hasEndTime :TimeInstant_11am .
+```
+
+Query mental states active at specific moments:
+
+```sparql
+SELECT ?mentalState WHERE {
+    ?mentalState bdi:hasValidity ?interval .
+    ?interval bdi:hasStartTime ?start ;
+              bdi:hasEndTime ?end .
+    FILTER(?start &lt;= &quot;2025-01-04T10:00:00&quot;^^xsd:dateTime &amp;&amp; 
+           ?end &gt;= &quot;2025-01-04T10:00:00&quot;^^xsd:dateTime)
+}
+```
+
+### Compositional Mental Entities
+
+Complex mental entities decompose into constituent parts for selective updates:
+
+```turtle
+:Belief_meeting a bdi:Belief ;
+    rdfs:comment &quot;Meeting at 10am in Room 5&quot; ;
+    bdi:hasPart :Belief_meeting_time , :Belief_meeting_location .
+
+# Update only location component
+:BeliefProcess_update a bdi:BeliefProcess ;
+    bdi:modifies :Belief_meeting_location .
+```
+
+### Integration Patterns
+
+#### Logic Augmented Generation (LAG)
+
+Augment LLM outputs with ontological constraints by serializing the BDI ontology graph and prepending it to the prompt:
+
+```python
+def augment_llm_with_bdi_ontology(prompt, ontology_graph):
+    ontology_context = serialize_ontology(ontology_graph, format=&#x27;turtle&#x27;)
+    augmented_prompt = f&quot;{ontology_context}\n\n{prompt}&quot;
+    return augmented_prompt
+```</pre>
+</body>
+</html>

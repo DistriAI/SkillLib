@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>google-calendar-automation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">google-calendar-automation</a> / google-calendar-automation</p><h1>google-calendar-automation</h1><p class="meta">combined</p><p>The two copies describe the same task but are built on different foundations. The first copy is a concrete implementation guide for a specific MCP server (Rube/Composio), providing exact tool names, parameter constraints (like ISO 8601 vs RFC3339), and specific pitfalls. The second copy is a generic, security-focused policy guide that explicitly warns against assuming a specific integration and emphasizes authorization, least privilege, and verification. Because the first copy&#x27;s specific tool names would be invalid in the second copy&#x27;s generic context, and the second copy&#x27;s security constraints are missing from the first, crowning one would hide a real alternative approach (specific implementation vs. generic secure policy).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/google-calendar-automation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/google-calendar-automation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/google-calendar-automation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/google-calendar-automation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/google-calendar-automation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-automation-builder/skills/google-calendar-automation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/google-calendar-automation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Google Calendar Automation
+
+## Prerequisites
+- An authenticated Google Calendar integration is available (e.g., via MCP or API client).
+- If using a specific MCP like Rube, verify the connection is ACTIVE.
+- Never request or echo passwords, cookies, or OAuth secrets in chat.
+
+## Workflow
+1. **Discovery &amp; Verification**: Inspect the available tools and their schemas. Do not assume tool names. Confirm the account, calendar ID, and IANA timezone.
+2. **Read &amp; Resolve**: Read relevant calendars with bounded results. Resolve ambiguous relative dates and daylight-saving changes. Distinguish all-day from timed events.
+3. **Draft &amp; Authorize**: Prepare the proposed event details (title, start/end, attendees). For writes, confirm explicit authorization for the specific change and its notification effects. A request to inspect availability does not authorize creating an event.
+4. **Execute**: Execute the approved operation once. If using specific tools (e.g., Rube), adhere to their parameter constraints (e.g., ISO 8601 for start times, IANA for timezones, max 59 for duration minutes). On timeout, read state before retrying to avoid duplicates.
+5. **Verify**: Read back the resulting event. Report the observed state, event ID, and timezone. State uncertainty if notification delivery cannot be confirmed.
+
+## Pitfalls
+- `start_datetime` must be ISO 8601; natural language is rejected.
+- `event_duration_minutes` max is 59; use hours for longer durations.
+- `timezone` must be IANA identifier; abbreviations like &#x27;EST&#x27; are invalid.
+- `attendees` only accepts email addresses.
+- `PATCH_EVENT` attendees field replaces the entire list; include existing attendees to avoid removal.
+- UTC timestamps may not align with local dates; use local timezone offsets for queries.</pre>
+</body>
+</html>

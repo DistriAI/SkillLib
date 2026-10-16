@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gmail</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">gmail-email-management</a> / gmail</p><h1>gmail</h1><p class="meta">combined</p><p>The two copies implement the same Gmail operations (read, send, search, labels, drafts) but through fundamentally different mechanisms. The first copy (benchflow-ai) uses local Node.js CLI scripts with local OAuth token management and multi-account support via a --account flag. The second copy (LeoYeAI) uses a remote Maton API gateway with a MATON_API_KEY and connection management via ctrl.maton.ai. They disagree on authentication (local token.json vs. remote API key), execution environment (local npm scripts vs. remote HTTP calls), and multi-account handling (--account flag vs. Maton-Connection header). Crowning one would hide a valid alternative implementation.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks-extra/scheduling-email-assistant/environment/skills/gmail-skill/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/gmail/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks-extra/scheduling-email-assistant/environment/skills/gmail-skill/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/gmail/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: gmail
+description: Manage Gmail - send, read, search emails, manage labels and drafts. Use when user wants to interact with their Gmail account for email operations.
+---
+
+# Gmail Manager Skill
+
+This skill provides Gmail integration. Two implementation paths are available; choose based on environment.
+
+## Implementation A: Local CLI Scripts (benchflow-ai)
+
+### First-Time Setup
+1. Install dependencies:
+   ```bash
+   cd ~/.claude/skills/gmail-skill &amp;&amp; npm install
+   ```
+2. Set up Google Cloud credentials per docs/google-cloud-setup.md; save credentials.json to scripts/auth/credentials.json
+3. Authenticate:
+   ```bash
+   cd ~/.claude/skills/gmail-skill &amp;&amp; npm run setup
+   ```
+
+### Multi-Account Support
+- Add accounts: `npm run setup -- --account &lt;name&gt;`
+- List accounts: `node scripts/manage-accounts.js --list`
+- Set default: `node scripts/manage-accounts.js --set-default &lt;name&gt;`
+- Remove: `node scripts/manage-accounts.js --remove &lt;name&gt;`
+- Use specific account: add `--account &lt;name&gt;` to any script
+
+### Operations
+All scripts are in `scripts/` and output JSON. Change to scripts directory first.
+
+- Send: `node gmail-send.js --to &quot;...&quot; --subject &quot;...&quot; --body &quot;...&quot;`
+- Search: `node gmail-search.js --query &quot;is:unread&quot; --limit 10`
+- Read: `node gmail-read.js --id &quot;MESSAGE_ID&quot;`
+- Labels: `node gmail-labels.js --action list|add --id &quot;...&quot; --label &quot;...&quot;`
+- Drafts: `node gmail-drafts.js --action create|send --to &quot;...&quot; --subject &quot;...&quot; --body &quot;...&quot; --id &quot;...&quot;`
+
+### Error Handling
+- Check token.json exists in scripts/auth/
+- If expired, re-run `npm run setup`
+- Verify Gmail API permissions
+
+## Implementation B: Maton API Gateway (LeoYeAI)
+
+### Setup
+1. Set environment variable: `export MATON_API_KEY=&quot;YOUR_API_KEY&quot;`
+2. Get API key from maton.ai/settings
+3. Create a Google OAuth connection at https://ctrl.maton.ai
+
+### Connection Management
+- List: GET https://ctrl.maton.ai/connections?app=google-mail&amp;status=ACTIVE
+- Create: POST https://ctrl.maton.ai/connections with {&quot;app&quot;:&quot;google-mail&quot;}
+- Delete: DELETE https://ctrl.maton.ai/connections/{connection_id}
+- Specify connection: add header `Maton-Connection: {connection_id}`
+
+### Operations
+Base URL: `https://gateway.maton.ai/google-mail/{native-api-path}`
+All requests require `Authorization: Bearer $MATON_API_KEY`.
+
+- List messages: GET /gmail/v1/users/me/messages?maxResults=10
+- Search: GET /gmail/v1/users/me/messages?q=is:unread&amp;maxResults=10
+- Get message: GET /gmail/v1/users/me/messages/{messageId}
+- Send: POST /gmail/v1/users/me/messages/send with {&quot;raw&quot;:&quot;BASE64_ENCODED_EMAIL&quot;}
+- Labels: GET /gmail/v1/users/me/labels; POST /gmail/v1/users/me/messages/{id}/modify
+- Threads: GET /gmail/v1/users/me/threads?maxResults=10
+- Drafts: POST /gmail/v1/users/me/drafts; POST /gmail/v1/users/me/drafts/send
+- Profile: GET /gmail/v1/users/me/profile
+
+### Query Operators
+is:unread, is:starred, from:email, to:email, subject:keyword, after:YYYY/MM/DD, before:YYYY/MM/DD, has:attachment
+
+## Shared Guidelines
+1. Parse JSON output and present user-friendly summaries
+2. Validate user input before passing to scripts or API calls
+3. Handle errors gracefully with helpful messages
+4. Use search operators for precise email filtering
+5. Chain operations by saving intermediate results to files
+
+## Conflicts
+- benchflow-ai/skillsbench uses local Node.js scripts with local OAuth token; LeoYeAI/openclaw-master-skills uses remote Maton gateway with MATON_API_KEY. Choose based on whether local npm environment is available or remote API access is preferred.
+- Multi-account: benchflow-ai uses --account flag; LeoYeAI uses Maton-Connection header.</pre>
+</body>
+</html>

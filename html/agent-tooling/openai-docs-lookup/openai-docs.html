@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>openai-docs</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">openai-docs-lookup</a> / openai-docs</p><h1>openai-docs</h1><p class="meta">combined</p><p>The three copies overlap on the core task (querying OpenAI developer docs via the developers.openai.com MCP server and citing official sources), but each has material steps the others lack. The openai/skills copy adds Codex self-knowledge routing, a local manual-fetch helper, model-selection/migration guidance, and an OpenAPI spec tool. The Vibe-Skills copy adds an MCP install/restart recovery flow and explicit quality rules. The am-will copy uses a different access mechanism (a curl/jq CLI wrapper script) and exposes subcommands like endpoints/openapi. Crowning one copy would hide real alternatives, so the combined instruction preserves the shared workflow and lists the divergent access and recovery paths under Conflicts.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/openai-docs/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/openai-docs/SKILL.md</code></td></tr><tr><td><a href="https://github.com/am-will/codex-skills">am-will/codex-skills</a></td><td><code>skills/openai-docs-skill/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.curated/openai-docs/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/openai-docs/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/am-will/codex-skills">am-will/codex-skills</a></td><td><code>skills/openai-docs-skill/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/openai/skills">openai/skills</a></td><td><code>skills/.system/openai-docs/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># OpenAI Docs
+
+Provide authoritative, current guidance from OpenAI developer docs using the developers.openai.com MCP server. Treat OpenAI docs as the source of truth; avoid speculation. Cite the official doc URL(s) used in your response.
+
+## Access the docs
+
+Choose one access path based on what is available in the session:
+
+1. Native MCP tools (preferred when available): use `mcp__openaiDeveloperDocs__search_openai_docs` to find relevant pages, `mcp__openaiDeveloperDocs__fetch_openai_doc` to fetch the page or section, and `mcp__openaiDeveloperDocs__list_openai_docs` to browse when there is no clear query. For API reference, schema, parameter, or required-field questions, also use `mcp__openaiDeveloperDocs__get_openapi_spec` when available.
+2. CLI wrapper (when native MCP tools are not available): use `scripts/openai-docs-mcp.sh` with subcommands `search`, `list`, `fetch`, `endpoints`, and `openapi` to query the MCP server via curl/jq.
+
+## Workflow
+
+1. Clarify the product scope (Codex, OpenAI API, ChatGPT Apps SDK, Realtime, Agents SDK, etc.) and the task.
+2. Search docs with a precise query. If unsure, use list/browse to discover pages.
+3. Fetch the best page and the specific section needed (use an anchor when possible).
+4. Answer with concise guidance and cite the doc source URL(s).
+5. Provide code snippets only when the docs support them.
+
+## Quality rules
+
+- Keep quotes short; prefer paraphrase with citations.
+- If multiple pages differ, call out the difference and cite both.
+- If docs do not cover the user&#x27;s need, say so and offer next steps.
+- If falling back to web search, restrict to official OpenAI domains (developers.openai.com, platform.openai.com) and cite sources.
+
+## MCP server missing or failing
+
+If MCP tools fail or no OpenAI docs resources are available:
+
+1. Run the install command: `codex mcp add openaiDeveloperDocs --url https://developers.openai.com/mcp`.
+2. If it fails due to permissions/sandboxing, retry with escalated permissions and include a 1-sentence justification.
+3. Only if the escalated attempt fails, ask the user to run the install command.
+4. Ask the user to restart Codex.
+5. Re-run the doc search/fetch after restart.
+
+## Codex self-knowledge (when the question is about Codex itself)
+
+For broad Codex behavior, setup, customization, skills, plugins, MCP, hooks, AGENTS.md, automations, surfaces, local state, or system-map questions:
+
+1. Reuse a same-thread manual and outline path when it is still fresh.
+2. Otherwise run the skill-local helper first in normal writable sessions: `node &lt;skill-dir&gt;/scripts/fetch-codex-manual.mjs`. Skip only when the session is explicitly read-only, shell execution is unavailable, or visible policy shows no allowed temp cache.
+3. Use the manual as the first source for broad Codex synthesis; treat the manual and Docs MCP as different lanes.
+
+## Model selection and migration
+
+- For model-selection, &quot;latest model&quot;, or default-model questions, fetch `https://developers.openai.com/api/docs/guides/latest-model.md` first. If unavailable, load `references/latest-model.md`.
+- For model upgrades or prompt upgrades, run `node scripts/resolve-latest-model-info.js` only when the target is latest/current/default or otherwise unspecified; otherwise preserve the explicitly requested target.
+- Preserve explicit target requests: if the user names a target model, keep that requested target even if latest-model.md names a newer model. Mention newer guidance only as optional.
+- If current remote guidance is needed, fetch both the returned migration and prompting guide URLs directly. If direct fetch fails, use MCP/search fallback; if that also fails, use bundled fallback references and disclose the fallback.
+
+## OpenAI product snapshots
+
+1. Apps SDK: Build ChatGPT apps by providing a web component UI and an MCP server that exposes your app&#x27;s tools to ChatGPT.
+2. Responses API: A unified endpoint designed for stateful, multimodal, tool-using interactions in agentic workflows.
+3. Chat Completions API: Generate a model response from a list of messages comprising a conversation.
+4. Codex: OpenAI&#x27;s coding agent for software development that can write, understand, review, and debug code.
+5. gpt-oss: Open-weight OpenAI reasoning models (gpt-oss-120b and gpt-oss-20b) released under the Apache 2.0 license.
+6. Realtime API: Build low-latency, multimodal experiences including natural speech-to-speech conversations.
+7. Agents SDK: A toolkit for building agentic apps where a model can use tools and context, hand off to other agents, stream partial results, and keep a full trace.</pre>
+</body>
+</html>

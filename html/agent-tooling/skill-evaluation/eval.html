@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>eval</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">skill-evaluation</a> / eval</p><h1>eval</h1><p class="meta">combined</p><p>The two copies describe fundamentally different evaluation methodologies. The first (dzhng/skills) is a qualitative, agent-driven process: it uses fresh, context-free subagents to run a skill blind on golden cases, then uses a separate judge agent to grade the artifact against a &#x27;bar&#x27; and &#x27;smells&#x27; to drive iterative skill edits. The second (LeoYeAI/openclaw-master-skills) is a quantitative, CLI-based framework: it uses a command-line tool (`eval-skills`) to run benchmarks, score results with specific scorers (e.g., `exact`), and generate reports for CI/CD gates. They do not overlap in procedure; one is a manual/agent workflow for improvement, the other is an automated testing framework for quality assurance.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/authoring/eval-skills/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/eval-skills/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/authoring/eval-skills/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/eval-skills/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Eval Skills
+
+This skill covers two complementary approaches to evaluating AI agent skills: a qualitative improvement loop and a quantitative testing framework.
+
+## Approach 1: Qualitative Improvement Loop (Agent-Driven)
+Use this when you want to test, improve, or harden a specific skill based on its judgment quality.
+
+1. **Validate Inputs**: Ensure you have the target `SKILL.md`, at least one golden case (concrete input), and a clear &#x27;bar&#x27; (outcome + smells) for each case.
+2. **Blind Run**: Spawn a fresh, context-free subagent for each case. Give it only the input and the instruction to use the target skill. Isolate the run (e.g., sandbox dir) and sweep the live checkout afterward.
+3. **Grade**: Use a separate judge agent to grade the artifact against the bar and the skill&#x27;s first principles. The judge must cite specific evidence.
+4. **Account for Nondeterminism**: Re-run borderline cases 2-3 times to establish a pass rate.
+5. **Diagnose &amp; Revise**: Determine if failures are skill defects or bad cases. Fix skill defects using authoring principles (e.g., sharpen completion criteria).
+
+## Approach 2: Quantitative Testing Framework (CLI-Based)
+Use this for pre-production quality gates, CI/CD enforcement, or comparing candidate skills on benchmarks.
+
+1. **Find/Scaffold**: Use `eval-skills find` to search for skills or `eval-skills create` to generate a skeleton with starter tests.
+2. **Evaluate**: Run `eval-skills eval` with specific skills, benchmarks, and scorer types (e.g., `exact`). Configure concurrency, timeouts, and retries.
+3. **Select/Report**: Use `eval-skills select` to rank skills based on reports. Generate human-readable reports (JSON, Markdown, HTML) for analysis.
+4. **CI/CD Integration**: Use `--exit-on-fail` and `--min-completion` to block merges that degrade skill quality.</pre>
+</body>
+</html>

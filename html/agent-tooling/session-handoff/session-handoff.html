@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>session-handoff</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">session-handoff</a> / session-handoff</p><h1>session-handoff</h1><p class="meta">combined</p><p>The three copies overlap in the core goal (creating a structured handoff to preserve context across agent sessions) but each contains material steps and constraints the others lack. The softaworks copy is a tool-driven workflow with specific Python scripts for scaffolding, validation, staleness checking, and handoff chaining. The mohitagw15856 copy is a lightweight, prompt-based template focused on a specific output format (Objective, Done, State, Next, Gotchas, Pointers) and anti-patterns. The sickn33 copy is a rigorous, code-centric workflow that mandates git auditing, separating facts from speculation, assigning owners to open loops, and providing a detailed worked example. Crowning one would hide the specific tooling of the first, the specific format of the second, and the rigorous verification rules of the third.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/softaworks/agent-toolkit">softaworks/agent-toolkit</a></td><td><code>dist/plugins/session-handoff/skills/session-handoff/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-craft/skills/session-handoff/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/session-handoff/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/softaworks/agent-toolkit">softaworks/agent-toolkit</a></td><td><code>dist/plugins/session-handoff/skills/session-handoff/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-craft/skills/session-handoff/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/session-handoff/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/session-handoff/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/session-handoff/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/softaworks/agent-toolkit">softaworks/agent-toolkit</a></td><td><code>skills/session-handoff/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-tokens/skills/session-handoff/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/session-handoff/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Session Handoff
+
+Create a comprehensive handoff document to enable a fresh agent or human to continue work with zero ambiguity.
+
+## 1. Determine Mode
+- **Create**: User wants to save state, context is full, or session is ending.
+- **Resume**: User wants to load previous context.
+
+## 2. Create Workflow
+
+### Step 1: Audit State
+- Run `git status -s` and `git diff --stat` to establish grounded reality.
+- If using the `softaworks` toolkit, run `python scripts/create_handoff.py [task-slug]` to generate a scaffold.
+
+### Step 2: Capture Context
+Fill in the following sections (using the `mohitagw15856` format as a guide for structure):
+
+**🎯 Objective**
+- The goal in 1–2 lines and the definition of done.
+
+**✅ Done so far**
+- Key work completed and decisions made (with rationale).
+- Explicitly record negative decisions (discarded paths) to prevent re-attempting failed solutions.
+
+**📍 Current state**
+- Exactly where things stand: branch/PR, what runs, what&#x27;s failing, files touched.
+- Separate facts from speculation. Label untested assumptions as `[UNVERIFIED]`.
+
+**⏭️ Next step**
+- The single most important, atomic, unambiguous action to take next.
+- Followed by the next 2–3 steps.
+
+**⚠️ Gotchas &amp; dead ends**
+- What was tried and didn&#x27;t work, constraints, and sharp edges.
+
+**🔗 Pointers**
+- Key files (`path:line`), commands to run, and links.
+
+**📂 Open Loops**
+- List unaddressed edge cases or deferred tasks.
+- Every open loop must specify an owner (`Human` or `Agent`) and a deterministic verification criteria.
+
+### Step 3: Validate
+- If using the `softaworks` toolkit, run `python scripts/validate_handoff.py &lt;handoff-file&gt;`.
+- Ensure no `[TODO]` placeholders remain.
+- Ensure no secrets are included.
+- Check that the next step is specific enough to act on immediately.
+
+### Step 4: Confirm
+- Report the handoff location and a summary of captured context to the user.
+
+## 3. Resume Workflow
+
+### Step 1: Find Handoffs
+- List available handoffs (e.g., `python scripts/list_handoffs.py` or check `.claude/handoffs/`).
+
+### Step 2: Check Staleness
+- If using the `softaworks` toolkit, run `python scripts/check_staleness.py &lt;handoff-file&gt;`.
+- Assess if the context is still valid based on git changes since the handoff.
+
+### Step 3: Load and Verify
+- Read the handoff document completely.
+- Verify project directory, git branch, and environment state match the handoff.
+- Check if blockers have been resolved.
+
+### Step 4: Begin Work
+- Start with the &quot;Immediate Next Step&quot; from the handoff.
+- Reference &quot;Critical Files&quot; and &quot;Gotchas&quot; as you work.
+
+## 4. Anti-Patterns
+- Do not write vague status updates (e.g., &quot;worked on the feature&quot;).
+- Do not omit dead ends.
+- Do not assume shared memory; the reader may have zero prior context.
+- Do not provide broad lists for the next action; specify the exact command or file edit.</pre>
+</body>
+</html>

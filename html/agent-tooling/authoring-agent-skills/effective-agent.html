@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>effective-agent</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">authoring-agent-skills</a> / effective-agent</p><h1>effective-agent</h1><p class="meta">combined</p><p>The sickn33 copy is a bulk mirror of the davidondrej skill, but it is not a faithful reproduction. It adds a &#x27;When to Use&#x27; section, a table of prior alternatives, and a different stance on the disable-model-invocation field. The davidondrej copy contains specific YAML safety constraints (handling colons in descriptions) and client-specific invocation details (OpenAI Codex agents/openai.yaml) that the mirror omits or contradicts. Because the copies disagree on the status of a key frontmatter field and the mirror lacks the original&#x27;s specific YAML parsing warnings, crowning one would hide a real alternative or lose critical constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/skill-authoring/effective-agent-skills/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/effective-agent-skills/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/skill-authoring/effective-agent-skills/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/effective-agent-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/effective-agent-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-skill-author/skills/effective-agent-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/effective-agent-skills/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: effective-agent-skills
+description: &#x27;Write, review, and debug agent skills. Use when creating or editing SKILL.md files, improving skill structure, or diagnosing invocation and execution problems.&#x27;
+---
+
+# Effective Agent Skills
+
+## When to Use
+- Use when creating, editing, reviewing, or debugging an agent SKILL.md file.
+- Use when you need quality guidance for triggers, examples, limitations, and safety notes.
+
+## 1. What agent skills are
+An Agent Skill is a folder containing a `SKILL.md` file (YAML frontmatter + markdown instructions), plus optional subfolders for scripts, references, and assets that the agent loads on demand.
+
+```
+my-skill/
+├── SKILL.md          # Required: metadata + instructions
+├── scripts/          # Optional: executable code (CLIs, validators, helpers)
+├── references/       # Optional: detailed docs loaded only when needed
+└── assets/           # Optional: templates, fonts, static files
+```
+
+Agent Skills (agentskills.io) is an open standard. The folder and `SKILL.md` format are portable; optional behavior such as invocation control can be client-specific.
+
+## 2. Why use skills
+Skills package procedural knowledge and context for reuse:
+- **Context efficiency** — instructions load only when relevant
+- **Repeatability** — multi-step procedures become auditable workflows
+- **Composability** — multiple skills combine at runtime per task
+- **Portability** — same files work across vendors and surfaces
+
+## 3. How they work — progressive disclosure
+Three levels of loading:
+
+**Level 1 — Discovery (~100 tokens per skill, always in context):**
+The agent sees `name` + `description` first to decide whether the skill applies.
+
+**Level 2 — Activation (&lt;5,000 tokens, loaded on match):**
+When the request matches, the agent reads the full `SKILL.md` body.
+
+**Level 3 — Execution (unbounded, on demand):**
+The agent reads references (`references/foo.md`) or runs scripts (`scripts/validate.py`) as needed. Running a script need not load its source into context.
+
+## 4. SKILL.md anatomy
+
+```markdown
+---
+name: skill-name
+description: What this skill does AND when to use it. Include trigger phrases the user will say.
+---
+
+# Skill Name
+
+## Quick start
+[Minimal working example]
+
+## Workflow
+[Step-by-step procedure with checklists]
+
+## Output format
+[What the user/agent should expect back]
+
+## Advanced
+[Link to references/ for rarely-needed detail]
+```
+
+Frontmatter constraints:
+- `name` is lowercase, hyphens only, 1–64 chars, **exactly matches the parent folder name**
+- Avoid `&lt;` and `&gt;` in frontmatter (they can inject into the system prompt)
+- Invalid YAML silently prevents loading
+- **Never put `: ` (colon + space) inside an unquoted `description`** — strict YAML parsers reject it as a nested mapping. If the text needs a mid-sentence colon, single-quote the whole value and double any inner apostrophes: `description: &#x27;Differentiator: finds gaps in the user&#x27;&#x27;s knowledge.&#x27;`
+
+### Manual-only invocation is client-specific
+`disable-model-invocation: true` is **not** part of the core Agent Skills specification. It is a client extension supported by Claude Code and VS Code/Copilot. In those clients, put it in `SKILL.md` frontmatter to prevent automatic invocation while keeping explicit invocation available.
+
+OpenAI Codex uses a separate file at `agents/openai.yaml` inside the skill:
+
+```yaml
+policy:
+  allow_implicit_invocation: false
+```
+
+For a manual-only skill shared across Claude Code, VS Code/Copilot, and Codex, include both configurations. Never assume a client-specific frontmatter field works in every Agent Skills implementation; verify each target client&#x27;s documentation and test implicit invocation in each runtime.
+
+## 5. Two design philosophies
+
+### Pattern A — Capability primitives (tool wrappers)
+The skill is a thin wrapper over a deterministic CLI or script. Logic lives in code. SKILL.md teaches the agent how to invoke it.
+
+- **Adds**: new capabilities (search, email, browser, API access)
+- **Reliability via**: shell tools, not prompts
+- **Typical length**: 30–80 lines, mostly command examples
+- **Use when**: the bottleneck is &quot;the agent can&#x27;t do X&quot;
+
+### Pattern B — Process primitives (cognitive disciplines)
+The skill encodes a methodology the agent should follow. Pure prompt engineering — no scripts needed.
+
+- **Adds**: structured workflows (TDD, code review, design alignment, debugging loops)
+- **Reliability via**: explicit procedure, checklists, validation loops
+- **Use when**: the bottleneck is &quot;the agent&#x27;s output quality or process is bad&quot;
+
+## 6. How to write effective skills — do this
+
+### Write descriptions for skill selection
+The agent sees the name and description before loading the body. Describe **what the skill does + concrete tasks that should trigger it**.
+
+- Aim for one or two short sentences. The 1,024-character limit is a ceiling, not a target.
+- Put the main use case and important terms first; hosts may shorten descriptions.
+- Name tasks, inputs, or file types users actually mention. Match intent, not just keywords.
+- Add a boundary only when it prevents confusion with related skills.
+- Keep workflow steps in the body. Avoid vague claims, catchalls, and lists of synonyms.
+
+Pattern: `&quot;[Capability]. Use when [specific tasks or situations].&quot;`
+
+### Keep SKILL.md lean
+- Beyond a certain length, you&#x27;re usually encoding logic that should be in a script or referenced file
+
+### Bash-first, prose-second
+Prefer concrete command examples with inline comments to lengthy prose.
+
+### Push determinism into code
+Anything fragile, repetitive, or where variation is a bug → script. Use markdown only for tasks requiring judgment.
+
+### Match strictness to task fragility (degrees of freedom)
+Scale instruction rigidity to how costly a wrong move is:
+- **Loose natural-language heuristics** when many approaches are valid.
+- **Strict checklists and scripts** when a single wrong step is costly.</pre>
+</body>
+</html>

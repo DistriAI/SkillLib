@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>context-optimization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">context-window-optimization</a> / context-optimization</p><h1>context-optimization</h1><p class="meta">combined</p><p>The two copies cover the same four strategies (compaction, observation masking, KV-cache, partitioning) but disagree on priority and thresholds. The muratcankoylan copy orders KV-cache first and compaction third, uses a 70% compaction trigger, and includes a 50-70% reduction target with a 5% quality degradation limit. The sickn33 copy calls compaction the &#x27;first lever,&#x27; uses an 80% trigger threshold, and includes a distinct Budget Management section with explicit allocation categories. Because crowning one would hide the other&#x27;s specific thresholds and the budgeting procedure, the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/context-optimization/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/context-optimization/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/context-optimization/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/context-optimization/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/context-optimization/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/context-optimization/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: context-optimization
+description: &quot;Improve context efficiency through budgeting, observation masking, KV-cache strategy, and partitioning to extend effective context capacity without lowering answer quality.&quot;
+---
+
+# Context Optimization Techniques
+
+Context optimization extends the effective capacity of limited context windows through strategic compression, masking, caching, and partitioning. The goal is to make better use of available capacity without requiring larger models or longer windows.
+
+## When to Activate
+
+Activate this skill when:
+- Context budgets or token costs constrain task complexity.
+- Observation masking can replace verbose tool outputs with retrievable references.
+- Prefix or KV-cache hit rate needs improvement.
+- Retrieval scoping can reduce irrelevant loaded context.
+- Context partitioning can extend effective capacity across agents.
+- Budget triggers are needed for masking, compaction, or partitioning.
+
+Do not activate for:
+- Explaining why attention or context windows behave this way.
+- Diagnosing active lost-in-middle, poisoning, or distraction.
+- Designing a structured handoff summary for a long conversation.
+- Storing large outputs, plans, or logs as files.
+- Model-initiated rewrites of its own context.
+
+## Core Concepts
+
+Apply four primary strategies. The priority order depends on the specific bottleneck:
+
+1. **KV-cache optimization** — Reorder and stabilize prompt structure so the inference engine reuses cached Key/Value tensors. This is the cheapest optimization when the runtime supports prefix caching: low quality risk, immediate cost and latency savings. Apply it first when stable prefixes exist.
+2. **Observation masking** — Replace verbose tool outputs with compact references once their purpose has been served. Tool outputs can dominate agent trajectories, so masking often yields the largest capacity gains.
+3. **Compaction** — Summarize accumulated context when utilization exceeds 70-80%, then reinitialize with the summary. This distills the window&#x27;s contents while preserving task-critical state. Compaction is lossy — apply it after masking has already removed the low-value bulk.
+4. **Context partitioning** — Split work across sub-agents with isolated contexts when a single window cannot hold the full problem. Reserve this for tasks where estimated context exceeds 60% of the window limit.
+
+The governing principle: context quality matters more than quantity. Every optimization preserves signal while reducing noise. Measure before optimizing, then measure the optimization&#x27;s effect.
+
+## Detailed Topics
+
+### Compaction Strategies
+
+Trigger compaction when context utilization exceeds 70% (or 80% depending on system headroom): summarize the current context, then reinitialize with the summary. This distills the window&#x27;s contents in a high-fidelity manner, enabling continuation with minimal performance degradation.
+
+Prioritize compressing tool outputs first (they consume 80%+ of tokens), then old conversation turns, then retrieved documents. Never compress the system prompt — it anchors model behavior and its removal causes unpredictable degradation.
+
+Preserve different elements by message type:
+- **Tool outputs**: Extract key findings, metrics, error codes, and conclusions. Strip verbose raw output, stack traces (unless debugging is ongoing), and boilerplate headers.
+- **Conversational turns**: Retain decisions, commitments, user preferences, and context shifts. Remove filler, pleasantries, and exploratory back-and-forth that led to a conclusion already captured.
+- **Retrieved documents**: Keep claims, facts, and data points relevant to the active task. Remove supporting evidence and elaboration that served a one-time reasoning purpose.
+
+Target 50-70% token reduction with less than 5% quality degradation. If compaction exceeds 70% reduction, audit the summary for critical information loss — over-aggressive compaction is the most common failure mode.
+
+### Observation Masking
+
+Mask observations selectively based on recency and ongoing relevance — not uniformly. Apply these rules:
+- **Never mask**: Observations critical to the current task, observations from the most recent turn, observations used in active reasoning chains, and error outputs when debugging is in progress.
+- **Mask after 3+ turns**: Verbose outputs whose key points have already been extracted into the conversation flow. Replace with a compact reference: `[Obs:{ref_id} elided. Key: {summary}. Full content retrievable.]`
+- **Always mask immediately**: Repeated/duplicate outputs, boilerplate headers and footers, outputs already summarized earlier in the conversation.
+
+Masking should achieve 60-80% reduction in masked observations with less than 2% quality impact. The key is maintaining retrievability — store the full content externally and keep the reference ID in context so the agent can request the original if needed.
+
+### KV-Cache Optimization
+
+Maximize prefix cache hits by structuring prompts so that stable content occupies the prefix and dynamic content appears at the end. KV-cache stores Key and Value tensors computed during inference; when consecutive requests share an identical prefix, the cached tensors are reused, saving both cost and latency.
+
+Apply this ordering in every prompt:
+1. System prompt (most stable — never changes within a session)
+2. Tool definitions (stable across requests)
+3. Frequently reused templates and few-shot examples
+4. Conversation history and dynamic content
+
+Design prompts to maximize cache stability: avoid dynamic content like timestamps in the prefix, use consistent formatting, and keep structure stable across sessions.
+
+### Context Partitioning
+
+The most aggressive form of context optimization is partitioning work across sub-agents with isolated contexts. Each sub-agent operates in a clean context focused on its subtask without carrying accumulated context from other subtasks.
+
+This approach achieves separation of concerns—the detailed search context remains isolated within sub-agents while the coordinator focuses on synthesis and analysis.
+
+**Result Aggregation**
+Aggregate results from partitioned subtasks by validating all partitions completed, merging compatible results, and summarizing if still too large.
+
+### Budget Management
+
+**Context Budget Allocation**
+Design explicit context budgets. Allocate tokens to categories: system prompt, tool definitions, retrieved docs, message history, and reserved buffer. Monitor usage against budget and trigger optimization when approaching limits.
+
+**Trigger-Based Optimization**
+Monitor signals for optimization triggers: token utilization above 70-80%, degradation indicators, and performance drops. Apply appropriate optimization techniques based on context composition.
+
+## Practical Guidance
+
+### Optimization Decision Framework
+
+When to optimize:
+- Context utilization exceeds 70%.
+- Response quality degrades as conversations extend.
+- Token costs exceed budget thresholds.
+- Latency increases due to long context processing.
+
+When to partition:
+- Estimated context exceeds 60% of the window limit.
+- Task involves distinct subtasks with minimal cross-dependency.
+- Single context window cannot hold the full problem.</pre>
+</body>
+</html>

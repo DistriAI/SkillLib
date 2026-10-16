@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pair-trade-screener</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">pair-trade-screening</a> / pair-trade-screener</p><h1>pair-trade-screener</h1><p class="meta">combined</p><p>The two copies share the same frontmatter, overview, use cases, universe definition, data requirements, correlation/beta thresholds, and cointegration interpretation. They diverge on execution and prerequisites: the tradermonty copy specifies Python 3.9+, an FMP API key, statsmodels version pin, and a uv run command invoking skills/pair-trade-screener/scripts/find_pairs.py with --symbols/--sector/--lookback-days/--output; the LeoYeAI copy omits the prerequisites and uses a different script path and flags (python scripts/fetch_price_data.py --sector Technology --lookback 730). Crowning one would hide a real alternative execution path and dependency setup.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/tradermonty/claude-trading-skills">tradermonty/claude-trading-skills</a></td><td><code>skills/pair-trade-screener/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/pair-trade-screener/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/tradermonty/claude-trading-skills">tradermonty/claude-trading-skills</a></td><td><code>skills/pair-trade-screener/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/pair-trade-screener/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: pair-trade-screener
+description: Statistical arbitrage tool for identifying and analyzing pair trading opportunities. Detects cointegrated stock pairs within sectors, analyzes spread behavior, calculates z-scores, and provides entry/exit recommendations for market-neutral strategies. Use when user requests pair trading opportunities, statistical arbitrage screening, mean-reversion strategies, or market-neutral portfolio construction. Supports correlation analysis, cointegration testing, and spread backtesting.
+---
+
+# Pair Trade Screener
+
+## Overview
+
+This skill identifies and analyzes statistical arbitrage opportunities through pair trading. Pair trading is a market-neutral strategy that profits from the relative price movements of two correlated securities, regardless of overall market direction. The skill uses rigorous statistical methods including correlation analysis and cointegration testing to find robust trading pairs.
+
+**Core Methodology:**
+- Identify pairs of stocks with high correlation and similar sector/industry exposure
+- Test for cointegration (long-term statistical relationship)
+- Calculate spread z-scores to identify mean-reversion opportunities
+- Generate entry/exit signals based on statistical thresholds
+- Provide position sizing for market-neutral exposure
+
+**Key Advantages:**
+- Market-neutral: Profits in up, down, or sideways markets
+- Risk management: Limited exposure to broad market movements
+- Statistical foundation: Data-driven, not discretionary
+- Diversification: Uncorrelated to traditional long-only strategies
+
+## When to Use This Skill
+
+Use this skill when:
+- User asks for &quot;pair trading opportunities&quot;
+- User wants &quot;market-neutral strategies&quot;
+- User requests &quot;statistical arbitrage screening&quot;
+- User asks &quot;which stocks move together?&quot;
+- User wants to hedge sector exposure
+- User requests mean-reversion trade ideas
+- User asks about relative value trading
+
+Example user requests:
+- &quot;Find pair trading opportunities in the tech sector&quot;
+- &quot;Which stocks are cointegrated?&quot;
+- &quot;Screen for statistical arbitrage opportunities&quot;
+- &quot;Find mean-reversion pairs&quot;
+- &quot;What are good market-neutral trades right now?&quot;
+
+## Prerequisites
+
+- Python 3.9 or newer
+- An FMP API key with access to the company screener and historical-price endpoints
+- `statsmodels&gt;=0.14,&lt;0.15` for ADF and autoregression calculations
+
+Set the API key without placing it on the command line or in a committed file:
+
+```bash
+export FMP_API_KEY=&quot;&lt;fmp-api-key&gt;&quot;
+```
+
+## Analysis Workflow
+
+### Step 1: Define Pair Universe
+
+**Objective:** Establish the pool of stocks to analyze for pair relationships.
+
+**Option A: Sector-Based Screening (Recommended)**
+
+Select a specific sector to screen:
+- Technology
+- Financials
+- Healthcare
+- Consumer Discretionary
+- Industrials
+- Energy
+- Materials
+- Consumer Staples
+- Utilities
+- Real Estate
+- Communication Services
+
+**Option B: Custom Stock List**
+
+User provides specific tickers to analyze:
+```
+Example: [&quot;AAPL&quot;, &quot;MSFT&quot;, &quot;GOOGL&quot;, &quot;META&quot;, &quot;NVDA&quot;]
+```
+
+**Option C: Industry-Specific**
+
+Narrow focus to specific industry within sector:
+- Example: &quot;Software&quot; within Technology sector
+- Example: &quot;Regional Banks&quot; within Financials
+
+**Filtering Criteria:**
+- Minimum market cap: $2B (mid-cap and above)
+- Minimum average volume: 1M shares/day (liquidity requirement)
+- Active trading: No delisted or inactive stocks
+- Same exchange preference: Avoid cross-exchange complications
+
+### Step 2: Retrieve Historical Price Data
+
+**Objective:** Fetch price history for correlation and cointegration analysis.
+
+**Data Requirements:**
+- Timeframe: 2 years (minimum 252 trading days)
+- Frequency: Daily closing prices
+- Adjustments: Adjusted for splits and dividends
+- Clean data: No gaps or missing values
+
+**FMP API Endpoint:**
+```
+GET /v3/historical-price-full/{symbol}?apikey=YOUR_API_KEY
+```
+
+**Data Validation:**
+- Verify consistent date ranges across all symbols
+- Remove stocks with &gt;10% missing data
+- Fill minor gaps with forward-fill method
+- Log data quality issues
+
+**Script Execution:**
+
+Run the scripts from the repository root with the statistical dependency isolated to the command:
+
+```bash
+uv run --with &#x27;statsmodels&gt;=0.14,&lt;0.15&#x27; python \
+  skills/pair-trade-screener/scripts/find_pairs.py \
+  --sector Technology \
+  --lookback-days 730 \
+  --output /tmp/pair-trade/technology.json
+```
+
+Alternatively, if the repository ships a standalone fetch script:
+
+```bash
+python scripts/fetch_price_data.py --sector Technology --lookback 730
+```
+
+### Step 3: Calculate Correlation and Beta
+
+**Objective:** Identify candidate pairs with strong linear relationships.
+
+**Correlation Analysis:**
+
+For each pair of stocks (i, j) in the universe:
+1. Calculate Pearson correlation coefficient (ρ)
+2. Calculate rolling correlation (90-day window) for stability check
+3. Filter pairs with ρ &gt;= 0.70 (strong positive correlation)
+
+**Correlation Interpretation:**
+- ρ &gt;= 0.90: Very strong correlation (best candidates)
+- ρ 0.70-0.90: Strong correlation (good candidates)
+- ρ 0.50-0.70: Moderate correlation (marginal)
+- ρ &lt; 0.50: Weak correlation (exclude)
+
+**Beta Calculation:**
+
+For each candidate pair (Stock A, Stock B):
+```
+Beta = Covariance(A, B) / Variance(B)
+```
+
+Beta indicates the hedge ratio:
+- Beta = 1.0: Equal dollar amounts
+- Beta = 1.5: $1.50 of B for every $1.00 of A
+- Beta = 0.8: $0.80 of B for every $1.00 of A
+
+**Correlation Stability Check:**
+- Calculate correlation over multiple periods (6mo, 1yr, 2yr)
+- Require correlation to be stable (not deteriorating)
+- Flag pairs where recent correlation &lt; historical correlation by &gt;0.15
+
+### Step 4: Cointegration Testing
+
+**Objective:** Statistically validate long-term equilibrium relationship.
+
+**Why Cointegration Matters:**
+- Correlation measures short-term co-movement
+- Cointegration proves long-term equilibrium relationship
+- Cointegrated pairs mean-revert predictably
+- Non-cointegrated pairs may diverge permanently
+
+**Augmented Dickey-Fuller (ADF) Test:**
+
+For each correlated pair:
+1. Calculate spread: `Spread = Price_A - (Beta × Price_B)`
+2. Run ADF test on spread series
+3. Check p-value: p &lt; 0.05 indicates cointegration (reject null hypothesis of unit root)
+4. Extract ADF statistic for strength ranking
+
+**Cointegration Interpretation:**
+- p-value &lt; 0.01: Very strong cointegration (★★★)
+- p-value 0.01-0.05: Moderate cointegration (★★)
+- p-value &gt; 0.05: No cointegration (exclude)
+
+**Half-Life Calculation:**
+
+Estimate mean-reversion speed:
+```
+Half-Life = -log(2) / log(mean_reversion_coefficient)
+```
+
+- Half-life &lt; 30 days: Fast mean-reversion (good for short-term trading)
+- Half-life 30-60 days: Moderate speed (standard)
+- Half-life &gt; 60 days: Slow
+
+## Conflicts
+
+- tradermonty/claude-trading-skills specifies Python 3.9+, FMP_API_KEY, and statsmodels&gt;=0.14,&lt;0.15 as prerequisites and runs `uv run --with &#x27;statsmodels&gt;=0.14,&lt;0.15&#x27; python skills/pair-trade-screener/scripts/find_pairs.py` with `--symbols`, `--sector`, `--lookback-days`, and `--output` flags.
+- LeoYeAI/openclaw-master-skills omits the prerequisites and runs `python scripts/fetch_price_data.py --sector Technology --lookback 730`.</pre>
+</body>
+</html>

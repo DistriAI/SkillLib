@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>n8n-mcp-tools-expert</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">n8n-mcp-tool-usage</a> / n8n-mcp-tools-expert</p><h1>n8n-mcp-tools-expert</h1><p class="meta">combined</p><p>The two copies cover the same n8n-mcp tooling domain but each contains material steps the other lacks. The czlonkowski copy is the more complete, original-style guide: it enumerates the full tool catalog (data tables, folders, credentials, audit, agents, resource resolution, instance catalog), gives a quick-reference table with success-rate/speed heuristics, and—critically—includes a &#x27;Node JSON Hygiene&#x27; section (omit placeholder credentials, use UUID v4 node IDs, use current typeVersion) and a &#x27;nodeType Formats&#x27; section that the other copy does not. The sickn33 copy is a wrapper that defers to a references/detailed-guide.md and adds its own material: explicit &#x27;When to Use&#x27; triggers, a &#x27;Limitations&#x27; section (stop and ask for clarification when inputs/permissions/safety boundaries are missing), and a more detailed Template Usage section (search by nodes/task/metadata, get_template modes, n8n_deploy_template with autoFix/autoUpgradeVersions). They also disagree on how to proceed: czlonkowski says &#x27;Always consult this skill before calling any n8n-mcp tool&#x27; and inlines the full procedure, while sickn33 says &#x27;Read the detailed guide before executing this skill&#x27; and treats its safety/prerequisites as mandatory. Crowning one would hide the other&#x27;s real alternative (the wrapper&#x27;s safety/limitations framing and template-search modes vs. the original&#x27;s JSON-hygiene and nodeType-format rules).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/czlonkowski/n8n-skills">czlonkowski/n8n-skills</a></td><td><code>skills/n8n-mcp-tools-expert/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/n8n-mcp-tools-expert/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/czlonkowski/n8n-skills">czlonkowski/n8n-skills</a></td><td><code>skills/n8n-mcp-tools-expert/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/n8n-mcp-tools-expert/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/n8n-mcp-tools-expert/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/n8n-mcp-tools-expert/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: n8n-mcp-tools-expert
+description: Expert guide for using n8n-mcp MCP tools effectively. Use when searching for nodes, validating configurations, accessing templates, managing workflows, organizing workflows into folders, managing credentials, auditing instance security, or using any n8n-mcp tool. Provides tool selection guidance, parameter formats, and common patterns. Always consult this skill before calling any n8n-mcp tool.
+---
+
+# n8n MCP Tools Expert
+
+Master guide for using n8n-mcp MCP server tools to build workflows.
+
+## When to Use
+- You are using the n8n-mcp toolset to discover nodes, validate configs, or manage workflows.
+- The task involves choosing the right MCP tool or understanding its expected parameters and usage pattern.
+- You need guidance on workflow creation or editing through n8n MCP rather than through the n8n UI alone.
+- If the user mentions n8n, workflows, nodes, or automation and you have n8n MCP tools available, use this skill first.
+
+## Prerequisites and Safety
+- Treat safety, prerequisites, and validation requirements as mandatory.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+
+## Tool Categories
+1. Node Discovery (search_nodes, get_node)
+2. Configuration Validation (validate_node, validate_workflow)
+3. Workflow Management (n8n_create_workflow, n8n_update_partial_workflow, n8n_validate_workflow, n8n_autofix_workflow)
+4. Template Library (search_templates, get_template, n8n_deploy_template)
+5. Data Tables (n8n_manage_datatable)
+6. Workflow Folders (n8n_manage_folders)
+7. Credential Management (n8n_manage_credentials)
+8. Security &amp; Audit (n8n_audit_instance)
+9. Documentation &amp; Guides
+10. Agents (n8n_manage_agents, requires N8N_MCP_ACCESS_TOKEN)
+11. Node Resource Resolution (n8n_explore_node_resources, requires N8N_MCP_ACCESS_TOKEN)
+12. Instance Catalog (n8n_list_catalog)
+
+## Tool Selection Guide
+
+### Finding the Right Node
+1. search_nodes({query: &quot;keyword&quot;})
+2. get_node({nodeType: &quot;nodes-base.name&quot;})
+3. [Optional] get_node({nodeType: &quot;nodes-base.name&quot;, mode: &quot;docs&quot;})
+
+Common pattern: search → get_node (~18s average).
+
+### Validating Configuration
+1. validate_node({nodeType, config: {}, mode: &quot;minimal&quot;}) — check required fields
+2. validate_node({nodeType, config, profile: &quot;runtime&quot;}) — full validation
+3. Fix errors, validate again
+
+Common pattern: validate → fix → validate (~23s thinking, ~58s fixing per cycle).
+
+### Managing Workflows
+1. n8n_create_workflow({name, nodes, connections})
+2. n8n_validate_workflow({id})
+3. n8n_update_partial_workflow({id, operations: [...]})
+4. n8n_validate_workflow({id}) again
+5. n8n_update_partial_workflow({id, operations: [{type: &quot;activateWorkflow&quot;}]})
+
+Common pattern: iterative updates (~56s average between edits). Use n8n_update_partial_workflow for most edits (highest success rate).
+
+### Critical: Node JSON Hygiene When Creating Workflows
+Three structural mistakes in generated node JSON break the n8n UI even when the workflow validates:
+1. Never emit a credentials block with a placeholder ID. A fake ID like &quot;id&quot;: &quot;REPLACE_ME&quot; renders the credential selector permanently disabled. If you don&#x27;t know the real credential ID, omit the credentials block entirely. Use n8n_manage_credentials({action: &quot;list&quot;}) to discover real credential IDs first.
+2. Generate UUID v4 values for node id — not human-readable strings. Non-UUID IDs cause subtle UI breakage.
+3. Use the current typeVersion for each node — check get_node rather than hardcoding remembered versions.
+
+### Critical: nodeType Formats
+Two different formats for different tools:
+- Search/Validate tools: use SHORT prefix (e.g. &quot;nodes-base.slack&quot;).
+- Workflow creation/update tools: use the full node type as returned by get_node.
+
+## Template Usage
+
+### Search Templates
+- search_templates({query: &quot;webhook slack&quot;, limit: 20})
+- search_templates({searchMode: &quot;by_nodes&quot;, nodeTypes: [&quot;n8n-nodes-base.httpRequest&quot;, &quot;n8n-nodes-base.slack&quot;]})
+- search_templates({searchMode: &quot;by_task&quot;, task: &quot;webhook_processing&quot;})
+- search_templates({searchMode: &quot;by_metadata&quot;, complexity: &quot;simple&quot;, maxSetupMinutes: 15})
+
+### Get Template Details
+- get_template({templateId: 2947, mode: &quot;structure&quot;}) — nodes+connections only
+- get_template({templateId: 2947, mode: &quot;full&quot;}) — complete workflow JSON
+
+### Deploy Template Directly
+n8n_deploy_template({
+  templateId: 2947,
+  name: &quot;My Weather to Slack&quot;,
+  autoFix: true,
+  autoUpgradeVersions: true
+})
+Returns: workflow ID, required credentials, fixes applied.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</pre>
+</body>
+</html>

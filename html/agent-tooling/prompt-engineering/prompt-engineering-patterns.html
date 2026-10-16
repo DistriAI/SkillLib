@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>prompt-engineering-patterns</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">prompt-engineering</a> / prompt-engineering-patterns</p><h1>prompt-engineering-patterns</h1><p class="meta">combined</p><p>The first two copies are near-identical, but the third copy (LeoYeAI/openclaw-master-skills) diverges significantly. It replaces the generic &#x27;prompt_optimizer&#x27; library with specific LangChain and Anthropic SDK code, adds a &#x27;Structured Outputs&#x27; capability section (Pydantic/JSON mode) that the others lack, and provides different key patterns (e.g., Pydantic schema enforcement, SemanticSimilarityExampleSelector). Because the third copy contains material steps and constraints (specific library usage, structured output patterns) that the others do not, and the others contain a different &#x27;Quick Start&#x27; implementation, crowning one would hide a real alternative implementation approach.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/prompt-engineering-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/prompt-engineering-patterns/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/prompt-engineering-patterns/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/prompt-engineering-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/prompt-engineering-patterns/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/prompt-engineering-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/prompt-engineering-patterns/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/prompt-engineering-patterns/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: prompt-engineering-patterns
+description: Master advanced prompt engineering techniques to maximize LLM performance, reliability, and controllability in production.
+---
+
+# Prompt Engineering Patterns
+
+Master advanced prompt engineering techniques to maximize LLM performance, reliability, and controllability.
+
+## When to Use This Skill
+
+- Designing complex prompts for production LLM applications
+- Optimizing prompt performance and consistency
+- Implementing structured reasoning patterns (chain-of-thought, tree-of-thought)
+- Building few-shot learning systems with dynamic example selection
+- Creating reusable prompt templates with variable interpolation
+- Debugging and refining prompts that produce inconsistent outputs
+- Implementing system prompts for specialized AI assistants
+- Using structured outputs (JSON mode) for reliable parsing
+
+## Core Capabilities
+
+### 1. Few-Shot Learning
+- Example selection strategies (semantic similarity, diversity sampling)
+- Balancing example count with context window constraints
+- Constructing effective demonstrations with input-output pairs
+- Dynamic example retrieval from knowledge bases
+- Handling edge cases through strategic example selection
+
+### 2. Chain-of-Thought Prompting
+- Step-by-step reasoning elicitation
+- Zero-shot CoT with &quot;Let&#x27;s think step by step&quot;
+- Few-shot CoT with reasoning traces
+- Self-consistency techniques (sampling multiple reasoning paths)
+- Verification and validation steps
+
+### 3. Structured Outputs
+- JSON mode for reliable parsing
+- Pydantic schema enforcement
+- Type-safe response handling
+- Error handling for malformed outputs
+
+### 4. Prompt Optimization
+- Iterative refinement workflows
+- A/B testing prompt variations
+- Measuring prompt performance metrics (accuracy, consistency, latency)
+- Reducing token usage while maintaining quality
+- Handling edge cases and failure modes
+
+### 5. Template Systems
+- Variable interpolation and formatting
+- Conditional prompt sections
+- Multi-turn conversation templates
+- Role-based prompt composition
+- Modular prompt components
+
+### 6. System Prompt Design
+- Setting model behavior and constraints
+- Defining output formats and structure
+- Establishing role and expertise
+- Safety guidelines and content policies
+- Context setting and background information
+
+## Quick Start
+
+### Option A: Generic Template Approach
+```python
+from prompt_optimizer import PromptTemplate, FewShotSelector
+
+template = PromptTemplate(
+    system=&quot;You are an expert SQL developer.&quot;,
+    instruction=&quot;Convert the following natural language query to SQL:\n{query}&quot;,
+    few_shot_examples=True,
+    output_format=&quot;SQL code block&quot;
+)
+
+selector = FewShotSelector(
+    examples_db=&quot;sql_examples.jsonl&quot;,
+    selection_strategy=&quot;semantic_similarity&quot;,
+    max_examples=3
+)
+
+prompt = template.render(
+    query=&quot;Find all users who registered in the last 30 days&quot;,
+    examples=selector.select(query=&quot;user registration date filter&quot;)
+)
+```
+
+### Option B: LangChain &amp; Structured Outputs
+```python
+from langchain_anthropic import ChatAnthropic
+from langchain_core.prompts import ChatPromptTemplate
+from pydantic import BaseModel, Field
+
+class SQLQuery(BaseModel):
+    query: str = Field(description=&quot;The SQL query&quot;)
+    explanation: str = Field(description=&quot;Brief explanation&quot;)
+
+llm = ChatAnthropic(model=&quot;claude-sonnet-4-6&quot;)
+structured_llm = llm.with_structured_output(SQLQuery)
+
+prompt = ChatPromptTemplate.from_messages([
+    (&quot;system&quot;, &quot;You are an expert SQL developer.&quot;),
+    (&quot;user&quot;, &quot;Convert this to SQL: {query}&quot;)
+])
+
+chain = prompt | structured_llm
+result = await chain.ainvoke({&quot;query&quot;: &quot;Find all users who registered in the last 30 days&quot;})
+```
+
+## Key Patterns
+
+### Progressive Disclosure
+1. **Level 1**: Direct instruction
+2. **Level 2**: Add constraints
+3. **Level 3**: Add reasoning
+4. **Level 4**: Add examples
+
+### Instruction Hierarchy
+```
+[System Context] → [Task Instruction] → [Examples] → [Input Data] → [Output Format]
+```
+
+### Error Recovery
+- Include fallback instructions
+- Request confidence scores
+- Ask for alternative interpretations when uncertain
+
+## Best Practices
+
+1. **Be Specific**: Vague prompts produce inconsistent results
+2. **Show, Don&#x27;t Tell**: Examples are more effective than descriptions
+3. **Test Extensively**: Evaluate on diverse, representative inputs
+4. **Iterate Rapidly**: Small changes can have large impacts
+5. **Monitor Performance**: Track metrics in production
+6. **Version Control**: Treat prompts as code
+7. **Document Intent**: Explain why prompts are structured as they are
+
+## Common Pitfalls
+
+- **Over-engineering**: Starting with complex prompts before trying simple ones
+- **Example pollution**: Using examples that don&#x27;t match the target task
+- **Context overflow**: Exceeding token limits with excessive examples
+- **Ambiguous instructions**: Leaving room for multiple interpretations
+- **Ignoring edge cases**: Not testing on unusual or boundary inputs
+
+## Integration Patterns
+
+### With RAG Systems
+Combine retrieved context with prompt engineering, ensuring the model states if context is insufficient.
+
+### With Validation
+Add a self-verification step where the model checks its response against specific criteria (directness, source usage, uncertainty acknowledgment).</pre>
+</body>
+</html>

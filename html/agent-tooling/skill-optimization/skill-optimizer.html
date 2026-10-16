@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>skill-optimizer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">skill-optimization</a> / skill-optimizer</p><h1>skill-optimizer</h1><p class="meta">combined</p><p>The two copies describe different procedures for the same skill name. mcollina/skills defines a forward-looking optimization loop (baseline, failure pattern, salience edits, re-run, ship) and points to rule files. sickn33/agentic-awesome-skills defines a read-only diagnostic workflow that scans session JSONL files, runs 8 analysis dimensions, and outputs a P0/P1/P2 report. They overlap in the goal of improving skill activation and context cost, but each contains material steps the other lacks, and they disagree on whether the skill should modify files or only report.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mcollina/skills">mcollina/skills</a></td><td><code>skills/skill-optimizer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/skill-optimizer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/mcollina/skills">mcollina/skills</a></td><td><code>skills/skill-optimizer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/skill-optimizer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: skill-optimizer
+description: &quot;Optimizes AI skills for activation, clarity, and cross-model reliability. Use when creating or editing skill packs, diagnosing weak skill uptake, reducing regressions, tuning instruction salience, improving examples, shrinking context cost, or setting benchmark/release gates for skills. Trigger terms: skill optimization, activation gap, benchmark skill, with/without skill delta, regression, context budget, prompt salience.&quot;
+metadata:
+  tags: skills, optimization, benchmarking, activation, regressions, prompt-engineering
+---
+
+## When to use
+
+Use this skill when you need to:
+- Improve whether a skill is actually applied by models
+- Diagnose why some criteria fail across all models
+- Prevent a skill from making outputs worse
+- Refactor skill text for stronger retrieval under context pressure
+- Build repeatable benchmark loops and release gates
+- Audit and improve your skill library&#x27;s quality using session data
+
+## Optimization loop (default workflow)
+
+1. **Measure baseline and skill-on behavior** (per model, per scenario, per criterion)
+2. **Find failure pattern**:
+   - universal failure (0% with skill)
+   - model-specific weakness
+   - regression (negative delta)
+3. **Edit for salience**:
+   - add explicit triggers
+   - add concrete integrated examples
+   - tighten checklists and decision rules
+4. **Re-run evals** and compare deltas
+5. **Ship with guardrails** (documented gate + run history + follow-up issues)
+
+## Diagnostic workflow (read-only)
+
+Use this workflow when you need to audit existing skills using session data without modifying files.
+
+### Step 1: Identify Target Skills
+
+Scan skill directories in order: `~/.claude/skills/`, `~/.codex/skills/`, `~/.agents/skills/`. Deduplicate by skill name. For each, read `SKILL.md` and extract:
+- name, description (from YAML frontmatter)
+- trigger keywords (from description field)
+- defined workflow steps
+- word count
+
+### Step 2: Collect Session Data
+
+Use python3 scripts via Bash to scan session JSONL files. Extract:
+
+**Claude Code sessions** (`~/.claude/projects/**/*.jsonl`):
+- `Skill` tool_use calls
+- User messages
+- Assistant messages after skill invocation
+- User messages after skill invocation
+
+**Codex sessions** (`~/.codex/sessions/**/*.jsonl`):
+- `session_meta` events for skill loading evidence
+- `response_item` events for assistant outputs
+- `event_msg` events for tool execution
+- User messages from `turn_context` events
+
+**Note:** Codex injects skills via context rather than explicit `Skill` tool calls. Skill loading does NOT equal active invocation. To detect actual use, search for skill-specific workflow markers in `response_item` content.
+
+### Step 3: Run 8 Analysis Dimensions
+
+**You MUST run ALL 8 dimensions.**
+
+#### 4.1 Trigger Rate
+Count how many times each skill was actually invoked vs how many times its trigger keywords appeared in user messages.
+
+#### 4.2 Post-Invocation User Reaction
+After a skill is invoked, read the user&#x27;s next 3 messages. Classify as Negative, Correction, Positive, or Silent switch. Report per-skill satisfaction rate.
+
+#### 4.3 Workflow Completion Rate
+For each skill invocation, extract the skill&#x27;s defined steps and search assistant messages for step markers.
+
+#### 4.4-4.8
+Run remaining dimensions as defined in the source skill.
+
+### Step 4: Compute Composite Scores
+
+Score each skill on a 5-point composite scale across 8 dimensions.
+
+### Step 5: Output Report
+
+Output a diagnostic report with P0/P1/P2 prioritized fixes.
+
+## Practical heuristics
+
+- Prefer **few high-signal rules** over many soft recommendations
+- Put fragile, high-value behaviors in **top-level checklists**
+- Include at least one **integrated example** per common scenario
+- Add explicit wording for what must **not** be omitted
+- Track gains/losses with **with-skill vs without-skill** comparisons
+- **Read-only**: never modify skill files during diagnostic workflow. Only output report.
+- **Quantify**: use specific numbers rather than vague claims
+- **Suggest, don&#x27;t prescribe**: give specific wording suggestions but frame as suggestions
+- **Show evidence**: quote actual user messages that should have triggered the skill
+- **Evidence-based suggestions**: cite specific research findings that motivate changes
+
+## Conflicts
+
+- mcollina/skills instructs editing skill text for salience and shipping with guardrails, while sickn33/agentic-awesome-skills is read-only and only outputs a report
+- mcollina/skills uses a 5-step optimization loop, while sickn33/agentic-awesome-skills uses an 8-dimension diagnostic report with P0/P1/P2 prioritization
+- sickn33/agentic-awesome-skills requires scanning session JSONL files for evidence, while mcollina/skills does not mention session data collection</pre>
+</body>
+</html>

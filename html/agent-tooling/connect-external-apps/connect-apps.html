@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>connect-apps</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">connect-external-apps</a> / connect-apps</p><h1>connect-apps</h1><p class="meta">combined</p><p>Both copies describe the same goal (connecting Claude to external apps via Composio), but they prescribe different, non-interchangeable procedures. The first copy uses a Claude Code plugin (`/plugin install composio-toolrouter` and `/composio-toolrouter:setup`) and relies on the agent to route natural-language requests. The second copy uses the Composio CLI (`curl` install, `composio login`, `composio link`, `composio execute`) and provides explicit command-line workflows, discovery, dry-runs, and environment variables. Because each copy contains material steps and constraints the other lacks, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>connect-apps/SKILL.md</code></td></tr><tr><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>connect-apps/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>connect-apps/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>connect-apps/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: connect-apps
+description: Connect Claude to external apps like Gmail, Slack, GitHub, Notion, and 1000+ services. Use this skill when the user wants to send emails, create issues, post messages, or take actions in external services.
+---
+
+# Connect Apps
+
+Connect Claude to 1000+ apps. Actually send emails, create issues, post messages - not just generate text about it.
+
+## Quick Start
+
+### Option A: Claude Code Plugin
+
+1. Install the plugin:
+   ```
+   /plugin install composio-toolrouter
+   ```
+2. Run setup:
+   ```
+   /composio-toolrouter:setup
+   ```
+   This asks for a free API key (get one at [platform.composio.dev](https://platform.composio.dev/?utm_source=Github&amp;utm_content=AwesomeSkills)), configures the connection, and takes about 60 seconds.
+3. Restart Claude Code and try a test action, e.g.:
+   ```
+   Send me a test email at YOUR_EMAIL@example.com
+   ```
+
+### Option B: Composio CLI
+
+1. Install the CLI:
+   ```bash
+   curl -fsSL https://composio.dev/install | bash
+   ```
+2. Log in:
+   ```bash
+   composio login
+   composio whoami
+   ```
+   Opens a browser for auth, then prompts you to pick a default org and project. Use `-y` to skip prompts in scripts.
+3. Link the apps you need:
+   ```bash
+   composio link gmail
+   composio link slack
+   composio link github
+   ```
+   Each command walks OAuth once; the connection then persists.
+4. Try it:
+   ```bash
+   composio execute GMAIL_SEND_EMAIL -d &#x27;{
+     &quot;recipient_email&quot;: &quot;YOUR_EMAIL@example.com&quot;,
+     &quot;subject&quot;: &quot;Composio test&quot;,
+     &quot;body&quot;: &quot;Hello from the CLI&quot;
+   }&#x27;
+   ```
+
+## What You Can Do
+
+| Ask Claude to... | What happens |
+|------------------|--------------|
+| &quot;Send email to sarah@acme.com about the launch&quot; | Actually sends the email |
+| &quot;Create GitHub issue: fix login bug&quot; | Creates the issue |
+| &quot;Post to Slack #general: deploy complete&quot; | Posts the message |
+| &quot;Add meeting notes to Notion&quot; | Adds to Notion |
+
+## Core Workflow (CLI)
+
+1. **Know the tool slug?** → `composio execute &lt;SLUG&gt; -d &#x27;{...}&#x27;`
+2. **Don&#x27;t know it?** → `composio search &quot;what you want&quot;`
+3. **Need inputs?** → `composio execute &lt;SLUG&gt; --get-schema` or `--dry-run`
+4. **Not connected?** → `composio link &lt;toolkit&gt;` and retry
+5. **Multi-step?** → `composio run` for JS/TS workflows, `composio proxy` for raw API
+
+## Supported Apps
+
+**Email:** Gmail, Outlook, SendGrid
+**Chat:** Slack, Discord, Teams, Telegram
+**Dev:** GitHub, GitLab, Jira, Linear
+**Docs:** Notion, Google Docs, Confluence
+**Data:** Sheets, Airtable, PostgreSQL
+**And 1000+ more...**
+
+## Handy Commands (CLI)
+
+```bash
+# Discover tools
+composio search &quot;create a github issue&quot;
+composio tools list gmail
+composio tools info GITHUB_CREATE_ISSUE
+
+# Inspect / dry-run before executing
+composio execute GITHUB_CREATE_ISSUE --get-schema
+composio execute GITHUB_CREATE_ISSUE --dry-run -d &#x27;{&quot;owner&quot;:&quot;acme&quot;,&quot;repo&quot;:&quot;app&quot;,&quot;title&quot;:&quot;Bug&quot;}&#x27;
+
+# Execute in parallel
+composio execute --parallel \
+  GMAIL_FETCH_EMAILS -d &#x27;{&quot;max_results&quot;: 2}&#x27; \
+  GITHUB_GET_THE_AUTHENTICATED_USER -d &#x27;{}&#x27;
+
+# Multi-step workflow
+composio run &#x27;
+  const issue = await execute(&quot;GITHUB_CREATE_ISSUE&quot;, {
+    owner: &quot;acme&quot;, repo: &quot;app&quot;, title: &quot;Bug&quot;, body: &quot;...&quot;
+  });
+  console.log(issue);
+&#x27;
+
+# Raw API call when no dedicated tool exists
+composio proxy https://gmail.googleapis.com/gmail/v1/users/me/profile --toolkit gmail
+```
+
+## Configuration (CLI)
+
+**Environment variables:**
+- `COMPOSIO_API_KEY` - auth credential for non-interactive use
+- `COMPOSIO_BASE_URL` - custom API endpoint
+- `COMPOSIO_SESSION_DIR` - override artifact storage
+- `COMPOSIO_DISABLE_TELEMETRY=true` - opt out
+
+**Global flags:** `--log-level &lt;all|trace|debug|info|warning|error|fatal|none&gt;`, `--help`.
+
+## How It Works
+
+1. You ask Claude to do something
+2. Composio Tool Router finds the right tool
+3. First time? You&#x27;ll authorize via OAuth (one-time)
+4. Action executes and returns result
+
+## Troubleshooting
+
+- **&quot;Plugin not found&quot;** → Make sure you ran `/plugin install composio-toolrouter`
+- **&quot;Need to authorize&quot;** → Click the OAuth link Claude provides, then say &quot;done&quot;
+- **`Not logged in`** → run `composio login`
+- **`Connection required for &lt;toolkit&gt;`** → run `composio link &lt;toolkit&gt;`
+- **Unknown slug** → `composio search &quot;&lt;goal&gt;&quot;` or `composio tools list &lt;toolkit&gt;`
+- **Bad inputs** → `composio execute &lt;SLUG&gt; --get-schema` then `--dry-run`
+- **Action failed** → Check you have permissions in the target app
+
+Full reference: [docs.composio.dev/docs/cli](https://docs.composio.dev/docs/cli)
+
+---
+
+&lt;p align=&quot;center&quot;&gt;
+  &lt;b&gt;Join 20,000+ developers building agents that ship&lt;/b&gt;
+&lt;/p&gt;
+
+&lt;p align=&quot;center&quot;&gt;
+  &lt;a href=&quot;https://platform.composio.dev/?utm_source=Github&amp;utm_content=AwesomeSkills&quot;&gt;
+    &lt;img src=&quot;https://img.shields.io/badge/Get_Started_Free-4F46E5?style=for-the-badge&quot; alt=&quot;Get Started&quot;/&gt;
+  &lt;/a&gt;
+&lt;/p&gt;</pre>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gohighlevel</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">gohighlevel-crm-operations</a> / gohighlevel</p><h1>gohighlevel</h1><p class="meta">combined</p><p>The two copies describe different procedures for the same skill name. The first is a thin wrapper that mandates reading a canonical WORKFLOW.md from the NotFair plugin and forbids substituting other skills. The second is a standalone Membrane-based skill that lists a broad set of GoHighLevel entities and requires a Membrane account. Neither copy contains the other&#x27;s core steps, and they disagree on the integration mechanism (NotFair MCP vs Membrane).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/gohighlevel/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/gohighlevel/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/nowork-studio/notfair-plugin">nowork-studio/notfair-plugin</a></td><td><code>skills/gohighlevel/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/gohighlevel/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: gohighlevel
+description: Operate GoHighLevel CRM accounts. Use for contacts, conversations, opportunities, calendars, pipelines, tags, tasks, forms, invoices, products, or approved CRM changes.
+argument-hint: &quot;&lt;location, contact, opportunity, or GHL question&gt;&quot;
+---
+
+# GoHighLevel
+
+GoHighLevel is an all-in-one marketing and sales platform for agencies and small businesses, covering CRM, email, SMS, funnels, and automation.
+
+## Conflicts
+
+- nowork-studio/notfair-plugin: Read `&lt;plugin-root&gt;/gohighlevel/WORKFLOW.md` completely and follow it as the active workflow. Resolve relative references from that file against `&lt;plugin-root&gt;/gohighlevel/`. If the file cannot be read, stop and report the packaging error; never substitute a similarly named skill from another plugin.
+- LeoYeAI/openclaw-master-skills: Requires network access and a valid Membrane account (Free tier supported). Interact with GoHighLevel data through the Membrane integration. Official docs: https://developers.gohighlevel.com/
+
+## Steps
+
+1. Determine which integration is available in the current environment: NotFair MCP or Membrane.
+2. If NotFair MCP is available, follow the nowork-studio/notfair-plugin step: read the canonical WORKFLOW.md and follow it. Do not substitute another skill.
+3. If Membrane is available, follow the LeoYeAI/openclaw-master-skills step: use the Membrane account to manage GoHighLevel entities such as Contact, Location, Opportunity, Pipeline, Campaign, Form, Invoice, Product, Calendar, and Workflow.
+4. If neither integration is available, report that no supported GoHighLevel connector is configured.
+
+## Notes
+
+- Do not mix steps from the two integrations in a single operation.
+- Respect the packaging error rule from the NotFair copy when the canonical file is missing.</pre>
+</body>
+</html>

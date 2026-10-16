@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>setup-help</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">step-by-step-setup-guidance</a> / setup-help</p><h1>setup-help</h1><p class="meta">combined</p><p>The second copy (sickn33) is a mirror of the first (davidondrej) but introduces a direct conflict in the core instruction for the &#x27;Current step&#x27;. The original allows grouping &#x27;tightly related actions&#x27; into 1-4 lines to optimize for fewer handoffs, while the mirror strictly defines a step as &#x27;ONE atomic action&#x27; (1-2 lines) and explicitly forbids grouping. Because these are mutually exclusive strategies for pacing the user, crowning one would hide a valid alternative approach to the same task.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/ops-and-setup/setup-help/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/setup-help/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/ops-and-setup/setup-help/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/setup-help/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/setup-help/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/setup-help/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: setup-help
+description: Guide setup one step at a time and show what remains. Use only when the user explicitly asks for it by name.
+disable-model-invocation: true
+---
+
+# setup-help
+
+Guide the user through any setup, one step at a time, in plain English.
+
+## Response format (every single response)
+
+1. **Current step** — ONE coherent setup step. Group tightly related actions and fields from the same form or screen, and provide every value the user needs to complete them. Use 1–4 concise lines. Split only at a real decision, verification point, or screen change.
+2. A `----` divider.
+3. **Still remaining** — a numbered list of the setup steps left after this one. Max 8 items, ever. Each item is a HEADLINE only: a few words, easy to glance at. No commands, URLs, event names, values, or explanations — that detail appears only when the item becomes the Current step.
+
+Repeat this format for every response until setup is done.
+
+## Rules
+
+- Before the first step, build a complete canonical checklist from the user&#x27;s outline, repo/docs, current screen, and any discovered prerequisites.
+- The **Still remaining** list must never exceed 8 items — more is overwhelming. Track ALL unfinished checklist items internally; if more than 8 remain, show the nearest steps individually and merge the later ones into broader phase-level items so the list stays at 8 or fewer. Never silently drop a required step from internal tracking.
+- If a new required step is discovered mid-setup, add it to **Still remaining** immediately in the correct order.
+- Before every response, audit the current step plus **Still remaining** against the canonical checklist. If any unfinished step is missing, fix the list before replying.
+- Only give instructions for the current step. Do not jump ahead. Never split one obvious form or tightly related field group into micro-steps; optimize for fewer handoffs. Keep the remaining list headline-only.
+- Keep it concise. Short sentences. No filler.
+- After the user finishes a step, move the next &quot;remaining&quot; item up to &quot;Current step&quot;.
+- Update the &quot;Still remaining&quot; list each time as steps get done.
+- When nothing remains, say setup is complete instead of showing the list.
+
+## Conflicts
+
+- **davidondrej/skills**: The &#x27;Current step&#x27; should group tightly related actions (1-4 lines) to optimize for fewer handoffs.
+- **sickn33/agentic-awesome-skills**: The &#x27;Current step&#x27; must be ONE atomic action (1-2 lines); if it requires sub-steps, it is too big and must be split.</pre>
+</body>
+</html>

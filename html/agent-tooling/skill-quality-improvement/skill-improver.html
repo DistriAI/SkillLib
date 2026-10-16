@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>skill-improver</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">skill-quality-improvement</a> / skill-improver</p><h1>skill-improver</h1><p class="meta">combined</p><p>The three copies describe three different procedures for improving a skill. The first (trailofbits) is a wrapper that resolves a path and launches a background workflow (improve.js) with a reviewer agent, ledger, and scope guard. The second (sickn33) is a manual loop where the agent directly calls the skill-reviewer, categorizes issues, fixes them, and uses a specific completion marker. The third (brycewang-stanford) is a plan-executor that reads a pre-generated improvement-plan file, parses it, resolves conflicts, and applies changes with backups. Because they rely on different inputs (workflow vs. direct agent call vs. plan file) and have distinct mechanisms (background loop vs. interactive loop vs. batch execution), crowning one would hide the other valid approaches.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/code-improver/skills/skill-improver/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/skill-improver/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/skill-improver/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/code-improver/skills/skill-improver/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/skill-improver/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/skill-improver/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/skill-improver/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/skill-improver/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Skill Improver
+
+This skill provides three methods for improving a Claude Code skill. Choose the method that matches your available tools and inputs.
+
+## Method 1: Autonomous Workflow Loop (Recommended if available)
+
+Use this method if the `code-improver` plugin and `plugin-dev` plugin are installed.
+
+1. **Resolve Target**: Identify the skill path from arguments or conversation.
+2. **Locate Workflow**: Find `workflows/improve.js` in the plugin root.
+3. **Launch Workflow**: Use the Workflow tool with `scriptPath` and args including `target`, `reviewer` (plugin-dev:skill-reviewer), and `maxRounds`.
+4. **Monitor**: Wait for the workflow to complete. It handles the review-fix loop, ledger, and scope guards automatically.
+5. **Report**: Relay the structured result (converged, capped, or escalated).
+
+## Method 2: Interactive Review-Fix Loop
+
+Use this method if you have access to the `plugin-dev:skill-reviewer` agent but not the workflow tool.
+
+1. **Review**: Call `plugin-dev:skill-reviewer` on the target skill.
+2. **Categorize**: Parse issues into Critical, Major, and Minor.
+3. **Fix**: Address all Critical and Major issues.
+4. **Evaluate Minors**: Assess minor issues for validity; fix only those that provide clear value.
+5. **Verify**: Re-run the reviewer to confirm fixes.
+6. **Complete**: When all Critical/Major issues are resolved and Minors are addressed or dismissed, output the marker: `&lt;skill-improvement-complete&gt;`.
+
+## Method 3: Plan Execution
+
+Use this method if you have a pre-generated `improvement-plan-{name}.md` file.
+
+1. **Load Plan**: Read the improvement plan file.
+2. **Parse**: Extract changes grouped by file and priority (High/Medium/Low).
+3. **Resolve Conflicts**: Apply priority rules to conflicting changes.
+4. **Backup**: Create a backup of the skill directory.
+5. **Execute**: Apply changes in priority order using Edit/Write tools.
+6. **Verify**: Check YAML syntax and file integrity.
+7. **Report**: Generate an update report documenting changes and verification results.
+
+## Common Guidelines
+
+- **Severity Handling**: Always fix Critical and Major issues. Evaluate Minor issues for cost-benefit.
+- **Validation**: Ensure the skill remains valid (YAML syntax, file paths) after changes.
+- **Scope**: Only modify files within the skill&#x27;s directory unless explicitly instructed otherwise.</pre>
+</body>
+</html>

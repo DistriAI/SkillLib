@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>writing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">writing-agent-skills</a> / writing</p><h1>writing</h1><p class="meta">combined</p><p>The copies overlap heavily on the TDD-for-skills procedure, but they disagree on frontmatter fields, directory paths, and deployment checks. obra/superpowers is the most complete TDD procedure, while sickn33/agentic-awesome-skills adds a tiered architecture, CSO, anti-rationalization, and a pre-deploy checklist. LeoYeAI and FreedomIntelligence are near-duplicates of the TDD version with minor path and frontmatter differences. Crowning one would hide the alternative structure and checklist from the other.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/writing-skills/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/writing-skills/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/writing-skills/SKILL.md</code></td></tr><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/writing-skills/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/writing-skills/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/writing-skills/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/writing-skills/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/writing-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/writing-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-skill-author/skills/writing-skills/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/writing-skills/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Writing Skills
+
+## Overview
+
+Writing skills is Test-Driven Development applied to process documentation. You write test cases (pressure scenarios with subagents), watch them fail (baseline behavior), write the skill (documentation), watch tests pass (agents comply), and refactor (close loopholes).
+
+**Core principle:** If you didn&#x27;t watch an agent fail without the skill, you don&#x27;t know if the skill teaches the right thing.
+
+## When to Use
+
+- Creating a new skill from scratch
+- Editing or improving an existing skill
+- Verifying a skill works before deployment
+- Debugging why a skill isn&#x27;t being triggered
+- Standardizing skills across a team
+
+## TDD Mapping for Skills
+
+| TDD Concept | Skill Creation |
+|-------------|----------------|
+| Test case | Pressure scenario with subagent |
+| Production code | Skill document (SKILL.md) |
+| Test fails (RED) | Agent violates rule without skill (baseline) |
+| Test passes (GREEN) | Agent complies with skill present |
+| Refactor | Close loopholes while maintaining compliance |
+| Write test first | Run baseline scenario BEFORE writing skill |
+| Watch it fail | Document exact rationalizations agent uses |
+| Minimal code | Write skill addressing those specific violations |
+| Watch it pass | Verify agent now complies |
+| Refactor cycle | Find new rationalizations → plug → re-verify |
+
+## When to Create a Skill
+
+**Create when:**
+- Technique wasn&#x27;t intuitively obvious to you
+- You&#x27;d reference this again across projects
+- Pattern applies broadly (not project-specific)
+- Others would benefit
+
+**Don&#x27;t create for:**
+- One-off solutions
+- Standard practices well-documented elsewhere
+- Project-specific conventions (put in your instructions file)
+- Mechanical constraints (if it&#x27;s enforceable with regex/validation, automate it—save documentation for judgment calls)
+
+## Skill Types
+
+### Technique
+Concrete method with steps to follow (condition-based-waiting, root-cause-tracing)
+
+### Pattern
+Way of thinking about problems (flatten-with-flags, test-invariants)
+
+### Reference
+API docs, syntax guides, tool documentation (office docs)
+
+### Discipline
+Rules that agents must follow, with anti-rationalization language
+
+## Directory Structure
+
+```
+skills/
+  skill-name/
+    SKILL.md              # Main reference (required)
+    supporting-file.*     # Only if needed
+    references/           # For heavy reference or tiered architecture
+      tier-1-simple/      # Single file, &lt;200 lines
+      tier-2-expanded/    # Multi-concept, 200-1000 lines
+      tier-3-platform/    # 10+ products, AWS, Convex
+```
+
+**Flat namespace** - all skills in one searchable namespace
+
+**Separate files for:**
+1. **Heavy reference** (100+ lines) - API docs, comprehensive syntax
+2. **Reusable tools** - Scripts, utilities, templates
+
+**Keep inline:**
+- Principles and concepts
+- Code patterns (&lt; 50 lines)
+- Everything else
+
+## SKILL.md Structure
+
+**Frontmatter (YAML):**
+- Required fields: `name` and `description`
+- Optional fields: `category`, `risk`, `source`, `date_added`, `metadata.triggers`
+- Max 1024 characters total
+- `name`: Use letters, numbers, and hyphens only (no parentheses, special chars)
+- `description`: Third-person, describes ONLY when to use (NOT what it does)
+  - Start with &quot;Use when...&quot; to focus on triggering conditions
+  - Include specific symptoms, situations, and contexts
+  - **NEVER summarize the skill&#x27;s process or workflow**
+  - Keep under 500 characters if possible
+
+```markdown
+---
+name: Skill-Name-With-Hyphens
+description: Use when [specific triggering conditions and symptoms]
+---
+
+# Skill Name
+
+## Overview
+What is this? Core principle in 1-2 sentences.
+
+## When to Use
+[Small inline flowchart IF decision non-obvious]
+
+Bullet list with SYMPTOMS and use cases
+When NOT to use
+
+## Core Pattern (for techniques/patterns)
+Before/after code comparison
+
+## Quick Reference
+Table or bullets for scanning common operations
+
+## Implementation
+Inline code for simple patterns
+Link to file for heavy reference or reusable tools
+
+## Common Mistakes
+What goes wrong + fixes
+
+## Real-World Impact (optional)
+Concrete results
+```
+
+## Skill Discovery Optimization (SDO/CSO)
+
+**Critical for discovery:** Future agents need to FIND your skill
+
+### 1. Rich Description Field
+
+**Purpose:** Your agent reads the description to decide which skills to load for a given task. Make it answer: &quot;Should I read this skill right now?&quot;
+
+**Format:** Start with &quot;Use when...&quot; to focus on triggering conditions
+
+**CRITICAL: Description = When to Use, NOT What the Skill Does**
+
+The description should ONLY describe triggering conditions. Do NOT summarize the skill&#x27;s process or workflow in the description.
+
+**Why this matters:** Testing revealed that when a description summarizes the skill&#x27;s workflow, an agent may follow the description instead of reading the full skill content. A description saying &quot;code review between tasks&quot; caused an agent to do ONE review, even though the skill&#x27;s flowchart clearly showed TWO reviews (spec compliance then code quality).
+
+When the description was changed to just &quot;Use when executing implementation plans with independent tasks&quot; (no workflow summary), the agent correctly read the flowchart and followed the two-stage review process.
+
+**The trap:** Descriptions that summarize workflow create a shortcut the agent will take. The skill body becomes documentation the agent skips.
+
+### 2. Metadata Triggers
+
+Add 3+ keywords to `metadata.triggers` for better searchability:
+- Error text
+- Symptom
+- Tool name
+
+## Anti-Rationalization
+
+For discipline skills, write rules that agents won&#x27;t ignore:
+- Use explicit, unambiguous language
+- Provide concrete examples of violations
+- Include consequences or corrective actions
+- Avoid vague terms like &quot;should&quot; or &quot;try to&quot;
+
+## Testing
+
+1. **RED:** Run a baseline scenario without the skill. Document the agent&#x27;s rationalizations.
+2. **GREEN:** Write the skill addressing those specific violations. Verify the agent now complies.
+3. **REFACTOR:** Find new rationalizations, plug them, and re-verify.
+
+## Pre-Deploy Checklist
+
+Before deploying any skill:
+
+- [ ] `name` field matches directory name exactly
+- [ ] `SKILL.md` filename is ALL CAPS
+- [ ] Description starts with &quot;Use when...&quot;
+- [ ] `metadata.triggers` has 3+ keywords (if using metadata)
+- [ ] Total lines &lt; 500 (use `references/` for more)
+- [ ] No `@` force-loading in cross-references
+- [ ] Tested with real scenarios
+
+## Common Mistakes
+
+| Mistake | Fix |
+|---------|-----|
+| Description summarizes workflow | Use &quot;Use when...&quot; triggers only |
+| No `metadata.triggers` | Add 3+ keywords |
+| Generic name (&quot;helper&quot;) | Use gerund (`creating-skills`) |
+| Long monolithic SKILL.md | Split into `references/` |
+| Vague rules | Use explicit, unambiguous language with examples |
+
+## Conflicts
+
+- **obra/superpowers** says frontmatter has two required fields (name, description) and references agentskills.io/specification for all supported fields; **LeoYeAI/openclaw-master-skills** and **FreedomIntelligence/OpenClaw-Medical-Skills** say only two fields are supported; **sickn33/agentic-awesome-skills** requires additional metadata fields (category, risk, source, date_added, triggers).
+- **obra/superpowers** says personal skills live in `~/.claude/skills/` and mentions `~/.agents/skills/` as a cross-runtime alias; **LeoYeAI/openclaw-master-skills** and **FreedomIntelligence/OpenClaw-Medical-Skills** say `~/.claude/skills` for Claude Code and `~/.agents/skills/` for Codex; **sickn33/agentic-awesome-skills** uses `~/.config/opencode/skills/`.
+- **obra/superpowers** does not include a pre-deploy checklist; **sickn33/agentic-awesome-skills** includes a checklist requiring name to match directory, SKILL.md filename ALL CAPS, metadata.triggers with 3+ keywords, total lines &lt; 500, and no @ force-loading.
+- **obra/superpowers** references anthropic-best-practices.md and superpowers:test-driven-development as required background; **sickn33/agentic-awesome-skills** references tiered architecture templates, CSO, anti-rationalization, and testing guides instead.</pre>
+</body>
+</html>

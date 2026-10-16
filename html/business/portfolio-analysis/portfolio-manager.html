@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>portfolio-manager</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">portfolio-analysis</a> / portfolio-manager</p><h1>portfolio-manager</h1><p class="meta">combined</p><p>The LeoYeAI copy is a bulk mirror of the tradermonty skill, but the tradermonty copy contains material operational steps the mirror lacks: a REST fallback connection check, explicit REST endpoint fallbacks for scheduled jobs, margin/leverage exposure calculations, and a position-reconciliation gate before weekly allocation review. The mirror copy, in turn, contains a detailed Step 2 (enriching positions with market, fundamental, and technical data) and a more complete Step 3 (asset allocation, diversification, and risk analysis) that the tradermonty excerpt truncates before showing. Crowning one copy would hide either the operational fallback discipline or the analytical enrichment steps, so the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/tradermonty/claude-trading-skills">tradermonty/claude-trading-skills</a></td><td><code>skills/portfolio-manager/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/portfolio-manager/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/tradermonty/claude-trading-skills">tradermonty/claude-trading-skills</a></td><td><code>skills/portfolio-manager/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/portfolio-manager/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: portfolio-manager
+description: Comprehensive portfolio analysis using Alpaca MCP Server integration to fetch holdings and positions, then analyze asset allocation, risk metrics, individual stock positions, diversification, and generate rebalancing recommendations. Use when user requests portfolio review, position analysis, risk assessment, performance evaluation, or rebalancing suggestions for their brokerage account.
+---
+
+# Portfolio Manager
+
+## Overview
+
+Analyze and manage investment portfolios by integrating with Alpaca MCP Server to fetch real-time holdings data, then performing comprehensive analysis covering asset allocation, diversification, risk metrics, individual position evaluation, and rebalancing recommendations. Generate detailed portfolio reports with actionable insights.
+
+This skill leverages Alpaca&#x27;s brokerage API through MCP (Model Context Protocol) to access live portfolio data, ensuring analysis is based on actual current positions rather than manually entered data.
+
+## When to Use
+
+Invoke this skill when the user requests:
+- &quot;Analyze my portfolio&quot;
+- &quot;Review my current positions&quot;
+- &quot;What&#x27;s my asset allocation?&quot;
+- &quot;Check my portfolio risk&quot;
+- &quot;Should I rebalance my portfolio?&quot;
+- &quot;Evaluate my holdings&quot;
+- &quot;Portfolio performance review&quot;
+- &quot;What stocks should I buy or sell?&quot;
+- Any request involving portfolio-level analysis or management
+
+## Prerequisites
+
+### Alpaca MCP Server Setup
+
+This skill requires Alpaca MCP Server to be configured and connected. The MCP server provides access to:
+- Current portfolio positions
+- Account equity and buying power
+- Historical positions and transactions
+- Market data for held securities
+
+**MCP Server Tools Used:**
+- `get_account_info` - Fetch account equity, buying power, cash balance
+- `get_positions` - Retrieve all current positions with quantities, cost basis, market value
+- `get_portfolio_history` - Historical portfolio performance data
+- Market data tools for price quotes and fundamentals
+
+If Alpaca MCP Server is not connected, inform the user and provide setup instructions from `references/alpaca-mcp-setup.md`.
+
+### REST Fallback Connection Check
+
+Run the connection check from the repository root. Use paper credentials first; never paste credentials into a report or commit them to the repository.
+
+```bash
+export ALPACA_API_KEY=&quot;&lt;alpaca-key-id&gt;&quot;
+export ALPACA_SECRET_KEY=&quot;&lt;alpaca-secret-key&gt;&quot;
+export ALPACA_PAPER=&quot;true&quot;
+uv run python skills/portfolio-manager/scripts/check_alpaca_connection.py
+```
+
+The command writes a redacted diagnostic summary to stdout and returns zero only when the account and positions endpoints succeed. It does not create a report file or place orders.
+
+## Workflow
+
+### Step 1: Fetch Portfolio Data via Alpaca MCP or REST Fallback
+
+Use Alpaca MCP Server tools to gather current portfolio information when available. In scheduled Hermes jobs, MCP tools may not be exposed even when Alpaca credentials are present; in that case, use the Alpaca REST API directly with `ALPACA_API_KEY`, `ALPACA_SECRET_KEY`, and `ALPACA_PAPER`.
+
+**1.1 Get Account Information:**
+```
+Preferred: use mcp__alpaca__get_account_info to fetch:
+- Account equity (total portfolio value)
+- Cash balance
+- Buying power
+- Account status
+
+Fallback REST endpoints:
+- paper: https://paper-api.alpaca.markets/v2/account
+- live:  https://api.alpaca.markets/v2/account
+Headers:
+- APCA-API-KEY-ID=$ALPACA_API_KEY
+- APCA-API-SECRET-KEY=$ALPACA_SECRET_KEY
+```
+
+**1.2 Get Current Positions:**
+```
+Preferred: use mcp__alpaca__get_positions to fetch all holdings:
+- Symbol ticker
+- Quantity held
+- Average entry price (cost basis)
+- Current market price
+- Current market value
+- Unrealized P&amp;L ($ and %)
+- Position size as % of portfolio
+
+Fallback REST endpoints:
+- paper: https://paper-api.alpaca.markets/v2/positions
+- live:  https://api.alpaca.markets/v2/positions
+```
+
+**1.3 Get Portfolio History (Optional):**
+```
+Preferred: use mcp__alpaca__get_portfolio_history for performance analysis:
+- Historical equity values
+- Time-weighted return calculation
+- Drawdown analysis
+
+Fallback REST endpoint:
+- /v2/account/portfolio/history
+```
+
+**Scheduled-job fallback discipline:**
+- Clearly label the source as `Alpaca REST fallback` rather than MCP.
+- Use `ALPACA_PAPER=true` to choose paper endpoint; otherwise use live endpoint.
+- Still validate that long market value plus cash approximately reconciles to equity, and highlight margin/leverage if `long_market_value &gt; equity`.
+- For weekly core portfolio cron jobs, compute exposure using equity as the denominator as well as gross market value: `gross_long_exposure = long_market_value / equity`, `cash_pct = cash / equity`, and explicitly flag margin-funded portfolios when gross exposure is materially above 100% or cash is negative. Do not let sector weights look benign by using only gross-long denominator when the account is levered.
+- When the request emphasizes dividend holdings or forced-review triggers, build normalized monitor input from the live holdings and hand it to `kanchi-dividend-review-monitor` rather than treating dividend review as a narrative-only section. Also build tax-planning input for `kanchi-dividend-us-tax-accounting` when account-location notes are requested; label it degraded if account type or holding-period windows are unavailable.
+
+**Data Validation:**
+- Verify all positions have valid ticker symbols
+- Confirm market values sum to approximate account equity
+- Check for any stale or inactive positions
+- Handle edge cases (fractional shares, options, crypto if supported)
+
+### Reconcile Holdings Before Weekly Allocation Review
+
+For `core-portfolio-weekly`, follow `references/position-reconciliation.md` to compare complete broker and ACTIVE / PARTIALLY_CLOSED memory snapshots using `scripts/reconcile_positions.py`. Generate the JSON and Markdown reconciliation reports. Stop allocation and rebalance review if `can_continue` is false or if snapshot completeness, account status, or position mismatches indicate unresolved discrepancies.
+
+### Step 2: Enrich Position Data
+
+For each position in the portfolio, gather additional market data and fundamentals:
+
+**2.1 Current Market Data:**
+- Real-time or delayed price quotes
+- Daily volume and liquidity metrics
+- 52-week range
+- Market capitalization
+
+**2.2 Fundamental Data:**
+Use WebSearch or available market data APIs to fetch:
+- Sector and industry classification
+- Key valuation metrics (P/E, P/B, dividend yield)
+- Recent earnings and financial health indicators
+- Analyst ratings and price targets
+- Recent news and material developments
+
+**2.3 Technical Analysis:**
+- Price trend (20-day, 50-day, 200-day moving averages)
+- Relative strength
+- Support and resistance levels
+- Momentum indicators (RSI, MACD if available)
+
+### Step 3: Portfolio-Level Analysis
+
+Perform comprehensive portfolio analysis using frameworks from reference files:
+
+#### 3.1 Asset Allocation Analysis
+
+**Read references/asset-allocation.md** for allocation frameworks
+
+Analyze current allocation across multiple dimensions:
+
+**By Asset Class:**
+- Equities vs Fixed Income vs Cash vs Alternatives
+- Compare to target allocation for user&#x27;s risk profile
+- Assess if allocation matches investment goals
+
+**By Sector:**
+- Technology, Healthcare, Financials, Consumer, etc.
+- Identify sector concentration risks
+- Compare to benchmark sector weights (e.g., S&amp;P 500)
+
+**By Market Cap:**
+- Large-cap vs Mid-cap vs Small-cap distribution
+- Concentration in mega-caps
+- Market cap diversification score
+
+**By Geography:**
+- US vs International vs Emerging Markets
+- Domestic concentration risk assessment
+
+**Output Format:**
+```markdown
+## Asset Allocation
+
+### Current Allocation vs Target
+| Asset Class | Current | Target | Variance |
+|-------------|---------|--------|----------|
+| US Equities | XX.X% | YY.Y% | +/- Z.Z% |
+| ... |
+
+### Sector Breakdown
+[Pie chart description or table with sector percentages]
+
+### Top 10 Holdings
+| Rank | Symbol | % of Portfolio | Sector |
+|------|--------|----------------|--------|
+| 1 | AAPL | X.X% | Technology |
+| ... |
+```
+
+#### 3.2 Diversification Analysis
+
+**Read references/diversification-principles.md** for diversification theory
+
+Evaluate portfolio diversification quality:
+
+**Position Concentration:**
+- Identify top holdings and their aggregate weight
+- Flag if any single position exceeds 10-15% of portfolio
+- Calculate Herfindahl-Hirschman Index (HHI) for concentration measurement
+
+**Sector Concentration:**
+- Identify dominant sectors
+- Flag if any sector exceeds 30-40% of portfolio
+- Compare to benchmark sector diversity
+
+**Correlation Analysis:**
+- Estimate correlation between major positions
+- Identify highly correlated holdings (potential redundancy)
+- Assess true diversification benefit
+
+**Number of Positions:**
+- Optimal range: 15-30 stocks for individual portfolios
+- Flag if under-diversified (&lt;10 stocks) or over-diversified (&gt;50 stocks)
+
+#### 3.3 Risk Metrics
+
+Calculate and report:
+- Portfolio beta relative to benchmark
+- Maximum drawdown
+- Volatility (annualized standard deviation of returns)
+- Sharpe ratio
+- Value at Risk (VaR) at 95% and 99% confidence
+- Downside deviation and Sortino ratio
+
+#### 3.4 Individual Position Evaluation
+
+For each position, assess:
+- Contribution to portfolio return and risk
+- Valuation relative to sector peers
+- Fundamentals trend (revenue growth, margin expansion/contraction)
+- Catalysts and risks specific to the holding
+- Recommendation: Hold, Add, Reduce, or Sell with rationale
+
+### Step 4: Rebalancing Recommendations
+
+Based on the analysis, generate specific rebalancing recommendations:
+- Identify positions that have drifted beyond target allocation bands
+- Suggest specific trades (buy/sell quantities) to restore target allocation
+- Consider tax implications of selling positions with unrealized gains
+- Prioritize recommendations by impact on portfolio risk and return
+- Present recommendations in a clear, actionable format
+
+### Step 5: Generate Portfolio Report
+
+Compile all analysis into a comprehensive report:
+- Executive summary with key findings and top recommendations
+- Asset allocation analysis with visualizations
+- Diversification and concentration assessment
+- Risk metrics summary
+- Individual position evaluations
+- Rebalancing recommendations with specific trade suggestions
+- Appendix with detailed data tables
+
+## Conflicts
+
+- **tradermonty/claude-trading-skills** includes a REST fallback connection check, explicit REST endpoint fallbacks for scheduled jobs, margin/leverage exposure calculations, and a position-reconciliation gate before weekly allocation review. **LeoYeAI/openclaw-master-skills** does not include these operational steps.
+- **LeoYeAI/openclaw-master-skills** includes detailed Step 2 (enriching positions with market, fundamental, and technical data) and a more complete Step 3 (asset allocation, diversification, and risk analysis) that the tradermonty excerpt truncates before showing. **tradermonty/claude-trading-skills** does not show these analytical steps in the provided excerpt.</pre>
+</body>
+</html>

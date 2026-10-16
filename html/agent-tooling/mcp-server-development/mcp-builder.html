@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>mcp-builder</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">mcp-server-development</a> / mcp-builder</p><h1>mcp-builder</h1><p class="meta">combined</p><p>The four copies overlap on the goal of building MCP servers but diverge on the recommended stack, workflow, and deployment targets. The anthropics and davepoon copies are near-duplicates of a high-level, language-agnostic guide that emphasizes research, planning, and evaluation. The jezweb copy is a Python/FastMCP-specific guide with a concrete deployment checklist for FastMCP Cloud and Docker. The Leanmcp copy is a TypeScript-specific guide using the official SDK with Streamable HTTP and Express. Because each copy contains material steps or constraints the others lack (e.g., FastMCP Cloud deployment vs. official SDK session management vs. evaluation-driven design), crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/mcp-builder/SKILL.md</code></td></tr><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/integrations/skills/mcp-builder/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Leanmcp/gateway-skills">Leanmcp/gateway-skills</a></td><td><code>skills/mcp-builder/SKILL.md</code></td></tr><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/mcp-builder/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/anthropics/skills">anthropics/skills</a></td><td><code>skills/mcp-builder/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/integrations/skills/mcp-builder/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Leanmcp/gateway-skills">Leanmcp/gateway-skills</a></td><td><code>skills/mcp-builder/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/mcp-builder/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>mcp-builder/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/mcp-builder/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/mcp-builder/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>mcp-builder/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>mcp-builder/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/mcp-builder/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-agent-mcp-builder/skills/mcp-builder/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-bundle-aas-automation-builder/skills/mcp-builder/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/mcp-builder/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># MCP Server Development Guide
+
+## Overview
+Create MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. The quality of an MCP server is measured by how well it enables LLMs to accomplish real-world tasks.
+
+## Phase 1: Research and Planning
+
+### 1.1 Understand Design Principles
+- **API Coverage vs. Workflow Tools:** Balance comprehensive API endpoint coverage with specialized workflow tools. When uncertain, prioritize comprehensive API coverage.
+- **Tool Naming:** Use consistent prefixes and action-oriented naming for discoverability.
+- **Context Management:** Design tools that return focused, relevant data. Consider concise vs. detailed response formats.
+- **Actionable Error Messages:** Guide agents toward solutions with specific suggestions and next steps.
+
+### 1.2 Study Documentation
+- **MCP Specification:** Fetch `https://modelcontextprotocol.io/llms-full.txt` or navigate the sitemap.
+- **Framework Documentation:**
+  - **TypeScript (Recommended):** Load the TypeScript SDK README and the TypeScript Guide.
+  - **Python:** Load the Python SDK README and the Python Guide.
+- **API Documentation:** Review the service&#x27;s API documentation for endpoints, authentication, and data models.
+
+### 1.3 Plan Implementation
+- **Tool Selection:** Prioritize comprehensive API coverage. List endpoints to implement.
+- **Shared Utilities:** Plan for API clients, error handling, pagination, and response formatting.
+- **Input/Output Design:** Define input validation models (Zod/Pydantic) and consistent response formats.
+
+## Phase 2: Implementation
+
+### 2.1 Set Up Project Structure
+- **TypeScript:** Use the official `@modelcontextprotocol/sdk` with Express for Streamable HTTP transport, or use a framework like FastMCP if preferred.
+- **Python:** Use FastMCP. Ensure the server instance is at module level for cloud deployment.
+
+### 2.2 Implement Core Infrastructure
+- Create shared utilities for API clients, error handling, and pagination.
+
+### 2.3 Implement Tools
+- **Input Schema:** Use Zod (TypeScript) or Pydantic (Python) with clear descriptions.
+- **Output Schema:** Define `outputSchema` where possible for structured data.
+- **Tool Description:** Concise summary, parameter descriptions, and return type schema.
+- **Implementation:** Async/await for I/O, proper error handling, and pagination support.
+- **Annotations:** Use `readOnlyHint`, `destructiveHint`, `idempotentHint`, and `openWorldHint`.
+
+## Phase 3: Review and Test
+
+### 3.1 Code Quality
+- Review for DRY principle, consistent error handling, and full type coverage.
+
+### 3.2 Build and Test
+- **TypeScript:** Run `npm run build` and test with MCP Inspector.
+- **Python:** Verify syntax with `python -m py_compile` and test with `fastmcp dev` or MCP Inspector.
+
+## Phase 4: Deployment
+
+### 4.1 Pre-Deploy Checklist
+- Server file exists and syntax is valid.
+- Module-level server object (for FastMCP Cloud).
+- `requirements.txt` or `package.json` contains only valid dependencies.
+- No hardcoded secrets.
+
+### 4.2 Deploy
+- **FastMCP Cloud:** Push to a public GitHub repository and connect to FastMCP Cloud.
+- **Docker:** Use a Dockerfile with Python 3.12-slim and expose the HTTP port.
+- **Cloudflare Workers:** Use the Cloudflare `agents` SDK for edge deployment.
+
+## Phase 5: Evaluations
+- Create comprehensive evaluations to test whether LLMs can effectively use the MCP server to answer realistic questions.
+- Use agent feedback to drive tool improvements.</pre>
+</body>
+</html>

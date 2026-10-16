@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gmail-automation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">gmail-automation</a> / gmail-automation</p><h1>gmail-automation</h1><p class="meta">combined</p><p>The two copies implement the same high-level Gmail automation task through fundamentally different mechanisms. The davepoon copy is a procedure for using the Rube MCP (Composio) toolkit, requiring an MCP server connection and using specific RUBE_* and GMAIL_* tool calls. The sickn33 copy is a standalone CLI-based skill that uses local Python scripts (auth.py, gmail.py) and standalone OAuth, explicitly stating &#x27;No MCP server required.&#x27; Because they rely on different infrastructure, authentication flows, and command structures, crowning one as the authentic procedure would hide a valid, alternative implementation. The sickn33 copy also has a specific constraint (Google Workspace only) and missing supporting files that the davepoon copy does not share.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/gmail-automation/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/gmail-automation/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/gmail-automation/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/gmail-automation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/gmail-automation/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/gmail-automation/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Gmail Automation
+
+This skill supports two distinct implementations for automating Gmail. Choose the appropriate path based on your environment.
+
+## Path A: Rube MCP (Composio)
+Use this path if you have access to the Rube MCP server.
+
+1. **Prerequisites**: Ensure Rube MCP is connected and `RUBE_SEARCH_TOOLS` is available.
+2. **Authentication**: Call `RUBE_MANAGE_CONNECTIONS` with toolkit `gmail`. If not ACTIVE, follow the OAuth link.
+3. **Search**: Use `GMAIL_FETCH_EMAILS` with Gmail query syntax (e.g., `from:user is:unread`).
+4. **Send**: Use `GMAIL_SEND_EMAIL` with `recipient_email`, `subject`, and `body`.
+5. **Labels**: Use `GMAIL_BATCH_MODIFY_MESSAGES` to add/remove labels (e.g., remove `UNREAD` to mark as read).
+
+## Path B: Standalone CLI (OAuth)
+Use this path if you prefer local scripts and do not have an MCP server. **Note: Requires Google Workspace account.**
+
+1. **Prerequisites**: Ensure `scripts/auth.py` and `scripts/gmail.py` are available locally.
+2. **Authentication**: Run `python scripts/auth.py login` to authenticate via browser.
+3. **Search**: Run `python scripts/gmail.py search &quot;query&quot;` (e.g., `&quot;from:user is:unread&quot;`).
+4. **Send**: Run `python scripts/gmail.py send --to &quot;user&quot; --subject &quot;Subj&quot; --body &quot;Body&quot;`.
+5. **Labels**: Run `python scripts/gmail.py modify MESSAGE_ID --remove-label UNREAD` to mark as read.
+
+## Common Gmail Query Syntax
+- `from:user@example.com`: Emails from a sender.
+- `is:unread`: Unread emails.
+- `subject:keyword`: Emails with keyword in subject.
+- `after:YYYY/MM/DD`: Emails after a date.
+- `label:name`: Emails with a specific label.
+
+## Conflicts
+- **Repository**: sickn33/agentic-awesome-skills
+  - **Conflicting Step**: Requires Google Workspace account; personal Gmail is not supported. The davepoon/buildwithclaude copy does not impose this restriction.
+- **Repository**: sickn33/agentic-awesome-skills
+  - **Conflicting Step**: Relies on local Python scripts (`scripts/auth.py`, `scripts/gmail.py`) which are not bundled in the catalog copy. The davepoon/buildwithclaude copy relies on remote MCP tools.</pre>
+</body>
+</html>

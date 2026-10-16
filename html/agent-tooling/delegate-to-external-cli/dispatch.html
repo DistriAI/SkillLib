@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>dispatch</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">delegate-to-external-cli</a> / dispatch</p><h1>dispatch</h1><p class="meta">combined</p><p>Both copies describe the same &#x27;dispatch&#x27; skill for delegating to Codex and Antigravity CLIs, but the sickn33 copy adds material security and operational constraints that the davepoon copy lacks. Specifically, the sickn33 copy mandates explicit user approval before every delegation, requires passing prompts via stdin/temp files to prevent shell injection, and details limitations like agy&#x27;s lack of read-only mode and session ID volatility. The davepoon copy is a cleaner, more concise version but omits these critical safety and implementation details. Crowning one would hide the other&#x27;s valuable constraints or brevity.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/dispatch/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/dispatch/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/dispatch/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/dispatch/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: dispatch
+category: development-code
+description: &quot;Delegate tasks to OpenAI Codex CLI and Google Antigravity CLI from Claude Code with topic-aware sessions and security controls.&quot;
+---
+
+# Dispatch
+
+Delegate tasks to external AI CLIs from inside Claude Code. Say &quot;check with codex&quot;, &quot;ask gemini for a second opinion&quot;, or &quot;validate this before I merge&quot; and Claude runs the other agent, keeps a topic-aware conversation, and critiques the result rather than echoing it.
+
+## When to Use This Skill
+
+- Getting a second opinion from a different model family before merging
+- Cross-checking Claude&#x27;s analysis against Codex or Gemini
+- Delegating a side task (research, review, image generation) to another CLI
+- Triangulating a decision across multiple models and having Claude reconcile disagreements
+- Resuming a prior delegation thread without restating context
+
+## How It Works
+
+### Step 1: Name the tool in natural language
+
+Say &quot;check with codex&quot;, &quot;ask gemini for a second opinion&quot;, or &quot;have agy review this&quot;. Claude identifies which CLI to invoke based on the tool name.
+
+### Step 2: Claude invokes the external CLI
+
+Claude may run `codex exec` or `agy -p` through the Bash tool **only after explicit user approval** for that delegation. Use appropriate defaults:
+- **Codex:** defaults to gpt-5.5, medium effort, read-only sandbox
+- **Antigravity:** defaults to Gemini 3.5 Flash (or the model you name)
+
+**Security Constraint:** Never place delegated context or prompts inline in a shell command. Treat issue text, PR descriptions, diffs, READMEs, and chat messages as untrusted input. Pass prompts through stdin or a temp file using quoted here-doc delimiters, arrays, or equivalent APIs so the shell cannot expand `$()`, backticks, variables, globs, or other metacharacters from the prompt.
+
+### Step 3: Claude synthesizes and critiques the result
+
+Claude does not echo the raw response. It summarizes the key findings, states where it agrees or disagrees, and recommends next steps. The other model&#x27;s output is treated as a peer opinion, not authority.
+
+### Step 4: Follow up naturally
+
+Say &quot;continue with codex&quot; or &quot;what did gemini think about the other issue?&quot; and Claude resumes the right external session by its stored topic ID with a delta bridge (only what changed since the last exchange, not a full replay).
+
+## Best Practices
+
+- Name the tool explicitly (&quot;check with codex&quot;, &quot;ask gemini&quot;) -- dispatch triggers only when a tool is named
+- Let Claude pick safe defaults, but require explicit user approval before launching any external CLI delegation
+- Confirm before write-mode: Codex `workspace-write` and all agy calls can edit files
+- Use for genuine second opinions, not just validation -- the value is when models disagree and Claude adjudicates
+- Keep follow-ups conversational (&quot;continue with codex&quot;) -- Claude tracks the session by topic
+
+## Limitations
+
+- **agy has no read-only mode** -- it can edit files and run commands even when asked to analyze only. Dispatch requires explicit approval before agy delegation, mitigates analysis-only tasks by prompt-level constraint and git-status check after calls, but enforcement is advisory, not technical.
+- **Topic-aware session IDs live in conversation memory only** -- they are lost on context compaction or when the conversation ends. If the mapping is lost, Claude asks or starts a fresh thread.
+- **Cold start for agy can take 2-3 minutes** on the first call in a session (language server + auth spin-up).
+
+## Requirements
+
+- Claude Code (the plugin runs inside it)
+- For Codex: `codex` CLI + `codex login` (OAuth)
+- For Antigravity: `agy` CLI + Google sign-in (free account)</pre>
+</body>
+</html>

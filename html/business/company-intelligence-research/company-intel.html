@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>company-intel</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">company-intelligence-research</a> / company-intel</p><h1>company-intel</h1><p class="meta">combined</p><p>The two copies implement the same named skill but with fundamentally different procedures. The gooseworks copy is a tooling wrapper that calls a specific external API (Gooseworks/Orthogonal) via curl to retrieve brand, people, and scrape data. The deanpeters copy is a pure reasoning workflow that uses web search and seven analytical lenses to produce a structured 11-section report without any specific API dependency. They overlap in intent (company intel) but disagree on the mechanism (API calls vs. analytical reasoning) and output structure (raw data vs. structured lenses).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/lead-generation/capabilities/company-intel/SKILL.md</code></td></tr><tr><td><a href="https://github.com/deanpeters/Product-Manager-Skills">deanpeters/Product-Manager-Skills</a></td><td><code>skills/company-intel/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/lead-generation/capabilities/company-intel/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/deanpeters/Product-Manager-Skills">deanpeters/Product-Manager-Skills</a></td><td><code>skills/company-intel/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: company-intel
+description: Generate company intelligence using either API-based data retrieval or analytical web research.
+---
+
+# Company Intelligence
+
+## Method Selection
+Determine if the user has access to the Gooseworks API or if a pure research approach is preferred.
+
+### Method A: API-Based Retrieval (Gooseworks)
+1. **Setup**: Read credentials from `~/.gooseworks/credentials.json`. If missing, instruct user to run `npx gooseworks login`.
+2. **Overview**: Call `brand-dev` API via `POST /v1/proxy/orthogonal/run` with the company domain.
+3. **Leadership**: Call `fiber` API (`/v1/people-search`) with company name and job titles.
+4. **Products**: Call `scrapegraph` API (`/v1/smartscraper`) on the company&#x27;s pricing/product pages.
+5. **Growth**: Call `fiber` API (`/v1/company-search`) for employee count and growth data.
+
+### Method B: Analytical Research (Web Search)
+1. **Entry Point**: Identify if the target is a single company, industry, or competitor set.
+2. **Lenses**: Apply seven analytical lenses:
+   - Financial Landscape
+   - Market Offer &amp; Business Model
+   - Product Portfolio
+   - Competitive Dynamics
+   - Rising Trends
+   - PM Implications
+   - Strategic Signals (patents, hiring, leadership)
+3. **Output**: Structure findings into an 11-section report. If a competitor set is provided, add a Section 12 for cross-company comparison.
+
+## Conflicts
+- **gooseworks-ai/goose-skills** requires a specific API key and uses curl commands to fetch data.
+- **deanpeters/Product-Manager-Skills** relies on general web search and analytical reasoning without specific API dependencies.</pre>
+</body>
+</html>

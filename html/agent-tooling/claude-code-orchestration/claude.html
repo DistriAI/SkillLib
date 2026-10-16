@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>claude</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">claude-code-orchestration</a> / claude</p><h1>claude</h1><p class="meta">combined</p><p>The four copies are not reproductions of a single procedure. dzhng/skills and LeoYeAI/openclaw-master-skills both describe how to invoke and manage the `claude` CLI as a subagent, but they disagree on defaults, safety mechanisms, and operational details. bergside/awesome-design-skills is a design-system authoring skill that merely uses the name &#x27;claude&#x27; for a brand aesthetic, and foryourhealth111-pixel/Vibe-Skills is a meta-skill for creating other skills. Because the copies cover distinct tasks (CLI orchestration vs. design authoring vs. skill creation) and the two CLI-focused copies contain conflicting operational constraints, crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/claude/SKILL.md</code></td></tr><tr><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/claude/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/claude-skills/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/claude-skill/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/dzhng/skills">dzhng/skills</a></td><td><code>skills/engineering/claude/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/bergside/awesome-design-skills">bergside/awesome-design-skills</a></td><td><code>skills/claude/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/claude-skills/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/claude-skill/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Claude Skill (Combined)
+
+This skill covers three distinct capabilities associated with the name &#x27;claude&#x27;:
+
+## 1. Claude Code CLI Orchestration
+Use when delegating tasks to the `claude` CLI.
+
+**Defaults &amp; Invocation:**
+- **dzhng approach:** Use `claude -p --model opus --effort high`. Verify all claims. Use `--max-budget-usd` for exploratory tasks.
+- **LeoYeAI approach:** Use `--dangerously-skip-permissions` in isolated environments. Use `--output-format stream-json` for structured logs. Implement poll-and-extend timeouts instead of hard kills.
+
+**Safety:**
+- **dzhng:** Never grant fewer tools than required by the output contract. Require evidence (file paths, command output) for all claims.
+- **LeoYeAI:** Use worktrees for isolation. Use tmux for mid-task steering.
+
+## 2. Claude Design System (bergside)
+Use when authoring design guidelines for the &#x27;Claude&#x27; brand aesthetic.
+- **Aesthetic:** Research-journal style, warm ivory parchment, near-black slate ink.
+- **Typography:** Anthropic Sans (UI), Anthropic Serif (Display).
+- **Tokens:** primary=#141413, secondary=#FAF9F6.
+- **Workflow:** Restate intent -&gt; Define tokens -&gt; Component rules -&gt; Accessibility -&gt; QA checklist.
+
+## 3. Claude Skills Meta-Skill (Vibe-Skills)
+Use when creating or refactoring other SKILL.md files.
+- **Structure:** `SKILL.md` + `references/` + `scripts/`.
+- **Frontmatter:** `name` must match `^[a-z][a-z0-9-]*$`. `description` must be decidable.
+- **Quality Gate:** Run `validate-skill.sh` before delivery.
+- **Rules:** No bluffing on external facts. Keep Quick Reference &lt;= 20 patterns.</pre>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>help</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">display-help-reference</a> / help</p><h1>help</h1><p class="meta">combined</p><p>The two skills share the same name and high-level intent (display a help/reference guide), but they are not reproductions of one another. The first is a thin wrapper that reads and outputs a GSD command reference from a plugin workflow file, with strict constraints against adding commentary. The second is a self-contained, versioned Diverga help guide that embeds a detailed, formatted reference for 24 research agents across 9 categories, commands, and usage examples. Neither copy contains the other&#x27;s material steps or content, and they disagree on the reference content, versioning, and output format, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/help/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/25-HosungYou-Diverga/skills/help/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/gsd/skills/help/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/25-HosungYou-Diverga/skills/help/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/origin/skills/help/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: help
+description: Display the help reference for the active tool or plugin
+---
+
+&lt;objective&gt;
+Display the complete help reference for the active tool or plugin.
+&lt;/objective&gt;
+
+&lt;process&gt;
+1. Determine which help reference applies to the current context (e.g., GSD command reference or Diverga agent guide).
+2. If the reference is stored in an external file (e.g., @${CLAUDE_PLUGIN_ROOT}/workflows/help.md), read that file and output its content directly.
+3. If the reference is embedded in this skill, output the embedded content directly.
+4. Do not add project-specific analysis, git status, file context, next-step suggestions, or commentary beyond the reference content.
+&lt;/process&gt;
+
+&lt;conflicts&gt;
+- davepoon/buildwithclaude::plugins/gsd/skills/help/SKILL.md: Outputs the GSD command reference from @${CLAUDE_PLUGIN_ROOT}/workflows/help.md and forbids any additions or modifications.
+- brycewang-stanford/Auto-Empirical-Research-Skills::skills/25-HosungYou-Diverga/skills/help/SKILL.md: Outputs a self-contained Diverga v11.0 help guide with 24 agents across 9 categories, commands, and usage examples, and includes version metadata.
+&lt;/conflicts&gt;</pre>
+</body>
+</html>

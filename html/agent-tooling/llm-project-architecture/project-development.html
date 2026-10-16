@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>project-development</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">llm-project-architecture</a> / project-development</p><h1>project-development</h1><p class="meta">combined</p><p>The sickn33 copy is a broader, more operational version of the muratcankoylan copy. While they share the core &#x27;Task-Model Fit&#x27; and &#x27;Pipeline Architecture&#x27; concepts, the sickn33 copy includes specific implementation patterns like &#x27;File System as State Machine&#x27; and &#x27;Structured Output Design&#x27; that are absent from the muratcankoylan copy. Conversely, the muratcankoylan copy provides more granular routing logic for when to activate the skill versus other skills (tool-design, context-optimization). Combining them provides a complete methodology from high-level fit to low-level state management.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/project-development/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/project-development/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering">muratcankoylan/Agent-Skills-for-Context-Engineering</a></td><td><code>skills/project-development/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/project-development/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/project-development/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/project-development/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: project-development
+description: &quot;Methodology for LLM project development: task-model fit, pipeline architecture, state management, and structured output design.&quot;
+---
+
+# Project Development Methodology
+
+This skill covers the principles for identifying tasks suited to LLM processing, designing effective project architectures, and iterating rapidly using agent-assisted development.
+
+## When to Activate
+
+Activate this skill when the unit of work is a whole project or pipeline:
+- Deciding whether an LLM is the right primitive for a task.
+- Shaping a multi-stage batch or agent pipeline.
+- Estimating tokens, dollar cost, and timelines.
+- Choosing between single-agent and multi-agent at the project level.
+- Designing structured output at the pipeline contract level.
+
+Do not activate for:
+- Per-tool design (use `tool-design`).
+- Per-trajectory token-efficiency tactics (use `context-optimization`).
+- Agent topology splitting (use `multi-agent-patterns`).
+
+## Core Concepts
+
+### 1. Task-Model Fit Recognition
+
+Evaluate task-model fit before writing any code.
+
+**Proceed when:**
+- Synthesis across sources
+- Subjective judgment with rubrics
+- Natural language output
+- Error tolerance
+- Batch processing
+- Domain knowledge in training
+
+**Stop when:**
+- Precise computation
+- Real-time requirements
+- Perfect accuracy requirements
+- Proprietary data dependence
+- Sequential dependencies
+- Deterministic output requirements
+
+### 2. The Manual Prototype Step
+
+Always validate task-model fit with a manual test before investing in automation.
+- Copy one representative input into the model interface.
+- Evaluate output quality.
+- Answer: Does the model have the knowledge? Can it produce the format? What is the quality baseline? What are the failure modes?
+
+### 3. Pipeline Architecture
+
+Structure LLM projects as staged pipelines. Each stage must be:
+- **Discrete**: Clear boundaries.
+- **Idempotent**: Re-running produces the same result.
+- **Cacheable**: Intermediate results persist.
+- **Independent**: Each stage can run separately.
+
+**Canonical Structure:**
+```
+acquire -&gt; prepare -&gt; process -&gt; parse -&gt; render
+```
+1. **Acquire**: Fetch raw data.
+2. **Prepare**: Transform data into prompt format.
+3. **Process**: Execute LLM calls (non-deterministic/expensive).
+4. **Parse**: Extract structured data.
+5. **Render**: Generate final outputs.
+
+### 4. File System as State Machine
+
+Use the file system to track pipeline state. Each processing unit gets a directory.
+
+```
+data/{id}/
+├── raw.json         # acquire complete
+├── prompt.md        # prepare complete
+├── response.md      # process complete
+├── parsed.json      # parse complete
+```
+
+- **Idempotency**: File existence gates execution.
+- **Debugging**: Read intermediate files directly.
+- **Re-running**: Delete output file and downstream files.
+
+### 5. Structured Output Design
+
+When LLM outputs must be parsed programmatically:
+1. **Section markers**: Explicit headers/prefixes.
+2. **Format examples**: Show exactly what output should look like.
+3. **Rationale disclosure**: &quot;I will be parsing this programmatically.&quot;
+4. **Constrained values**: Enumerated options, score ranges.
+
+**Example Prompt:**
+```
+Analyze the following and provide your response in exactly this format:
+
+## Summary
+[Your summary here]
+
+## Score
+Rating: [1-10]
+
+Follow this format exactly because I will be parsing it programmatically.
+```
+
+Parsing code must handle variations gracefully.</pre>
+</body>
+</html>

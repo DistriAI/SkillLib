@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>skill-writer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">skill-authoring</a> / skill-writer</p><h1>skill-writer</h1><p class="meta">combined</p><p>Both copies describe the same canonical workflow for creating and improving agent skills, but they disagree on the reference architecture and the required steps. The getsentry copy is a router that defers to many specific reference files (execution-shapes, reference-architecture, source-discovery, source-adaptation, iteration-evidence, output-contracts, skill-evals, structure-troubleshooting, artifact-layout, workflow-mechanic, and Claude-specific references) and does not prescribe a fixed multi-step sequence beyond Step 1. The sickn33 copy prescribes a fixed 7-step sequence (Resolve, Synthesis, Iteration, Author, Optimize Description, Evaluate, Register/Validate), uses a different set of reference files (skill-patterns, workflow-patterns, output-patterns, evaluation-path, examples/*.md), and adds explicit output format, limitations, and risk metadata. Crowning one would hide the other&#x27;s real alternative structure and steps.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/skill-writer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/skill-writer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/skill-writer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/skill-writer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/skill-writer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/skill-writer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: skill-writer
+description: Create, synthesize, and iteratively improve agent skills following the Agent Skills specification. Use when asked to create, write, synthesize, improve, update, or maintain skills.
+---
+
+# Skill Writer
+
+Use this as the single canonical workflow for skill creation and improvement.
+Primary success condition: maximize high-value input coverage before authoring while minimizing wasted runtime tokens.
+
+Follow the workflow steps in order. Load only the reference files required for the step you are on.
+
+## Step 1: Resolve target, path, and shape
+
+1. Resolve the intended operation (create, update, synthesize, iterate) and inspect workspace prior art before choosing where files belong.
+2. Choose the target skill root from observed conventions. If the canonical location is still unclear after inspection, ask one direct question before editing files.
+3. Read references/mode-selection.md to choose the minimum required workflow paths.
+4. Read references/execution-shapes.md to choose the primary execution shape.
+5. Default to the simplest adequate shape. If selecting a more complex shape, record why simpler shapes were rejected.
+6. Load only the exact artifact-layout, workflow-mechanic, and provider-specific leaf files required by that shape.
+7. Classify the skill (workflow-process, integration-documentation, security-review, skill-authoring, generic). Ask one direct question if class or depth requirements are ambiguous; otherwise state explicit assumptions.
+
+## Step 2: Run synthesis when needed
+
+Read references/synthesis-path.md.
+
+1. Collect and score relevant sources with provenance.
+2. Apply trust and safety rules when ingesting external content.
+3. Produce source-backed decisions and coverage/gap status.
+4. Load one or more profiles from references/examples/*.md when the skill is hybrid.
+5. Enforce baseline source pack for skill-authoring workflows.
+6. Enforce depth gates before moving to authoring.
+
+## Step 3: Run iteration first when improving from outcomes/examples
+
+Read references/iteration-path.md first when selected path includes iteration.
+
+1. Capture and anonymize examples with provenance.
+2. Re-evaluate skill behavior against working and holdout slices.
+3. Propose improvements from positive/negative/fix evidence.
+4. Carry concrete behavior deltas into authoring.
+
+Skip this step when selected path does not include iteration.
+
+## Step 4: Author or update skill artifacts
+
+Read references/authoring-path.md.
+
+1. Write or update SKILL.md in imperative voice with trigger-rich description.
+2. Create focused reference files and scripts only when justified.
+3. Follow references/skill-patterns.md, references/workflow-patterns.md, and references/output-patterns.md for structure and output determinism.
+4. For authoring/generator skills, include transformed examples in references: happy-path, secure/robust variant, anti-pattern + corrected version.
+
+## Step 5: Optimize description quality
+
+Read references/description-optimization.md.
+
+1. Validate should-trigger and should-not-trigger query sets.
+2. Reduce false positives and false negatives with targeted description edits.
+3. Keep trigger language generic across Codex and Claude.
+
+## Step 6: Evaluate outcomes
+
+Read references/evaluation-path.md.
+
+1. Run a lightweight qualitative check by default.
+2. For integration/documentation and skill-authoring skills, include the concise depth rubric from references/evaluation-path.md.
+3. Run deeper eval playbook and quantitative baseline-vs-with-skill only when requested or risk warrants it.
+4. Record outcomes and unresolved risks.
+
+## Step 7: Register and validate
+
+Read references/registration-validation.md.
+
+1. Apply repository registration steps.
+2. Run quick validation with strict depth gates.
+3. Reject shallow outputs that fail depth gates or required artifact checks.
+
+## Output format
+
+Return:
+1. Summary
+2. Changes Made
+3. Validation Results
+4. Open Gaps
+
+## When to Use
+Use this skill when tackling tasks related to skill creation, synthesis, improvement, or maintenance.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+## Conflicts
+
+- getsentry/skills routes the workflow through a large reference table (execution-shapes, reference-architecture, source-discovery, source-adaptation, iteration-evidence, output-contracts, skill-evals, structure-troubleshooting, artifact-layout, workflow-mechanic, Claude-specific references, example profiles) and does not prescribe a fixed multi-step sequence beyond Step 1.
+- sickn33/agentic-awesome-skills prescribes a fixed 7-step sequence and uses references/skill-patterns.md, references/workflow-patterns.md, references/output-patterns.md, references/evaluation-path.md, and references/examples/*.md, which are absent from the getsentry copy.
+- sickn33/agentic-awesome-skills adds an explicit Output format, When to Use, and Limitations sections that the getsentry copy does not include.
+- getsentry/skills includes Claude-specific references and example profiles that the sickn33 copy does not list.</pre>
+</body>
+</html>

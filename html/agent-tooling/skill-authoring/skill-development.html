@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>skill-development</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">skill-authoring</a> / skill-development</p><h1>skill-development</h1><p class="meta">combined</p><p>The two skills cover the same domain (creating and maintaining Claude Code skills) but diverge significantly in scope and methodology. The first copy (scenario-labs) is a theoretical guide focused on the &#x27;Anatomy of a Skill&#x27; and &#x27;Progressive Disclosure&#x27; design principles, treating skills as abstract plugin components. The second copy (brycewang-stanford) is a practical, environment-aware workflow that emphasizes inspecting the local filesystem, verifying the existence of referenced files, and performing integrity checks to prevent &#x27;dead references.&#x27; The first copy lacks the local verification steps, while the second lacks the detailed theoretical breakdown of resource types (scripts vs. references vs. assets) and the specific &#x27;Progressive Disclosure&#x27; context management strategy. Combining them yields a complete guide that covers both the design theory and the practical implementation/verification workflow.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/scenario-labs/skills">scenario-labs/skills</a></td><td><code>.agents/skills/skill-development/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/skill-development/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/scenario-labs/skills">scenario-labs/skills</a></td><td><code>.agents/skills/skill-development/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/33-Galaxy-Dawn-claude-scholar/skills/skill-development/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: skill-development
+description: This skill should be used when the user wants to create a new skill, repair an existing skill, improve trigger descriptions, or organize skill content. It covers skill anatomy, progressive disclosure, and local integrity checks.
+version: 0.3.0
+---
+
+# Skill Development
+
+This skill provides guidance for creating effective, maintainable skills for Claude Code. It combines design principles with practical local verification workflows.
+
+## 1. Design Principles &amp; Anatomy
+
+Skills are modular packages that extend Claude&#x27;s capabilities. They follow a **Progressive Disclosure** model to manage context efficiently:
+1. **Metadata (name + description)**: Always in context (~100 words). Determines when the skill triggers.
+2. **SKILL.md body**: Loaded when the skill triggers (&lt;5k words). Contains core workflow and boundaries.
+3. **Bundled Resources**: Loaded as needed. Keeps SKILL.md lean.
+
+### Skill Structure
+```
+skill-name/
+├── SKILL.md (required)
+└── Bundled Resources (optional)
+    ├── scripts/      - Deterministic code (Python/Bash)
+    ├── references/   - Documentation loaded into context as needed
+    ├── examples/     - Concrete outputs or scaffolds
+    └── assets/       - Files used in output (templates, images)
+```
+
+**Resource Guidelines:**
+- **Scripts**: Use for deterministic reliability or repetitive code generation.
+- **References**: Use for detailed schemas, policies, or API docs. If &gt;10k words, include grep patterns in SKILL.md.
+- **Assets**: Use for files that are part of the final output (e.g., logos, boilerplate).
+
+## 2. Creation &amp; Repair Workflow
+
+### Step 1: Inspect the Environment
+Before writing or editing:
+- Inspect the target skill directory.
+- Verify which agents, commands, and sibling skills actually exist locally.
+- Identify stale references or dead paths.
+- *Note: Do not write guidance against an imagined plugin layout; use the local inventory as authority.*
+
+### Step 2: Define the Contract
+Lock in four things before editing:
+1. What the skill does.
+2. What triggers it (concrete user phrases).
+3. What it explicitly does **not** do.
+4. Which bundled resources are actually needed.
+
+### Step 3: Write Frontmatter
+- Use the real skill identifier in `name`.
+- Use a third-person trigger description (e.g., &quot;This skill should be used when...&quot;).
+- Include concrete phrases a user would naturally say.
+- Keep it short and scannable.
+
+### Step 4: Write SKILL.md (Keep it Lean)
+- Include: Short goal, role boundaries, default workflow, safety rules.
+- Exclude: Templates, exhaustive checklists, edge-case catalogs, long examples.
+- Move detailed material to `references/` or `examples/`.
+
+### Step 5: Add Real Bundled Resources
+- Only create `references/`, `examples/`, or `scripts/` if they are needed.
+- **Rule**: If a resource is mentioned in `SKILL.md`, it must exist locally.
+- **Rule**: If a resource exists but is never referenced, delete it.
+
+### Step 6: Integrity Checks
+Before closing, verify:
+- Frontmatter parses correctly.
+- All referenced local files exist.
+- Sibling skill or agent references are real.
+- `SKILL.md` is not overloaded with material that belongs in references.
+- No temporary logs, caches, or editor artifacts are left in the skill directory.
+
+## 3. Repair Patterns
+
+- **Too Long**: Move catalogs/deep detail to `references/`. Keep a short read order in SKILL.md.
+- **Too Thin**: Add a default workflow and at least one concrete example. Make boundaries explicit.
+- **Stale References**: Remove dead paths immediately. Replace historical names with current local names.
+
+## 4. Output Format
+When creating or repairing a skill, report:
+- What changed.
+- Which files were created or updated.
+- What integrity checks were run.
+- What still needs manual follow-up.</pre>
+</body>
+</html>

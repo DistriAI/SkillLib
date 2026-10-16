@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>prompt-engineer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">prompt-design-optimization</a> / prompt-engineer</p><h1>prompt-engineer</h1><p class="meta">combined</p><p>The three copies define the &#x27;prompt-engineer&#x27; skill in fundamentally different ways. Jeffallan/claude-skills defines it as a full lifecycle engineering process (design, test, evaluate, deploy) with a specific 5-step workflow and validation checkpoints. rmyndharis/antigravity-skills defines it as a broad knowledge base of advanced techniques (Constitutional AI, model-specific optimization) with a strict output constraint to always display the full prompt text. sickn33/agentic-awesome-skills defines it as a &#x27;magic mode&#x27; transformation tool that silently maps user intent to specific prompting frameworks (RTF, RISEN, etc.) to rewrite vague prompts. Because they disagree on the core procedure (lifecycle vs. knowledge base vs. framework mapping) and the interaction model (explicit workflow vs. display constraint vs. silent transformation), crowning one would hide the other two distinct approaches.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/prompt-engineer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/prompt-engineer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/prompt-engineer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Jeffallan/claude-skills">Jeffallan/claude-skills</a></td><td><code>skills/prompt-engineer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/rmyndharis/antigravity-skills">rmyndharis/antigravity-skills</a></td><td><code>skills/prompt-engineer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/prompt-engineer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/prompt-engineer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/prompt-engineer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: prompt-engineer
+description: Designs, optimizes, and transforms prompts for LLMs using engineering workflows, advanced techniques, and structured frameworks.
+---
+
+# Prompt Engineer
+
+This skill supports three modes of prompt engineering: full lifecycle development, advanced technique application, and prompt transformation via frameworks.
+
+## 1. Lifecycle Engineering (Design &amp; Test)
+Use this mode when building new prompts or refactoring existing ones for production.
+
+1. **Understand requirements**: Define task, success criteria, and edge cases.
+2. **Design initial prompt**: Choose a pattern (zero-shot, few-shot, CoT).
+3. **Test and evaluate**: Run diverse test cases. If accuracy &lt; 80%, identify failure patterns before iterating.
+4. **Iterate and optimize**: Make one change at a time to refine reliability and token efficiency.
+5. **Document and deploy**: Version the prompt and monitor production performance.
+
+## 2. Advanced Techniques &amp; Model Optimization
+Use this mode when optimizing for specific models or advanced reasoning.
+
+- **Reasoning**: Apply Chain-of-Thought, Tree-of-Thoughts, or Self-Consistency for complex tasks.
+- **Safety**: Use Constitutional AI principles and critique-revise patterns for alignment.
+- **Model-Specific**: 
+  - *OpenAI*: Optimize function calling and JSON mode.
+  - *Anthropic*: Use XML tags and tool use optimization.
+  - *Open Source*: Adjust for special tokens and context limits.
+- **Output Constraint**: When providing a final prompt in this mode, ALWAYS display the complete prompt text in a single, clearly marked, copy-pasteable block.
+
+## 3. Framework-Based Transformation
+Use this mode to transform vague user prompts into structured ones.
+
+1. **Analyze Intent**: Detect task type, complexity, and clarity.
+2. **Clarify (Conditional)**: Ask max 3 questions only if task type or scope is critically ambiguous. Otherwise, proceed with available context.
+3. **Select Framework**: Map the task to a framework:
+   - *Role-based*: RTF (Role-Task-Format)
+   - *Reasoning*: Chain of Thought
+   - *Complex Projects*: RISEN or RODES
+   - *Summarization*: Chain of Density
+   - *Communication*: RACE
+   - *Goal-setting*: CLEAR or GROW
+4. **Transform**: Rewrite the prompt using the selected framework(s). Blend 2-3 frameworks if the task spans multiple types.
+
+## Constraints
+- **MUST**: Test prompts with diverse inputs and measure quantitative metrics.
+- **MUST NOT**: Deploy without evaluation or make multiple changes simultaneously when debugging.
+- **MUST NOT**: Hardcode sensitive data in prompts.</pre>
+</body>
+</html>

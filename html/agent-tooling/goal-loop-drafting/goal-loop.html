@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>goal-loop</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">goal-loop-drafting</a> / goal-loop</p><h1>goal-loop</h1><p class="meta">combined</p><p>The sickn33 copy is a bulk mirror of the davidondrej skill (it explicitly lists source_repo: davidondrej/skills), but it is not a faithful reproduction. It adds material constraints and steps the original lacks (a mandatory Documentation contract item, a 4,000-char limit, a &gt;30-minute task threshold, a repo-readiness requirement, and a specific list of supported agents/auth requirements). It also disagrees with the original on the contract structure (5-part vs 4-part) and the validation cadence (after each change vs during work/final). Because the mirror diverges from the source in ways that would hide real alternatives if one were crowned, the copies should be combined.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/agent-orchestration/goal-loop/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/goal-loop/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davidondrej/skills">davidondrej/skills</a></td><td><code>skills/agent-orchestration/goal-loop/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/goal-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/goal-loop/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/goal-loop/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: goal-loop
+description: &#x27;Draft /goal prompts and explain persistent agent loops. Use for goal or Ralph loops, autonomous run setup, monitoring, and troubleshooting.&#x27;
+---
+
+# Agent `/goal` Loop
+
+## What `/goal` is
+
+`/goal` makes an agent persist through `plan → act → test → review → iterate`. If a turn ends before the goal is met, it auto-continues instead of waiting for input. The loop ends at its stop condition, a user pause, or the token budget limit. It is also called the “Ralph loop.”
+
+Before giving runtime instructions, check goal support in the installed agent and interface through its help, exposed tools, or current official documentation. Verify feature flags, authentication, and limits; do not transfer one agent&#x27;s requirements to another. Lifecycle states, budgets, and pause/resume vary by runtime.
+
+A goal enforces a contract through verification. It is not a budget command, a safety boundary, “run forever”, or a replacement for `/plan`.
+
+## When to use it
+
+Use for repeated autonomous work with a **verifiable stop condition**: passing tests, target coverage, eval ≥ X, or a green build. For code work, establish a working build and relevant checks first. No minimum task duration applies.
+
+Fits: migrations, coverage lifts, TDD feature builds, refactors with contract tests, prompt/eval optimization, deploy retry loops, bug-repro-then-fix.
+
+Bad fits: exploratory work, vague &quot;improve this&quot;, anything without a &quot;done&quot; definition, prod credentials, destructive shared-infra ops.
+
+## The contract (every goal needs this)
+
+1. **Objective** — one sentence, one concrete outcome.
+2. **Constraints** — what must NOT change (public API, files, libs, conventions).
+3. **Validation command** — the exact shell command that proves progress (`pytest -q`, `pnpm test`, etc.).
+4. **Stop condition** — verifiable: &quot;Stop when X passes&quot; OR &quot;when further changes need human/product input.&quot;
+5. **Documentation** — one sentence instructing the agent to write concise, targeted docs for every change, either creating new `.md` files or updating existing ones.
+
+Also specify what to read first, checkpoints, and a short progress log.
+
+## Writing a goal (the core deliverable)
+
+When asked for a goal prompt, return only the contract body as a Markdown block, one item per line. **Do not prefix it with `/goal`** — the user adds that command in the composer.
+
+```
+**Objective:** &lt;one-sentence objective&gt;
+**Read first:** &lt;files/PLAN.md/issue&gt;
+**Constraints:** &lt;what not to change, libs, conventions&gt;
+**Validate:** &lt;relevant checks during work and final acceptance command&gt;
+**Document:** Write concise, targeted documentation for all changes — create new `.md` files or update existing docs as needed.
+**Checkpoints:** work in checkpoints and log progress briefly
+**Stop when:** &lt;verifiable condition&gt;, OR when further changes require human/product input
+```
+
+### Example (migration)
+
+```
+**Objective:** Migrate this project from Pydantic v1 to v2.
+**Read first:** pyproject.toml, src/, tests/
+**Constraints:** no public API changes; keep imports backwards-compatible via shims if needed; no new dependencies
+**Validate:** run relevant tests during the migration; run `pytest -q` before declaring done
+**Document:** Write concise, targeted documentation for all changes — create new `.md` files or update existing docs as needed.
+**Checkpoints:** work in checkpoints; log progress briefly
+**Stop when:** full suite passes with zero deprecation warnings, OR when a change requires architecture decisions
+```
+
+### Example (coverage lift)
+
+```
+**Objective:** Raise coverage in src/auth/ from ~38% to ≥75%.
+**Read first:** src/auth/, tests/auth/, AGENTS.md
+**Constraints:** no new deps; mirror existing test style; do not modify production code unless strictly required for testability
+**Validate:** `pytest --cov=src/auth --cov-report=term-missing`
+**Document:** Write concise, targeted documentation for all changes — create new `.md` files or update existing docs as needed.
+**Checkpoints:** work in checkpoints; log coverage delta each one
+**Stop when:** coverage ≥75% AND all tests pass, OR when uncovered code needs design changes
+```
+
+### Writing rules
+- **One objective, one stop condition.** Not a backlog.
+- **Documentation is mandatory.** Every `/goal` prompt must include a single sentence committing the agent to concise, targeted docs — new `.md` files or focused updates to existing docs.
+- Match checks to the change and final acceptance criteria; do not require the full suite after every edit.
+- **Never instruct the agent to create new ADRs** — ADRs require the user&#x27;s explicit approval, so goal prompts must not pre-approve or encourage them.
+- **Forbid reward-hacking:** &quot;Do not delete, skip, weaken, or narrow tests to make the goal pass.&quot;
+- Respect the runtime&#x27;s length limit. If the objective exceeds 4,000 characters, put detail in a file (`PLAN.md`/`GOAL_BRIEF.md`) and make the goal point to it — keep the goal itself compact.
+- Use exact paths, commands, and issue numbers.
+- Forbid scope creep explicitly: &quot;Do not refactor unrelated code. Do not add dependencies.&quot;
+- Tell the agent when to pause: &quot;If &lt;condition&gt;, pause and ask before proceeding.&quot;
+
+### Draft with another agent
+
+Give a second AI session access to the codebase. Ask it to inspect the code, surface assumptions, constraints, and edge cases, then produce the structured contract. Paste that contract into the goal agent.
+
+### Self-goal setting
+
+Use a supported goal-creation tool such as `create_goal` only when the user explicitly asks to set a goal. The user can give high-level intent: &quot;Inspect this repo, then write yourself a `/goal` with a verifiable stop condition and pursue it.&quot; Supply files to read, constraints, and the validation command. If intent is underspecified, ask clarifying questions before setting the goal.
+
+## Launching and controlling a goal
+
+1. Identify the agent, version, interface, and intended working directory or session.
+2. Check its supported goal commands/tools and any setup or authentication requirements.
+3. Start the goal using that runtime&#x27;s supported interface and the agreed contract.
+4. Verify it is active and know how to inspect, pause/stop, and resume it.
+
+Before resuming across sessions, verify where that runtime stores goal state and which session must be reopened. Do not assume server-side persistence, automatic pause on user input, replacement semantics, or resumption after a budget refresh.
+
+## When a goal drifts
+
+- **Minor drift:** send a correction and check that the agent incorporates it.
+- **Loose objective:** use the runtime&#x27;s supported pause/stop mechanism to halt the goal, then refine the contract and restart.
+
+## Conflicts
+
+- **davidondrej/skills** defines a 4-part contract, while **sickn33/agentic-awesome-skills** defines a 5-part contract that adds a mandatory Documentation item. The combined instruction includes the Documentation item.
+- **sickn33/agentic-awesome-skills** requires the validation command to run &#x27;after each change&#x27; in the template, whereas **davidondrej/skills** specifies &#x27;relevant checks during work and final acceptance command&#x27; and explicitly warns against requiring the full suite after every edit. The combined instruction follows the davidondrej/skills guidance to avoid token waste.
+- **sickn33/agentic-awesome-skills** imposes a 4,000-character limit on the objective, while **davidondrej/skills** only says to &#x27;respect the runtime&#x27;s length limit&#x27;. The combined instruction includes the 4,000-character limit as a specific constraint.
+- **sickn33/agentic-awesome-skills** requires the task to be &gt;30 minutes of mechanical work and the repo to be &#x27;agent-ready&#x27;, whereas **davidondrej/skills** states &#x27;No minimum task duration applies&#x27;. The combined instruction follows the davidondrej/skills guidance to avoid excluding valid short tasks.</pre>
+</body>
+</html>

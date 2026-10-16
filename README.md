@@ -11,23 +11,164 @@ The catalog is stored as a tree in `catalog/skill_repositories.json`:
 - for a collection, the repositories it indexes
 - for a skill repository, domain, then skill
 
+## Plan
+
+Status as of the model index written at `2026-10-16T08:29:21+00:00`.
+
+### 1. Collect repositories — done
+
+- Search GitHub for skill-content repositories with more than 1000 stars. Done. `catalog/skill_repositories.json` and `catalog/search_report.json`.
+- Keep skill repositories and collections, and leave out skill specifications and skill tooling. Done. 179 skill repositories, 32,977 skill files.
+
+### 2. Metadata index — done, then replaced
+
+- Rank copies from repository metadata and write `catalog/skill_index.json`. Done earlier.
+- That file was the index an agent would read until the model index replaced it. Replaced by step 7.
+
+### 3. Screen comparison groups — done
+
+- Group copies that share a normalized skill name. One group is judged together, not as a series of pairs. Done.
+- Shortlist at most four copies per group and write `catalog/skill_screen.json`. Done. 21,516 groups: 2,383 overlapping, 19,133 separate. The shortlist is 5,260 skill files in 124 repositories.
+
+### 4. Download skill text for indexing — done
+
+- Save each shortlisted `SKILL.md` under `cache/skills/`. Done. 5,260 stored, 0 failed.
+- Retry only files that are missing. Done. The 94 files that failed on the first pass were fetched later.
+- This cache is not a git checkout. Full repositories for `git submodule update` are a separate step and are not done. One checkout exists: `cache/repos/mattpocock/skills`.
+
+### 5. Judge overlapping skills — done
+
+- Read skill text from `cache/skills/` and ask the local model to choose an authentic copy or write a combined skill. Done. 1,553 groups decided by the model.
+- Skip the model when the shortlisted texts are identical. Done. 830 groups.
+- Keep each finished decision in `.cache/judge/decisions/` and retry only groups with no saved decision. Done. 0 groups fell back to metadata.
+
+### 6. Place skills in the catalog — done
+
+- Assign a domain and an application scenario. Overlapping skills judged from their text keep the domain chosen in that comparison. The other skills are placed in batches. Done. 19,963 placements in `.cache/judge/semantics/`.
+- The domain list is the fixed vocabulary in the judge prompt. A later pass that splits or adds domains is not done.
+
+### 7. Write the model index — done
+
+- Replace `catalog/skill_index.json` after judging and placement both finish. Done. 21,516 leading skills: 4,994 authentic, 797 combined, 15,725 separate.
+
+## Skill domains
+
+The index tree is domain, then application scenario, then skill. A separate or authentic skill records one source repository and path. A combined skill has no single repository; each peer copy records its own repository and path. There is no second tree sorted by skill name. Open a skill page in the HTML browser to see those repositories.
+
+Regenerate the browser with `python -m skillrepo browse`. The top page is `html/index.html`.
+
+| Domain | Scenarios | Skills |
+|---|---:|---:|
+| [agent-tooling](html/agent-tooling/index.html) | 882 | 1,478 |
+| [business](html/business/index.html) | 1,539 | 2,134 |
+| [data](html/data/index.html) | 683 | 889 |
+| [design](html/design/index.html) | 594 | 872 |
+| [devops](html/devops/index.html) | 928 | 1,106 |
+| [documents](html/documents/index.html) | 432 | 623 |
+| [general](html/general/index.html) | 638 | 1,020 |
+| [marketing](html/marketing/index.html) | 957 | 1,347 |
+| [media](html/media/index.html) | 423 | 671 |
+| [research](html/research/index.html) | 1,527 | 4,997 |
+| [science](html/science/index.html) | 1,609 | 2,446 |
+| [security](html/security/index.html) | 1,418 | 1,787 |
+| [software-engineering](html/software-engineering/index.html) | 1,690 | 2,146 |
+
 ## Commands
 
+Run these from the repository root. `PYTHONPATH=src` is required until the package is installed.
+
 ```bash
-python -m skillrepo search --min-stars 1000
-python -m skillrepo list
-python -m skillrepo index
-python -m skillrepo visit owner/name
+cd /data/liangfeng/git/skillRepo
+export PYTHONPATH=src
 ```
 
-`index` reads the catalog and writes `catalog/skill_index.json`. Metadata first shortlists skills that share a name, and the repositories that hold them. Those repositories are checked out as submodules under `cache/repos/`; if a checkout fails, the skill file is read from the raw host instead. The model in `catalog/judge_config.json` (default `http://127.0.0.1:8090/v1`) reads the skill text and either selects one authentic copy or writes a combined skill whose conflicts stay explicit. Unique skills stay separate. The model then places each leading skill in a domain and an application scenario. `--judge heuristic` keeps the metadata-only ranking. Pass `--versions versions.json` with a map of `owner/name` to a git timestamp or commit when you have one. Judgements are cached under `.cache/judge/`, so a later `index` resumes after the catalog grows.
+Stages that download or judge can be stopped and started again. A finished product is kept: an existing skill file is not fetched again, and a saved model decision is not judged again. A failed or interrupted case is the one that runs on the next invocation.
 
-`search` keeps repositories with **more than** `--min-stars` stars. A skill repository must contain at least `--min-skills` agent skills (default 5).
+### search
 
-`visit` adds `https://github.com/owner/name.git` as a git submodule at `cache/repos/owner/name` the first time. Later calls reuse that checkout.
-
-Run the module from this directory:
+Search GitHub and write the catalog. `--min-stars` keeps repositories with strictly more than that many stars. A skill repository must contain at least `--min-skills` agent skills. `--jobs` is the number of concurrent repository inspections.
 
 ```bash
-PYTHONPATH=src python -m skillrepo search --min-stars 1000
+python -m skillrepo search --min-stars 1000 --min-skills 5 --jobs 6
+```
+
+Writes `catalog/skill_repositories.json` and `catalog/search_report.json`. This replaces the catalog.
+
+### list
+
+Print the saved catalog. It does not contact GitHub.
+
+```bash
+python -m skillrepo list
+```
+
+### screen
+
+Group skills that share a normalized name and write the shortlist. Copies of one name are one comparison group. At most `--max-variants` copies from that group are marked for download and judging. `--versions` is an optional JSON object whose keys are `owner/name` and whose values are a git timestamp or commit.
+
+```bash
+python -m skillrepo screen --max-variants 4
+python -m skillrepo screen --versions catalog/repo_versions.json
+```
+
+Writes `catalog/skill_screen.json`. Run this again after the catalog changes. `download` and `index` load this file instead of screening again.
+
+### download
+
+Download each `SKILL.md` named in the screen into `cache/skills/owner/name/...`. This is the text used for indexing. It is not a git checkout.
+
+```bash
+python -m skillrepo download --workers 6 --timeout 20
+```
+
+Writes `catalog/download_status.json`. Exit code 0 means every file is stored. Exit code 2 means some fetches failed; run the same command again to retry only the missing files. Exit code 1 means `catalog/skill_screen.json` is absent.
+
+A long run can live in a tmux session that stays up after the terminal closes:
+
+```bash
+tmux new-session -d -s skillrepo-download -c /data/liangfeng/git/skillRepo \
+  'PYTHONUNBUFFERED=1 PYTHONPATH=src python3 -m skillrepo download; echo EXIT:$?; sleep infinity'
+tmux attach -t skillrepo-download
+```
+
+Detach with `Ctrl-b` then `d`. `Ctrl-c` stops the download.
+
+### index
+
+Build `catalog/skill_index.json`.
+
+The metadata ranking does not call the model and does not read skill files:
+
+```bash
+python -m skillrepo index --judge heuristic
+```
+
+The model ranking loads `catalog/skill_screen.json` when that file exists. It reads skill text from `cache/skills/` when the file is already stored, then from a submodule checkout under `cache/repos/`, then from the raw GitHub host. The model is the OpenAI-compatible endpoint in `catalog/judge_config.json` (`base_url` `http://127.0.0.1:8090/v1`, model `Qwen/Qwen3.8-27B`). `SKILLREPO_LLM_BASE_URL`, `SKILLREPO_LLM_MODEL`, and `SKILLREPO_LLM_API_KEY` override that file. `--max-clusters N` sends only the first N overlapping skills to the model. `--config` selects another judge config.
+
+```bash
+python -m skillrepo index --judge llm --stage judge
+python -m skillrepo index --judge llm
+python -m skillrepo index --judge llm --max-clusters 20
+```
+
+`--stage judge` compares the overlapping skills and writes `.cache/judge/decisions/`. It reads `SKILL.md` text from `cache/skills/` when that file is already stored. It does not place the remaining skills and does not replace `catalog/skill_index.json`. Run the same command again to retry only clusters that have no saved decision.
+
+A saved decision under `.cache/judge/decisions/` is reused. A cluster that failed is not saved, so the next run retries it. Domain placement for skills the content judge did not locate is cached under `.cache/judge/semantics/`. The index file is replaced only when the run finishes.
+
+### browse
+
+Write static HTML pages that walk the index the way a file listing does: domain, scenario, then skill. The skill page links each source repository.
+
+```bash
+python -m skillrepo browse
+```
+
+Writes `html/index.html` and one page per scenario and skill. Open `html/index.html` in a browser.
+
+### visit
+
+Clone one repository as a git submodule for later `git submodule update`. The first call clones `https://github.com/owner/name.git` to `cache/repos/owner/name`. A later call reuses that checkout.
+
+```bash
+python -m skillrepo visit anthropics/skills
 ```

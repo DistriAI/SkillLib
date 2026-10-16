@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>proposal-writer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">client-proposal-writing</a> / proposal-writer</p><h1>proposal-writer</h1><p class="meta">combined</p><p>Both copies describe the same task (writing a client/service proposal) and share the core structure: problem understanding, solution, scope/deliverables, timeline, pricing, and next steps. However, each contains material steps and constraints the other lacks. jezweb/claude-skills provides detailed tone guidance, concrete examples of &#x27;too corporate&#x27; vs &#x27;right tone&#x27;, specific scope detail levels, and multiple pricing presentation formats (single price, good/better/best, line items). mohitagw15856/pm-claude-skills adds a &#x27;Why Us&#x27; section, explicit &#x27;Valid until&#x27; date requirement, a &#x27;Next Steps&#x27; section with named actions and dates, a &#x27;Quality Checks&#x27; checklist, and &#x27;Anti-Patterns&#x27; that include specific prohibitions (e.g., no vague pricing, no omitting &#x27;not included&#x27;). Crowning one would hide the other&#x27;s unique structural and quality-control elements.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/writing/skills/proposal-writer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-sales/skills/proposal-writer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/jezweb/claude-skills">jezweb/claude-skills</a></td><td><code>plugins/writing/skills/proposal-writer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-sales/skills/proposal-writer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/proposal-writer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: proposal-writer
+description: &quot;Write a client proposal, quote, scope of work, or engagement letter for a service business. Covers project understanding, scope, timeline, pricing presentation, and terms. Use whenever the user asks for a proposal, quote, project proposal, client proposal, SOW, statement of work, engagement letter, or B2B service engagement document.&quot;
+---
+
+# Client Proposal Writer
+
+Produces proposals for service businesses. The goal is a document that wins the work by showing you understood the problem, have a clear plan, and are easy to work with.
+
+## Before You Start
+
+Gather these inputs. Ask for anything missing:
+
+1. **Client name and business** — who is this for, what do they do
+2. **What they asked for** — the brief, the problem, the conversation summary
+3. **What you are proposing** — your recommended solution at a high level
+4. **Pricing** — your numbers, or ask for guidance on range
+5. **Timeline** — how long, any fixed deadlines
+6. **Tone** — match the client relationship (new vs existing, corporate vs casual, local tradie vs enterprise)
+7. **Key stakeholders** who will read this
+8. **Valid until date** for the proposal
+
+If the user has notes from a discovery call or email thread, use those to write the &quot;project understanding&quot; section in the client&#x27;s own language.
+
+---
+
+## Proposal Structure
+
+Present sections in this order. Every section earns its place — cut any that do not apply.
+
+### 1. Project Understanding
+
+This is the most important section. It proves you listened. Restate the client&#x27;s problem in their words, not yours. Show you understand what they are trying to achieve, not just what they asked you to build.
+
+**Too corporate:**
+&gt; We understand that your organisation is seeking to leverage digital transformation to enhance customer engagement across multiple touchpoints and drive sustainable growth through an integrated online presence.
+
+**Right tone:**
+&gt; You have been running the business for 12 years on word-of-mouth alone, and it has worked — you are booked out most weeks. The problem is that when someone searches &quot;plumber Newcastle&quot; you do not show up, and you are losing jobs to competitors with half your experience. You want a website that shows up in local search and makes it easy for people to call or book online.
+
+Rules for this section:
+- Use the client&#x27;s language, not industry jargon
+- Reference specific details from the conversation (&quot;you mentioned&quot;, &quot;as we discussed&quot;)
+- State the business problem, not just the technical requirement
+- Keep it to 2-3 short paragraphs
+- Include: **The key challenge** (one sentence), **The impact** (what this costs them), **What you have tried** (acknowledge prior attempts)
+
+### 2. Proposed Solution
+
+High-level description of what you will do and why this approach makes sense for them. This is the &quot;what and why&quot;, not the detailed scope.
+
+Connect the solution back to their problem. &quot;Because you need local customers to find you, we will build the site on WordPress with a focus on local SEO structure from day one&quot; is better than &quot;We will build a WordPress website with SEO.&quot;
+
+One to two paragraphs. Save the detail for the scope section.
+
+### 3. Scope and Deliverables
+
+Numbered list of specific items the client will receive. Each item should be concrete enough that both parties can agree on whether it was delivered.
+
+**Too vague:**
+&gt; - Website design and development
+&gt; - SEO optimisation
+&gt; - Ongoing support
+
+**Right level of detail:**
+&gt; 1. Custom WordPress website — up to 8 pages (Home, About, Services x4, Contact, Blog)
+&gt; 2. Mobile-responsive design matching your brand colours and logo
+&gt; 3. Local SEO setup — Google Business Profile optimisation, schema markup on all pages, location-based meta titles
+&gt; 4. Contact form with email notifications to your nominated address
+&gt; 5. Online booking integration with your existing Calendly account
+&gt; 6. Basic analytics setup (Google Analytics 4 + Google Search Console)
+&gt; 7. 30-minute training session on how to update content yourself
+&gt; 8. 30 days of post-launch support for bug fixes and minor adjustments
+
+**What is NOT included** is just as important as what is. Add an exclusions note at the bottom of this section:
+
+&gt; **Not included in this scope:** Ongoing content writing, paid advertising setup or management, additional pages beyond the 8 listed above, custom functionality not described here. These can be quoted separately if needed.
+
+### 4. Timeline
+
+Phases with durations or target dates. Show the client what happens when.
+
+| Phase | Duration | What happens |
+|-------|----------|--------------|
+| Discovery and planning | Week 1 | Content gathering, sitemap sign-off |
+| Design | Weeks 2-3 | Homepage mockup, revision, remaining pages |
+| Development | Weeks 3-5 | Build, integrations, internal testing |
+| Review and launch | Week 6 | Client review, revisions, go-live |
+
+If there is a fixed deadline (event, season, campaign), state it and work the timeline back from it. Flag any dependencies on the client: &quot;This timeline assumes content and images are provided by [date].&quot;
+
+### 5. Investment
+
+Frame pricing as an investment, not a cost. Present confidently — no hedging, no apologising for the number.
+
+Choose the pricing format that suits the project:
+
+**Single price (simple projects):**
+&gt; **Investment: $4,500 + GST**
+&gt;
+&gt; This covers everything listed in the scope above — design, development, SEO setup, training, and 30 days of post-launch support.
+
+**Good / Better / Best packages (gives the client choice):**
+
+| | Starter | Professional | Premium |
+|---|---------|-------------|---------|
+| Pages | 5 | 8 | 12 |
+| Design | Template-based | Custom design | Custom + brand guide |
+| SEO | Basic on-page | Local SEO package | Local SEO + content strategy |
+| Support | 14 days | 30 days | 90 days |
+| **Investment** | **$2,500** | **$4,500** | **$7,500** |
+
+Package pricing works well when the client is unsure of scope. The middle option is typically where you want them to land — price it as the best value.
+
+**Line items (transparency-focused):**
+
+| Item | Description | Investment |
+|---|---|---|
+| [Component 1] | [Description] | £[amount] |
+| **Total** | | **£[total]** |
+
+**Payment terms:** [Terms]
+**Included:** [What is in]
+**Not included:** [What is out — prevents scope disputes]
+
+### 6. Why [Your Company]
+
+[3-4 sentences. Specific to their situation. Reference similar customers. Generic &quot;why us&quot; sections are skipped.]
+
+### 7. Next Steps
+
+1. [Sign / reply / schedule] by [date]
+2. We will send contract and confirm kickoff
+3. [Any immediate action]
+
+Each next step must name who is responsible and the expected timeline.
+
+---
+
+## Quality Checks
+
+- [ ] &quot;Project Understanding&quot; reflects what was learned in discovery (not generic)
+- [ ] Outcomes are listed (not just deliverables or features)
+- [ ] &quot;Not included&quot; section is explicit to prevent scope disputes later
+- [ ] Next steps include a specific date and named action
+- [ ] &quot;Valid until&quot; date is included to create urgency
+
+## Anti-Patterns
+
+- [ ] Do not lead with the solution before establishing that the problem is understood — the proposal must demonstrate problem comprehension first
+- [ ] Do not use vague investment language like &quot;competitive pricing&quot; — every proposal must state a specific price or range
+- [ ] Do not omit a &quot;not included&quot; section — undefined scope leads to disputes after the proposal is accepted
+- [ ] Do not forget a &quot;valid until&quot; date — proposals without expiry create awkward situations and stale pricing
+- [ ] Do not list next steps without naming who is responsible for each and what the expected timeline is</pre>
+</body>
+</html>
