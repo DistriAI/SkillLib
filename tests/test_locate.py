@@ -6,6 +6,7 @@ from pathlib import Path
 from skillrepo.sorting.enrich import enrich_cards, is_thin
 from skillrepo.sorting.families import build_task_families, heuristic_namer, write_family_pages
 from skillrepo.sorting.finder import Finder
+from skillrepo.sorting.links import extract_links, link_cards
 from skillrepo.sorting.promptpack import render_prompt
 
 
@@ -141,14 +142,14 @@ class FinderTests(unittest.TestCase):
             ],
         }
         finder = Finder([gsea, gmail], families)
-        ranked = finder.find("Run GSEA on a ranked gene list", domain="science")
+        ranked = finder.find("Run GSEA on a ranked gene list", domain="science")["cards"]
         self.assertEqual(ranked[0]["name"], "gsea")
         self.assertEqual(ranked[0]["family"], "gene-sets")
-        rejected = finder.find("Run differential expression on a raw expression matrix", domain="science")
+        rejected = finder.find("Run differential expression on a raw expression matrix", domain="science")["cards"]
         self.assertNotIn("gsea", [item["name"] for item in rejected])
-        mailed = finder.find("Automate Gmail to send a reply")
+        mailed = finder.find("Automate Gmail to send a reply")["cards"]
         self.assertEqual(mailed[0]["name"], "gmail-automation")
-        self.assertEqual(finder.find("Fold an origami crane"), [])
+        self.assertEqual(finder.find("Fold an origami crane")["cards"], [])
 
     def test_load_reports_missing_scripts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -160,6 +161,53 @@ class FinderTests(unittest.TestCase):
             loaded = Finder([target]).load(root, "acme::gsea")
         self.assertIn("run gsea", loaded["text"])
         self.assertFalse(loaded["scripts_checked_out"])
+
+
+class LinkTests(unittest.TestCase):
+    def test_a_skill_file_names_requires_alternative_and_follows(self) -> None:
+        names = {"report-writing", "triage-validation", "debugging-and-error-recovery", "offensive-osint", "bugcrowd-reporting", "web2-recon", "observability"}
+        text = """
+For the generic templates, use the `report-writing` skill. Before deciding to report, use `triage-validation`.
+
+**NOT for:**
+- Diagnosing a failure happening right now — use the `debugging-and-error-recovery` skill
+
+## Related Skills & Chains
+
+- **`offensive-osint`** — Workflow primitive: this skill produces the URL set; offensive-osint provides the probes.
+"""
+        found = extract_links(text, names, "bugcrowd-reporting")
+        self.assertEqual(found["requires"], ["report-writing", "triage-validation"])
+        self.assertEqual(found["alternative"], ["debugging-and-error-recovery"])
+        self.assertEqual(found["follows"], ["offensive-osint"])
+
+    def test_follows_pair_and_checkout_gap(self) -> None:
+        recon = card(
+            "recon",
+            "web2-recon",
+            description="Recon a web target and produce a URL set.",
+            links={"requires": [], "alternative": [], "follows": ["offensive-osint"]},
+        )
+        osint = card(
+            "osint",
+            "offensive-osint",
+            description="Apply offensive osint probes to a URL set from recon.",
+        )
+        found = Finder([recon, osint]).find("Recon a web target then apply offensive osint probes")
+        self.assertEqual([step["name"] for step in found["pairs"][0]["steps"]], ["web2-recon", "offensive-osint"])
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / "cache/skills/acme/skills/gsea/SKILL.md"
+            path.parent.mkdir(parents=True)
+            path.write_text("Run `Rscript scripts/main.R` after reading references/algorithm.md\n", encoding="utf-8")
+            target = card("acme::gsea", "gsea", description="Run GSEA.")
+            summary = link_cards([target], root)
+            self.assertIn("scripts/main.R", target["applicability"]["bundled_files"])
+            self.assertIn("python -m skillrepo visit", target["applicability"]["gap"])
+            loaded = Finder([target]).load(root, "acme::gsea")
+            self.assertEqual(loaded["text"], "")
+            self.assertIn("not checked out", loaded["gap"])
+            self.assertGreater(summary["links"]["gaps"], 0)
 
 
 class PromptTests(unittest.TestCase):

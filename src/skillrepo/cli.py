@@ -18,6 +18,8 @@ from skillrepo.sorting.enrich import STATUS_PATH as ENRICH_STATUS_PATH
 from skillrepo.sorting.enrich import enrich_cards
 from skillrepo.sorting.families import build_task_families, heuristic_namer, llm_namer, write_family_pages, write_task_families
 from skillrepo.sorting.finder import EVAL_PATH, EVAL_REPORT_PATH, Finder, default_families_path, load_families, score_eval
+from skillrepo.sorting.links import STATUS_PATH as LINK_STATUS_PATH
+from skillrepo.sorting.links import link_cards
 from skillrepo.sorting.llm import LLMClient, LLMError
 from skillrepo.sorting.promptpack import WORKING_SET_EXAMPLE, load_working_set, render_prompt, write_prompt
 from skillrepo.visit import visit_repository
@@ -79,6 +81,9 @@ def main(argv: list[str] | None = None) -> int:
     prompt.add_argument("--root", type=Path, default=Path.cwd())
     prompt.add_argument("--working-set", type=Path, default=None)
 
+    link = sub.add_parser("link", help="record skill links and checkout gaps from cached skill files")
+    link.add_argument("--root", type=Path, default=Path.cwd())
+
     load = sub.add_parser("load", help="print a skill body for one card id")
     load.add_argument("skill_id")
     load.add_argument("--root", type=Path, default=Path.cwd())
@@ -124,6 +129,8 @@ def main(argv: list[str] | None = None) -> int:
         return _find(args)
     if args.command == "prompt":
         return _prompt(args)
+    if args.command == "link":
+        return _link(args)
     if args.command == "load":
         return _load(args)
     if args.command == "index":
@@ -311,14 +318,19 @@ def _find(args) -> int:
         return 1
     constraints = {item.strip() for item in args.constraints.split(",") if item.strip()} or None
     found = finder.find(args.task, domain=args.domain, constraints=constraints, limit=args.limit)
-    if not found:
+    if not found["cards"]:
         print("No skill card matched.")
         return 0
-    for item in found:
+    for item in found["cards"]:
         family = f" family={item['family']}" if item["family"] else ""
         print(f"{item['score']:3} {item['kind']:9} {item['name']}{family}")
         if item["description"]:
             print(f"    {item['description'][:180]}")
+        if item.get("gap"):
+            print(f"    {item['gap']}")
+    for pair in found["pairs"]:
+        names = " -> ".join(step["name"] for step in pair["steps"])
+        print(f"pair: {names}")
     return 0
 
 
@@ -335,6 +347,22 @@ def _prompt(args) -> int:
     return 0
 
 
+def _link(args) -> int:
+    cards_path = args.root / CARDS_PATH
+    if not cards_path.is_file():
+        print(f"No cards at {cards_path}. Run: python -m skillrepo cards")
+        return 1
+    summary = link_cards(load_routing_cards(cards_path), args.root, progress=print)
+    links = summary["links"]
+    print(
+        f"Bodies {links['bodies']}: {links['linked']} linked, {links['reused']} reused, "
+        f"requires {links['with_requires']}, alternative {links['with_alternative']}, follows {links['with_follows']}"
+    )
+    print(f"Bundled files {links['with_bundled_files']}, checked out {links['checked_out']}, gaps {links['gaps']}")
+    print(f"Status {args.root / LINK_STATUS_PATH}")
+    return 0
+
+
 def _load(args) -> int:
     if not (args.root / CARDS_PATH).is_file():
         print(f"No cards at {args.root / CARDS_PATH}. Run: python -m skillrepo cards")
@@ -344,6 +372,9 @@ def _load(args) -> int:
     except KeyError:
         print(f"No card {args.skill_id}")
         return 1
+    if loaded.get("gap"):
+        print(loaded["gap"])
+        return 0
     print(f"scripts_checked_out={loaded['scripts_checked_out']}")
     print(loaded["text"])
     return 0

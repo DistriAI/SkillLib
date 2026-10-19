@@ -15,7 +15,7 @@ The catalog is stored as a tree in `catalog/skill_repositories.json`:
 
 Catalog stages 1–7 are done. The model index was written at `2026-10-16T08:29:21+00:00`.
 
-The locator stages 8–13 are a suggested plan and are not finalized. Stages 8–12 finished in tmux session `skillrepo-locate` with exit code 0. The enriched cards were written at `2026-10-19T11:21:26+00:00`. Stage 13 has not been started.
+The locator stages 8–13 are a suggested plan and are not finalized. Stages 8–12 finished in tmux session `skillrepo-locate` with exit code 0. The enriched cards were written at `2026-10-19T11:21:26+00:00`. Stage 13 finished in tmux session `skillrepo-link` with exit code 0.
 
 ### 1. Collect repositories — done
 
@@ -112,12 +112,14 @@ Done. 36 of 40 tasks passed. The four misses are `skill-creator`, `agentic-actio
 
 Done. `catalog/skill_prompt.txt`, using `catalog/working_set.example.json` (`gsea` and `pdf`). The integration stays a library and a command. Wiring a specific agent host is not done.
 
-### 13. Links, applicability, and checkout — not done
+### 13. Links, applicability, and checkout — done
 
 - Add `requires`, `alternative`, and `follows` when one skill body names another skill.
 - Let `find_skills` return an ordered pair when a `follows` link matches a two-step task.
 - When a card names bundled files, check whether `visit` has checked out that repository. Report the gap instead of loading a procedure the agent cannot run.
 - Full checkout stays `python -m skillrepo visit owner/name`, used for a skill the agent actually selected.
+
+Done. Of the 2,383 cards with a cached skill file, 87 record `requires`, 235 record `alternative`, and 112 record `follows`. 634 name bundled files. 1 of those repositories is checked out. The other 633 cards carry a gap that names `visit` instead of pretending the procedure can run. Report: `catalog/link_report.json`.
 
 ## Skill domains
 
@@ -266,6 +268,16 @@ python -m skillrepo load combined::gsea
 ```
 
 `--eval` scores `catalog/find_eval.json` and writes `catalog/find_eval_report.json`.
+
+### link
+
+Read cached skill files for the name of another skill. Record `requires`, `alternative`, and `follows` on the card. When the file names a bundled script or reference, check `cache/repos` and record a gap that says to run `visit` for that repository. This command does not clone repositories.
+
+```bash
+python -m skillrepo link
+```
+
+Rewrites `catalog/routing_cards.jsonl` and writes `catalog/link_report.json`. A skill file whose body hash is unchanged is not parsed again. Checkout state is refreshed every run. `find` prints a `pair:` line when a follows link joins two cards that both match the task. `load` prints the gap instead of the procedure when bundled files are missing.
 
 ### prompt
 

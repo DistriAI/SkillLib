@@ -79,12 +79,22 @@ class Finder:
         results = []
         for score, card, info in scored[:limit]:
             results.append(_view(card, info, score))
-        return results
+        return {"cards": results, "pairs": _pairs(scored, results)}
 
     def load(self, root: Path, skill_id: str) -> dict:
         card = self.by_id.get(skill_id)
         if card is None:
             raise KeyError(skill_id)
+        gap = ((card.get("applicability") or {}).get("gap")) or ""
+        if gap:
+            return {
+                "id": card["id"],
+                "name": card.get("name"),
+                "text": "",
+                "gap": gap,
+                "scripts_checked_out": False,
+                "scripts_available": False,
+            }
         parts = []
         note = (card.get("provenance") or {}).get("conflict_note") or ""
         if note:
@@ -111,7 +121,8 @@ def score_eval(finder: Finder, cases: list[dict], *, limit: int = 5) -> dict:
     passed = 0
     for case in cases:
         found = finder.find(case["task"], domain=case.get("domain") or None, limit=limit)
-        names = [item["name"] for item in found]
+        cards = found["cards"] if isinstance(found, dict) else found
+        names = [item["name"] for item in cards]
         expected = list(case.get("expect_names") or [])
         absent = list(case.get("absent_names") or [])
         empty_ok = bool(case.get("expect_empty"))
@@ -150,8 +161,48 @@ def _view(card: dict, info: dict | None, score: int) -> dict:
         "domains": card.get("domains") or [],
         "family": None if info is None else info["name"],
         "conflict_note": provenance.get("conflict_note") or "",
+        "requires": list((card.get("links") or {}).get("requires") or []),
+        "alternative": list((card.get("links") or {}).get("alternative") or []),
+        "follows": list((card.get("links") or {}).get("follows") or []),
+        "gap": ((card.get("applicability") or {}).get("gap")) or "",
         "score": score,
     }
+
+
+def _pairs(scored: list[tuple], results: list[dict]) -> list[dict]:
+    """Return follows links whose two ends both match this task, in link order."""
+
+    score_of = {card["id"]: score for score, card, _info in scored}
+    info_of = {card["id"]: info for _score, card, info in scored}
+    card_of = {card["id"]: card for _score, card, _info in scored}
+    chosen = {item["id"] for item in results}
+    by_name = {}
+    for _score, card, _info in scored:
+        by_name.setdefault(card.get("name") or "", card)
+    pairs = []
+    seen = set()
+    for item in results:
+        source = card_of.get(item["id"])
+        if source is None or source["id"] not in chosen:
+            continue
+        for name in item.get("follows") or []:
+            target = by_name.get(name)
+            if target is None or score_of.get(target["id"], 0) < 5:
+                continue
+            key = (source["id"], target["id"])
+            if key in seen:
+                continue
+            seen.add(key)
+            pairs.append(
+                {
+                    "relation": "follows",
+                    "steps": [
+                        item,
+                        _view(target, info_of.get(target["id"]), score_of[target["id"]]),
+                    ],
+                }
+            )
+    return pairs
 
 
 def _family_index(document: dict) -> tuple[dict, dict]:
