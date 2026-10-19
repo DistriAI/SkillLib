@@ -128,6 +128,79 @@ def llm_namer(client, root: Path):
     return name_family
 
 
+def assign_to_families(document: dict, cards: list[dict]) -> tuple[dict, int]:
+    """File cards that are not already in a family.
+
+    Families that already exist keep their names and their remaining members.
+    A new method skill joins the family in its domain with the most shared
+    words. A new family is opened while the domain has fewer than 30 families.
+    Past that cap the skill joins the general family. Product skills join the
+    product channel.
+    """
+
+    live = {card["id"]: card for card in cards}
+    exact = []
+    for row in document.get("exact") or []:
+        ids = [skill_id for skill_id in row.get("skill_ids") or [] if skill_id in live]
+        if ids:
+            exact.append({**row, "skill_ids": ids})
+    domains = []
+    for domain in document.get("domains") or []:
+        families = []
+        for family in domain.get("families") or []:
+            ids = [skill_id for skill_id in family.get("skill_ids") or [] if skill_id in live]
+            if ids:
+                families.append({**family, "skill_ids": list(ids)})
+        domains.append({**domain, "families": families})
+    filed = {skill_id for row in exact for skill_id in row["skill_ids"]}
+    filed.update(skill_id for domain in domains for family in domain["families"] for skill_id in family["skill_ids"])
+    products = {row["product"] for row in exact}
+    products.update(_products([card for card in cards if card["id"] not in filed]))
+    assigned = 0
+    for card in cards:
+        if card["id"] in filed:
+            continue
+        product = _product_for(card.get("name") or "", products)
+        if product:
+            row = next((item for item in exact if item["product"] == product), None)
+            if row is None:
+                row = {"product": product, "skill_ids": []}
+                exact.append(row)
+            if card["id"] not in row["skill_ids"]:
+                row["skill_ids"] = sorted({*row["skill_ids"], card["id"]})
+            assigned += 1
+            continue
+        domain_name = (card.get("domains") or ["general"])[0]
+        domain = next((item for item in domains if item["name"] == domain_name), None)
+        if domain is None:
+            domain = {"name": domain_name, "families": []}
+            domains.append(domain)
+        family = _best_family(domain["families"], card)
+        if family is None and len(domain["families"]) < _MAX_FAMILIES:
+            opened = _open_family(domain_name, card.get("scenario") or card.get("name") or "general", card)
+            family = next((item for item in domain["families"] if item.get("name") == opened["name"]), None)
+            if family is None:
+                family = opened
+                domain["families"].append(family)
+        if family is None:
+            family = next((item for item in domain["families"] if item.get("name") == "general"), None)
+        if family is None:
+            family = _open_family(domain_name, "general", card)
+            domain["families"].append(family)
+        if card["id"] not in family["skill_ids"]:
+            family["skill_ids"] = sorted({*family["skill_ids"], card["id"]})
+        assigned += 1
+    exact.sort(key=lambda row: row["product"])
+    domains.sort(key=lambda item: item["name"])
+    updated = {
+        **document,
+        "updated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+        "exact": exact,
+        "domains": domains,
+    }
+    return updated, assigned
+
+
 def write_task_families(document: dict, root: Path) -> Path:
     path = root / FAMILIES_PATH
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -219,6 +292,37 @@ def _collapse(cards: list[dict]) -> dict[str, list[dict]]:
         kept.setdefault("general", [])
         kept["general"].extend(rest)
     return kept
+
+
+def _best_family(families: list[dict], card: dict) -> dict | None:
+    tokens = _family_tokens(f"{card.get('name') or ''} {card.get('scenario') or ''}")
+    best = None
+    best_score = 0
+    for family in families:
+        blob = f"{family.get('name') or ''} {family.get('definition') or ''}"
+        score = len(tokens & _family_tokens(blob))
+        if score > best_score or (score == best_score and score > 0 and best is not None and family.get("name", "") < best.get("name", "")):
+            best = family
+            best_score = score
+    return best
+
+
+def _open_family(domain: str, key: str, card: dict) -> dict:
+    named = heuristic_namer(domain, key, [card])
+    return {
+        "id": f"{domain}/{named['name']}",
+        "name": named["name"],
+        "definition": named["definition"],
+        "exemplar_tasks": named["exemplar_tasks"],
+        "discriminator": named["discriminator"],
+        "judge": "heuristic",
+        "skill_ids": [],
+    }
+
+
+def _family_tokens(text: str) -> set[str]:
+    skip = {"skills", "skill", "filed", "under", "the", "and", "for"}
+    return {token for token in re.findall(r"[a-z0-9]+", text.lower()) if len(token) > 2 and token not in skip}
 
 
 def _label(card: dict, depth: int) -> str:

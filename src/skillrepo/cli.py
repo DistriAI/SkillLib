@@ -1,4 +1,4 @@
-"""Command line for searching and visiting skill repositories."""
+"""Command line for searching, retrieving, indexing, and locating skills."""
 
 from __future__ import annotations
 
@@ -6,12 +6,15 @@ import argparse
 import json
 from pathlib import Path
 
+from skillrepo.agent import find_skills, load_skill, render_prompt
 from skillrepo.browse import BROWSE_PATH, default_index_path, load_index, write_browse_site
-from skillrepo.catalog import CATALOG_PATH, Catalog
-from skillrepo.search import search_repositories
+from skillrepo.catalog import CATALOG_PATH
+from skillrepo.index import ModelUnavailable, STATE_PATH, update_index
+from skillrepo.retrieve import download_skills
+from skillrepo.search import add_repository, search_repositories
 from skillrepo.sorting.build import INDEX_PATH, build_skill_index, load_skill_index, save_skill_index, update_skill_index
 from skillrepo.sorting.config import load_judge_config
-from skillrepo.sorting.download import STATUS_PATH, download_shortlist
+from skillrepo.sorting.download import STATUS_PATH
 from skillrepo.sorting.screen import SCREEN_PATH, save_skill_screen, screen_catalog
 from skillrepo.sorting.cards import CARDS_PATH, build_routing_cards, licenses_from_catalog, load_routing_card_map, load_routing_cards, write_routing_cards
 from skillrepo.sorting.enrich import STATUS_PATH as ENRICH_STATUS_PATH
@@ -21,22 +24,51 @@ from skillrepo.sorting.finder import EVAL_PATH, EVAL_REPORT_PATH, Finder, defaul
 from skillrepo.sorting.links import STATUS_PATH as LINK_STATUS_PATH
 from skillrepo.sorting.links import link_cards
 from skillrepo.sorting.llm import LLMClient, LLMError
-from skillrepo.sorting.promptpack import WORKING_SET_EXAMPLE, load_working_set, render_prompt, write_prompt
+from skillrepo.sorting.promptpack import load_working_set, write_prompt
 from skillrepo.visit import visit_repository
+
+_EPILOG = """
+modules:
+  search    search, list, add
+  retrieve  download, visit
+  index     screen, index, cards, enrich, families, link, browse, update
+  agent     find, load, prompt
+"""
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="skillrepo")
+    parser = argparse.ArgumentParser(
+        prog="skillrepo",
+        description="Search skill repositories, index them, and locate a skill for a task.",
+        epilog=_EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
-    search = sub.add_parser("search", help="search GitHub and rewrite the hierarchical catalog")
+    search = sub.add_parser("search", help="search GitHub and write the catalog")
     search.add_argument("--min-stars", type=int, default=1000)
     search.add_argument("--min-skills", type=int, default=5)
     search.add_argument("--jobs", type=int, default=6)
+    search.add_argument("--merge", action="store_true", help="keep repositories already stored and add new matches")
     search.add_argument("--root", type=Path, default=Path.cwd())
 
     show = sub.add_parser("list", help="print the saved catalog")
     show.add_argument("--root", type=Path, default=Path.cwd())
+
+    add = sub.add_parser("add", help="inspect one repository and merge it into the catalog")
+    add.add_argument("repository", help="owner/name")
+    add.add_argument("--min-skills", type=int, default=5)
+    add.add_argument("--jobs", type=int, default=6)
+    add.add_argument("--root", type=Path, default=Path.cwd())
+
+    update = sub.add_parser("update", help="index repositories added since the last update")
+    update.add_argument("--root", type=Path, default=Path.cwd())
+    update.add_argument("--judge", choices=("llm", "heuristic"), default="llm")
+    update.add_argument("--config", type=Path, default=None)
+    update.add_argument("--versions", type=Path, default=None)
+    update.add_argument("--max-clusters", type=int, default=None)
+    update.add_argument("--workers", type=int, default=6)
+    update.add_argument("--timeout", type=float, default=20)
 
     visit = sub.add_parser("visit", help="clone a skill repository as a submodule on first access")
     visit.add_argument("repository", help="owner/name")
@@ -103,9 +135,14 @@ def main(argv: list[str] | None = None) -> int:
             root=args.root,
             min_skills=args.min_skills,
             jobs=args.jobs,
+            merge=args.merge,
         )
         print(format_catalog(catalog.document()))
         return 0
+    if args.command == "add":
+        return _add(args)
+    if args.command == "update":
+        return _update(args)
     if args.command == "list":
         path = args.root / CATALOG_PATH
         if not path.is_file():
@@ -174,7 +211,7 @@ def _download(args) -> int:
         print(f"No screen at {screen_path}. Run: python -m skillrepo screen")
         return 1
     try:
-        status = download_shortlist(
+        status = download_skills(
             args.root,
             workers=args.workers,
             timeout=args.timeout,
@@ -293,17 +330,83 @@ def _families(args) -> int:
     return 0
 
 
-def _finder(args) -> Finder:
-    cards = load_routing_cards(args.root / CARDS_PATH)
-    return Finder(cards, load_families(default_families_path(args.root)))
+def _add(args) -> int:
+    try:
+        catalog = add_repository(
+            args.repository,
+            root=args.root,
+            min_skills=args.min_skills,
+            jobs=args.jobs,
+        )
+    except (LookupError, ValueError) as error:
+        print(error)
+        return 1
+    print(format_catalog(catalog.document()))
+    print("Run: python -m skillrepo update")
+    return 0
+
+
+def _update(args) -> int:
+    versions = None
+    if args.versions is not None:
+        versions = json.loads(args.versions.read_text(encoding="utf-8"))
+    try:
+        summary = update_index(
+            args.root,
+            judge=args.judge,
+            versions=versions,
+            config_path=args.config,
+            max_clusters=args.max_clusters,
+            workers=args.workers,
+            timeout=args.timeout,
+        )
+    except FileNotFoundError as error:
+        print(error)
+        return 1
+    except ModelUnavailable as error:
+        print(error)
+        return 1
+    action = summary["action"]
+    if action == "seeded":
+        print(f"Seeded {args.root / STATE_PATH}")
+        print(
+            f"Repositories {summary.get('repositories', 0)}, "
+            f"occurrences {summary.get('occurrences', 0)}"
+        )
+        print("Nothing new to index.")
+        return 0
+    if action == "idle":
+        print("Nothing new to index.")
+        return 0
+    if action == "model_unavailable":
+        print(summary.get("error") or "Judge model is not usable.")
+        return 1
+    print(
+        f"{action}: added {summary['added']}, removed {summary['removed']}, "
+        f"changed {summary['changed']}"
+    )
+    if summary.get("clusters") is not None:
+        print(f"Name groups {summary['clusters']}")
+    if summary.get("families_assigned") is not None:
+        print(f"Families assigned {summary['families_assigned']}")
+    if summary.get("links_rescanned"):
+        print(f"Links rescanned {summary['links_rescanned']}")
+    if action == "download_incomplete":
+        print(f"Downloads failed {summary.get('failed', 0)}. Run update again to retry those files.")
+        return 2
+    if action == "enrich_incomplete":
+        print(f"Enrichment failed {summary.get('failed', 0)}. Run update again to retry those cards.")
+        return 2
+    print(f"State {args.root / STATE_PATH}")
+    return 0
 
 
 def _find(args) -> int:
     if not (args.root / CARDS_PATH).is_file():
         print(f"No cards at {args.root / CARDS_PATH}. Run: python -m skillrepo cards")
         return 1
-    finder = _finder(args)
     if args.eval:
+        finder = Finder(load_routing_cards(args.root / CARDS_PATH), load_families(default_families_path(args.root)))
         cases = json.loads((args.root / EVAL_PATH).read_text(encoding="utf-8"))
         report = score_eval(finder, cases, limit=args.limit)
         path = args.root / EVAL_REPORT_PATH
@@ -317,7 +420,7 @@ def _find(args) -> int:
         print("Pass a task or --eval.")
         return 1
     constraints = {item.strip() for item in args.constraints.split(",") if item.strip()} or None
-    found = finder.find(args.task, domain=args.domain, constraints=constraints, limit=args.limit)
+    found = find_skills(args.task, root=args.root, domain=args.domain, constraints=constraints, limit=args.limit)
     if not found["cards"]:
         print("No skill card matched.")
         return 0
@@ -335,12 +438,11 @@ def _find(args) -> int:
 
 
 def _prompt(args) -> int:
-    cards = {card["id"]: card for card in load_routing_cards(args.root / CARDS_PATH)}
     working_set = None
     path = args.working_set
     if path is not None:
         working_set = load_working_set(path if path.is_absolute() else args.root / path)
-    text = render_prompt(cards, working_set)
+    text = render_prompt(args.root, working_set)
     out = write_prompt(text, args.root)
     print(text)
     print(f"Wrote {out}")
@@ -368,7 +470,7 @@ def _load(args) -> int:
         print(f"No cards at {args.root / CARDS_PATH}. Run: python -m skillrepo cards")
         return 1
     try:
-        loaded = _finder(args).load(args.root, args.skill_id)
+        loaded = load_skill(args.skill_id, root=args.root)
     except KeyError:
         print(f"No card {args.skill_id}")
         return 1
@@ -502,7 +604,3 @@ def format_catalog(document: dict) -> str:
                 f"skills={repository.get('skill_count', 0)}  domains={domain_text}"
             )
     return "\n".join(lines)
-
-
-def load_catalog(root: Path) -> Catalog:
-    return Catalog.load(root / CATALOG_PATH)

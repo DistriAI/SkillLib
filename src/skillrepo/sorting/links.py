@@ -25,16 +25,21 @@ _FILE = re.compile(r"(?<![\w/])((?:\./)?(?:scripts|references|assets)/[\w./-]+\.
 _MAX = 8
 
 
-def link_cards(cards: list[dict], root: Path, *, progress=None) -> dict:
-    """Add links and applicability to every card. Skill text that is unchanged is not parsed again."""
+def link_cards(cards: list[dict], root: Path, *, progress=None, rescan_names: set[str] | None = None) -> dict:
+    """Add links and applicability to every card. Skill text that is unchanged is not parsed again.
+
+    ``rescan_names`` lists skill names that became known after the last scan.
+    A cached file is parsed again only when its text mentions one of those names.
+    """
 
     root = root.resolve()
     report = progress or (lambda _message: None)
     names = {card.get("name") or "" for card in cards}
+    novel = set(rescan_names or ())
     cache_dir = root / CACHE_DIR
     cache_dir.mkdir(parents=True, exist_ok=True)
     pending = [card for card in cards if (card.get("body") or {}).get("present")]
-    counts = {"bodies": len(pending), "reused": 0, "linked": 0, "gaps": 0}
+    counts = {"bodies": len(pending), "reused": 0, "linked": 0, "gaps": 0, "rescanned": 0}
     done = 0
     for card in cards:
         if not (card.get("body") or {}).get("present"):
@@ -54,6 +59,11 @@ def link_cards(cards: list[dict], root: Path, *, progress=None) -> dict:
             else:
                 cached = _extract_card(card, root, names)
                 path.write_text(json.dumps(cached) + "\n", encoding="utf-8")
+            if reused and novel and _mentions_names(card, root, novel):
+                reused = False
+                cached = _extract_card(card, root, names)
+                path.write_text(json.dumps(cached) + "\n", encoding="utf-8")
+                counts["rescanned"] += 1
             done += 1
             if done == 1 or done % 100 == 0 or done == len(pending):
                 report(f"{done}/{len(pending)} {'reused' if reused else 'linked'} {card.get('name')}")
@@ -191,14 +201,23 @@ def _checked_out(root: Path, repository: str, skill_path: str) -> bool:
     return any(child.name.lower() != "skill.md" for child in directory.iterdir())
 
 
-def _extract_card(card: dict, root: Path, names: set[str]) -> dict:
+def _mentions_names(card: dict, root: Path, names: set[str]) -> bool:
+    text = _body_text(card, root)
+    return any(f"`{name}`" in text for name in names)
+
+
+def _body_text(card: dict, root: Path) -> str:
     chunks = []
     for source in card.get("sources") or []:
         relative = source.get("cache_path")
         if not source.get("present") or not relative:
             continue
         chunks.append((root / relative).read_text(encoding="utf-8", errors="replace"))
-    return extract_links("\n\n".join(chunks), names, card.get("name") or "")
+    return "\n\n".join(chunks)
+
+
+def _extract_card(card: dict, root: Path, names: set[str]) -> dict:
+    return extract_links(_body_text(card, root), names, card.get("name") or "")
 
 
 def _empty_extract() -> dict:
@@ -218,6 +237,7 @@ def _link_summary(cards: list[dict], counts: dict) -> dict:
         "bodies": counts["bodies"],
         "reused": counts["reused"],
         "linked": counts["linked"],
+        "rescanned": counts.get("rescanned", 0),
         "with_requires": 0,
         "with_alternative": 0,
         "with_follows": 0,

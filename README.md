@@ -11,6 +11,46 @@ The catalog is stored as a tree in `catalog/skill_repositories.json`:
 - for a collection, the repositories it indexes
 - for a skill repository, domain, then skill
 
+The catalog above 1,000 stars is the starting collection. Later repositories are merged into that file, and `update` rebuilds only the name groups, cards, families, and links that the new skill files affect.
+
+## Modules
+
+Four modules cover the pipeline. The functions are importable, and the same actions are shell commands.
+
+| Module | Function | Command |
+|---|---|---|
+| Search | `search_repositories`, `add_repository`, `load_catalog` | `search`, `add`, `list` |
+| Retrieval | `download_skills`, `visit_repository` | `download`, `visit` |
+| Indexing | `update_index` | `update`, plus `screen`, `index`, `cards`, `enrich`, `families`, `link`, `browse` |
+| Agent use | `find_skills`, `load_skill`, `render_prompt` | `find`, `load`, `prompt` |
+
+`docs/interface.md` lists every function, the file it reads, and the file it writes.
+
+Add one repository, then fold it into the index:
+
+```bash
+python -m skillrepo add owner/name
+python -m skillrepo update
+```
+
+```python
+from skillrepo import add_repository, find_skills, load_skill, update_index
+
+add_repository("owner/name")
+summary = update_index()
+found = find_skills("Run GSEA on a ranked gene list")
+if found["cards"]:
+    loaded = load_skill(found["cards"][0]["id"])
+```
+
+`update` records progress in `catalog/index_state.json`. The first run on this repository records the current catalog and prints `Nothing new to index.` A later run screens a name group again only when a skill file was added, removed, or its stored text changed. A downloaded file, a saved judge decision, and an existing family name stay in place. A new method skill joins the closest family in its domain. A cached skill file is parsed again for links only when it mentions a skill name that was added after the last scan.
+
+`search --merge` adds repositories from a GitHub search without dropping the ones already stored:
+
+```bash
+python -m skillrepo search --min-stars 1000 --merge
+```
+
 ## Plan
 
 Catalog stages 1–7 are done. The model index was written at `2026-10-16T08:29:21+00:00`.
@@ -160,9 +200,10 @@ Search GitHub and write the catalog. `--min-stars` keeps repositories with stric
 
 ```bash
 python -m skillrepo search --min-stars 1000 --min-skills 5 --jobs 6
+python -m skillrepo search --min-stars 500 --merge
 ```
 
-Writes `catalog/skill_repositories.json` and `catalog/search_report.json`. This replaces the catalog.
+Writes `catalog/skill_repositories.json` and `catalog/search_report.json`. Without `--merge`, the catalog is replaced by this search. With `--merge`, repositories already stored stay, and matches from this search are added. The saved star cutoff becomes the lower of the two searches.
 
 ### list
 
@@ -171,6 +212,34 @@ Print the saved catalog. It does not contact GitHub.
 ```bash
 python -m skillrepo list
 ```
+
+### add
+
+Inspect one `owner/name` repository and merge it into the catalog. This does not run a GitHub search. A repository that is already stored is refreshed. The saved star cutoff stays as it was, so a repository below that cutoff can still be added by name.
+
+```bash
+python -m skillrepo add owner/name
+python -m skillrepo add owner/name --min-skills 5
+```
+
+Exit code 1 means the repository is a specification, a skill tool, or has fewer than `--min-skills` skill files. After a successful add, run `update`.
+
+### update
+
+Index skill files added, removed, or edited since `catalog/index_state.json`.
+
+```bash
+python -m skillrepo update
+python -m skillrepo update --judge heuristic
+```
+
+The first run against the finished catalog writes the state file and does no indexing. The next run prints `Nothing new to index` when the catalog and the stored skill files are unchanged.
+
+`--judge llm` is the default. It asks the model only about name groups that gained or lost a copy, then fills new thin cards. `--judge heuristic` ranks those groups from repository metadata and skips the model. `--max-clusters`, `--config`, `--versions`, `--workers`, and `--timeout` match `index` and `download`.
+
+Exit code 0 means the state file now matches the catalog. Exit code 1 means the catalog is missing or the judge model did not answer. Exit code 2 means a download or an enrichment failed; the state file is left unchanged, and the same command retries that work.
+
+`find`, `load`, and `prompt` read the files `update` writes. They are not part of `update`. Run `browse` when you want the HTML shelf refreshed.
 
 ### screen
 

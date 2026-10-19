@@ -124,30 +124,62 @@ def load_screened_clusters(path: Path) -> list[ScreenedCluster]:
     """Rebuild the shortlist from ``catalog/skill_screen.json``."""
 
     document = json.loads(path.read_text(encoding="utf-8"))
-    clusters: list[ScreenedCluster] = []
-    for raw in document.get("clusters") or []:
-        occurrences = [_occurrence(item) for item in raw.get("occurrences") or []]
-        by_id = {item.occurrence_id: item for item in occurrences}
-        copies = []
-        for item in raw.get("copies") or []:
-            copies.append(
-                ScreenedCopy(
-                    by_id[item["occurrence_id"]],
-                    float(item.get("score") or 0),
-                    list(item.get("reasons") or []),
-                    bool(item.get("include_content")),
-                )
-            )
-        clusters.append(
-            ScreenedCluster(
-                name=raw["name"],
-                occurrences=occurrences,
-                copies=copies,
-                adapters=[by_id[item] for item in raw.get("adapter_ids") or [] if item in by_id],
-                needs_llm=bool(raw.get("needs_llm")),
+    return [cluster_from_record(raw) for raw in document.get("clusters") or []]
+
+
+def merge_screen(
+    previous: dict | None,
+    catalog: dict,
+    affected: set[str],
+    versions: dict[str, str] | None = None,
+    *,
+    max_variants: int = 4,
+    source_catalog: str = "catalog/skill_repositories.json",
+) -> dict:
+    """Rescreen name groups that gained or lost a copy and keep the other groups."""
+
+    groups = _clusters(occurrences_from_catalog(catalog))
+    current = {group[0].normalized_name for group in groups}
+    fresh = [
+        screen_cluster(group, versions, max_variants=max_variants)
+        for group in groups
+        if group[0].normalized_name in affected
+    ]
+    kept = [
+        cluster_from_record(raw)
+        for raw in (previous or {}).get("clusters") or []
+        if raw.get("name") in current and raw.get("name") not in affected
+    ]
+    return screen_document(
+        kept + fresh,
+        source_catalog=source_catalog,
+        catalog_updated_at=catalog.get("updated_at") or "",
+        max_variants=max_variants,
+    )
+
+
+def cluster_from_record(raw: dict) -> ScreenedCluster:
+    """Rebuild one screened name group from the saved screen document."""
+
+    occurrences = [_occurrence(item) for item in raw.get("occurrences") or []]
+    by_id = {item.occurrence_id: item for item in occurrences}
+    copies = []
+    for item in raw.get("copies") or []:
+        copies.append(
+            ScreenedCopy(
+                by_id[item["occurrence_id"]],
+                float(item.get("score") or 0),
+                list(item.get("reasons") or []),
+                bool(item.get("include_content")),
             )
         )
-    return clusters
+    return ScreenedCluster(
+        name=raw["name"],
+        occurrences=occurrences,
+        copies=copies,
+        adapters=[by_id[item] for item in raw.get("adapter_ids") or [] if item in by_id],
+        needs_llm=bool(raw.get("needs_llm")),
+    )
 
 
 def screen_document(

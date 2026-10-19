@@ -34,11 +34,14 @@ def search_repositories(
     client: GitHubClient | None = None,
     fetcher: ContentFetcher | None = None,
     log: Log = print,
+    merge: bool = False,
 ) -> Catalog:
     """Find skill repositories and collections above ``min_stars`` and store them.
 
     The star threshold is exclusive: ``min_stars=1000`` keeps repositories with
-    more than 1000 stars. The catalog is rewritten from this search.
+    more than 1000 stars. The default replaces the saved catalog with this
+    search. ``merge=True`` keeps repositories already stored and adds the ones
+    this search accepted.
     """
 
     root = (root or Path.cwd()).resolve()
@@ -53,8 +56,110 @@ def search_repositories(
         github.log = log
     candidates = [meta for meta in github.search(queries) if meta.stars > min_stars]
     log(f"Search returned {len(candidates)} unique repositories")
+    found, excluded, stats = _inspect(
+        candidates,
+        min_stars=min_stars,
+        min_skills=min_skills,
+        jobs=jobs,
+        queries=queries,
+        content=content,
+        log=log,
+    )
+    catalog_path = root / CATALOG_PATH
+    merging = merge and catalog_path.is_file()
+    added: list[str] = []
+    if merging:
+        catalog = Catalog.load(catalog_path)
+        added = catalog.merge(found, adopt_threshold=True)
+        log(f"Merged {len(added)} repositories into the saved catalog")
+    else:
+        catalog = found
+    catalog.save(catalog_path)
+    _write_report(
+        root / REPORT_PATH,
+        candidates=stats["candidates"],
+        inspected=stats["inspected"],
+        skipped=stats["skipped"],
+        catalog=catalog,
+        excluded=excluded,
+        merged=merging,
+        added=added,
+    )
+    log(
+        "Kept "
+        f"{len(catalog.skill_repositories())} skill repositories and "
+        f"{len(catalog.collections())} collections"
+    )
+    log(f"Wrote {catalog_path}")
+    return catalog
 
-    catalog = Catalog(min_stars=min_stars, min_skills=min_skills, queries=queries)
+
+def add_repository(
+    full_name: str,
+    *,
+    root: Path | None = None,
+    min_skills: int = MIN_SKILLS,
+    jobs: int = 6,
+    client: GitHubClient | None = None,
+    fetcher: ContentFetcher | None = None,
+    log: Log = print,
+) -> Catalog:
+    """Inspect one ``owner/name`` repository and merge it into the saved catalog.
+
+    This does not run a GitHub search. A repository that is already stored is
+    replaced by the fresh inspection. The star cutoff of an existing catalog
+    stays as it was.
+    """
+
+    if full_name.count("/") != 1:
+        raise ValueError(f"invalid repository id: {full_name}")
+    root = (root or Path.cwd()).resolve()
+    cache_dir = root / ".cache" / "github"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    github = client or GitHubClient(cache_dir)
+    content = fetcher or ContentFetcher(cache_dir, jobs=jobs, budget=CoreBudget())
+    if client is None:
+        github.log = log
+    meta = github.repository(full_name)
+    found, excluded, _stats = _inspect(
+        [meta],
+        min_stars=0,
+        min_skills=min_skills,
+        jobs=jobs,
+        queries=[],
+        content=content,
+        log=log,
+        force_list=True,
+    )
+    if found.get(full_name) is None:
+        reason = excluded[0]["reason"] if excluded else "not a skill-content repository"
+        raise LookupError(f"{full_name}: {reason}")
+    catalog_path = root / CATALOG_PATH
+    if catalog_path.is_file():
+        catalog = Catalog.load(catalog_path)
+    else:
+        catalog = Catalog(min_stars=0, min_skills=min_skills, queries=[])
+    added = catalog.merge(found)
+    catalog.save(catalog_path)
+    log(f"{'Added' if added else 'Updated'} {full_name}")
+    log(f"Wrote {catalog_path}")
+    return catalog
+
+
+def _inspect(
+    candidates: list[RepoMeta],
+    *,
+    min_stars: int,
+    min_skills: int,
+    jobs: int,
+    queries: list[str],
+    content: ContentFetcher,
+    log: Log,
+    force_list: bool = False,
+) -> tuple[Catalog, list[dict], dict]:
+    """Classify candidates and return a catalog, exclusions, and counts."""
+
+    catalog = Catalog(min_stars=min_stars, min_skills=min_skills, queries=list(queries))
     for meta in candidates:
         catalog.remember_name(meta.full_name)
 
@@ -68,7 +173,7 @@ def search_repositories(
         if is_skill_mechanism(meta):
             _exclude(excluded, meta, "skill mechanism or tooling, not skill content")
             continue
-        if worth_file_listing(meta):
+        if force_list or worth_file_listing(meta):
             to_list.append(meta)
         else:
             skipped += 1
@@ -106,23 +211,8 @@ def search_repositories(
             _exclude(excluded, meta, decision.reason)
             continue
         _add_decision(catalog, meta, decision)
-
-    catalog.save(root / CATALOG_PATH)
-    _write_report(
-        root / REPORT_PATH,
-        candidates=len(candidates),
-        inspected=len(to_list),
-        skipped=skipped,
-        catalog=catalog,
-        excluded=excluded,
-    )
-    log(
-        "Kept "
-        f"{len(catalog.skill_repositories())} skill repositories and "
-        f"{len(catalog.collections())} collections"
-    )
-    log(f"Wrote {root / CATALOG_PATH}")
-    return catalog
+    stats = {"candidates": len(candidates), "inspected": len(to_list), "skipped": skipped}
+    return catalog, excluded, stats
 
 
 def _frontmatter_states(content: ContentFetcher, metas: list[RepoMeta], listings: dict, jobs: int) -> dict[str, str]:
@@ -201,7 +291,17 @@ def _exclude(excluded: list[dict], meta: RepoMeta, reason: str) -> None:
     )
 
 
-def _write_report(path: Path, *, candidates: int, inspected: int, skipped: int, catalog: Catalog, excluded: list[dict]) -> None:
+def _write_report(
+    path: Path,
+    *,
+    candidates: int,
+    inspected: int,
+    skipped: int,
+    catalog: Catalog,
+    excluded: list[dict],
+    merged: bool = False,
+    added: list[str] | None = None,
+) -> None:
     import json
 
     excluded.sort(key=lambda item: (-item["stars"], item["full_name"].lower()))
@@ -211,6 +311,8 @@ def _write_report(path: Path, *, candidates: int, inspected: int, skipped: int, 
         "skipped_unrelated": skipped,
         "skill_repositories": len(catalog.skill_repositories()),
         "collections": len(catalog.collections()),
+        "merged": merged,
+        "added": list(added or []),
         "excluded": excluded[:300],
     }
     path.parent.mkdir(parents=True, exist_ok=True)

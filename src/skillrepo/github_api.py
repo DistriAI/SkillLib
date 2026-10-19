@@ -110,6 +110,23 @@ class GitHubClient:
             self._last_search = time.monotonic()
         return payload
 
+    def repository(self, full_name: str) -> RepoMeta:
+        """Fetch metadata for one ``owner/name`` repository."""
+
+        if full_name.count("/") != 1:
+            raise ValueError(f"invalid repository id: {full_name}")
+        cache_path = self.cache_dir / "repos" / f"{full_name.replace('/', '__')}.json"
+        cached = _read_json(cache_path)
+        if cached is None:
+            _status, _headers, body = request(f"https://api.github.com/repos/{full_name}", timeout=45)
+            cached = json.loads(body.decode("utf-8"))
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            cache_path.write_text(json.dumps(cached), encoding="utf-8")
+        meta = _meta_from_item(cached, from_topic_query=False)
+        if meta is None:
+            raise ValueError(f"invalid repository id: {full_name}")
+        return meta
+
     def _pace_search(self) -> None:
         elapsed = time.monotonic() - self._last_search
         if self._last_search and elapsed < self.min_interval:

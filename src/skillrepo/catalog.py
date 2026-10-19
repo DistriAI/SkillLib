@@ -73,6 +73,34 @@ class Catalog:
             return self._repositories[key]
         return self._collections.get(key)
 
+    def merge(self, other: Catalog, *, adopt_threshold: bool = False) -> list[str]:
+        """Insert repositories and collections from ``other``.
+
+        An existing record is replaced by the incoming one. The returned names
+        were absent before this call. ``adopt_threshold`` keeps the lower star
+        cutoff and the union of the search queries, which a merged search uses.
+        """
+
+        added: list[str] = []
+        seen: set[str] = set()
+        for repository in other.skill_repositories():
+            if self.get(repository.full_name) is None:
+                added.append(repository.full_name)
+                seen.add(repository.full_name.lower())
+            self.add_skill_repository(repository)
+        for collection in other.collections():
+            key = collection.full_name.lower()
+            if key not in self._collections and key not in seen:
+                added.append(collection.full_name)
+            self.add_collection(collection)
+        if adopt_threshold:
+            self.min_stars = min(self.min_stars, other.min_stars)
+            for query in other.queries:
+                if query not in self.queries:
+                    self.queries.append(query)
+        self.link_references()
+        return added
+
     def link_references(self) -> None:
         """Attach stars and qualification to repositories named by collections."""
 
@@ -240,6 +268,13 @@ def _ref_from_dict(raw: dict) -> RepoRef:
         qualified=bool(raw.get("qualified")),
         kind=raw.get("kind") or "referenced",
     )
+
+
+def load_catalog(root: Path | None = None) -> Catalog:
+    """Load ``catalog/skill_repositories.json`` from ``root``."""
+
+    root = (root or Path.cwd()).resolve()
+    return Catalog.load(root / CATALOG_PATH)
 
 
 def _now() -> str:
