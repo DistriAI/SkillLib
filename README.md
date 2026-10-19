@@ -13,7 +13,9 @@ The catalog is stored as a tree in `catalog/skill_repositories.json`:
 
 ## Plan
 
-Status as of the model index written at `2026-10-16T08:29:21+00:00`.
+Catalog stages 1–7 are done. The model index was written at `2026-10-16T08:29:21+00:00`.
+
+The locator stages 8–13 are a suggested plan and are not finalized. Routing cards were written at `2026-10-16T18:35:42+00:00`. Stages 9–13 have not been started. Adjust this list before those stages run.
 
 ### 1. Collect repositories — done
 
@@ -50,6 +52,70 @@ Status as of the model index written at `2026-10-16T08:29:21+00:00`.
 ### 7. Write the model index — done
 
 - Replace `catalog/skill_index.json` after judging and placement both finish. Done. 21,516 leading skills: 4,994 authentic, 797 combined, 15,725 separate.
+
+## Locator plan
+
+Suggested, not finalized. This sits on the finished index. Each stage writes a file the next stage reads. A rerun resumes from what is already on disk.
+
+Review points, in order: the card fields, a sample of thin cards, the family list, then the first retrieval scores. Change a stage's output before the next stage runs.
+
+### 8. Routing cards — done
+
+- Freeze card schema version 1. Done.
+- Write one card per leading skill from the index and the cached `SKILL.md` files. No model call. Done. `catalog/routing_cards.jsonl`, 21,516 cards.
+- A rerun keeps extracted text when the schema version and the body hash are unchanged, and refreshes placement and provenance from the index. Checked. The second run reused all 21,516 cards.
+- Write a coverage report. Done. `catalog/routing_card_report.json`.
+
+Coverage of that run:
+
+| | Cards | Cached body | Description | Negative scope |
+|---|---:|---:|---:|---:|
+| separate | 15,725 | 0 | 0 | 0 |
+| authentic | 4,994 | 1,586 | 1,585 | 273 |
+| combined | 797 | 797 | 796 | 435 |
+
+2,383 cards have a cached body. Among those, 1,050 have a positive scope, 708 a negative scope, 93 inputs, 347 outputs, and 1,061 a precondition. The other 19,133 cards have a name, domain, scenario, and repository, and an empty description and scope. Separate skills were not part of the judging download, so their skill files are not in `cache/skills/`.
+
+### 9. Fill thin cards — not done
+
+- Call the local model only for cards that have a body and are missing a description, a negative scope, or inputs and outputs.
+- Review a sample of about 50 cards before a full run.
+- Cache each result by schema version and body hash. Retry failures. Do not overwrite a saved result.
+- Merge filled fields back into `catalog/routing_cards.jsonl` and refresh the coverage report.
+
+Blocked on a decision about the 19,133 cards with no body. Filling them needs those `SKILL.md` files. Stage 8 does not download them.
+
+### 10. Task families — not done
+
+- Split product and API skills into an exact-name channel. Cluster the remaining method skills inside each domain.
+- Aim for about 10–30 families per domain. Give each family a name, a one-sentence definition, two exemplar tasks, and a one-line discriminator between its skills.
+- Write `catalog/task_families.json` and a family page in the HTML browser.
+- Raw scenarios stay in the index and the current HTML shelf.
+
+The family list is a review point. Rename, merge, or split it before retrieval uses it.
+
+### 11. Finder — not done
+
+- `find_skills(task, constraints)` returns a few cards. Rank an exact product token first, then a domain filter, then a lexical match, then a family match. Penalize a negative scope that matches the task, and a precondition the caller does not have.
+- `load_skill(id)` returns the cached `SKILL.md`. It reports bundled scripts as unavailable.
+- Add `python -m skillrepo find`.
+- Score the finder on a hand-labeled set of about 40 tasks in `catalog/find_eval.json`, including a product-name task, a method task, a negative-scope rejection, and a task no skill fits.
+
+### 12. Prompt contract and working set — not done
+
+- Write a stable prompt fragment: one sentence per domain, an instruction to call `find_skills` before deciding that no skill applies, and a cap on how many bodies may be loaded.
+- The tool result is the card, plus the family name. A combined skill includes its conflict note.
+- A working-set file lists skill ids for one project. Those ids are rendered as name plus description.
+- Document the two calls in this file.
+
+The integration stays a library and a command. Wiring a specific agent host waits until `find` scores well on the eval set.
+
+### 13. Links, applicability, and checkout — not done
+
+- Add `requires`, `alternative`, and `follows` when one skill body names another skill.
+- Let `find_skills` return an ordered pair when a `follows` link matches a two-step task.
+- When a card names bundled files, check whether `visit` has checked out that repository. Report the gap instead of loading a procedure the agent cannot run.
+- Full checkout stays `python -m skillrepo visit owner/name`, used for a skill the agent actually selected.
 
 ## Skill domains
 
