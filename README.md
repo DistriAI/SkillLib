@@ -15,7 +15,7 @@ The catalog is stored as a tree in `catalog/skill_repositories.json`:
 
 Catalog stages 1–7 are done. The model index was written at `2026-10-16T08:29:21+00:00`.
 
-The locator stages 8–13 are a suggested plan and are not finalized. Routing cards were written at `2026-10-16T18:35:42+00:00`. Stages 9–13 have not been started. Adjust this list before those stages run.
+The locator stages 8–13 are a suggested plan and are not finalized. Stages 8–12 finished in tmux session `skillrepo-locate` with exit code 0. The enriched cards were written at `2026-10-19T11:21:26+00:00`. Stage 13 has not been started.
 
 ### 1. Collect repositories — done
 
@@ -76,39 +76,41 @@ Coverage of that run:
 
 2,383 cards have a cached body. Among those, 1,050 have a positive scope, 708 a negative scope, 93 inputs, 347 outputs, and 1,061 a precondition. The other 19,133 cards have a name, domain, scenario, and repository, and an empty description and scope. Separate skills were not part of the judging download, so their skill files are not in `cache/skills/`.
 
-### 9. Fill thin cards — not done
+### 9. Fill thin cards — done
 
 - Call the local model only for cards that have a body and are missing a description, a negative scope, or inputs and outputs.
 - Review a sample of about 50 cards before a full run.
 - Cache each result by schema version and body hash. Retry failures. Do not overwrite a saved result.
 - Merge filled fields back into `catalog/routing_cards.jsonl` and refresh the coverage report.
 
-Blocked on a decision about the 19,133 cards with no body. Filling them needs those `SKILL.md` files. Stage 8 does not download them.
+Done. 2,175 thin cards filled, 0 failed. Every card with a cached body now has a description: 2,383 descriptions, 2,379 positive scopes, 1,115 negative scopes, 2,177 inputs, 2,280 outputs. The 19,133 cards with no cached body were left unchanged.
 
-### 10. Task families — not done
+### 10. Task families — done
 
 - Split product and API skills into an exact-name channel. Cluster the remaining method skills inside each domain.
 - Aim for about 10–30 families per domain. Give each family a name, a one-sentence definition, two exemplar tasks, and a one-line discriminator between its skills.
 - Write `catalog/task_families.json` and a family page in the HTML browser.
 - Raw scenarios stay in the index and the current HTML shelf.
 
-The family list is a review point. Rename, merge, or split it before retrieval uses it.
+Done. 389 families across 13 domains, all named by the model, and 964 product channels. `catalog/task_families.json` and `html/families/index.html`. The family list is still a review point. Rename, merge, or split it if a family is too broad.
 
-### 11. Finder — not done
+### 11. Finder — done
 
 - `find_skills(task, constraints)` returns a few cards. Rank an exact product token first, then a domain filter, then a lexical match, then a family match. Penalize a negative scope that matches the task, and a precondition the caller does not have.
 - `load_skill(id)` returns the cached `SKILL.md`. It reports bundled scripts as unavailable.
 - Add `python -m skillrepo find`.
 - Score the finder on a hand-labeled set of about 40 tasks in `catalog/find_eval.json`, including a product-name task, a method task, a negative-scope rejection, and a task no skill fits.
 
-### 12. Prompt contract and working set — not done
+Done. 36 of 40 tasks passed. The four misses are `skill-creator`, `agentic-actions-auditor`, `ai-pipeline-orchestration`, and the origami task, which still returned journal table-and-figure skills. Report: `catalog/find_eval_report.json`.
+
+### 12. Prompt contract and working set — done
 
 - Write a stable prompt fragment: one sentence per domain, an instruction to call `find_skills` before deciding that no skill applies, and a cap on how many bodies may be loaded.
 - The tool result is the card, plus the family name. A combined skill includes its conflict note.
 - A working-set file lists skill ids for one project. Those ids are rendered as name plus description.
 - Document the two calls in this file.
 
-The integration stays a library and a command. Wiring a specific agent host waits until `find` scores well on the eval set.
+Done. `catalog/skill_prompt.txt`, using `catalog/working_set.example.json` (`gsea` and `pdf`). The integration stays a library and a command. Wiring a specific agent host is not done.
 
 ### 13. Links, applicability, and checkout — not done
 
@@ -220,6 +222,60 @@ python -m skillrepo index --judge llm --max-clusters 20
 `--stage judge` compares the overlapping skills and writes `.cache/judge/decisions/`. It reads `SKILL.md` text from `cache/skills/` when that file is already stored. It does not place the remaining skills and does not replace `catalog/skill_index.json`. Run the same command again to retry only clusters that have no saved decision.
 
 A saved decision under `.cache/judge/decisions/` is reused. A cluster that failed is not saved, so the next run retries it. Domain placement for skills the content judge did not locate is cached under `.cache/judge/semantics/`. The index file is replaced only when the run finishes.
+
+### cards
+
+Extract one routing card per leading skill from `cache/skills/`. This does not call the model.
+
+```bash
+python -m skillrepo cards
+```
+
+Writes `catalog/routing_cards.jsonl` and `catalog/routing_card_report.json`. A card whose skill text is unchanged is not parsed again.
+
+### enrich
+
+Fill thin cards that already have a cached `SKILL.md` and are missing a description, a negative scope, or both inputs and outputs. The model is the endpoint in `catalog/judge_config.json`. Cards with no cached body are left unchanged. A saved extraction under `.cache/judge/cards/` is reused. A failed call is retried on the next run.
+
+```bash
+python -m skillrepo enrich
+python -m skillrepo enrich --max-cards 50
+```
+
+Writes the cards file again, refreshes `catalog/routing_card_report.json`, and records progress in `catalog/enrich_status.json`. Exit code 2 means some calls failed.
+
+### families
+
+Put product skills such as `gmail-automation` on an exact name channel. Collapse the other skills in each domain into at most 30 families. `--name-with heuristic` skips the model.
+
+```bash
+python -m skillrepo families
+python -m skillrepo families --name-with heuristic
+```
+
+Writes `catalog/task_families.json` and `html/families/index.html`. A saved family name under `.cache/judge/families/` is reused.
+
+### find
+
+Return a few routing cards for a task. `load` prints the cached skill text for one card id and whether bundled scripts are checked out.
+
+```bash
+python -m skillrepo find "Run GSEA on a ranked gene list"
+python -m skillrepo find --eval
+python -m skillrepo load combined::gsea
+```
+
+`--eval` scores `catalog/find_eval.json` and writes `catalog/find_eval_report.json`.
+
+### prompt
+
+Write the resident prompt: one sentence per domain, the instruction to call `find_skills` before deciding that no skill applies, and a cap of 3 loaded bodies. `--working-set` adds name and description lines for pinned skill ids.
+
+```bash
+python -m skillrepo prompt --working-set catalog/working_set.example.json
+```
+
+Writes `catalog/skill_prompt.txt`.
 
 ### browse
 

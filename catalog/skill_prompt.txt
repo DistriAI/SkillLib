@@ -1,0 +1,27 @@
+Skill library
+
+Domains:
+- agent-tooling: Tools, memory, orchestration, and other machinery an agent uses to do its own work.
+- business: Company research, operations, finance, and planning.
+- data: Tables, databases, scraping, and data preparation.
+- design: Interface, brand, and visual design.
+- devops: Build, release, infrastructure, and runtime operations.
+- documents: Files and formats such as PDF, Markdown, and office documents.
+- general: Tasks that do not sit clearly in another domain.
+- marketing: Campaigns, audiences, and customer messaging.
+- media: Image, audio, and video production.
+- research: Literature, writing, and scholarly workflows.
+- science: Scientific analysis, including biology, chemistry, and clinical methods.
+- security: Security review, hardening, and offensive techniques. Treat these as sensitive.
+- software-engineering: Designing, writing, testing, and reviewing software.
+
+Before you decide that no skill applies, call find_skills with the user's task.
+Load at most 3 skill bodies with load_skill, and only after a card matches.
+Follow the loaded procedure. When a card is a combined skill, its conflict_note names the disagreement; follow that note instead of picking a peer at random.
+
+find_skills(task, constraints) returns a few cards. Each card has name, description, positive_scope, negative_scope, inputs, outputs, preconditions, kind, family, and conflict_note.
+load_skill(id) returns the skill text. scripts_checked_out is false when the repository checkout does not contain the bundled scripts.
+
+Working set:
+- gsea: Tests a ranked gene vector for coordinated expression shifts in GO, KEGG, Reactome, or MSigDB gene sets with clusterProfiler's gseGO, gseKEGG, gsePathway, and GSEA (fgseaMultilevel engine), and scores per-sample pathway activity with ssGSEA and GSVA. Covers why a GSEA result is…
+- pdf: Use this skill whenever the user wants to do anything with PDF files. This includes reading or extracting text/tables from PDFs, combining or merging multiple PDFs into one, splitting PDFs apart, rotating pages, adding watermarks, creating new PDFs, filling PDF forms, encrypting…
