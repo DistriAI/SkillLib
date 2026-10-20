@@ -375,3 +375,7 @@ Clone one repository as a git submodule for later `git submodule update`. The fi
 ```bash
 python -m skillrepo visit anthropics/skills
 ```
+
+## License
+
+This project is released under the [MIT License](LICENSE). Skill files collected from other repositories keep the license recorded for each repository in the catalog.
