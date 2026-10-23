@@ -2,7 +2,7 @@
 
 The public overview is the [README](../README.md). The hosted page is [index.html](index.html).
 
-Run commands from the repository root with `PYTHONPATH=src`. The same actions are available as functions imported from `skilllib`.
+Install with `python -m pip install -e .` from the repository root, then run `skilllib`. The same commands work without installing, as `PYTHONPATH=src python -m skilllib`. Either way, run them from the repository root. The same actions are available as functions imported from `skilllib`.
 
 The catalog built from repositories with more than 1,000 stars stays in `catalog/skill_repositories.json`. Later repositories are merged into that file. `update_index` then refreshes only the name groups those repositories change.
 

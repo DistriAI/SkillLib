@@ -8,6 +8,28 @@ MIT · Python 3.11+ · no third-party dependencies · [project page](docs/index.
 
 ![Search, judge, index, and use](docs/assets/flow.svg)
 
+## Install
+
+Python 3.11 or newer. SkillLib has no runtime dependencies.
+
+Clone the repository and install the package. Commands and the Python functions read `catalog/` from the current directory, so run them from the repository root. The routing cards and task families are already in the clone, so a search works as soon as the package is installed.
+
+```bash
+git clone https://github.com/DistriAI/SkillLib.git
+cd SkillLib
+python -m pip install -e .
+skilllib find "Run GSEA on a ranked gene list"
+```
+
+To use the checkout without installing it:
+
+```bash
+export PYTHONPATH=src
+python -m skilllib find "Run GSEA on a ranked gene list"
+```
+
+`search`, `add`, and `update` call GitHub. `visit` checks a repository out with git. Judging a new overlap with a model uses the OpenAI-compatible endpoint in `catalog/judge_config.json` (`SKILLLIB_LLM_BASE_URL`, `SKILLLIB_LLM_MODEL`, and `SKILLLIB_LLM_API_KEY` override it). `update --judge heuristic` judges from the repository metadata alone.
+
 ## The library
 
 The catalog is the public skill-content repositories with more than 1,000 GitHub stars, indexed on 16 October 2026. A match is a repository full of task skills (`SKILL.md`), or a curated collection that points at those repositories. Skill specifications, skill SDKs, and agent products are left out.
@@ -37,10 +59,9 @@ skill = load_skill(found["cards"][0]["id"])
 ```
 
 ```bash
-export PYTHONPATH=src
-python -m skilllib find "Run GSEA on a ranked gene list"
-python -m skilllib load combined::gsea
-python -m skilllib prompt --working-set catalog/working_set.example.json
+skilllib find "Run GSEA on a ranked gene list"
+skilllib load combined::gsea
+skilllib prompt --working-set catalog/working_set.example.json
 ```
 
 `find_skills` returns a few cards for the task: name, description, when to use the skill, when not to, and where it came from. `load_skill` returns the procedure. `render_prompt` writes the standing prompt: one sentence for each of the 13 domains, an instruction to search before deciding that no skill applies, and a cap of three loaded bodies.
@@ -89,7 +110,7 @@ python -m skilllib families --name-with heuristic
 
 ## Commands
 
-Run these from the repository root. Full arguments are in [docs/interface.md](docs/interface.md). The stage log for the first catalog is in [docs/history.md](docs/history.md).
+Run these from the repository root as `skilllib <command>`, or as `python -m skilllib <command>`. Full arguments are in [docs/interface.md](docs/interface.md). The stage log for the first catalog is in [docs/history.md](docs/history.md).
 
 | Command | What it does |
 |---|---|
