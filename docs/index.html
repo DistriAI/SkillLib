@@ -90,6 +90,8 @@
     .bars { display: grid; gap: 0.45rem; margin-top: 1.2rem; }
     .bar { display: grid; grid-template-columns: 11.5rem 1fr 4.2rem; gap: 0.7rem; align-items: center; font-size: 0.95rem; }
     .bar i { display: block; height: 0.55rem; background: var(--stamp); }
+    .bar a { color: inherit; text-decoration: none; }
+    .bar a:hover { color: var(--stamp); }
     .bar b { font-weight: 500; text-align: right; }
     .note { color: var(--muted); }
     .places { display: flex; flex-wrap: wrap; gap: 0.7rem; margin: 1.5rem 0 0; }
@@ -219,22 +221,23 @@ python -m skilllib load combined::gsea</code></pre>
       <section id="domains">
         <h2>Thirteen shelves</h2>
         <p>Every leading skill has one domain and one scenario. Research is the largest shelf. Documents is the smallest. An agent can pass a domain into <code>find_skills</code> and search only that shelf.</p>
+        <p>Open a domain, then its <a href="library/families/index.html">task families</a>. A family lists skill cards. A card opens the skill page.</p>
         <div class="bars" aria-label="Leading skills by domain">
-          <div class="bar"><span>research</span><i style="width:100%"></i><b>4,997</b></div>
-          <div class="bar"><span>science</span><i style="width:48.9%"></i><b>2,446</b></div>
-          <div class="bar"><span>software-engineering</span><i style="width:42.9%"></i><b>2,146</b></div>
-          <div class="bar"><span>business</span><i style="width:42.7%"></i><b>2,134</b></div>
-          <div class="bar"><span>security</span><i style="width:35.8%"></i><b>1,787</b></div>
-          <div class="bar"><span>agent-tooling</span><i style="width:29.6%"></i><b>1,478</b></div>
-          <div class="bar"><span>marketing</span><i style="width:27%"></i><b>1,347</b></div>
-          <div class="bar"><span>devops</span><i style="width:22.1%"></i><b>1,106</b></div>
-          <div class="bar"><span>general</span><i style="width:20.4%"></i><b>1,020</b></div>
-          <div class="bar"><span>data</span><i style="width:17.8%"></i><b>889</b></div>
-          <div class="bar"><span>design</span><i style="width:17.5%"></i><b>872</b></div>
-          <div class="bar"><span>media</span><i style="width:13.4%"></i><b>671</b></div>
-          <div class="bar"><span>documents</span><i style="width:12.5%"></i><b>623</b></div>
+          <div class="bar"><a href="library/research/index.html">research</a><i style="width:100%"></i><b>4,997</b></div>
+          <div class="bar"><a href="library/science/index.html">science</a><i style="width:48.9%"></i><b>2,446</b></div>
+          <div class="bar"><a href="library/software-engineering/index.html">software-engineering</a><i style="width:42.9%"></i><b>2,146</b></div>
+          <div class="bar"><a href="library/business/index.html">business</a><i style="width:42.7%"></i><b>2,134</b></div>
+          <div class="bar"><a href="library/security/index.html">security</a><i style="width:35.8%"></i><b>1,787</b></div>
+          <div class="bar"><a href="library/agent-tooling/index.html">agent-tooling</a><i style="width:29.6%"></i><b>1,478</b></div>
+          <div class="bar"><a href="library/marketing/index.html">marketing</a><i style="width:27%"></i><b>1,347</b></div>
+          <div class="bar"><a href="library/devops/index.html">devops</a><i style="width:22.1%"></i><b>1,106</b></div>
+          <div class="bar"><a href="library/general/index.html">general</a><i style="width:20.4%"></i><b>1,020</b></div>
+          <div class="bar"><a href="library/data/index.html">data</a><i style="width:17.8%"></i><b>889</b></div>
+          <div class="bar"><a href="library/design/index.html">design</a><i style="width:17.5%"></i><b>872</b></div>
+          <div class="bar"><a href="library/media/index.html">media</a><i style="width:13.4%"></i><b>671</b></div>
+          <div class="bar"><a href="library/documents/index.html">documents</a><i style="width:12.5%"></i><b>623</b></div>
         </div>
-        <p class="note">Beneath the domains are 13,320 scenarios and 389 task families. Open the local shelf with <code>python -m skilllib browse</code>, then <code>html/index.html</code>.</p>
+        <p class="note"><a href="library/index.html">All domains</a> list scenarios as well as families. Regenerate the shelf with <code>python -m skilllib browse</code>.</p>
       </section>
     </main>
 

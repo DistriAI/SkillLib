@@ -89,23 +89,25 @@ On a hand-labeled set of 40 tasks, the finder returned the expected skill for 36
 
 Pass a domain to search one shelf: `find_skills(task, domain="science")`.
 
+The same shelves are on the web homepage. Open a domain, then its [task families](https://distriai.github.io/SkillLib/library/families/). A family lists skill cards. A card opens the skill page. [All domains](https://distriai.github.io/SkillLib/library/) also lists scenarios.
+
 | Domain | Scenarios | Skills |
 |---|---:|---:|
-| research | 1,527 | 4,997 |
-| science | 1,609 | 2,446 |
-| software-engineering | 1,690 | 2,146 |
-| business | 1,539 | 2,134 |
-| security | 1,418 | 1,787 |
-| agent-tooling | 882 | 1,478 |
-| marketing | 957 | 1,347 |
-| devops | 928 | 1,106 |
-| general | 638 | 1,020 |
-| data | 683 | 889 |
-| design | 594 | 872 |
-| media | 423 | 671 |
-| documents | 432 | 623 |
+| [research](https://distriai.github.io/SkillLib/library/research/) | 1,527 | 4,997 |
+| [science](https://distriai.github.io/SkillLib/library/science/) | 1,609 | 2,446 |
+| [software-engineering](https://distriai.github.io/SkillLib/library/software-engineering/) | 1,690 | 2,146 |
+| [business](https://distriai.github.io/SkillLib/library/business/) | 1,539 | 2,134 |
+| [security](https://distriai.github.io/SkillLib/library/security/) | 1,418 | 1,787 |
+| [agent-tooling](https://distriai.github.io/SkillLib/library/agent-tooling/) | 882 | 1,478 |
+| [marketing](https://distriai.github.io/SkillLib/library/marketing/) | 957 | 1,347 |
+| [devops](https://distriai.github.io/SkillLib/library/devops/) | 928 | 1,106 |
+| [general](https://distriai.github.io/SkillLib/library/general/) | 638 | 1,020 |
+| [data](https://distriai.github.io/SkillLib/library/data/) | 683 | 889 |
+| [design](https://distriai.github.io/SkillLib/library/design/) | 594 | 872 |
+| [media](https://distriai.github.io/SkillLib/library/media/) | 423 | 671 |
+| [documents](https://distriai.github.io/SkillLib/library/documents/) | 432 | 623 |
 
-Regenerate the local shelf with `python -m skilllib browse`. Open `html/index.html`. The web homepage is [distriai.github.io/SkillLib](https://distriai.github.io/SkillLib/).
+Regenerate the shelf with `python -m skilllib browse`. The pages are under `docs/library/`.
 
 ## Grow the catalog
 
@@ -113,11 +115,24 @@ New repositories merge in. A later search does not throw away the 1,000-star col
 
 ```bash
 python -m skilllib add owner/name
-python -m skilllib update
 python -m skilllib search --min-stars 500 --merge
+python -m skilllib update
 ```
 
-`update` judges a name again only when a copy joins it, leaves it, or a stored skill file changes. Rebuild the task families when you want the shelves collapsed again. That is a separate command, because re-collapsing every domain on each added repository is expensive:
+`update` judges a name again only when a copy joins it, leaves it, or a stored skill file changes. It downloads the skill files in an overlapping name, writes a card for each new leading skill, and fills a thin card when that file is already on disk.
+
+A skill name that occurs only in the repository just added is not part of that download. Its card keeps an empty description until the file is fetched and read. Run this from the repository root after `update`. Each command skips work already stored.
+
+```bash
+python -m skilllib download --leaders
+python -m skilllib cards
+python -m skilllib link
+python -m skilllib enrich
+```
+
+`download --leaders` fetches the `SKILL.md` behind every leading skill. Exit code 2 means some fetches failed. Run that command again to retry those files. `cards` copies the description and scope out of each new file. `link` records `requires`, `alternative`, and `follows`. `enrich` asks the model in `catalog/judge_config.json` to fill a field the file never states. A saved fill is reused. Exit code 2 means some cards failed. Run `enrich` again to retry them.
+
+Rebuild the task families when you want the shelves collapsed again. That is a separate command, because re-collapsing every domain on each added repository is expensive:
 
 ```bash
 python -m skilllib families --name-with heuristic
@@ -137,10 +152,10 @@ Run these from the repository root as `skilllib <command>`, or as `python -m ski
 | `load <id>` | Print the cached procedure for one card. |
 | `prompt` | Write the standing prompt fragment. |
 | `families` | Collapse the current cards into families again. |
-| `browse` | Write the HTML shelf under `html/`. |
+| `browse` | Write the HTML shelf under `docs/library/`. |
 | `visit owner/name` | Check out one repository as a submodule. |
 
-`screen`, `download`, `index`, `cards`, `enrich`, and `link` run a single stage. `download --leaders` fetches the skill file behind every leading skill, including a name that occurs once. `update` runs the stages that a new repository needs.
+`screen`, `download`, `index`, `cards`, `enrich`, and `link` run a single stage. After `add` and `update`, run `download --leaders`, `cards`, `link`, and `enrich` so a skill name that occurs once gets a full card. `update` covers names that overlap a skill already in the catalog.
 
 ## License
 

@@ -41,6 +41,8 @@ python -m skilllib add owner/name
 python -m skilllib add owner/name --min-skills 5
 ```
 
+Adding the repository does not download its skill files or write cards. The steps after `add` or `search --merge` are in [After a repository is added](#after-a-repository-is-added).
+
 ### `load_catalog(root=None)`
 
 Read `catalog/skill_repositories.json`.
@@ -101,10 +103,10 @@ Compare the catalog with `catalog/index_state.json`.
 - The first call on a finished catalog writes that state file from the current index, cards, and families, and leaves those files unchanged.
 - A call with no added, removed, or edited skill file returns without rewriting the index.
 - A new or changed skill file is screened into its name group. Other name groups in `catalog/skill_screen.json` stay as stored.
-- Missing `SKILL.md` files are downloaded. Files already on disk are skipped.
+- `SKILL.md` files for an overlapping name are downloaded. A name that occurs once is not in that download. Files already on disk are skipped.
 - A name group is judged again when a copy joined it, left it, or a stored skill file changed. Saved decisions in `.cache/judge/decisions/` are reused.
-- New leading skills get a routing card. A card whose skill text is unchanged keeps its extracted fields.
-- With `judge="llm"`, new thin cards are filled from the model in `catalog/judge_config.json`. `judge="heuristic"` skips the model.
+- New leading skills get a routing card. A card whose skill text is unchanged keeps its extracted fields. A card with no cached file has an empty description.
+- With `judge="llm"`, a thin card that has a cached file is filled from the model in `catalog/judge_config.json`. `judge="heuristic"` skips the model. A card with no cached file is left unchanged.
 - A new product skill joins that product channel. A new method skill joins the family in its domain that shares the most words with its name and scenario. Existing families keep their names. A new family is opened while the domain has fewer than 30 families; after that the skill joins the general family.
 - A cached skill file is parsed again for `requires`, `alternative`, and `follows` only when its text mentions a skill name that was not in the catalog at the last update.
 
@@ -139,7 +141,36 @@ python -m skilllib link
 python -m skilllib browse
 ```
 
-`browse` writes the HTML shelf under `html/`. `update` does not regenerate those pages.
+`browse` writes the HTML shelf under `docs/library/`. `update` does not regenerate those pages. The homepage and the project readme link into that shelf: a domain page links to its families, a family lists skill cards, and a card opens the skill page.
+
+### After a repository is added
+
+`add` and `search --merge` write the repository into `catalog/skill_repositories.json`. They do not fetch skill files. `update` then judges overlapping names and writes a card for every new leading skill. A name that occurs only in the repository just added still has no file on disk, so its card has an empty description and `enrich` does not read it.
+
+Run this from the repository root after `update`. The model in `catalog/judge_config.json` must be reachable for `enrich`, and for `update` when its judge is `llm`.
+
+```bash
+python -m skilllib add owner/name
+python -m skilllib update
+python -m skilllib download --leaders
+python -m skilllib cards
+python -m skilllib link
+python -m skilllib enrich
+```
+
+`search --min-stars 500 --merge` can replace `add` when the new repositories come from a search. It keeps every repository already stored.
+
+| Step | What it completes |
+|---|---|
+| `update` | Screens the new names, downloads files that share a name with another copy, judges those overlaps, writes cards, fills thin cards whose files were downloaded, and records links for new skill names. |
+| `download --leaders` | Fetches the `SKILL.md` behind every leading skill, including a name that occurs once. A file already in `cache/skills/` or in a submodule checkout is skipped. |
+| `cards` | Copies the description and scope out of each newly stored file into `catalog/routing_cards.jsonl`. |
+| `link` | Records `requires`, `alternative`, and `follows` from those files, and sets a checkout gap when a skill names bundled files that are not checked out. |
+| `enrich` | Asks the model to fill a description, negative scope, or inputs and outputs that the file never states. A saved fill in `.cache/judge/cards/` is reused. |
+
+Exit code 2 from `download --leaders` means some fetches failed. Run the same command again. The stored files are skipped. Exit code 2 from `enrich` means some model calls failed. Run `enrich` again. Successful fills stay cached.
+
+`python -m skilllib families` rebuilds every task family from the current cards. `update` only files new cards onto the families that already exist, so run `families` when you want the shelves collapsed again. `python -m skilllib browse` rewrites the HTML shelf. `update` does not.
 
 ## Agent use
 
