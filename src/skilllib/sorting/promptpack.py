@@ -1,13 +1,18 @@
 """The resident prompt for an agent that locates skills through tools.
 
-The fragment names the thirteen domains, tells the agent to call find_skills
-before giving up, and caps how many skill bodies may be loaded. A working set
-adds name and description lines for skills pinned to one project.
+The fragment names the thirteen domains, tells the agent to search before
+giving up, and caps how many skill bodies may be loaded. A working set adds
+name and description lines for skills pinned to one project.
+
+``calls`` selects the names the agent actually invokes. The command-line
+prompt says ``find_skills`` and ``load_skill``. A host that registers the
+integration tools passes those tool names so the prompt and the tools match.
 """
 
 from __future__ import annotations
 
 import json
+from dataclasses import dataclass
 from pathlib import Path
 
 PROMPT_PATH = Path("catalog") / "skill_prompt.txt"
@@ -31,41 +36,74 @@ DOMAIN_SENTENCES = (
 )
 
 
-def render_prompt(cards_by_id: dict[str, dict], working_set: list[str] | None = None) -> str:
+@dataclass(frozen=True)
+class PromptCalls:
+    """Names and sections of one resident prompt.
+
+    The default matches the ``skilllib prompt`` command. ``skilllib.integrate``
+    passes the host tool names and leaves the working-set block off unless the
+    host pinned skills.
+    """
+
+    find: str = "find_skills"
+    load: str = "load_skill"
+    visit: str | None = None
+    heading: str = "Skill library"
+    intro: tuple[str, ...] = ()
+    include_signatures: bool = True
+    include_working_set: bool = True
+
+
+def render_prompt(
+    cards_by_id: dict[str, dict],
+    working_set: list[str] | None = None,
+    *,
+    calls: PromptCalls | None = None,
+) -> str:
     """Render the stable fragment plus the pinned skills."""
 
-    lines = [
-        "Skill library",
-        "",
-        "Domains:",
-    ]
+    calls = calls or PromptCalls()
+    lines = [calls.heading, ""]
+    lines.extend(calls.intro)
+    if calls.intro:
+        lines.append("")
+    lines.append("Domains:")
     for name, sentence in DOMAIN_SENTENCES:
         lines.append(f"- {name}: {sentence}")
     lines.extend(
         [
             "",
-            "Before you decide that no skill applies, call find_skills with the user's task.",
-            f"Load at most {LOAD_CAP} skill bodies with load_skill, and only after a card matches.",
+            f"Before you decide that no skill applies, call {calls.find} with the user's task.",
+            f"Load at most {LOAD_CAP} skill bodies with {calls.load}, and only after a card matches.",
             "Follow the loaded procedure. When a card is a combined skill, its conflict_note names the disagreement; follow that note instead of picking a peer at random.",
-            "",
-            "find_skills(task, constraints) returns a few cards. Each card has name, description, positive_scope, negative_scope, inputs, outputs, preconditions, kind, family, and conflict_note.",
-            "load_skill(id) returns the skill text. scripts_checked_out is false when the repository checkout does not contain the bundled scripts.",
-            "",
-            "Working set:",
         ]
     )
-    pinned = working_set or []
-    if not pinned:
-        lines.append("- (none)")
-    for skill_id in pinned:
-        card = cards_by_id.get(skill_id)
-        if card is None:
-            lines.append(f"- {skill_id}: missing from the catalog")
-            continue
-        description = (card.get("description") or "").replace("\n", " ").strip()
-        if len(description) > 280:
-            description = description[:279].rstrip() + "…"
-        lines.append(f"- {card.get('name')}: {description}" if description else f"- {card.get('name')}")
+    if calls.visit:
+        lines.append(
+            f"When {calls.load} returns a gap, call {calls.visit} with the repository it names, then call {calls.load} again."
+        )
+    if calls.include_signatures:
+        lines.extend(
+            [
+                "",
+                f"{calls.find}(task, constraints) returns a few cards. Each card has name, description, positive_scope, negative_scope, inputs, outputs, preconditions, kind, family, and conflict_note.",
+                f"{calls.load}(id) returns the skill text. scripts_checked_out is false when the repository checkout does not contain the bundled scripts.",
+            ]
+        )
+    if calls.include_working_set:
+        lines.extend(["", "Working set:"])
+        pinned = working_set or []
+        if not pinned:
+            lines.append("- (none)")
+        for skill_id in pinned:
+            card = cards_by_id.get(skill_id)
+            if card is None:
+                lines.append(f"- {skill_id}: missing from the catalog")
+                continue
+            description = (card.get("description") or "").replace("\n", " ").strip()
+            if len(description) > 280:
+                description = description[:279].rstrip() + "…"
+            lines.append(f"- {card.get('name')}: {description}" if description else f"- {card.get('name')}")
     return "\n".join(lines) + "\n"
 
 

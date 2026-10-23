@@ -64,9 +64,13 @@ skilllib load combined::gsea
 skilllib prompt --working-set catalog/working_set.example.json
 ```
 
-`find_skills` returns a few cards for the task: name, description, when to use the skill, when not to, and where it came from. `load_skill` returns the procedure. `render_prompt` writes the standing prompt: one sentence for each of the 13 domains, an instruction to search before deciding that no skill applies, and a cap of three loaded bodies.
+`find_skills` returns a few cards for the task: name, description, when to use the skill, when not to, and where it came from. `load_skill` returns the procedure. `render_prompt` writes the standing prompt for those Python function names: one sentence for each of the 13 domains, an instruction to search before deciding that no skill applies, and a cap of three loaded bodies.
 
-An agent that already has `skill_view` (Hermes) or the equivalent Claude or Codex skill loader should keep it. That tool opens a skill installed on the machine, including its scripts and references. SkillLib answers the prior question, at a size those lists are not built for: which skill from the library is worth installing. `load_skill` can show the cached text before that install. When the skill names bundled files that are not checked out, the reply names the repository to `visit` instead of pretending the procedure can run.
+## Integrating an agent
+
+An agent runtime takes the prompt and the tool descriptions from `skilllib.integrate`: `tool_specs()`, `resident_prompt()`, `task_instruction()`, and `call_tool()`. Register the specs under the names they already carry (`skill_library_find`, `skill_library_load`, `skill_library_visit`), append `resident_prompt()` to the system prompt, and return `call_tool(name, arguments, root=checkout)` to the model. The field reference is [docs/interface.md](docs/interface.md).
+
+An agent that already has `skill_view` (Hermes) or the equivalent Claude or Codex skill loader should keep it. That tool opens a skill installed on the machine, including its scripts and references. SkillLib answers the prior question, at a size those lists are not built for: which skill from the library is worth installing. `load_skill` can show the cached text before that install. When the skill names bundled files that are not checked out, the tool result names the repository to visit instead of pretending the procedure can run.
 
 On a hand-labeled set of 40 tasks, the finder returned the expected skill for 36.
 

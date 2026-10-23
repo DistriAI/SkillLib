@@ -33,6 +33,7 @@ modules:
   retrieve  download, visit
   index     screen, index, cards, enrich, families, link, browse, update
   agent     find, load, prompt
+  integrate tool_specs, resident_prompt, call_tool
 """
 
 

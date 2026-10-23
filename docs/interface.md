@@ -193,3 +193,35 @@ python -m skilllib prompt --working-set catalog/working_set.example.json
 ```
 
 The command also writes `catalog/skill_prompt.txt`.
+
+## Integrating an agent
+
+`find_skills`, `load_skill`, and `visit_repository` are the library calls. An agent runtime registers the host contract in `skilllib.integrate` and passes each tool call through `call_tool`.
+
+The contract is four pieces:
+
+| Piece | What the host does with it |
+|---|---|
+| `tool_specs()` | Register these three OpenAI function specs under their `name` fields. The names are `skill_library_find`, `skill_library_load`, and `skill_library_visit`. |
+| `resident_prompt()` | Append this string to the system prompt when those tools are offered. It names the tools, lists one sentence per domain, and caps loaded bodies at 3. |
+| `task_instruction()` | Optional paragraph on a task prompt. The same sentence in every host. |
+| `call_tool(name, arguments, root=...)` | Run one tool. Return the dict to the model as JSON. `root` is the SkillLib checkout. |
+
+`catalog_ready(root)` is true when `catalog/routing_cards.jsonl` exists. Hide the tools when it is false. Leave the library out of any scanner that copies every `SKILL.md` into the prompt.
+
+```python
+from skilllib.integrate import call_tool, catalog_ready, resident_prompt, tool_specs
+
+root = Path("path/to/SkillLib")
+if catalog_ready(root):
+    system_prompt += "\n\n" + resident_prompt()
+    for spec in tool_specs():
+        register(spec)  # the host's tool registry
+
+def handle(name, arguments):
+    return call_tool(name, arguments, root=root)
+```
+
+`call_tool` returns `{"success": true, ...}` or `{"success": false, "error": "..."}`. A load that cannot see bundled scripts sets `text` to empty, sets `gap` to the repository id, and sets `next` to the visit-then-load step. That `next` sentence is the one the model should follow.
+
+`resident_prompt(root, working_set=["card-id"])` pins those cards' names into the fragment. Omit `working_set` when the prompt must stay byte-stable for a conversation.
