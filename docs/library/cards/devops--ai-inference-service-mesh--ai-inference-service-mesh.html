@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ai-inference-service-mesh</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / ai-inference-service-mesh</p><h1>ai-inference-service-mesh</h1><p class="meta">combined</p><p>Use service mesh patterns for AI inference traffic management, mTLS, canary releases, policy enforcement, and cross-cluster resilience.
+
+Use verified service mesh patterns for AI inference traffic management, mTLS,</p><h2>When to use</h2><ul><li>Design or troubleshoot mTLS identity, model-version routing, inference retry budgets, mesh egress or observable latency on an actual supported cluster.</li></ul><h2>When not to use</h2><ul><li>Infrastructure commands can disrupt services: confirm target host/scope and have backups/snapshots before mutating state.</li><li>Docs-only import: upstream scripts and templates not bundled.</li></ul><p><a href="../devops/ai-inference-service-mesh/ai-inference-service-mesh.html">Skill page</a></p><h2>Conflict</h2><pre>The sickn33 copy is a mirror of the BagelHole copy (it explicitly cites BagelHole as the source) but it adds material safety constraints and corrections that the original lacks. The original presents the egress policy as a complete firewall and includes a DestinationRule that originates TLS for an external HTTPS host, which the mirror explicitly warns against (double TLS breaks the connection). The mirror also adds a prerequisite to confirm cluster context, mesh version, and CRD schemas, and warns that multiple DestinationRules for the same host must be consolidated. Because the mirror corrects a real operational hazard in the original, crowning the original would hide a safer alternative, so the copies should be combined.</pre>
+</body>
+</html>

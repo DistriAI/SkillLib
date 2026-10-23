@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>tao-run-automl-deft-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / tao-run-automl-deft-pipeline</p><h1>tao-run-automl-deft-pipeline</h1><p class="meta">separate</p><p>Run the canonical NVIDIA AOI three-phase training pipeline — Phase 1 AutoML baseline (HPO), Phase 2 DEFT loop (RCA → SDG → mining → plain-train retrain), Phase 3 AutoML refinement on the DEFT-augmented dataset. Use when the user asks to &quot;run the AOI workflow&quot;, &quot;fine-tune my PCB AOI model end-to-end&quot;, &quot;improve my AOI ChangeNet model&quot;, or &quot;AOI workflow with AutoML&quot; request — route here instead of tao-run-deft-aoi directly unless the user explicitly asks for the DEFT loop ONLY (e.g. &quot;run JUST the DEFT loop&quot;, &quot;skip AutoML, only DEFT&quot;). Also handles the same three-phase pattern for non-AOI DEFT applications — AutoML baseline then DEFT loop warm-started from AutoML&#x27;s winning HPs then post-DEFT AutoML refinement on the iteration-augmented dataset. Trigger phrases include &quot;run the AOI workflow&quot;, &quot;AOI end-to-end&quot;, &quot;AutoML + DEFT&quot;, &quot;AutoML then DEFT&quot;, &quot;tune hyperparameters then DEFT&quot;, &quot;DEFT with AutoML at both ends&quot;, &quot;warm-start DEFT&quot;, &quot;improve my AOI model&quot;.</p><p><a href="../data/automl-execution/tao-run-automl-deft-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/tao-run-automl-deft-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

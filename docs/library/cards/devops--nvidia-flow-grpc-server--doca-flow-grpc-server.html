@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>doca-flow-grpc-server</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / doca-flow-grpc-server</p><h1>doca-flow-grpc-server</h1><p class="meta">separate</p><p>Remote control of DOCA Flow over gRPC with the shipped `doca_flow_grpc` server: program Flow pipes and entries from Python, Go, Rust or Java, or from another host, instead of linking `libdoca_flow.so`. PLAINTEXT-ONLY: the server uses `grpc::InsecureServerCredentials()` with NO TLS / mTLS / token-auth knob; transport security must come from external infrastructure (e.g. an mTLS proxy / sidecar) on a trusted segment. Trigger even without &quot;gRPC&quot;: &quot;program Flow rules from Python on another host&quot;, &quot;remotely configure pipes on the BlueField&quot;, &quot;client times out connecting to the Flow server&quot;, &quot;where is the .proto for Flow&quot;, &quot;UNAUTHENTICATED / FAILED_PRECONDITION on a Flow RPC&quot;. Covers bringing up, configuring, hardening and debugging the server. Route elsewhere for the underlying doca-flow C API, generic gRPC tooling (protoc, language bindings), or DOCA install / BFB bring-up.</p><p><a href="../devops/nvidia-flow-grpc-server/doca-flow-grpc-server.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/doca-flow-grpc-server/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

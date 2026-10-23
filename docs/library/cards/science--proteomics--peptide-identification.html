@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>peptide-identification</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / peptide-identification</p><h1>peptide-identification</h1><p class="meta">separate</p><p>Peptide-spectrum matching from MS/MS with target-decoy FDR control, framing identification confidence as a property of a ranked list (q-value/PEP) rather than a raw engine score (XCorr, hyperscore, Andromeda, SpecEValue). Covers sequence-database search engines (Comet, MS-GF+, MSFragger, Sage, MaxQuant, MetaMorpheus), concatenated vs separate target-decoy competition, PEP vs q-value, the multi-level FDR cascade, open/mass-tolerant search, rescoring (Percolator, mokapot, MS2Rescore), and pyOpenMS SimpleSearchEngineAlgorithm + FalseDiscoveryRate. Use when identifying peptides from tandem mass spectra and deciding what FDR threshold to act on. Protein grouping and protein-level FDR are protein-inference; PTM site localization is ptm-analysis; DIA peptide-centric scoring is dia-analysis; intensity quant is quantification.</p><h2>When to use</h2><ul><li>spectrum-to-peptide matching</li><li>PSM/peptide-level FDR</li><li>target-decoy competition</li><li>q-value and PEP calculation</li><li>open/mass-tolerant search</li><li>rescoring with Percolator or mokapot</li><li>sequence-database search engines</li></ul><h2>When not to use</h2><ul><li>protein grouping</li><li>protein-level FDR</li><li>PTM site localization</li><li>DIA peptide-centric scoring</li><li>intensity quantification</li><li>mzML/raw loading</li></ul><p><a href="../science/proteomics/peptide-identification.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>proteomics/peptide-identification/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

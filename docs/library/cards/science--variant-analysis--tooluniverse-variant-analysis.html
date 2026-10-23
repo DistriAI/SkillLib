@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>tooluniverse-variant-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / tooluniverse-variant-analysis</p><h1>tooluniverse-variant-analysis</h1><p class="meta">separate</p><p>Production-ready VCF processing, variant annotation, mutation analysis, and structural variant (SV/CNV) interpretation for bioinformatics questions. Parses VCF files (streaming, large files), classifies mutation types (missense, nonsense, synonymous, frameshift, splice, intronic, intergenic) and structural variants (deletions, duplications, inversions, translocations), applies VAF/depth/quality/consequence filters, annotates with ClinVar/dbSNP/gnomAD/CADD via ToolUniverse, interprets SV/CNV clinical significance using ClinGen dosage sensitivity scores, computes variant statistics, and generates reports. Solves questions like &quot;What fraction of variants with VAF &lt; 0.3 are missense?&quot;, &quot;How many non-reference variants remain after filtering intronic/intergenic?&quot;, &quot;What is the pathogenicity of this deletion affecting BRCA1?&quot;, or &quot;Which dosage-sensitive genes overlap this CNV?&quot;. Use when processing VCF files, annotating variants, filtering by VAF/depth/consequence, classifying mutations, in…</p><h2>When to use</h2><ul><li>User provides a VCF file (SNV/indel or SV) and asks questions about its contents</li><li>Questions about variant allele frequency (VAF) filtering</li><li>Mutation type classification queries (missense, nonsense, synonymous, etc.)</li><li>Structural variant interpretation requests (deletions, duplications, CNVs)</li><li>Variant annotation requests (ClinVar, gnomAD, CADD, dbSNP)</li><li>CNV pathogenicity assessment using ClinGen dosage sensitivity</li><li>Cohort comparison questions</li><li>Population frequency filtering (SNVs or SVs)</li></ul><h2>When not to use</h2><ul><li>**VCF annotation required for mutation classification**: If VCF has no ANN/CSQ/FUNCOTATION in INFO, mutation types will be &quot;unknown&quot; until ToolUniverse annotation is applied</li><li>**Multi-allelic variants**: Parser takes first ALT allele for type classification</li><li>**ToolUniverse annotation rate**: API-based, limited to ~100 variants per batch by default to respect rate limits</li><li>**gnomAD tool**: Returns basic metadata only (not full allele frequencies); use MyVariant.info for gnomAD AF</li><li>**Large VCFs**: Pure Python parser streams line-by-line; cyvcf2 is recommended for files with &gt;100K variants</li></ul><p><a href="../science/variant-analysis/tooluniverse-variant-analysis.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/tooluniverse-variant-analysis/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

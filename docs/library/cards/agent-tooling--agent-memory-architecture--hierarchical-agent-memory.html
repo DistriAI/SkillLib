@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hierarchical-agent-memory</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / hierarchical-agent-memory</p><h1>hierarchical-agent-memory</h1><p class="meta">authentic</p><p>Scoped CLAUDE.md memory system that reduces context token spend. Creates directory-level context files, tracks savings via dashboard, and routes agents to the right sub-context.</p><h2>When to use</h2><ul><li>Use when you want to reduce input token costs across Claude Code sessions</li><li>Use when your project has 3+ directories and the agent keeps re-reading the same files</li><li>Use when you want directory-scoped context instead of one monolithic CLAUDE.md</li><li>Use when you want a dashboard to visualize token savings, session history, and context health</li><li>Use when setting up a new project and want structured agent memory from day one</li></ul><h2>When not to use</h2><ul><li>Token estimates use ~4 chars = 1 token approximation, not a real tokenizer</li><li>Baseline savings comparisons are estimates based on typical agent behavior</li><li>Dashboard requires Node.js 18+ and reads session data from `~/.claude/projects/`</li><li>Context routing detection relies on CLAUDE.md read order in session JSONL files</li><li>Does not auto-update subdirectory CLAUDE.md content — you maintain those manually or via `ham audit`</li><li>Carbon estimates use regional grid averages, not real-time energy data</li></ul><p><a href="../agent-tooling/agent-memory-architecture/hierarchical-agent-memory.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/hierarchical-agent-memory/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>merip-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / merip-pipeline</p><h1>merip-pipeline</h1><p class="meta">separate</p><p>Orchestrates an end-to-end MeRIP-seq / m6A-seq analysis from raw FASTQ to differential m6A peak calls and metagene plots, chaining fastp adapter trimming, STAR splice-aware alignment (NO deduplication for non-UMI MeRIP), deepTools replicate-concordance + IP-enrichment QC, PreSeq saturation curves, exomePeak2 (transcript-aware, GC-bias-aware negative-binomial GLM) peak calling, optional MACS3 broad-peak cross-check, DRACH motif confirmation as a sanity check (NOT a per-peak filter), exomePeak2 differential calling via the four-BAM-vector interface (bam_ip + bam_input control; bam_treated_ip + bam_treated_input treatment), ChIPseeker annotation, and the canonical Guitar metagene with stop-codon enrichment as the biological QC anchor. Use when running a complete MeRIP analysis from raw reads, when chaining the constituent epitranscriptomics skills (merip-preprocessing -&gt; m6a-peak-calling -&gt; m6a-differential -&gt; modification-visualization), or when wrapping the pipeline in Snakemake / Next…</p><h2>When to use</h2><ul><li>running a complete MeRIP analysis from raw reads</li><li>chaining constituent epitranscriptomics skills</li><li>wrapping the pipeline in Snakemake / Nextflow</li><li>differential m6A peak calls</li><li>metagene plots</li><li>IP-enrichment QC</li><li>m6A peak calling</li><li>ChIPseeker annotation</li></ul><h2>When not to use</h2><ul><li>per-peak DRACH filtering</li><li>deduplication for non-UMI MeRIP</li></ul><p><a href="../science/methylation-enrichment-analysis/merip-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/merip-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

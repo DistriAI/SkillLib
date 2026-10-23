@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-llm-ai</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunt-llm-ai</p><h1>hunt-llm-ai</h1><p class="meta">combined</p><p>Hunt LLM/AI feature bugs
+
+Hunt LLM/AI feature bugs — prompt injection, indirect injection, exfiltration viatool-use/markdown, ASCII smuggling, agentic AI security (OWASP Agentic Apps 2026, ASI01-ASI10). Patterns: direct injection (&#x27;ignore previous instructions&#x27;), indirect injection via documents/web pages/email the model reads, ASCII smuggling (Unicode Tags block U+E0000-U+E007F, invisible to humans, decoded by the model),tool-use exfiltration (model has fetch/browse tool, attacker injects OOB URL, model exfils chat history/secrets), markdown-image zero-click exfil, system-prompt extraction, IDOR-via-AI (cross-tenant data). Targets: chatbots, RAG, summarizers, agentic copilots, MCPtools. Detection: any LLM-backed endpoint, doc upload triggering AI processing, autonomous agent withtools. Validate: OOB/Collaborator callback for exfil, verbatim-reproducible system-prompt leak (run twice), verifiable cross-tenant leak or RCE. Confabulation is NOT a finding. Use when hunting AI features, chatbots, RAG, agentic syst…</p><h2>When to use</h2><ul><li>You have explicit, written authorization to assess the target in scope, and the task matches this skill&#x27;s vulnerability class or technique within a bug-bounty or penetration-test engagement.</li><li>You need the recon, exploitation, or validation workflow described below — executed strictly inside the approved scope.</li></ul><h2>When not to use</h2><ul><li>Authorized scope only: the confirmation gate above is mandatory before any probing, exploitation, or credential-access command.</li><li>Docs-only import: upstream helper scripts, commands, engine, and research assets are not bundled; reinstall tooling from the source repo when needed.</li><li>Validate every finding (see `triage-validation`) before reporting; report via `report-writing`. Prefer a sandbox, disposable VM, or controlled lab.</li></ul><p><a href="../security/llm-ai-redteam/hunt-llm-ai.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies share the same core procedure (False-Positive Gate, direct/indirect injection, OOB exfil proof) but each contains material steps the other lacks. The uphiago copy includes ASCII smuggling (Unicode Tags block) and markdown-image zero-click exfil with specific payloads, while the sickn33 copy adds a mandatory authorization/confirmation gate and a multimodal/vision-model injection section. Crowning one would hide a real alternative (authorization gate vs. additional attack vectors).</pre>
+</body>
+</html>

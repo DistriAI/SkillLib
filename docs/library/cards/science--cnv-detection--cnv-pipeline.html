@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cnv-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / cnv-pipeline</p><h1>cnv-pipeline</h1><p class="meta">separate</p><p>Orchestrates the copy-number pipeline from BAM to segmented, integer-called, annotated CNVs, forking on germline-vs-somatic - CNVkit (somatic exome/panel: coverage -&gt; assay-matched reference/PoN -&gt; fix -&gt; segment -&gt; purity/ploidy-aware call), GATK gCNV (germline rare-CNV cohort), and allele-specific callers (ASCAT/FACETS/PURPLE) for purity/ploidy. Use when committing the build + target/access BED + PoN once (assay-matched), building the reference from normals BEFORE segmenting, fitting purity/ploidy BEFORE integer calls in tumors, centering on the true (non-diploid) mode before GISTIC2 recurrence, or routing cfDNA to ichorCNA. Hands mechanism to the copy-number component skills; not a re-teach of any single step.</p><h2>When to use</h2><ul><li>Orchestrating copy-number pipeline from BAM to annotated CNVs</li><li>Forking germline vs somatic workflows</li><li>Committing build, target/access BED, and assay-matched reference</li><li>Building reference from normals before segmenting</li><li>Fitting purity/ploidy before integer calls in tumors</li><li>Centering on true mode before GISTIC2 recurrence</li><li>Routing cfDNA to ichorCNA</li><li>Managing hand-offs to copy-number component skills</li></ul><h2>When not to use</h2><ul><li>Re-teaching the mechanism of any single step</li><li>Teaching internals of component skills</li></ul><p><a href="../science/cnv-detection/cnv-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/cnv-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>apple-notes-search</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/documents.html">documents</a> / apple-notes-search</p><h1>apple-notes-search</h1><p class="meta">separate</p><p>Semantic + keyword search and connection-discovery across the user&#x27;s own Apple Notes via the apple-notes MCP server. Use when the user wants to find, recall, or synthesize something from their notes, or surface non-obvious bridges/related notes. macOS, on-device.</p><h2>When to use</h2><ul><li>Use when the user wants to **find, recall, or look up** something from their own Apple</li><li>Use when the user wants to surface **non-obvious connections** across their notes</li><li>Use when the user wants to **synthesize a position** from their notes (&quot;summarize what I</li><li>Also use for &quot;index my Apple Notes&quot;, tag/folder queries, and &quot;what&#x27;s connected to X&quot;.</li><li>Do **not** use for creating reminders, or for non-Apple-Notes note systems.</li></ul><h2>When not to use</h2><ul><li>macOS and Apple Notes only; it does not search Obsidian, Notion, Google Docs, or other note stores.</li><li>The MCP server needs local filesystem permissions to read Apple Notes data, so setup cannot be completed purely inside a remote shell.</li><li>Search quality depends on a fresh local index. Recently edited notes may require `check-changes`, `index-health`, or a rerun after background indexing catches up.</li><li>Entity tools require the optional layered graph database; without it, use hybrid search, exact search, related notes, or bridges instead.</li></ul><p><a href="../documents/note-search/apple-notes-search.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/apple-notes-search/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

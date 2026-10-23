@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-itsm-incident-priority-configure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / service-itsm-incident-priority-configure</p><h1>service-itsm-incident-priority-configure</h1><p class="meta">separate</p><p>Configures the Incident Priority Matrix for Salesforce ITSM through the sf CLI — enabling or disabling the matrix, shaping the Impact x Urgency grid that derives Priority on Incident records, toggling the manual-override preference, and reading or setting the default fallback priority. Reads every value before writing, is idempotent, and requires explicit user confirmation before any mutation. Use when the user wants to view, enable, disable, set up, seed, add to, change, or remove priority matrix configuration for Incident records, change the default incident priority, or asks about incident priority setup, impact/urgency mapping, override, or the ITSM incident priority matrix. DO NOT TRIGGER for Problem or ChangeRequest priority matrices, Case priority fields, standard Priority picklists outside ITSM, SLA or milestone configuration, or enabling Incident Management itself (use the service-itsm-incident-mgmt-configure skill).</p><h2>When to use</h2><ul><li>**In scope** (Incident only): view the matrix; enable / disable it; add, change, remove, or</li><li>**Out of scope**: `Problem` and `ChangeRequest` matrices; non-ITSM Priority pickers;</li></ul><p><a href="../devops/incident-priority/service-itsm-incident-priority-configure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>skills/service-itsm-incident-priority-configure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

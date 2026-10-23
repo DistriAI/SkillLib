@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>upstash-redis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / upstash-redis</p><h1>upstash-redis</h1><p class="meta">authentic</p><p>Use the @upstash/redis HTTP client for caching, sessions, counters, and Redis data structures from serverless and edge runtimes without connection pooling.</p><h2>When to use</h2><ul><li>Use when the user needs a cache, session store, counter, leaderboard, or</li><li>Use when the user mentions Upstash Redis, `UPSTASH_REDIS_REST_URL`, or</li><li>Use when migrating an `ioredis` or `node-redis` call site to a runtime that</li><li>Do not use for a self-hosted or non-Upstash Redis server; the client only</li><li>Do not use for Redis administration or CLI work; see `redis-cli`.</li></ul><h2>When not to use</h2><ul><li>Requires an Upstash Redis database; it cannot connect to other Redis servers.</li><li>Each command is an HTTP request, so latency is higher than a warm TCP</li><li>Transactions (`multi()`) do not roll back on runtime errors, and `WATCH` is</li><li>Pub/Sub subscribe and blocking commands (`BLPOP`, `XREAD BLOCK`) are not</li><li>This skill covers the TypeScript client only. Python, Go, and other SDKs</li><li>This skill does not replace environment-specific validation, testing, or</li></ul><p><a href="../devops/caching/upstash-redis.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/upstash-redis/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

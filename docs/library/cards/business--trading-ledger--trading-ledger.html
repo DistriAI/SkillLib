@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>trading-ledger</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / trading-ledger</p><h1>trading-ledger</h1><p class="meta">authentic</p><p>A trading journal that captures the decision, not just the fill: thesis, plan, and emotion at the moment of entry, written to the user&#x27;s own Notion database; reviews grade decisions, not P&amp;L.</p><h2>When to use</h2><ul><li>Use when the user reports a trade fill (&quot;bought 500 NVDA at 135&quot;, &quot;closed my TSLA position&quot;, &quot;opened 2 ES contracts short&quot;)</li><li>Use when the user says &quot;log a trade&quot; or &quot;trading ledger&quot;, or &quot;tidy up my trading ledger&quot;</li><li>Use when the user asks to &quot;review my trades&quot;</li></ul><h2>When not to use</h2><ul><li>Requires the user&#x27;s own Notion workspace, the companion database (duplicate the template from the source repo), and the official Notion connector granted access — connector/skill setups currently live on paid Claude tiers.</li><li>Close, reconcile, and review flows require reliable Notion database query/search access to open, closed, and `To-confirm` rows. If the connector cannot query the ledger, stop after logging the user&#x27;s new facts and ask them to provide the r…</li><li>No broker integration, by design: the broker knows the fills; only the user knows the reasons. The user must self-report.</li><li>Grading honesty depends on input honesty: a thesis backfilled three days later defeats the point (the skill nags, but cannot prevent it).</li></ul><p><a href="../business/trading-ledger/trading-ledger.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/trading-ledger/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

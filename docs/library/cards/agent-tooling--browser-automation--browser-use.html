@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>browser-use</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / browser-use</p><h1>browser-use</h1><p class="meta">combined</p><p>Automates browser interactions for web testing, form filling, screenshots, and data extraction. Use when the user needs to navigate websites, interact with web pages, fill forms, take screenshots, or extract information from web pages.
+
+Direct browser control via CDP for web interaction: automation, scraping, testing, screenshots, and site/app work.</p><h2>When to use</h2><ul><li>web testing</li><li>form filling</li><li>screenshots</li><li>data extraction</li><li>navigate websites</li><li>interact with web pages</li><li>fill forms</li><li>extract information from web pages</li></ul><h2>When not to use</h2><ul><li>A basic fetch of public information needs no browser. If a plain HTTP request can read it — a public page, an API, docs — use `curl` or your fetch tool, and leave the browser alone. Use browser-use when the task needs interaction (click, t…</li></ul><p><a href="../agent-tooling/browser-automation/browser-use.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills describe fundamentally different interfaces for the `browser-use` tool. The first (davidondrej) describes a Python-heredoc based CLI (`browser-use &lt;&lt;&#x27;PY&#x27;`) that uses a daemon, CDP directly, and specific helper functions like `new_tab()` and `page_info()`. It focuses on advanced CDP control, remote daemons, and specific local Chrome debugging workflows. The second (LeoYeAI) describes a command-line argument based CLI (`browser-use open &lt;url&gt;`, `browser-use click &lt;index&gt;`) that uses a state-based interaction model (getting indices from `state` and using them for clicks). These are mutually exclusive workflows; an agent following the first would fail if it tried to use the second&#x27;s commands, and vice versa. Therefore, they must be combined to provide a complete picture of the available interfaces.</pre>
+</body>
+</html>

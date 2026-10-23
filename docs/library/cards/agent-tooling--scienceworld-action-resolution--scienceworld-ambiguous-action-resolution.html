@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scienceworld-ambiguous-action-resolution</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / scienceworld-ambiguous-action-resolution</p><h1>scienceworld-ambiguous-action-resolution</h1><p class="meta">separate</p><p>Use when the ScienceWorld environment returns an &quot;Ambiguous request&quot; prompt with a numbered list of identical action options. This skill resolves the disambiguation by selecting the lowest available number (typically 0) to proceed, ensuring task progression when multiple identical object instances exist and the system cannot automatically determine which instance to act upon.</p><h2>When to use</h2><ul><li>Resolve system disambiguation prompts that block task progression when the ScienceWorld environment cannot determine which identical object instance the agent intends to act upon. This is a mechanical bypass, not a decision-making step.</li><li>When the environment returns an observation containing `&quot;Ambiguous request: Please enter the number for the action you intended (or blank to cancel):&quot;` followed by a numbered list</li><li>When multiple identical object instances exist (e.g., five identical banana seeds in a jar) and the system requires explicit selection</li><li>Only when options are functionally identical -- do NOT use this skill for menu selections where options have different meanings</li></ul><p><a href="../agent-tooling/scienceworld-action-resolution/scienceworld-ambiguous-action-resolution.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/zjunlp/SkillNet">zjunlp/SkillNet</a></td><td><code>experiments/src/skills/scienceworld/scienceworld-ambiguous-action-resolution/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-ssti</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunt-ssti</p><h1>hunt-ssti</h1><p class="meta">combined</p><p>Hunt server-side template injection (SSTI) across Jinja2 (Flask/Django),
+
+Hunt server-side template injection (SSTI) across Jinja2 (Flask/Django), Twig (Symfony), Freemarker (Java), ERB (Rails), Spring, Velocity, Mako, Thymeleaf, Smarty. Detection probes use double-curly and dollar-curly math expressions evaluated server-side. Once an engine is fingerprinted, escalate to RCE via the engine-specific class-walker, callback-registrar, or Execute-utility patterns documented in disclosed reports. Detection patterns: error messages reveal engine, blank or numeric eval reveals expression mode. Targets: email templates, PDF/report generators, CMS preview features, error pages with user input. Use when hunting RCE via template rendering, when content shows engine fingerprints, when finding endpoints that compose strings with user input before render.</p><h2>When to use</h2><ul><li>You have explicit, written authorization to assess the target in scope, and the task matches this skill&#x27;s vulnerability class or technique within a bug-bounty or penetration-test engagement.</li><li>You need the recon, exploitation, or validation workflow described below — executed strictly inside the approved scope.</li><li>Use when the target has any endpoint that renders user-controlled input through a server-side template engine. SSTI is one of the fastest paths to RCE — detection is a single `{{7*7}}` and escalation typically requires one more payload. SS…</li></ul><h2>When not to use</h2><ul><li>Authorized scope only: the confirmation gate above is mandatory before any probing, exploitation, or credential-access command.</li><li>Docs-only import: upstream helper scripts, commands, engine, and research assets are not bundled; reinstall tooling from the source repo when needed.</li><li>Validate every finding (see `triage-validation`) before reporting; report via `report-writing`. Prefer a sandbox, disposable VM, or controlled lab.</li></ul><p><a href="../security/ssti-hunt/hunt-ssti.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies describe the same SSTI hunting workflow (polyglot detection, engine fingerprinting, engine-specific RCE, blind/OOB detection), but each contains material steps the other lacks. The uphiago copy provides a broader engine matrix (including Velocity, Thymeleaf, Smarty, Mako) and a structured four-phase methodology with blind SSTI and chaining. The sickn33 copy adds an explicit authorization gate, an &#x27;escalate straight to RCE&#x27; priority order, form-encoded vs JSON body handling, length-constrained field techniques, and CMS template-editor specifics (query-param id, fingerprint-before-RCE). Crowning one would hide these real alternatives.</pre>
+</body>
+</html>

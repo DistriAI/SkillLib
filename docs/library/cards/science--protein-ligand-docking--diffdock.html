@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>diffdock</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / diffdock</p><h1>diffdock</h1><p class="meta">combined</p><p>Diffusion-based molecular docking. Predict protein-ligand binding poses from PDB/SMILES, confidence scores, virtual screening, for structure-based drug design. Not for affinity prediction.
+
+Predicts protein-small-molecule binding poses with DiffDock and DiffDock-L from PDB or sequence plus SMILES/SDF/MOL2. Covers batch docking, pose triage, confidence interpretation, and validation. Use for molecular docking and virtual-screening pose generation, not binding-affinity prediction.</p><h2>When to use</h2><ul><li>&quot;Dock this ligand to a protein&quot; or &quot;predict binding pose&quot;</li><li>&quot;Run molecular docking&quot; or &quot;perform protein-ligand docking&quot;</li><li>&quot;Virtual screening&quot; or &quot;screen compound library&quot;</li><li>&quot;Where does this molecule bind?&quot; or &quot;predict binding site&quot;</li><li>Structure-based drug design or lead optimization tasks</li><li>Tasks involving PDB files + SMILES strings or ligand structures</li><li>Batch docking of multiple protein-ligand pairs</li></ul><h2>When not to use</h2><ul><li>affinity prediction</li><li>binding affinity assessment</li><li>ΔG calculation</li><li>Kd calculation</li></ul><p><a href="../science/protein-ligand-docking/diffdock.html">Skill page</a></p><h2>Conflict</h2><pre>The K-Dense copy is a rigorous, source-verified procedure that pins the v1.1.3 release, corrects the CLI flag to --ligand_description, and details input preparation and output file naming. The FreedomIntelligence copy is a broader workflow guide that includes a results analysis script (analyze_results.py) and a pre-computed ESM embedding workflow for large-scale screening, which are absent from the K-Dense copy. The FreedomIntelligence copy also uses the incorrect --ligand flag and lacks the specific version pinning and input validation constraints found in the K-Dense copy. Combining them provides a complete, accurate, and scalable docking workflow.</pre>
+</body>
+</html>

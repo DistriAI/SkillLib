@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>incident-runbook-templates</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / incident-runbook-templates</p><h1>incident-runbook-templates</h1><p class="meta">combined</p><p>Create structured incident response runbooks with step-by-step procedures, escalation paths, and recovery actions. Use when building runbooks, responding to incidents, or establishing incident response procedures.
+
+Adaptable templates for incident response runbooks covering detection, triage, mitigation, resolution, and communication.</p><h2>When to use</h2><ul><li>Creating incident response procedures</li><li>Building service-specific runbooks</li><li>Establishing escalation paths</li><li>Documenting recovery procedures</li><li>Responding to active incidents</li><li>Onboarding on-call engineers</li></ul><h2>When not to use</h2><ul><li>The task is unrelated to incident runbook templates</li><li>You need a different domain or tool outside this scope</li><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../devops/incident-runbook-templates/incident-runbook-templates.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies share the same severity table, runbook structure, and most of the Service Outage template, but they disagree on safety-critical steps. The sickn33 copy adds a &#x27;Runbook prerequisites&#x27; section requiring binding of service/namespace/cluster context, approved incident authority, and evidence sources before adapting templates, and it explicitly states that thresholds and financial amounts are illustrative. It also replaces the direct &#x27;pg_terminate_backend&#x27; command with a guarded procedure requiring an exact authorized PID and the approved database runbook. The rmyndharis copy lacks these constraints and includes the direct termination command. Crowning one copy would hide the other&#x27;s safety constraints and the conflicting mitigation step.</pre>
+</body>
+</html>

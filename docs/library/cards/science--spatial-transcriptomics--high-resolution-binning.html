@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>high-resolution-binning</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / high-resolution-binning</p><h1>high-resolution-binning</h1><p class="meta">separate</p><p>Reconstructs single cells from sub-cellular spatial capture units (Visium HD 2um bins, Stereo-seq DNB spots, Slide-seqV2 beads) by aggregating bins UP into cells rather than deconvolving a mixture DOWN. Use when choosing a bin size and recognizing the sparsity-vs-mixture dilemma (2um bins are too sparse to cluster, but binning to 8/16um re-creates the multi-cell mixture deconvolution was meant to escape); deciding between morphology-driven cell reconstruction (Bin2cell -- StarDist/Cellpose nuclei on a registered H&amp;E/DAPI image, then assign 2um bins to nuclei) and fixed-bin aggregation by whether a co-registered cell image exists; recognizing this as the INVERSE of deconvolution (bin UP, not mix DOWN -- this is the AMBIGUOUS regime of the resolution fork); and handling each platform (Visium HD has an image so reconstruct, Slide-seqV2 has no per-bead image so aggregate or deconvolve, Stereo-seq depends on a registered stain).</p><h2>When to use</h2><ul><li>Reconstructing single cells from Visium HD 2um bins</li><li>Aggregating Stereo-seq DNB spots into cells</li><li>Aggregating Slide-seqV2 beads into cells</li><li>Morphology-driven cell reconstruction using registered images</li><li>Fixed-bin aggregation when no cell image exists</li><li>Choosing bin size to avoid sparsity or mixture dilemmas</li></ul><h2>When not to use</h2><ul><li>Deconvolving multi-cell mixtures in large spots</li><li>Clustering sparse 2um bins directly</li><li>Reconstructing cells from Slide-seqV2 without a registered image</li></ul><p><a href="../science/spatial-transcriptomics/high-resolution-binning.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>spatial-transcriptomics/high-resolution-binning/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

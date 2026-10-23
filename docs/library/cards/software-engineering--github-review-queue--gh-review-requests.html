@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gh-review-requests</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / gh-review-requests</p><h1>gh-review-requests</h1><p class="meta">combined</p><p>Fetch unread GitHub notifications for open PRs where review is requested from a specified team or opened by a team member. Use when asked to &quot;find PRs I need to review&quot;, &quot;show my review requests&quot;, &quot;what needs my review&quot;, &quot;fetch GitHub review requests&quot;, or &quot;check team review queue&quot;.</p><h2>When to use</h2><ul><li>You need to find unread GitHub PR review requests for a specific team.</li><li>You want to check which open PRs currently need your review or a teammate&#x27;s review.</li><li>You need a filtered review queue instead of manually browsing GitHub notifications.</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../software-engineering/github-review-queue/gh-review-requests.html">Skill page</a></p><h2>Conflict</h2><pre>The first copy (getsentry/skills) provides a specific, executable procedure using a bundled Python script (`fetch_review_requests.py`) and `uv`, which is the primary method for the original skill. The second copy (sickn33/agentic-awesome-skills) explicitly states that the script is not bundled and provides a manual `gh api` fallback as the primary method, adding safety constraints (e.g., verifying origin, not marking as read) that the first copy lacks. Because the first copy relies on a script that the second copy says is missing, and the second copy adds operational safety steps, crowning one would hide the alternative manual procedure or the specific tooling dependency.</pre>
+</body>
+</html>

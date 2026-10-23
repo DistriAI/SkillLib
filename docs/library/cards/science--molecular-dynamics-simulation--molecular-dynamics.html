@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>molecular-dynamics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / molecular-dynamics</p><h1>molecular-dynamics</h1><p class="meta">combined</p><p>Run and analyze molecular dynamics simulations with OpenMM and MDAnalysis. Set up protein/small molecule systems, define force fields, run energy minimization and production MD, analyze trajectories (RMSD, RMSF, contact maps, free energy surfaces). For structural biology, drug binding, and biophysics.
+
+Runs and analyzes molecular dynamics simulations with OpenMM and MDAnalysis. Sets up protein/small molecule systems, defines force fields, runs energy minimization and production MD, and analyzes trajectories (RMSD, RMSF, contact maps, free energy surfaces). For structural biology, drug binding, and biophysics.</p><h2>When to use</h2><ul><li>**Protein stability analysis**: How does a mutation affect protein dynamics?</li><li>**Drug binding simulations**: Characterize binding mode and residence time of a ligand</li><li>**Conformational sampling**: Explore protein flexibility and conformational changes</li><li>**Protein-protein interaction**: Model interface dynamics and binding energetics</li><li>**RMSD/RMSF analysis**: Quantify structural fluctuations from a reference structure</li><li>**Free energy estimation**: Compute binding free energy or conformational free energy</li><li>**Membrane simulations**: Model proteins in lipid bilayers</li><li>**Intrinsically disordered proteins**: Study IDR conformational ensembles</li></ul><p><a href="../science/molecular-dynamics-simulation/molecular-dynamics.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe the same OpenMM/MDAnalysis workflow, but they disagree on environment setup, version pinning, platform selection, and minimization parameters. The K-Dense copy is more rigorous (dedicated venv, pinned versions, explicit platform argument, 2 fs integrator, neutralization flag, and a warning that trajectories alone do not establish binding free energy), while the FreedomIntelligence copy adds a conda/pip install path and a CUDA/OpenCL/CPU fallback. Neither is a strict superset of the other, so crowning one would hide a real alternative.</pre>
+</body>
+</html>

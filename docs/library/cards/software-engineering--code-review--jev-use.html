@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jev-use</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / jev-use</p><h1>jev-use</h1><p class="meta">authentic</p><p>Route enumerable judgment steps - did it work, which option, how risky, is this safe to run - to the Jev judgment model through the jev_judge and jev_gate MCP tools, batched into one call per state.</p><h2>When to use</h2><ul><li>Use when the next step is a judgment over context you already have (&quot;did X succeed?&quot;, &quot;which option?&quot;, &quot;how bad is this?&quot;) rather than something to write.</li><li>Use when you are about to check the same state several times in a row, so the questions can be batched into one call.</li><li>Use when you want a risk check on a proposed tool call before running it.</li><li>Do not use when the step must produce new content - text, code, free-form tool arguments - or when the options cannot be enumerated. Those are structurally the model&#x27;s own work.</li></ul><h2>When not to use</h2><ul><li>Jev judges only what is in `state`; it has no view of your conversation, repository or tool history, so a thin `state` produces a thin judgment.</li><li>State has a size ceiling (roughly 30k tokens). Beyond it the request escalates as `oversized` instead of being judged.</li><li>Confidence is not uniform across backends: the default escalation threshold is `0.75`, but through the Vercel gateway no confidence field is returned and a top-minus-runner-up margin is used instead, with a default threshold of `0.4`.</li><li>The advantage is narrower than an unconfigured comparison suggests. The project publishes its losing runs in [bench/RESULTS.md](https://github.com/shitianfang/jev-use/blob/main/bench/RESULTS.md): against enum-constrained baselines the late…</li><li>This skill does not replace environment-specific validation, testing, or expert review.</li></ul><p><a href="../software-engineering/code-review/jev-use.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/jev-use/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

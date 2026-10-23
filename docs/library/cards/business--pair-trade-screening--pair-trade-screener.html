@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pair-trade-screener</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / pair-trade-screener</p><h1>pair-trade-screener</h1><p class="meta">combined</p><p>Statistical arbitrage tool for identifying and analyzing pair trading opportunities. Detects cointegrated stock pairs within sectors, analyzes spread behavior, calculates z-scores, and provides entry/exit recommendations for market-neutral strategies. Use when user requests pair trading opportunities, statistical arbitrage screening, mean-reversion strategies, or market-neutral portfolio construction. Supports correlation analysis, cointegration testing, and spread backtesting.</p><h2>When to use</h2><ul><li>User asks for &quot;pair trading opportunities&quot;</li><li>User wants &quot;market-neutral strategies&quot;</li><li>User requests &quot;statistical arbitrage screening&quot;</li><li>User asks &quot;which stocks move together?&quot;</li><li>User wants to hedge sector exposure</li><li>User requests mean-reversion trade ideas</li><li>User asks about relative value trading</li><li>&quot;Find pair trading opportunities in the tech sector&quot;</li></ul><p><a href="../business/pair-trade-screening/pair-trade-screener.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies share the same frontmatter, overview, use cases, universe definition, data requirements, correlation/beta thresholds, and cointegration interpretation. They diverge on execution and prerequisites: the tradermonty copy specifies Python 3.9+, an FMP API key, statsmodels version pin, and a uv run command invoking skills/pair-trade-screener/scripts/find_pairs.py with --symbols/--sector/--lookback-days/--output; the LeoYeAI copy omits the prerequisites and uses a different script path and flags (python scripts/fetch_price_data.py --sector Technology --lookback 730). Crowning one would hide a real alternative execution path and dependency setup.</pre>
+</body>
+</html>

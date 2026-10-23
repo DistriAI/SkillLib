@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ejentum-reasoning-harness</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / ejentum-reasoning-harness</p><h1>ejentum-reasoning-harness</h1><p class="meta">separate</p><p>MCP server exposing four cognitive harness modes (reasoning, code, anti-deception, memory). Each call returns an engineered scaffold (failure pattern, procedure, suppression vectors, falsification test) the agent ingests before generating.</p><h2>When to use</h2><ul><li>Use `harness_reasoning` before answering analytical, diagnostic, planning, or multi-step questions (&quot;why is X happening&quot;, &quot;what&#x27;s the best approach&quot;, &quot;what are the tradeoffs&quot;, root-cause analysis, architecture decisions).</li><li>Use `harness_code` before generating, refactoring, reviewing, or debugging code; before architectural changes, algorithm or data-structure choices, dependency-upgrade evaluation.</li><li>Use `harness_anti_deception` when the prompt pressures the agent to validate, certify, or soften an honest assessment; manufactured urgency; authority appeals; setups where the obvious helpful answer would compromise honesty.</li><li>Use `harness_memory` only when sharpening an observation already formed about cross-turn drift or behavioral patterns; never call with an empty mind.</li></ul><h2>When not to use</h2><ul><li>The harness shapes the substance of reasoning; it does not guarantee a correct answer. Domain expertise and source verification still apply.</li><li>5-second timeout typical; clients should fall back to native capability if the API is unreachable.</li><li>The scaffold is a procedure, not a knowledge base. It does not retrieve facts, only structured reasoning patterns.</li></ul><p><a href="../agent-tooling/agent-catalog-management/ejentum-reasoning-harness.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/ejentum-reasoning-harness/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

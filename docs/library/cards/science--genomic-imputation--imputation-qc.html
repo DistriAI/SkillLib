@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>imputation-qc</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / imputation-qc</p><h1>imputation-qc</h1><p class="meta">separate</p><p>Assesses and filters phasing/imputation output - the quality metrics (Beagle DR2, Minimac R2 and EmpRsq, IMPUTE/GLIMPSE INFO), MAF-stratified filtering, true accuracy by masking, the differential-imputation confound, dosage-based downstream usage, and phasing switch-error QC. Covers why every routine quality score is an ESTIMATE of r2 from the posterior spread (not validation against truth), why it is confounded with MAF so a flat INFO&gt;=0.3 cutoff is a hidden rare-variant filter, why concordance lies for rare variants while masked dosage-r2 by MAF is the gold standard, why separate case/control imputation manufactures false GWAS hits, and that the field name tells the tool (DR2=Beagle, R2=Minimac, INFO=GLIMPSE/IMPUTE). Use when filtering imputed variants before GWAS, validating accuracy, benchmarking phasing against trios, or diagnosing inflated association. Imputation is genotype-imputation; phasing is haplotype-phasing; panel ancestry is reference-panels; the test is population-gene…</p><h2>When to use</h2><ul><li>Filtering imputed variants before GWAS</li><li>Validating imputation accuracy</li><li>Benchmarking phasing against trios</li><li>Diagnosing inflated association</li><li>Interpreting Beagle DR2, Minimac R2, and IMPUTE/GLIMPSE INFO</li><li>MAF-stratified filtering</li><li>Masked dosage-r2 validation</li><li>Phasing switch-error QC</li></ul><h2>When not to use</h2><ul><li>Running imputation</li><li>Haplotype-phasing</li><li>Reference-panels</li><li>Population-genetics/association-testing</li><li>VCF field-parsing mechanics</li><li>Read-backed phasing switch QC</li></ul><p><a href="../science/genomic-imputation/imputation-qc.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>phasing-imputation/imputation-qc/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

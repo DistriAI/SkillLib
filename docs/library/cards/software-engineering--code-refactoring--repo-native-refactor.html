@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>repo-native-refactor</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / repo-native-refactor</p><h1>repo-native-refactor</h1><p class="meta">authentic</p><p>Review diffs without editing, or perform evidence-based cleanup while preserving authorized behavior, public contracts, and domain ownership.</p><h2>When to use</h2><ul><li>Use when the user asks to review a diff, branch, or PR for correctness, contract breaks, or operational risk.</li><li>Use when the user authorizes bounded cleanup before opening a PR or asks to consolidate duplicated policy with shared ownership.</li><li>Use for repository rehabilitation only when the user explicitly requests work across multiple domains.</li><li>Establish review-only, edit, or combined authority before choosing the operating mode.</li><li>**Correctness and security:** prevent regressions, avoid new security vulnerabilities, handle boundary conditions.</li><li>**Semantic integrity:** preserve existing invariants, state transitions, validation, and error boundaries.</li><li>**Contracts stay as declared:** the rule lives in `references/shared-contracts.md` §1. Preserve the authorized target contract; otherwise keep exact declared types. Internal helpers are fine when exposed contracts stay exact.</li><li>**Repository conformity:** match surrounding naming, domain conventions, and architectural precedents.</li></ul><h2>When not to use</h2><ul><li>Review requires an identifiable comparison base and enough repository evidence to establish contracts and ownership.</li><li>Similar syntax alone does not establish shared policy or justify consolidation.</li><li>The skill cannot establish migration or concurrency safety without relevant requirements and verification; unresolved material uncertainty is a hard stop.</li><li>Local checks and self-review do not establish independent review or universal reliability.</li><li>**Clean greenfield code:** Do not refactor newly written code that is already minimal, idiomatic, and passing all tests.</li><li>**Speculative cleanup:** If you cannot state the domain owner and the concrete maintenance consequence in a single sentence, leave the code unmodified.</li><li>**Risk classification:** When uncertain between risk bands (such as R2 structural vs. R3 semantic), default conservatively to the higher risk band and require explicit justification.</li></ul><p><a href="../software-engineering/code-refactoring/repo-native-refactor.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/repo-native-refactor/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

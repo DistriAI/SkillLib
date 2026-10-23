@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>youtube-transcript</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / youtube-transcript</p><h1>youtube-transcript</h1><p class="meta">combined</p><p>Fetch transcripts from YouTube videos for summarization and analysis.
+
+YouTube transcript extraction and content reformatting: given a YouTube video URL, opens the video&#x27;s transcript panel, extracts all timestamped segments, and transforms the raw transcript into summaries, chapter outlines, Twitter/X threads, blog posts, or notable quotes. Use when the user shares a YouTube URL or video link, asks to summarize a video, get a transcript, extract content from a YouTube video, get YouTube captions, extract YouTube captions, download YouTube captions, transcribe YouTube video, YouTube video to text, make a thread from YouTube, YouTube to blog post, YouTube to article, pull transcript from YouTube, YouTube content extraction, convert YouTube to text, video to transcript. Also applies when user wants to reformat any YouTube video content into structured output (chapters, threads, blog articles, key quotes).</p><h2>When to use</h2><ul><li>Use when the user wants a YouTube video&#x27;s transcript fetched, summarized, quoted, or analyzed.</li><li>Use when the user wants to search YouTube (globally, or within one channel by handle).</li><li>Use when the user wants a channel handle resolved to a channel ID, or wants a channel&#x27;s info and upload history.</li><li>Use when the user wants the videos in a YouTube playlist.</li></ul><h2>When not to use</h2><ul><li>The transcript endpoint returns the full spoken text as one string; there is no per-line timestamp breakdown.</li><li>This skill does not replace environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, or safety boundaries are missing.</li></ul><p><a href="../media/youtube-transcript-extraction/youtube-transcript.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies implement the same high-level goal (getting a YouTube video&#x27;s spoken content) but use fundamentally different mechanisms that are not interchangeable. The browser-act copy uses a browser automation workflow to scrape the YouTube UI and produces timestamped segments plus a content-reformatting pipeline (summary, chapters, thread, blog, quotes). The badlogic copy uses a local Node.js script to fetch a timestamped transcript. The davepoon and sickn33 copies use the getyoutubetranscript.com REST API, which returns a single string without timestamps and includes additional features like search, channel resolution, and playlist fetching. Because the methods conflict (browser scraping vs. local script vs. external API) and the outputs differ (timestamped vs. untimestamped), crowning one would hide the real alternatives. The sickn33 copy is a mirror of the davepoon copy, so they are treated as the same approach.</pre>
+</body>
+</html>

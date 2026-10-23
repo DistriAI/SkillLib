@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>umi-processing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / umi-processing</p><h1>umi-processing</h1><p class="meta">separate</p><p>Extracts UMIs and collapses reads to original molecules with umi_tools (directional dedup) or builds error-corrected single-strand/duplex consensus reads with fgbio. Use when the library has UMIs and accurate molecule counting or below-sequencer-floor error correction is needed - single-cell, low-input RNA-seq, targeted panels, and ctDNA/liquid-biopsy rare-variant detection. For UMI extraction during QC use fastp-workflow; do not dedup non-UMI bulk RNA-seq.</p><h2>When to use</h2><ul><li>UMI extraction</li><li>directional dedup</li><li>molecule counting</li><li>single-strand consensus reads</li><li>duplex consensus reads</li><li>single-cell RNA-seq</li><li>low-input RNA-seq</li><li>ctDNA/liquid-biopsy rare-variant detection</li></ul><h2>When not to use</h2><ul><li>UMI extraction during QC</li><li>non-UMI bulk RNA-seq deduplication</li><li>single-cell matrix preprocessing</li><li>non-UMI DNA coordinate dedup</li></ul><p><a href="../science/umi-deduplication/umi-processing.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>read-qc/umi-processing/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

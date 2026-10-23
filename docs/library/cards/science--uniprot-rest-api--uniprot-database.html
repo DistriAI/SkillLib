@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>uniprot-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / uniprot-database</p><h1>uniprot-database</h1><p class="meta">combined</p><p>Direct REST API access to UniProt. Protein searches, FASTA retrieval, ID mapping, Swiss-Prot/TrEMBL. For Python workflows with multiple databases, prefer bioservices (unified interface to 40+ services). Use this for direct HTTP/REST work or UniProt-specific control.
+
+Direct REST API access to UniProt for protein search, entry retrieval, and identifier mapping; use when you need programmatic UniProtKB queries or cross-database ID conversion.</p><h2>When to use</h2><ul><li>Searching for protein entries by name, gene symbol, accession, or organism</li><li>Retrieving protein sequences in FASTA or other formats</li><li>Mapping identifiers between UniProt and external databases (Ensembl, RefSeq, PDB, etc.)</li><li>Accessing protein annotations including GO terms, domains, and functional descriptions</li><li>Batch retrieving multiple protein entries efficiently</li><li>Querying reviewed (Swiss-Prot) vs. unreviewed (TrEMBL) protein data</li><li>Streaming large protein datasets</li><li>Building custom queries with field-specific search syntax</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../science/uniprot-rest-api/uniprot-database.html">Skill page</a></p><h2>Conflict</h2><pre>The copies overlap heavily on the UniProt REST endpoints, but they disagree on the recommended Python implementation and include material steps the others lack. The foryourhealth111, sickn33, and FreedomIntelligence copies are near-identical and point to a bundled scripts/uniprot_client.py helper, while the aipoch copy provides a self-contained inline Python client with explicit polling logic and dependency versions. Crowning one copy would hide the alternative implementation and the missing-script caveat present in the sickn33 copy.</pre>
+</body>
+</html>

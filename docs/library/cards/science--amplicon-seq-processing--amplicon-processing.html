@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>amplicon-processing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / amplicon-processing</p><h1>amplicon-processing</h1><p class="meta">separate</p><p>Infers exact amplicon sequence variants (ASVs) from demultiplexed 16S rRNA or ITS amplicon FASTQ with DADA2 - removing primers with cutadapt (--discard-untrimmed), learning a per-run error model (filterAndTrim -&gt; learnErrors -&gt; dada -&gt; mergePairs), merging run-level tables with mergeSequenceTables, then one removeBimeraDenovo. Covers why primers come OFF before truncation, why the error model is per-run, truncLen as a merge-overlap detection budget (V4 vs V3-V4), DADA2 vs Deblur and q2-dada2 (denoise-paired/single/pyro/ccs), ASV vs OTU, NovaSeq binned-quality error-fit breakage, ITSxpress for variable-length ITS, and decontam removal of reagent/kit contaminants. Use when turning demultiplexed amplicon reads into an ASV/feature table, choosing truncation lengths, handling multi-run studies, or ITS. For shotgun reads see metagenomics/kraken-classification; for QIIME2 CLI mechanics see qiime2-workflow; for primer trimming theory see read-qc/adapter-trimming.</p><h2>When to use</h2><ul><li>turning demultiplexed amplicon reads into an ASV/feature table</li><li>choosing truncation lengths</li><li>handling multi-run studies</li><li>ITS processing</li><li>removing primers with cutadapt</li><li>learning a per-run error model</li><li>merging run-level tables</li><li>removing chimeras</li></ul><h2>When not to use</h2><ul><li>shotgun reads</li><li>QIIME2 CLI mechanics</li><li>primer trimming theory</li><li>taxonomy assignment</li><li>diversity analysis</li><li>differential abundance</li><li>compositional normalization theory</li></ul><p><a href="../science/amplicon-seq-processing/amplicon-processing.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>microbiome/amplicon-processing/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

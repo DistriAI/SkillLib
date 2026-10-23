@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>wikipathways</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / wikipathways</p><h1>wikipathways</h1><p class="meta">separate</p><p>Tests a gene list (ORA, enrichWP) or a ranked gene vector (GSEA, gseWP) against the WikiPathways community-curated pathway collection with clusterProfiler and rWikiPathways. Covers why a WikiPathways result is a snapshot of a live, monthly-updated database (enrichWP/gseWP/gson_WP silently pull data.wikipathways.org/current/), why reproducibility requires pinning a dated GMT via downloadPathwayArchive(date=, format=&#x27;gmt&#x27;), why the WP GMT is Entrez-keyed so symbols and Ensembl silently overlap nothing, why universe=NULL gives a biased all-WP-genes background, how to split the name%version%wpid%org term, and why WikiPathways (CC0, no peer review) complements KEGG/Reactome. Use when running open community-pathway enrichment, covering a non-model WP species, catching disease/drug pathways missing from KEGG/Reactome, or needing a reproducible dated analysis. The gene list comes from differential-expression/de-results; visualize with enrichment-visualization.</p><h2>When to use</h2><ul><li>WikiPathways ORA enrichment</li><li>WikiPathways GSEA enrichment</li><li>Reproducible dated GMT analysis</li><li>Non-model WP species coverage</li><li>Disease/drug pathways missing from KEGG/Reactome</li><li>Community-curated pathway enrichment</li></ul><h2>When not to use</h2><ul><li>KEGG pathway enrichment</li><li>Reactome pathway enrichment</li><li>Differential expression analysis</li><li>Enrichment visualization</li><li>ORA/GSEA method theory</li><li>Hypergeometric background theory</li></ul><p><a href="../science/wikipathways-analysis/wikipathways.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>pathway-analysis/wikipathways/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

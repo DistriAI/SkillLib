@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>mofa-integration</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / mofa-integration</p><h1>mofa-integration</h1><p class="meta">separate</p><p>Discovers shared and view-specific latent factors across bulk multi-omics blocks (RNA-seq, proteomics, methylation) on a common sample axis with MOFA2&#x27;s unsupervised Bayesian group factor model, then attributes per-view variance explained and interprets signed factor weights. Covers why a factor is an unsupervised axis of variance and not a pathway, why a factor that correlates with batch is a batch factor, why the per-view variance-explained table is the primary read-out rather than p-values, why raw counts in a Gaussian view make factor 1 the library-size factor, and why MOFA2 handles missing omics-per-sample natively. Use when integrating two or more bulk omics to find joint axes of variation, choosing factor count, labeling factors against metadata, or running enrichment on factor weights. For supervised discriminant integration see mixomics-analysis; for the method decision see integration-design; for single-cell see single-cell/multimodal-integration; for enrichment see pathway-…</p><h2>When to use</h2><ul><li>integrating two or more bulk omics to find joint axes of variation</li><li>choosing factor count</li><li>labeling factors against metadata</li><li>running enrichment on factor weights</li><li>unsupervised cross-block factor modeling of bulk omics</li><li>variance decomposition</li><li>signed-weight interpretation</li></ul><h2>When not to use</h2><ul><li>supervised discriminant integration</li><li>method decision</li><li>single-cell multimodal integration</li><li>enrichment mechanics</li><li>per-omic normalization</li><li>HVG selection</li><li>transform-to-Gaussian</li></ul><p><a href="../science/mofa-multi-omics/mofa-integration.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>multi-omics-integration/mofa-integration/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

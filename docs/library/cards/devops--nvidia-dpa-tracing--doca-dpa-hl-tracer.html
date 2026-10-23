@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>doca-dpa-hl-tracer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / doca-dpa-hl-tracer</p><h1>doca-dpa-hl-tracer</h1><p class="meta">separate</p><p>Use this skill when the user runs doca_dpa_hl_tracer to capture/decode DPA-side traces at the programming-events layer (kernel entry/exit, sync points, comm primitive calls, RDMA WR submission, completion drain) — picking TRACE vs CRIT, tuning the JSON config (file-size limits + file_size_limit_policy, thread priorities/cores), decoding against the matching DPA-side ELF, or diagnosing empty/noisy captures. Trigger even when the user does not explicitly mention &quot;DOCA DPA tracer&quot; or &quot;high-level tracer&quot; — typical implicit phrasings include &quot;DPA kernel returns wrong result but host completions look clean&quot;, &quot;kernel-entry to first-comm latency is huge&quot;, &quot;RDMA WR to drain gap on the DPA&quot;, &quot;trace file truncated mid-run&quot;, &quot;TRACE doubled my DPA latency&quot;, or &quot;tracer wrote a file but parser shows zero events&quot;. Refuse and route elsewhere for writing DPA kernels, DPA-Comms/DPA-Verbs programming, raw per-cycle DPA profiling, host-side doca-dpa debugging, or production DPA telemetry — those belong to…</p><p><a href="../devops/nvidia-dpa-tracing/doca-dpa-hl-tracer.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/doca-dpa-hl-tracer/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>redteam-mindset</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / redteam-mindset</p><h1>redteam-mindset</h1><p class="meta">combined</p><p>Red-team operator discipline
+
+Red-team operator discipline — the mindset corrections that separate offensive testing from defensive WAPT. Built from authorized red-team work where conservative defaults caused multiple findings to be missed and one to be incorrectly retracted. Use at the START of any red-team engagement and again whenever feeling stuck or considering &quot;stopping&quot; on a defended target. The single most important skill to load when scope is &quot;external red team&quot; not &quot;bug bounty / WAPT&quot;.</p><h2>When to use</h2><ul><li>Engagement scope says &quot;red team&quot;, &quot;adversary emulation&quot;, &quot;assume breach&quot;, &quot;TIBER-style&quot;</li><li>You&#x27;re tempted to retract a finding because reproducibility failed once</li><li>You&#x27;re tempted to call a defense &quot;working as intended&quot; instead of probing further</li><li>You hit a blocker (captcha, rate limit, WAF, CA-block, lockout) and consider stopping</li><li>You&#x27;re about to spend time on IDOR/CSRF/XSS instead of access-yielding bugs</li><li>You found a vuln on app A and there are sister apps B, C, D you haven&#x27;t touched</li><li>Bug bounty programs (use bug-bounty skill — different scope rules)</li><li>WAPT/PCI-style assessments (use OWASP-aligned skills)</li></ul><h2>When not to use</h2><ul><li>Authorized scope only: the confirmation gate above is mandatory before any probing, exploitation, or credential-access command.</li><li>Docs-only import: upstream helper scripts, commands, engine, and research assets are not bundled; reinstall tooling from the source repo when needed.</li><li>Validate every finding (see `triage-validation`) before reporting; report via `report-writing`. Prefer a sandbox, disposable VM, or controlled lab.</li></ul><p><a href="../security/redteam-operator-discipline/redteam-mindset.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies share the same core red-team mindset (scope definition, DO NOT STOP directive, anti-throttling rules), but they disagree on a critical operational control. The uphiago copy explicitly forbids mid-engagement permission gates and `AskUserQuestion` calls, treating the initial authorization as covering the entire engagement. The sickn33 copy, however, inserts a &#x27;Mandatory confirmation gate&#x27; that requires explicit user confirmation for every probing command before execution. These are mutually exclusive operational procedures: one mandates continuous autonomous execution, while the other mandates step-by-step human-in-the-loop approval. Additionally, the sickn33 copy includes a detailed &#x27;data-minimization boundary&#x27; section that is absent from the uphiago copy, adding material constraints on data extraction that the other lacks. Because they conflict on the primary execution loop and differ in scope of constraints, neither is a pure reproduction of the other.</pre>
+</body>
+</html>

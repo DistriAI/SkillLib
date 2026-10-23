@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>twitter-reader</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / twitter-reader</p><h1>twitter-reader</h1><p class="meta">combined</p><p>Fetches Twitter/X post and Article content — text, author, engagement metrics and embedded media — downloading images locally and generating complete Markdown with image references. Use when retrieving a tweet&#x27;s text or an X Article with images, or pulling post metadata for a Markdown/PKM record. Preferred over Jina alone for X Articles with images.
+
+Read Twitter/X for financial research through opencli: the user&#x27;s home timeline, tweet search, trending topics, bookmarks, a user&#x27;s recent tweets, threads, articles, profiles, followers and following, and notifications. Use this skill whenever the user wants to know what people are saying on Twitter/X or fintwit about a stock, topic, or market event, check their feed or bookmarks, see what&#x27;s trending, or look up an @account and its posts. Read-only: it cannot post, like, retweet, reply, or follow.</p><h2>When to use</h2><ul><li>retrieving a tweet&#x27;s text</li><li>retrieving an X Article with images</li><li>pulling post metadata for a Markdown/PKM record</li><li>downloading images locally</li><li>generating complete Markdown with image references</li></ul><h2>When not to use</h2><ul><li>Jina alone for X Articles with images</li></ul><p><a href="../research/twitter-x-content-retrieval/twitter-reader.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills share the name and the broad goal of reading Twitter/X, but they implement materially different procedures and tools. The first copy is a read-only financial-research skill built on opencli (browser-session reuse, opencli doctor, timeline/search/trending/bookmarks/profiles/notifications). The second copy is a content-fetching skill built on fxtwitter, Jina, and local scripts (fetch_article.py, fetch_tweet.py, fetch_tweets.sh) that downloads images and emits Markdown with YAML frontmatter. Neither copy is a reproduction, shortening, or wrapper of the other; crowning one would hide a real alternative workflow. They also disagree on prerequisites (Chrome + Browser Bridge + opencli vs uv + JINA_API_KEY + fxtwitter) and on what the skill can do (broad read-only browsing vs single-post/article fetching with media).</pre>
+</body>
+</html>

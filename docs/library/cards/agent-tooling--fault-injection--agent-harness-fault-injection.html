@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>agent-harness-fault-injection</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / agent-harness-fault-injection</p><h1>agent-harness-fault-injection</h1><p class="meta">authentic</p><p>Use when an agent workflow needs deterministic recovery evidence for sandbox, MCP/tool, worker, checkpoint, memory, or orchestration failures.</p><h2>When to use</h2><ul><li>Use when a multi-step agent, state machine, loop, or multi-agent workflow has a new recovery path.</li><li>Use when sandbox execution, an MCP/tool call, a worker, a checkpoint store, or memory can time out or disappear.</li><li>Use before claiming retry, resume, deadline, isolation, or partial-failure behavior is production-ready.</li><li>Use when a regression needs reproducible failure evidence instead of a random chaos run.</li></ul><h2>When not to use</h2><ul><li>A local stub cannot prove behavior of a deployed model, MCP server, scheduler,</li><li>Deterministic schedules cover named paths; they do not estimate random-fault</li><li>At-most-once effects require an idempotent, observable contract; a timeline</li><li>This skill does not select production SLOs, repair broken workflows, or grant</li></ul><p><a href="../agent-tooling/fault-injection/agent-harness-fault-injection.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/agent-harness-fault-injection/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

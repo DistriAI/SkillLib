@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>deprecation-and-migration</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / deprecation-and-migration</p><h1>deprecation-and-migration</h1><p class="meta">combined</p><p>Manages deprecation and migration. Use when removing old systems, APIs, or features. Use when migrating users from one implementation to another. Use when migrating a database schema in production, such as renaming or dropping a column without downtime (expand/contract). Use when deciding whether to maintain or sunset existing code.
+
+Manages deprecation and migration. Use when removing old systems, APIs, or features. Use when migrating users from one implementation to another. Use when deciding whether to maintain or sunset existing code.</p><h2>When to use</h2><ul><li>Replacing an old system, API, or library with a new one</li><li>Sunsetting a feature that&#x27;s no longer needed</li><li>Consolidating duplicate implementations</li><li>Removing dead code that nobody owns but everybody depends on</li><li>Planning the lifecycle of a new system (deprecation planning starts at design time)</li><li>Deciding whether to maintain a legacy system or invest in migration</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches its upstream source and local project context.</li><li>Verify commands, generated code, dependencies, credentials, and external service behavior before applying changes.</li><li>Do not treat examples as a substitute for environment-specific tests, security review, or user approval for destructive or costly actions.</li></ul><p><a href="../software-engineering/deprecation-migration/deprecation-and-migration.html">Skill page</a></p><h2>Conflict</h2><pre>The sickn33 copy is a mirror of the addyosmani skill, but it adds material safety and operational constraints that the original lacks. Specifically, it changes the migration verification step to avoid executing unknown registry packages, and it adds requirements for a rollback plan, a representative usage window, and keeping migration history discoverable. Crowning the original would hide these important safety and operational steps.</pre>
+</body>
+</html>

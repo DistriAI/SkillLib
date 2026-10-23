@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>esl-price-sync</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / esl-price-sync</p><h1>esl-price-sync</h1><p class="meta">authentic</p><p>Synchronizes retail prices between ERP/POS systems and Electronic Shelf Labels (SES-imagotag, ZKONG, Pricer, Hanshow, SOLUM) with delta watermarking, idempotency, and battery modeling. Trigger phrases: esl price sync, electronic shelf labels, zkong sync, ses imagotag price, ghost pricing audit.</p><h2>When to use</h2><ul><li>Designing, implementing, or auditing integration pipelines between enterprise retail masters (SAP, Oracle Retail, Dynamics 365, Lightspeed) and ESL server platforms.</li><li>The user asks: &quot;How do I sync price updates to ESL tags without draining batteries?&quot;, &quot;Debug ghost pricing where POS doesn&#x27;t match the shelf tag&quot;, &quot;Design an idempotent delta feed for ZKONG or SES-imagotag&quot;, or &quot;Schedule promotional pricin…</li><li>Reconciling price discrepancy logs between central ERP databases, ESL middleware, and wireless base station ACK telemetry.</li><li>Calculating battery life depletion curves for e-paper tags running on CR2450 coin cells under varying refresh frequencies.</li><li>Managing e-commerce web store frontends or dynamic pricing algorithms (this skill governs faithful delivery of decided prices to physical tags).</li><li>Troubleshooting individual dead hardware tags before gateway RF coverage and RSSI signal propagation have been verified.</li><li>Performing live write operations on production store fleets without a preceding read-only audit verification pass.</li></ul><h2>When not to use</h2><ul><li>ESL APIs, radio limits, acknowledgements, battery figures, and rate limits depend on the vendor, firmware, tag model, and local radio rules. Confirm each value in the deployed system&#x27;s documentation before use.</li><li>Start with read-only reconciliation and a small authorized pilot. A server acknowledgement does not prove the physical label displayed the intended value; require tag-level confirmation and a rollback plan before wider writes.</li><li>Protect retail pricing, product, and device identifiers as business data. Do not transmit credentials or customer data in diagnostic logs or reports.</li><li>The scripts and payloads in this guide are illustrative and are not vendor-certified integrations.</li></ul><p><a href="../business/price-sync/esl-price-sync.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/esl-price-sync/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

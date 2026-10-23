@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>detecting-dll-sideloading-attacks</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / detecting-dll-sideloading-attacks</p><h1>detecting-dll-sideloading-attacks</h1><p class="meta">separate</p><p>Detect DLL side-loading and search-order hijacking (MITRE T1574) where adversaries plant malicious DLLs for legitimate signed applications to load, by analyzing Sysmon Event ID 7 DLL-load events, checking signatures/hashes against known-good versions, and flagging path anomalies with EDR tools like CrowdStrike, MDE, or SentinelOne. Use when investigating EDR alerts on unsigned DLLs, hunting for APT persistence via trojanized applications, or triaging incidents involving DLL hijacking.</p><h2>When to use</h2><ul><li>When investigating potential DLL hijacking in enterprise environments</li><li>After EDR alerts on unsigned DLLs loaded by signed applications</li><li>When hunting for APT persistence using legitimate application wrappers</li><li>During incident response to identify trojanized applications</li><li>When threat intel indicates DLL sideloading campaigns targeting specific software</li></ul><p><a href="../security/dll-sideloading-detection/detecting-dll-sideloading-attacks.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills">mukul975/Anthropic-Cybersecurity-Skills</a></td><td><code>skills/detecting-dll-sideloading-attacks/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

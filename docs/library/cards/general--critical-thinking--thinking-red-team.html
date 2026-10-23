@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>thinking-red-team</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/general.html">general</a> / thinking-red-team</p><h1>thinking-red-team</h1><p class="meta">separate</p><p>For authorized security review of code, auth, or APIs you control, model the attacker, map the attack surface, and report only findings with a reproducible exploit path and verified mitigation.</p><h2>When to use</h2><ul><li>Security review of code, authentication, authorization, APIs, data handling, or infrastructure you control and are permitted to probe.</li><li>Pre-launch hardening of systems that handle auth, money, personal data, or privileged actions.</li><li>Checking whether a specific vulnerability class (injection, XSS, IDOR, auth bypass, SSRF, secret exposure, etc.) is present with a real path.</li><li>Validating that a claimed control actually blocks the attack, not only that a scanner is quiet.</li></ul><h2>When not to use</h2><ul><li>No authorization to attack the target — stop; do not probe systems you do not own or have written leave to test.</li><li>Speculative &quot;best practice&quot; notes without a reproducible exploit path — drop them; they are not findings.</li><li>Plan, strategy, or decision stress-testing — use pre-mortem (how the plan fails) or steel-manning (strongest case against the decision).</li><li>Architecture resilience without a security objective — use systems or pre-mortem.</li><li>Scanner output alone as a report — patterns are leads; red-team requires an exploit path.</li><li>Non-security root-cause or hypothesis localization — use scientific-method or five-whys-plus.</li></ul><p><a href="../general/critical-thinking/thinking-red-team.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/tjboudreaux/cc-thinking-skills">tjboudreaux/cc-thinking-skills</a></td><td><code>skills/thinking-red-team/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

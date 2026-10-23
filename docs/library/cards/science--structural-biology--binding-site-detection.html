@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>binding-site-detection</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / binding-site-detection</p><h1>binding-site-detection</h1><p class="meta">separate</p><p>Detects putative ligand-binding pockets and druggable cavities de novo on an apo protein structure with fpocket, P2Rank, CASTp, and DoGSiteScorer, ranking them by druggability/ligandability score. Use when detecting cavities on an apo structure with no bound ligand; choosing geometric pocket enumeration (fpocket alpha-spheres, CASTp) vs ML ligandability scoring (P2Rank, DoGSiteScorer); recognizing that a geometric cavity is a hypothesis, not automatically a functional or druggable site (may be a crystal-additive or non-functional cleft); knowing druggability scores were trained on holo sets and under-detect apo, shallow, and cryptic pockets; detecting cryptic or transient pockets over an MD or conformational ensemble (mdpocket); and detecting on a predicted model whose pocket-lining rotamers are the least reliable atoms. Keywords binding site, pocket, cavity, druggability, ligandability, fpocket, P2Rank, CASTp, DoGSiteScorer, apo, cryptic pocket, alpha sphere, mdpocket.</p><h2>When to use</h2><ul><li>detecting cavities on an apo structure with no bound ligand</li><li>choosing geometric pocket enumeration vs ML ligandability scoring</li><li>detecting cryptic or transient pockets over an MD or conformational ensemble</li><li>detecting on a predicted model</li><li>ranking pockets by druggability or ligandability score</li></ul><h2>When not to use</h2><ul><li>mapping residues around a bound ligand in a holo structure</li><li>interface-analysis</li></ul><p><a href="../science/structural-biology/binding-site-detection.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>structural-biology/binding-site-detection/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

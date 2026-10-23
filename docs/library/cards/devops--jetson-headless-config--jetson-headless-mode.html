@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-headless-mode</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-headless-mode</p><h1>jetson-headless-mode</h1><p class="meta">separate</p><p>Plan and apply safe Jetson headless-mode changes to reclaim GUI and daemon memory.</p><h2>When to use</h2><ul><li>Build a user-approved headless-mode plan from live audit data, then apply only safe, reversible user-space changes that reduce desktop and daemon memory use on Jetson.</li><li>&quot;Free as much memory as possible — I don&#x27;t need the GUI.&quot;</li><li>&quot;I&#x27;m shipping this Jetson as an inference appliance / edge node.&quot;</li><li>After `jetson-memory-audit` shows `default_systemd_target=graphical.target` or shows `gdm3` / `lightdm` / `sddm` active on a system the user describes as headless.</li></ul><h2>When not to use</h2><ul><li>The user needs the local desktop, display output, kiosk UI, or any X/Wayland session. In that case, do not recommend disabling the graphical target or display manager; use `jetson-memory-audit` for a read-only view and suggest non-GUI memo…</li><li>You do not have current audit data. Run `jetson-memory-audit` first, or ask the user for its output, before proposing changes or estimating savings.</li></ul><p><a href="../devops/jetson-headless-config/jetson-headless-mode.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-headless-mode/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

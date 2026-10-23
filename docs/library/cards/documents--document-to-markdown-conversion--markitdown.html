@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>markitdown</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/documents.html">documents</a> / markitdown</p><h1>markitdown</h1><p class="meta">combined</p><p>Converts heterogeneous documents and selected URIs to Markdown with Microsoft MarkItDown for text analysis, search, and LLM/RAG ingestion. Covers safe local conversion, streams, Office/PDF/data formats, batch workflows, plugins, vision OCR, Azure extraction, and the official MCP server.
+
+Convert files and Office documents into clean Markdown when you need LLM-friendly, token-efficient text (e.g., for summarization, search, RAG ingestion, or dataset preparation).</p><h2>When to use</h2><ul><li>Converting research papers or reports (PDF/DOCX/EPUB/HTML) into Markdown for LLM summarization, Q&amp;A, or RAG indexing.</li><li>Extracting tables and structured content from spreadsheets (XLSX/CSV) into Markdown for analysis or documentation.</li><li>Turning slide decks (PPTX) into Markdown notes, including speaker notes and (optionally) AI-generated image descriptions.</li><li>Processing images or scanned documents with OCR to obtain searchable, editable Markdown text.</li><li>Transcribing audio (WAV/MP3) or pulling YouTube transcripts into Markdown for meeting notes, content analysis, or knowledge bases.</li><li>Converting documents to Markdown format</li><li>Extracting text from PDF, Word, PowerPoint, or Excel files</li><li>Performing OCR on images to extract text</li></ul><h2>When not to use</h2><ul><li>High-fidelity visual reproduction</li><li>Bounding boxes, page coordinates, or screenshots</li><li>PDF merge, split, forms, or watermarks</li></ul><p><a href="../documents/document-to-markdown-conversion/markitdown.html">Skill page</a></p><h2>Conflict</h2><pre>The copies overlap significantly in describing the MarkItDown tool, but they diverge on critical operational details. The K-Dense-AI copy is the most technically accurate and secure, targeting a specific version (0.1.8) and emphasizing security (untrusted input, narrow APIs like `convert_local` vs `convert`). The other copies (Vibe-Skills, medical-research, Auto-Empirical) use older or less secure APIs (`convert` with untrusted paths, `result.text_content` instead of `result.markdown`), and the Vibe-Skills copy includes an unrelated, potentially hallucinated &#x27;scientific-schematics&#x27; workflow. Because the K-Dense copy contains superior security constraints and version-specific API details that the others lack (and potentially contradict by using deprecated methods), crowning it alone would hide the alternative (though less secure) workflows present in the others, while combining them requires reconciling the API version differences.</pre>
+</body>
+</html>

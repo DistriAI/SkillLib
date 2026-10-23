@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunting-for-dcsync-attacks</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunting-for-dcsync-attacks</p><h1>hunting-for-dcsync-attacks</h1><p class="meta">separate</p><p>Detect DCSync attacks (MITRE ATT&amp;CK T1003.006) by analyzing Windows Event ID 4662 (AccessMask 0x100) for DS-Replication-Get-Changes and DS-Replication-Get-Changes-All requests issued by non-domain-controller accounts. Use when hunting for DCSync credential theft, after detecting Mimikatz-class tooling, or during incident response and purple-team exercises involving Active Directory replication abuse.</p><h2>When to use</h2><ul><li>When hunting for DCSync credential theft (MITRE ATT&amp;CK T1003.006)</li><li>After detecting Mimikatz or similar tools in the environment</li><li>During incident response involving Active Directory compromise</li><li>When monitoring for unauthorized domain replication requests</li><li>During purple team exercises testing AD attack detection</li></ul><p><a href="../security/active-directory-attack-hunting/hunting-for-dcsync-attacks.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills">mukul975/Anthropic-Cybersecurity-Skills</a></td><td><code>skills/hunting-for-dcsync-attacks/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

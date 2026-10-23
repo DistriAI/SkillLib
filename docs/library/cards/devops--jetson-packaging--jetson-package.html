@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-package</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-package</p><h1>jetson-package</h1><p class="meta">separate</p><p>Pick Jetson-compatible containers, vLLM runtime images, and Jetson AI Lab PyPI indexes; maps Orin SM 8.7 vs Thor SM 11.0 and JetPack-specific package choices.</p><h2>When to use</h2><ul><li>Choose Jetson-compatible containers and Python package indexes before installing GPU-native ML stacks. This skill prevents agents from recommending generic ARM wheels or stale container tags that do not include the right CUDA, JetPack, or…</li><li>&quot;Which Docker image / container should I use on this Jetson?&quot;</li><li>&quot;Where do I get PyTorch / vLLM / CUDA wheels for Jetson?&quot;</li><li>&quot;`pip install` failed&quot; or &quot;wrong CUDA / SM&quot; after installing a generic ARM wheel.</li><li>Before `docker run` or `pip install` for ML stacks on Orin or Thor.</li><li>User or agent looks for `l4t-cuda` containers on NGC — redirect to `nvcr.io/nvidia/cuda` (multi-arch).</li><li>&quot;Which PyTorch container should I use on Jetson?&quot; — answer depends on Thor vs Orin and JetPack version.</li></ul><h2>When not to use</h2><ul><li>This skill points to package catalogs and emits compatibility hints; it does not verify that a specific model checkpoint fits in memory.</li><li>NGC and GHCR tags change. Treat placeholder tag shapes such as `&lt;current-tag&gt;-py3` as lookup instructions, not literal tags.</li><li>If `generation` or `cuda_sm_hint` is unknown, do not guess a container tag.</li></ul><p><a href="../devops/jetson-packaging/jetson-package.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-package/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

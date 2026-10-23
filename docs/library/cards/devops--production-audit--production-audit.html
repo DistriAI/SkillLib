@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>production-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / production-audit</p><h1>production-audit</h1><p class="meta">authentic</p><p>Audit a shipped repo for production-readiness gaps across RLS, webhooks, secrets, grants, Stripe idempotency, mobile UX, and deployment health.</p><h2>When to use</h2><ul><li>Use when the user asks &quot;is this production-ready&quot;, &quot;what would break in prod&quot;, &quot;score my project&quot;, &quot;what did I miss&quot;, &quot;audit my repo&quot;, &quot;ready to ship&quot;.</li><li>Use right after merging a feature branch to `main` (helpful as a pre-deploy gate).</li><li>Use before a public launch / Show HN post / investor demo.</li><li>Use when `git log` shows &gt;20 commits since the last `.commitshow/audit.md` was written.</li><li>During active in-session coding — use `security-review` / OWASP-style for line-level patterns. This skill is for post-merge / pre-ship review.</li><li>For library / scaffold-form repos — the engine handles **app form** best; libraries get a partial-substitute score.</li><li>If `.commitshow/audit.json` already exists and is &lt; 1 hour old, read that instead of re-running. Audit is rate-limited (anonymous: 20/IP/day · 5/repo/day · 2000/day global).</li><li>Inside a private / non-GitHub repo — the audit pulls public GitHub signals, so private repos return a `not_found` error.</li></ul><h2>When not to use</h2><ul><li>This skill does not replace environment-specific validation, testing, or expert review.</li><li>The audit engine is calibrated for **deployed apps** with a live URL. CLI / library / scaffold form gets a partial-substitute score (max ~45/50 on the audit pillar) — fair but not flattering.</li><li>Behind a corporate firewall blocking `*.supabase.co`, the API call fails. There is no offline mode — the audit relies on the public engine.</li><li>Cold audit takes 60-90s. Cached audits (within 7 days) return instantly. `--refresh` force-bypasses cache (counts against rate limits).</li></ul><p><a href="../devops/production-audit/production-audit.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/production-audit/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

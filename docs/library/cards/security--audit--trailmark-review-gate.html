@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>trailmark-review-gate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / trailmark-review-gate</p><h1>trailmark-review-gate</h1><p class="meta">separate</p><p>Runs a Trailmark structural review gate over a branch, pull request, fix commit, release diff, or git ref range to detect new entrypoints, new tainted paths, removed validation or authorization calls, privilege-boundary drift, blast-radius growth, complexity growth, and newly reachable sensitive sinks. Use when reviewing a PR, branch, remediation commit, or release diff where graph-level security regressions should be checked before merge.</p><h2>When to use</h2><ul><li>Reviewing a branch, pull request, release diff, or fix commit</li><li>Checking whether a change expands attack surface</li><li>Looking for removed validation or authorization on reachable paths</li><li>Comparing before/after taint, privilege-boundary, blast-radius, or</li><li>Producing graph evidence for a differential review</li></ul><h2>When not to use</h2><ul><li>Single-snapshot analysis. Use `trailmark` or `trailmark-structural`.</li><li>Text-diff review only. Use `differential-review`.</li><li>Full vulnerability discovery. Use an audit or bug-finding workflow.</li><li>One static finding. Use `trailmark-finding-triage`.</li><li>Tooling is unavailable and the user wants manual review only.</li></ul><p><a href="../security/audit/trailmark-review-gate.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/trailmark/skills/trailmark-review-gate/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

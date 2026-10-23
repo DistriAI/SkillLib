@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>parabolic-short-trade-planner</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / parabolic-short-trade-planner</p><h1>parabolic-short-trade-planner</h1><p class="meta">separate</p><p>Screen US equities for parabolic exhaustion patterns and generate conditional pre-market short plans, then evaluate intraday trigger fires from live 5-min bars. Phase 1 daily 5-factor scorer (MA extension / acceleration / volume climax / range expansion / liquidity), Phase 2 per-candidate plans for ORL break / first-red 5-min / VWAP fail with explicit borrow / SSR / manual-confirmation gating, Phase 3 one-shot intraday FSM that detects trigger fires and resolves concrete share counts. Covers Phase 1 + Phase 2 + Phase 3.</p><h2>When to use</h2><ul><li>Build a daily Parabolic Short watchlist from S&amp;P 500 (or a custom CSV).</li><li>Translate a watchlist into pre-market trade plans with explicit</li><li>Audit a candidate&#x27;s blocking vs advisory manual-confirmation reasons</li><li>Long-side momentum screening — use vcp-screener or canslim-screener.</li><li>1-minute / sub-minute intraday signals — Phase 3 evaluates 5-min</li><li>Live order routing — this skill is detection-only by design;</li></ul><p><a href="../business/trade-planning/parabolic-short-trade-planner.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/tradermonty/claude-trading-skills">tradermonty/claude-trading-skills</a></td><td><code>skills/parabolic-short-trade-planner/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

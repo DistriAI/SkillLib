@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scanpy</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / scanpy</p><h1>scanpy</h1><p class="meta">combined</p><p>Performs Scanpy single-cell RNA-seq QC, normalization, HVG selection, PCA/UMAP/t-SNE, clustering, exploratory marker ranking, pseudobulk preparation, visualization, and Seurat or SingleCellExperiment RDS conversion to h5ad. Applies to established exploratory scRNA-seq workflows with explicit count and expression provenance; complementary skills cover scvi-tools models and AnnData format details.
+
+Standard single-cell RNA-seq analysis pipeline. For quality control (QC), normalization, dimensionality reduction (PCA/UMAP/t-SNE), clustering, differential expression analysis, and visualization. Best suited for exploratory single-cell transcriptomics analysis using established workflows. For deep learning models, use scvi-tools; for data format issues, use anndata.</p><h2>When to use</h2><ul><li>Analyzing single-cell RNA-seq data (.h5ad, 10X, CSV formats)</li><li>Working with R-friendly single-cell datasets (`.rds`, `.RData`, Seurat, SingleCellExperiment) that need conversion to `.h5ad`</li><li>Performing quality control on scRNA-seq datasets</li><li>Creating UMAP, t-SNE, or PCA visualizations</li><li>Identifying cell clusters and finding marker genes</li><li>Annotating cell types based on gene expression</li><li>Conducting trajectory inference or pseudotime analysis</li><li>Generating publication-quality single-cell plots</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../science/single-cell-rna-seq-analysis/scanpy.html">Skill page</a></p><h2>Conflict</h2><pre>The K-Dense-AI copy is the most rigorous and specific, containing critical &#x27;Representation and inference contracts&#x27; (e.g., raw count provenance, HVG flavor differences, Harmony/BBKNN side effects) and specific version pinning (Python 3.12+, Scanpy 1.12.4) that the others lack. However, the other three copies (Vibe-Skills, aipoch, sickn33) provide a complete, step-by-step &#x27;Standard Analysis Workflow&#x27; with Python code snippets for QC, normalization, clustering, and annotation that the K-Dense copy omits in favor of referencing bundled scripts. The aipoch copy also adds a &#x27;When to Use&#x27; section that explicitly frames the skill as a packaged method for reproducible deliverables. Combining is necessary to capture both the rigorous data contracts of the K-Dense copy and the executable workflow steps of the others.</pre>
+</body>
+</html>

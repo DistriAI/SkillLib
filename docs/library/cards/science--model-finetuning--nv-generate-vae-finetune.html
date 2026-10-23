@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nv-generate-vae-finetune</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / nv-generate-vae-finetune</p><h1>nv-generate-vae-finetune</h1><p class="meta">separate</p><p>Used for finetuning the NV-Generate-CTMR MAISI VAE from CT/MRI NIfTI datalists. Not for clinical or production data approval.</p><h2>When to use</h2><ul><li>Used for finetuning the NV-Generate-CTMR MAISI VAE/autoencoder from user-supplied CT or MRI NIfTI training volumes.</li><li>Not for clinical interpretation, regulatory use, or approving synthetic data for production training.</li><li>Upstream currently documents VAE training in `train_vae_tutorial.ipynb` and provides configs/helpers, but not a `scripts.train_vae` CLI. This skill does not execute the notebook; it stages the required config/datalist glue locally and uses…</li><li>Manifest I/O: inputs are `datalist` and `data_base_dir`; outputs are `autoencoder_checkpoint`, `discriminator_checkpoint`, and `result_json`.</li><li>The underlying training contract is the upstream config/env JSON (`config_maisi_vae_train.json` + `environment_maisi_vae_train.json`, as used in `train_vae_tutorial.ipynb`). The wrapper stages those JSON files for you and exposes the most-…</li></ul><h2>When not to use</h2><ul><li>Requires a current upstream `NV-Generate-CTMR` checkout with VAE configs and helper APIs. The skill owns the runner glue and does not depend on the notebook.</li><li>Full training can be expensive and is not deterministic across hardware, CUDA, and package versions.</li><li>The wrapper gates file accounting and command provenance, not anatomical realism, reconstruction quality, or downstream model utility.</li><li>Not for clinical deployment, clinical interpretation, autonomous diagnosis, regulatory submission, or production training-data approval.</li></ul><p><a href="../science/model-finetuning/nv-generate-vae-finetune.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/nv-generate-vae-finetune/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

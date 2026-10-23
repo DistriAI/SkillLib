@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>textme</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / textme</p><h1>textme</h1><p class="meta">separate</p><p>Text Claude from your phone — set up the njerschow/textme daemon so inbound iMessages drive a Claude Code session on your laptop, with voice notes, image input, code execution, and a phone-number whitelist.</p><h2>When to use</h2><ul><li>Use when the user says &quot;text Claude&quot;, &quot;text my laptop&quot;, &quot;drive Claude from my phone&quot;, &quot;I want to send iMessages to Claude&quot;, or &quot;let me code from my phone&quot;.</li><li>Use when the user is heads-down away from their desk and wants to kick off, supervise, or interrupt a Claude session via SMS/iMessage.</li><li>Use when setting up a long-running headless workstation that the user wants to remote-control while travelling or away from the keyboard.</li><li>Pair with [[sendblue-notify]] for bidirectional flow — outbound completion pings + inbound commands on the same Sendblue account.</li><li>Do **not** use for outbound-only &quot;text me when X finishes&quot; patterns. That is [[sendblue-notify]] and does not need a daemon.</li></ul><h2>When not to use</h2><ul><li>**Outbound-only flows do not need this skill.** For &quot;text me when X finishes&quot; use [[sendblue-notify]]; running a daemon is overkill.</li><li>**Voice transcription requires a separate OpenAI API key.** Without it, voice notes are dropped or surfaced as un-transcribed audio depending on daemon version.</li><li>**The daemon polls on an interval** — there is no push delivery. Expect single-digit-second latency between message receipt and Claude response.</li><li>**One conversation, one machine.** This is a per-host daemon, not a multi-tenant service. Two daemons sharing one Sendblue number will both try to handle every inbound message.</li><li>**Sendblue free-plan verification still applies.** The user&#x27;s phone must have texted the Sendblue number once before outbound responses from Claude reach the user (see [[sendblue-cli]] limitations).</li></ul><p><a href="../media/sms-messaging/textme.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/sendblue/textme/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

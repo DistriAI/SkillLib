@@ -44,7 +44,7 @@ Both should be under 1MB. Confirm the catalog is absent:
 tar -tzf dist/skilllib-*.tar.gz
 ```
 
-The listing should contain `pyproject.toml`, `README.md`, `LICENSE`, and `src/skilllib/`. It should not contain `catalog/`, `html/`, or `cache/`.
+The listing should contain `pyproject.toml`, `README.md`, `LICENSE`, and `src/skilllib/`. It should not contain `catalog/`, `docs/`, or `cache/`.
 
 Install the wheel once before uploading:
 
@@ -57,15 +57,20 @@ skilllib --help
 
 ## Upload
 
-From the repository root, put the token in the environment and upload. The username is the literal text `__token__`. The password is the token you copied from PyPI, including the `pypi-` prefix.
+From the repository root, upload with the credentials already loaded in a new terminal. `~/.bashrc` reads `~/.config/skilllib/twine.env`, which sets `TWINE_USERNAME` and `TWINE_PASSWORD`. That file is in your home directory, mode 600, and is not part of this repository. `~/.pypirc` holds the same username and token for twine. Do not copy either file into the repository.
+
+```bash
+python -m twine upload dist/*
+```
+
+If those variables are unset, create the token on PyPI again and put it in `~/.config/skilllib/twine.env`:
 
 ```bash
 export TWINE_USERNAME=__token__
 export TWINE_PASSWORD='paste-the-token-here'
-python -m twine upload dist/*
 ```
 
-If those two variables are unset, `python -m twine upload dist/*` asks for them. Username: `__token__`. Password: paste the token. The password is not shown as you paste it.
+The username is the literal text `__token__`. The password is the token, including the `pypi-` prefix. `python -m twine upload dist/*` also asks for them when both the environment and `~/.pypirc` are empty. The password is not shown as you paste it.
 
 Twine uploads every file in `dist/`. Empty `dist/` before `python -m build` so an older version is not uploaded again.
 

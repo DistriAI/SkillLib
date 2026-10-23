@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-omni-queue-deploy</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / service-omni-queue-deploy</p><h1>service-omni-queue-deploy</h1><p class="meta">authentic</p><p>Use to verify or create a Queue on a Salesforce org for a routable sObject (Case | Incident | MessagingSession | VoiceCall), discovered via its QueueSobject binding rather than by hardcoded name. Reuses whatever queue already routes the target sObject; with --create-if-missing it creates a Queue via the Metadata API (Group + QueueSobject) when none is bound and aligns its QueueRoutingConfigId to a caller-specified QRC. Returns created, reused, updated, or blocked. Triggers: verify or create a queue for Case/Incident/Messaging/Voice routing, align queue routing config, set up an Omni voice queue. Do not use to add users to the queue (service-omni-queue-members-assign) or for sObjects outside Case/Incident/MessagingSession/VoiceCall.</p><h2>When not to use</h2><ul><li>Only `Case`, `Incident`, `MessagingSession`, `VoiceCall` — extend by adding a dispatcher branch.</li><li>Never deletes a queue or its `QueueSobject` rows, and never modifies queue members.</li><li>Creation ships a minimal queue shape; exotic fields (`doesIncludeBosses`, email routing address) are not set.</li></ul><p><a href="../software-engineering/deploy-queue/service-omni-queue-deploy.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/service-omni/skills/service-omni-queue-deploy/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

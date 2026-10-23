@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>setup-local-sdk</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / setup-local-sdk</p><h1>setup-local-sdk</h1><p class="meta">separate</p><p>Install a .NET SDK locally for safe preview testing, specific-version pinning, or reproducible team setups — without modifying the system-wide installation. USE FOR: trying .NET previews safely, testing specific SDK versions, installing MAUI or other workloads on a preview, updating or replacing an existing local SDK, creating reproducible team/CI install scripts, configuring global.json paths. DO NOT USE FOR: system-wide SDK installs, .NET hosts older than 10, runtime-only installs, or projects not using SDK-style commands.</p><h2>When to use</h2><ul><li>Does **not** modify the system-wide .NET installation.</li><li>Is picked up automatically by `dotnet` commands from the project root.</li><li>Can be deleted to revert (`rm -rf .dotnet/` or `Remove-Item -Recurse -Force .\.dotnet`).</li></ul><h2>When not to use</h2><ul><li>User wants a **system-wide** install — direct to the official installer.</li><li>Host `dotnet` is **older than v10** — `paths` doesn&#x27;t exist; explain and stop.</li><li>User needs a **runtime-only** install — `paths` applies to SDK resolution only.</li></ul><p><a href="../software-engineering/environment-setup/setup-local-sdk.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet/skills/setup-local-sdk/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

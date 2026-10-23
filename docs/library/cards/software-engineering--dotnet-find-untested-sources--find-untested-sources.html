@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>find-untested-sources</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / find-untested-sources</p><h1>find-untested-sources</h1><p class="meta">separate</p><p>MANDATORY for static source-to-test pairing: find or list source files/modules without corresponding tests, or suggest test locations from repository structure. Invoke even for a tiny package; do not substitute manual globbing. Uses Roslyn for C#/.NET and tree-sitter for Python, TS/JS, Go, Java, Rust, Ruby, Kotlin, Swift, PowerShell, and C++. DO NOT USE FOR: real line/branch/Cobertura data, coverage-backed test priorities, CRAP risk, or grading existing tests.</p><h2>When to use</h2><ul><li>Coverage tools answer &quot;which lines were executed?&quot; — they require a green build and a passing test run, which is minutes-to-tens-of-minutes on a real repo. The question this skill answers is different and much cheaper: &gt; _Which source file…</li><li>User asks &quot;where should I add tests based on source pairing?&quot;, &quot;which files</li><li>Before invoking a test-generation agent, to produce a source-pairing worklist.</li><li>After generating tests, to verify each new test file pairs to a source file.</li><li>To enumerate &quot;weakly paired&quot; source files (only one referring test) for</li></ul><h2>When not to use</h2><ul><li>**Line/branch coverage** — use `coverage-analysis`.</li><li>**Priorities derived from real coverage data** — use `coverage-analysis`.</li><li>**CRAP-score / risk hotspots** — use `coverage-analysis`.</li><li>**Are existing tests strong?** — use `test-gap-analysis` (mutation reasoning)</li></ul><p><a href="../software-engineering/dotnet-find-untested-sources/find-untested-sources.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-test/skills/find-untested-sources/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

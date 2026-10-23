@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>context-compression</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / context-compression</p><h1>context-compression</h1><p class="meta">combined</p><p>This skill should be used when long-running agent sessions need context compression, structured summarization, compaction, token-per-task optimization, or durable handoff summaries that preserve decisions, files, risks, and next actions.
+
+When agent sessions generate millions of tokens of conversation history, compression becomes mandatory. The naive approach is aggressive compression to minimize tokens per request.</p><h2>When to use</h2><ul><li>Agent sessions exceed context window limits</li><li>Codebases exceed context windows (5M+ token systems)</li><li>Designing conversation summarization strategies</li><li>Debugging cases where agents &quot;forget&quot; what files they modified</li><li>Building evaluation frameworks for compression quality</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../agent-tooling/context-compression/context-compression.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies share the same core philosophy (tokens-per-task, structured summaries, artifact trail) and the same example summary block, but they are not simple reproductions of one another. The muratcankoylan copy adds explicit routing boundaries to other skills (context-optimization, context-degradation, filesystem-context, memory-systems, self-managed-context) and a specific warning against opaque compression when debugging/artifact tracking is critical. The sickn33 copy adds a concrete compression trigger strategy table (fixed threshold, sliding window, importance-based, task-boundary) and a detailed probe-based evaluation framework with specific probe types and a six-dimension evaluation rubric. Because each copy contains material steps and constraints the other lacks, crowning one would hide a real alternative.</pre>
+</body>
+</html>

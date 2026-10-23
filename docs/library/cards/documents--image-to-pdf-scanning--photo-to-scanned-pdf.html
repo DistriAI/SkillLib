@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>photo-to-scanned-pdf</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/documents.html">documents</a> / photo-to-scanned-pdf</p><h1>photo-to-scanned-pdf</h1><p class="meta">separate</p><p>Two pipelines ending at a scanner-look PDF. (1) Phone photos of paper documents (contracts, stamped certificates, receipts, forms, handwritten notes) → clean scanner-quality PDF: perspective rectification + noteshrink whitening + A4 assembly + mandatory whole-document check. Trigger: &quot;把照片 做成扫描件&quot;, &quot;photos to scanned PDF&quot;, &quot;make this look scanned&quot;, &quot;手机拍的 文档转 PDF&quot;, &quot;盖章文件扫描&quot;, replacing pages in an existing scanned PDF, any CamScanner-like request. (2) A digital document with no signature yet (rendered docx/PDF, confirmation form, contract draft) → make it look hand-signed and scanned: synthesize a handwriting-style signature, composite it onto the signature line, apply the same scan-look post-processing. Trigger: &quot;帮我做个手写签名&quot;, &quot;生成签名盖到这份文件上&quot;, &quot;做成签过字的扫描件&quot;, &quot;synthesize a signature&quot;, any request for a document that needs to look signed without a real photographed signature. Do NOT hand-roll levels/contrast enhancement for scan-look — tried and rejected twice; this skill&#x27;s pipeline is the proven…</p><p><a href="../documents/image-to-pdf-scanning/photo-to-scanned-pdf.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>daymade-docs/photo-to-scanned-pdf/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

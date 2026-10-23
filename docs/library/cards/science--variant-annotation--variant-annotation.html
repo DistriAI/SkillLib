@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>variant-annotation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / variant-annotation</p><h1>variant-annotation</h1><p class="meta">combined</p><p>Annotates VCF variants with functional consequences, population frequencies, and pathogenicity scores using bcftools annotate/csq, Ensembl VEP, SnpEff, and ANNOVAR. Use when deciding which annotation engine and version to pin, which transcript set to report on (RefSeq vs Ensembl vs MANE Select/Plus Clinical, and why VEP --pick is dangerous clinically), how to reconcile HGVS 3&#x27;-shifting with VCF left-alignment, which consequence plus NMD status governs PVS1 eligibility, which single calibrated predictor to use for PP3/BP4 (REVEL, AlphaMissense, CADD, SpliceAI deltas), or how to read gnomAD v2/v3/v4 grpmax filtering allele frequency instead of one global AF cutoff. Not for ACMG combining rules or final classification (see variant-calling/clinical-interpretation).
+
+Query and annotate gene variants from ClinVar and dbSNP databases. \n\.</p><h2>When to use</h2><ul><li>Use this skill when the task needs Query and annotate gene variants from ClinVar and dbSNP databases.</li><li>Use this skill for evidence insight tasks that require explicit assumptions, bounded scope, and a reproducible output format.</li><li>Use this skill when you need a documented fallback path for missing inputs, execution errors, or partial evidence.</li><li>Clinical significance classification (Pathogenic, Likely Pathogenic, VUS, Likely Benign, Benign)</li><li>ACMG guideline-based pathogenicity assessment</li><li>Population allele frequencies (gnomAD, ExAC, 1000 Genomes)</li><li>Disease and phenotype associations</li><li>Functional predictions (SIFT, PolyPhen, CADD)</li></ul><h2>When not to use</h2><ul><li>Requires internet connection for database queries</li><li>NCBI API rate limits: 3 requests/second (API key increases to 10/sec)</li><li>Some variants may not be present in ClinVar (VUS without clinical data)</li><li>HGVS notation parsing may fail for complex variants</li><li>Population frequencies not available for all variants</li><li>Functional predictions are computational estimates only</li></ul><p><a href="../science/variant-annotation/variant-annotation.html">Skill page</a></p><h2>Conflict</h2><pre>The three skills cover the same high-level task but operate at different levels of abstraction and tooling. The first (aipoch) is a high-level wrapper for a Python script that queries ClinVar/dbSNP for clinical significance. The second (FreedomIntelligence) is a practical guide for using command-line tools (bcftools, VEP, SnpEff, ANNOVAR) to add annotations to VCF files. The third (GPTomics) is a deep-dive into the theoretical and practical pitfalls of variant annotation, focusing on reproducibility, transcript selection (MANE vs RefSeq), and normalization issues. No single copy contains the full procedure; the first lacks the CLI tooling details, the second lacks the deep theoretical context and specific clinical reporting standards (MANE), and the third lacks the simple &#x27;how-to&#x27; commands for basic annotation. Combining them provides a complete workflow from basic annotation to clinical-grade reproducibility.</pre>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>imaging-data-commons</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / imaging-data-commons</p><h1>imaging-data-commons</h1><p class="meta">combined</p><p>Query and download public cancer imaging data from NCI Imaging Data Commons using idc-index. Use for accessing large-scale radiology (CT, MR, PET) and pathology datasets for AI training or research. No authentication required. Query by metadata, visualize in browser, check licenses.
+
+Queries and downloads public cancer imaging data from NCI Imaging Data Commons. Supports IDC collection discovery, DICOM access, radiology (CT, MR, PET) and pathology AI datasets, metadata SQL, visualization, licensing, and citations. Uses public metadata and download routes without authentication; optional BigQuery and Google Healthcare routes require Google credentials.</p><h2>When to use</h2><ul><li>Finding publicly available radiology (CT, MR, PET) or pathology (slide microscopy) images</li><li>Selecting image subsets by cancer type, modality, anatomical site, or other metadata</li><li>Downloading DICOM data from IDC</li><li>Checking data licenses before use in research or commercial applications</li><li>Visualizing medical images in a browser without local DICOM viewer software</li></ul><p><a href="../data/idc-imaging-data-query/imaging-data-commons.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies are different versions of the same skill, but they disagree on the access strategy and the pinned environment. The K-Dense-AI copy (v1.8) is the most advanced: it introduces a routing gate that prefers the hosted MCP server or the REST API for read-only metadata and only installs idc-index when heavier work is needed, and it pins idc-index 0.12.5 / IDC v24. The other two copies (v1.3.1 and v1.4.0) are older, pin idc-index 0.11.9/0.11.10 and IDC v23, and mandate installing/upgrading idc-index as the first step. Because the copies conflict on the primary access path and the required versions, crowning one would hide a real alternative procedure.</pre>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>differential-review</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / differential-review</p><h1>differential-review</h1><p class="meta">authentic</p><p>Performs security-focused differential review of code changes. Adapts analysis depth to codebase size, uses git blame for context, calculates blast radius by counting callers, checks test coverage of modified code, and generates a markdown report. Use when reviewing a PR, commit, or diff for security vulnerabilities, checking whether a change re-introduces a previously fixed bug, asking what else a change could break, or finding which modified code has no test covering it.</p><h2>When to use</h2><ul><li>reviewing a PR, commit, or diff for security vulnerabilities</li><li>checking whether a change re-introduces a previously fixed bug</li><li>asking what else a change could break</li><li>finding which modified code has no test covering it</li></ul><h2>When not to use</h2><ul><li>**Greenfield code** (no baseline to compare)</li><li>**Documentation-only changes** (no security impact)</li><li>**Formatting/linting** (cosmetic changes)</li><li>**User explicitly requests quick summary only** (they accept risk)</li></ul><p><a href="../security/differential-security-review/differential-review.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/differential-review/skills/differential-review/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

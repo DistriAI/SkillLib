@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pufferlib</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / pufferlib</p><h1>pufferlib</h1><p class="meta">combined</p><p>Version-aware guidance for PufferLib reinforcement-learning environments, vectorization, policies, PuffeRL training, evaluation, and safe checkpoint review. Covers the native 5.0 build and environment API, published 3.0.0 Gymnasium/PettingZoo adaptation, and a pinned historical 4.0 profile.
+
+This skill should be used when working with reinforcement learning tasks including high-performance RL training, custom environment development, vectorized parallel simulation, multi-agent systems, or integration with existing RL environments (Gymnasium, PettingZoo, Atari, Procgen, etc.). Use this skill for implementing PPO training, creating PufferEnv environments, optimizing RL performance, or developing policies with CNNs/LSTMs.</p><h2>When to use</h2><ul><li>**Training RL agents** with PPO on any environment (single or multi-agent)</li><li>**Creating custom environments** using the PufferEnv API</li><li>**Optimizing performance** for parallel environment simulation (vectorization)</li><li>**Integrating existing environments** from Gymnasium, PettingZoo, Atari, Procgen, etc.</li><li>**Developing policies** with CNN, LSTM, or custom architectures</li><li>**Scaling RL** to millions of steps per second for faster experimentation</li><li>**Multi-agent RL** with native multi-agent environment support</li></ul><h2>When not to use</h2><ul><li>Launching training via bundled plan schema</li><li>Importing arbitrary environments by dotted path</li><li>Installing or executing unreviewed environment packages</li><li>Passing W&amp;B or Neptune credentials via CLI or config</li><li>Dumping all environment variables</li><li>Recursively searching for .env files</li></ul><p><a href="../science/rl-environment-training/pufferlib.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same library but target fundamentally different versions and workflows. The first skill (K-Dense-AI) is a version-aware, security-focused guide that distinguishes between the native 5.0 C/CUDA build, the 3.0.0 PyPI release, and a pinned 4.0 source, emphasizing safe defaults, provenance verification, and synthetic CPU-only checks. The second skill (Vibe-Skills) is a practical, high-performance guide focused on the 3.0/4.0 era Python API, providing concrete code examples for PuffeRL training, PufferEnv development, and vectorization. They disagree on the primary API (native C vs Python/Gymnasium) and the recommended entry points (safe synthetic checks vs direct training loops). Combining them is necessary to provide a complete picture that includes both the security/provenance constraints of the first and the practical implementation details of the second.</pre>
+</body>
+</html>

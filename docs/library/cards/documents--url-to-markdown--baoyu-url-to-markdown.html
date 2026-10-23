@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>baoyu-url-to-markdown</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/documents.html">documents</a> / baoyu-url-to-markdown</p><h1>baoyu-url-to-markdown</h1><p class="meta">combined</p><p>Fetch any URL and convert to markdown using baoyu-fetch CLI (Chrome CDP with site-specific adapters). Built-in adapters for X/Twitter, YouTube transcripts, Hacker News threads, and generic pages via Defuddle. Handles login/CAPTCHA via interaction wait modes. Use when user wants to save a webpage as markdown.
+
+Fetch any URL and convert to markdown using Chrome CDP. Saves the rendered HTML snapshot alongside the markdown, uses an upgraded Defuddle pipeline with better web-component handling and YouTube transcript extraction, and automatically falls back to the pre-Defuddle HTML-to-Markdown pipeline when needed. If local browser capture fails entirely, it can fall back to the hosted defuddle.md API. Supports two modes - auto-capture on page load, or wait for user signal (for pages requiring login). Use when user wants to save a webpage as markdown.</p><h2>When to use</h2><ul><li>save a webpage as markdown</li><li>fetch X/Twitter</li><li>fetch YouTube transcripts</li><li>fetch Hacker News threads</li><li>fetch generic pages via Defuddle</li><li>handle login/CAPTCHA</li></ul><p><a href="../documents/url-to-markdown/baoyu-url-to-markdown.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies describe the same task but disagree on the underlying tooling, CLI surface, and setup behavior. JimLiu/baoyu-skills is the most complete and appears to be the upstream procedure (baoyu-fetch CLI, site-specific adapters, media download, first-time setup). anbeime/skill is a simplified wrapper around a local main.ts script with a different flag set and no first-time setup. LeoYeAI/openclaw-master-skills is a mirror of the upstream with a different version, additional fallbacks, and a different runtime resolution strategy. Crowning one would hide the real alternatives and conflicting parameters.</pre>
+</body>
+</html>

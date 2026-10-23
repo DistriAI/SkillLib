@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>embedding-strategies</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / embedding-strategies</p><h1>embedding-strategies</h1><p class="meta">combined</p><p>Select and optimize embedding models for semantic search and RAG applications. Use when choosing embedding models, implementing chunking strategies, or optimizing embedding quality for specific domains.
+
+Guide to selecting and optimizing embedding models for vector search applications.</p><h2>When to use</h2><ul><li>Choosing embedding models for RAG</li><li>Optimizing chunking strategies</li><li>Fine-tuning embeddings for domains</li><li>Comparing embedding model performance</li><li>Reducing embedding dimensions</li><li>Handling multilingual content</li></ul><h2>When not to use</h2><ul><li>The task is unrelated to embedding strategies</li><li>You need a different domain or tool outside this scope</li><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../data/embedding-model-selection/embedding-strategies.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies share the same model comparison table, pipeline diagram, and most templates, but they disagree on implementation details. The sickn33 copy adds input validation to chunk_by_tokens, fixes an infinite-loop edge case, and replaces the buggy BGE prefix check with an explicit query_prefix parameter. The foryourhealth111 and rmyndharis copies contain a bug in LocalEmbedder.embed_query (checking a string against an integer return value) and a potential infinite loop in chunk_by_tokens. Because the copies overlap but each has material steps or constraints the others lack, and they disagree on the correct way to handle model-specific prefixes and chunking edge cases, crowning one would hide a real alternative.</pre>
+</body>
+</html>

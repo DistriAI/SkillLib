@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>enrichment-visualization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / enrichment-visualization</p><h1>enrichment-visualization</h1><p class="meta">separate</p><p>Turns an enrichResult or gseaResult from clusterProfiler/enrichplot into a figure that collapses or shows gene-set redundancy, using dotplot, barplot, cnetplot, emapplot, treeplot, ridgeplot, gseaplot2, and upsetplot. Covers why a default top-20 GO dotplot is one biological theme drawn twenty times (the DAG/nesting guarantees redundant overlapping terms), so the figure is a modeling choice between SHOWING redundancy (pairwise_termsim -&gt; emapplot/treeplot) and DELETING it (simplify/REVIGO); why cnetplot/emapplot/treeplot need pairwise_termsim first; why enrichplot ships no barplot for gseaResult (a bar cannot carry a signed NES); why GeneRatio is not fold enrichment; and why showCategory silently truncates. Use when plotting ORA or GSEA results, collapsing redundant GO terms visually, encoding a dotplot, or building a publication enrichment figure. Statistics come from go-enrichment and gsea; generic ggplot -&gt; data-visualization/ggplot2-fundamentals.</p><h2>When to use</h2><ul><li>plotting ORA or GSEA results</li><li>collapsing redundant GO terms visually</li><li>encoding a dotplot</li><li>building a publication enrichment figure</li><li>rendering enrichResult or gseaResult</li><li>deciding whether to show or delete redundancy</li></ul><h2>When not to use</h2><ul><li>ORA/GSEA statistics that produce the objects</li><li>generic ggplot2 grammar</li><li>Cytoscape UI mechanics</li><li>simplify() existence</li></ul><p><a href="../science/enrichment-visualization/enrichment-visualization.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>pathway-analysis/enrichment-visualization/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

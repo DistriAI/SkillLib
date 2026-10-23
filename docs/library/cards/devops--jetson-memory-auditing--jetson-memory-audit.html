@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-memory-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-memory-audit</p><h1>jetson-memory-audit</h1><p class="meta">separate</p><p>Measure Jetson DRAM/NvMap usage and verify before/after memory reclamation with live audit data.</p><h2>When to use</h2><ul><li>Measure current Jetson memory consumers, capture before/after baselines, and verify whether user-approved changes actually reclaimed DRAM. Use live device data rather than estimates from container size, model size, or generic process memor…</li><li>&quot;How much memory is in use on this Jetson? What&#x27;s holding it?&quot;</li><li>&quot;I disabled the GUI / stopped vLLM / quit my container — did memory actually free?&quot;</li><li>&quot;Why does `free -h` still show low free memory after I stopped my workload?&quot;</li><li>As the **baseline** before applying `jetson-headless-mode` or other memory-related changes, and again **after** to compute the actual delta.</li></ul><h2>When not to use</h2><ul><li>Exact freed-memory deltas require a before snapshot, the user-approved change, cache flush when appropriate, and an after snapshot.</li><li>NvMap attribution depends on host-visible debugfs access; if it is unavailable, report limited GPU memory attribution instead of guessing.</li><li>Sandbox/container runs may not see host `/proc`, `tegrastats`, systemd, or NvMap data unless the runtime exposes them.</li></ul><p><a href="../devops/jetson-memory-auditing/jetson-memory-audit.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-memory-audit/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

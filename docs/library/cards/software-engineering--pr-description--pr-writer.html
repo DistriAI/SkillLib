@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pr-writer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / pr-writer</p><h1>pr-writer</h1><p class="meta">combined</p><p>Create or refresh reviewer-facing PR titles and descriptions. Use when opening a PR, updating its title or body, or preparing branch changes for review.
+
+Create pull requests following Sentry&#x27;s engineering practices.</p><h2>When to use</h2><ul><li>You are ready to open a pull request and need a structured description based on the committed branch diff.</li><li>You want the PR body to capture what changed, why it changed, and any reviewer context.</li><li>You are using GitHub CLI and need a repeatable PR-writing workflow rather than writing the description ad hoc.</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../software-engineering/pr-description/pr-writer.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies describe the same task (writing a reviewer-facing PR title and body via gh), but they disagree on the required body structure and on how to create/update the PR. The getsentry copy forbids default Summary/Changes/Test Plan sections, prescribes a minimum-shape body, and uses a temporary body file for both create and update. The sickn33 copy mandates a four-paragraph structure (what, why, alternatives, context), uses a heredoc for creation, and explicitly warns that gh pr edit is broken. Crowning one copy would hide a real alternative workflow and conflicting constraints.</pre>
+</body>
+</html>

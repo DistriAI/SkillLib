@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>heritability-partitioning</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / heritability-partitioning</p><h1>heritability-partitioning</h1><p class="meta">separate</p><p>Estimates SNP heritability and partitions it across functional annotations, cell types, and loci from GWAS summary statistics or individual-level genotypes. Implements LDSC, stratified LDSC with the baseline-LD model, Finucane 2018 cell-type prioritization, LDAK SumHer, HDL, HESS local heritability, BOLT-REML, GCTA-GREML, graphREML, and Popcorn cross-population genetic correlation. Use when computing total h2_SNP from summary stats, partitioning heritability across functional categories, prioritizing trait-relevant tissues or cell types from ENCODE/Roadmap chromatin marks, reconciling LDSC vs LDAK enrichment estimates, computing local heritability with HESS, estimating genetic correlation between traits, or producing publication-grade enrichment with calibrated sensitivity to model assumptions.</p><h2>When to use</h2><ul><li>computing total h2_SNP from summary stats</li><li>partitioning heritability across functional categories</li><li>prioritizing trait-relevant tissues or cell types</li><li>reconciling LDSC vs LDAK enrichment estimates</li><li>computing local heritability with HESS</li><li>estimating genetic correlation between traits</li><li>producing publication-grade enrichment</li></ul><h2>When not to use</h2><ul><li>non-EUR ancestry with EUR LD scores</li><li>sample size too low (mean chi-square &lt; 1.02)</li><li>population stratification not captured</li><li>sample overlap &gt; 5% for HDL</li><li>non-EUR HDL eigen-reference</li></ul><p><a href="../science/causal-genomics-heritability-partitioning/heritability-partitioning.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>causal-genomics/heritability-partitioning/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

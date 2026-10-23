@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>phylogenetics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / phylogenetics</p><h1>phylogenetics</h1><p class="meta">combined</p><p>Build and analyze phylogenetic trees using MAFFT (multiple alignment), IQ-TREE 2 (maximum likelihood), and FastTree (fast NJ/ML). Visualize with ETE3 or FigTree. For evolutionary analysis, microbial genomics, viral phylodynamics, protein family analysis, and molecular clock studies.
+
+Builds and analyzes phylogenetic trees using MAFFT multiple sequence alignment, IQ-TREE maximum likelihood with ModelFinder and branch support, and FastTree approximate inference. Uses ETE3 for tree summaries and visualization. Applies to homologous nucleotide or protein sequences, microbial gene trees, protein families, and cautiously interpreted dated phylogenies.</p><h2>When to use</h2><ul><li>**Evolutionary relationships**: Which organism/gene is most closely related to my sequence?</li><li>**Viral phylodynamics**: Trace outbreak spread and estimate transmission dates</li><li>**Protein family analysis**: Infer evolutionary relationships within a gene family</li><li>**Horizontal gene transfer detection**: Identify genes with discordant species/gene trees</li><li>**Ancestral sequence reconstruction**: Infer ancestral protein sequences</li><li>**Molecular clock analysis**: Estimate divergence dates using temporal sampling</li><li>**GWAS companion**: Place variants in evolutionary context (e.g., SARS-CoV-2 variants)</li><li>**Microbiology**: Species phylogeny from 16S rRNA or core genome phylogeny</li></ul><p><a href="../science/phylogenetic-tree-inference/phylogenetics.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe the same MAFFT/IQ-TREE/FastTree/ETE3 pipeline but disagree on key parameters and operational rules. The K-Dense copy is a more rigorous, version-pinned procedure (IQ-TREE 3, MFP model, explicit FastTree flags, ETE3/Python 3.12 constraints, no silent trim fallback, bundled helper script). The OpenClaw copy is a broader, more permissive Python-subprocess wrapper (IQ-TREE 2, TEST model, --redo by default, silent trim fallback, FigTree option, different MAFFT method mapping). Crowning one would hide a real alternative workflow and conflicting defaults.</pre>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>adme-property-predictor</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / adme-property-predictor</p><h1>adme-property-predictor</h1><p class="meta">combined</p><p>Predict ADME (Absorption, Distribution, Metabolism, Excretion) properties
+
+Analyze data with `adme-property-predictor` using a reproducible workflow, explicit validation, and structured outputs for review-ready interpretation.</p><h2>When to use</h2><ul><li>Screening compound libraries for drug-like properties in early discovery</li><li>Prioritizing lead compounds for advancement based on predicted PK</li><li>Identifying ADME liabilities requiring structural optimization</li><li>Comparing analogs to select candidates with optimal ADME profiles</li><li>Filtering virtual screening hits before synthesis</li><li>Generating ADME data for regulatory pre-submission packages</li><li>Teaching pharmacokinetics and drug design principles</li><li>Exact PK parameters needed for dosing → Use experimental PK studies</li></ul><h2>When not to use</h2><ul><li>**Small Molecules Only**: Models trained on drugs with MW 100-800 Da; unreliable for larger compounds</li><li>**pH 7.4 Assumption**: Most models predict properties at physiological pH</li><li>**Human-Specific**: Predictions for human PK; animal models may differ</li><li>**Healthy Subject Assumption**: Does not account for disease states, drug interactions</li><li>**Single Compound**: Does not predict formulation effects, salt form impact</li><li>**Static Models**: Do not account for induction, inhibition, or time-dependent changes</li><li>**Training Set Bias**: Underperforms for novel scaffolds not in training data</li><li>**Qualitative Only**: For Go/No-Go decisions; not for precise quantitative predictions</li></ul><p><a href="../science/adme-property-prediction/adme-property-predictor.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies describe the same ADME prediction skill and share the Overview, Integration, and Absorption sections. However, the LeoYeAI copy contains material steps and constraints the aipoch copy lacks, specifically a detailed &#x27;When to Use&#x27; section with explicit do-not-use cases (biologics, prodrugs, clinical dosing), a &#x27;Common Issues and Solutions&#x27; troubleshooting section, and a &#x27;Distribution&#x27; section with specific property tables and best practices. The aipoch copy contains a generic &#x27;Workflow&#x27; and &#x27;Audit-Ready Commands&#x27; section that the LeoYeAI copy does not. Because the LeoYeAI copy is a more complete and specific version of the domain logic, but the aipoch copy provides a different structural wrapper (audit commands), they are not identical reproductions. The LeoYeAI copy is the &#x27;authentic&#x27; domain procedure, but the aipoch copy&#x27;s specific audit commands are a distinct procedural element. Given the instruction to &#x27;combine&#x27; when copies overlap but each has material steps the others lack, and the aipoch copy&#x27;s &#x27;Audit-Ready Commands&#x27; are not in the LeoYeAI copy, I will mark as combine to ensure the audit steps are preserved in the combined instruction, although the LeoYeAI copy is the primary source of the scientific logic.</pre>
+</body>
+</html>

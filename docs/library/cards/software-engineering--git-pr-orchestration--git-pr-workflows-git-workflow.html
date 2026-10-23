@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>git-pr-workflows-git-workflow</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / git-pr-workflows-git-workflow</p><h1>git-pr-workflows-git-workflow</h1><p class="meta">combined</p><p>Guide changes through code checks, testing, commits, and pull request preparation. Use when coordinating a complete Git workflow and verifying readiness for collaboration.
+
+Orchestrate review, tests, commits, branch pushes, and pull-request creation with parallel agents. Use when completed changes must move through validation into a PR or guarded merge.</p><h2>When to use</h2><ul><li>Working on complete git workflow with multi-agent orchestration tasks or workflows</li><li>Needing guidance, best practices, or checklists for complete git workflow with multi-agent orchestration</li><li>Use for completed implementation work that must be reviewed, tested, committed, pushed to a topic branch, and opened as a pull request. Use the repository&#x27;s dedicated maintainer or release workflow instead when one is mandatory.</li></ul><h2>When not to use</h2><ul><li>The task is unrelated to complete git workflow with multi-agent orchestration</li><li>You need a different domain or tool outside this scope</li><li>This workflow cannot bypass branch protection, required reviews, repository permissions, or missing credentials.</li><li>It does not authorize destructive cleanup, force pushes, merges, deployments, or releases beyond the user&#x27;s request and repository policy.</li><li>Keep unresolved environment or infrastructure failures explicit; do not convert them into source changes without evidence.</li></ul><p><a href="../software-engineering/git-pr-orchestration/git-pr-workflows-git-workflow.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills describe the same high-level goal (moving code from local changes to a PR) but diverge significantly in implementation strategy and safety constraints. The first skill (rmyndharis) is a &#x27;multi-agent orchestration&#x27; template that relies on specific subagent types (code-reviewer, test-automator) and a rigid 3-phase pipeline with specific JSON output formats. It lacks safety gates regarding branch protection or repository policy. The second skill (sickn33) is a &#x27;guarded&#x27; workflow that prioritizes repository policy (AGENTS.md), branch protection, and manual verification steps (git status, gh pr view) over automated subagent delegation. It explicitly forbids bypassing policy and includes a &#x27;Policy Gate&#x27; phase that the first skill completely omits. Combining them is necessary to capture both the automated quality assurance steps (from skill 1) and the critical safety/policy compliance steps (from skill 2).</pre>
+</body>
+</html>

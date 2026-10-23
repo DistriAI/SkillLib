@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>local-codex</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / local-codex</p><h1>local-codex</h1><p class="meta">separate</p><p>Launches and manages the local OpenAI Codex CLI as a non-interactive coding sub-agent via ChatGPT OAuth, never API keys. Use to delegate coding tasks to Codex, run codex exec, generate or refactor code, or get a Codex code review; phrases like &#x27;codex&#x27;, &#x27;run codex&#x27;, &#x27;codex exec&#x27;, &#x27;delegate to codex&#x27;.</p><h2>When to use</h2><ul><li>User wants to generate, refactor, or review code via Codex</li><li>User wants to run `codex exec` for non-interactive tasks</li><li>User wants to use Codex&#x27;s GPT-5.5 agent capabilities</li><li>User mentions &quot;codex&quot;, &quot;run codex&quot;, &quot;delegate to codex&quot;</li></ul><h2>When not to use</h2><ul><li>Remote login can use device authorization with a browser on another machine; follow the OAuth guide instead of requiring a desktop app on the remote host.</li><li>Inspect the selected binary&#x27;s `doctor --help` before using its diagnostics; when supported, use the full report for endpoint/remedy details rather than `--summary`. Interpret the failed check, not only the aggregate exit code, and read the…</li><li>Shell environment inheritance follows the selected build&#x27;s `shell_environment_policy`; inspect the effective configuration. Keep credentials out of prompts.</li><li>Large file operations may need increased timeout</li></ul><p><a href="../agent-tooling/local-agent-execution/local-codex.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>daymade-codex/local-codex/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

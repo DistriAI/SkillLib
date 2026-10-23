@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jacks-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / jacks-analysis</p><h1>jacks-analysis</h1><p class="meta">separate</p><p>Runs JACKS (Joint Analysis of CRISPR/Cas9 Knockout Screens; Allen et al 2019 Genome Research) which models per-sgRNA log-fold-change as the product of a treatment-dependent gene-essentiality term and a treatment-independent guide-efficacy term. Covers the Bayesian decomposition math, the hierarchical efficacy prior shared across screens performed with the same library, when JACKS outperforms MAGeCK (multi-screen joint analysis, libraries with broad efficacy variance) and when it does not (single screen, novel libraries with no prior efficacy), library-reuse efficacy transfer, downstream essentiality interpretation, and the 2.5x sample-size reduction enabled by efficacy-aware testing. Use when running multiple screens with the same library, when guide-level noise is suspected to dominate per-gene signal, when reusing published essentiality reference screens for efficacy priors, or when comparing screens performed across cell lines that share library but differ biologically.</p><h2>When to use</h2><ul><li>Multi-screen joint analysis with same library</li><li>Guide-level noise reduction</li><li>Reusing published essentiality reference screens for efficacy priors</li><li>Comparing screens across cell lines sharing library</li><li>Libraries with broad efficacy variance</li><li>Heterogeneous quality mixed plasmid quality</li></ul><h2>When not to use</h2><ul><li>Single screen with no prior efficacy</li><li>Single timepoint or two-condition essentiality</li><li>Heavy-selection drug screens</li><li>Cancer-cell-line copy-number screens</li><li>Cross-chemistry sharing (e.g. CRISPRi + Cas9)</li></ul><p><a href="../science/crispr-screen-analysis/jacks-analysis.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>crispr-screens/jacks-analysis/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

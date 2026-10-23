@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>tooluniverse-epigenomics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / tooluniverse-epigenomics</p><h1>tooluniverse-epigenomics</h1><p class="meta">separate</p><p>Production-ready genomics and epigenomics data processing for BixBench questions. Handles methylation array analysis (CpG filtering, differential methylation, age-related CpG detection, chromosome-level density), ChIP-seq peak analysis (peak calling, motif enrichment, coverage stats), ATAC-seq chromatin accessibility, multi-omics integration (expression + methylation correlation), and genome-wide statistics. Pure Python computation (pandas, scipy, numpy, pysam, statsmodels) plus ToolUniverse annotation tools (Ensembl, ENCODE, SCREEN, JASPAR, ReMap, RegulomeDB, ChIPAtlas). Supports BED, BigWig, methylation beta-value matrices, Illumina manifest files, and multi-sample clinical data. Use when processing methylation data, ChIP-seq peaks, ATAC-seq signals, or answering questions about CpG sites, differential methylation, chromatin accessibility, histone marks, or epigenomic statistics.</p><h2>When to use</h2><ul><li>User provides methylation data (beta-value matrices, Illumina arrays) and asks about CpG sites</li><li>Questions about differential methylation analysis</li><li>Age-related CpG detection or epigenetic clock questions</li><li>Chromosome-level methylation density or statistics</li><li>ChIP-seq peak files (BED format) with analysis questions</li><li>ATAC-seq chromatin accessibility questions</li><li>Multi-omics integration (expression + methylation, expression + ChIP-seq)</li><li>Genome-wide epigenomic statistics</li></ul><h2>When not to use</h2><ul><li>**No native pybedtools**: Uses pure Python interval operations (slower for very large BED files)</li><li>**No native pyBigWig**: Cannot read BigWig files directly without package</li><li>**No R bridge**: Does not use methylKit, ChIPseeker, or DiffBind</li><li>**Illumina-centric**: Methylation functions designed for 450K/EPIC arrays</li><li>**Statistical simplicity**: Uses t-test/Wilcoxon for differential methylation (not limma/bumphunter)</li><li>**No peak calling**: Assumes peaks are pre-called; does not run MACS2 or similar</li><li>**API rate limits**: ToolUniverse annotation limited to ~20 genes per batch</li></ul><p><a href="../science/epigenomics-analysis/tooluniverse-epigenomics.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/tooluniverse-epigenomics/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

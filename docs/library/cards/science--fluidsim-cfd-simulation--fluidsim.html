@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>fluidsim</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / fluidsim</p><h1>fluidsim</h1><p class="meta">combined</p><p>Plans, configures, inspects, restarts, and analyzes bounded FluidSim computational-fluid-dynamics simulations with explicit numerical-validity and HPC safety checks. Use for FluidSim solver selection, parameter review, FFT/MPI setup, output diagnostics, or restart compatibility.
+
+Framework for computational fluid dynamics simulations using Python. Use when running fluid dynamics simulations including Navier-Stokes equations (2D/3D), shallow water equations, stratified flows, or when analyzing turbulence, vortex dynamics, or geophysical flows. Provides pseudospectral methods with FFT, HPC support, and comprehensive output analysis.</p><h2>When to use</h2><ul><li>FluidSim solver selection</li><li>parameter review</li><li>FFT/MPI setup</li><li>output diagnostics</li><li>restart compatibility</li><li>periodic Cartesian pseudospectral CFD</li><li>numerical-validity checks</li><li>HPC safety checks</li></ul><h2>When not to use</h2><ul><li>treating completed runs as evidence of numerical convergence</li><li>treating stable time steps as evidence of physical validity</li><li>treating smooth plots as evidence of numerical convergence</li><li>treating closed program exit as evidence of physical validity</li><li>claiming GPU acceleration</li><li>installing unrelated CUDA wheels as a FluidSim backend</li><li>automatically submitting or launching MPI jobs</li></ul><p><a href="../science/fluidsim-cfd-simulation/fluidsim.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same domain (FluidSim CFD) but diverge significantly in procedure, safety constraints, and technical accuracy. The first skill (K-Dense-AI) is a rigorous, safety-focused workflow that mandates explicit resource planning, pilot runs, and specific version pins (0.9.0), while explicitly correcting API field names (e.g., `cfl_coef` vs `CFL`). The second skill (Vibe-Skills) is a general-purpose guide that includes a broader solver list (shallow water, stratified) and a simpler 5-step workflow, but it contains a likely API error (using `CFL` instead of `cfl_coef` for 0.9.0) and lacks the strict HPC safety checks. Because the first skill&#x27;s safety constraints are critical for HPC usage and the second skill provides broader solver context, neither is a pure reproduction of the other. Combining them allows for a robust workflow that includes the safety checks of the first and the solver breadth of the second, while resolving the API conflict in favor of the version-specific correction in the first.</pre>
+</body>
+</html>

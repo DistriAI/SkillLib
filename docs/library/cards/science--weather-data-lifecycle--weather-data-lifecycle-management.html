@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>weather-data-lifecycle-management</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / weather-data-lifecycle-management</p><h1>weather-data-lifecycle-management</h1><p class="meta">authentic</p><p>Manage ownership, retention, and cleanup of downloaded weather data across one-shot jobs, interactive viewers, caches, failures, and cancellation.</p><h2>When to use</h2><ul><li>A completed render leaves large temporary files behind.</li><li>An interactive view fails because its backing data was deleted too early.</li><li>Cancellation or exceptions leak partial downloads and derived files.</li><li>Request-owned files and a shared user cache are mixed together.</li><li>Background workers transfer ownership of data to a UI or later processing</li></ul><h2>When not to use</h2><ul><li>Multi-process leases require coordination beyond an in-memory reference</li><li>Some decoders create files outside their requested directory; configure or</li><li>Lifecycle correctness prevents leaks and premature deletion but does not</li></ul><p><a href="../science/weather-data-lifecycle/weather-data-lifecycle-management.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/weather-data-lifecycle-management/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>association-testing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / association-testing</p><h1>association-testing</h1><p class="meta">separate</p><p>Single-variant common-variant GWAS with plink2 --glm (linear/logistic, Firth) and the linear mixed models GEMMA, BOLT-LMM, SAIGE, regenie (SPA). A GWAS statistic is valid only when genotype is independent of unmodeled phenotype drivers after the chosen covariates and random effects, so the engine follows sample structure and case:control imbalance, not taste: PC covariates absorb continuous ancestry but cannot remove relatedness (a covariance structure needing an LMM), genomic inflation above 1 is mostly true polygenic signal not confounding (the LDSC intercept is the diagnostic), LOCO prevents proximal contamination, and SPA/Firth keep the tail calibrated at extreme imbalance and low MAC. Use when running single-variant GWAS, choosing between a GLM and a mixed model, or controlling stratification, relatedness, and case:control imbalance. For rare-variant aggregation (burden, SKAT, SKAT-O, ACAT) see rare-variant-association; fine-mapping and MR see causal-genomics; PRS see clinical-da…</p><h2>When to use</h2><ul><li>single-variant GWAS</li><li>choosing between GLM and mixed model</li><li>controlling stratification</li><li>controlling relatedness</li><li>controlling case:control imbalance</li><li>linear mixed models</li><li>SPA and Firth correction</li></ul><h2>When not to use</h2><ul><li>rare-variant aggregation</li><li>burden tests</li><li>SKAT</li><li>fine-mapping</li><li>Mendelian randomization</li><li>polygenic risk scores</li></ul><p><a href="../science/population-genetics/association-testing.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>population-genetics/association-testing/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

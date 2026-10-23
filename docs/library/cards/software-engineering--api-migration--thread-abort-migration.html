@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>thread-abort-migration</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / thread-abort-migration</p><h1>thread-abort-migration</h1><p class="meta">separate</p><p>Guides migration of .NET Framework Thread.Abort usage to cooperative cancellation in modern .NET. USE FOR: modernizing code that calls Thread.Abort, catching ThreadAbortException, replacing Thread.ResetAbort, replacing Thread.Interrupt for thread termination, resolving PlatformNotSupportedException or SYSLIB0006 after retargeting to .NET 6+, migrating ASP.NET Response.End or Response.Redirect(url, true) which internally call Thread.Abort. DO NOT USE FOR: code that only uses Thread.Join, Thread.Sleep, or Thread.Start without any abort, interrupt, or ThreadAbortException usage — these APIs work identically in modern .NET and need no migration. Also not for projects staying on .NET Framework, or Thread.Abort usage inside third-party libraries you do not control.</p><h2>When to use</h2><ul><li>Migrating a .NET Framework project to .NET 6+ that calls `Thread.Abort`</li><li>Replacing `ThreadAbortException` catch blocks that use control flow or cleanup logic</li><li>Removing `Thread.ResetAbort` calls that cancel pending aborts</li><li>Replacing `Thread.Interrupt` for waking blocked threads</li><li>Migrating ASP.NET code that uses `Response.End` or `Response.Redirect(url, true)`, which internally call `Thread.Abort`</li><li>Resolving `PlatformNotSupportedException` or `SYSLIB0006` warnings after a target framework change</li></ul><h2>When not to use</h2><ul><li>**The code only uses `Thread.Join`, `Thread.Sleep`, or `Thread.Start` without any abort, interrupt, or `ThreadAbortException` catch blocks.** These APIs work identically in modern .NET — no migration is needed. Stop here and tell the user…</li><li>The project will remain on .NET Framework indefinitely</li><li>The Thread.Abort usage is inside a third-party library you do not control</li></ul><p><a href="../software-engineering/api-migration/thread-abort-migration.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-upgrade/skills/thread-abort-migration/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

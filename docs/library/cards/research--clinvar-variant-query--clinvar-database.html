@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clinvar-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / clinvar-database</p><h1>clinvar-database</h1><p class="meta">combined</p><p>Query NCBI ClinVar for variant clinical significance. Search by gene/position, interpret pathogenicity classifications, access via E-utilities API or FTP, annotate VCFs, for genomic medicine.
+
+Utilities for querying the NCBI ClinVar database to retrieve variant records, clinical significance, and phenotype relationships; use when searching variants by gene/condition/significance, interpreting Pathogenic/Benign/VUS classifications, or annotating VCF files with ClinVar annotations.</p><h2>When to use</h2><ul><li>Searching for variants by gene, condition, or clinical significance</li><li>Interpreting clinical significance classifications (pathogenic, benign, VUS)</li><li>Accessing ClinVar data programmatically via E-utilities API</li><li>Downloading and processing bulk data from FTP</li><li>Understanding review status and star ratings</li><li>Resolving conflicting variant interpretations</li><li>Annotating variant call sets with clinical significance</li><li>You need to find ClinVar variant records by **gene**, **condition/phenotype**, or **clinical significance** (e.g., *BRCA1* + *pathogenic*).</li></ul><p><a href="../research/clinvar-variant-query/clinvar-database.html">Skill page</a></p><h2>Conflict</h2><pre>Both skills cover querying ClinVar, interpreting significance, and bulk data access, but they diverge significantly in implementation details and scope. The first skill (aipoch) is a wrapper around specific Python scripts (`scripts/search.py`, `scripts/annotate.py`) and relies on `bcftools` for annotation. The second skill (FreedomIntelligence) provides direct API usage examples (curl), detailed FTP file paths, specific update schedules, and manual `bcftools` commands for filtering/annotation without relying on the first skill&#x27;s custom scripts. Combining them is necessary to capture both the script-based workflow and the direct API/FTP procedural details.</pre>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>harness-writing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / harness-writing</p><h1>harness-writing</h1><p class="meta">authentic</p><p>Designs and improves fuzzing harnesses for C/C++ and Rust. Covers mapping raw bytes onto a target API, generating structured inputs, avoiding non-determinism and false crashes, and deciding what to fuzz together. Use when writing a first LLVMFuzzerTestOneInput or fuzz_target! harness, when a campaign finds nothing or reports crashes that will not reproduce, or when the target API needs structured rather than raw input.</p><h2>When to use</h2><ul><li>Writing a first LLVMFuzzerTestOneInput or fuzz_target! harness</li><li>Improving harnesses when campaigns find nothing</li><li>Fixing crashes that will not reproduce</li><li>Mapping raw bytes onto a target API</li><li>Generating structured inputs</li><li>Avoiding non-determinism and false crashes</li><li>Deciding what to fuzz together</li></ul><h2>When not to use</h2><ul><li>Using existing well-tested harnesses from your project</li><li>Using automatic harness generation that meets your needs</li><li>Targets that already have comprehensive fuzzing infrastructure</li></ul><p><a href="../security/fuzzing-harness-writing/harness-writing.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/testing-handbook-skills/skills/harness-writing/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

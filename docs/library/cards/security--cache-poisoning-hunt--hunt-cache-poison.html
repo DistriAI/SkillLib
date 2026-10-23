@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-cache-poison</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunt-cache-poison</p><h1>hunt-cache-poison</h1><p class="meta">combined</p><p>Hunting skill for cache poison vulnerabilities.
+
+Hunting skill for cache poison vulnerabilities. Built from 10 public bug bounty reports including X-Forwarded-Host poisoning, X-HTTP-Method-Override / GCS cache, reflected→stored XSS via cache, classic Omer-Gil Web Cache Deception, Cloudflare Cache Deception Armor bypass, session-token cache deception, Akamai hop-by-hop smuggling → server-side edge poisoning, and Kettle&#x27;s 2024 path-normalization WCD against Cloudflare/Fastly/GCP. Use when hunting cache poisoning, Web Cache Deception, CDN-fronted apps.</p><h2>When to use</h2><ul><li>You have explicit, written authorization to assess the target in scope, and the task matches this skill&#x27;s vulnerability class or technique within a bug-bounty or penetration-test engagement.</li><li>You need the recon, exploitation, or validation workflow described below — executed strictly inside the approved scope.</li></ul><h2>When not to use</h2><ul><li>Authorized scope only: the confirmation gate above is mandatory before any probing, exploitation, or credential-access command.</li><li>Docs-only import: upstream helper scripts, commands, engine, and research assets are not bundled; reinstall tooling from the source repo when needed.</li><li>Validate every finding (see `triage-validation`) before reporting; report via `report-writing`. Prefer a sandbox, disposable VM, or controlled lab.</li></ul><p><a href="../security/cache-poisoning-hunt/hunt-cache-poison.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies share the same core methodology (map cache, identify unkeyed headers, test reflection, WCD, validate storage), but each contains material steps the other lacks. The uphiago copy includes a 10-step methodology with DoS-via-cache, parameter pollution, TTL measurement, and blast-radius documentation, plus a detailed payload/detection section. The sickn33 copy adds a mandatory authorization/confirmation gate and an &#x27;Autonomous Testing Priority&#x27; section that explicitly prioritizes password-reset poisoning (Host header injection) as a distinct first attack, which the uphiago copy does not highlight as a separate priority. Because the sickn33 copy imposes a strict authorization gate and a different attack prioritization, crowning one would hide a real alternative procedure.</pre>
+</body>
+</html>

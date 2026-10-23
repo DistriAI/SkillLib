@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-dispatch</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunt-dispatch</p><h1>hunt-dispatch</h1><p class="meta">combined</p><p>Skill-set loader for /hunt orchestrator.
+
+Skill-set loader for /hunt orchestrator. Fingerprints the target, picks the right platform attack skills, and loads the Red Team or WAPT skill set. Use when /hunt has just received a mode answer (redteam or wapt + blackbox|greybox) and needs to load the appropriate skills and print the taxonomy. Not for direct user invocation.</p><h2>When to use</h2><ul><li>You have explicit, written authorization to assess the target in scope, and the task matches this skill&#x27;s vulnerability class or technique within a bug-bounty or penetration-test engagement.</li><li>You need the recon, exploitation, or validation workflow described below — executed strictly inside the approved scope.</li></ul><h2>When not to use</h2><ul><li>Authorized scope only: the confirmation gate above is mandatory before any probing, exploitation, or credential-access command.</li><li>Docs-only import: upstream helper scripts, commands, engine, and research assets are not bundled; reinstall tooling from the source repo when needed.</li><li>Validate every finding (see `triage-validation`) before reporting; report via `report-writing`. Prefer a sandbox, disposable VM, or controlled lab.</li></ul><p><a href="../security/hunt-skill-dispatch/hunt-dispatch.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies implement the same /hunt skill-set loader (fingerprint hosts, map signals to platform skills, load a bounded set). They overlap heavily on the invocation contract, the fingerprint loop, and the signal-to-skill table. However, each contains material steps the other lacks: the uphiago copy defines the tiered priority order, the 8-skill load budget, and de-dup rules (CDN-only, cloud header vs leaked key, framework vs class), while the sickn33 copy adds a mandatory 404 baseline step (soft-404 control via status/size/hash) and an engagement-context/authorization gate. Crowning one would hide the other&#x27;s real alternative procedure, so they should be combined.</pre>
+</body>
+</html>

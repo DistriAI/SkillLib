@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ctdna-mutation-detection</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / ctdna-mutation-detection</p><h1>ctdna-mutation-detection</h1><p class="meta">separate</p><p>Detects somatic mutations in circulating tumor DNA, treating low-VAF detection as a signal-versus-noise problem set by error suppression and molecules sampled, not by the choice of caller. Distinguishes de novo CALLING (scanning a panel for unknown variants, bounded by per-locus error and multiple testing) from tumor-informed DETECTION (tracking a pre-specified variant set, where panel integration reaches single-ppm). Covers VarDict and Mutect2 for de novo calling, UMI-aware callers, and a pysam-based known-variant VAF tracker, with matched-WBC subtraction as the mandatory defense against clonal hematopoiesis (the dominant false positive). Use when calling or tracking tumor mutations from plasma cfDNA, setting a VAF threshold, or deciding whether a low-VAF call is tumor versus CHIP.</p><h2>When to use</h2><ul><li>calling tumor mutations from plasma cfDNA</li><li>tracking known tumor mutations</li><li>setting a VAF threshold</li><li>distinguishing tumor mutations from CHIP</li><li>de novo low-VAF somatic variant calling</li><li>tumor-informed variant detection</li><li>matched-WBC subtraction</li><li>quantifying pre-specified mutation sets</li></ul><h2>When not to use</h2><ul><li>germline variant calling</li><li>tumor tissue-only analysis without plasma cfDNA</li><li>non-somatic mutation detection</li></ul><p><a href="../science/liquid-biopsy-ctdna-mutation-detection/ctdna-mutation-detection.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>liquid-biopsy/ctdna-mutation-detection/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

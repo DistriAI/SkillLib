@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>behavior</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / behavior</p><h1>behavior</h1><p class="meta">separate</p><p>Drive Unity Behavior behavior graphs and blackboard variables</p><h2>When to use</h2><ul><li>Wiring NPC/AI decision logic</li><li>Working with behavior trees/graphs</li><li>Reading/writing blackboard variables</li><li>Behavior graph asset discovery</li><li>Agent wiring</li><li>Blackboard variable access</li></ul><h2>When not to use</h2><ul><li>The authoring node graph is stored as a `[SerializeReference]` polymorphic `List&lt;NodeModel&gt;` with `PortModel` cross-references, an embedded `SerializableCommandBuffer`, and a version-stamped `NodeModelInfo` cache. Writing it correctly mean…</li><li>Every edit must be followed by a consistent rebake of three sub-assets (runtime graph, runtime blackboard, debug info) plus `VersionTimestamp` synchronization, or the asset silently desyncs from its baked runtime graph.</li><li>The serialization schema is explicitly versioned (`kLatestSerializationVersion`, currently 3) and has changed within the 1.0.x line. Reflection-driven topology writes would break on a patch release.</li><li>**Preferred** — author the graph in the Behavior editor window (`Window &gt; AI &gt; Behavior`, or double-click the asset), then use this module to inspect and wire it up.</li><li>Duplicate a known-good graph with `asset_duplicate` and rebind it, instead of building topology from nothing.</li><li>For mechanical, repetitive edits to an existing graph, edit the `.asset` YAML directly — load the [yaml-editing](../yaml-editing/SKILL.md) advisory first for the managed-reference and `fileID` rules, and re-verify with `behavior_graph_info…</li><li>`behavior_graph_create` produces an empty graph. Node authoring still requires the editor window.</li><li>Blackboard variables cannot be created, renamed, retyped, or deleted — only existing variables can be assigned. Add variables in the Behavior editor&#x27;s Blackboard panel.</li></ul><p><a href="../software-engineering/unity-behavior/behavior.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/behavior/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

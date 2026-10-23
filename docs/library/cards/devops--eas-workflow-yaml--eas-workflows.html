@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>eas-workflows</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / eas-workflows</p><h1>eas-workflows</h1><p class="meta">combined</p><p>Helps understand and write EAS workflow YAML files for Expo projects. Use this skill when the user asks about CI/CD or workflows in an Expo or EAS context, mentions .eas/workflows/, or wants help with EAS build pipelines or deployment automation.
+
+Use when writing or reviewing Expo EAS workflow YAML: inspect current schema and job syntax, validate configuration, and separate draft edits from launching builds or submissions.</p><h2>When to use</h2><ul><li>Create or repair `.eas/workflows` YAML for an Expo application.</li><li>Review triggers, dependencies, expressions or pre-packaged job parameters.</li><li>Validate a proposed workflow without launching it or publishing an app.</li></ul><h2>When not to use</h2><ul><li>Authenticated CLI validation is distinct from launching jobs; workflow runs, uploads, builds and store submissions need their actual authorized scope and account limits.</li><li>Draft-2020-12 schema checks do not replace EAS server validation, profile references or expression-context checks.</li><li>No unbounded fetch, arbitrary URL, redirect or secret is required to read the public references. On platforms without a no-follow cache-open flag, cached reads are skipped rather than following links.</li><li>Does not replace environment-specific validation, testing, or maintainer review.</li></ul><p><a href="../devops/eas-workflow-yaml/eas-workflows.html">Skill page</a></p><h2>Conflict</h2><pre>The expo/skills copy is the upstream procedure, but the sickn33 copy is not a simple reproduction: it adds security and operational constraints (Node 22+, exact-URL fetch allowlist, redirect rejection, 10-second deadline, 1 MiB response limit, 15-minute ETag cache, no-store handling, envelope data extraction, pinned local EAS CLI validation, and project trust checks) that the upstream copy lacks. It also disagrees with the upstream on whether `on` is required and on the expression contexts available. Crowning the upstream copy would hide these real alternative constraints and the conflicting schema interpretation.</pre>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nvidia-broadcast</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / nvidia-broadcast</p><h1>nvidia-broadcast</h1><p class="meta">separate</p><p>Use when controlling NVIDIA Broadcast through MCP to apply effects, process local media, select devices, or change camera resolution, or when Broadcast is missing or too old to expose the gateway and the user wants it installed; not for Broadcast app settings outside the MCP gateway.</p><h2>When to use</h2><ul><li>NVIDIA Broadcast applies AI effects to your camera, microphone, and speaker, and can apply the same effects to local media files. You drive it over a local MCP gateway that NVIDIA Broadcast runs on loopback. It also lets you check and chan…</li></ul><h2>When not to use</h2><ul><li>Loopback MCP only; no LAN or remote access. From WSL that means mirrored networking (or WSL 1);</li><li>stdio transport exists only as a fallback for clients that cannot use Streamable HTTP; it is</li><li>This skill exposes Broadcast effect, file-processing, device-selection, and camera-resolution controls only.</li><li>Installing or updating NVIDIA Broadcast is the one system-level change it can make, only with the</li><li>The gateway first ships in 2.3.x. If the newest build the update service offers this machine is</li><li>Speaker effects do not apply to file processing jobs.</li></ul><p><a href="../agent-tooling/nvidia-broadcast-workflow/nvidia-broadcast.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/nvidia-broadcast/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

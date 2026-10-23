@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>subdomain-takeover-hunt</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / subdomain-takeover-hunt</p><h1>subdomain-takeover-hunt</h1><p class="meta">separate</p><p>Detect and verify subdomain takeover via dangling CNAME to unclaimed services.</p><h2>When to use</h2><ul><li>Subdomain enumeration produces a large list — scan for lingering DNS records.</li><li>Target uses cloud services with shared-namespace identifiers (Heroku, S3, Azure, Zendesk, Shopify).</li><li>A subdomain returns NXDOMAIN, 404, or &quot;no such app&quot; error pages.</li><li>The CNAME target is a service with user-registrable names.</li></ul><p><a href="../security/subdomain-takeover/subdomain-takeover-hunt.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>recon/subdomain-takeover-hunt/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

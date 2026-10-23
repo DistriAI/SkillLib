@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scvi-tools</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / scvi-tools</p><h1>scvi-tools</h1><p class="meta">combined</p><p>This skill should be used when working with single-cell omics data analysis using scvi-tools, including scRNA-seq, scATAC-seq, CITE-seq, spatial transcriptomics, and other single-cell modalities. Use this skill for probabilistic modeling, batch correction, dimensionality reduction, differential expression, cell type annotation, multimodal integration, and spatial analysis tasks.
+
+Fits probabilistic models for single-cell omics, including scVI batch integration, scANVI annotation, totalVI CITE-seq, MultiVI RNA/ATAC integration, and posterior differential expression. Use for generative modeling, reference mapping, multimodal analysis, or model-based uncertainty; use scanpy for standard preprocessing and exploratory analysis.</p><h2>When to use</h2><ul><li>Analyzing single-cell RNA-seq data (dimensionality reduction, batch correction, integration)</li><li>Working with single-cell ATAC-seq or chromatin accessibility data</li><li>Integrating multimodal data (CITE-seq, multiome, paired/unpaired datasets)</li><li>Analyzing spatial transcriptomics data (deconvolution, spatial mapping)</li><li>Performing differential expression analysis on single-cell data</li><li>Conducting cell type annotation or transfer learning tasks</li><li>Working with specialized single-cell modalities (methylation, cytometry, RNA velocity)</li><li>Building custom probabilistic models for single-cell analysis</li></ul><p><a href="../science/single-cell-probabilistic-modeling/scvi-tools.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies overlap on the core scvi-tools workflow (setup_anndata, train, get_latent_representation, Scanpy downstream, DE, save/load) and the modality-to-model mapping. However, they disagree on version pinning, Python/dependency requirements, and preprocessing details, and each contains material steps the others lack. K-Dense-AI pins scvi-tools 1.5.1, requires Python 3.12+, and includes a detailed count-validation and batch-aware HVG workflow plus release-boundary notes (JAX removal, spatial model maintenance). aipoch uses a looser Python 3.9+ requirement and includes a differential_expression example with mode/delta parameters. FreedomIntelligence provides a broader &#x27;when to use&#x27; list and theoretical foundations but lacks the version pinning and count-validation rigor. Crowning one would hide the version-specific constraints and the alternative dependency assumptions.</pre>
+</body>
+</html>

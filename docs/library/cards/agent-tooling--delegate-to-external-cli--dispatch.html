@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>dispatch</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / dispatch</p><h1>dispatch</h1><p class="meta">combined</p><p>Delegate tasks to OpenAI Codex CLI and Google Antigravity CLI from Claude Code. Say &#x27;check with codex&#x27; or &#x27;ask gemini for a second opinion&#x27; and Claude runs the other agent, keeps a topic-aware session, and critiques the result.
+
+Delegate tasks to OpenAI Codex CLI and Google Antigravity CLI from Claude Code with topic-aware sessions</p><h2>When to use</h2><ul><li>Getting a second opinion from a different model family before merging</li><li>Cross-checking Claude&#x27;s analysis against Codex or Gemini</li><li>Delegating a side task (research, review, image generation) to another CLI</li><li>Triangulating a decision across multiple models and having Claude reconcile disagreements</li><li>Resuming a prior delegation thread without restating context</li><li>Use when you want a second opinion from a different model family before merging or shipping</li><li>Use when you want to cross-check Claude&#x27;s analysis against Codex or Gemini</li><li>Use when you want to delegate a side task (research, review, image generation) to another CLI without leaving Claude Code</li></ul><h2>When not to use</h2><ul><li>**agy has no read-only mode** -- it can edit files and run commands even when asked to analyze only. Dispatch requires explicit approval before agy delegation, mitigates analysis-only tasks by prompt-level constraint and git-status check a…</li><li>**Topic-aware session IDs live in conversation memory only** -- they are lost on context compaction or when the conversation ends. If the mapping is lost, Claude asks or starts a fresh thread.</li><li>**Cold start for agy can take 2-3 minutes** on the first call in a session (language server + auth spin-up). This is normal, not a hang.</li><li>**Image generation quality depends on the underlying CLI&#x27;s model** -- Codex uses gpt-image-2, Antigravity uses Nano Banana Pro. Neither supports native transparency.</li><li>This skill does not replace environment-specific validation, testing, or expert review.</li></ul><p><a href="../agent-tooling/delegate-to-external-cli/dispatch.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies describe the same &#x27;dispatch&#x27; skill for delegating to Codex and Antigravity CLIs, but the sickn33 copy adds material security and operational constraints that the davepoon copy lacks. Specifically, the sickn33 copy mandates explicit user approval before every delegation, requires passing prompts via stdin/temp files to prevent shell injection, and details limitations like agy&#x27;s lack of read-only mode and session ID volatility. The davepoon copy is a cleaner, more concise version but omits these critical safety and implementation details. Crowning one would hide the other&#x27;s valuable constraints or brevity.</pre>
+</body>
+</html>

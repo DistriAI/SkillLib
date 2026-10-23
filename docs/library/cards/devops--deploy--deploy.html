@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>deploy</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / deploy</p><h1>deploy</h1><p class="meta">combined</p><p>Render Quarto slides and sync to docs/ for GitHub Pages deployment. Use when deploying lecture slides after making changes.
+
+Builds and deploys a Power Apps code app to Power Platform. Use when deploying changes, redeploying an existing app, or pushing updates.</p><h2>When to use</h2><ul><li>Invoked by the `azure-app-onboard` orchestrator at Phase 4 when `scaffold-manifest.json` exists with `files[]` and `validationResult`. Not directly user-routable. &gt; **Return to orchestrator:** When complete, return control to `azure-app-on…</li></ul><h2>When not to use</h2><ul><li>| Scenario | Use Instead | |----------|-------------| | Plan architecture, map services, estimate costs | [prepare](../prepare/SKILL.md) | | Generate IaC files from a plan | `azure-app-onboard` Step 7 (scaffold) | | Run `azd up` or execute…</li></ul><p><a href="../devops/deploy/deploy.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies are unrelated procedures that share only the generic name &#x27;deploy&#x27;. The Azure skill executes IaC against Azure with preflight sub-agents, approval gates, and health checks. The Power Platform skill builds and pushes a code app to Power Platform. The research skill renders Quarto slides and syncs them to docs/ for GitHub Pages. None is a reproduction of the others, so crowning one would hide real alternatives.</pre>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>claude-api</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / claude-api</p><h1>claude-api</h1><p class="meta">combined</p><p>Reference for the Claude API / Anthropic SDK — model ids, pricing, params, streaming, tool use, MCP, agents, caching, token counting, model migration. TRIGGER — read BEFORE opening the target file; don&#x27;t skip because it &quot;looks like a one-liner&quot; — whenever: the prompt names Claude/Anthropic in any form (Claude, Anthropic, Fable, Opus, Sonnet, Haiku, `anthropic`, `@anthropic-ai`, `claude-*`, `us.anthropic.*`, `[1m]`); the user asks about an LLM (pricing/model choice/limits/caching) — never answer from memory; OR the task is LLM-shaped with provider unstated (agent/MCP/tool-definition/multi-agent/RAG/LLM-judge/computer-use; generate/summarize/extract/classify/rewrite/converse over NL; debugging refusals/cutoffs/streaming/tool-calls/tokens). SKIP only when another provider is being worked on (overrides all triggers): OpenAI/GPT/Gemini/Llama/Mistral/Cohere/Ollama named in the query; OR `grep -rE &#x27;openai|langchain_openai|google.generativeai|genai|mistralai|cohere|ollama&#x27;` over the project h…
+
+Build apps with the Claude API or Anthropic SDK. TRIGGER when: code imports `anthropic`/`@anthropic-ai/sdk`/`claude_agent_sdk`, or user asks to use Claude API, Anthropic SDKs, or Agent SDK. DO NOT TRIGGER when: code imports `openai`/other AI SDK, general programming, or ML/data-science tasks.</p><h2>When to use</h2><ul><li>User asks for &quot;latest&quot; or &quot;current&quot; information</li><li>Cached data seems incorrect</li><li>User asks about features not covered here</li><li>Use when building with the Claude API, Anthropic SDKs, or the Agent SDK.</li><li>Use when code imports `anthropic`, `@anthropic-ai/sdk`, or related Claude SDK packages.</li><li>Do not use for general coding work unrelated to Claude integrations.</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../software-engineering/claude-api-integration/claude-api.html">Skill page</a></p><h2>Conflict</h2><pre>The anthropics/skills copy is the upstream source and contains the core procedure, but the sickn33 copy adds a detailed &#x27;Language Detection&#x27; section and a &#x27;Which Surface Should I Use?&#x27; decision table that are absent from the first. The copies also disagree on the default model version (Opus 5.5 vs Opus 5) and the trigger logic (broad LLM-shaped tasks vs specific SDK imports). Combining is necessary to preserve the language detection steps and surface selection logic while acknowledging the model version conflict.</pre>
+</body>
+</html>

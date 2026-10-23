@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>kill-argument</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / kill-argument</p><h1>kill-argument</h1><p class="meta">authentic</p><p>Two-thread adversarial review: a fresh reviewer constructs the strongest 200-word rejection memo, then a second fresh reviewer defends the paper point-by-point and surfaces still-unresolved critical issues. Use when user says \&quot;kill argument\&quot;, \&quot;adversarial review\&quot;, \&quot;hostile review\&quot;, \&quot;rebuttal preparation\&quot;, \&quot;reviewer-2 simulation\&quot;, or before submitting a theory paper that has already passed standard review rounds.</p><h2>When to use</h2><ul><li>After 1-2 rounds of `/auto-paper-improvement-loop` settled at a stable score, but before submission. Surfaces what additional fixes would close the headline-attack gap.</li><li>During rebuttal preparation, to predict reviewer-2&#x27;s strongest objection so you can prepare the response in advance.</li><li>For theory papers with a high-level title that may oversimplify the actual theorem (the most common reject-attack pattern).</li><li>For papers where a reviewer might attack scope, assumption-vs-claim mismatch, missing proof obligations, or evidence-vs-headline gaps.</li></ul><h2>When not to use</h2><ul><li>Empirical papers without theorems / scope claims — `/research-review` is more useful. The skill emits `NOT_APPLICABLE` with `reason_code: not_theory_or_scope_paper` in this case.</li><li>Very early drafts where the headline isn&#x27;t stable yet — fix the headline first. The skill emits `NOT_APPLICABLE` with `reason_code: headline_unstable` if the title or abstract changed within the last 2 commits.</li><li>Papers with ongoing experiments — wait until results stabilize, then run.</li><li>(`/auto-paper-improvement-loop` Step 5.5 used to run this protocol inline; as of May 2026 it now invokes `/kill-argument` and reads `KILL_ARGUMENT.json` instead, so there is no longer a &quot;do not invoke from inside auto-loop&quot; exclusion.)</li></ul><p><a href="../research/argument-critique/kill-argument.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep">wanshuiyin/Auto-claude-code-research-in-sleep</a></td><td><code>skills/kill-argument/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

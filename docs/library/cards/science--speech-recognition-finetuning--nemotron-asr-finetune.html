@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nemotron-asr-finetune</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / nemotron-asr-finetune</p><h1>nemotron-asr-finetune</h1><p class="meta">separate</p><p>Orchestration skill for NVIDIA Nemotron Speech (Riva) / NeMo ASR domain and language adaptation. Given a goal like &quot;improve/fine-tune ASR for my domain or language&quot;, it scopes the task, picks the cheapest sufficient path (word boosting → n-gram LM → fine-tuning), delegates each stage to the right sub-skill (data generation, training, evaluation, deployment), and answers cost/time/data questions along the way.</p><h2>When to use</h2><ul><li>Use for any request to make a Nemotron Speech / Riva ASR model work better on a specific domain or language — improving accuracy, reducing WER, adding a language, or planning a fine-tune. Start here even when the user names a specific tech…</li></ul><h2>When not to use</h2><ul><li>Orchestration only — execution happens in the sub-skills. Where a sub-skill is a placeholder, guidance is interim until it exists.</li><li>GPU required for the training rungs; deployment/serving is owned by the `nemotron-speech` sub-skill.</li><li>Model names, config paths, flags, and per-model feature support drift across NeMo/Riva releases — verify against the support matrix and the current checkout.</li><li>Public branding is **&quot;Nemotron Speech&quot;**; commands, imports, config paths, and doc URLs still use **&quot;Riva&quot;** / **&quot;NeMo&quot;** — do not rename.</li></ul><p><a href="../science/speech-recognition-finetuning/nemotron-asr-finetune.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/nemotron-asr-finetune/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

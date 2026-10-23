@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-multiomics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / spatial-multiomics</p><h1>spatial-multiomics</h1><p class="meta">combined</p><p>Integrates spatial RNA with a second modality (protein, ATAC, or histone marks) on spatial CITE-seq, DBiT-seq, spatial-ATAC, or Visium CytAssist data. Use when deciding vertical (same-pixel co-profiling -&gt; WNN/MOFA joint factors) versus diagonal (serial adjacent sections -&gt; registration via PASTE/STalign) integration; recognizing that modalities from serial sections are DIFFERENT cells so joint same-cell methods do not apply; handling a bounded antibody/feature panel where absence is uninformative; or treating a pixel/spot as a multi-cell mixture rather than a single cell.</p><h2>When to use</h2><ul><li>subcellular resolution spatial data</li><li>high-density spatial data</li><li>spatial CITE-seq integration</li><li>DBiT-seq integration</li><li>spatial-ATAC integration</li><li>Visium CytAssist data</li><li>vertical integration (same-pixel co-profiling)</li><li>diagonal integration (serial adjacent sections)</li></ul><h2>When not to use</h2><ul><li>joint same-cell methods for modalities from serial sections</li></ul><p><a href="../science/spatial-multiomics-integration/spatial-multiomics.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills use the same name but define different tasks. The first copy is a platform-specific analysis guide for high-resolution spatial transcriptomics (Slide-seq, Stereo-seq, Visium HD, MERFISH) using Squidpy and SpatialData. The second copy is a conceptual and methodological guide for integrating spatial RNA with a second modality (protein, ATAC) using Muon, MOFA, and registration tools like PASTE. They disagree on the primary tool (squidpy vs muon) and the core objective (high-res spatial analysis vs multi-modal integration). Combining them is necessary to capture both the high-resolution processing steps and the multi-modal integration logic.</pre>
+</body>
+</html>

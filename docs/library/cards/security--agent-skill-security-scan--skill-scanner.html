@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>skill-scanner</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / skill-scanner</p><h1>skill-scanner</h1><p class="meta">combined</p><p>Scan Clawdbot and MCP skills for malware, spyware, crypto-miners, and malicious code patterns before you install them. Security audit tool that detects data exfiltration, system modification attempts, backdoors, and obfuscation techniques.
+
+Scan agent skills for security issues. Use when asked to &quot;scan a skill&quot;,</p><h2>When to use</h2><ul><li>You need to evaluate a skill for prompt injection, malicious code, over-broad permissions, or supply-chain risk before adopting it.</li><li>You want a static scan plus manual review workflow for a skill directory.</li><li>The task is to decide whether a skill is safe enough to trust in an agent environment.</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../security/agent-skill-security-scan/skill-scanner.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies overlap on the goal of scanning agent skills for security issues, but they are not interchangeable. getsentry/skills and sickn33/agentic-awesome-skills describe a similar multi-phase workflow with a bundled scan_skill.py, but they disagree on how the script is invoked, what the report contains, and which structural attacks to check. LeoYeAI/openclaw-master-skills is a different tool: it targets Clawdbot/MCP skills, uses a different entry point (skill_scanner.py), adds a Streamlit Web UI, and focuses on malware/spyware/crypto-mining rather than the prompt-injection and agent-behavior phases in the other two. Crowning one copy would hide real alternatives and conflicting parameters.</pre>
+</body>
+</html>

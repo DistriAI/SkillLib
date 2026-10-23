@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>functional-prediction</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / functional-prediction</p><h1>functional-prediction</h1><p class="meta">separate</p><p>Predicts community functional POTENTIAL from 16S/ITS amplicon ASVs with PICRUSt2 (or q2-picrust2) by phylogenetic interpolation of reference-genome gene content - EPA-ng placement, gappa, castor hidden-state prediction of KO/EC/Pfam copy number, 16S copy-number normalization, and MinPath MetaCyc/KEGG pathways - gated by the NSTI quality index. Covers why predicted function is taxonomy re-encoded (never measured gene content and never activity), the mandatory NSTI report (--max_nsti 2 silently drops novel ASVs), why accuracy IS reference coverage (gut Spearman ~0.8, soil/marine collapse), the circularity trap, and Tax4Fun2/FAPROTAX/BugBase alternatives. Use when inferring KO/EC/MetaCyc potential from an ASV table, gating on NSTI, or choosing a prediction method. For MEASURED shotgun function see metagenomics/functional-profiling; for enrichment of KO lists see pathway-analysis/go-enrichment; for DA of predicted tables see differential-abundance.</p><h2>When to use</h2><ul><li>inferring KO/EC/MetaCyc potential from an ASV table</li><li>gating on NSTI</li><li>choosing a prediction method</li><li>predicting community functional potential</li><li>phylogenetic interpolation of reference-genome gene content</li><li>EPA-ng placement</li><li>gappa resolution</li><li>castor hidden-state prediction</li></ul><h2>When not to use</h2><ul><li>measured shotgun function</li><li>enrichment of KO lists</li><li>differential abundance of predicted tables</li><li>measured gene carriage</li><li>measured transcription</li><li>measured flux</li><li>activity or upregulation claims</li><li>independent corroboration of functional differences</li></ul><p><a href="../science/microbiome-functional-prediction/functional-prediction.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>microbiome/functional-prediction/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>stepinfo-3d</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/design.html">design</a> / stepinfo-3d</p><h1>stepinfo-3d</h1><p class="meta">separate</p><p>Use this skill when computing 3D step-response performance metrics for point-to-point drone flight — rise time, settling time, percent overshoot, and steady-state error based on Euclidean distance to the final target. Use instead of 1D stepinfo for any flight where all three position axes move simultaneously.</p><h2>When to use</h2><ul><li>| Scenario | Metric to use | |---|---| | Pure z-step (hover, takeoff, land) | 1D `stepinfo` on `z` signal | | Diagonal flight (x, y, z all change) | `stepinfo_3d` on 3D Euclidean distance | | Circular / figure-eight trajectory | Neither —…</li></ul><h2>When not to use</h2><ul><li>**Assumes point-to-point flight** — the drone starts away from a fixed target and converges. For circular trajectories, use RMS or cumulative error instead.</li><li>`dist_initial` is the distance at `t[0]`. If the drone starts at the target (hover command), all metrics return `0`.</li><li>Overshoot is defined by **distance**, not by crossing the target in one axis — the drone must physically move farther from the target after settling to register overshoot.</li><li>If the settling band is never entered (common for very short commands where d0 is small, making `band = 0.02 × d0` only a few centimetres), `Overshoot_pct` returns `0.0` — the drone approached the target without oscillating past it.</li></ul><p><a href="../design/3d-modeling/stepinfo-3d.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/drone-planning-control/environment/skills/stepinfo-3d/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

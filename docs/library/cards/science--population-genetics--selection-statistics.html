@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>selection-statistics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / selection-statistics</p><h1>selection-statistics</h1><p class="meta">separate</p><p>Scans genomes for natural selection with SFS tests (Tajima&#x27;s D, Fay &amp; Wu H, Zeng E, SweepFinder2 CLR), haplotype tests (iHS, nSL, XP-EHH, Rsb, H12), and differentiation (FST, PBS) using scikit-allel, selscan, and SweepFinder2. No single statistic separates selection from demography at one locus, so the deliverable is empirical genome-wide outliers plus multiple orthogonal signals, not an absolute cutoff. iHS detects incomplete sweeps and collapses to zero at fixation while XP-EHH catches fixed sweeps; iHS/nSL standardize within derived-allele-frequency bins but XP-EHH gets a genome-wide z-score; derived-allele tests need substitution-model polarization; background selection mimics FST and CLR. Use when computing selection statistics like FST, Tajima&#x27;s D, iHS, or XP-EHH, or scanning for selective sweeps. For phasing inputs see phasing-imputation/haplotype-phasing; for dN/dS see comparative-genomics/positive-selection.</p><h2>When to use</h2><ul><li>computing selection statistics like FST, Tajima&#x27;s D, iHS, or XP-EHH</li><li>scanning for selective sweeps</li><li>SFS neutrality tests</li><li>haplotype/EHH sweep statistics</li><li>differentiation outliers (FST, PBS)</li><li>CLR scans</li><li>polygenic Qx</li><li>standardization and demography-aware outlier interpretation</li></ul><h2>When not to use</h2><ul><li>PCA/ADMIXTURE population assignment</li><li>LD/EHH mechanics</li><li>scikit-allel array-API mechanics</li><li>phasing</li><li>dN/dS and McDonald-Kreitman</li></ul><p><a href="../science/population-genetics/selection-statistics.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>population-genetics/selection-statistics/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

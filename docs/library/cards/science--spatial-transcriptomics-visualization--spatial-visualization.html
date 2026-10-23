@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-visualization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / spatial-visualization</p><h1>spatial-visualization</h1><p class="meta">combined</p><p>Plots spatial transcriptomics expression, clusters, and annotations on tissue using Squidpy and Scanpy. Use when choosing the plotter and spot size by platform fork (sc.pl.spatial / sq.pl.spatial_scatter with real scalefactors and capture diameter for spot/capture data like Visium and Slide-seq, versus molecule/segmentation overlays for imaging/FOV data like Xenium, MERFISH, and CosMx); getting the histology coordinate-frame transform right (micron&lt;-&gt;pixel, scalefactors) so points land on the image; and avoiding the honest-visualization traps where interpolation/KDE manufactures spatial pattern not in the data, oversized markers fake tissue coverage, jet and other non-uniform colormaps distort structure, and non-metric UMAP/tSNE distances are misread as spatial conclusions.</p><h2>When to use</h2><ul><li>visualizing spatial expression patterns</li><li>creating tissue plots</li><li>overlaying gene expression on histology</li><li>plotting clusters and annotations</li><li>comparing conditions or samples</li><li>visualizing co-expression</li><li>interactive visualization with Napari</li><li>saving publication-quality figures</li></ul><p><a href="../science/spatial-transcriptomics-visualization/spatial-visualization.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same domain (spatial transcriptomics visualization) but differ significantly in depth and intent. The first copy (OpenClaw) is a practical &#x27;cookbook&#x27; of code snippets for common plotting tasks (basic plots, gene expression, co-expression, napari). The second copy (GPTomics) is a conceptual guide focused on &#x27;honest visualization,&#x27; emphasizing the distinction between spot/capture data (Visium) and imaging/FOV data (Xenium/MERFISH), the importance of correct scalefactors, and avoiding artifacts like interpolation or misleading colormaps. The first copy lacks the critical platform-specific logic and honesty warnings present in the second, while the second copy is truncated and lacks the specific code examples for complex tasks like co-expression RGB plots or multi-panel figures found in the first. Combining them provides both the practical code and the necessary scientific rigor.</pre>
+</body>
+</html>

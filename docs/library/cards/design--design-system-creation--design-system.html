@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>design-system</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/design.html">design</a> / design-system</p><h1>design-system</h1><p class="meta">combined</p><p>Extract a complete design system from an existing website or screenshot into a DESIGN.md file. Analyses colours, typography, component styles, spacing, and atmosphere through browser automation and HTML inspection. Produces a semantic design system document optimised for consistent page generation. Triggers: &#x27;extract design system&#x27;, &#x27;design system&#x27;, &#x27;create DESIGN.md&#x27;, &#x27;analyse the design&#x27;, &#x27;what design does this site use&#x27;, &#x27;extract styles from&#x27;, &#x27;reverse engineer the design&#x27;.
+
+Creates the Tamagui brand system for an Expo/React Native Power Apps mobile app, including design-system.md, tokens.ts, and an HTML gallery.</p><h2>When to use</h2><ul><li>Starting a new project based on an existing site&#x27;s visual language</li><li>Documenting a site&#x27;s design system that was never formally written down</li><li>Preparing `.design/DESIGN.md` before running the design loop</li><li>Extracting brand guidelines from a client&#x27;s existing website</li><li>Creating consistency documentation for a multi-page project</li><li>Extracting design tokens from a Google Stitch project</li><li>**Step 6.5** — auto-invoked from `/create-mobile-app` after scaffold + `pa app init`, before screen builders</li><li>**Standalone** — `/design-system` callable any time to create or refresh a brand system</li></ul><h2>When not to use</h2><ul><li>Screen-level visual tweaks → use `/edit-app`</li><li>Plan-level screen changes → use `/edit-app screens`</li><li>Data model changes → use `/add-dataverse` or `/setup-datamodel`</li><li>Use this skill only when the task clearly matches its upstream source and local project context.</li><li>Verify commands, generated code, dependencies, credentials, and external service behavior before applying changes.</li><li>Do not treat examples as a substitute for environment-specific tests, security review, or user approval for destructive or costly actions.</li></ul><p><a href="../design/design-system-creation/design-system.html">Skill page</a></p><h2>Conflict</h2><pre>The three skills share the name &#x27;design-system&#x27; but perform fundamentally different tasks. The first (microsoft) is a generator for a specific mobile stack (Expo/Tamagui) that creates a brand spec, tokens, and an HTML gallery. The second (jezweb) is an extractor that reverse-engineers a design system from an existing website or screenshot into a DESIGN.md file. The third (sickn33) is a set of mechanical implementation invariants (performance, FOUT prevention, token architecture) for frontend code. Because they cover generation, extraction, and implementation rules respectively, no single copy is the &#x27;original&#x27; that the others reproduce; they are distinct tools for different stages of the design process.</pre>
+</body>
+</html>

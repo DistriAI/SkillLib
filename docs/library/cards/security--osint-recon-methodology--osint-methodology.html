@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>osint-methodology</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / osint-methodology</p><h1>osint-methodology</h1><p class="meta">combined</p><p>Comprehensive OSINT methodology for external red-team operations and authorized attack-surface assessments. Covers the 6-stage recon pipeline (seed → asset expansion → enrichment → exposure analysis → convergence → operator-armed active validation) with connector-resilience and stage-vs-gating discipline, asset-graph discipline, severity rubric, confidence upgrade workflows, time budgeting, identity-fabric mapping, breach×identity correlation with per-person identity dossiers, detectability tagging, detection-aware probing, WAF/CDN bypass, vulnerability prioritization, phishing infrastructure planning, bug bounty submission, and client deliverable templates. Use when planning or executing reconnaissance against authorized targets, mapping an organization&#x27;s external attack surface, investigating a person/entity, or producing client deliverables.
+
+Comprehensive OSINT methodology for external red-team operations and</p><h2>When to use</h2><ul><li>You have explicit, written authorization to assess the target in scope, and the task matches this skill&#x27;s vulnerability class or technique within a bug-bounty or penetration-test engagement.</li><li>You need the recon, exploitation, or validation workflow described below — executed strictly inside the approved scope.</li></ul><h2>When not to use</h2><ul><li>Authorized scope only: the confirmation gate above is mandatory before any probing, exploitation, or credential-access command.</li><li>Docs-only import: upstream helper scripts, commands, engine, and research assets are not bundled; reinstall tooling from the source repo when needed.</li><li>Validate every finding (see `triage-validation`) before reporting; report via `report-writing`. Prefer a sandbox, disposable VM, or controlled lab.</li></ul><p><a href="../security/osint-recon-methodology/osint-methodology.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies are not simple reproductions of one another. The uphiago copy (v2.1) describes a 5-stage pipeline and includes specific operational tactics (identity-fabric mapping, JavaScript deep analysis, mobile/cloud attack surface, threat-actor pivots, crypto tracing, forensics) that the others omit. The elementalsouls copy (v2.3) describes a 6-stage pipeline (adding convergence and active validation) and includes specific structural artifacts (Finding schema, Source Hygiene, Confidence Upgrade Workflows table) that the others omit. The sickn33 copy is a mirror of the elementalsouls content (v2.3) but adds a distinct &#x27;Mandatory confirmation gate&#x27; requiring explicit user confirmation of the target and scope before any probing, which is a stricter constraint than the &#x27;soft scope check&#x27; in the other two. Because the copies disagree on the pipeline stage count (5 vs 6) and the authorization gate strictness (soft check vs mandatory confirmation), and each contains unique material steps, crowning one would hide real alternatives.</pre>
+</body>
+</html>

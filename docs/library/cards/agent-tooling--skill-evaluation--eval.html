@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>eval</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / eval</p><h1>eval</h1><p class="meta">combined</p><p>AI Agent Skill unit testing framework. A framework-agnostic toolkit for discovering, scaffolding, selecting, evaluating, and reporting on AI skills. Use this skill to assess skill quality before production, compare candidate skills on the same benchmark, enforce quality gates in CI/CD, and generate human-readable evaluation reports.
+
+Eval and improve a skill against golden cases — run the target skill blind in a fresh, context-free subagent on each example input, grade the artifact against the expected outcome, and let the gaps drive the edits. Use when the user wants to test/eval/improve/harden a skill, says &quot;this skill keeps producing X / keeps missing Y&quot;, or hands a skill plus example input→expected-output pairs. Pairs with [write-skills](../write-skills/SKILL.md) (the authoring principles every fix obeys).</p><h2>When to use</h2><ul><li>**Before deploying a new skill to production** — run `eval` to verify it meets your quality gate.</li><li>**When choosing between multiple candidate skills** — run `select` to rank them on the same benchmark.</li><li>**When a skill is upgraded** — run `report diff` to detect regressions.</li><li>**In CI/CD** — use `--exit-on-fail` to block merges that degrade skill quality.</li><li>**When bootstrapping a new skill** — run `create` to generate a ready-to-fill skeleton.</li></ul><h2>When not to use</h2><ul><li>agent-level evaluation</li><li>trajectory-level evaluation</li></ul><p><a href="../agent-tooling/skill-evaluation/eval.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe fundamentally different evaluation methodologies. The first (dzhng/skills) is a qualitative, agent-driven process: it uses fresh, context-free subagents to run a skill blind on golden cases, then uses a separate judge agent to grade the artifact against a &#x27;bar&#x27; and &#x27;smells&#x27; to drive iterative skill edits. The second (LeoYeAI/openclaw-master-skills) is a quantitative, CLI-based framework: it uses a command-line tool (`eval-skills`) to run benchmarks, score results with specific scorers (e.g., `exact`), and generate reports for CI/CD gates. They do not overlap in procedure; one is a manual/agent workflow for improvement, the other is an automated testing framework for quality assurance.</pre>
+</body>
+</html>

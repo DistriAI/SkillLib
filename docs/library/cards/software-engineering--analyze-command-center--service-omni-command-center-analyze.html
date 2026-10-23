@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-omni-command-center-analyze</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / service-omni-command-center-analyze</p><h1>service-omni-command-center-analyze</h1><p class="meta">authentic</p><p>Use to analyze whether an org should use Command Center for Service V2 or classic Omni Supervisor and recommend the next action without making changes. Triggers: detect Command Center V2 versus classic, check supervisor readiness, choose a supervisor experience, diagnose Command Center availability, assess Omni Supervisor setup. Do not use to enable V2, assign permissions, or deploy configuration.</p><h2>When not to use</h2><ul><li>The `CommandCenterForServiceV2` org preference has no supported public read; its state is **inferred** from the seeded FlexiPage (the platform seeds on the ON-flip). This is called out in `signals` and is why a bare capability-without-seed…</li><li>The release gater cannot be read directly; capability is inferred from the presence of the user-permission column on the org schema.</li><li>Tab detection is best-effort; when the tab query cannot run, `v2_tab_present` is `&quot;unknown&quot;` and state is derived from the remaining signals.</li><li>Read-only: it never enables V2, seeds pages, assigns permissions, or deploys config.</li></ul><p><a href="../software-engineering/analyze-command-center/service-omni-command-center-analyze.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/service-omni/skills/service-omni-command-center-analyze/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

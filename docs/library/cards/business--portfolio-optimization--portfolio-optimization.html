@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>portfolio-optimization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / portfolio-optimization</p><h1>portfolio-optimization</h1><p class="meta">separate</p><p>Use when a user asks to build, optimize, backtest, rebalance, or analyze a stock portfolio with Mean-CVaR, Mean-Variance/SOCP variance caps, efficient frontiers, scenario generation, or NVIDIA cuOpt.</p><h2>When to use</h2><ul><li>Build and analyze quantitative portfolios with NVIDIA-accelerated Mean-CVaR and Mean-Variance optimization. Use the `portfolio_optimization` package to compute returns, generate KDE scenarios for CVaR, solve variance-cap Markowitz allocati…</li><li>Build or optimize a Mean-CVaR portfolio from stock prices.</li><li>Allocate weights across tickers while controlling downside CVaR risk.</li><li>Solve Mean-Variance or Markowitz allocations with a hard variance or volatility cap using cuOpt SOCP/QCQP support.</li><li>Plot or inspect an efficient frontier for a portfolio universe.</li><li>Produce a weights-by-risk-aversion table.</li><li>Backtest an optimized portfolio against benchmarks.</li><li>Rebalance a portfolio on a schedule or drift trigger.</li></ul><h2>When not to use</h2><ul><li>Requires an NVIDIA GPU with cuOpt and cuML; CPU solvers are intentionally disallowed.</li><li>Mean-Variance SOCP variance caps require cuOpt QCQP/SOCP support. Use the 26.06 line or newer when installing CUDA extras.</li><li>`cuda13-socp` intentionally installs cuOpt without cuML because `cuml-cu13` 26.06 is not published yet; use it for direct SOCP/QCQP validation, not GPU KDE CVaR workflows.</li><li>Cardinality plus SOCP is treated as unsupported unless the package exposes explicit mixed-integer conic support.</li><li>CPU-only eval containers can still validate routing, data handling, and reporting behavior, but they cannot produce a valid cuOpt solve. In that case, report the missing GPU/cuOpt runtime explicitly.</li><li>Default price data is a historical snapshot and may omit current constituents.</li><li>First-run dataset download depends on network access unless the user supplies a CSV.</li></ul><p><a href="../business/portfolio-optimization/portfolio-optimization.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/portfolio-optimization/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

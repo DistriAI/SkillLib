@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cfdna-preprocessing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / cfdna-preprocessing</p><h1>cfdna-preprocessing</h1><p class="meta">separate</p><p>Decides how to preprocess plasma cfDNA sequencing data so the recoverable signal survives - library-prep-aware fragment expectations (dsDNA vs ssDNA/adaptase prep), UMI/duplex consensus with fgbio (ExtractUmisFromBam, GroupReadsByUmi --strategy paired for duplex, CallMolecularConsensusReads vs CallDuplexConsensusReads, FilterConsensusReads min-reads &quot;total s1 s2&quot;), the align-&gt;group-&gt;consensus-&gt;RE-align ordering, and the cfDNA dedup trap where naive coordinate dedup collapses nucleosome-coincident independent molecules. Covers when single-strand consensus suffices vs when duplex is mandatory, the singleton/sensitivity tax at low input, and reading the insert-size histogram as a pre-analytical QC instrument. Use when processing plasma cfDNA reads before fragmentomics, ctDNA mutation calling, or tumor-fraction estimation.</p><h2>When to use</h2><ul><li>plasma cfDNA read preprocessing</li><li>UMI/duplex consensus generation</li><li>fragmentomics preparation</li><li>ctDNA mutation calling preparation</li><li>tumor-fraction estimation preparation</li><li>insert-size histogram QC</li></ul><h2>When not to use</h2><ul><li>liquid-biopsy analytical validation</li><li>blood draw QC</li><li>tumor-fraction estimation execution</li></ul><p><a href="../science/liquid-biopsy-cfdna-preprocessing/cfdna-preprocessing.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>liquid-biopsy/cfdna-preprocessing/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

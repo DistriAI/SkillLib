@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ax-extract-workflow</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / ax-extract-workflow</p><h1>ax-extract-workflow</h1><p class="meta">authentic</p><p>Reconstruct workflow behind a past coding-agent artifact using local ax sessions/commits/skills/tool traces. Use when asked how X was built.</p><h2>When to use</h2><ul><li>Use when the user asks &quot;how did we build X?&quot;, &quot;what made X work?&quot;, or &quot;extract the workflow behind this artifact.&quot;</li><li>Use when the anchor is a commit SHA, date, feature name, PR, session, or repo-local artifact.</li><li>Use when the user wants the sequence of agent skills, prompts, commands, decisions, and checks that led to a result.</li><li>Do not use for a generic activity summary; use normal session listing instead.</li></ul><h2>When not to use</h2><ul><li>Requires a working local ax installation and reachable local ax database.</li><li>Only sees sessions, commits, skills, and tool traces that ax has ingested.</li><li>Session data can be incomplete when an agent provider omits tool output, cost, or reasoning data.</li><li>It reconstructs workflow, not correctness; still inspect the code and run project checks when making engineering decisions.</li></ul><p><a href="../data/data-extraction-workflow/ax-extract-workflow.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ax-extract-workflow/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

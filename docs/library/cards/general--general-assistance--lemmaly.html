@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>lemmaly</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/general.html">general</a> / lemmaly</p><h1>lemmaly</h1><p class="meta">authentic</p><p>Algorithm-first discipline: state Big-O, data structure, and algorithm family BEFORE writing loops, queries, or recursion. Catches O(n^2), N+1, and brute-force defaults.</p><h2>When to use</h2><ul><li>Writing, editing, or reviewing code that involves loops, collections, lookups, searches, joins, recursion, graphs, queries, or any computation over more than a handful of items.</li><li>About to write a `for` inside a `for`, `.find` / `.includes` / `.indexOf` inside a loop, `await` inside `for` / `map` / `forEach` over independent items, or one query per item in a collection.</li><li>Auditing a codebase / PR for known anti-patterns (await-in-loop, `.includes` inside `.filter`, string-concat in loop, `SELECT *`, N+1, etc.).</li><li>Reviewing AI-generated code that &quot;looks idiomatic&quot; but might hide O(n²) or N+1.</li><li>**lemmaly** = think first (prevention).</li><li>**complexity-cuts** = clean up bad Big-O (correction).</li><li>**invariant-guard** = prove it&#x27;s correct (verification).</li><li>**mathguard** = beat the classical floor (acceleration).</li></ul><h2>When not to use</h2><ul><li>**Not a substitute for profiling.** lemmaly forces asymptotic reasoning, not measurement. For constant-factor wins, latency tails, or I/O bottlenecks you still need a profiler.</li><li>**Reasoning gate, not a code generator.** This skill changes how the model thinks before writing; it does not auto-rewrite existing code (use `complexity-cuts` for that).</li><li>**English-language enforcement.** The rule catalog and prompts are English-only.</li><li>**n &lt; ~10 is exempt.** The protocol explicitly accepts trivial collections and one-shot setup code; do not waste time stating complexity for `for i in range(3)`.</li><li>**Cannot prevent intentional brute force.** If the author writes a one-line justification (&quot;n ≤ 100 in practice; readability matters more&quot;), brute force ships. The skill only requires the justification, not its absence.</li><li>**CLI scanner is separate.** The 59 rules are enforced by `lemmaly scan` in the upstream repo, not by this SKILL.md alone.</li></ul><p><a href="../general/general-assistance/lemmaly.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/lemmaly/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

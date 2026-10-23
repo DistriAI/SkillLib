@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-itsm-channels-coordinate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / service-itsm-channels-coordinate</p><h1>service-itsm-channels-coordinate</h1><p class="meta">separate</p><p>Top-level interactive coordinator for Employee Service (ITSM) channel setup. Presents menu of channel setup options (Portal, Teams, Slack) and delegates to the corresponding skill. Use this for: &#x27;setup ITSM channels&#x27;, &#x27;configure employee service channels&#x27;, &#x27;set up service cloud communication channels&#x27;, &#x27;I want to configure ITSM integrations&#x27;, or any general request for ITSM channel/integration setup where the user hasn&#x27;t specified exactly which channel they want. DO NOT TRIGGER for requests that already name a specific channel or child skill (e.g. &#x27;configure Teams&#x27;, &#x27;set up Slack&#x27;, &#x27;create an employee portal&#x27;, &#x27;configure ITSM notifications&#x27;) — route directly to the matching child skill instead.</p><h2>When to use</h2><ul><li>**In scope**: Presenting the channel setup menu to the user. Delegating to child skills based on selection (Portal, Teams, Slack). Validating prerequisites before delegation. Providing clear descriptions of each channel capability.</li><li>**Out of scope**: Directly calling setup APIs for any channel — always delegate to the dedicated child skill. Channel-specific configuration details beyond the initial enablement. User permission assignment. Post-setup testing. ITSM notifi…</li></ul><p><a href="../devops/channel-coordination/service-itsm-channels-coordinate.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>skills/service-itsm-channels-coordinate/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

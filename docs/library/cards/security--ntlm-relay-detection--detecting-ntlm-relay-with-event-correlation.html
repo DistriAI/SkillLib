@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>detecting-ntlm-relay-with-event-correlation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / detecting-ntlm-relay-with-event-correlation</p><h1>detecting-ntlm-relay-with-event-correlation</h1><p class="meta">separate</p><p>Detect NTLM relay attacks (T1557.001) by correlating Windows Event 4624 LogonType 3 for IP-to-hostname mismatches, identifying Responder/LLMNR poisoning artifacts, auditing SMB/LDAP signing, and flagging NTLMv2-to-NTLMv1 downgrades. Use for hunting credential relay in NTLM-enabled AD, investigating auth-source anomalies, building SIEM correlation rules, or responding to PetitPotam/DFSCoerce/PrinterBug alerts.</p><h2>When to use</h2><ul><li>Hunting for credential relay activity in Active Directory environments where NTLM authentication is still in use</li><li>Investigating alerts for authentication anomalies where the source IP does not match the expected workstation</li><li>Auditing SMB signing and LDAP signing enforcement to assess exposure to relay attacks</li><li>Detecting NTLM downgrade attacks where NTLMv2 is forced to NTLMv1 for easier offline cracking or relay</li><li>Building SIEM correlation rules for MITRE ATT&amp;CK T1557.001 (LLMNR/NBT-NS Poisoning and SMB Relay)</li><li>Responding to PetitPotam, DFSCoerce, or PrinterBug coercion alerts that may precede relay attacks</li><li>During purple team exercises validating NTLM relay detection and SMB signing enforcement</li></ul><p><a href="../security/ntlm-relay-detection/detecting-ntlm-relay-with-event-correlation.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills">mukul975/Anthropic-Cybersecurity-Skills</a></td><td><code>skills/detecting-ntlm-relay-with-event-correlation/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

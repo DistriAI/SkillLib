@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>eas-hosting</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / eas-hosting</p><h1>eas-hosting</h1><p class="meta">authentic</p><p>Deploy Expo websites and Expo Router API routes to EAS Hosting - export the web bundle, run eas deploy for production and PR preview URLs, manage environment secrets and custom domains, and work within the Cloudflare Workers runtime. Also covers authoring API routes (+api.ts handlers, HTTP methods, request handling, CORS). Use when deploying an Expo web app or API routes, setting up EAS Hosting, or configuring hosting environments and domains. Not for native builds or store releases - use the eas-app-stores skill for those.</p><h2>When to use</h2><ul><li>**Server-side secrets** — API keys, database credentials, or tokens that must never reach the client</li><li>**Database operations** — Direct database queries that shouldn&#x27;t be exposed</li><li>**Third-party API proxies** — Hide API keys when calling external services (OpenAI, Stripe, etc.)</li><li>**Server-side validation** — Validate data before database writes</li><li>**Webhook endpoints** — Receive callbacks from services like Stripe or GitHub</li><li>**Rate limiting** — Control access at the server level</li><li>**Heavy computation** — Offload processing that would be slow on mobile</li></ul><h2>When not to use</h2><ul><li>**Data is already public** — Use direct fetch to public APIs instead</li><li>**No secrets required** — Static data or client-safe operations</li><li>**Real-time updates needed** — Use WebSockets or services like Supabase Realtime</li><li>**Simple CRUD** — Consider Firebase, Supabase, or Convex for managed backends</li><li>**File uploads** — Use direct-to-storage uploads (S3 presigned URLs, Cloudflare R2)</li><li>**Authentication only** — Use Clerk, Auth0, or Firebase Auth instead</li></ul><p><a href="../devops/eas-hosting-deploy/eas-hosting.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/expo/skills">expo/skills</a></td><td><code>plugins/expo/skills/eas-hosting/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

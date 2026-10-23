@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>doca-urom</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / doca-urom</p><h1>doca-urom</h1><p class="meta">separate</p><p>Host-side DOCA UROM library (doca_urom_*): offload an HPC / UCX / MPI application&#x27;s remote memory operations (puts, gets, atomics, collectives) from the host CPU onto a BlueField DPU. Trigger on &quot;MPI all-reduce burning host CPU&quot;, &quot;push UCX traffic onto the BlueField&quot;, &quot;first doca_urom call returns NOT_PERMITTED&quot;, or &quot;host library and DPU service look out of sync&quot;, even without naming DOCA UROM. An offload needs both halves: this host library and the UROM Service on the DPU (doca-urom-svc), which owns deploying that container. Covers creating UROM Service contexts (doca_urom_service_*) and Worker contexts (doca_urom_worker_*) that run plugins on the DPU, discovering plugins via doca_urom_service_get_plugins_list, progressing completions, and DOCA_ERROR_* from doca_urom_* calls. Route elsewhere for UROM Service deployment on the DPU side, MPI / UCX collective algorithm design, and RDMA / RoCE / IB substrate bring-up.</p><p><a href="../devops/resource-management/doca-urom.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/doca-urom/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

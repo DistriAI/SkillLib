@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ncbi-datasets-cli</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / ncbi-datasets-cli</p><h1>ncbi-datasets-cli</h1><p class="meta">separate</p><p>Download genome assemblies, gene records, and ortholog data from NCBI using the modern Datasets v2 CLI (replaces assembly_summary.txt scraping and many EFetch workflows). Use when bulk-pulling genome assemblies, gene metadata across species, ortholog sets, or BLAST databases; when E-utilities are too slow for genome-scale work; or when automatic checksum verification, parallel download, and clean accession-driven retrieval are required. Encodes the JSON-lines output format, dataformat conversion, --dehydrated for cloud workflows, and when Datasets is/isn&#x27;t the right tool.</p><h2>When to use</h2><ul><li>**Discover**: `datasets download genome taxon human --reference --dehydrated --filename human.zip` (fast; ~MB).</li><li>**Inspect**: `unzip -p human.zip ncbi_dataset/fetch.txt` -- a TSV of all URLs to pull.</li><li>**Pull**: either `datasets rehydrate --directory ./human/` or use `aria2c --input-file=fetch.txt` for parallel pull.</li></ul><h2>When not to use</h2><ul><li>PubMed queries</li><li>SRA reads</li><li>custom Entrez queries</li><li>BLAST searches</li><li>pre-computed alignments (Compara)</li><li>richer protein annotation (UniProt)</li></ul><p><a href="../data/bioinformatics-database-access/ncbi-datasets-cli.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>database-access/ncbi-datasets-cli/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

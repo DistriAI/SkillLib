@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>reference-panels</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / reference-panels</p><h1>reference-panels</h1><p class="meta">separate</p><p>Selects and prepares the reference panel that phasing/imputation copies haplotypes from (1000 Genomes, HRC, TOPMed, HGDP+1kGP/gnomAD, CAAPA), matching panel ancestry to the target, reconciling genome build and chromosome naming, and running the strand/allele harmonization gate. Covers why ancestry-match beats panel size (imputation can only copy haplotypes the panel contains), why palindromic A/T and C/G SNPs flip strand without erroring, why liftover is a strand-flip generator in between-build inverted regions, that HRC is SNP-only and TOPMed is never downloadable (governance can override accuracy), and panel formats (msav, bref3, imp5). Use when choosing a panel for a target ancestry, preparing or converting a panel, aligning study data, or deciding between downloadable and server-only panels. Phasing is haplotype-phasing; imputation is genotype-imputation; PCA for ancestry is population-genetics/population-structure; HLA panels are clinical-databases/hla-typing.</p><h2>When to use</h2><ul><li>choosing a panel for a target ancestry</li><li>preparing or converting a panel</li><li>aligning study data</li><li>deciding between downloadable and server-only panels</li><li>strand/allele harmonization</li><li>build/liftover reconciliation</li><li>format conversion to msav, bref3, or imp5</li></ul><h2>When not to use</h2><ul><li>haplotype-phasing</li><li>genotype-imputation</li><li>population-genetics/population-structure</li><li>clinical-databases/hla-typing</li><li>variant-calling/variant-normalization</li></ul><p><a href="../science/genomic-imputation/reference-panels.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>phasing-imputation/reference-panels/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

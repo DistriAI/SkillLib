@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>changelog-generator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / changelog-generator</p><h1>changelog-generator</h1><p class="meta">combined</p><p>Changelog Generator
+
+Automatically creates user-facing changelogs from git commits by analyzing commit history, categorizing changes, and transforming technical commits into clear, customer-friendly release notes. Turns hours of manual changelog writing into minutes of automated generation.</p><h2>When to use</h2><ul><li>Before publishing a release tag</li><li>During CI to generate release notes automatically</li><li>During PR checks to block invalid commit message formats</li><li>In monorepos where package changelogs require scoped filtering</li><li>When converting raw git history into user-facing notes</li><li>Preparing release notes for a new version</li><li>Creating weekly or monthly product update summaries</li><li>Documenting changes for customers</li></ul><h2>When not to use</h2><ul><li>Mixing merge commit messages with release commit parsing</li><li>Treating docs/chore changes as user-facing features</li><li>Overwriting historical changelog sections instead of prepending</li></ul><p><a href="../software-engineering/changelog-generation/changelog-generator.html">Skill page</a></p><h2>Conflict</h2><pre>The copies overlap in the high-level goal (turning git history into user-facing changelogs) but diverge on the actual procedure. davepoon and Prat011 are near-identical prompt-style skills that rely on the agent to scan, categorize, and translate commits. mohitagw15856 is a Spanish-localized, Keep-a-Changelog-focused skill with explicit required inputs, a scoring rubric, and quality checks. LeoYeAI is a script-driven skill that parses Conventional Commits, computes semver bumps, and provides specific Python scripts for generation and linting. Crowning one would hide the alternative approaches (prompt-based vs. script-based vs. rubric-based).</pre>
+</body>
+</html>

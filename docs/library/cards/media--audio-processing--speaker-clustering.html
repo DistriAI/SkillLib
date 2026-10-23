@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>speaker-clustering</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / speaker-clustering</p><h1>speaker-clustering</h1><p class="meta">separate</p><p>Choose and implement clustering algorithms for grouping speaker embeddings after VAD and embedding extraction. Compare Hierarchical clustering (auto-tunes speaker count), KMeans (fast, requires known count), and Agglomerative clustering (fixed clusters). Use Hierarchical clustering when speaker count is unknown, KMeans when count is known, and always normalize embeddings before clustering.</p><h2>When to use</h2><ul><li>After extracting speaker embeddings from VAD segments</li><li>Need to group similar speakers together</li><li>Determining number of speakers automatically or manually</li></ul><p><a href="../media/audio-processing/speaker-clustering.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks-extra/speaker-diarization-subtitles/environment/skills/speaker-clustering/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

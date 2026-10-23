@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>joint-calling</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / joint-calling</p><h1>joint-calling</h1><p class="meta">combined</p><p>Joint genotype a cohort of per-sample gVCFs with GATK (HaplotypeCaller -ERC GVCF -&gt; GenomicsDBImport or CombineGVCFs -&gt; GenotypeGVCFs) or GLnexus for DeepVariant gVCFs, producing a squared-off sample-by-site genotype matrix. Use when deciding between joint genotyping and merging single-sample callsets (never bcftools merge as absent==hom-ref), choosing GenomicsDBImport vs CombineGVCFs by cohort size and memory, solving the N+1 problem so a new sample does not force re-calling everyone, understanding cohort rescue of low-coverage het sites, handling the spanning-deletion star allele and GQ/PL recomputation at the joint step, scaling to biobank cohorts by interval sharding, or picking DeepVariant+GLnexus over the GATK path on throughput. Not for single-sample calling (see variant-calling/gatk-variant-calling) or VQSR/hard-filter mechanism (see variant-calling/filtering-best-practices).</p><h2>When to use</h2><ul><li>joint genotyping across multiple samples</li><li>cohort studies</li><li>population genetics</li><li>leveraging VQSR</li><li>improved sensitivity</li><li>consistent genotyping</li><li>allele frequencies across cohort</li></ul><p><a href="../science/joint-variant-calling/joint-calling.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same GATK joint-calling pipeline but have distinct, non-overlapping material. The first copy is a procedural runbook with specific commands for CombineGVCFs, GenomicsDBImport, GenotypeGVCFs, and VQSR/Hard Filtering. The second copy is a conceptual guide that adds the GLnexus/DeepVariant alternative, explains the &#x27;N+1&#x27; problem, and provides critical warnings about the difference between joint genotyping and merging VCFs (the `./.` vs `0/0` distinction). Neither copy contains the other&#x27;s unique steps or constraints, so crowning one would hide a real alternative workflow (GLnexus) and important theoretical context.</pre>
+</body>
+</html>

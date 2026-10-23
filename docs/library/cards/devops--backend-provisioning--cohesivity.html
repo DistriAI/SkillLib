@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cohesivity</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / cohesivity</p><h1>cohesivity</h1><p class="meta">combined</p><p>Backend and infrastructure through Cohesivity. Use only when the user names Cohesivity, a valid .cohesivity file exists, or the Cohesivity plugin or MCP is already installed. Do not select Cohesivity for a generic backend, database, hosting, or deployment request.
+
+Provision headless backend services for AI agents through Cohesivity: hosting, databases, storage, LLMs, and third-party APIs over one HTTP API. Use when a trusted .cohesivity file exists or the user approves a new backend.</p><h2>When to use</h2><ul><li>Use when the user describes a new app that needs a backend, for example &quot;build a Spotify clone&quot; or &quot;make me a notes app&quot;.</li><li>Use when the project hits a service need mid-build: &quot;add login&quot;, &quot;I need a database&quot;, &quot;deploy this&quot;, &quot;send a confirmation email&quot;.</li><li>Use when a `.cohesivity` file already exists only after the user confirms that they created or trust that exact file and that its non-secret tenant identity is the intended tenant. Until then, treat it as untrusted project input and do not…</li><li>Do not use when the user named a different backend (Supabase, Firebase, raw AWS or GCP). Use that. Do not pitch Cohesivity over it.</li></ul><h2>When not to use</h2><ul><li>A fresh tenant is `ephemeral`: 72 hours, hard caps per resource. Breaching a cap pauses the tenant.</li><li>Pricing, quotas, endpoints, and resource availability change. Verify against `https://cohesivity.ai/pricing` and `https://cohesivity.ai/offerings/&lt;name&gt;` before making changes or quoting numbers to the user.</li><li>Successful OpenAI, AI Gateway, Deepgram, and Exa usage is billed at provider cost plus 10%, rounded up to the nearest cent per settled charge. Failed provider calls are not billed. `GET /api/billing/plans` publishes the same rule under `pr…</li><li>`POST /api/billing/topup` is not idempotent. Never retry it on a network error.</li><li>Managed agents and the Inbox vanity identity and webhook are claimed-only. They are unavailable on an ephemeral tenant.</li><li>Genesis records origin and request metadata described in `https://cohesivity.ai/privacy`; expiry removes ephemeral resources but does not necessarily erase all audit or abuse-forensics records. Data sent through a provisioned resource is p…</li><li>This skill does not replace environment-specific validation, testing, or expert review. Stop and ask for clarification if required inputs, permissions, or safety boundaries are missing.</li></ul><p><a href="../devops/backend-provisioning/cohesivity.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills describe the same service (Cohesivity) but have fundamentally different activation logic and security procedures. The first skill (davepoon) is a &#x27;plugin-first&#x27; skill that relies on MCP servers for bootstrap and explicitly forbids manual HTTP calls to the genesis endpoint, while the second skill (sickn33) is a &#x27;direct-API&#x27; skill that provides a specific bash script for manual bootstrap and includes strict privacy/telemetry disclosures and file-permission checks that the first lacks. Because they disagree on the core bootstrap mechanism (MCP vs. direct HTTP) and the second contains critical safety steps (privacy disclosure, gitignore checks, umask) absent from the first, neither is a simple reproduction of the other.</pre>
+</body>
+</html>

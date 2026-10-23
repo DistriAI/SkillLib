@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-k8s</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunt-k8s</p><h1>hunt-k8s</h1><p class="meta">authentic</p><p>Hunt Kubernetes &amp; Docker — API anonymous access, kubelet 10250 exec (SPDY/WebSocket, NOT plain POST) and the simpler /run primitive, etcd 2379 unauth, dashboard skip-login, RBAC misconfig, secret/SA-token abuse, docker.sock host escape, runc/container-escape (Leaky Vessels CVE-2024-21626), API-server-mediated nodes/proxy RCE, EphemeralContainers node-shell, bound/projected SA-token audience+expiry abuse, admission-controller bypass, Helm/Tiller remnants. Use when target runs containerized infra, exposes K8s ports (6443/10250/10255/2379/8443), or cloud metadata reveals K8s service accounts.</p><h2>When to use</h2><ul><li>Kubernetes API anonymous access</li><li>kubelet 10250 exec</li><li>etcd 2379 unauth</li><li>dashboard skip-login</li><li>RBAC misconfig</li><li>secret/SA-token abuse</li><li>docker.sock host escape</li><li>runc/container-escape</li></ul><h2>When not to use</h2><ul><li>tasks not involving containerized infra</li><li>targets not exposing K8s ports</li><li>targets where cloud metadata does not reveal K8s service accounts</li></ul><p><a href="../security/k8s-docker-redteam/hunt-k8s.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-k8s/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

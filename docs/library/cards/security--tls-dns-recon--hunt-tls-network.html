@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-tls-network</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunt-tls-network</p><h1>hunt-tls-network</h1><p class="meta">authentic</p><p>Hunt TLS/SSL and DNS misconfigurations — missing HSTS (downgrade attack), weak cipher suites, expired/invalid certificates, mTLS bypass, missing SPF/DKIM/DMARC (email spoofing), DNS Zone Transfer (AXFR), dangling CNAME subdomain takeover, CAA records. Most of these are Info/Low on their own — this skill is opinionated about which findings actually pay (spoofable DMARC with delivered-to-inbox proof, AXFR returning internal hosts, dangling-CNAME takeover) versus which get rejected as best-practice noise (missing CAA, missing HSTS with no MitM position). Use during recon to find infrastructure weaknesses, and to TRIAGE them honestly before reporting.</p><h2>When to use</h2><ul><li>TLS/SSL audit</li><li>HSTS check</li><li>DNS misconfiguration hunting</li><li>Subdomain takeover detection</li><li>DMARC spoofing verification</li><li>DNS Zone Transfer (AXFR) testing</li><li>mTLS bypass testing</li><li>Finding triage</li></ul><h2>When not to use</h2><ul><li>Reporting missing CAA</li><li>Reporting missing HSTS without MitM PoC</li><li>Reporting missing security headers alone</li><li>Reporting weak-cipher support without exploit</li><li>Reporting self-signed cert on non-prod host</li><li>Reporting TLS 1.0/1.1 enabled without downgrade victim</li></ul><p><a href="../security/tls-dns-recon/hunt-tls-network.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/hunt-tls-network/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

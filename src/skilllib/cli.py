@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 from skilllib.agent import find_skills, load_skill, render_prompt
-from skilllib.browse import BROWSE_PATH, default_index_path, load_index, write_browse_site
+from skilllib.browse import BROWSE_PATH, default_index_path, load_index, shelf_locations, write_browse_site, write_card_pages
 from skilllib.catalog import CATALOG_PATH
 from skilllib.index import ModelUnavailable, STATE_PATH, update_index
 from skilllib.retrieve import download_skills
@@ -330,7 +330,13 @@ def _families(args) -> int:
             namer = llm_namer(client, args.root)
     document = build_task_families(cards, name_family=namer)
     path = write_task_families(document, args.root)
-    page = write_family_pages(document, args.root)
+    index_path = default_index_path(args.root)
+    links = {}
+    if index_path.is_file():
+        locations = shelf_locations(load_index(index_path))
+        write_card_pages(cards, locations, args.root)
+        links = {card_id: place["family_href"] for card_id, place in locations.items()}
+    page = write_family_pages(document, args.root, links)
     families = sum(len(domain["families"]) for domain in document["domains"])
     print(f"Wrote {path}")
     print(f"Families {families} across {len(document['domains'])} domains, {len(document['exact'])} product channels")

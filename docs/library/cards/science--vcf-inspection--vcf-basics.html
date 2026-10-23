@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>vcf-basics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / vcf-basics</p><h1>vcf-basics</h1><p class="meta">combined</p><p>View, query, and interpret VCF/BCF variant files with bcftools and cyvcf2. Use when inspecting variants, extracting fields with query format strings, converting VCF/BCF, or correctly reading a field -- QUAL (site) vs GQ (genotype) vs PL/GL likelihoods, AD vs DP and allele balance, GT phasing/ploidy/PS and missing-vs-hom-ref, INFO/FORMAT Number A/R/G semantics, symbolic alleles (&lt;DEL&gt;, &lt;NON_REF&gt;, spanning *) and END, or telling a raw gVCF apart from a filtered callset.</p><h2>When to use</h2><ul><li>inspecting variants</li><li>extracting specific fields</li><li>understanding VCF format structure</li><li>viewing VCF/BCF files</li><li>format conversion</li><li>querying variant data</li></ul><p><a href="../science/vcf-inspection/vcf-basics.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies cover the same core task (viewing and querying VCF/BCF files with bcftools and cyvcf2) but the GPTomics copy adds substantial, non-trivial interpretive constraints that the FreedomIntelligence copy lacks: a governing principle about field level and Number semantics, a detailed QUAL vs GQ vs PL/GL comparison, the header contract, and specific traps (missing vs hom-ref, symbolic alleles, gVCF). The FreedomIntelligence copy provides a more complete, step-by-step command reference for bcftools view/query, format conversion, indexing, and cyvcf2 code patterns that the GPTomics copy truncates or omits. Crowning one would hide the other&#x27;s real value.</pre>
+</body>
+</html>

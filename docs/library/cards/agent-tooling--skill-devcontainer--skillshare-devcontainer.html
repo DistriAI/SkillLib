@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>skillshare-devcontainer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / skillshare-devcontainer</p><h1>skillshare-devcontainer</h1><p class="meta">separate</p><p>Run CLI commands, tests, and debugging inside the skillshare devcontainer. Use this skill whenever you need to: execute skillshare CLI commands for verification, run Go tests (unit or integration), reproduce bugs, test new features, start the web UI, or perform any operation that requires a Linux environment. All CLI execution MUST happen inside the devcontainer — never run skillshare commands on the host. If you are about to use Bash to run `ss`, `skillshare`, `go test`, or `make test`, stop and use this skill first to ensure correct container execution.</p><h2>When to use</h2><ul><li>Running `ss` / `skillshare` commands for verification</li><li>Running `go test`, `make test`, `make check`</li><li>Reproducing a bug report</li><li>Testing a feature you just implemented</li><li>Starting the web UI dashboard</li><li>Any command that needs the skillshare binary or Go toolchain</li></ul><h2>When not to use</h2><ul><li>Editing source code (do that on host via Read/Edit tools)</li><li>Running `git` commands (git works on host)</li><li>Running `make fmt`, `make lint` (host-safe Go toolchain commands; no container needed)</li><li>E2E test runbooks → use `cli-e2e-test` skill instead (it handles ssenv isolation)</li></ul><p><a href="../agent-tooling/skill-devcontainer/skillshare-devcontainer.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/runkids/skillshare">runkids/skillshare</a></td><td><code>.skillshare/skills/skillshare-devcontainer/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

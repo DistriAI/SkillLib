@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>what-could-break</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / what-could-break</p><h1>what-could-break</h1><p class="meta">authentic</p><p>Find what a change breaks outside its own diff, then prove the one fact that makes it safe by running real code. Use before any multi-file edit or an edit to a shared path.</p><h2>When to use</h2><ul><li>Use before any multi-file edit, or an edit to a shared path: API payload, config, stored data, a client other apps read, a prompt or policy file</li><li>Use when the user asks &quot;what could this break&quot; or &quot;blast radius of X&quot;</li><li>Use for a small diff you do not trust</li><li>Use when a brief asserts something about existing code, before you design against that assertion</li></ul><h2>When not to use</h2><ul><li>A risk needs a real chance and a real cost, or it does not belong on the list.</li><li>A search that found nothing is still an answer: write the search down rather than claiming the risk does not exist.</li><li>This skill does not replace environment-specific testing or expert review.</li><li>Keep secrets and private data out of the report and out of any script left behind.</li></ul><p><a href="../software-engineering/failure-mode-analysis/what-could-break.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/what-could-break/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>m6anet-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / m6anet-analysis</p><h1>m6anet-analysis</h1><p class="meta">separate</p><p>Detects m6A modifications from Oxford Nanopore direct-RNA-seq (DRS) signal using m6Anet (multiple-instance-learning over DRACH 5-mer signal). Covers the upstream pipeline (Dorado/Guppy basecalling -&gt; minimap2 map-ont -&gt; nanopolish eventalign -&gt; m6anet dataprep -&gt; m6anet inference), per-site vs per-read probability including the mod_ratio stoichiometry column, the DRACH-only constraint, minimum-coverage thresholds (20-50 reads/site), multi-condition comparison via xPore/Nanocompore/ELIGOS, Dorado native modification calling (RNA004, 2024+), and the cDNA-vs-DRS distinction (cDNA Nanopore CANNOT detect modifications). Use when calling m6A from ONT DRS without immunoprecipitation, choosing m6Anet vs xPore vs Nanocompore vs ELIGOS vs Dorado native, interpreting probability_modified vs mod_ratio vs per-read probabilities, deciding between m6Anet (known DRACH sites) and Dorado/Remora (genome-wide screening), pinning RNA002 vs RNA004 chemistry and basecaller versions, or troubleshooting event…</p><h2>When to use</h2><ul><li>calling m6A from ONT DRS without immunoprecipitation</li><li>choosing m6Anet vs xPore vs Nanocompore vs ELIGOS vs Dorado native</li><li>interpreting probability_modified vs mod_ratio vs per-read probabilities</li><li>deciding between m6Anet and Dorado/Remora</li><li>pinning RNA002 vs RNA004 chemistry and basecaller versions</li><li>troubleshooting eventalign/dataprep failures</li></ul><h2>When not to use</h2><ul><li>cDNA Nanopore data analysis</li><li>non-DRACH site discovery</li></ul><p><a href="../science/m6anet-analysis/m6anet-analysis.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>epitranscriptomics/m6anet-analysis/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

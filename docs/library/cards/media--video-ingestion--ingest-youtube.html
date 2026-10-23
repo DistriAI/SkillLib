@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ingest-youtube</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / ingest-youtube</p><h1>ingest-youtube</h1><p class="meta">authentic</p><p>Pull a YouTube video transcript into a queryable markdown vault with yt-dlp subtitle discovery, VTT cleanup, metadata frontmatter, and capture-seed stubs.</p><h2>When to use</h2><ul><li>User pastes a YouTube URL and asks for a transcript or summary</li><li>User says `/ingest-youtube &lt;url&gt;` for a single video</li><li>User asks to capture, sync, ingest, transcribe, or pull a talk/podcast/keynote into the vault</li><li>Downloading the actual video file (use `yt-dlp` directly with `-f best`)</li><li>Channel-wide ingestion or `--days` windows; this script ingests one video URL at a time</li><li>Live streams (transcripts are not stable)</li><li>Non-YouTube sources (Vimeo, Twitch, Twitter Spaces have their own connectors)</li><li>One-off transcript reads where the user does not want a vault file (run `yt-dlp --write-auto-sub` directly and pipe to stdout)</li></ul><h2>When not to use</h2><ul><li>Ingests one YouTube video URL per run; channel handles, playlists, and `--days` windows are out of scope.</li><li>Depends on subtitles returned by `yt-dlp`; videos without subtitles produce a metadata stub, not a transcript.</li><li>Does not download video files or perform built-in Whisper transcription in this version.</li><li>Network availability, YouTube subtitle access, and local `yt-dlp` behavior determine whether ingest succeeds.</li></ul><p><a href="../media/video-ingestion/ingest-youtube.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ingest-youtube/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

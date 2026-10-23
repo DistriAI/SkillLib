@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>posthog-adblock-bypass</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / posthog-adblock-bypass</p><h1>posthog-adblock-bypass</h1><p class="meta">separate</p><p>Configure a Next.js app using posthog-js so session recording and dead-click capture survive browser ad blockers. Aliases the three blocker-flagged JS chunks (dead-clicks-autocapture.js, recorder.js, posthog-recorder.js) to bland same-origin paths via Next.js rewrites, and monkey-patches HTMLScriptElement so posthog-js requests the aliases. TRIGGER when posthog-js session replay or dead-click capture is failing in production with ERR_BLOCKED_BY_CLIENT or 404s on /static/dead-clicks-autocapture.js / /static/recorder.js / /static/posthog-recorder.js, or when the user wants to bypass ad blockers for these specific assets. Works alongside an existing PostHog reverse proxy (managed or otherwise) — only the three blocked files divert through Next.js, all other PostHog traffic stays on the original api_host. SKIP for unrelated PostHog setup, non-Next.js apps, or when capture/decide endpoints (/e/, /decide/, /array/*/config.js) are the ones being blocked — those need a different treatment.</p><h2>When to use</h2><ul><li>`/static/dead-clicks-autocapture.js` failing</li><li>`/static/recorder.js` or `/static/posthog-recorder.js` failing</li><li>`ERR_BLOCKED_BY_CLIENT` or a synthesized 404 (the file actually returns 200 via `curl`)</li></ul><p><a href="../data/analytics-tracking/posthog-adblock-bypass.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Leanmcp/gateway-skills">Leanmcp/gateway-skills</a></td><td><code>skills/posthog-adblock-bypass/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

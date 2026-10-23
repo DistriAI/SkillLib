@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>detect-static-dependencies</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / detect-static-dependencies</p><h1>detect-static-dependencies</h1><p class="meta">separate</p><p>ACTIVATION PREREQUISITE: the request or discovered target must explicitly identify C#, .NET, `.cs`, or `.csproj`; otherwise stay dormant without invoking this skill. USE FOR: locating System.DateTime.Now/UtcNow, System.IO.File/Directory, System.Environment, HttpClient, Console, or Process usage in C#; auditing C# code for hard-to-test framework dependencies; or verifying those C# calls are already abstracted. DO NOT USE FOR: any target lacking the activation prerequisite; generating wrappers (use generate-testability-wrappers); migrating code (use migrate-static-to-wrapper); or general code review.</p><h2>When to use</h2><ul><li>Auditing a project&#x27;s testability before adding unit tests</li><li>Understanding the scope of static coupling in a legacy codebase</li><li>Prioritizing which statics to wrap first (highest-frequency wins)</li><li>Creating a migration plan for incremental testability improvements</li></ul><h2>When not to use</h2><ul><li>The user wants wrappers generated (hand off to `generate-testability-wrappers`)</li><li>The user wants mechanical migration done (hand off to `migrate-static-to-wrapper`)</li><li>The statics are already behind interfaces or `TimeProvider`</li><li>The code is not C# / .NET</li></ul><p><a href="../software-engineering/dotnet-detect-static-dependencies/detect-static-dependencies.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-test/skills/detect-static-dependencies/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

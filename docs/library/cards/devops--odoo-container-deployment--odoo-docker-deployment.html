@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>odoo-docker-deployment</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / odoo-docker-deployment</p><h1>odoo-docker-deployment</h1><p class="meta">authentic</p><p>Production-ready Docker and docker-compose setup for Odoo with PostgreSQL, persistent volumes, environment-based configuration, and Nginx reverse proxy.</p><h2>When to use</h2><ul><li>Spinning up a local Odoo development environment with Docker.</li><li>Deploying Odoo to a VPS or cloud server (AWS, DigitalOcean, etc.).</li><li>Troubleshooting Odoo container startup failures or database connection errors.</li><li>Adding a reverse proxy with SSL to an existing Odoo Docker setup.</li></ul><h2>When not to use</h2><ul><li>This skill covers **self-hosted Docker deployments** — Odoo.sh (cloud-managed hosting) has a completely different deployment model.</li><li>**Horizontal scaling** (multiple Odoo containers behind a load balancer) requires shared filestore (NFS or S3-compatible storage) not covered here.</li><li>Does not include an Nginx configuration template — consult the [official Odoo Nginx docs](https://www.odoo.com/documentation/17.0/administration/install/deploy.html) for the full reverse proxy config.</li><li>The `addons_path` inside the Docker image may change with new base image versions — always verify after upgrading the Odoo image.</li></ul><p><a href="../devops/odoo-container-deployment/odoo-docker-deployment.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/odoo-docker-deployment/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

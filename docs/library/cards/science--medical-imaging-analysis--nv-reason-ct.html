@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nv-reason-ct</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / nv-reason-ct</p><h1>nv-reason-ct</h1><p class="meta">separate</p><p>Run NV-Reason-CT inference on user-provided 3D NIfTI chest or abdominal CT volumes for engineering and research workflows. Not for diagnosis, treatment, or clinical reporting.</p><h2>When to use</h2><ul><li>Runs the documented `nvidia/NV-Reason-CT` Hugging Face Transformers path on one user-provided 3D NIfTI CT volume and text prompt.</li><li>Emits `result_json` with input geometry and hash, anatomy-region selection, response text, runtime identity, dependency versions, and limitations.</li><li>Manifest I/O: inputs are `ct_request_or_fixture` and optional direct `ct_volume`; output is `result_json` on stdout.</li><li>Not for diagnosis, treatment, triage, patient-facing output, or clinical reporting.</li></ul><h2>When not to use</h2><ul><li>The wrapper loads upstream custom code only after explicit `--trust-model-code` opt-in. Review that code and use an isolated environment and an immutable reviewed revision for evidence runs. Neither offline mode nor a local export prevents…</li><li>It checks readable 3D NIfTI structure, positive voxel spacing, a finite affine, and file identity. It does not verify de-identification, Hounsfield-unit calibration, anatomy coverage, crop quality, or clinical correctness.</li><li>Model output can hallucinate, omit findings, or present unreliable reasoning. Reviewable reasoning text is generated output, not proof of the model&#x27;s internal computation.</li><li>CT scans and model weights must be supplied separately. The upstream examples demonstrate inference wiring and provide no clinical ground truth. A successful setup check is not completed model inference.</li><li>The moving `main` revision is suitable only for development. Replace it with the reviewed immutable public release revision before publication.</li><li>This wrapper does not cover the Gradio UI, finetuning, retraining, clinical deployment, or patient-facing use.</li></ul><p><a href="../science/medical-imaging-analysis/nv-reason-ct.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/nv-reason-ct/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

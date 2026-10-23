@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>specificity-annotation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / specificity-annotation</p><h1>specificity-annotation</h1><p class="meta">separate</p><p>Maps TCR/BCR receptor sequences toward candidate antigen specificity and clusters repertoires by shared-specificity signal, while enforcing that a database match or a cluster label is a HYPOTHESIS, not a specificity call. Use when deciding among database annotation (VDJdb/McPAS/IEDB+TCRMatch, requiring V-gene and HLA concordance plus a confidence score) versus sequence clustering (tcrdist3 meta-clonotypes, GLIPH2, GIANA, clusTCR, which find enrichment not per-receptor labels) versus generation-probability nulls (OLGA Pgen, IGoR, SONIA Ppost) for testing public/convergent/shared claims; and when guarding against overclaiming specificity, base-rate false positives from bare CDR3 matches, unpaired beta-only annotation, ML predictor failure on unseen epitopes, and ignored MHC restriction. TCR-focused with a BCR/antibody note (SHM, conformational epitopes, IGHV3-53/3-66 public clonotypes). Keywords CDR3, pMHC, HLA restriction, cross-reactivity, meta-clonotype, Pgen, public clonotype, conve…</p><h2>When to use</h2><ul><li>Database annotation using VDJdb, McPAS, or IEDB+TCRMatch</li><li>Sequence clustering with tcrdist3, GLIPH2, GIANA, or clusTCR</li><li>Generation-probability null testing with OLGA, IGoR, or SONIA</li><li>Testing public or convergent clonotype claims</li><li>Guarding against overclaiming specificity</li><li>BCR/antibody annotation notes for SHM and conformational epitopes</li></ul><h2>When not to use</h2><ul><li>Proving definitive antigen specificity</li><li>Treating cluster labels as per-receptor antigen calls</li><li>Bare CDR3 matches without HLA or V-gene concordance</li><li>Unpaired beta-only annotation</li><li>ML predictor application on unseen epitopes</li><li>Ignoring MHC restriction</li></ul><p><a href="../science/tcr-bcr-analysis/specificity-annotation.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>tcr-bcr-analysis/specificity-annotation/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-omni-presence-user-config-deploy</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / service-omni-presence-user-config-deploy</p><h1>service-omni-presence-user-config-deploy</h1><p class="meta">authentic</p><p>Use to deploy an Omni PresenceUserConfig (presence configuration) as one whole-record Metadata write with the decline/ACW fields set consistently: Auto-Accept off, Decline on, Decline Reason on (with a PresenceDeclineReason deployed in the same package), and an After-Conversation-Work wrap-up timer. Agents are assigned by username. Idempotent via the Metadata API files[].state signal. Triggers: create presence configuration, enable decline + decline reason + ACW wrap-up timer for agents, assign presence config to users. Do not use for ServicePresenceStatus (separate skill), for permission-set access to statuses, or to set the channel-level ACW timer on a ServiceChannel.</p><h2>When not to use</h2><ul><li>One presence configuration per invocation.</li><li>Encodes the decline+ACW rep profile from the steel thread; other field combinations require forking the XML template.</li><li>Does **not** set the channel-level After-Conversation-Work timer on a `ServiceChannel` (a separate concern), deploy `ServicePresenceStatus`, or grant status access via permission set.</li></ul><p><a href="../software-engineering/deploy-user-config/service-omni-presence-user-config-deploy.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/service-omni/skills/service-omni-presence-user-config-deploy/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

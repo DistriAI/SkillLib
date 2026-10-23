@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>doca-flow-dpa-provider</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / doca-flow-dpa-provider</p><h1>doca-flow-dpa-provider</h1><p class="meta">separate</p><p>Use this skill when the user is doing hands-on DOCA Flow DPA Provider work — exporting a `doca-flow` pipe or external resource (index-selector/memory) into BlueField DPA address space so a DPACC-built kernel can read counters, mutate hash-pipe entries, and update/read memory or index-selector resources inline with Flow. Covers per-port `doca_flow_dpa_ctx`, three queue types (general/resources-write/resources-read), the order-sensitive export handshake (`_export_prepare` → add entries → `_export` → `_get_device_addr`), and DPA-side device API. Trigger even when the user does not say &quot;DOCA Flow DPA Provider&quot; — implicit phrasings include &quot;DPA kernel never sees entries in the exported pipe&quot;, &quot;BAD_STATE from `_pipe_export`&quot;, &quot;how do I disable a hash entry from a DPA kernel&quot;, &quot;DPA memory read returns no value&quot;, or &quot;DPA-side post keeps returning AGAIN&quot;. Refuse and route elsewhere for `doca-flow` pipe construction, generic host-side DPA (`doca-dpa`), or DPA-side kernel-writing — those belong…</p><p><a href="../devops/nvidia-flow-dpa-provider/doca-flow-dpa-provider.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/doca-flow-dpa-provider/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

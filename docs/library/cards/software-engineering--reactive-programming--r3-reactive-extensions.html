@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>r3-reactive-extensions</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / r3-reactive-extensions</p><h1>r3-reactive-extensions</h1><p class="meta">separate</p><p>Build reactive/event-driven C# with R3 (Cysharp&#x27;s modern reimplementation of Reactive Extensions). Covers the Observable&lt;T&gt;/Observer&lt;T&gt; model, the OnErrorResume error contract, async dispatch with AwaitOperation, Task/IAsyncEnumerable integration, TimeProvider/FrameProvider scheduling, the concurrency contract, and how R3 differs from System.Reactive (Rx.NET).</p><h2>When to use</h2><ul><li>Composing **events** over time — UI input, sensor/feed updates, websocket messages, domain events</li><li>You need operators like debounce, throttle, merge, combine-latest, distinct-until-changed</li><li>Building **MVVM** state with `ReactiveProperty` / `BindableReactiveProperty`</li><li>Bridging push-based streams with `Task` / `async` and `IAsyncEnumerable`</li><li>Migrating from `System.Reactive`, UniRx, or `IObservable&lt;T&gt;` code</li><li>You hit Rx pain points: subscriptions dying on exceptions, scheduler overhead, or leak hunting</li></ul><h2>When not to use</h2><ul><li>Request/response I/O</li><li>Bounded producer/consumer with backpressure</li><li>Server-side stream processing with batching/backpressure</li></ul><p><a href="../software-engineering/reactive-programming/r3-reactive-extensions.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Aaronontheweb/dotnet-skills">Aaronontheweb/dotnet-skills</a></td><td><code>skills/r3-reactive-extensions/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

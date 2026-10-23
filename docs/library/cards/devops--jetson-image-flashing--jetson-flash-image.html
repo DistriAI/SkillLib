@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-flash-image</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-flash-image</p><h1>jetson-flash-image</h1><p class="meta">separate</p><p>Use to flash a promoted BSP image to a Jetson DUT in RCM mode via flash.sh or l4t_initrd_flash.sh. Do NOT use for BSP customization, image promotion, or carrier derivation.</p><h2>When to use</h2><ul><li>Host-side flash variables (`&lt;board&gt;`, `&lt;boot-dev&gt;`, flow tool, per-board `.conf`, `boardctl`) are resolved from the active profile or the in-tree BSP.</li><li>Artifact paths (`DTB_FILE`, `BPFDTB_FILE`, partition XML, BCTs, DRAM training) are resolved inside `flash.sh` / `l4t_initrd_flash.sh` at flash time from `board_sku` / `board_FAB` read off the DUT&#x27;s EEPROM.</li><li>The DUT&#x27;s EEPROM is authoritative; the profile is an authoring-time prediction reconciled by the preflight cross-check. Empty EEPROM values are valid, not refusal triggers.</li><li>The user explicitly confirms a printed *resolution* before flashing.</li></ul><h2>When not to use</h2><ul><li>**DUT must be in RCM mode.** Image-generation (EEPROM read) and the flash itself both use the recovery USB channel; not-in-RCM at the gate fails image-gen too.</li><li>**Artifact paths resolved at flash time.** `DTB_FILE`, `BPFDTB_FILE`, partition XML, BCTs, DRAM training are picked from EEPROM (`board_sku` / `board_FAB`) by `flash.sh` / `l4t_initrd_flash.sh`; this skill validates only host-side scaffold…</li><li>**EEPROM is authoritative over the profile.** Real non-empty disagreement refuses; *empty* EEPROM values are valid.</li><li>**No raw-command bypass.** Refuses to fall back to user-supplied &quot;paste this command&quot; — that path is how stale doc snippets and prompt-character paste artifacts reach production flashes.</li><li>**No transient-error auto-retry.** USB hiccups abort; re-enter RCM and re-invoke.</li><li>**T26x needs an explicit post-flash reset.** T26x doesn&#x27;t auto-reboot from a freshly flashed image; `&lt;boardctl&gt; -t &lt;target&gt; reset` (or manual power-cycle) required. T23x resets internally.</li><li>**Massflash / `--flash-only`** uses the same tool selection + respective flags; massflash topology setup is out of scope here.</li></ul><p><a href="../devops/jetson-image-flashing/jetson-flash-image.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-flash-image/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

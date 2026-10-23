@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>perplexity</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / perplexity</p><h1>perplexity</h1><p class="meta">combined</p><p>Search the web with AI-powered answers via Perplexity API. Returns grounded responses with citations. Supports batch queries.
+
+Web search and research using Perplexity AI. Use when user says &quot;search&quot;, &quot;find&quot;, &quot;look up&quot;, &quot;ask&quot;, &quot;research&quot;, or &quot;what&#x27;s the latest&quot; for generic queries. NOT for library/framework docs (use Context7) or workspace questions.</p><h2>When to use</h2><ul><li>Generic web searches</li><li>Finding resources</li><li>Current best practices</li><li>Recent information</li><li>Tutorial discovery</li><li>Conversational explanations</li><li>Deep multi-source research</li></ul><h2>When not to use</h2><ul><li>Library/framework documentation</li><li>Graphite gt CLI queries</li><li>Workspace-specific questions</li><li>Specific URL crawling</li></ul><p><a href="../agent-tooling/web-search/perplexity.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills describe fundamentally different implementations of the &#x27;perplexity&#x27; skill. The first (softaworks) is a routing and policy skill for an agent using MCP tools (Perplexity Search/Ask), defining when to use them versus other tools like Context7 or Graphite, and explicitly prohibiting a specific research tool. The second (LeoYeAI) is a standalone CLI wrapper skill that executes a Node.js script to call the Perplexity API directly, requiring an API key. They do not reproduce each other; one is a decision framework for tool selection, and the other is a direct execution script. Combining them is necessary to capture both the high-level routing logic and the low-level API execution method.</pre>
+</body>
+</html>

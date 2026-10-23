@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>unslop</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/documents.html">documents</a> / unslop</p><h1>unslop</h1><p class="meta">combined</p><p>Cut AI tells from text you write or edit for a human reader (commit messages, PR titles and bodies, docs, code comments, replies). Apply before committing, posting, or sending; leave prose you didn&#x27;t touch alone.
+
+Post-process AI-generated text through the unslop CLI to strip AI writing patterns before publishing</p><h2>When to use</h2><ul><li>When you have AI-generated text ready to publish and want a final cleanup pass</li><li>When working in a shell pipeline where text quality needs to be enforced automatically</li><li>When writing commit hooks or CI steps that validate content before it ships</li><li>When you need reproducible text normalization across multiple runs</li></ul><h2>When not to use</h2><ul><li>Processes prose only — not code, JSON, or structured data</li><li>Does not catch factual errors or substantive writing issues</li><li>Some replacements may not fit every context; review the output before publishing</li><li>Requires Python tooling such as `pipx` or `uv` for standalone CLI installation</li></ul><p><a href="../documents/remove-ai-writing-patterns/unslop.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe different procedures for the same goal. The first is a manual editing skill that instructs the agent to scan, rewrite, add voice, and self-audit against a long list of AI tells. The second is a CLI-based skill that installs and pipes text through the `unslop` command for deterministic post-processing. They overlap in intent but each contains material steps the other lacks (manual pattern list vs CLI pipeline/CI integration), so crowning one would hide a real alternative.</pre>
+</body>
+</html>

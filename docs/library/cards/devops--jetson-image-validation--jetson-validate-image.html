@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-validate-image</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-validate-image</p><h1>jetson-validate-image</h1><p class="meta">separate</p><p>Use after jetson-flash-image to run static BSP checks, on-target smoke/regression tests on a flashed DUT, or both. Not for build or flash steps. Triggers: validate bsp, on-target validation.</p><h2>When to use</h2><ul><li>Confirm that a freshly customized BSP landed correctly — both as a static artifact on disk and as a running system on the target — without re-promoting or re-flashing. Forms the **validation tail of Deploy** in the Setup → Customize → Buil…</li></ul><h2>When not to use</h2><ul><li>Placeholder skill — only the DUT-access contract and the</li><li>UART file transfer is byte-banged base64 at ~10 KB/s on 115200</li><li>`uart_session.py` opens and closes the tty per subcommand</li><li>SSH uses `StrictHostKeyChecking=accept-new` with a per-profile</li><li>Passwords are never inlined in the profile YAML — only</li><li>`transport=uart` with `lock_strategy=steal` is **not implemented**</li></ul><p><a href="../devops/jetson-image-validation/jetson-validate-image.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-validate-image/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

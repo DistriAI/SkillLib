@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hf-cloud-aws-context-discovery</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / hf-cloud-aws-context-discovery</p><h1>hf-cloud-aws-context-discovery</h1><p class="meta">combined</p><p>Discover the user&#x27;s local AWS context (active profile, region, account ID, caller identity) at the start of any AWS task. Use this skill before any other AWS work — deploying to SageMaker, creating resources, calling AWS APIs, or anything that touches an AWS account. Use it especially when the user has not specified a region or profile explicitly, when they say things like &quot;use my AWS account&quot;, &quot;deploy to AWS&quot;, &quot;use my profile&quot;, or when about to make any AWS CLI or SDK call. Never guess the region or account ID — always use this skill to read it from the local configuration first.
+
+Discover the effective local AWS profile, region, account, and caller identity before any AWS task without exposing credentials.</p><h2>When to use</h2><ul><li>Establish the effective AWS profile, region, account, and caller before AWS work.</li><li>Diagnose expired SSO sessions, missing profiles, or configuration overrides.</li><li>Provide verified context to later SageMaker planning and deployment skills.</li></ul><h2>When not to use</h2><ul><li>Discovery may reveal account IDs, role ARNs, or profile names; report only what the task needs and never expose secrets or session tokens.</li><li>STS identity checks require network access and valid credentials.</li><li>A valid identity does not imply permission to change resources.</li></ul><p><a href="../devops/aws-context-discovery/hf-cloud-aws-context-discovery.html">Skill page</a></p><h2>Conflict</h2><pre>The huggingface/skills copy is the upstream source, but the sickn33/agentic-awesome-skills copy is not a faithful reproduction. It adds a security layer (never open or print credentials, SSO token caches, or secret env vars; use masked CLI metadata commands like aws configure list-profiles and aws configure get region) and a Limitations section that the upstream copy lacks. The upstream copy, by contrast, explicitly permits reading ~/.aws/config and ~/.aws/credentials as plain INI files and relies on AWS_PROFILE/AWS_REGION/AWS_DEFAULT_REGION env vars for region resolution, which the mirror copy omits. Crowning the upstream copy would hide the mirror&#x27;s credential-safety constraints, and crowning the mirror would hide the upstream&#x27;s env-var resolution steps and raw-config reading guidance. The copies overlap heavily on the core discovery flow (profile, region, sts get-caller-identity, SSO ARN detection, reporting format) but each has material steps the other lacks, so combine is correct.</pre>
+</body>
+</html>

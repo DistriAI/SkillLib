@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>file-search</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / file-search</p><h1>file-search</h1><p class="meta">combined</p><p>Fast file-name and content search using `fd` and `rg` (ripgrep).
+
+Perform fast file name and content searches with ripgrep (rg); use it when you need to locate files by glob/regex, find keywords across directories, or replace common find/grep workflows.</p><h2>When to use</h2><ul><li>You need to list files matching a pattern (e.g., `*.rs`, `*.md`) across a project quickly.</li><li>You want to find occurrences of a keyword/regex (e.g., `TODO|FIXME`) across one or more directories.</li><li>You need contextual matches (lines before/after) to understand how a symbol or string is used.</li><li>You want a faster, simpler replacement for typical `find` + `grep` pipelines.</li><li>You need to narrow searches by file type (e.g., Rust-only) while scanning large repositories.</li></ul><h2>When not to use</h2><ul><li>Do not use this skill when the required source data, identifiers, files, or credentials are missing.</li><li>Do not use this skill when the user asks for fabricated results, unsupported claims, or out-of-scope conclusions.</li><li>Do not use this skill when a simpler direct answer is more appropriate than the documented workflow.</li></ul><p><a href="../software-engineering/file-search/file-search.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same core task (fast file search) but rely on different primary tools and workflows. The first skill (LeoYeAI) uses `fd` for filename search and `rg` for content search, while the second skill (aipoch) uses `rg --files` for both filename and content search. The second skill also includes extensive boilerplate for validation, safety, and output contracts that the first lacks. Because the first skill provides a distinct and often preferred tool (`fd`) for filename operations that the second omits, and the second provides a self-contained `rg`-only workflow, crowning one would hide a valid alternative approach. They are complementary rather than one being a strict reproduction of the other.</pre>
+</body>
+</html>

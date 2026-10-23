@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>eas-simulator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / eas-simulator</p><h1>eas-simulator</h1><p class="meta">authentic</p><p>Run and control a user&#x27;s app on a remote iOS/Android simulator hosted on EAS cloud. Read before running any `eas simulator:*` commands - it has the current syntax for this experimental API. Use whenever the user needs a simulator they can&#x27;t run locally - &#x27;run my app on a cloud simulator&#x27;, &#x27;use eas simulator to run/install/screenshot my app&#x27;, &#x27;I&#x27;m on Linux/Cursor and need an iOS device&#x27;, &#x27;no sim on this box / headless CI&#x27;, &#x27;let an agent click through my app and screenshot it&#x27;, &#x27;test my dev build on a remote sim with live reload&#x27;, &#x27;stream a sim to my browser&#x27; - even when they don&#x27;t say &#x27;EAS Simulator&#x27; or &#x27;cloud&#x27;. On a host WITHOUT a local simulator (Linux, CI, cloud sandbox) it&#x27;s the default; on macOS, do NOT auto-trigger for a plain &#x27;run on the simulator&#x27; - use it only for a cloud/remote/shareable sim, an iOS version they lack, or an agent-driven session. NOT for local sims (expo run:ios, Xcode, Android Studio), EAS Build/Update, web preview, or physical devices.</p><h2>When to use</h2><ul><li>The frontmatter `description` carries the trigger phrases. In short: use this to get a user&#x27;s app onto a **cloud** simulator and interact with it — especially from a Mac-less or cloud/sandbox agent. **Not** for local sims (`expo run:ios`,…</li></ul><h2>When not to use</h2><ul><li>local sims (expo run:ios, Xcode, Android Studio)</li><li>EAS Build/Update</li><li>web preview</li><li>physical devices</li></ul><p><a href="../devops/eas-simulator/eas-simulator.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/expo/skills">expo/skills</a></td><td><code>plugins/expo/skills/eas-simulator/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

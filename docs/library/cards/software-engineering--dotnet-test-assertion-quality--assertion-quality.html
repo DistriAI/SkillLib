@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>assertion-quality</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / assertion-quality</p><h1>assertion-quality</h1><p class="meta">separate</p><p>Analyze assertion quality, depth, variety, and false confidence in existing tests. ALWAYS USE when asked about weak, shallow, trivial, always-true, self-referential, assertion-free, presence/truthiness-only, or insufficiently diverse assertions, including MSTest, Jest, pytest, and Go. DO NOT USE for direct fixes: writing-mstest-tests owns supplied MSTest assertions; code-testing owns new cases. Use test-gap-analysis when asked whether tests would catch a production change, and test-anti-patterns for general severity-ranked audits.</p><h2>When to use</h2><ul><li>User asks to evaluate assertion quality or depth</li><li>User asks &quot;are my tests actually testing anything meaningful?&quot;</li><li>User wants to know if test assertions are too shallow or trivial</li><li>User asks for assertion coverage metrics or diversity analysis</li><li>User suspects tests give false confidence despite passing</li><li>The `test-engineer` agent (or any test-generation workflow) calls this skill as a pre-completion self-review step on freshly generated tests, before declaring the run finished</li></ul><h2>When not to use</h2><ul><li>User wants to write new tests (use `code-testing` for any language, or `writing-mstest-tests` for MSTest specifically)</li><li>User wants to detect anti-patterns beyond assertions (use `test-anti-patterns`)</li><li>User wants to fix or rewrite assertions (help them directly)</li><li>User asks about code coverage percentages (out of scope — this analyzes assertion quality, not line coverage)</li></ul><p><a href="../software-engineering/dotnet-test-assertion-quality/assertion-quality.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-test/skills/assertion-quality/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

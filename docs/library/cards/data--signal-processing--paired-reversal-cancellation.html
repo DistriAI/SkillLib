@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>paired-reversal-cancellation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / paired-reversal-cancellation</p><h1>paired-reversal-cancellation</h1><p class="meta">separate</p><p>Reference for paired-reversal handling on GL batch tapes: an RV row whose ref-trace points at an earlier row cancels BOTH legs (the RV and the row it references) — but ONLY when the two value-dates fall within the shop&#x27;s reversal settlement window; an RV that references a too-old posting is NOT a cancellation and posts one-sided. Useful when the posting tape carries a reference-trace column alongside reversal codes and the running balance is off by twice the reversal magnitude, or by a whole leg on stale references.</p><p><a href="../data/signal-processing/paired-reversal-cancellation.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks-extra/cobol-gl-batch-reconcile/environment/skills/paired-reversal-cancellation/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

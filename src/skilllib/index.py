@@ -12,6 +12,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from skilllib.browse import shelf_locations, write_card_pages
 from skilllib.catalog import CATALOG_PATH
 from skilllib.sorting.build import INDEX_PATH, load_skill_index, save_skill_index, update_skill_index
 from skilllib.sorting.cards import (
@@ -175,7 +176,9 @@ def update_index(
         families = build_task_families(cards, name_family=heuristic_namer)
         assigned = len(cards)
     write_task_families(families, root)
-    write_family_pages(families, root)
+    locations = shelf_locations(document)
+    write_card_pages(cards, locations, root)
+    write_family_pages(families, root, {card_id: place["family_href"] for card_id, place in locations.items()})
 
     previous_names = set(state.get("known_names") or [])
     current_names = {card.get("name") or "" for card in cards if card.get("name")}

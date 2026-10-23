@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / spatial-pipeline</p><h1>spatial-pipeline</h1><p class="meta">separate</p><p>Orchestrates the end-to-end spatial transcriptomics pipeline from Space Ranger / vendor output to spatial domains and statistics, branching FIRST on platform class (imaging in-situ Xenium/MERFISH/CosMx vs sequencing/capture Visium/Visium HD/Slide-seq). Use when deciding segmentation-vs-deconvolution and the QC floors from the platform class, committing the coordinate/image-registration frame and panel identity, deconvolving multi-cell spots against an annotated scRNA reference (never relabeling spot clusters as cell types), building the spatial neighbor graph on PHYSICAL not expression space, gating spatially-variable genes on FDR, or using a real domain method (BANKSY/BayesSpace/STAGATE) rather than clustering the spatial graph alone. Hands off deconvolution and cell-cell communication to the component skills; not a re-teach of any single step.</p><h2>When to use</h2><ul><li>deciding segmentation-vs-deconvolution</li><li>setting QC floors from platform class</li><li>committing coordinate/image-registration frame</li><li>deconvolving multi-cell spots against scRNA reference</li><li>building spatial neighbor graph on physical space</li><li>gating spatially-variable genes on FDR</li><li>using real domain methods like BANKSY or BayesSpace</li></ul><h2>When not to use</h2><ul><li>re-teaching any single step</li><li>inlining deconvolution</li><li>inlining cell-cell communication</li></ul><p><a href="../science/spatial-transcriptomics-analysis/spatial-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/spatial-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

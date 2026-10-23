@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>semgrep-rule-variant-creator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / semgrep-rule-variant-creator</p><h1>semgrep-rule-variant-creator</h1><p class="meta">combined</p><p>Creates language variants of existing Semgrep rules. Use when porting a Semgrep rule to specified target languages. Takes an existing rule and target languages as input, produces independent rule+test directories for each language.</p><h2>When to use</h2><ul><li>Porting an existing Semgrep rule to one or more target languages</li><li>Creating language-specific variants of a universal vulnerability pattern</li><li>Expanding rule coverage across a polyglot codebase</li><li>Translating rules between languages with equivalent constructs</li></ul><h2>When not to use</h2><ul><li>Creating a new Semgrep rule from scratch (use `semgrep-rule-creator` instead)</li><li>Running existing rules against code</li><li>Languages where the vulnerability pattern fundamentally doesn&#x27;t apply</li><li>Minor syntax variations within the same language</li><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../security/semgrep-rule-variant-creator/semgrep-rule-variant-creator.html">Skill page</a></p><h2>Conflict</h2><pre>The trailofbits copy is the operational source: it defines the shipped workflow, the required arguments, the referencesDir resolution procedure, and the resume semantics. The sickn33 copy is a broader procedural guide that adds material the trailofbits copy does not contain: explicit When/When NOT to Use boundaries, an output directory layout, a table of rationalizations to reject, a strictness level, and a detailed four-phase workflow with applicability verdicts and test-first requirements. Because each copy has steps and constraints the other lacks, crowning one would hide a real alternative.</pre>
+</body>
+</html>

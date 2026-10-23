@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nv-segment-ctmr</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / nv-segment-ctmr</p><h1>nv-segment-ctmr</h1><p class="meta">separate</p><p>Used for running NV-Segment-CTMR on CT or MRI NIfTI volumes and recording label-map evidence. Not for clinical interpretation.</p><h2>When to use</h2><ul><li>Used for running NV-Segment-CTMR on CT or MRI NIfTI volumes and recording label-map evidence. Not for clinical interpretation.</li><li>Use the wrapper exactly as documented; do not replace the upstream entrypoint with a handwritten implementation.</li><li>Manifest I/O: inputs are `ct_or_mr_volume`; outputs are `label_map` and `result_json`.</li></ul><h2>When not to use</h2><ul><li>This is a thin wrapper. Inference, preprocessing, and postprocessing are delegated entirely to the upstream MONAI bundle under $NV_SEGMENT_CTMR_ROOT or the repo-local fallback at .workbench_data/upstreams/NV-Segment-CTMR/NV-Segment-CTMR.</li><li>The default wrapper path runs automatic &quot;segment everything&quot; inference for CT_BODY, MRI_BODY, or MRI_BRAIN. MRI_BRAIN inputs must already follow the upstream brain preprocessing requirements.</li><li>Label names are loaded from upstream configs when available. If a label dictionary is absent, the wrapper still records label IDs and marks only negative IDs as invalid.</li><li>No clinical, diagnostic, regulatory, or treatment-planning claims.</li><li>Not for clinical deployment, clinical interpretation, autonomous diagnosis, regulatory submission.</li></ul><p><a href="../science/medical-imaging-segmentation/nv-segment-ctmr.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/nv-segment-ctmr/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cellxgene-census</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / cellxgene-census</p><h1>cellxgene-census</h1><p class="meta">combined</p><p>Query CZ CELLxGENE Census (61M+ cells). Filter by cell type/tissue/disease, retrieve expression data, integrate with scanpy/PyTorch, for population-scale single-cell analysis.
+
+Queries the CZ CELLxGENE Census programmatically for versioned public single-cell and spatial transcriptomics data. Use when you need population-scale cell metadata, gene expression slices, Census summary counts, source H5AD URIs/downloads, embeddings, spatial Census data, or reference atlas comparisons across organisms, tissues, diseases, assays, and cell types. For analyzing your own local single-cell data use scanpy, anndata, or scvi-tools.</p><h2>When to use</h2><ul><li>Querying single-cell expression data by cell type, tissue, or disease</li><li>Exploring available single-cell datasets and metadata</li><li>Training machine learning models on single-cell data</li><li>Performing large-scale cross-dataset analyses</li><li>Integrating Census data with scanpy or other analysis frameworks</li><li>Computing statistics across millions of cells</li><li>Accessing pre-calculated embeddings or model predictions</li><li>**Cross-tissue or cross-disease expression comparisons** (e.g., macrophages across lung/liver/brain; COVID-19 vs control).</li></ul><p><a href="../science/cellxgene-census-query/cellxgene-census.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies overlap heavily on the core Census workflow (open_soma, get_obs/get_anndata, axis_query, is_primary_data filtering, and scanpy integration), but they disagree on versioning, scale, and ML installation. K-Dense-AI pins cellxgene-census 1.18.0, uses the 2025-11-08 LTS build, and installs tiledbsoma-ml for PyTorch; aipoch and FreedomIntelligence use older/unpinned versions, the 2023-07-25 example build, and the [experimental] extra. K-Dense also adds spatial support, presence-matrix checks, and a reference to eight workflow patterns, while aipoch provides a complete runnable script and FreedomIntelligence provides more detailed inline patterns. Crowning one copy would hide the alternative versioning and ML setup choices.</pre>
+</body>
+</html>

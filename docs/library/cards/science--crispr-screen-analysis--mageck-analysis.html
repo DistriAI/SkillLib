@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>mageck-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / mageck-analysis</p><h1>mageck-analysis</h1><p class="meta">separate</p><p>Analyzes pooled CRISPR screens with MAGeCK (Li et al 2014), covering count generation (mageck count), the RRA two-condition workflow (mageck test using alpha-RRA over per-sgRNA negative-binomial p-values), the MLE multi-condition workflow (mageck mle with explicit design matrix and beta-score output), normalization choice (median vs total vs control-sgRNA vs spike-in), sgRNA efficiency injection, paired-sample testing, time-course design, drug-screen versus dropout-screen design matrices, MAGeCKFlute and MAGeCK-VISPR downstream visualization, and decision logic for when to use MAGeCK vs JACKS / BAGEL2 / drugZ / Chronos. Use when running a fresh CRISPR screen analysis, picking RRA vs MLE for the experimental design, choosing a normalization method from QC signatures, debugging MLE convergence failure or NaN beta scores, comparing MAGeCK output across tools, or building a batch-aware multi-cell-line / multi-condition MLE design matrix.</p><h2>When to use</h2><ul><li>running a fresh CRISPR screen analysis</li><li>picking RRA vs MLE for the experimental design</li><li>choosing a normalization method from QC signatures</li><li>debugging MLE convergence failure or NaN beta scores</li><li>comparing MAGeCK output across tools</li><li>building a batch-aware multi-cell-line / multi-condition MLE design matrix</li><li>counting sgRNAs from FASTQ</li><li>ranking genes by enrichment or depletion</li></ul><h2>When not to use</h2><ul><li>using RRA for time-series</li><li>using MLE without explicit design matrix in a screen with severe batch effects</li><li>using MAGeCK for drug screens without vehicle control</li></ul><p><a href="../science/crispr-screen-analysis/mageck-analysis.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>crispr-screens/mageck-analysis/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

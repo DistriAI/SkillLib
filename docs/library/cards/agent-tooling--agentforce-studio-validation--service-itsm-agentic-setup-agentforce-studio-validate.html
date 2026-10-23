@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-itsm-agentic-setup-agentforce-studio-validate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / service-itsm-agentic-setup-agentforce-studio-validate</p><h1>service-itsm-agentic-setup-agentforce-studio-validate</h1><p class="meta">separate</p><p>Validate the Agentforce for IT Service prerequisites for a Fulfiller or Employee agent, using the Salesforce CLI (sf). The READ-ONLY prerequisite check: it reads the Salesforce Go feature toggles behind the Agentforce for IT Service setup page (Agentforce Studio, the IT Service Fulfiller Template / IT Service Employee Template, Specialized Agent Templates for Employee) via one Connect API call, then a helper script classifies the chosen path into a READY / NOT-READY verdict. It never enables anything; when a toggle is off it hands off to agentforce-studio-configure to enable it. Use when asked to check Agentforce prerequisites, validate the org is ready for an ITSM agent, or verify Agentforce Studio is enabled. Triggers: check agentforce prerequisites, validate agentforce readiness, is my org ready for the fulfiller agent, verify agentforce studio enabled. DO NOT TRIGGER: enabling or turning on the toggles, creating the fulfiller agent (service-itsm-agentic-setup-fulfiller-agent-confi…</p><h2>When to use</h2><ul><li>**In scope**: Reading the Agentforce-for-IT-Service Go feature toggles via `connect/setup/discovery/features/status`; classifying the **fulfiller** or **employee** path into a per-feature + overall READY / NOT-READY verdict via a helper sc…</li><li>**Out of scope**: **Enabling / turning on any toggle** — that write is owned by `service-itsm-agentic-setup-agentforce-studio-configure` (this skill is read-only and never POSTs an enable); creating, committing, or activating an agent (han…</li></ul><p><a href="../agent-tooling/agentforce-studio-validation/service-itsm-agentic-setup-agentforce-studio-validate.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>skills/service-itsm-agentic-setup-agentforce-studio-validate/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

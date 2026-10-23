@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-sqli</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunt-sqli</p><h1>hunt-sqli</h1><p class="meta">combined</p><p>Hunting skill for sqli vulnerabilities.
+
+Hunting skill for sqli vulnerabilities. Built from 12 public bug bounty reports including modern NoSQL injection (Rocket.Chat CVE-2021-22911 MongoDB $regex, Mongoose ORM CVE-2024-53900 $where bypass), modern ORM raw-fragment SQLi (Django CVE-2024-42005, Sequelize GHSA-wrh9-cjv3-2hpw), second-order SOQL injection (HackerOne Salesforce), time-based blind SQLi in GraphQL resolvers, and SQLi on OIDC-proxy backends. Use when hunting SQLi / NoSQLi on any target.</p><h2>When to use</h2><ul><li>You have explicit, written authorization to assess the target in scope, and the task matches this skill&#x27;s vulnerability class or technique within a bug-bounty or penetration-test engagement.</li><li>You need the recon, exploitation, or validation workflow described below — executed strictly inside the approved scope.</li><li>Use when the target has any endpoint that interacts with a database — search, filter, sort, login, ID-based lookups, API parameters, or any user input that could be used in a query. SQL injection (including NoSQL injection) remains one of…</li></ul><h2>When not to use</h2><ul><li>Authorized scope only: the confirmation gate above is mandatory before any probing, exploitation, or credential-access command.</li><li>Docs-only import: upstream helper scripts, commands, engine, and research assets are not bundled; reinstall tooling from the source repo when needed.</li><li>Validate every finding (see `triage-validation`) before reporting; report via `report-writing`. Prefer a sandbox, disposable VM, or controlled lab.</li></ul><p><a href="../security/sqli-hunt/hunt-sqli.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies share the same crown-jewel targets, attack-surface signals, and general SQLi/NoSQLi context, but they disagree on the core hunting methodology. The uphiago copy prescribes a broad, step-by-step workflow (error-based, boolean blind, time-based, NoSQL object injection, sqlmap automation, UNION escalation) and includes a large payload library. The sickn33 copy prescribes a different, more opinionated workflow: distrust target hints, prefer UNION over blind, and establish column count exhaustively via ORDER BY/UNION NULL enumeration before dumping. Because the sickn33 copy explicitly rejects the blind-first approach that the uphiago copy treats as a standard step, crowning one would hide a real alternative procedure. The sickn33 copy also adds a mandatory authorization gate and a source attribution that the uphiago copy lacks.</pre>
+</body>
+</html>

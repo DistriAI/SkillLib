@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>migrate-mstest-v1v2-to-v3</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / migrate-mstest-v1v2-to-v3</p><h1>migrate-mstest-v1v2-to-v3</h1><p class="meta">separate</p><p>Use this skill before answering or editing whenever an MSTest v1/v2 project is being upgraded or repaired for v3. Triggers include QualityTools assembly references; MSTest.TestFramework/TestAdapter 1.x-2.x; &quot;upgrade to MSTest v3&quot;; comparing v1 and v2 migration paths; choosing MSTest or MSTest.Sdk; CS0411/CS1503 after a v3 package bump; DataRow type mismatch, MSTEST0014, or &quot;Test data doesn&#x27;t match method parameters&quot;; .testsettings/LegacySettings to .runsettings; timeout changes; and net5.0 or other dropped v3 TFMs. Still use it when packages say 3.x but migration source errors or legacy settings remain. Preserve VSTest/MTP. Do not use for a clean v3 project, v3-to-v4, framework conversion, or runner-only migration.</p><h2>When to use</h2><ul><li>Project references `Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll` (MSTest v1)</li><li>Project uses `MSTest.TestFramework` / `MSTest.TestAdapter` NuGet 1.x or 2.x</li><li>Resolving build errors after updating MSTest packages from v1/v2 to v3 -- including when the packages already read 3.x and only the source or settings still need fixing</li><li>Replacing `.testsettings` with `.runsettings`</li><li>Adopting MSTest.Sdk or in-assembly parallel execution</li></ul><h2>When not to use</h2><ul><li>Project already on MSTest v3 with no migration-related build errors and no leftover `.testsettings` / `&lt;LegacySettings&gt;` (fully migrated)</li><li>Upgrading v3 to v4 -- use `migrate-mstest-v3-to-v4`</li><li>Migrating between frameworks (MSTest to xUnit/NUnit)</li></ul><p><a href="../software-engineering/dotnet-migrate-mstest-v3/migrate-mstest-v1v2-to-v3.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-test-migration/skills/migrate-mstest-v1v2-to-v3/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

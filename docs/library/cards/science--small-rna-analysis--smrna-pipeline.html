@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>smrna-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / smrna-pipeline</p><h1>smrna-pipeline</h1><p class="meta">separate</p><p>Orchestrates the end-to-end small RNA-seq pipeline from FASTQ to differential miRNAs and expression-filtered targets, chaining kit-aware cutadapt trimming (adapter on every read, UMI/4N handling), miRge3 known+isomiR quantification or miRDeep2 novel discovery, compositionally-aware DESeq2, and miRanda target prediction. Use when committing the library-kit adapter/UMI handling once, choosing the NORMALIZER (which drives which miRNAs are called DE more than the DE model does), deciding known quantification vs novel discovery, handling biofluid/plasma libraries that lack a trustworthy endogenous normalizer, routing tRF/piRNA reads to their own profiling, or feeding RAW (not RPM) counts with size-factor inspection into DE. Hands mechanism to the small-rna-seq component skills; not a re-teach of any single step.</p><h2>When to use</h2><ul><li>small RNA-seq pipeline from FASTQ to differential miRNAs</li><li>kit-aware cutadapt trimming</li><li>UMI/4N handling</li><li>miRge3 known+isomiR quantification</li><li>miRDeep2 novel discovery</li><li>compositionally-aware DESeq2</li><li>miRanda target prediction</li><li>routing tRF/piRNA reads to profiling</li></ul><h2>When not to use</h2><ul><li>re-teach of any single step</li><li>position-dedup a non-UMI small-RNA library</li><li>using RPM counts for DE</li></ul><p><a href="../science/small-rna-analysis/smrna-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/smrna-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

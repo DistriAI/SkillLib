@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>image-processing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/design.html">design</a> / image-processing</p><h1>image-processing</h1><p class="meta">combined</p><p>Batch-convert and compress local images with Pillow; use when you need an offline, scriptable pipeline for directory-based processing.
+
+Process images for web development — resize, crop, trim whitespace, convert formats (PNG/WebP/JPG), optimise file size, generate thumbnails, create OG card images. Uses Pillow (Python) — no ImageMagick needed. Trigger with &#x27;resize image&#x27;, &#x27;convert to webp&#x27;, &#x27;trim logo&#x27;, &#x27;optimise images&#x27;, &#x27;make thumbnail&#x27;, &#x27;create OG image&#x27;, &#x27;crop whitespace&#x27;, &#x27;process image&#x27;, or &#x27;image too large&#x27;.</p><h2>When to use</h2><ul><li>You need to batch convert a folder of images into a single target format (e.g., WebP) for distribution.</li><li>You want to reduce file sizes via compression while keeping processing fully offline (no network calls).</li><li>You need a repeatable, scriptable pipeline for CI/local automation (e.g., preparing assets for a website/app).</li><li>You want to preserve the source directory structure in the output directory during conversion.</li><li>You need best-effort batch processing where individual file errors are reported but do not stop the entire run.</li></ul><h2>When not to use</h2><ul><li>Do not use this skill when the required source data, identifiers, files, or credentials are missing.</li><li>Do not use this skill when the user asks for fabricated results, unsupported claims, or out-of-scope conclusions.</li><li>Do not use this skill when a simpler direct answer is more appropriate than the documented workflow.</li></ul><p><a href="../design/batch-image-conversion/image-processing.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover overlapping ground (Pillow-based image processing) but serve different primary workflows. The first skill (jezweb) focuses on a CLI tool (`img-process`) for individual operations like resizing, trimming, and generating OG cards, providing specific Python patterns for these tasks. The second skill (aipoch) focuses on a batch directory conversion script (`convert_images.py`) with specific flags for recursion, overwriting, and error handling, emphasizing a CI/automation pipeline. Neither is a strict reproduction of the other; the first lacks the batch directory logic and error-handling contract of the second, while the second lacks the specific utility commands (trim, OG card) and code patterns of the first. Combining them provides a complete toolkit for both single-file manipulation and batch directory processing.</pre>
+</body>
+</html>

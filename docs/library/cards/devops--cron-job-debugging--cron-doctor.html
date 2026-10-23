@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cron-doctor</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / cron-doctor</p><h1>cron-doctor</h1><p class="meta">authentic</p><p>Diagnose and validate cron expressions before they ship. Catches the five silent death-traps: impossible dates that never fire, OR-semantics that fire too often, midnight spikes, uneven step drift, and leap-year February 29.</p><h2>When to use</h2><ul><li>Use when a user writes, edits, reviews, or deploys a cron expression — in a</li><li>Use when debugging a job that &quot;didn&#x27;t fire&quot; or &quot;fired at the wrong time.&quot;</li><li>Use when a user asks &quot;what does this cron expression mean?&quot; or &quot;when will this</li><li>Use when reviewing a CI/CD pipeline or infrastructure config that contains a</li><li>Use when a user pastes a 5-field cron expression and asks for a sanity check.</li></ul><h2>When not to use</h2><ul><li>This skill targets standard 5-field cron as implemented by Vixie cron, systemd</li><li>Estimated annual fire counts assume a non-leap reference year; February 29</li><li>This skill does not replace environment-specific validation, testing, or expert</li></ul><p><a href="../devops/cron-job-debugging/cron-doctor.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cron-doctor/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

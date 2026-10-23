@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>microbiome-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / microbiome-pipeline</p><h1>microbiome-pipeline</h1><p class="meta">separate</p><p>End-to-end 16S/ITS amplicon workflow from demultiplexed FASTQ to a consensus differential-abundance result, orchestrating cutadapt primer removal, per-run DADA2 ASV inference (learnErrors/mergeSequenceTables/removeBimeraDenovo), region-matched taxonomy assignment, a SEPP/Greengenes2 tree, alpha/beta diversity at a declared sampling depth (phyloseq/vegan, adonis2 paired with betadisper), compositional DA as a consensus of &gt;=2 tools (ALDEx2/ANCOM-BC2) on unrarefied counts, and optional PICRUSt2 functional prediction gated on NSTI. Covers the stage-ordering decisions (primers before truncation, per-run error model, rarefy for diversity not DA, predicted potential not activity) and defers each per-step choice to the six microbiome skills. Use when staging an amplicon study end to end or chaining ASV inference, taxonomy, diversity, and differential abundance. For shotgun reads see workflows/metagenomics-pipeline.</p><h2>When to use</h2><ul><li>staging an amplicon study end to end</li><li>chaining ASV inference, taxonomy, diversity, and differential abundance</li><li>16S/ITS amplicon workflow</li><li>consensus differential-abundance result</li><li>per-run DADA2 ASV inference</li><li>region-matched taxonomy assignment</li><li>alpha/beta diversity analysis</li><li>optional PICRUSt2 functional prediction</li></ul><h2>When not to use</h2><ul><li>shotgun reads</li><li>WGS reads</li><li>metagenomics pipeline</li><li>QIIME2 artifact/provenance route</li></ul><p><a href="../science/microbiome-analysis/microbiome-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/microbiome-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

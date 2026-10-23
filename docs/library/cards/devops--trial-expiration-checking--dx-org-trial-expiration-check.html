@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>dx-org-trial-expiration-check</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / dx-org-trial-expiration-check</p><h1>dx-org-trial-expiration-check</h1><p class="meta">authentic</p><p>Check when Salesforce orgs expire (or already expired) and what to do about it, for one org, the default org, or across all authenticated orgs, using the Salesforce CLI (sf). Use when the user asks about org or trial expiration, \&quot;when does my trial expire\&quot;, \&quot;is my trial org still active\&quot;, \&quot;how many days are left\&quot;, \&quot;which orgs are expiring soon\&quot;, wants to filter orgs expiring within N days, needs machine-readable (JSON/CSV) output for cron or alerting, wants to back up an at-risk org before it lapses, or asks how to extend or renew an expiring trial or Developer Edition org. Covers trial editions, Developer Edition orgs (anything with a TrialExpirationDate), and scratch orgs (via sf org list). DO NOT TRIGGER for sandbox refresh timing, for creating, deleting, or switching the active org, or for non-Salesforce trials such as AWS, Netflix, or other vendors — this skill reads expiration and prints guidance, it does not modify orgs.</p><h2>When to use</h2><ul><li>&quot;When does my trial org expire?&quot; / &quot;Is it still active or has it expired?&quot;</li><li>&quot;How many days are left on my trial?&quot;</li><li>&quot;Which of my orgs are expiring soon?&quot; / &quot;expiring within 30 days?&quot;</li><li>&quot;Alert me / set up a cron job for expiring orgs&quot; (use `--json` + `--fail-if-expiring`).</li><li>&quot;Back up my org before it expires&quot; (use `--preserve`).</li><li>&quot;How do I extend / renew my trial (or Developer Edition) org?&quot; (use `--renew`).</li></ul><h2>When not to use</h2><ul><li>**Sandbox refresh timing** — that is not an expiration date.</li><li>**Creating, deleting, or switching orgs** — this skill only *reads*</li><li>**Non-Salesforce trials** — e.g. AWS free tier, Netflix, or any other</li></ul><p><a href="../devops/trial-expiration-checking/dx-org-trial-expiration-check.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/dx-org-lifecycle/skills/dx-org-trial-expiration-check/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

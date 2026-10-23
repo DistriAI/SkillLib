@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>immunogenicity-scoring</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / immunogenicity-scoring</p><h1>immunogenicity-scoring</h1><p class="meta">separate</p><p>Rank and prioritize neoantigen/epitope candidates by likely T-cell response using NeoFox feature annotation, PRIME2.0, BigMHC-IM, the Łuksza/Balachandran fitness model (agretopicity + foreignness), and pVACtools tiering. Encodes the field&#x27;s hard truths that immunogenicity is the least-solved layer (dedicated scores ~AUROC 0.6-0.7, modest PPV), that scores are valid only for RANKING within one patient (never absolute go/no-go or cross-patient), that DAI has anchor-inflation and WT-denominator traps, and that stacking weak correlated scores into one number is a red flag. Use when ordering a candidate list for a vaccine. Binding lives in mhc-binding-prediction; calling in neoantigen-prediction.</p><h2>When to use</h2><ul><li>Ranking neoantigen candidates</li><li>Prioritizing epitope candidates</li><li>Ordering candidate lists for a vaccine</li><li>Annotating presentation and recognition features</li><li>Using NeoFox feature annotation</li><li>Applying pVACtools tiering</li><li>Calculating PRIME2.0 scores</li><li>Calculating BigMHC-IM scores</li></ul><h2>When not to use</h2><ul><li>Absolute go/no-go immunogenicity verdicts</li><li>Cross-patient comparison</li><li>Cross-allele comparison</li><li>MHC binding prediction</li><li>Neoantigen calling</li><li>Class II immunogenicity prediction</li><li>Using ImmunoBERT as an immunogenicity predictor</li></ul><p><a href="../science/immunoinformatics-immunogenicity-scoring/immunogenicity-scoring.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>immunoinformatics/immunogenicity-scoring/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sdk-container-publishing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / sdk-container-publishing</p><h1>sdk-container-publishing</h1><p class="meta">separate</p><p>Publish .NET services as container images with the built-in SDK tooling (dotnet publish /t:PublishContainer, Microsoft.NET.Build.Containers) - no Dockerfile required. Covers the MSBuild property surface, base-image inference, self-contained and AOT implications, and CI/CD publishing.</p><h2>When to use</h2><ul><li>You want a container image for a .NET service and do not want to hand-write a Dockerfile</li><li>You want to know how to tag, name, or expose ports on an SDK-built image without a Dockerfile</li><li>You are wiring container publishing into CI / CD or a release pipeline</li><li>An SDK-built image pushes to the wrong registry, gets the wrong tag, or picks the wrong base image</li><li>You need a tarball of an image for scanning or air-gapped loading</li><li>You need a `RUN` step or arbitrary layer customization in the image. The SDK tooling cannot emulate `RUN`; write a Dockerfile instead.</li></ul><h2>When not to use</h2><ul><li>Images requiring RUN steps or arbitrary layer customization</li></ul><p><a href="../devops/containerization/sdk-container-publishing.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Aaronontheweb/dotnet-skills">Aaronontheweb/dotnet-skills</a></td><td><code>skills/sdk-container-publishing/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

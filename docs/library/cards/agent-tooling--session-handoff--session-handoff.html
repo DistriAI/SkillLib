@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>session-handoff</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / session-handoff</p><h1>session-handoff</h1><p class="meta">combined</p><p>Write a handoff summary so another agent or person (or a fresh session) can pick up the work with full context. Use when ending a work session, hitting a context limit, switching agents, or pausing a task mid-flight. Produces a structured handoff: what the goal is, what&#x27;s done, the current state, what&#x27;s next, and the gotchas — so no context is lost across the boundary.
+
+Use when context approaches capacity, before /clear or /compact, when switching tasks, or when ending a coding session: produces a structured handoff artifact for the next session.</p><h2>When to use</h2><ul><li>Large context windows degrade in instruction adherence, reasoning precision, and tool accuracy as token counts accumulate. Long sessions fill with superseded plans, aborted scratchpads, and repetitive error traces. Resetting to a fresh ses…</li><li>Context usage approaches capacity (roughly &gt;60%) and a reset is coming.</li><li>Before running `/clear` or `/compact` in Claude Code, Cursor, or Codex.</li><li>When switching tasks mid-session, or ending a coding session that another session (or agent) will continue.</li></ul><h2>When not to use</h2><ul><li>This skill produces a written handoff only; it cannot preserve live state such as running processes, uncommitted terminal output, or in-memory debugging context — record anything that matters explicitly in the note.</li><li>Handoff quality is bounded by what the outgoing session records: decisions, dead-ends, or file changes that are not written down cannot be recovered by the next session.</li><li>It does not replace version control or issue tracking; commit work first and reference commits or tickets in the note instead of duplicating them.</li></ul><p><a href="../agent-tooling/session-handoff/session-handoff.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies overlap in the core goal (creating a structured handoff to preserve context across agent sessions) but each contains material steps and constraints the others lack. The softaworks copy is a tool-driven workflow with specific Python scripts for scaffolding, validation, staleness checking, and handoff chaining. The mohitagw15856 copy is a lightweight, prompt-based template focused on a specific output format (Objective, Done, State, Next, Gotchas, Pointers) and anti-patterns. The sickn33 copy is a rigorous, code-centric workflow that mandates git auditing, separating facts from speculation, assigning owners to open loops, and providing a detailed worked example. Crowning one would hide the specific tooling of the first, the specific format of the second, and the rigorous verification rules of the third.</pre>
+</body>
+</html>

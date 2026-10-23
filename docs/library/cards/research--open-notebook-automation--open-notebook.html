@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>open-notebook</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / open-notebook</p><h1>open-notebook</h1><p class="meta">combined</p><p>Self-hosted, open-source alternative to Google NotebookLM for AI-powered research and document analysis. Use when organizing research materials into notebooks, ingesting diverse content sources (PDFs, videos, audio, web pages, Office documents), generating AI-powered notes and summaries, creating multi-speaker podcasts from research, chatting with documents using context-aware AI, searching across materials with full-text and vector search, or running custom content transformations. Supports 16+ AI providers including OpenAI, Anthropic, Google, Ollama, Groq, and Mistral with complete data privacy through self-hosting.
+
+Organizes research with the self-hosted Open Notebook alternative to NotebookLM. Supports source ingestion (PDFs, web pages, audio, video, and Office documents), cited document chat, text and vector search, notes, custom transformations, and multi-speaker podcasts. Use when automating Open Notebook through its REST API or configuring its local or cloud AI providers, including OpenAI, Anthropic, Google, Ollama, Groq, and Mistral.</p><h2>When to use</h2><ul><li>organizing research materials into notebooks</li><li>ingesting diverse content sources</li><li>generating AI-powered notes and summaries</li><li>creating multi-speaker podcasts from research</li><li>chatting with documents using context-aware AI</li><li>searching across materials with full-text and vector search</li><li>running custom content transformations</li></ul><p><a href="../research/open-notebook-automation/open-notebook.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same tool (Open Notebook) but diverge significantly in implementation details and API contracts. The K-Dense skill is more rigorous, pinning a specific version (v1.14.0), providing bundled Python helpers, and explicitly correcting common API misconceptions (e.g., model types are &#x27;language&#x27; not &#x27;llm&#x27;). The FreedomIntelligence skill is a broader overview that includes raw REST API examples for features like podcast generation and search, but it uses a potentially unstable &#x27;main&#x27; branch reference and contains API calls that appear inconsistent with the more detailed K-Dense documentation (e.g., using &#x27;model_ids&#x27; for registration vs &#x27;models[]&#x27; with explicit types). Because the K-Dense skill contains critical safety/versioning constraints and helper usage that the other lacks, while the FreedomIntelligence skill provides raw endpoint examples for features (podcasts, search) that are truncated or less detailed in the K-Dense copy, neither is a complete superset. Combining them allows an agent to use the safe, versioned deployment and helper approach from K-Dense while referencing the raw API patterns from FreedomIntelligence for features not fully detailed in the K-Dense snippet.</pre>
+</body>
+</html>

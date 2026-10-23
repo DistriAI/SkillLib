@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunting-bootkits-in-efi-system-partition</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunting-bootkits-in-efi-system-partition</p><h1>hunting-bootkits-in-efi-system-partition</h1><p class="meta">separate</p><p>Baseline the EFI System Partition and hunt malicious EFI binaries such as ESPecter, BlackLotus, Bootkitty, and Glupteba by mounting the ESP, hashing and verifying boot loaders, scanning with YARA, and flagging anomalous non-EFI files or out-of-band bootloader changes. Use during proactive threat hunts for firmware/bootkit persistence (MITRE ATT&amp;CK T1542.003) or when investigating suspected UEFI-level compromise that survives OS reinstall.</p><h2>When to use</h2><ul><li>During proactive threat hunts for firmware/bootkit persistence (MITRE ATT&amp;CK T1542.003 — Pre-OS Boot: Bootkit)</li><li>After an incident where an adversary achieved SYSTEM/root and may have established below-OS persistence</li><li>When validating Secure Boot posture across a fleet and confirming boot-chain integrity</li><li>As a periodic integrity check, comparing the current ESP contents against a trusted golden baseline</li><li>When triaging hosts that show measured-boot (TPM PCR) mismatches</li></ul><p><a href="../security/hunt-bootkits/hunting-bootkits-in-efi-system-partition.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills">mukul975/Anthropic-Cybersecurity-Skills</a></td><td><code>skills/hunting-bootkits-in-efi-system-partition/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

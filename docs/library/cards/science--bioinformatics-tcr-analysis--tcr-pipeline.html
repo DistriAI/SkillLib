@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>tcr-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / tcr-pipeline</p><h1>tcr-pipeline</h1><p class="meta">separate</p><p>Orchestrates an end-to-end immune-repertoire pipeline from FASTQ to clonotypes, diversity, overlap, somatic hypermutation and lineages, routing on two forks. Use when deciding bulk vs single-cell (bulk amplicon/RNA-seq -&gt; MiXCR analyze preset -&gt; VDJtools/immunarch depth-normalized diversity and overlap -&gt; figures; 10x paired VDJ -&gt; MiXCR 10x preset or Cell Ranger -&gt; scirpy gene-expression integration, chain QC, clonotype clusters); and TCR vs BCR (TCR -&gt; exact CDR3-nt+V/J clonotypes, VDJtools diversity is fine; BCR -&gt; somatic hypermutation makes exact clonotypes wrong -&gt; Immcantation distToNearest/findThreshold clonal clustering, germline reconstruction, SHM, Dowser lineages); selecting the MiXCR 4.x preset by chemistry and activating its license; downsampling to equal depth before comparing diversity or overlap; and optionally annotating antigen specificity.</p><h2>When to use</h2><ul><li>bulk amplicon/RNA-seq analysis</li><li>10x paired VDJ analysis</li><li>TCR exact CDR3-nt+V/J clonotypes</li><li>BCR somatic hypermutation and clonal clustering</li><li>depth-normalized diversity and overlap</li><li>single-cell gene-expression integration</li><li>MiXCR 4.x preset selection</li><li>antigen specificity annotation</li></ul><h2>When not to use</h2><ul><li>running BCR through exact-CDR3 VDJtools diversity</li></ul><p><a href="../science/bioinformatics-tcr-analysis/tcr-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/tcr-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

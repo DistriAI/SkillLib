@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>earth2studio-data-fetch</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / earth2studio-data-fetch</p><h1>earth2studio-data-fetch</h1><p class="meta">separate</p><p>Fetch weather/climate data via Earth2Studio data sources for specific variables and times. Do NOT use for inference pipelines, model discovery, or installation.</p><h2>When to use</h2><ul><li>Guide a user through downloading weather/climate data via Earth2Studio data source APIs. Identifies compatible sources by checking the lexicon, verifies variable support, and produces a working fetch script outputting an xarray DataArray.</li></ul><h2>When not to use</h2><ul><li>**Network required** — all data sources fetch from remote stores</li><li>**No local file loading** — for local NetCDF/Zarr, use</li><li>**One source type per script** — cannot mix analysis and forecast</li><li>**Variable availability varies** — not all sources provide all</li><li>**Rate limits** — CDS API has queue-based throttling; GCS/S3 sources</li></ul><p><a href="../science/earth-science-data-fetch/earth2studio-data-fetch.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/earth2studio-data-fetch/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

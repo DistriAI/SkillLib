@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>security-reviewer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / security-reviewer</p><h1>security-reviewer</h1><p class="meta">combined</p><p>Identifies security vulnerabilities, generates structured audit reports with severity ratings, and provides actionable remediation guidance. Use when conducting security audits, reviewing code for vulnerabilities, or analyzing infrastructure security. Invoke for SAST scans, penetration testing, DevSecOps practices, cloud security reviews, dependency audits, secrets scanning, or compliance checks. Produces vulnerability reports, prioritized recommendations, and compliance checklists.
+
+Dedicated security-audit route for OWASP-style risks, secret leaks, auth flaws, injection, unsafe input handling, SSRF/XSS, and sensitive-data exposure. Use instead of code-reviewer when the prompt explicitly asks for security, vulnerability, threat, auth, or OWASP review.</p><h2>When to use</h2><ul><li>Code review and SAST scanning</li><li>Vulnerability scanning and dependency audits</li><li>Secrets scanning and credential detection</li><li>Penetration testing and reconnaissance</li><li>Infrastructure and cloud security audits</li><li>DevSecOps pipelines and compliance automation</li></ul><h2>When not to use</h2><ul><li>ordinary maintainability review</li><li>general PR review where security is not the main question</li></ul><p><a href="../security/code-security-audit/security-reviewer.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies define a security-reviewer skill, but they are not the same procedure. The Jeffallan copy is a full audit workflow with explicit tool commands (semgrep, bandit, gitleaks, npm audit, trivy), CVSS severity, written authorization and rules of engagement, a reference-guide table, and a report template. The Vibe-Skills copy is a routing-focused, OWASP-oriented checklist with a different severity scale (CRITICAL/HIGH/MEDIUM/LOW), a high-risk pattern audit, and pairing guidance with other skills. Each has material steps the other lacks, and they disagree on severity taxonomy and on whether active testing/authorization is in scope, so crowning one would hide a real alternative.</pre>
+</body>
+</html>

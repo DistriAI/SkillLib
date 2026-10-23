@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>implement-spec</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / implement-spec</p><h1>implement-spec</h1><p class="meta">combined</p><p>Implement an existing spec through committed passes. Use for long or multi-pass specs that need maintenance checkpoints to periodically clean code, handoffs, priorities, and plan bloat before drift accumulates.
+
+Implement the result of /to-spec and /to-tickets in code.</p><h2>When to use</h2><ul><li>Implementing existing specs</li><li>Long or multi-pass specs</li><li>Maintenance checkpoints</li><li>Cleaning code and handoffs</li><li>Managing plan bloat</li><li>Delegating independent passes to subagents</li><li>Reviewing and committing passes</li><li>Updating spec READMEs</li></ul><h2>When not to use</h2><ul><li>Stopping after the first green commit</li><li>Weakening existing default gates</li><li>Repinning failing contracts without proof</li><li>Committing scratch files or one-off probes</li><li>Walking the ladder one slice at a time when independent</li></ul><p><a href="../software-engineering/implement-spec/implement-spec.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe different procedures for the same skill name. mattpocock/skills treats the spec as a ticket graph and orchestrates parallel implementer subagents in worktrees, merging to an integration branch and using a merger subagent. dzhng/skills treats the spec as a sequence of reviewable passes with maintenance checkpoints, visual verification, and a choices ledger, and does not use the ticket/worktree/merger model. Neither is a shortening or wrapper of the other; crowning one would hide a real alternative workflow.</pre>
+</body>
+</html>

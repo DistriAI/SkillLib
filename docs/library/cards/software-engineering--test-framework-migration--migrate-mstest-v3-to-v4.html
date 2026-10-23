@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>migrate-mstest-v3-to-v4</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / migrate-mstest-v3-to-v4</p><h1>migrate-mstest-v3-to-v4</h1><p class="meta">separate</p><p>Use this skill before answering, planning, or editing any MSTest 3.x-to-4.x upgrade or post-upgrade failure. Triggers include &quot;MSTest v4 breaking changes&quot;; CS0507/CS0103/CS1061/CS1615; ExecuteAsync, CallerInfo, DisplayName, or custom TestMethodAttribute; ClassCleanupBehavior; ContainsKey; ThrowsExactly or ExpectedException; IsInstanceOfType out parameters; TestTimeout.Infinite; ManagedType; net6/net7 compatibility; TestCase.Id history; TestName in ClassInitialize; TreatDiscoveryWarningsAsErrors; discovery errors after a clean build; and MSTest.Sdk/MTP or vstest.console discovery changes. Do not use for v1/v2-to-v3 leftovers, framework conversion, runner-only migration, or a general .NET upgrade.</p><h2>When to use</h2><ul><li>Upgrading `MSTest.TestFramework`, `MSTest.TestAdapter`, or `MSTest` metapackage from 3.x to 4.x</li><li>Upgrading `MSTest.Sdk` from 3.x to 4.x</li><li>Fixing build errors after updating to MSTest v4 packages</li><li>Resolving behavioral changes in test execution after upgrading to MSTest v4</li><li>Updating custom `TestMethodAttribute` or `ConditionBaseAttribute` implementations for v4</li></ul><h2>When not to use</h2><ul><li>The project already uses MSTest v4 and builds cleanly -- migration is done</li><li>Upgrading from MSTest v1 or v2 -- use `migrate-mstest-v1v2-to-v3` first, then return here</li><li>The project does not use MSTest</li><li>Migrating between test frameworks (e.g., MSTest to xUnit or NUnit)</li></ul><p><a href="../software-engineering/test-framework-migration/migrate-mstest-v3-to-v4.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-test-migration/skills/migrate-mstest-v3-to-v4/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>esm</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / esm</p><h1>esm</h1><p class="meta">combined</p><p>Comprehensive toolkit for protein language models including ESM3 (generative multimodal protein design across sequence, structure, and function) and ESM C (efficient protein embeddings and representations). Use this skill when working with protein sequences, structures, or function prediction; designing novel proteins; generating protein embeddings; performing inverse folding; or conducting protein engineering tasks. Supports both local model usage and cloud-based Forge API for scalable inference.
+
+Uses the Biohub esm Python SDK for ESM3 protein generation, ESMC embeddings, and ESMFold2 all-atom folding. Applies to local model inference and Biohub hosted clients, including former Forge workflows; distinguishes the separate legacy fair-esm distribution.</p><h2>When to use</h2><ul><li>Use for Biohub&#x27;s `esm` SDK: ESM3 masked multimodal generation, ESMC sequence representations, and ESMFold2 all-atom prediction. The former Forge platform migrated to `https://biohub.ai`, including ESM3; SDK class names still contain `Forge…</li><li>**Designing novel proteins** with desired properties by generating sequences (optionally conditioned on structure/function) using **ESM3**.</li><li>**Completing or editing sequences** (e.g., filling masked residues, generating variants) for protein engineering workflows.</li><li>**Predicting 3D structure from sequence** or performing **inverse folding** (designing sequences for a target structure) with ESM3’s structure/sequence tracks.</li><li>**Generating protein embeddings** for downstream ML tasks (classification, clustering, similarity search, function prediction) using **ESM C**.</li><li>**Scaling inference** to many sequences using the **Forge API** (async/batch execution, hosted large models).</li></ul><p><a href="../science/protein-language-modeling/esm.html">Skill page</a></p><h2>Conflict</h2><pre>The three skills cover the same domain (ESM protein models) but diverge significantly on the current state of the SDK and API. The K-Dense-AI skill is the most up-to-date, explicitly targeting `esm 3.4.1.post1` and the migration from &#x27;Forge&#x27; to &#x27;Biohub&#x27;, while the other two rely on the older &#x27;Forge&#x27; API and deprecated class names (e.g., `ESMC` vs `EsmcForMaskedLM`). The K-Dense skill also provides critical safety constraints (isolated environments, error handling for `ESMProteinError`) that the others lack. Conversely, the other skills provide specific implementation patterns for &#x27;Chain-of-Thought&#x27; generation and inverse folding that are not detailed in the K-Dense skill. Because the K-Dense skill is the &#x27;authentic&#x27; current procedure but the others contain unique workflow steps (CoT, specific inverse folding examples) that are not contradictory but additive, and because the K-Dense skill&#x27;s strict version pinning conflicts with the others&#x27; generic installation advice, a combined instruction is necessary to provide a complete, safe, and up-to-date guide.</pre>
+</body>
+</html>

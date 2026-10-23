@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>context-optimization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / context-optimization</p><h1>context-optimization</h1><p class="meta">combined</p><p>This skill should be used for improving context efficiency: context budgeting, observation masking, prefix or KV-cache strategy, partitioning, token-cost reduction, retrieval scoping, and extending effective context capacity without lowering answer quality.
+
+Context optimization extends the effective capacity of limited context windows through strategic compression, masking, caching, and partitioning. The goal is not to magically increase context windows but to make better use of available capacity.</p><h2>When to use</h2><ul><li>Context limits constrain task complexity</li><li>Optimizing for cost reduction (fewer tokens = lower costs)</li><li>Reducing latency for long conversations</li><li>Implementing long-running agent systems</li><li>Needing to handle larger documents or conversations</li><li>Building production systems at scale</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../agent-tooling/context-window-optimization/context-optimization.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies cover the same four strategies (compaction, observation masking, KV-cache, partitioning) but disagree on priority and thresholds. The muratcankoylan copy orders KV-cache first and compaction third, uses a 70% compaction trigger, and includes a 50-70% reduction target with a 5% quality degradation limit. The sickn33 copy calls compaction the &#x27;first lever,&#x27; uses an 80% trigger threshold, and includes a distinct Budget Management section with explicit allocation categories. Because crowning one would hide the other&#x27;s specific thresholds and the budgeting procedure, the copies should be combined.</pre>
+</body>
+</html>

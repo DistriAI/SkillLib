@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>api-security-best-practices</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / api-security-best-practices</p><h1>api-security-best-practices</h1><p class="meta">combined</p><p>Implement secure API design patterns including authentication, authorization, input validation, rate limiting, and protection against common API vulnerabilities</p><h2>When to use</h2><ul><li>Use when designing new API endpoints</li><li>Use when securing existing APIs</li><li>Use when implementing authentication and authorization</li><li>Use when protecting against API attacks (injection, DDoS, etc.)</li><li>Use when conducting API security reviews</li><li>Use when preparing for security audits</li><li>Use when implementing rate limiting and throttling</li><li>Use when handling sensitive data in APIs</li></ul><h2>When not to use</h2><ul><li>This guide is not a full identity service, certified security audit or penetration test. Snippets omit application adapters and integration error middleware. Unit tests of a parser do not verify database transactions, proxy behavior or pro…</li></ul><p><a href="../security/api-security-review/api-security-best-practices.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies cover the same topic but with materially different depth and scope. The sickn33 copy is a rigorous, defensive procedure focused on exact token contracts, tenant-scoped authorization predicates, strict input parsing, and refresh-token atomicity, with explicit constraints against inferring permissions before verification and against implicit admin bypasses. The LeoYeAI copy is a broader, more prescriptive checklist that includes rate limiting, data protection, security testing, and a full JWT login/refresh implementation example that the first copy deliberately avoids (it treats refresh as a server-side opaque design and warns against storing tokens in a database). Because the LeoYeAI copy contains steps (rate limiting, data protection, testing) and a concrete implementation pattern (storing refresh tokens in a database) that the sickn33 copy lacks or explicitly contradicts, crowning one would hide a real alternative approach.</pre>
+</body>
+</html>

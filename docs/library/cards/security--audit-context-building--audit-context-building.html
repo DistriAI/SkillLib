@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>audit-context-building</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / audit-context-building</p><h1>audit-context-building</h1><p class="meta">combined</p><p>Enables ultra-granular, line-by-line code analysis to build deep architectural context before vulnerability or bug finding.
+
+Understand a codebase before looking for bugs in it - what each function assumes, what it guarantees, and what it depends on elsewhere. Use when starting an audit, threat model, or architecture review on unfamiliar code, and before any vulnerability-hunting pass.</p><h2>When to use</h2><ul><li>Deep comprehension is needed before bug or vulnerability discovery.</li><li>You want bottom-up understanding instead of high-level guessing.</li><li>Reducing hallucinations, contradictions, and context loss is critical.</li><li>Preparing for security auditing, architecture review, or threat modeling.</li><li>Vulnerability findings</li><li>Fix recommendations</li><li>Exploit reasoning</li><li>Severity/impact rating</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li><li>Do not name vulnerabilities, suggest fixes, write proofs-of-concept, or rate severity. Those belong to the hunting phase, which runs next and with the whole picture in hand. When the code counts on something and nothing checks it, record t…</li></ul><p><a href="../security/audit-context-building/audit-context-building.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe the same pre-audit phase but enforce it in incompatible ways. The trailofbits copy is a routing skill: it explicitly forbids doing the analysis in the current context and requires dispatching subagents to write files, returning only compact records. The sickn33 copy is a behavioral skill: it instructs the agent to perform ultra-granular, line-by-line analysis in the current context using specific heuristics (5 Whys, 5 Hows) and a detailed checklist. Because one copy mandates delegation to avoid context bloat while the other mandates direct, deep analysis, crowning one would hide a real alternative approach to the same task.</pre>
+</body>
+</html>

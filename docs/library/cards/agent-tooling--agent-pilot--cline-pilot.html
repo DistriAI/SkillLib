@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cline-pilot</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / cline-pilot</p><h1>cline-pilot</h1><p class="meta">authentic</p><p>Proxy Cline CLI coding tasks: dispatch, monitor background runs via hard evidence, relay decision points in a fixed format, verify against a checklist, and learn per-tag preferences over time.</p><h2>When to use</h2><ul><li>用户下达任何需要在 Cline CLI 里执行的编码任务（写测试/重构/修 bug/出报告）</li><li>新项目冷启动：工程还没有 clinerules/memory-bank，需按 Cline 最佳实践初始化（见“冷启动流程”）</li><li>需要在后台驱动 Cline 长任务并汇报进度</li><li>**不适用**：用户自己在 Cline TUI 里手工操作；非 Cline 的 agent（用 claude-code/codex/opencode 技能）</li></ul><h2>When not to use</h2><ul><li>Requires the `cline` CLI (v3.x) with a working LLM endpoint (or local model) — if absent,</li><li>Designed for **serial, single-encoding-process** workflows; it explicitly forbids running</li><li>Assumes a git repository with a task branch; not designed for non-git projects.</li><li>Does not hold project architecture — that belongs in the project&#x27;s own `memory-bank/`</li><li>Learning-loop state (decision log, per-tag preferences, scratch task files, process</li><li>Windows support is unverified for the `cline -i` TUI mode (mode 2); non-interactive mode 1</li></ul><p><a href="../agent-tooling/agent-pilot/cline-pilot.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cline-pilot/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

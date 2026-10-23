@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>expression-to-pathways</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / expression-to-pathways</p><h1>expression-to-pathways</h1><p class="meta">separate</p><p>Orchestrates the full path from differential expression results to redundancy-collapsed functional enrichment: choose ORA vs GSEA, convert gene IDs per method, run enrichGO/enrichKEGG/enrichPathway/enrichWP or gseGO/gseKEGG (clusterProfiler, ReactomePA, rWikiPathways), and visualize. Use when a DESeq2/edgeR/limma result must become enriched GO terms, KEGG/Reactome/WikiPathways pathways, or a GSEA leading edge; when the input is a full ranking for all genes (GSEA, named decreasing vector) or only a pre-selected list (ORA plus a defensible background universe); or when assembling DE-to-pathway end to end. The DE list and ranking statistic come from differential-expression/de-results; per-method nuance lives in the pathway-analysis skills.</p><h2>When to use</h2><ul><li>differential expression to functional enrichment</li><li>ORA vs GSEA decision</li><li>gene ID conversion per method</li><li>enrichGO/enrichKEGG/enrichPathway/enrichWP execution</li><li>gseGO/gseKEGG execution</li><li>redundancy-collapsed visualization</li><li>DE-to-pathway end-to-end assembly</li></ul><h2>When not to use</h2><ul><li>re-teaching individual pathway analysis methods</li><li>deriving null/universe/reproducibility theory</li><li>master method-selection tree derivation</li><li>ORA mechanics</li><li>GSEA mechanics</li><li>per-database IDs and live-DB behavior</li><li>generating DE list and ranking statistic</li><li>plotting details</li></ul><p><a href="../science/pathway-analysis/expression-to-pathways.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/expression-to-pathways/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

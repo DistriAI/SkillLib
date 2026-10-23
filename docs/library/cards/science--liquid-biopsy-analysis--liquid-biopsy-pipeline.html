@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>liquid-biopsy-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / liquid-biopsy-pipeline</p><h1>liquid-biopsy-pipeline</h1><p class="meta">separate</p><p>Orchestrates the cell-free DNA / liquid-biopsy pipeline from plasma sequencing to tumor monitoring, forking tumor-naive (screening) vs tumor-informed (MRD), and chaining pre-analytic QC, UMI/duplex error-suppression (fgbio), fragment QC, ichorCNA tumor fraction (sWGS) or VarDict low-VAF calling (panel), CHIP subtraction against matched WBC, optional fragmentomics/methylation, and longitudinal tracking. Use when treating pre-analytics as the irreversible sensitivity ceiling (tube/time-to-plasma/hemolysis), running error-suppression BEFORE calling (single-strand consensus does not remove deamination; only duplex does), reporting a VAF only with input genome-equivalents (TF ~ 2x VAF only for clonal-het-diploid), subtracting CHIP before reporting somatic, or keeping tube/panel/pipeline identical across a longitudinal MRD series. Hands mechanism to the liquid-biopsy component skills; not a re-teach of any single step.</p><h2>When to use</h2><ul><li>cell-free DNA / liquid-biopsy pipeline</li><li>plasma sequencing to tumor monitoring</li><li>tumor-naive (screening) vs tumor-informed (MRD)</li><li>pre-analytic QC</li><li>UMI/duplex error-suppression</li><li>fragment QC</li><li>ichorCNA tumor fraction</li><li>VarDict low-VAF calling</li></ul><h2>When not to use</h2><ul><li>re-teach of any single step</li></ul><p><a href="../science/liquid-biopsy-analysis/liquid-biopsy-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/liquid-biopsy-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

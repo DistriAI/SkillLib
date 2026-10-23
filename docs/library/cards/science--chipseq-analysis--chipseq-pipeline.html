@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>chipseq-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / chipseq-pipeline</p><h1>chipseq-pipeline</h1><p class="meta">separate</p><p>Orchestrates the end-to-end ChIP-seq pipeline from FASTQ to blacklist-filtered, annotated peaks, chaining fastp QC, Bowtie2 alignment, pre-dedup library-complexity QC (NRF/PBC), duplicate removal, chrM + ENCODE-blacklist filtering, MACS3 peak calling against a matched input, IDR/consensus reproducibility, deepTools signal tracks, and ChIPseeker annotation. Use when committing the reference build + blacklist version + effective genome size once, pairing each IP with its matched control, computing complexity metrics BEFORE dedup, choosing narrow vs broad and MACS3 vs SEACR/Genrich, keeping per-replicate peaks for IDR, or avoiding depth-normalization that erases a spike-in global shift. Hands mechanism to the chip-seq component skills; not a re-teach of any single step.</p><h2>When to use</h2><ul><li>ChIP-seq pipeline from FASTQ to annotated peaks</li><li>fastp QC and Bowtie2 alignment</li><li>pre-dedup library-complexity QC (NRF/PBC)</li><li>duplicate removal and chrM + ENCODE-blacklist filtering</li><li>MACS3 peak calling against a matched input</li><li>IDR/consensus reproducibility</li><li>deepTools signal tracks</li><li>ChIPseeker annotation</li></ul><h2>When not to use</h2><ul><li>re-teach of any single step</li><li>mechanism of individual component skills</li></ul><p><a href="../science/chipseq-analysis/chipseq-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/chipseq-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

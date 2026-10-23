@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-de-waba-integrate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / service-de-waba-integrate</p><h1>service-de-waba-integrate</h1><p class="meta">authentic</p><p>Confirm the customer&#x27;s WhatsApp Business Account is shared with Salesforce on Meta&#x27;s side. TRIGGER when the user asks to link, share, or confirm sharing of a WhatsApp Business Account with Salesforce, or to verify Salesforce appears in the WABA&#x27;s Partners list. Pure instruction + one user-confirmation prompt — no API calls, no token handling. Sharing happens in Meta Business Suite (UI-only; Meta has no Graph endpoint for this). Renders step-by-step instructions with Salesforce&#x27;s Business Manager ID substituted in, then asks the user to confirm whether \&quot;Salesforce\&quot; appears in the WABA&#x27;s Partners list. DO NOT TRIGGER when the user needs full end-to-end WhatsApp setup (use `service-de-headless-channel-configure`) or to insert the channel record itself (use `service-de-channel-create`).</p><h2>When not to use</h2><ul><li>**You&#x27;ve already confirmed the partnership on a previous run.** The orchestrator&#x27;s resume logic doesn&#x27;t short-circuit Stage 1 (no cheap SF-side probe exists), so this skill always runs — but it&#x27;s just text + a prompt, no round trip.</li><li>**You&#x27;re inserting a non-WhatsApp channel.** Line / Apple / Facebook don&#x27;t use Meta Business Manager partnerships. Skip this skill entirely for those paths.</li><li>**The customer is using the Embedded Signup popup instead.** That&#x27;s a different flow (popup-driven, SF-UI-side OAuth); this skill is specifically the headless alternative.</li></ul><p><a href="../software-engineering/waba-integration/service-de-waba-integrate.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/service-engagement/skills/service-de-waba-integrate/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

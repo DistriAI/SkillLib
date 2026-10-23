@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>citedy-content-ingestion</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / citedy-content-ingestion</p><h1>citedy-content-ingestion</h1><p class="meta">separate</p><p>Turn any URL into structured content — YouTube videos (via Gemini Video API), web articles, PDFs, and audio files. Extract transcripts, summaries, and metadata for use in any LLM pipeline. Powered by Citedy.</p><h2>When to use</h2><ul><li>Asks to extract, transcribe, or summarize a URL</li><li>Shares a YouTube video and wants the content analyzed or repurposed</li><li>Shares a PDF link and wants the text extracted</li><li>Wants to ingest audio content for transcription</li><li>Is building a pipeline that needs to pull content from the web</li></ul><h2>When not to use</h2><ul><li>**YouTube:** maximum video duration 120 minutes. Videos longer than 120 min are rejected with `DURATION_EXCEEDED`.</li><li>**Audio files:** maximum file size 50 MB. Files larger than 50 MB are rejected with `SIZE_EXCEEDED`.</li><li>**Supported content types:** `youtube_video`, `web_article`, `pdf_document`, `audio_file`</li><li>**Batch size:** maximum 20 URLs per batch request</li><li>**Private content:** private YouTube videos, paywalled articles, and login-gated content cannot be ingested</li></ul><p><a href="../research/content-ingestion/citedy-content-ingestion.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/citedy-content-ingestion/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

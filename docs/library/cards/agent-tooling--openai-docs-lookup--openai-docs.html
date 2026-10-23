@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>openai-docs</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / openai-docs</p><h1>openai-docs</h1><p class="meta">combined</p><p>Query the OpenAI developer documentation via the OpenAI Docs MCP server using CLI (curl/jq). Use whenever a task involves the OpenAI API (Responses, Chat Completions, Realtime, etc.), OpenAI SDKs, ChatGPT Apps SDK, Codex, MCP integrations, endpoint schemas, parameters, limits, or migrations and you need up-to-date official guidance.
+
+Use when the user asks how to build with OpenAI products or APIs and needs up-to-date official documentation with citations (for example: Codex, Responses API, Chat Completions, Apps SDK, Agents SDK, Realtime, model capabilities or limits); prioritize OpenAI docs MCP tools and restrict any fallback browsing to official OpenAI domains.</p><h2>When to use</h2><ul><li>OpenAI API questions</li><li>OpenAI SDKs</li><li>ChatGPT Apps SDK</li><li>Codex</li><li>MCP integrations</li><li>endpoint schemas</li><li>parameters and limits</li><li>migrations</li></ul><h2>When not to use</h2><ul><li>non-official sources</li><li>relying on memory</li></ul><p><a href="../agent-tooling/openai-docs-lookup/openai-docs.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies overlap on the core task (querying OpenAI developer docs via the developers.openai.com MCP server and citing official sources), but each has material steps the others lack. The openai/skills copy adds Codex self-knowledge routing, a local manual-fetch helper, model-selection/migration guidance, and an OpenAPI spec tool. The Vibe-Skills copy adds an MCP install/restart recovery flow and explicit quality rules. The am-will copy uses a different access mechanism (a curl/jq CLI wrapper script) and exposes subcommands like endpoints/openapi. Crowning one copy would hide real alternatives, so the combined instruction preserves the shared workflow and lists the divergent access and recovery paths under Conflicts.</pre>
+</body>
+</html>

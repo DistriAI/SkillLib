@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>genome-annotation-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / genome-annotation-pipeline</p><h1>genome-annotation-pipeline</h1><p class="meta">separate</p><p>Orchestrates genome annotation from assembled contigs to functional annotation, forking prokaryotic (Bakta one-step, genetic-code table from GTDB-Tk) vs eukaryotic (RepeatMask -&gt; BRAKER3 -&gt; functional -&gt; ncRNA), then eggNOG/InterProScan functional assignment and Infernal/tRNAscan ncRNA. Use when committing the pro-vs-eukaryotic path and the genetic-code table from taxonomy (never guessing), annotating ONLY a decontaminated QC-passed assembly (CheckM2 before prokaryotic annotation is non-negotiable), committing the evidence set (RNA-seq + protein drives BRAKER3 training), soft-masking with a curated repeat library before gene prediction, or pinning the tool + DB version for any pangenome comparison. Hands mechanism to the genome-annotation component skills; not a re-teach of any single step.</p><h2>When to use</h2><ul><li>Prokaryotic genome annotation with Bakta</li><li>Eukaryotic genome annotation with BRAKER3</li><li>Repeat masking with RepeatMasker</li><li>Functional annotation with eggNOG-mapper and InterProScan</li><li>ncRNA annotation with Infernal and tRNAscan</li><li>Assembly QC with CheckM2 and BUSCO</li><li>Genetic code table selection from GTDB-Tk</li></ul><h2>When not to use</h2><ul><li>Re-teaching individual annotation steps</li><li>Annotating non-decontaminated or QC-failed assemblies</li><li>Guessing genetic code tables without taxonomy</li></ul><p><a href="../science/genome-annotation/genome-annotation-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/genome-annotation-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>m6a-differential</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / m6a-differential</p><h1>m6a-differential</h1><p class="meta">separate</p><p>Identifies differential m6A methylation between conditions from MeRIP-seq paired IP/input data using exomePeak2 (GC-bias-aware differential via its bam_ip/bam_input control + bam_treated_ip/bam_treated_input treatment arms), QNB beta-binomial, MeTDiff HMM, and RADAR, plus the paired-symmetric edgeR/DESeq2-on-peak-counts route when batch/lot covariates need fixed-effect handling that exomePeak2&#x27;s API does not accept. Covers paired vs unpaired vs interaction designs, batch confounding and per-lot meta-analysis, the stoichiometry-vs-expression-vs-IP-efficiency confound, and effect-size filtering against under-powered N=2 designs. Use when comparing m6A across two or more conditions, choosing between exomePeak2/QNB/RADAR/MeTDiff for a design, handling batch confounding when exomePeak2&#x27;s API is too rigid, distinguishing real hyper/hypo-methylation from expression shifts, applying effect-size thresholds, or planning orthogonal stoichiometry validation (GLORI/SAC-seq/m6Anet mod_ratio).</p><h2>When to use</h2><ul><li>comparing m6A across two or more conditions</li><li>choosing between exomePeak2/QNB/RADAR/MeTDiff</li><li>handling batch confounding</li><li>distinguishing real hyper/hypo-methylation from expression shifts</li><li>applying effect-size thresholds</li><li>planning orthogonal stoichiometry validation</li><li>paired vs unpaired vs interaction designs</li><li>per-lot meta-analysis</li></ul><h2>When not to use</h2><ul><li>absolute stoichiometry claims without orthogonal validation</li></ul><p><a href="../science/m6a-differential/m6a-differential.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>epitranscriptomics/m6a-differential/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

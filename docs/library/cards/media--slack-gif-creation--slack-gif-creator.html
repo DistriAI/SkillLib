@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>slack-gif-creator</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / slack-gif-creator</p><h1>slack-gif-creator</h1><p class="meta">combined</p><p>Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, validation tools, and animation concepts. Use when users request animated GIFs for Slack like &quot;make me a GIF of X doing Y for Slack.&quot;
+
+Toolkit for creating animated GIFs optimized for Slack, with validators for size constraints and composable animation primitives. This skill applies when users request animated GIFs or emoji animations for Slack from descriptions like &quot;make me a GIF for Slack of X doing Y&quot;.</p><h2>When to use</h2><ul><li>creating animated GIFs for Slack</li><li>validating GIFs against Slack requirements</li><li>drawing graphics from scratch using PIL</li><li>working with user-uploaded images</li><li>applying animation concepts like shake, pulse, bounce, spin, fade, and slide</li></ul><h2>When not to use</h2><ul><li>using emoji fonts</li><li>assuming pre-packaged graphics exist</li></ul><p><a href="../media/slack-gif-creation/slack-gif-creator.html">Skill page</a></p><h2>Conflict</h2><pre>The copies split into two distinct, non-reproducible procedures. The anthropics/skills and LeoYeAI copies describe a low-level workflow using PIL ImageDraw primitives, core.gif_builder, core.easing, and core.frame_composer, with guidance on drawing polished graphics from scratch. The davepoon and Prat011 copies describe a high-level workflow using pre-built animation primitives from templates.* (shake, bounce, spin, pulse, fade, zoom, explode, wiggle, slide) and a different set of validators (check_slack_size, validate_dimensions). Each group contains material steps and constraints the other lacks (e.g., drawing-from-scratch guidance vs. composable template functions; different validator APIs; different Slack parameter ranges). Crowning one would hide a real alternative implementation.</pre>
+</body>
+</html>

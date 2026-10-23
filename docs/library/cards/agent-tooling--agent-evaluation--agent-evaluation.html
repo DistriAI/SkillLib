@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>agent-evaluation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / agent-evaluation</p><h1>agent-evaluation</h1><p class="meta">authentic</p><p>Evaluate agent behavior with versioned cases and explicit verifiers. Use when comparing agent or prompt changes, reproducing failures, or running agent regression tests.</p><h2>When to use</h2><ul><li>Use when comparing a changed agent, prompt or tool configuration, reproducing an observed failure, or estimating reliability on a declared task distribution. Do not infer product readiness from a public benchmark percentage or a generic sc…</li></ul><h2>When not to use</h2><ul><li>Illustrative 80/90% thresholds and score weights in the architecture sketches are not universal merge/deploy rules; define project-specific criteria and keep critical failures separate.</li><li>A small-sample chi-squared comparison or absence of significance does not prove equivalence; use a method suited to counts, pairing and multiple comparisons.</li><li>Exceptions are not automatic safe rejections, and test retries must not erase the first failure.</li><li>Similarity to a retrieved answer may be legitimate RAG behavior; leakage depends on what the evaluation permits the agent to know.</li><li>LLM judges do not substitute for real user feedback, and output truncation does not remove private data. Use synthetic or authorized redacted inputs with bounded retention.</li></ul><p><a href="../agent-tooling/agent-evaluation/agent-evaluation.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/agent-evaluation/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

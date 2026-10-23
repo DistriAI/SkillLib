@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cloudformation-best-practices</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / cloudformation-best-practices</p><h1>cloudformation-best-practices</h1><p class="meta">authentic</p><p>CloudFormation template optimization, nested stacks, drift detection, and production-ready patterns. Use when writing or reviewing CF templates.</p><h2>When to use</h2><ul><li>Writing or reviewing CloudFormation templates (YAML/JSON)</li><li>Optimizing existing templates for maintainability and cost</li><li>Designing nested or cross-stack architectures</li><li>Troubleshooting stack creation/update failures and drift</li></ul><h2>When not to use</h2><ul><li>The user prefers CDK or Terraform over raw CloudFormation</li><li>The task is application code, not infrastructure</li><li>validate-template checks template form, not deployability, cost, policy or safe replacements. Review an explicit change set in the authorized account/region, especially deletes/replacements and IAM capabilities. DeletionPolicy alone does n…</li><li>Never execute a deploy/recovery or change a stack merely to validate these examples. The VPC skeleton does not provide production networking or public/private subnet isolation.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../devops/cloudformation-infrastructure/cloudformation-best-practices.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/cloudformation-best-practices/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

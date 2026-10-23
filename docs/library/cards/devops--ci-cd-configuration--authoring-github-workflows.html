@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>authoring-github-workflows</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / authoring-github-workflows</p><h1>authoring-github-workflows</h1><p class="meta">separate</p><p>Author and review GitHub Actions workflow YAML safely so syntactically-valid YAML can&#x27;t ship a workflow that GitHub Actions refuses to run. USE FOR: editing, adding, or reviewing any file under .github/workflows/, writing run-name/name/if/env/run values that contain ${{ }} expressions, diagnosing a run that fails with &#x27;This run likely failed because of a workflow file issue&#x27; and no jobs starting, deciding when a workflow scalar must be quoted, validating workflows with actionlint. DO NOT USE FOR: authoring application YAML unrelated to GitHub Actions, Azure Pipelines, GitLab CI, or non-workflow YAML. SCOPE: this skill covers *syntactic/structural* correctness of workflow YAML (quoting, parsing, actionlint); for *semantic and functional* workflow design (what a workflow should do, agentic-workflow behavior), see .github/agents/agentic-workflows.agent.md — the two are complementary. INVOKES: actionlint (downloaded pinned binary) plus git/grep for inspection.</p><h2>When to use</h2><ul><li>Editing, adding, or reviewing any file under `.github/workflows/`.</li><li>Writing a `run-name`, `name`, `if`, `env`, `with`, or `run` value that embeds a `${{ }}` expression.</li><li>A workflow run failed with *&quot;This run likely failed because of a workflow file issue&quot;* and **no jobs ran**.</li><li>Eval/CI on `main` suddenly breaks for every run after a workflow edit merged, even though the change &quot;looked fine.&quot;</li><li>Deciding whether a YAML scalar needs quoting.</li></ul><h2>When not to use</h2><ul><li>Authoring non-Actions YAML (app config, Kubernetes, Compose, Azure Pipelines, GitLab CI).</li><li>Pure shell/script logic inside an already-valid `run:` block (that is a scripting task, not a workflow-syntax task).</li></ul><p><a href="../devops/ci-cd-configuration/authoring-github-workflows.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>.agents/skills/authoring-github-workflows/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clair3-variants</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / clair3-variants</p><h1>clair3-variants</h1><p class="meta">separate</p><p>Calls germline small variants (SNPs and indels) from Oxford Nanopore and PacBio HiFi long reads with Clair3, a two-stage (pileup + full-alignment) deep-learning caller, selecting the chemistry- and basecaller-version-matched model, enabling read-based phasing, and benchmarking against GIAB with stratification. Covers why the model string is the experiment (no auto-detection, silent degradation on mismatch), why ONT homopolymer/STR indels are the residual error whole-genome F1 hides, and the somatic/trio/RNA boundary to the ClairS/Clair3-Trio family. Use when calling germline SNVs/indels from ONT or HiFi BAMs, choosing a Clair3 model, phasing variants, or benchmarking long-read calls.</p><h2>When to use</h2><ul><li>calling germline SNVs/indels from ONT or HiFi BAMs</li><li>choosing a Clair3 model</li><li>phasing variants</li><li>benchmarking long-read calls</li><li>germline diploid SNPs + small indels</li><li>non-human / draft / bacterial reference calling</li><li>cohort joint genotyping via gVCF</li></ul><h2>When not to use</h2><ul><li>structural variants</li><li>somatic/mosaic variants</li><li>RNA variants</li><li>PacBio CLR data</li></ul><p><a href="../science/long-read-sequencing-variant-calling/clair3-variants.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>long-read-sequencing/clair3-variants/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

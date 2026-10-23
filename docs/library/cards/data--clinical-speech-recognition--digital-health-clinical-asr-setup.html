@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>digital-health-clinical-asr-setup</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / digital-health-clinical-asr-setup</p><h1>digital-health-clinical-asr-setup</h1><p class="meta">separate</p><p>Stage 1 of Clinical ASR Flywheel. Use when bootstrapping a cycle: NVCF+MW disclosure, NVIDIA_API_KEY check, deps install, TTS+ASR smoke test.</p><h2>When to use</h2><ul><li>Get a fresh environment ready for Stage 2. Three things to confirm: key is present, deps import cleanly, hosted stack actually answers. Close by naming which skill to run next. The four `digital-health-clinical-asr-*` skills are **self-con…</li><li>&quot;Set up the Clinical ASR Flywheel&quot;</li><li>&quot;Initialize the clinical-asr eval&quot;</li><li>&quot;I want to evaluate ASR on clinical terminology — where do I start?&quot;</li><li>&quot;Bootstrap my environment for the flywheel&quot;</li><li>&quot;What do I need installed before I run the flywheel?&quot;</li><li>The user already has a manifest and wants to score it → `/digital-health-clinical-asr-eval`</li><li>The user already has the env set up and wants to curate terms → `/digital-health-clinical-asr-build`</li></ul><h2>When not to use</h2><ul><li>**Scope is environment readiness only.** Whether the user&#x27;s term list or pronunciation overrides make sense is decided in `/digital-health-clinical-asr-build`, not here.</li><li>**Magpie en-US assumption.** Downstream IPA validation rides on Magpie&#x27;s English phoneme inventory; other locales require a different phoneme set entirely.</li><li>**Hosted NVCF is the assumed deployment.** Running self-hosted Riva NIMs is possible but the setup for that lives inside `/digital-health-clinical-asr-finetune` Stage 4d.</li><li>**Synthetic data only.** This skill family is built for benchmarks generated from a curated term list. Real patient transcripts and recorded audio must not flow through any stage.</li></ul><p><a href="../data/clinical-speech-recognition/digital-health-clinical-asr-setup.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/digital-health-clinical-asr-setup/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

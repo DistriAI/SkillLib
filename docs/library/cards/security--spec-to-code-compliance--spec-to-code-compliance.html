@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spec-to-code-compliance</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / spec-to-code-compliance</p><h1>spec-to-code-compliance</h1><p class="meta">combined</p><p>Verifies code implements exactly what documentation specifies for blockchain audits. Use when comparing code against whitepapers, finding gaps between specs and implementation, or performing compliance checks for protocol implementations.
+
+Check code against the documentation that specifies it - which requirements hold, which the code contradicts, which are absent, and what the code does that no document mentions. Use when comparing an implementation against a whitepaper, protocol spec, or design document.</p><h2>When to use</h2><ul><li>Verify code implements exactly what documentation specifies</li><li>Audit smart contracts against whitepapers or design documents</li><li>Find gaps between intended behavior and actual implementation</li><li>Identify undocumented code behavior or unimplemented spec claims</li><li>Perform compliance checks for blockchain protocol implementations</li><li>User provides both specification documents AND codebase</li><li>Questions like &quot;does this code match the spec?&quot; or &quot;what&#x27;s missing from the implementation?&quot;</li><li>Audit engagements requiring spec-to-code alignment analysis</li></ul><h2>When not to use</h2><ul><li>Codebases without corresponding specification documents</li><li>General code review or vulnerability hunting (use audit-context-building instead)</li><li>Writing or improving documentation (this skill only verifies compliance)</li><li>Non-blockchain projects without formal specifications</li><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li><li>Not for code with no documentation of intended behavior. There is nothing to check against, and a requirement inferred from the code is checked against itself. Build the system model first with `audit-context-building`. Not for finding bug…</li></ul><p><a href="../security/spec-to-code-compliance/spec-to-code-compliance.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe the same task but prescribe different, non-interchangeable procedures. The trailofbits copy is a dispatcher: it tells the agent to run a specific slash command and subagent, explains why the work must be fanned out per requirement, and defines a six-verdict output schema with a refutation step. The sickn33 copy is a self-contained, multi-phase audit procedure (Discovery, Normalization, Spec-IR, Code-IR, Alignment) with explicit global rules, a rationalization table, and a confidence-score requirement. Neither copy contains the other&#x27;s core mechanism (the slash-command dispatch vs. the IR-based line-by-line analysis), so crowning one would hide a real alternative approach.</pre>
+</body>
+</html>

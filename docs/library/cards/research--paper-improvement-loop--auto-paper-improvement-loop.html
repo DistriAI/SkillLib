@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>auto-paper-improvement-loop</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / auto-paper-improvement-loop</p><h1>auto-paper-improvement-loop</h1><p class="meta">combined</p><p>Autonomously improve a generated paper via GPT-5.4 xhigh review → implement fixes → recompile, for 2 rounds. Use when user says \&quot;改论文\&quot;, \&quot;improve paper\&quot;, \&quot;论文润色循环\&quot;, \&quot;auto improve\&quot;, or wants to iteratively polish a generated paper.
+
+Autonomously improve a generated paper via GPT-6-Astra xhigh review → implement fixes → recompile, for 2 rounds. Use when user says \&quot;改论文\&quot;, \&quot;improve paper\&quot;, \&quot;论文润色循环\&quot;, \&quot;auto improve\&quot;, or wants to iteratively polish a generated paper.</p><h2>When to use</h2><ul><li>improve paper</li><li>论文润色循环</li><li>auto improve</li><li>iteratively polish a generated paper</li><li>fixing theoretical inconsistencies</li><li>softening overclaims</li><li>adding missing content</li><li>improving presentation</li></ul><h2>When not to use</h2><ul><li>iterating on research</li><li>running experiments</li><li>collecting data</li><li>rewriting narrative</li></ul><p><a href="../research/paper-improvement-loop/auto-paper-improvement-loop.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies describe the same two-round review→fix→recompile loop, but they disagree on the reviewer model (gpt-6-astra vs gpt-5.4) and on a core loop mechanic: the wanshuiyin copy mandates a fresh reviewer thread each round (REVIEWER_BIAS_GUARD, no codex-reply) and adds style-ref/edit-whitelist options, while the brycewang copy explicitly uses codex-reply with the saved threadId in Round 2 and adds state-persistence recovery. Crowning one would hide a real alternative procedure.</pre>
+</body>
+</html>

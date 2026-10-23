@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>digital-health-clinical-asr-build</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / digital-health-clinical-asr-build</p><h1>digital-health-clinical-asr-build</h1><p class="meta">separate</p><p>Stage 2 of the Clinical ASR Flywheel. Use when curating clinical terms, tagging IPA, and synthesizing a NeMo manifest. NOT for scoring (use /digital-health-clinical-asr-eval).</p><h2>When to use</h2><ul><li>Curate a clinical-specialty term list, generate eval audio for it through Magpie TTS with a two-tier IPA pipeline, and write a NeMo-format manifest tagged with the clinical-extension fields (`term`, `entity_category`, `ipa_source`, `voice_…</li><li>&quot;Build a clinical ASR benchmark&quot;</li><li>&quot;Curate drug names / procedure names for ASR eval&quot;</li><li>&quot;Generate eval audio for medical terms&quot;</li><li>&quot;Create a NeMo manifest from clinical terms&quot;</li><li>&quot;Add oncology / cardiology / ortho terms to my benchmark&quot;</li><li>&quot;Audition the TTS pronunciation for these drug names&quot;</li><li>&quot;Make me a cycle-N manifest&quot;</li></ul><h2>When not to use</h2><ul><li>**English-only by default.** Magpie&#x27;s en-US phoneme inventory is what the two-tier IPA pipeline validates against. Other locales need a different upstream phoneme set + override CSV format.</li><li>**Six fixed entity categories.** Extending `entity_category` is a deliberate methodology change, not a one-off tweak — KER breakdowns, leaderboard sections, and downstream finetune scripts all key off the vocabulary.</li><li>**Tiny first cycles.** Below ~20 terms, the by-`ipa_source` leaderboard split won&#x27;t have enough rows in each bucket to be statistically meaningful. Build a meaningful cycle even if it costs a session.</li><li>**Magpie NVCF rate-limits.** ~5–10% drops on large jobs; budget a re-run pass.</li></ul><p><a href="../data/clinical-speech-recognition/digital-health-clinical-asr-build.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/digital-health-clinical-asr-build/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

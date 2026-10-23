@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>vcf-statistics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / vcf-statistics</p><h1>vcf-statistics</h1><p class="meta">combined</p><p>Compute and interpret VCF quality-control metrics (Ti/Tv, het/hom, novel/known, missingness, HWE, contamination, relatedness) with bcftools stats, vcftools, plot-vcfstats, and identity tools (somalier, peddy, KING). Use when judging whether a callset is trustworthy, diagnosing a low Ti/Tv or outlier het/hom sample, deciding whether an HWE deviation is error or biology, screening a cohort for sample swaps/contamination/wrong-sex before analysis, or comparing call sets before and after filtering. Not for applying filters (see variant-calling/filtering-best-practices) or normalizing representation (see variant-calling/variant-normalization).</p><h2>When to use</h2><ul><li>evaluating variant quality</li><li>comparing samples</li><li>summarizing VCF contents</li><li>generating variant statistics</li><li>sample concordance</li><li>quality metrics</li><li>checking sample identity</li><li>detecting sample swaps</li></ul><p><a href="../data/vcf-quality-control/vcf-statistics.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same task (VCF statistics and QC) but with different emphases and non-overlapping material. The OpenClaw copy is a broad command reference (bcftools stats, gtcheck, query, cyvcf2) with specific expected Ti/Tv ranges and plotting steps. The GPTomics copy is a decision-oriented QC guide that adds a governing principle (cohort-relative interpretation, order of operations, identity as a graph problem), a detailed decision table for interpreting deviations, version compatibility notes, and additional tools (vcftools, somalier, peddy, KING). Neither is a strict reproduction of the other; crowning one would hide the other&#x27;s unique interpretive framework and tooling.</pre>
+</body>
+</html>

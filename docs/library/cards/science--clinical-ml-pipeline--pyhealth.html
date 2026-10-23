@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pyhealth</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / pyhealth</p><h1>pyhealth</h1><p class="meta">combined</p><p>Comprehensive healthcare AI toolkit for developing, testing, and deploying machine learning models with clinical data. This skill should be used when working with electronic health records (EHR), clinical prediction tasks (mortality, readmission, drug recommendation), medical coding systems (ICD, NDC, ATC), physiological signals (EEG, ECG), healthcare datasets (MIMIC-III/IV, eICU, OMOP), or implementing deep learning models for healthcare applications (RETAIN, SafeDrug, Transformer, GNN).
+
+Builds and validates PyHealth clinical machine-learning pipelines for EHR, signals, imaging, and medical codes. Use for PyHealth dataset loading, MIMIC-III/IV, eICU or OMOP prediction tasks, patient-level evaluation, mortality/readmission/length-of-stay modeling, medication recommendation, sleep staging, Trainer checkpoints, and ICD/ATC/NDC/RxNorm mapping.</p><h2>When to use</h2><ul><li>**Working with healthcare datasets**: MIMIC-III, MIMIC-IV, eICU, OMOP, sleep EEG data, medical images</li><li>**Clinical prediction tasks**: Mortality prediction, hospital readmission, length of stay, drug recommendation</li><li>**Medical coding**: Translating between ICD-9/10, NDC, RxNorm, ATC coding systems</li><li>**Processing clinical data**: Sequential events, physiological signals, clinical text, medical images</li><li>**Implementing healthcare models**: RETAIN, SafeDrug, GAMENet, StageNet, Transformer for EHR</li><li>**Evaluating clinical models**: Fairness metrics, calibration, interpretability, uncertainty quantification</li><li>Use for clinical prediction with PyHealth, including EHR sequences, physiological signals, imaging tasks, or medical-code lookup. Establish the cohort, prediction time, observation window, outcome horizon, and unit of evaluation before mod…</li></ul><h2>When not to use</h2><ul><li>Do not use for medical image segmentation or radiology AI (use a medical imaging skill).</li><li>Do not use for real-time clinical decision support in production (PyHealth is a research toolkit, not a certified medical device).</li><li>Do not use for NLP-only tasks on clinical text without structured EHR data.</li><li>Do not use when the dataset has fewer than ~500 patients for deep learning models — classical ML methods (e.g., scikit-learn) are more appropriate.</li></ul><p><a href="../science/clinical-ml-pipeline/pyhealth.html">Skill page</a></p><h2>Conflict</h2><pre>The K-Dense-AI copy is a distinct, version-pinned (PyHealth 2.0.2) procedure with specific scientific and API constraints (e.g., MIMIC-III table casing, leakage warnings, specific task semantics). The other three copies (Vibe-Skills, aipoch, OpenClaw) are near-identical mirrors of a different, more generic &#x27;Healthcare AI Toolkit&#x27; skill that uses a different API style (e.g., `mortality_prediction_mimic4_fn` vs `MortalityPredictionMIMIC3`) and lacks the version-specific safety checks. Crowning one would hide the alternative API approach and the specific version constraints.</pre>
+</body>
+</html>

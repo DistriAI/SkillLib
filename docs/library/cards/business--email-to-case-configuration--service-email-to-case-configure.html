@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-email-to-case-configure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / service-email-to-case-configure</p><h1>service-email-to-case-configure</h1><p class="meta">authentic</p><p>Use to configure Salesforce Email-to-Case headlessly via the Metadata API. Reads CaseSettings, applies the emailToCase config with updateMetadata, and verifies by re-reading. Also the entry point for attaching an Agentforce agent to Email-to-Case: configures the E2C base, then delegates agent creation and channel wiring. TRIGGER on set up/configure Email-to-Case, enable E2C routing addresses, add a routing address, or E2C with an Agentforce agent. DO NOT TRIGGER for the interactive Easy Setup wizard, On-Demand E2C only, general Case/web-to-case setup, or an agent with no E2C involved.</p><h2>When to use</h2><ul><li>**In scope**: Enabling Email-to-Case org-wide and setting its toggles (full field lists in Required Inputs and step 4); creating `EmailToCase`, `Outlook`, and `GmailOAuth` routing addresses; applying the change to an sf-CLI-authenticated o…</li><li>**Out of scope**:</li><li>**`E2cEasy` routing addresses** — created only through the Service Easy Setup wizard, not the Metadata API; route the user there.</li><li>Authenticating the org — the user authenticates out-of-band (e.g. `sf org login web`); the script reuses that session and never handles passwords or tokens.</li><li>Case object schema, layouts, assignment rules, or Web-to-Case.</li></ul><p><a href="../business/email-to-case-configuration/service-email-to-case-configure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/service-engagement/skills/service-email-to-case-configure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

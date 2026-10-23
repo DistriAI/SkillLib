@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-customize-nvpmodel</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-customize-nvpmodel</p><h1>jetson-customize-nvpmodel</h1><p class="meta">separate</p><p>Use when you need to add, remove, edit, list, or change the boot default of an nvpmodel power mode on a Jetson/Tegra (Orin, Thor) target. Triggers: edit power mode, tune frequency caps.</p><h2>When to use</h2><ul><li>Edit the per-board nvpmodel configuration so the device boots with the desired power-mode set, CPU/GPU/EMC/TPC clamps, and default mode. BSP-side only — all writes land in the overlay tracker, the upstream `bsp_image` copy is read-only. Th…</li></ul><h2>When not to use</h2><ul><li>BSP-side scope only — this skill never invokes `nvpmodel -m` on a</li><li>Edits land in the overlay copy under `&lt;source.root_path&gt;` only;</li><li>Frequency values must come from the kernel&#x27;s `available_frequencies`</li><li>Non-trivial envelope edits (any CPU/GPU/EMC/PVA/DLA `MAX_FREQ` /</li><li>Propagation across siblings is partial by design: only the changed</li><li>PARAM names are chip-family-specific (e.g. `CPU_A78_&lt;n&gt;` on T234,</li></ul><p><a href="../devops/jetson-nvpmodel-tuning/jetson-customize-nvpmodel.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-customize-nvpmodel/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

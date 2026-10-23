@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunting-for-suspicious-scheduled-tasks</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunting-for-suspicious-scheduled-tasks</p><h1>hunting-for-suspicious-scheduled-tasks</h1><p class="meta">separate</p><p>Hunts for adversary persistence and execution via Windows scheduled tasks (T1053.005) by analyzing Security Event ID 4698 task-creation events, suspicious task properties, and unusual execution patterns from schtasks.exe/at.exe. Use after detecting schtasks or at.exe in process creation logs, during incident response to enumerate persistence on compromised hosts, or when Event ID 4698 fires for an unusual task.</p><h2>When to use</h2><ul><li>When proactively hunting for persistence mechanisms in Windows environments</li><li>After detecting schtasks.exe or at.exe usage in process creation logs</li><li>When investigating malware that survives reboots and user logoffs</li><li>During incident response to enumerate all persistence on compromised systems</li><li>When Windows Security Event ID 4698 (Scheduled Task Created) fires for unusual tasks</li></ul><p><a href="../security/endpoint-hunting/hunting-for-suspicious-scheduled-tasks.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills">mukul975/Anthropic-Cybersecurity-Skills</a></td><td><code>skills/hunting-for-suspicious-scheduled-tasks/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

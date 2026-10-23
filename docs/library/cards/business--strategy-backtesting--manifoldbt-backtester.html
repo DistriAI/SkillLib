@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>manifoldbt-backtester</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / manifoldbt-backtester</p><h1>manifoldbt-backtester</h1><p class="meta">separate</p><p>Runs a declarative strategy spec over OHLCV bars with the manifoldbt Rust engine, pairs the fill log into round trips, and emits the eight inputs the backtest-expert skill scores. Use when the user wants to execute a backtest, measure a rule they have described, obtain win rate / average win / average loss / max drawdown from real bars, or feed backtest-expert with measured numbers instead of estimates.</p><h2>When to use</h2><ul><li>Execute what `backtest-expert` teaches. That skill grades a backtest on five dimensions, and its prerequisites say &quot;metrics are user-provided&quot;: it scores numbers it never produces. This skill produces them. It runs a strategy over real bar…</li><li>A user describes a rule and wants it measured</li><li>`backtest-expert` is about to run and the numbers do not exist yet</li><li>A win rate, average winner, average loser or drawdown must come from bars</li><li>A strategy&#x27;s parameter count must be established for scoring</li><li>Supported: `sma`, `ema`, `rsi` over any OHLC column; one entry condition using `&gt;`, `&lt;`, `&gt;=`, `&lt;=` against another indicator, a price column or a number; optional stop-loss and take-profit; fees and slippage in basis points; long-only. Re…</li></ul><p><a href="../business/strategy-backtesting/manifoldbt-backtester.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/tradermonty/claude-trading-skills">tradermonty/claude-trading-skills</a></td><td><code>skills/manifoldbt-backtester/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

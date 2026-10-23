@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>neuropixels-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / neuropixels-analysis</p><h1>neuropixels-analysis</h1><p class="meta">combined</p><p>Neuropixels neural recording analysis. Load SpikeGLX/OpenEphys data, preprocess, motion correction, Kilosort4 spike sorting, quality metrics, Allen/IBL curation, AI-assisted visual analysis, for Neuropixels 1.0/2.0 extracellular electrophysiology. Use when working with neural recordings, spike sorting, extracellular electrophysiology, or when the user mentions Neuropixels, SpikeGLX, Open Ephys, Kilosort, quality metrics, or unit curation.
+
+Analyzes Neuropixels extracellular recordings end-to-end with SpikeInterface. Covers loading SpikeGLX/Open Ephys/NWB data, preprocessing, drift/motion correction, Kilosort4 (and CPU) spike sorting, quality metrics, and unit curation (threshold-based, model-based UnitRefine, and AI-assisted visual review). Use when working with Neuropixels 1.0/2.0 recordings, spike sorting, or extracellular electrophysiology analysis.</p><h2>When to use</h2><ul><li>Working with Neuropixels recordings (.ap.bin, .lf.bin, .meta files)</li><li>Loading data from SpikeGLX, Open Ephys, or NWB formats</li><li>Preprocessing neural recordings (filtering, CAR, bad channel detection)</li><li>Detecting and correcting motion/drift in recordings</li><li>Running spike sorting (Kilosort4, SpykingCircus2, Mountainsort5)</li><li>Computing quality metrics (SNR, ISI violations, presence ratio)</li><li>Curating units using Allen/IBL criteria</li><li>Creating visualizations of neural data</li></ul><p><a href="../science/neuropixels-spike-sorting/neuropixels-analysis.html">Skill page</a></p><h2>Conflict</h2><pre>The copies describe the same high-level workflow (load, preprocess, drift correction, sort, metrics, curation) but diverge significantly on implementation details. The K-Dense-AI copy is the most rigorous, using the native SpikeInterface API (`si`) and specific version constraints (0.105.0), while the other three copies (Vibe-Skills, medical-research-skills, OpenClaw-Medical-Skills) rely on a hypothetical `neuropixels_analysis` (npa) wrapper package that is not part of the standard SpikeInterface distribution. The K-Dense copy also includes specific hardware-aware constraints (e.g., shank-specific referencing) that the others omit or simplify. Because the &#x27;wrapper&#x27; approach in the other copies is a distinct (and potentially non-functional or different) implementation path compared to the &#x27;native API&#x27; path in K-Dense, crowning one would hide the alternative implementation strategy.</pre>
+</body>
+</html>

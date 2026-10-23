@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-preprocessing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / spatial-preprocessing</p><h1>spatial-preprocessing</h1><p class="meta">combined</p><p>Quality control, filtering, and normalization for spatial transcriptomics (Visium, Visium HD, Xenium, MERFISH/MERSCOPE, CosMx, Slide-seq) with Squidpy and Scanpy. Use when setting QC floors that do NOT delete real low-count imaging cells (an scRNA min_counts=500 floor deletes nearly every Xenium cell, whose vector is tens-to-low-hundreds of transcripts); deciding whether to normalize at all when library size carries spatial biology rather than pure technical depth; choosing cell-volume/area normalization over Pearson residuals for skewed targeted panels; reading negative-control-probe / blank-barcode false-discovery rates; and inspecting QC spatially on the tissue rather than only in violins.</p><h2>When to use</h2><ul><li>Calculate QC metrics</li><li>Filter spots/cells</li><li>Normalize counts</li><li>Identify highly variable genes</li><li>Identify spatially variable genes</li><li>Scale data</li><li>Run PCA</li></ul><p><a href="../science/spatial-transcriptomics-preprocessing/spatial-preprocessing.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same task but disagree on the core procedure. The first copy (OpenClaw) provides a standard, platform-agnostic pipeline using Scanpy/Squidpy with fixed thresholds (min_counts=500, min_genes=200) and standard normalization (CP10k/log1p or Pearson residuals). The second copy (GPTomics) explicitly argues that these standard thresholds and normalization methods are incorrect for imaging-based spatial platforms (Xenium, MERFISH, CosMx), stating that they delete real cells and introduce bias. It mandates a &#x27;platform-class fork&#x27; decision and different QC/normalization strategies (e.g., area/volume normalization) for imaging data. Because the first copy&#x27;s procedure is actively contradicted by the second for a major subset of spatial data, crowning one would hide a critical alternative workflow.</pre>
+</body>
+</html>

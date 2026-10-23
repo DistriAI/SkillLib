@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-xss</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunt-xss</p><h1>hunt-xss</h1><p class="meta">combined</p><p>Hunting skill for xss vulnerabilities.
+
+Hunting skill for xss vulnerabilities. Built from 174 public bug bounty reports. Use when hunting xss on any target.</p><h2>When to use</h2><ul><li>You have explicit, written authorization to assess the target in scope, and the task matches this skill&#x27;s vulnerability class or technique within a bug-bounty or penetration-test engagement.</li><li>You need the recon, exploitation, or validation workflow described below — executed strictly inside the approved scope.</li><li>✅ Payload is REFLECTED/STORED in response (presence)</li><li>✅ Payload appears in a RENDERABLE context (sink check)</li><li>✅ Payload EXECUTES in browser (proof of exploitation)</li></ul><h2>When not to use</h2><ul><li>Authorized scope only: the confirmation gate above is mandatory before any probing, exploitation, or credential-access command.</li><li>Docs-only import: upstream helper scripts, commands, engine, and research assets are not bundled; reinstall tooling from the source repo when needed.</li><li>Validate every finding (see `triage-validation`) before reporting; report via `report-writing`. Prefer a sandbox, disposable VM, or controlled lab.</li></ul><p><a href="../security/xss-hunting/hunt-xss.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies share the same core structure (Crown Jewel Targets and the OOB-Or-It-Didn&#x27;t-Happen Gate are nearly identical), but each contains material steps the other lacks. The uphiago copy provides a framework-specific sink verification table (React/Vue/Angular/Svelte/Next.js) and a grep command to check JS bundles for dangerous rendering patterns, which is a critical &#x27;presence vs. exploitation&#x27; gate. The sickn33 copy provides a mandatory authorization confirmation gate, a unique numeric canary strategy to distinguish real payloads from decoys, and a specific ordered list of injection contexts (inline script, attribute event, URL/href). Crowning one would hide the other&#x27;s unique verification and safety procedures.</pre>
+</body>
+</html>

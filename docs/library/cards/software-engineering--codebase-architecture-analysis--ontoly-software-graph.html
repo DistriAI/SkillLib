@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ontoly-software-graph</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / ontoly-software-graph</p><h1>ontoly-software-graph</h1><p class="meta">combined</p><p>Use Ontoly&#x27;s deterministic Software Graph and MCP capabilities for architecture review, request tracing, dependency analysis, configuration lookup, and impact analysis before falling back to source-file search.
+
+Use Ontoly&#x27;s deterministic Software Graph and MCP server for codebase architecture, request tracing, dependency analysis, and impact analysis.</p><h2>When to use</h2><ul><li>Explaining a repository architecture</li><li>Tracing a request, route, controller, service, or dependency path</li><li>Finding owners of services, modules, routes, configuration, or environment variables</li><li>Reviewing dependency impact before a refactor</li><li>Auditing dead code, cycles, unresolved imports, graph quality, or semantic coverage</li><li>Preparing documentation, onboarding notes, or architecture review from graph evidence</li><li>Use when the user asks for repository architecture, module ownership, or onboarding help.</li><li>Use when tracing a request, route, controller, service, provider, dependency, or call chain.</li></ul><h2>When not to use</h2><ul><li>Ontoly does not replace compiler, test, or runtime validation.</li><li>Graph quality depends on the Ontoly version, supported language frontend, repository setup, and diagnostics.</li><li>Missing or partial framework detection lowers confidence for framework-specific answers.</li><li>Do not claim a relationship exists unless it is present in the graph or clearly labeled as an inference.</li><li>Stop and ask for clarification if the repository path, target graph, or requested analysis scope is ambiguous.</li></ul><p><a href="../software-engineering/codebase-architecture-analysis/ontoly-software-graph.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies describe the same core workflow (check for graph, build if missing, check diagnostics, use Ontoly, fall back to source), but each contains material steps or constraints the others lack. The anbeime copy adds a specific &#x27;Answer Shape&#x27; and &#x27;Fallback Rules&#x27; (e.g., NOT_FOUND handling, disambiguation). The sickn33 copy adds a &#x27;Security &amp; Safety&#x27; section, specific CLI verification commands (`ontoly --help`, `find`), and a step to start the MCP server (`ontoly mcp`). The davepoon copy is the most concise but lacks the specific capability names and safety constraints found in the others. Crowning one would hide the specific operational details (like security notes or specific MCP commands) present in the others.</pre>
+</body>
+</html>

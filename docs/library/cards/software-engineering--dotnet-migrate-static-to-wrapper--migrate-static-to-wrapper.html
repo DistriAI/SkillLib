@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>migrate-static-to-wrapper</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / migrate-static-to-wrapper</p><h1>migrate-static-to-wrapper</h1><p class="meta">separate</p><p>ALWAYS USE when asked to migrate, replace, or make testable existing C# static calls with a named wrapper or built-in abstraction: DateTime.UtcNow/Now or DateTimeOffset.UtcNow to TimeProvider/IClock, File.* to IFileSystem or an existing store such as ITextFileStore, and Environment.* to an existing reader such as IEnvironmentReader. Covers scoped files/projects, constructor injection, replacing temp-file or process-environment tests with fakes, &quot;already registered&quot; abstractions, and static classes whose callers/signatures must stay unchanged. Preserves DateTimeKind and call count. DO NOT USE for finding statics (detect-static-dependencies), choosing/designing a new wrapper (generate-testability-wrappers), behavior tests with no chosen seam (testability-obstacle), or test-framework migration.</p><h2>When to use</h2><ul><li>After wrappers have been generated (via `generate-testability-wrappers`) or built-in abstractions identified</li><li>Migrating `DateTime.UtcNow` → `TimeProvider.GetUtcNow()` across a project</li><li>Migrating `File.*` → `IFileSystem.File.*` across a namespace</li><li>Adding constructor injection for the new abstraction to affected classes</li><li>Making a `static` utility class testable by adding an ambient seam (Step 3) while its existing call sites keep</li><li>Incremental migration: one project or namespace at a time</li><li>Updating affected tests with fakes when the requested migration names the</li></ul><h2>When not to use</h2><ul><li>No wrapper or abstraction exists yet and one must be designed from scratch (use `generate-testability-wrappers` first).</li><li>The user wants to detect statics, not migrate them (use `detect-static-dependencies`)</li><li>Migrating between test frameworks (use the appropriate migration skill)</li><li>The user primarily asks for a deterministic behavior test and has not selected</li></ul><p><a href="../software-engineering/dotnet-migrate-static-to-wrapper/migrate-static-to-wrapper.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-test/skills/migrate-static-to-wrapper/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>string-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / string-database</p><h1>string-database</h1><p class="meta">combined</p><p>Query STRING API for protein-protein interactions (59M proteins, 20B interactions). Network analysis, GO/KEGG enrichment, interaction discovery, 5000+ species, for systems biology.
+
+Access the STRING database to map identifiers, retrieve protein–protein interaction networks, and run functional/PPI enrichment when you need interaction context for a gene/protein set.</p><h2>When to use</h2><ul><li>Retrieving protein-protein interaction networks for single or multiple proteins</li><li>Performing functional enrichment analysis (GO, KEGG, Pfam) on protein lists</li><li>Discovering interaction partners and expanding protein networks</li><li>Testing if proteins form significantly enriched functional modules</li><li>Generating network visualizations with evidence-based coloring</li><li>Analyzing homology and protein family relationships</li><li>Conducting cross-species protein interaction comparisons</li><li>Identifying hub proteins and network connectivity patterns</li></ul><p><a href="../science/string-ppi-query/string-database.html">Skill page</a></p><h2>Conflict</h2><pre>Both skills describe the same task (querying the STRING database for PPIs and enrichment) and reference the same underlying files (`scripts/string_api.py`, `references/string_reference.md`). However, they disagree on the specific API surface: the first copy uses a `StringClient` class with methods like `map_id` and `get_network_image`, while the second copy uses standalone functions like `string_map_ids` and `string_network`. The second copy also provides significantly more detail on parameters (e.g., `required_score` thresholds, `network_flavor` options) and use cases. Because the code interfaces are incompatible and the second copy contains material steps/constraints (specific thresholds, flavors) missing from the first, crowning one would hide the alternative implementation or lose critical parameter details.</pre>
+</body>
+</html>

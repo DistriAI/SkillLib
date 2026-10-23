@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-de-channel-routing-configure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / service-de-channel-routing-configure</p><h1>service-de-channel-routing-configure</h1><p class="meta">separate</p><p>Configure routing on a newly-inserted Enhanced `MessagingChannel` so activation will accept it. Given a `{CHANNEL_ID}`, walks through picking a routing type (Omni-Channel Queue, Omni-Flow, Agentforce Service Agent, Digital Worker, or direct User), locates or provisions the target, then PATCHes `SessionHandlerId` (plus `FallbackQueueId` where required). Use between insertion and activation — activation fails server-side with `nullQueueId`/`LiveMessageSetupException` if no valid `SessionHandlerId` is set. Do not use for full end-to-end setup — use `service-de-headless-channel-configure`.</p><h2>When not to use</h2><ul><li>**The channel already has `SessionHandlerId` or `FallbackQueueId` set.** This skill revalidates the existing target before no-op. An ASA must still have a BotUser and an Active BotVersion; otherwise it reports `asa-target-inactive` and doe…</li><li>**The channel doesn&#x27;t exist yet.** Run the insertion skill first; this skill expects a real `MessagingChannel.Id`.</li><li>**You want to replace existing routing.** Safer to clear `SessionHandlerId` manually in the UI, then re-run this skill. The no-op check is a guardrail, not a limitation worth bypassing automatically.</li></ul><p><a href="../business/channel-routing-configuration/service-de-channel-routing-configure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>skills/service-de-channel-routing-configure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

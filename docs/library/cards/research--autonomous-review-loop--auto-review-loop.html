@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>auto-review-loop</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / auto-review-loop</p><h1>auto-review-loop</h1><p class="meta">combined</p><p>Autonomous multi-round research review loop. Repeatedly reviews via Codex MCP, implements fixes, and re-reviews until positive assessment or max rounds reached. Use when user says &quot;auto review loop&quot;, &quot;review until it passes&quot;, or wants autonomous iterative improvement.
+
+Autonomous multi-round research review loop. In Copilot CLI it defaults to the native complementary rubber-duck subagent with host-event model evidence; elsewhere it uses Codex, while explicit external reviewer overrides remain available. Implements fixes and re-reviews until a policy-approved positive assessment or max rounds is reached.</p><h2>When to use</h2><ul><li>auto review loop</li><li>review until it passes</li><li>autonomous iterative improvement</li></ul><p><a href="../research/autonomous-review-loop/auto-review-loop.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies implement the same review-fix-rereview loop but disagree on the stop condition, reviewer backend, and state persistence. The wanshuiyin copy is the more evolved procedure (Copilot-native reviewer, explicit AND stop condition, difficulty levels, output directory, HTML rendering, and a warning against external timers), while the brycewang copy adds a concrete REVIEW_STATE.json persistence and resume protocol that the wanshuiyin copy does not contain. Crowning one would hide a real alternative: the brycewang copy&#x27;s state recovery is a material step absent from the other, and the wanshuiyin copy&#x27;s reviewer routing and stop-condition correction are absent from the other.</pre>
+</body>
+</html>

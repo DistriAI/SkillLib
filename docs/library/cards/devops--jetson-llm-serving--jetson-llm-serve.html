@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-llm-serve</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-llm-serve</p><h1>jetson-llm-serve</h1><p class="meta">separate</p><p>Stand up vLLM or SGLang serving on Jetson, using upstream vLLM on Thor and Orin JetPack 7.2+, and NVIDIA-AI-IOT vLLM on older Orin.</p><h2>When to use</h2><ul><li>Provide a Jetson-appropriate serving recipe for an LLM or VLM using vLLM or SGLang, including runtime path, launch command, endpoint, and verification step.</li><li>&quot;Run / serve / host this model on a Jetson.&quot;</li><li>&quot;Start a vLLM server I can hit from Open WebUI / my app.&quot;</li><li>After `jetson-inference-mem-tune` produced launch flags and the user wants to actually start the server.</li></ul><h2>When not to use</h2><ul><li>This skill provides serving commands and pre-flight checks; it does not benchmark the deployed server.</li><li>Container tags such as `latest` are mutable. For release or compliance deployments, pin a digest and record it with the deployment notes.</li><li>vLLM and SGLang memory limits still depend on model architecture, quantization, context length, and concurrent request count. Use `jetson-inference-mem-tune` when a command OOMs or memory headroom matters.</li><li>Thor vLLM requires upstream vLLM 0.20+ or newer. Older upstream vLLM images may not support Thor / SM 11.0 correctly.</li><li>Thor SGLang should use NVIDIA SGLang 26.01 or newer release notes that explicitly list Jetson Thor support. NVIDIA SGLang 26.01 contains SGLang 0.5.5.post2.</li><li>On Thor, MIG, desktop display, or camera services can hide the full GPU from containers. This skill should detect and warn only; disabling MIG or stopping services such as `gdm3` or `nvargus-daemon` requires explicit user approval.</li><li>Host-native vLLM/SGLang on Thor should be used only when that install is already validated on the target JetPack.</li></ul><p><a href="../devops/jetson-llm-serving/jetson-llm-serve.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-llm-serve/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

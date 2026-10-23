@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>dos-verify-done-claims</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / dos-verify-done-claims</p><h1>dos-verify-done-claims</h1><p class="meta">separate</p><p>Before accepting an agent&#x27;s &#x27;done / shipped / fixed&#x27; claim, verify it against ground truth (git ancestry + the commit&#x27;s own diff) using the DOS kernel&#x27;s `dos verify` and `dos commit-audit` — never the agent&#x27;s own narration.</p><h2>When to use</h2><ul><li>Use when an agent reports a task/phase/feature as **complete** and you want</li><li>Use right after a commit, to confirm the commit&#x27;s **message matches its diff**</li><li>Use when folding many sub-agents&#x27; results — verify each claimed effect instead</li><li>**Do not** use it to judge whether code is *correct* — that is what the test</li></ul><h2>When not to use</h2><ul><li>This skill does not replace environment-specific validation, testing, or expert review.</li><li>It checks whether a claimed change *shipped* / matches its diff — not whether the code is *correct*.</li><li>`dos verify` reads git history; in a repo with no commits there is nothing to witness (it will honestly report `source: none`).</li><li>Stop and ask for clarification if required inputs (a git repo, the `dos` CLI) are missing.</li></ul><p><a href="../agent-tooling/agent-catalog-management/dos-verify-done-claims.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/dos-verify-done-claims/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

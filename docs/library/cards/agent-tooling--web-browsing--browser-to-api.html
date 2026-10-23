@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>browser-to-api</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / browser-to-api</p><h1>browser-to-api</h1><p class="meta">separate</p><p>Turn a website&#x27;s observable HTTP traffic into a best-effort OpenAPI 3.1 spec by analyzing a `browser-trace` capture. Use when the user wants to discover/extract API endpoints from a browser session, build an OpenAPI doc from network traffic, or document a third-party site&#x27;s XHR/fetch surface for client integration.</p><h2>When to use</h2><ul><li>The user wants an OpenAPI document for a third-party or undocumented website API.</li><li>The user has a `browser-trace` run and wants endpoints + schemas extracted from it.</li><li>The user is building a client/SDK against a site that doesn&#x27;t publish a spec.</li><li>The user wants a coverage report showing which flows would broaden the spec.</li></ul><h2>When not to use</h2><ul><li>**Coverage is bounded by the captured flow.** Endpoints not exercised in the trace will not appear. The skill cannot prove completeness.</li><li>**Schemas are inductive, not contractual.** A field might be optional on the server even if every sample contained it.</li><li>**Auth is observed, not specified.** The skill records auth-shaped headers in an `x-observed-auth` extension but won&#x27;t claim a security scheme.</li><li>**Path templating is heuristic.** Numeric / UUID / hex / slug patterns are detected per segment. Ambiguous URLs are flagged in `confidence.json`.</li><li>**Redaction is best-effort.** Default redactions cover common credentials, but app-specific secrets may slip through; use `--redact` for known custom headers/keys.</li></ul><p><a href="../agent-tooling/web-browsing/browser-to-api.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/browserbase/skills">browserbase/skills</a></td><td><code>skills/browser-to-api/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

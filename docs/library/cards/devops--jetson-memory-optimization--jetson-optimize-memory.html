@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-optimize-memory</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-optimize-memory</p><h1>jetson-optimize-memory</h1><p class="meta">separate</p><p>Reclaim DRAM by disabling unused subsystems across MB1 BCT, MB2 BCT, kernel reserved-memory, and SWIOTLB. Use for headless or no-camera Jetson deployments; not for CPU/GPU frequency tuning.</p><h2>When to use</h2><ul><li>Cut the unused DRAM carveouts that ship enabled in the reference BSP when a Jetson deployment skips display, camera, or other peripherals, freeing the freed bytes for the application. Always edits the four layers in boot order so an early-…</li></ul><h2>When not to use</h2><ul><li>Only the validated recipes (`headless`, `no-camera`, `swiotlb`) are</li><li>SWIOTLB shrink is bounded by peak in-flight DMA — exceeding the new</li><li>BPMP-DTB edits land in the overlay tracker only after Customize +</li></ul><p><a href="../devops/jetson-memory-optimization/jetson-optimize-memory.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-optimize-memory/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

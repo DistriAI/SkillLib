@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>mathguard</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / mathguard</p><h1>mathguard</h1><p class="meta">authentic</p><p>Math-heavy escalation for n &gt;= 10^6 — Bloom, HyperLogLog, Count-Min, MinHash/LSH, FFT, JL projection, sweep line. Use when classical O(n log n) is the floor and approximate or math wins.</p><h2>When to use</h2><ul><li>Working with large-scale data (`n ≥ 10⁶`): similarity search, deduplication, top-K / heavy-hitters, streaming analytics, cardinality estimation, embeddings, recommender systems.</li><li>Doing signal/image processing, polynomial or big-integer arithmetic, convolution, graph distance, computational geometry, randomized algorithms.</li><li>The classical O(n log n) is already the floor and you need an asymptotic win (Bloom filter, HyperLogLog, Count-Min Sketch, MinHash/LSH, FFT/NTT, Johnson-Lindenstrauss projection, sweep line, kd-tree/BVH, fast exponentiation, monoid paralle…</li><li>Loaded *after* `lemmaly` has confirmed the classical answer is not enough.</li><li>The caller needs exact answers (auth, billing, dedup-for-correctness, primary keys).</li><li>`n` is small (n &lt; 10⁴) and the path is not hot.</li><li>The bottleneck is I/O, not CPU/memory.</li></ul><h2>When not to use</h2><ul><li>**Not for exact-required pipelines.** Any system where the result is a primary key, dedup key, billing input, or auth decision is out of scope — keep classical.</li><li>**Assumes representative inputs.** ε/δ bounds are average-case or high-probability; adversarial inputs can blow past them. State the threat model.</li><li>**Library quality varies.** Bloom / HLL / MinHash implementations differ in seed strategy, hash function, and memory layout — pick a maintained library and pin the version.</li><li>**Numerical stability.** Floating FFT, randomized SVD, and JL projection accumulate float error; for combinatorial exactness use NTT or exact integer variants.</li><li>**Team-familiarity risk.** A technique nobody can debug at 3 a.m. is a liability — write the maintainer note next to the trade-off.</li><li>**Not a profiler.** mathguard tells you which asymptotic ceiling you can break; it does not measure constant factors. Benchmark before claiming a wall-clock win.</li></ul><p><a href="../science/mathematical-verification/mathguard.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/mathguard/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

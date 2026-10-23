@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>1claw</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / 1claw</p><h1>1claw</h1><p class="meta">separate</p><p>HSM-backed secret management for AI agents. Store API keys (including Bankr `bk_` keys), passwords, and credentials in an encrypted vault; retrieve them at runtime via MCP without keeping secrets in chat context. Bankr Dynamic Key Vending issues short-lived scoped `bk_usr_` keys from a partner key (`bk_ptr_`) without manual rotation. Policy-based access control, secret rotation, sharing, EVM transaction intents (sign/simulate/broadcast), multi-chain signing keys, treasury multisig proposals, OIDC federation for external service auth, built-in prompt injection detection, and optional Shroud TEE LLM proxy. Use when the agent needs secure credential storage, just-in-time secret access, guarded on-chain signing, or security scanning — not for Bankr trading prompts, portfolio checks, or x402 calls (use the bankr skill instead).</p><h2>When to use</h2><ul><li>Store or rotate API keys, tokens, passwords, or env bundles</li><li>Retrieve credentials at runtime without exposing them in the conversation</li><li>Share a secret back to the registering human or another principal</li><li>Sign or simulate EVM transactions under agent guardrails (Intents API)</li><li>Provision or list per-chain signing keys (Ethereum, Bitcoin, Solana, XRP, Cardano, Tron)</li><li>Create treasury multisig proposals (when delegated to a Safe)</li><li>Get OIDC federation tokens for external services (no static API keys on the relying party)</li><li>Scan arbitrary text for prompt injection, command injection, and social engineering (free, local-only)</li></ul><h2>When not to use</h2><ul><li>Natural-language trading, swaps, or portfolio queries → **bankr** skill</li><li>x402 pay-per-call to third-party APIs → Bankr `x402 call` or provider-specific skills</li><li>Human-only treasury wallet generation/send/swap → 1Claw dashboard or CLI (agents get 403)</li></ul><p><a href="../agent-tooling/agent-workflow-automation/1claw.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/BankrBot/skills">BankrBot/skills</a></td><td><code>1claw/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

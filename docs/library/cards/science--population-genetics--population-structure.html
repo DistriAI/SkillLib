@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>population-structure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / population-structure</p><h1>population-structure</h1><p class="meta">separate</p><p>Infers and describes population structure with PCA (plink2 --pca, smartpca/EIGENSOFT, FlashPCA2), model-based clustering (ADMIXTURE, fastSTRUCTURE), FST estimators (Weir-Cockerham vs Hudson), and f-statistics (f3/f4/D via AdmixTools/admixr), plus Python plotting of PCs and Q barplots. Every output is a model-conditioned description of variance, not truth: PCs conflate ancestry with LD/inversions/relatedness/batch, ADMIXTURE Q-values are panel- and K-dependent artifacts, and CV-minimum K is a guide not the true population count. FST must combine SNPs as a ratio of averages (sum numerators / sum denominators), never an average of per-SNP FST; negative per-SNP FST is normal and must not be clamped. f3/f4/D need a block jackknife or the significance is fake. Use when running PCA, ADMIXTURE, FST, or f-statistics on QC&#x27;d genotypes. For QC and KING relatedness see plink-basics; for LD pruning see linkage-disequilibrium; for array-based Python pipelines see scikit-allel-analysis.</p><h2>When to use</h2><ul><li>running PCA</li><li>ADMIXTURE clustering</li><li>FST estimation</li><li>f-statistics analysis</li><li>Python plotting of PCs</li><li>Q barplots</li><li>model-based clustering</li><li>population structure inference</li></ul><h2>When not to use</h2><ul><li>QC and KING relatedness</li><li>LD pruning</li><li>array-based Python pipelines</li><li>phased haplotype work</li><li>introgression detection</li></ul><p><a href="../science/population-genetics/population-structure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>population-genetics/population-structure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

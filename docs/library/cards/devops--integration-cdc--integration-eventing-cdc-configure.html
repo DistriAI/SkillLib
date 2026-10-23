@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>integration-eventing-cdc-configure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / integration-eventing-cdc-configure</p><h1>integration-eventing-cdc-configure</h1><p class="meta">authentic</p><p>Use to enable Salesforce Change Data Capture (CDC) on a standard or custom object, configure a custom event channel, set a filter expression, or add enrichment fields. TRIGGER broadly on any of: &#x27;enable CDC&#x27;, &#x27;enable Change Data Capture&#x27;, &#x27;turn on CDC&#x27;, &#x27;subscribe X to change events&#x27;, &#x27;only emit events for&#x27;, &#x27;filter change events&#x27;, &#x27;enrich change events&#x27;, &#x27;create a custom event channel&#x27;; or any mention of CDC, change events, PlatformEventChannel, PlatformEventChannelMember, EnrichedField, ChangeEvents channel, enrichment fields, change event filter; or when the user wants a downstream system to receive Salesforce data changes; or when the user touches .platformEventChannelMember-meta.xml / .platformEventChannel-meta.xml files. SKIP when publishing platform events, Pub/Sub API or REST/SOAP (use integration-connectivity-generate), or ManagedEventSubscription (out of scope for CDC). Always use this skill for CDC channel-membership metadata.</p><h2>When to use</h2><ul><li>**In scope**: Generating `PlatformEventChannelMember` and `PlatformEventChannel` metadata for CDC. Subscribing standard objects, custom objects, or both. Configuring enrichment fields. Configuring filter expressions. Defining custom data c…</li><li>**Out of scope**: Publishing custom platform events (PE) — that&#x27;s a different metadata type (`PlatformEvent`). Pub/Sub API or external Kafka/Bayeux configuration. Pricing/limits guidance — refer the user to the [CDC Developer Guide](https:…</li></ul><p><a href="../devops/integration-cdc/integration-eventing-cdc-configure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/integration/skills/integration-eventing-cdc-configure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

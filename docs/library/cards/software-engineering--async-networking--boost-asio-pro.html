@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>boost-asio-pro</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / boost-asio-pro</p><h1>boost-asio-pro</h1><p class="meta">authentic</p><p>Use when writing asynchronous C++ networking code with Boost.Asio or standalone Asio — TCP/UDP servers and clients, SSL/TLS, timers, strands, composed async ops. Covers io_context, co_spawn, awaitable, async_read/async_write, asio::spawn, yield_context, and pre-C++20 callback styles.</p><h2>When to use</h2><ul><li>Use when writing or reviewing async C++ networking code with Boost.Asio or standalone Asio: TCP/UDP servers and clients, SSL/TLS streams, timers, resolvers.</li><li>Use when the code involves `io_context`, `io_service`, `co_spawn`, `awaitable`, `async_read`, `async_write`, `strand`, `asio::spawn`, `yield_context`, or completion-handler callbacks.</li><li>Use when the target toolchain is old: an older Boost or a pre-C++20 standard, where coroutine examples will not compile.</li><li>Use when async code compiles but misbehaves: interleaved writes, dangling buffers, sockets closing early, `operation_aborted` treated as an error.</li></ul><h2>When not to use</h2><ul><li>This skill does not replace compiling and testing against the target toolchain. The version floors it documents are only real once built — build the code.</li><li>It does not cover Boost.Beast (HTTP/WebSocket), io_uring backends, or UDP multicast specifics.</li><li>Stop and ask when the Boost version and C++ standard cannot be determined; the style choice depends on them.</li></ul><p><a href="../software-engineering/async-networking/boost-asio-pro.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/boost-asio-pro/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

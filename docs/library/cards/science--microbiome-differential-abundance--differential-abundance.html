@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>differential-abundance</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / differential-abundance</p><h1>differential-abundance</h1><p class="meta">authentic</p><p>Tests which individual taxa differ between groups on an amplicon ASV/feature table (phyloseq) using compositionally-aware methods - ALDEx2 (Dirichlet-MC CLR, conservative), ANCOM-BC2/ANCOMBC (sampling-fraction bias correction, structural zeros, passed_ss, default p_adj_method=holm), MaAsLin2/MaAsLin3 (multivariable GLM, random effects, prevalence/abundance split), LinDA (CLR mixed-model regression), ZicoSeq (permutation FDR), LEfSe, and q2-composition ancombc. Covers why the hit list depends more on the DA tool than the biology (Nearing benchmark) so the deliverable is a CONSENSUS of &gt;=2 tools, why a relative change is not absolute without a load anchor, the prevalence-filter knob, BH/FDR plus an effect-size floor, and why DESeq2/edgeR misfire here. Use when finding differentially abundant taxa, handling covariates or longitudinal designs, or choosing a method. Whole-community diversity -&gt; diversity-analysis; shotgun DA -&gt; metagenomics/metagenome-visualization; CoDA theory -&gt; metageno…</p><h2>When to use</h2><ul><li>finding differentially abundant taxa</li><li>handling covariates or longitudinal designs</li><li>choosing a method</li><li>per-taxon DA on an amplicon feature table</li></ul><h2>When not to use</h2><ul><li>whole-community diversity</li><li>shotgun DA</li><li>CoDA theory</li><li>collapse ASVs to genus/species</li><li>QIIME2 CLI route</li></ul><p><a href="../science/microbiome-differential-abundance/differential-abundance.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>microbiome/differential-abundance/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

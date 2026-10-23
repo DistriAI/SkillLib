@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>commandcode-delegate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / commandcode-delegate</p><h1>commandcode-delegate</h1><p class="meta">combined</p><p>Delegate a coding task to the Command Code CLI (`cmd`) as a background implementer, then review its diff and land it yourself. Use this whenever the user wants to hand implementation work to Command Code — phrasings like &quot;have Command Code do X&quot;, &quot;delegate this to commandcode&quot;, &quot;run it through cmd&quot;, or &quot;use Command Code to implement/fix/refactor&quot; — or to run a queue of coding tasks through Command Code while staying the reviewer. DO NOT USE for tasks small enough to do inline, or when the user wants the code written directly without delegating.
+
+Delegate coding tasks to the Command Code CLI (`cmd`) only when the user</p><h2>When to use</h2><ul><li>You want to delegate a bounded coding task to a separate `commandcode` implementer (`Command Code`) and then review its diff yourself.</li><li>The user explicitly asked for delegation to this implementer.</li></ul><h2>When not to use</h2><ul><li>The task is small enough to just do inline — delegation overhead is not worth it.</li><li>The `cmd` CLI is not installed or not authenticated (run `cmd login`).</li><li>You want to write the code yourself, or you only need a review (Command Code has its own `/review`).</li><li>You are on native Windows and `cmdc --version` does not work. Upstream recommends WSL for stable Windows use.</li><li>Docs-only import — executable `scripts/relay.mjs` not included; see upstream for full runtime. Requires `commandcode` CLI, Node 18+, git.</li><li>Relay never commits — it only returns structured result JSON; you review and land the commit.</li></ul><p><a href="../agent-tooling/delegate-coding-to-commandcode/commandcode-delegate.html">Skill page</a></p><h2>Conflict</h2><pre>The sickn33 copy is a mirror of the amElnagdy skill (it even records source_repo: amElnagdy/delegate-skills) and reproduces its autonomy model, prerequisites, and loop. However, the mirror adds a material safety constraint the original lacks: before the first write-capable run, explain the unsandboxed full-trust mode and obtain explicit human acceptance. The original also contains a Codex-specific dispatch path (codex-background MCP delegate_run) that the mirror omits. Crowning one copy would hide either the consent gate or the Codex dispatch alternative, so the copies should be combined.</pre>
+</body>
+</html>

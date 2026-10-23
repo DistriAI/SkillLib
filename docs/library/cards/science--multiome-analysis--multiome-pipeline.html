@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>multiome-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / multiome-pipeline</p><h1>multiome-pipeline</h1><p class="meta">separate</p><p>Orchestrates the end-to-end 10x Multiome (paired scRNA + scATAC) pipeline from Cell Ranger ARC output to a jointly-embedded, annotated object, chaining per-modality QC, AMULET fragment-based ATAC doublet detection, per-modality normalization (RNA SCT/PCA; ATAC TF-IDF/LSI), WNN (or MultiVI) integration, joint clustering, RNA-based annotation, and LinkPeaks peak-to-gene linking. Use when enforcing the shared cell-barcode intersection between modalities (cellranger-ARC not -atac), keeping per-modality QC/doublets before the joint embedding, dropping the depth-correlated LSI component, annotating identity from RNA (ATAC is regulatory state), treating peak-to-gene links as correlational hypotheses, or aggregating to pseudobulk for cross-condition DE. Hands mechanism to the single-cell and atac-seq component skills; not a re-teach of any single step.</p><h2>When to use</h2><ul><li>10x Multiome paired scRNA + scATAC analysis</li><li>Cell Ranger ARC output processing</li><li>Per-modality QC and AMULET doublet detection</li><li>WNN or MultiVI multimodal integration</li><li>Joint clustering and RNA-based annotation</li><li>LinkPeaks peak-to-gene linking</li><li>Pseudobulk aggregation for cross-condition DE</li></ul><h2>When not to use</h2><ul><li>Re-teaching single-step internals</li><li>ATAC-only barcode analysis using cellranger-atac</li><li>Integrating cells missing a modality with WNN</li></ul><p><a href="../science/multiome-analysis/multiome-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/multiome-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

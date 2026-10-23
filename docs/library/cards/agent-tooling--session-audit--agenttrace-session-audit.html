@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>agenttrace-session-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / agenttrace-session-audit</p><h1>agenttrace-session-audit</h1><p class="meta">combined</p><p>Audit local AI coding-agent sessions with agenttrace for cost, tokens, tool failures, latency, anomalies, health, diffs, and CI gates.
+
+Audit local AI coding-agent sessions with agenttrace for cost, tool failures, latency, anomalies, health, diffs, and CI gates.</p><h2>When to use</h2><ul><li>Use when a user asks why an AI coding run was slow, expensive, shallow, or unreliable.</li><li>Use when reviewing local agent logs before retrying a failed or suspicious task.</li><li>Use when building a lightweight CI health gate for AI-assisted coding sessions.</li><li>Use when comparing two attempts and looking for changed tool paths, retries, or cost patterns.</li></ul><h2>When not to use</h2><ul><li>agenttrace can only analyze logs that are present locally or provided as exports.</li><li>Some agents do not expose enough fields to infer cost, model, cache use, or latency.</li><li>Healthy trace metrics do not prove the final code is correct; still run tests and review diffs.</li><li>CI gates should start as advisory until the team understands normal baseline behavior.</li></ul><p><a href="../agent-tooling/session-audit/agenttrace-session-audit.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same core workflow (discovery, reporting, CI gates) but contain distinct, non-overlapping material. The first copy (davepoon) provides specific guardrails regarding &#x27;capability levels&#x27; (Detailed/Aggregate/Limited) and treats Tool Steps as metadata-only, which is a critical constraint for interpreting data fidelity. The second copy (sickn33) adds a &#x27;Compare Attempts&#x27; step for semantic drift detection, specific &#x27;When to Use&#x27; triggers, and a &#x27;Common Pitfalls&#x27; section. Additionally, they disagree on the fallback command for the source repository (`cargo run` vs `go run`). Crowning one would hide either the data-fidelity constraints or the semantic-drift workflow.</pre>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>vdjtools-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / vdjtools-analysis</p><h1>vdjtools-analysis</h1><p class="meta">separate</p><p>Computes immune-repertoire diversity, clonal structure, overlap, and segment usage from TCR/BCR clonotype tables with VDJtools (immunarch as the modern R alternative). Use when deciding which diversity estimator answers a question (q=0 observed richness/chao1/chaoE, q=1 shannonWienerIndex, q=2 inverseSimpson as a Hill profile); normalizing sequencing depth before any cross-sample claim (DownSample or the resampled CalcDiversityStats table); choosing an overlap metric (depth-robust MorisitaHorn/F2 vs depth-biased Jaccard/public counts) and a clonotype match key (-i nt/aa, +/-V/J); summarizing clonality as 1 - normalizedShannonWienerIndex; reading spectratype and V-J usage under primer bias; interpreting public clonotypes; and choosing VDJtools (stable Java CLI) vs immunarch (active tidy R).</p><h2>When to use</h2><ul><li>Computing immune-repertoire diversity</li><li>Analyzing clonal structure</li><li>Quantifying repertoire overlap</li><li>Summarizing segment usage</li><li>Normalizing sequencing depth</li><li>Choosing diversity estimators</li><li>Interpreting public clonotypes</li><li>Comparing VDJtools vs immunarch</li></ul><h2>When not to use</h2><ul><li>Processing FASTQ files</li><li>Pre-analysis steps</li></ul><p><a href="../science/tcr-bcr-analysis/vdjtools-analysis.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>tcr-bcr-analysis/vdjtools-analysis/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

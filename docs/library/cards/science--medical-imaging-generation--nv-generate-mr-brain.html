@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nv-generate-mr-brain</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / nv-generate-mr-brain</p><h1>nv-generate-mr-brain</h1><p class="meta">separate</p><p>Used for generating synthetic T1, T2, FLAIR, SWI, or MRA brain MRI volumes with NV-Generate-CTMR MR-Brain v1. Not for production training data.</p><h2>When to use</h2><ul><li>Used for generating synthetic T1, T2, FLAIR, SWI, or MRA brain MRI volumes with NV-Generate-CTMR rflow-mr-brain v1. Not for production training data.</li><li>Use the wrapper exactly as documented; do not replace the upstream entrypoint with a handwritten implementation.</li><li>Do not write custom inference code for normal runs. The wrapper owns config staging, output paths, and validation.</li><li>Manifest I/O: inputs are `model_config_override`; outputs are `synthetic_mr_brain_volumes` and `result_json`.</li></ul><h2>When not to use</h2><ul><li>This is a thin wrapper. Inference, sampling, and decoding are delegated entirely to NVIDIA-Medtech/NV-Generate-CTMR&#x27;s `scripts.diff_model_infer`. Do not modify code under $NV_GENERATE_ROOT or the repo-local fallback at .workbench_data/upst…</li><li>rflow-mr-brain generates image-only synthetic brain MRI volumes. It does not emit paired segmentation masks.</li><li>Output volumes are synthetic. They are not safe as training data for production medtech models without independent quality review.</li><li>Not for clinical deployment, clinical interpretation, autonomous diagnosis, regulatory submission.</li></ul><p><a href="../science/medical-imaging-generation/nv-generate-mr-brain.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/nv-generate-mr-brain/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>agentmail</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / agentmail</p><h1>agentmail</h1><p class="meta">combined</p><p>API-first email platform designed for AI agents. Create and manage dedicated email inboxes, send and receive emails programmatically, and handle email-based workflows with webhooks and real-time events. Use when you need to set up agent email identity, send emails from agents, handle incoming email workflows, or replace traditional email providers like Gmail with agent-friendly infrastructure.
+
+Email infrastructure for AI agents. Create accounts, send/receive emails, manage webhooks, and inspect billing balance via the AgentMail API.</p><h2>When to use</h2><ul><li>**Replace Gmail for agents** - No OAuth complexity, designed for programmatic use</li><li>**Email-based workflows** - Customer support, notifications, document processing</li><li>**Agent identity** - Give agents their own email addresses for external services</li><li>**High-volume sending** - No restrictive rate limits like consumer email providers</li><li>**Real-time processing** - Webhook-driven workflows for immediate email responses</li><li>An AI agent needs a real inbox/outbox for signups, verification flows, or transactional communication.</li><li>You need to provision AgentMail accounts, send messages, read inbox contents, or register inbound webhooks.</li><li>You need to inspect current billing usage or wire email events into agent automation.</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../agent-tooling/agent-email-infrastructure/agentmail.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies target different AgentMail services and use different integration stacks. The first copy targets the theagentmail.net REST API with curl, Bearer tokens, and detailed webhook HMAC/replay constraints. The second copy targets agentmail.to with a Python SDK, console setup, and a Clawdbot-specific webhook allowlist for prompt-injection defense. Neither copy is a reproduction of the other; each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</pre>
+</body>
+</html>

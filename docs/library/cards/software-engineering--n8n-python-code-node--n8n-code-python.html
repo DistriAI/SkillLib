@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>n8n-code-python</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / n8n-code-python</p><h1>n8n-code-python</h1><p class="meta">combined</p><p>Write Python in n8n Code nodes (native Python, `language` pythonNative, n8n 2.x). Use when the user explicitly wants Python in a Code node, when migrating old Pyodide/&quot;Python (Beta)&quot; code that used _input/_json/_node/_now, or when a Python Code node fails with NameError, &quot;Security violations detected&quot;, &quot;Import of standard library module … is disallowed&quot;, &quot;__build_class__ not found&quot;, &quot;A &#x27;json&#x27; property isn&#x27;t a dictionary&quot;, or &quot;Python runner unavailable&quot;. Covers the only two variables (_items/_item), dict-only access, imports blocked by default, the sandbox&#x27;s denied builtins, accepted return shapes, and how errors interact with onError. JavaScript is the default for Code nodes — native Python has no n8n helpers and, by default, no imports. EXCEPTION — for Python in the AI-agent-callable Custom Code Tool (@n8n/n8n-nodes-langchain.toolCode), use the n8n-code-tool skill instead (input is _query, return must be a string).
+
+Write Python code in n8n Code nodes. Use when writing Python in n8n, using _input/_json/_node syntax, working with standard library, or need to understand Python limitations in n8n Code nodes.</p><h2>When to use</h2><ul><li>✅ You need `statistics` module for statistical operations</li><li>✅ You&#x27;re significantly more comfortable with Python syntax</li><li>✅ Your logic maps well to list comprehensions</li><li>✅ You need specific standard library functions</li><li>✅ You need HTTP requests ($helpers.httpRequest())</li><li>✅ You need advanced date/time (DateTime/Luxon)</li><li>✅ You want better n8n integration</li><li>✅ **For 95% of use cases** (recommended)</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../software-engineering/n8n-python-code-node/n8n-code-python.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe different n8n Python runtimes and contradict each other on core facts. The first copy (czlonkowski) targets n8n 2.x native Python (pythonNative), where legacy helpers like _input/_json are gone, only _items/_item exist, and imports are blocked by default. The second copy (sickn33) targets the older Pyodide &#x27;Python (Beta)&#x27; node, where _input/_json/_node are valid and standard library imports like json/datetime/re are available. Because they disagree on the available variables, the import policy, and the node version, crowning one would hide a real alternative for users on the other version.</pre>
+</body>
+</html>

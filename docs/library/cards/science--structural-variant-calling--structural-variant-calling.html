@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>structural-variant-calling</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / structural-variant-calling</p><h1>structural-variant-calling</h1><p class="meta">combined</p><p>Call structural variants (&gt;=50 bp deletions, insertions, inversions, duplications, translocations) from short- or long-read data by reconstructing four orthogonal signals (discordant pairs, split reads via the SA tag, read depth, local assembly). Covers Manta, DELLY, LUMPY/smoove, GRIDSS2, SvABA for short reads and Sniffles2, cuteSV, pbsv, dipcall/PAV for long reads, each mapped to the signals it fuses and the blind spots that follow. Use when choosing an SV caller from its signal set and failure modes, decoding the SVLEN-sign / symbolic-vs-BND / CIPOS VCF representation minefield, force-genotyping a cohort matrix instead of unioning discovery VCFs, merging populations with sequence-aware Truvari vs position-only SURVIVOR, parameterizing a Truvari benchmark, or deciding when short-read insertion recall forces a switch to long reads. Not for pure copy-number dosage (see copy-number/cnvkit-analysis).</p><h2>When to use</h2><ul><li>Detecting structural variants from short-read data</li><li>Calling germline SVs</li><li>Calling somatic SVs</li><li>Merging multiple SV callsets</li><li>Filtering SV calls</li><li>Annotating SVs</li></ul><h2>When not to use</h2><ul><li>Long-read SV calling</li><li>Standard SNV calling</li></ul><p><a href="../science/structural-variant-calling/structural-variant-calling.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same task but with different depth and scope. The first copy (OpenClaw) is a practical, command-line recipe book for short-read SV calling (Manta, Delly, LUMPY) with specific bash commands for configuration, execution, merging, and filtering. The second copy (GPTomics) is a conceptual and strategic guide that explains the underlying signals (RP, SR, RD, Assembly), maps callers to their signal strengths/blind spots, includes long-read callers (Sniffles2, cuteSV, pbsv), and discusses version compatibility and benchmarking (Truvari). The first copy lacks the theoretical framework and long-read details; the second copy lacks the specific, copy-pasteable command workflows for the short-read tools it mentions. Combining them provides both the &#x27;how&#x27; (commands) and the &#x27;why/when&#x27; (signal logic and caller selection).</pre>
+</body>
+</html>

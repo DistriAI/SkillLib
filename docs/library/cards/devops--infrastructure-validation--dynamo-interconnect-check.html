@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>dynamo-interconnect-check</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / dynamo-interconnect-check</p><h1>dynamo-interconnect-check</h1><p class="meta">separate</p><p>Validate that a Dynamo deployment&#x27;s NIXL/UCX/NCCL interconnect is ready for disaggregated serving over RDMA/NVLink. Use after recipe-runner brings a deployment up (especially disagg/multi-node) to confirm the KV transport is correct; use troubleshoot for diagnosing already-failed pods.</p><h2>When to use</h2><ul><li>Confirm that the transport disaggregated serving depends on actually works. A deployment can pass an endpoint smoke test while disagg is silently wrong: if NIXL/UCX cannot reach the peer worker over RDMA or NVLink, KV transfer falls back t…</li><li>After `dynamo-recipe-runner` deploys a **disagg** or multi-node recipe.</li><li>Before reporting disagg throughput/latency, so numbers reflect the real</li><li>When agg works but disagg is slow, hangs, or returns wrong output and you</li></ul><h2>When not to use</h2><ul><li>Read-only fabric probe; does not run a full pairwise NIXL transfer (requires two scheduled GPU pods and the in-pod NIXL test tools).</li><li>`skipped` results for missing tools (`ibstat`, `nvidia-smi`, `lsmod`) are inconclusive, not a pass.</li><li>Env-var check inspects the recipe text; values injected at runtime via initContainers or operator-applied envs are not detected.</li><li>Single-node agg deployments do not exercise the transport — this skill is for disagg / multi-node validation.</li></ul><p><a href="../devops/infrastructure-validation/dynamo-interconnect-check.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/dynamo-interconnect-check/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

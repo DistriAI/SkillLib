@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>extract-source-sample</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / extract-source-sample</p><h1>extract-source-sample</h1><p class="meta">separate</p><p>Given the path to a finished content-goose ad-run folder, extract everything that defines that ad — recipe shot list, VO script, characters, voices, world, atom-skills, master mp4 — and emit a `source-sample.json` in the exact shape the `upload-ad-sample` skill writes to the Goose Ads library. Also links every character and voice to the central character library at `&lt;repo-root&gt;/assets/character-library/` (repo-root derived from the run-dir, not a hardcoded path), and if a character isn&#x27;t in the library yet, adds it first then links. Use when the user wants to remix one of their existing ads — this skill produces the source JSON that the script-rewriting step and `remix-ad` consume.</p><h2>When to use</h2><ul><li>&quot;Extract the source-sample.json for `&lt;run&gt;`.&quot;</li><li>&quot;Get the upload-sample JSON for this ad so I can remix it.&quot;</li><li>&quot;Prep `&lt;run&gt;` for remix.&quot;</li><li>Rewrite the script for a new brand (that&#x27;s a separate agent step that</li><li>Render the remix (that&#x27;s the existing `remix-ad` skill).</li><li>Upload an ad to the library (that&#x27;s `upload-ad-sample`).</li></ul><p><a href="../data/source-extraction/extract-source-sample.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/ads/composites/extract-source-sample/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

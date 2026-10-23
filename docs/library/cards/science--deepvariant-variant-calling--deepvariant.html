@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>deepvariant</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / deepvariant</p><h1>deepvariant</h1><p class="meta">combined</p><p>Calls germline SNPs and indels with Google DeepVariant, which reframes variant calling as CNN image classification over multi-channel pileup tensors. Covers platform-specific model selection (WGS, WES, PACBIO, ONT_R104, HYBRID_PACBIO_ILLUMINA), one-shot run_deepvariant vs the three-stage make_examples/call_variants/postprocess_variants pipeline, GPU acceleration of call_variants, DeepTrio for family/trio and de-novo calling, and joint genotyping of gVCFs with GLnexus (not GenotypeGVCFs). Use when deciding DeepVariant vs GATK vs DRAGEN, picking the right --model_type for a sequencing platform, avoiding post-hoc GATK hard filters or BQSR that degrade CNN calls, calling de-novo variants in a trio, merging a DeepVariant cohort, or weighing GIAB-trained benchmark accuracy before clinical deployment.</p><h2>When to use</h2><ul><li>**DeepVariant** -- best indel accuracy and best difficult-region/long-read performance among open tools; generalizes across platforms with a model swap; needs no filter tuning. Default choice for indels, difficult regions, and long reads.</li><li>**GATK HaplotypeCaller** -- every parameter auditable, mature joint calling with reference-confidence squaring-off, and regulatory precedent. Prefer for very large cohorts needing GenomicsDB scaling or clinical pipelines already validated…</li><li>**DRAGEN** -- FPGA-accelerated, ~20-25 min per 30x genome, wins the difficult-to-map benchmarks; prefer for throughput when the hardware or cloud is available (subject to the GIAB-overfitting caveat below).</li></ul><p><a href="../science/deepvariant-variant-calling/deepvariant.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same core DeepVariant workflow but contain material, non-overlapping guidance. The first copy (OpenClaw) provides concrete, copy-pasteable commands for installation, the three-stage pipeline, GPU acceleration, platform-specific runs, GLnexus joint calling, quality metrics, and a complete workflow script. The second copy (GPTomics) provides critical conceptual constraints and decision logic that the first lacks: the prohibition against applying GATK hard filters/VQSR to DeepVariant output, the recommendation to skip BQSR, the distinction between germline and somatic calling, and a detailed model selection table explaining failure modes. It also includes version compatibility checks. Combining them is necessary to avoid hiding the critical &#x27;do not filter&#x27; constraint or the specific command templates.</pre>
+</body>
+</html>

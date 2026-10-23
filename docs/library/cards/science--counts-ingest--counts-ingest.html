@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>counts-ingest</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / counts-ingest</p><h1>counts-ingest</h1><p class="meta">separate</p><p>Imports gene expression count matrices from featureCounts, HTSeq, STAR ReadsPerGene, Salmon/kallisto via tximport or tximeta, RSEM, 10X Genomics MTX/H5, AnnData H5AD, and RDS. Handles silent-miscounting traps (featureCounts -p v2.0.2 API break, STAR strandedness column choice, salmon NumReads-sum without tximport, RSEM non-integer expected_count, GENCODE _PAR_Y suffix, zero-length-transcript TPM divide-by-zero), and encodes the tximport countsFromAbundance decision tree with the &quot;lengthScaledTPM is not TPM&quot; warning. Use when assembling a gene-by-sample count matrix from aligner or quantifier output, importing salmon/kallisto for DESeq2 vs limma-voom, choosing strandedness column for STAR, debugging zero-count panics, or building tx2gene mapping.</p><h2>When to use</h2><ul><li>assembling a gene-by-sample count matrix</li><li>importing salmon/kallisto for DESeq2 vs limma-voom</li><li>choosing strandedness column for STAR</li><li>debugging zero-count panics</li><li>building tx2gene mapping</li><li>parsing per-sample quantification</li><li>applying length-bias correction via tximport</li></ul><p><a href="../science/counts-ingest/counts-ingest.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>expression-matrix/counts-ingest/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

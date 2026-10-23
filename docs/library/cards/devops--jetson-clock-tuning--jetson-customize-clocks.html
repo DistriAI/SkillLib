@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-customize-clocks</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-customize-clocks</p><h1>jetson-customize-clocks</h1><p class="meta">separate</p><p>Use to lock/cap Jetson CPU/GPU/EMC clocks, toggle EMC/CPU DVFS, or change cpufreq governors by editing BPMP DTB and nvpower.sh pre-flash. Do NOT use for live tuning or nvpmodel edits.</p><h2>When to use</h2><ul><li>The **BPMP DTB** at `Linux_for_Tegra/bootloader/&lt;BPFDTB_FILE&gt;` — per-clock `max-rate-custom` ceilings, plus the EMC DVFS gate (bwmgr + cactmon on all SoCs; osp-controller on T26x only).</li><li>**nvpower.sh** at `Linux_for_Tegra/rootfs/etc/systemd/nvpower.sh` — cpufreq / devfreq governors and (optionally) per-device min / max / static rates written to sysfs at boot.</li></ul><h2>When not to use</h2><ul><li>**Image-build-time only.** All edits land under `&lt;source.root_path&gt;/Linux_for_Tegra/` and reach the device only via `/jetson-promote-image` → `/jetson-flash-image`. Live-target tuning is out of scope.</li><li>**`max-rate-custom` only lowers the ceiling.** It must be strictly below `max-rate-maxn`; raising the silicon cap is not supported.</li><li>**Effective ceiling is two-layer.** The runtime ceiling is `min(BPMP cap, active-nvpmodel-mode cap)`. The nvpmodel cap is owned by `/jetson-customize-nvpmodel`; this skill does not edit it.</li><li>**SoC-conditional EMC DVFS gate.** Disabling EMC DVFS requires editing different node sets on T23x (bwmgr + cactmon) vs T26x (bwmgr + cactmon + delete `osp-controller`). Mis-detection produces undefined behavior.</li><li>**T23x GPU cap is multi-node.** The GPU clock is split across `nafll_gpusys` and every `nafll_gpcX`; the cap binds only when applied to all of them.</li><li>**`nvpower.sh` is package-managed.** It ships in `nvidia-l4t-init`; package upgrades clobber in-place edits. Long-lived setups should prefer a systemd drop-in or sibling helper.</li><li>**ODMDATA wins.** When an ODMDATA token covers a property, the token overrides direct BPMP DTS edits at flash time. Direct BPMP DTS edits are the fallback for properties no NVIDIA token reaches.</li><li>**`max-rate-maxn` and `lateinit` are off-limits.** `max-rate-maxn` is the silicon ceiling (read-only). `lateinit` is for boot-time clock init, not ceiling overrides — never touch either.</li></ul><p><a href="../devops/jetson-clock-tuning/jetson-customize-clocks.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-customize-clocks/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

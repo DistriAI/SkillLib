@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>qpcr-primers</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / qpcr-primers</p><h1>qpcr-primers</h1><p class="meta">separate</p><p>Co-designs qPCR/RT-qPCR primers and hydrolysis (TaqMan) or molecular-beacon probes with primer3-py (PRIMER_PICK_INTERNAL_OLIGO, PRIMER_INTERNAL_* tags), for assays whose deliverable is a quantitative measurement device. Covers why amplification efficiency (90-110%, slope -3.6 to -3.1) and single-product specificity make the 2^-ddCq / Pfaffl math valid, why the short amplicon (70-150 bp), tight Tm, and zero-dimer requirement exist, the coupled probe rules (probe Tm 8-10 C above primers so it is bound when Taq&#x27;s exonuclease cleaves it; no 5&#x27; G as it quenches the reporter; C-rich strand; primer3 has NO no-5&#x27;-G tag so enforce PRIMER_INTERNAL_MUST_MATCH_FIVE_PRIME=HNNNN), gDNA exclusion by exon-junction spanning AND why pseudogenes defeat it, SYBR melt-curve QC, and reference-gene validation (geNorm/NormFinder). Use when designing TaqMan/SYBR assays, exon-spanning primers, probes, or matched-efficiency multiplex panels. Genome specificity is primer-specificity; dimers primer-validation; st…</p><h2>When to use</h2><ul><li>Designing TaqMan/SYBR assays</li><li>Designing exon-spanning primers</li><li>Designing probes</li><li>Designing matched-efficiency multiplex panels</li><li>Co-designing qPCR/RT-qPCR primers and probes</li></ul><h2>When not to use</h2><ul><li>Genome-wide specificity</li><li>Pseudogene checking</li><li>Intramolecular dimers/hairpins of the oligos and probe</li><li>Standard (non-quantitative) PCR</li></ul><p><a href="../science/primer-design/qpcr-primers.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>primer-design/qpcr-primers/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

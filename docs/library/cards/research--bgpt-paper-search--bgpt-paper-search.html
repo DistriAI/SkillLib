@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>bgpt-paper-search</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / bgpt-paper-search</p><h1>bgpt-paper-search</h1><p class="meta">combined</p><p>Search scientific papers and retrieve structured experimental data extracted from full-text studies via the BGPT MCP server. Returns 25+ fields per paper including methods, results, sample sizes, quality scores, and conclusions. Use for literature reviews, evidence synthesis, and finding experimental details not available in abstracts alone.
+
+Searches BGPT scientific papers by topic or DOI and retrieves claim-level evidence extracted from full text, including experiments, reported statistics, scope, limitations, and provenance. Use for literature reviews, evidence synthesis, and finding experimental details beyond abstracts.</p><h2>When to use</h2><ul><li>Searching for scientific papers with specific experimental details</li><li>Conducting systematic or scoping literature reviews</li><li>Finding quantitative results, sample sizes, or effect sizes across studies</li><li>Comparing methodologies used in different studies</li><li>Looking for papers with quality scores or evidence grading</li><li>Needing structured data from full-text papers (not just abstracts)</li><li>Building evidence tables for meta-analyses or clinical guidelines</li><li>Use BGPT to find full-text-derived evidence for a research question or a known DOI. It returns extracted claims and their supporting experiments, rather than only bibliographic metadata. Use these records to build a traceable evidence tabl…</li></ul><h2>When not to use</h2><ul><li>Complete systematic-review search</li><li>Validated risk-of-bias assessment</li></ul><p><a href="../research/bgpt-paper-search/bgpt-paper-search.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe the same BGPT MCP paper-search skill but disagree on the tool contract, connection method, and result semantics. The K-Dense copy is a newer, schema-checked contract (v1.3, 2026-09-30) that documents specific tool arguments (num_results, days_back, min_citations, study_type, output_format), distinguishes evidence/full/legacy formats, and warns that returned records may lack claim-level provenance. The FreedomIntelligence copy is an older, higher-level overview that advertises 25+ fields, quality scores, and a free tier of 50 searches, and recommends the SSE endpoint and the bgpt-mcp npm package. Because each copy contains material steps or constraints the other lacks, and they conflict on the result contract and setup, crowning one would hide a real alternative.</pre>
+</body>
+</html>

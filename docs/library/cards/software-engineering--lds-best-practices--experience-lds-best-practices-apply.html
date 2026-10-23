@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>experience-lds-best-practices-apply</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / experience-lds-best-practices-apply</p><h1>experience-lds-best-practices-apply</h1><p class="meta">authentic</p><p>Use when reviewing or implementing Lightning Data Service best practices in an LWC (.js, .html, .js-meta.xml) — UIAPI vs Apex, refreshApex / notifyRecordUpdateAvailable, @salesforce/schema imports, LDS record-form data patterns. TRIGGER on \&quot;apply LDS best practices to this LWC\&quot;, \&quot;review this LWC for LDS best-practice issues\&quot;, \&quot;review this component for Lightning Data Service issues\&quot;, \&quot;UIAPI or Apex for this data?\&quot;, \&quot;fix stale data after record save\&quot;, \&quot;sync LDS cache\&quot;, \&quot;use @salesforce/schema for field names\&quot;, \&quot;choose between getRecord and Apex\&quot;. DO NOT TRIGGER when building a new LWC (use experience-lwc-generate), applying SLDS design tokens (use design-systems-slds-apply), picking or wiring a `lightning-*` base component&#x27;s props/events/slots generically (use experience-lwc-base-components-integrate — this skill covers only the LDS data-layer rationale, even when the fix involves a base record form), or for security / RTL / accessibility reviews (separate passes).</p><h2>When to use</h2><ul><li>Reviewing a component&#x27;s data layer for LDS compliance (hand-rolled forms, stringly-typed field names, un-synchronized Apex + LDS, Apex overuse).</li><li>Implementing CRUD on standard or custom objects.</li><li>Deciding between `getRecord`, `getRecords`, `createRecord`, `updateRecord`, `deleteRecord`, base record form components, or Apex.</li><li>Fixing stale-data bugs after record mutation.</li><li>Adding schema imports (`@salesforce/schema/...`) to replace hard-coded field/object names.</li><li>GraphQL query/mutation generation — handled out-of-band today.</li><li>Upstream data-requirements discovery — handled out-of-band today.</li><li>SLDS class / design-token work (use `design-systems-slds-apply`).</li></ul><p><a href="../software-engineering/lds-best-practices/experience-lds-best-practices-apply.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/experience-lwc/skills/experience-lds-best-practices-apply/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scrnaseq-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / scrnaseq-pipeline</p><h1>scrnaseq-pipeline</h1><p class="meta">separate</p><p>Orchestrates the end-to-end single-cell RNA-seq pipeline from 10x Cell Ranger output to annotated cell types, chaining ambient-RNA removal, doublet detection, MAD-adaptive QC, normalization, integration, clustering, marker annotation, and (separately) pseudobulk DE + differential abundance. Use when honoring the made-once counting commitments (reference build/Ensembl vintage, --include-introns, cell-calling, feature namespace), ordering correct-then-detect-then-normalize (ambient before doublet before normalize), running per-sample QC before merge, integrating-then-clustering (never testing on integrated values), aggregating to pseudobulk for condition DE instead of cells-as-replicates, or pairing DE with differential abundance. Hands mechanism to the single-cell component skills; not a re-teach of any single step.</p><h2>When to use</h2><ul><li>single-cell RNA-seq pipeline orchestration</li><li>ambient-RNA removal</li><li>doublet detection</li><li>MAD-adaptive QC</li><li>normalization and batch integration</li><li>clustering and marker annotation</li><li>pseudobulk DE and differential abundance</li><li>hashing demultiplexing</li></ul><h2>When not to use</h2><ul><li>re-teaching any single step mechanism</li><li>differential expression on integrated values</li><li>cells-as-replicates for condition DE</li></ul><p><a href="../science/single-cell-rna-seq-analysis/scrnaseq-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/scrnaseq-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

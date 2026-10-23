@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hybridclr</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / hybridclr</p><h1>hybridclr</h1><p class="meta">separate</p><p>Automate HybridCLR C# hot-update prebuild</p><h2>When to use</h2><ul><li>Configuring hot-update assemblies</li><li>Compiling hot-update DLLs</li><li>Generating AOTGenericReferences/link.xml</li><li>Diagnosing HybridCLR setup</li><li>Wiring output into YooAsset builds</li><li>Reading HybridCLR settings</li><li>Probing il2cpp_plus installation state</li><li>Staging hot-update DLLs</li></ul><h2>When not to use</h2><ul><li>**No install skill.** `InstallerController.InstallDefaultHybridCLR()` is reachable by reflection but deliberately not exposed: it clones two git repos over the network and copies the editor&#x27;s entire il2cpp tree, with no progress reporting…</li><li>**Synchronous execution.** These operations are not `AsyncJobService` jobs — HybridCLR&#x27;s commands are synchronous main-thread Unity APIs with no step boundaries to pump, so there is no `jobId` to poll. Treat them as long blocking calls.</li><li>**Workflow undo is partial for generation.** `hybridclr_settings_set` restores fully. `hybridclr_compile_dlls` and `hybridclr_copy_hotupdate_dlls` restore the affected directory from a file backup under `Library/UnitySkills/HybridCLRBackup…</li><li>**Backups keep 5 generations per label.** Older undo steps for `compile_dlls` / `copy_hotupdate_dlls` degrade to &quot;added files removed, previous files not restored&quot;. `Library/` is not version-controlled, so backups do not survive a Library…</li><li>**No control over build processors.** HybridCLR&#x27;s `IPreprocessBuildWithReport` / `IPostprocessBuildWithReport` hooks (`CheckSettings`, `CopyStrippedAOTAssemblies`, `PatchScriptingAssemblyList`, the Xcode source injectors) run automatically…</li><li>**Version drift is reported, not guessed.** Reflection targets are anchored to 8.12.0. If a member cannot be resolved the skill returns `MISSING_PACKAGE` naming it, rather than silently doing nothing.</li><li>**`hybridclr_aot_generic_refs` parses generated text, not IL.** `patchedAOTAssemblyList` is read exactly from the `PatchedAOTAssemblyList` initializer, but `genericTypeCount` counts comment lines in the generator&#x27;s `// {{ AOT generic types…</li></ul><p><a href="../software-engineering/unity-hot-reload/hybridclr.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Besty0728/Unity-Skills">Besty0728/Unity-Skills</a></td><td><code>SkillsForUnity/unity-skills~/skills/hybridclr/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

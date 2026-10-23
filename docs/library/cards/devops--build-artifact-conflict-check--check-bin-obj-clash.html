@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>check-bin-obj-clash</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / check-bin-obj-clash</p><h1>check-bin-obj-clash</h1><p class="meta">separate</p><p>Detects MSBuild projects with conflicting OutputPath or IntermediateOutputPath. USE FOR: builds failing with &#x27;Cannot create a file when that file already exists&#x27;, &#x27;The process cannot access the file because it is being used by another process&#x27;, intermittent build failures that succeed on retry, or missing/overwritten outputs in multi-project or multi-targeting builds where bin/obj (or project.assets.json) collide. Common causes: shared OutputPath, missing AppendTargetFrameworkToOutputPath, extra global properties (e.g. PublishReadyToRun), or SetTargetFramework on a ProjectReference to a single-targeting project. DO NOT USE FOR: file access errors unrelated to MSBuild (OS-level locking), single-project single-TFM builds, non-MSBuild build systems.</p><h2>When to use</h2><ul><li>`Cannot create a file when that file already exists` during NuGet restore</li><li>`The process cannot access the file because it is being used by another process`</li><li>Intermittent build failures that succeed on retry</li><li>Missing output files or unexpected overwriting</li></ul><p><a href="../devops/build-artifact-conflict-check/check-bin-obj-clash.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-msbuild/skills/check-bin-obj-clash/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>context-degradation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / context-degradation</p><h1>context-degradation</h1><p class="meta">combined</p><p>This skill should be used for diagnosing and mitigating context degradation: lost-in-middle failures, context poisoning, context clash, context confusion, attention-pattern issues, and agent performance degradation caused by accumulated or conflicting context.
+
+Language models exhibit predictable degradation patterns as context length increases. Understanding these patterns is essential for diagnosing failures and designing resilient systems.</p><h2>When to use</h2><ul><li>Agent performance degrades unexpectedly during long conversations</li><li>Debugging cases where agents produce incorrect or irrelevant outputs</li><li>Designing systems that must handle large contexts reliably</li><li>Evaluating context engineering choices for production systems</li><li>Investigating &quot;lost in middle&quot; phenomena in agent outputs</li><li>Analyzing context-related failures in agent behavior</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../agent-tooling/context-degradation/context-degradation.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies cover the same five degradation patterns but diverge on scope and actionable constraints. The muratcankoylan copy is a diagnostic and mitigation procedure with specific activation boundaries (explicitly excluding adjacent skills like context-fundamentals and context-optimization) and detailed recovery steps (e.g., truncating to before the poisoning point). The sickn33 copy is a broader educational overview that includes a sixth pattern (Context Confusion) and architectural mitigation strategies (compaction, masking, partitioning) that the first copy lacks. Because the first copy omits the confusion pattern and the second lacks the specific skill-routing and recovery constraints, crowning one would hide a real alternative approach to handling context failures.</pre>
+</body>
+</html>

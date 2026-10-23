@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>stripe-integration</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / stripe-integration</p><h1>stripe-integration</h1><p class="meta">combined</p><p>Implement Stripe payment processing for robust, PCI-compliant payment flows including checkout, subscriptions, and webhooks. Use when integrating Stripe payments, building subscription systems, or implementing secure checkout flows.
+
+Implement and verify Stripe checkout, subscriptions, webhooks and refunds with explicit server-side authorization and retry boundaries.</p><h2>When to use</h2><ul><li>Implementing payment processing in web/mobile applications</li><li>Setting up subscription billing systems</li><li>Handling one-time payments and recurring charges</li><li>Processing refunds and disputes</li><li>Managing customer payment methods</li><li>Implementing SCA (Strong Customer Authentication) for European payments</li><li>Building marketplace payment flows with Stripe Connect</li></ul><h2>When not to use</h2><ul><li>The task is unrelated to stripe integration</li><li>You need a different domain or tool outside this scope</li><li>API versions, event payloads and SDK exception namespaces differ; verify the installed version rather than combining examples from different releases.</li><li>Request idempotency keys must stay bound to the same logical operation and parameters; a new key on every retry can duplicate a charge or refund.</li><li>Webhook deduplication alone does not prevent duplicate business effects from different events.</li><li>Client success, test-card success and a signature check do not establish full fulfillment, tax, compliance or subscription correctness.</li><li>Customer, payment-method, dispute and refund mutations require server-side ownership/role checks and explicit task authorization.</li></ul><p><a href="../software-engineering/stripe-payment-integration/stripe-integration.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies share the same core structure (payment flows, webhooks, subscriptions, customer management, and Python/JS snippets), but the second copy adds material safety and operational constraints that the first lacks: an explicit &#x27;Inputs and safety boundary&#x27; section, server-side authorization requirements, idempotency keys in the code patterns, environment-variable key loading, and a note to inspect the installed SDK/API version. The first copy is a cleaner, more complete procedural guide with more patterns, but it omits these security and idempotency steps. Crowning one would hide the other&#x27;s real alternative approach to safe integration.</pre>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>skill-check</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / skill-check</p><h1>skill-check</h1><p class="meta">authentic</p><p>Validate Claude Code skills against the agentskills specification. Catches structural, semantic, and naming issues before users do.</p><h2>When to use</h2><ul><li>Use when user says &quot;check skill&quot;, &quot;skillcheck&quot;, or &quot;validate SKILL.md&quot;</li><li>Use when reviewing a skill before publishing to a marketplace</li><li>Use when debugging why a skill doesn&#x27;t trigger correctly</li><li>Use when onboarding a team to skill authoring standards</li><li>Do NOT use for anti-slop detection, security scanning, or token analysis; use [SkillCheck Pro](https://getskillcheck.com) for those</li></ul><h2>When not to use</h2><ul><li>Read-only: does not modify any files</li><li>Free tier covers structural, semantic, and naming checks only</li><li>Anti-slop, security, WCAG, token, enterprise, and workflow checks require [SkillCheck Pro](https://getskillcheck.com)</li><li>Semantic checks (contradiction detection, wisdom/platitude) are heuristic with ~5% false positive rate</li><li>Does not validate referenced files or scripts; only checks SKILL.md content</li><li>Single-file validation; does not cross-check against other skills in the same directory</li></ul><p><a href="../agent-tooling/skill-validation/skill-check.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/skill-check/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

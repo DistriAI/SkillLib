@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>chembl-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / chembl-database</p><h1>chembl-database</h1><p class="meta">combined</p><p>Query ChEMBL&#x27;s bioactive molecules and drug discovery data. Search compounds by structure/properties, retrieve bioactivity data (IC50, Ki), find inhibitors, perform SAR studies, for medicinal chemistry.
+
+Query the ChEMBL database for bioactive molecules, targets, bioactivities, and approved drugs; use this when you need to filter by physicochemical properties (e.g., MW, LogP), chemical structure (SMILES), or retrieve drug mechanism information.</p><h2>When to use</h2><ul><li>**Compound searches**: Finding molecules by name, structure, or properties</li><li>**Target information**: Retrieving data about proteins, enzymes, or biological targets</li><li>**Bioactivity data**: Querying IC50, Ki, EC50, or other activity measurements</li><li>**Drug information**: Looking up approved drugs, mechanisms, or indications</li><li>**Structure searches**: Performing similarity or substructure searches</li><li>**Cheminformatics**: Analyzing molecular properties and drug-likeness</li><li>**Target-ligand relationships**: Exploring compound-target interactions</li><li>**Drug discovery**: Identifying inhibitors, agonists, or bioactive molecules</li></ul><p><a href="../science/chembl-query/chembl-database.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies overlap heavily on the core ChEMBL Python client usage, but each has material steps or constraints the others lack. The Vibe-Skills and OpenClaw copies are near-identical and include structure-based similarity/substructure search examples, a drug_indication endpoint, and a pandas export section. The aipoch copy adds a complete runnable main() example, explicit pagination/slicing guidance, a note that not all bioactivity records contain all fields, and references to an API reference file and a CLI wrapper script. Crowning one copy would hide the aipoch-specific operational guidance and the Vibe/OpenClaw-specific structure-search and drug-indication steps.</pre>
+</body>
+</html>

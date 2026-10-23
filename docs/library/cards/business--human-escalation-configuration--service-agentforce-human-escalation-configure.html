@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-agentforce-human-escalation-configure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / service-agentforce-human-escalation-configure</p><h1>service-agentforce-human-escalation-configure</h1><p class="meta">authentic</p><p>Use to configure and verify Agentforce agent-to-human escalation, including human handoff, a staffed fallback queue, and failure-threshold directives. Triggers: configure agent escalation, escalate to a human agent, agent handoff to a queue, configure a human escalation queue, set an Agentforce fallback handoff. Do not use to create an agent or configure inbound channel routing; use service-agentforce-channel-configure for inbound routing.</p><h2>When to use</h2><ul><li>**In scope**: enabling the escalation topic (`canEscalate`); wiring `outboundRouteConfigs` on the `GenAiPlannerBundle` Messaging surface; deploying the bundled QueueBased outbound `RoutingFlow`; create-or-adopt of the human queue (`QueueSo…</li><li>**Out of scope**: creating/activating the agent; inbound channel transport (`sessionHandlerAsa` on the `MessagingChannel`) and the agent&#x27;s outbound `connection` block (owned by `service-agentforce-channel-configure`); provisioning the mess…</li></ul><p><a href="../business/human-escalation-configuration/service-agentforce-human-escalation-configure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/service-engagement/skills/service-agentforce-human-escalation-configure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

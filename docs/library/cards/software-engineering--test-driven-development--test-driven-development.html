@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>test-driven-development</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / test-driven-development</p><h1>test-driven-development</h1><p class="meta">combined</p><p>Use when implementing any feature or bugfix, before writing implementation code
+
+Drives development with tests using the red-green-refactor loop. Use when implementing any logic, fixing any bug, or changing any behavior. Use when you need to prove that code works, when a bug report arrives, or when you&#x27;re about to modify existing functionality. Use when asked to add tests to a function, fix a bug in it or change its behavior, even when the code is pasted inline and the request does not mention tests.</p><h2>When to use</h2><ul><li>New features</li><li>Bug fixes</li><li>Refactoring</li><li>Behavior changes</li><li>Throwaway prototypes</li><li>Generated code</li><li>Configuration files</li><li>Implementing any new logic or behavior</li></ul><h2>When not to use</h2><ul><li>A passing unit test does not prove browser, packaged-runtime or provider integration behavior.</li><li>Retry examples assume retry-safe operations; production retries need explicit idempotency, cancellation and retryable-error policy.</li><li>Test-first order does not prevent incorrect requirements or over-mocking. Inspect assertions and real boundaries.</li><li>Preserve unrelated changes and use the project’s existing test commands rather than assuming every `npm test` accepts the same arguments.</li></ul><p><a href="../software-engineering/test-driven-development/test-driven-development.html">Skill page</a></p><h2>Conflict</h2><pre>The copies overlap heavily on the red-green-refactor loop, but they disagree on how to handle existing code and on the strictness of the &#x27;test-first&#x27; rule. obra/superpowers and LeoYeAI/openclaw-master-skills enforce an &#x27;Iron Law&#x27; where any code written before a failing test must be deleted. In contrast, sickn33/agentic-awesome-skills explicitly forbids deleting user work or resetting branches, instead advocating for characterization tests when implementation already exists. addyosmani/agent-skills adds a unique &#x27;Discover the Stack First&#x27; step and a &#x27;Prove-It Pattern&#x27; for bug fixes that the others lack. Because crowning one copy would either hide the &#x27;delete code&#x27; rule or the &#x27;preserve work&#x27; rule, a combined instruction is required.</pre>
+</body>
+</html>

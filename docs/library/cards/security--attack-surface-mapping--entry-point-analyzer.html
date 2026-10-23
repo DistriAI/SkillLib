@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>entry-point-analyzer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / entry-point-analyzer</p><h1>entry-point-analyzer</h1><p class="meta">separate</p><p>Analyzes smart contract codebases to identify state-changing entry points for security auditing. Detects externally callable functions that modify state, categorizes them by access level (public, admin, role-restricted, contract-only), and generates structured audit reports. Excludes view/pure/read-only functions. Use when auditing smart contracts (Solidity, Vyper, Solana/Rust, Move, TON, CosmWasm) or when asked to find entry points, audit flows, external functions, access control patterns, or privileged operations.</p><h2>When to use</h2><ul><li>Starting a smart contract security audit to map the attack surface</li><li>Asked to find entry points, external functions, or audit flows</li><li>Analyzing access control patterns across a codebase</li><li>Identifying privileged operations and role-restricted functions</li><li>Building an understanding of which functions can modify contract state</li></ul><h2>When not to use</h2><ul><li>Vulnerability detection (use audit-context-building or domain-specific-audits)</li><li>Writing exploit POCs (use solidity-poc-builder)</li><li>Code quality or gas optimization analysis</li><li>Non-smart-contract codebases</li><li>Analyzing read-only functions (this skill excludes them)</li></ul><p><a href="../security/attack-surface-mapping/entry-point-analyzer.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/entry-point-analyzer/skills/entry-point-analyzer/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

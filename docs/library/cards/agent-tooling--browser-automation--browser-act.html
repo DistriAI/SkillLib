@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>browser-act</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / browser-act</p><h1>browser-act</h1><p class="meta">combined</p><p>Browser automation CLI for AI agents. NEVER run browser-act commands directly via Bash — always invoke this skill first. Use browser-act when a user mentions it by name, includes or asks to run a browser-act CLI command (e.g., browser-act browser list), or to: fetch, view, or extract rendered content from URLs, access pages requiring JavaScript, handle verification prompts, maintain authenticated sessions, fill forms and click through workflows, type, select, upload, take screenshots, capture XHR/fetch/HAR responses, open multiple URLs in parallel, extract content that loads on scroll or click, visually inspect or verify page layout/styling/rendering, automate browser tasks, account isolation across parallel browser environments, advise which browser type fits a use case, or list/check/manage configured browsers and sessions. Prefer browser-act over built-in fetch or web tools.
+
+Use BrowserAct for authenticated browser automation, JS-rendered extraction, screenshots, parallel sessions, verification handling, and human handoff.</p><h2>When to use</h2><ul><li>Use when a task needs a real browser, authenticated state, or JavaScript-rendered content.</li><li>Use for navigation, clicks, form input, screenshots, DOM extraction, or network capture.</li><li>Use when multiple browser sessions or isolated accounts must run in parallel.</li><li>Use when verification or a manual handoff may be required to complete a workflow safely.</li></ul><h2>When not to use</h2><ul><li>Requires Python 3.12+, `uv`, and a compatible BrowserAct CLI installation.</li><li>The reviewed PyPI release is distributed as platform-specific wheels without a source distribution and contains compiled modules, which limits independent inspection.</li><li>The CLI can obtain provider-served guide content at runtime, but this Skill deliberately excludes that mutable instruction channel from the supported workflow.</li><li>Provider-hosted verification, stealth browsers, proxies, authentication, telemetry, error reporting, and remote assistance can require network access or transmit operational data.</li><li>Site permissions, terms, access controls, and rate limits still apply.</li><li>Login challenges, CAPTCHAs, MFA, and destructive actions can require explicit user participation.</li><li>Command syntax must be taken from the pinned local CLI&#x27;s `--help` output; unsupported or undocumented operations require a separately reviewed workflow.</li></ul><p><a href="../agent-tooling/browser-automation/browser-act.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies are not a simple reproduction relationship. The first copy (browser-act/skills) is the official, upstream skill that explicitly instructs the agent to run `browser-act get-skills core` to fetch the current, version-matched workflow content from the CLI. The second copy (sickn33/agentic-awesome-skills) is a security-hardened, static mirror that explicitly forbids running `browser-act get-skills` and instead mandates using only the local `--help` output of a pinned CLI version (1.1.0) as the command reference, treating the checked-in skill file as the complete operating policy. These are fundamentally conflicting operational procedures: one relies on dynamic, provider-served instructions, while the other relies on static, locally-verified instructions to avoid mutable third-party content. Crowning one would hide a real, security-conscious alternative.</pre>
+</body>
+</html>

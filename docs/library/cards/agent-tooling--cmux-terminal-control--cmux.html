@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cmux</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / cmux</p><h1>cmux</h1><p class="meta">combined</p><p>Control the cmux macOS terminal app: workspaces, panes, surfaces, browsers, notifications, settings, and hooks. Use only when the user explicitly names cmux. Read before running any cmux command.
+
+Control cmux workspaces, panes, surfaces, and agent sessions safely from macOS terminal workflows.</p><h2>When to use</h2><ul><li>Use when you need to inspect, create, close, or rearrange cmux panes, surfaces, or workspaces.</li><li>Use when you need to send input to or monitor agents running inside cmux.</li></ul><h2>When not to use</h2><ul><li>Adapted from `davidondrej/skills`; verify local paths, tools, credentials, and agent features before acting.</li><li>For commands, remote access, scheduling, browser automation, or file-changing workflows, get explicit user approval and confirm the target environment first.</li></ul><p><a href="../agent-tooling/cmux-terminal-control/cmux.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies overlap heavily on cmux topology, ref syntax, and send-input rules, but each contains material steps the other lacks. The davidondrej copy is the more complete upstream procedure (it includes the inspect/read/send sequence, surface-health checks, ownership/focus preservation, and a troubleshooting section). The sickn33 copy adds a shell detection snippet, a broader fast-start topology command set (move/split/reorder/close), and a distinct polling interval for Pi agents. Because the copies disagree on polling cadence and the catalog copy explicitly omits supporting reference files, crowning one would hide a real alternative and a real conflict.</pre>
+</body>
+</html>

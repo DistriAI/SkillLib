@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-de-headless-channel-configure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / service-de-headless-channel-configure</p><h1>service-de-headless-channel-configure</h1><p class="meta">separate</p><p>Top-level orchestrator: given a messaging channel type and its inputs, produces an activated Enhanced `MessagingChannel` in the target org — without the Meta/LINE/Apple setup popups. Prompts for `{MESSAGE_TYPE}` if not supplied, then sequences insert → route → consent → activate via the type-agnostic dispatcher (`service-de-channel-create`) plus the shared routing/consent/activation leaves. Resumes from partial state on re-run. Use to set up an Enhanced channel (WhatsApp, Facebook, LINE, Apple, SMS) end-to-end, bypassing in-org setup popups. Do not use for a single stage of an already-inserted channel — use the matching leaf skill (`service-de-channel-activate`, `service-de-channel-settings-configure`, `service-de-channel-routing-configure`) instead.</p><h2>When not to use</h2><ul><li>**You only want one step.** Invoke the leaf skill directly (`service-de-channel-create`, `service-de-channel-routing-configure`, `service-de-channel-activate`). This orchestrator is for the full automated path from nothing → activated chan…</li><li>**You want to run stages independently in separate conversation turns.** This orchestrator runs all stages consecutively in one response. If you need manual control between stages, invoke the leaf skills individually.</li><li>**You want a message type outside `WhatsApp` / `Line` / `AppleBusinessChat` / `Facebook` / `Text`.** The dispatcher will return `unsupported-type`. WeChat / MsCopilot / Alexa would need their own leaves + a dispatcher update.</li><li>**The prereq hasn&#x27;t been met (WABA not shared, LINE channel not created, Apple account not registered, SMS number not provisioned).** The per-type insert skill&#x27;s Stage 2-equivalent surfaces this clearly and returns; no orchestration fixes…</li></ul><p><a href="../business/headless-channel-configuration/service-de-headless-channel-configure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>skills/service-de-headless-channel-configure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

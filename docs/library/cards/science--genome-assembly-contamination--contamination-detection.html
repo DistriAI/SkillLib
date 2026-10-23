@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>contamination-detection</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / contamination-detection</p><h1>contamination-detection</h1><p class="meta">separate</p><p>Detects and removes contamination in genome assemblies via two disjoint workflows - foreign-sequence screening of a single-organism (eukaryote/isolate) assembly with NCBI FCS-GX (GenBank-submission-mandatory), FCS-adaptor, and BlobToolKit blob plots; and MAG/bin quality assessment with CheckM2 plus GUNC (chimerism) plus GTDB-Tk taxonomy, judged against MIMAG. Covers why CheckM2 alone is blind to disjoint-marker chimeras, the FCS-GX RAM wall, organelle/NUMT triage, strain heterogeneity, and the HGT-vs-contamination (tardigrade) trap. Use when screening an assembly for foreign contamination before GenBank submission, assessing MAG completeness/contamination/chimerism, deciding which contigs to remove, or distinguishing real HGT from contaminant contigs.</p><h2>When to use</h2><ul><li>screening an assembly for foreign contamination before GenBank submission</li><li>assessing MAG completeness, contamination, and chimerism</li><li>deciding which contigs to remove</li><li>distinguishing real HGT from contaminant contigs</li><li>foreign-sequence screening of a single-organism assembly</li><li>MAG/bin quality assessment</li><li>organelle/NUMT triage</li><li>strain heterogeneity analysis</li></ul><h2>When not to use</h2><ul><li>running CheckM2 on a eukaryotic nuclear assembly</li><li>running FCS-GX on a single MAG to determine MIMAG contamination percentage</li></ul><p><a href="../science/genome-assembly-contamination/contamination-detection.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>genome-assembly/contamination-detection/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

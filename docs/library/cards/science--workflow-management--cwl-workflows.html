@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cwl-workflows</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / cwl-workflows</p><h1>cwl-workflows</h1><p class="meta">separate</p><p>Authors portable, strongly-typed bioinformatics pipelines in the Common Workflow Language (CWL v1.2) as CommandLineTool/Workflow/ExpressionTool documents, validated with cwltool and run at scale on Toil/Arvados/Calrissian. Use when deciding CWL (portability/provenance/regulated) vs Nextflow/WDL/Snakemake; declaring secondaryFiles for indexed companions (.bai/.fai/.dict/.tbi and the caret rule); putting resources/containers under requirements (must-hold) vs hints (advisory) to avoid silent OOM; choosing scatterMethod (dotproduct vs flat_/nested_crossproduct); preferring $(...) parameter refs over ${...} JavaScript for portability; pinning DockerRequirement images; or emitting a CWLProv provenance object for audited/clinical settings.</p><h2>When to use</h2><ul><li>Authoring CWL v1.2 pipelines</li><li>Validating CWL documents with cwltool</li><li>Running CWL workflows on Toil, Arvados, or Calrissian</li><li>Declaring secondaryFiles for indexed companions</li><li>Configuring resources and containers in requirements vs hints</li><li>Choosing scatterMethod for parallelization</li><li>Emitting CWLProv provenance objects</li><li>Deciding between CWL and Nextflow/WDL/Snakemake</li></ul><h2>When not to use</h2><ul><li>Authoring Nextflow pipelines</li><li>Authoring WDL pipelines</li><li>Authoring Snakemake pipelines</li><li>Using cwltool for large-scale production execution</li></ul><p><a href="../science/workflow-management/cwl-workflows.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflow-management/cwl-workflows/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

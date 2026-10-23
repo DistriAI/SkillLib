@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>bioservices</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / bioservices</p><h1>bioservices</h1><p class="meta">combined</p><p>Primary Python tool for 40+ bioinformatics services. Preferred for multi-database workflows: UniProt, KEGG, ChEMBL, PubChem, Reactome, QuickGO. Unified API for queries, ID mapping, pathway analysis. For direct REST control, use individual database skills (uniprot-database, kegg-database).
+
+Provides a Python interface to bioinformatics services including UniProt, KEGG, ChEMBL, Reactome, QuickGO, and UniChem. Used for cross-database protein annotation, pathway retrieval, chemical identifier mapping, and integrated biological data workflows with BioServices.</p><h2>When to use</h2><ul><li>Retrieving protein sequences, annotations, or structures from UniProt, PDB, Pfam</li><li>Analyzing metabolic pathways and gene functions via KEGG or Reactome</li><li>Searching compound databases (ChEBI, ChEMBL, PubChem) for chemical information</li><li>Converting identifiers between different biological databases (KEGG↔UniProt, compound IDs)</li><li>Running sequence similarity searches (BLAST, MUSCLE alignment)</li><li>Querying gene ontology terms (QuickGO, GO annotations)</li><li>Accessing protein-protein interaction data (PSICQUIC, IntactComplex)</li><li>Mining genomic data (BioMart, ArrayExpress, ENA)</li></ul><h2>When not to use</h2><ul><li>Direct REST control of individual databases</li></ul><p><a href="../science/bioinformatics-service-workflows/bioservices.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies overlap on the core BioServices use case (UniProt, KEGG, UniChem, QuickGO, PSICQUIC) but each contains material steps or constraints the others lack. K-Dense-AI provides version-pinned installation, response-type validation, pagination/limit guidance, KEGG rate limits, and SIF namespace caveats. aipoch provides a broader cross-service example including QuickGO and PSICQUIC and optional dependencies. FreedomIntelligence provides BLAST asynchronous workflow, organism/pathway lookup methods, and a direct-REST alternative note. Crowning one would hide real alternatives and constraints.</pre>
+</body>
+</html>

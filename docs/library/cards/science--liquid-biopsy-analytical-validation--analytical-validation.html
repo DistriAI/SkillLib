@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>analytical-validation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / analytical-validation</p><h1>analytical-validation</h1><p class="meta">separate</p><p>Treats a ctDNA assay as a molecule-counting experiment at the Poisson edge and builds its analytical-validation case the measurement-science way. Covers the genome-equivalent currency (~330 haploid copies/ng), the lambda = input_GE x VAF sampling ceiling (lambda&gt;=3 for ~95% detection), the error-suppression ladder (raw NGS ~1e-3 -&gt; single-strand UMI ~1e-4/1e-5 -&gt; duplex &lt;1e-7), the CLSI EP17 LoB/LoD/LoD95/LoQ framework, the per-locus-vs-panel-integrated LoD distinction that lets bespoke MRD reach ppm, contrived/SEQC2 reference standards, and honest LoD reporting conditioned on input mass + consensus depth + replicate detection rate. Use when stating or trusting a sensitivity claim, designing a dilution-series validation, deciding how many genome equivalents are needed at a target VAF, choosing a single-locus vs panel-integrated LoD, or auditing a &quot;detects 0.1% VAF&quot; claim.</p><h2>When to use</h2><ul><li>stating or trusting a sensitivity claim</li><li>designing a dilution-series validation</li><li>deciding how many genome equivalents are needed at a target VAF</li><li>choosing a single-locus vs panel-integrated LoD</li><li>auditing a &#x27;detects 0.1% VAF&#x27; claim</li><li>quantifying the Poisson sampling ceiling</li><li>quantifying the error-suppression floor</li><li>defining a defensible sensitivity claim</li></ul><p><a href="../science/liquid-biopsy-analytical-validation/analytical-validation.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>liquid-biopsy/analytical-validation/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>warp-eval</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / warp-eval</p><h1>warp-eval</h1><p class="meta">separate</p><p>Evaluate whether an existing hot path is a credible NVIDIA Warp candidate. Use for irregular or spatial queries, particle or geometry simulation, branch-heavy loops, many small launches, host fallbacks, or large intermediates. CPU-only code and absent GPU dependencies are normal unless NVIDIA is prohibited. Exclude required cross-vendor or CPU-only deployment, vendor-lowered dense or NN layers, general Warp API questions, and already-selected Warp kernels. Contribution policy alone is not exclusion.</p><h2>When to use</h2><ul><li>Collect reproducible evidence about how a **narrow seam** in an existing codebase would behave in NVIDIA Warp. Report facts; the user decides. Name Warp as the option under evaluation in the first line, state that no adoption recommendatio…</li></ul><h2>When not to use</h2><ul><li>**Warp CPU kernels are serial and outside this skill&#x27;s evaluation scope.**</li><li>**Mesh and geometry queries compute in float32/int32** even behind a float64</li><li>**Warp does not follow semver.** Feature releases can break APIs, only the</li><li>**`latest` docs track development, not the shipped release.** Pin to the</li><li>**Kernel-only builtins are not resolvable from Python** —</li><li>**`enable_backward=False`** (kernel, module or global) removes adjoint</li></ul><p><a href="../software-engineering/model-evaluation/warp-eval.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/warp-eval/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

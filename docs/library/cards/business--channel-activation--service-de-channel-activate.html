@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-de-channel-activate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / service-de-channel-activate</p><h1>service-de-channel-activate</h1><p class="meta">separate</p><p>Activate an Enhanced `MessagingChannel` (WhatsApp/Apple/Facebook/SMS/RCS) by PATCHing `MessagingChannelUsage.DeploymentStatus` from `Disabled` to `Provisioning` via the REST sobject endpoint. The UDD save-hook dispatches by `MessageType` for the external callout (`WHATS_APP`→Meta `/register`, `FACEBOOK`→`subscribeFacebookPage`, `TEXT`→`registerCsotSms`; Apple/LINE need none), writes the terminal `Active`/`Error`, and flips `IsActive`. Synchronous on the HTTP response — WhatsApp returns 204 after Meta confirms (~15-21s); no-callout channels are near-instant. No Aura RPC, no CSRF cookies. Use to activate an already-inserted Enhanced channel headlessly via REST. Do not use for full end-to-end setup — use `service-de-headless-channel-configure`.</p><h2>When not to use</h2><ul><li>**The channel is already `IsActive=true`.** Re-firing is blocked by the API transition validator (`Active → Provisioning` is not in `getValidAPIStatusTransitions()`) — the PATCH would return 400. The Stage 1 precondition check catches this…</li><li>**Routing isn&#x27;t configured.** `activateChannelUsage` used to fail with `LiveMessageSetupException` / `nullQueueId` at the Apex entry point. With the REST path the same guard lives in `validateChannelReadinessOnProvisioning` — write with `S…</li><li>**The MCU doesn&#x27;t exist.** Can&#x27;t PATCH a row that&#x27;s missing. Run the insertion skill first — it always creates the MCU as a side-effect of `addChannel`.</li></ul><p><a href="../business/channel-activation/service-de-channel-activate.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>skills/service-de-channel-activate/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

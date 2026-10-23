@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>warp-debug-gradients</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / warp-debug-gradients</p><h1>warp-debug-gradients</h1><p class="meta">separate</p><p>Use to diagnose and fix incorrect gradients in differentiable Warp programs. Anything trained, optimized, calibrated, or fit through Warp kernels depends on wp.Tape gradients, so treat any misbehavior of such a workflow as a gradient problem until proven otherwise — use this when training diverges or NaNs, won&#x27;t train at all, stalls or plateaus above the expected loss, converges to a wrong or biased answer, is worse than a reference implementation, works at small scale but fails at production scale, or fails a QA/validation recheck. Also for explicit symptoms — exploding, NaN/inf, zero, or subtly wrong gradients, suspected wp.Tape/backward issues, gradcheck failures — but users usually describe only the surface symptom (&quot;the sim explodes&quot;, &quot;the fit gets dragged toward outliers&quot;) without mentioning gradients: make that leap. Not for forward-only Warp work, build/install problems, or autograd issues in other frameworks without Warp.</p><h2>When to use</h2><ul><li>The &quot;Differentiability&quot; guide — especially &quot;Array Overwrites&quot;, &quot;Debugging</li><li>The FAQ, section &quot;Differentiation and Interoperability&quot; — what state a</li></ul><h2>When not to use</h2><ul><li>The overwrite tracker requires an active tape, cannot see arrays stored</li><li>`wp.autograd.gradcheck` does not accept struct inputs; wrap the forward</li><li>`wp.autograd.gradcheck_tape` validates each recorded launch in</li><li>The `*=`/`/=` non-differentiability warning is emitted only at codegen</li><li>Warp has no built-in gradient checkpointing; long-horizon memory</li><li>At non-smooth points (ties, kinks, argmin selections), finite</li></ul><p><a href="../software-engineering/gradient-debugging/warp-debug-gradients.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/warp-debug-gradients/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

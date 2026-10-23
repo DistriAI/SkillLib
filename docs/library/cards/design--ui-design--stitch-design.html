@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>stitch-design</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/design.html">design</a> / stitch-design</p><h1>stitch-design</h1><p class="meta">separate</p><p>Official Google Stitch SDK wrapper for OpenClaw. Requires only STITCH_API_KEY. Generate UI screens from text, apply targeted edits, branch variants, export HTML/images, and track design lineage with screen aliases plus append-only event history. Stores local artifacts under the skill folder and talks only to Google Stitch endpoints needed for generation and screenshot delivery.</p><h2>When not to use</h2><ul><li>**No image upload via SDK** — Sketches/screenshots must be uploaded in Stitch Web UI first, then refined via the skill</li><li>**Models:** `pro` (Gemini 3.1 Pro) and `flash` (Gemini 3.0 Flash). &quot;Redesign/NanoBanana&quot; from the Web UI = `variants --range reimagine`</li><li>**Full-screen bias** — Stitch defaults to generating complete layouts. Must be explicitly overridden for component work (see Core Rules).</li><li>**Content hallucination** — Stitch adds unrequested copy, labels, badges. Always have the user review generated content.</li><li>**Long operations** — generate/edit/variants take 1-5 minutes. Connection drops are handled automatically via recovery polling (generate/edit retry via `list_screens` newest; variants use delta-based recovery by comparing screen lists befo…</li></ul><p><a href="../design/ui-design/stitch-design.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/stitch-design/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

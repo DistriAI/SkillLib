@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>invariant-guard</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / invariant-guard</p><h1>invariant-guard</h1><p class="meta">authentic</p><p>Correctness-first: forces writing the function contract, loop invariant, termination argument, and edge cases BEFORE code. Catches Boyer-Moore, leftmost binary search, QuickSelect traps.</p><h2>When to use</h2><ul><li>Postcondition stronger than the loop&#x27;s natural invariant: Boyer–Moore majority, Floyd&#x27;s cycle detection, leftmost vs any binary search, QuickSelect partition.</li><li>In-place mutation with read+write pointers: dedup-in-place, partition, rotate.</li><li>Recursion with multiple parameters or accumulator state.</li><li>Off-by-one suspects with duplicates, empty inputs, boundary values.</li><li>Iterative refinements that must terminate: fixed-point, Newton, EM.</li><li>Any function where you catch yourself thinking &quot;I know this algorithm&quot; — the trap is usually in the contract, not the loop body.</li></ul><h2>When not to use</h2><ul><li>**Not an automated prover.** invariant-guard requires the author to *write* invariants; it does not mechanically check them. Pair with property-based tests for stronger evidence.</li><li>**Concurrency is out of scope by default.** Stated invariants assume single-threaded execution unless explicitly extended; multi-threaded reasoning needs additional happens-before / linearizability arguments.</li><li>**Float and overflow edge cases are language-specific.** The edge-case table is a checklist, not a substitute for understanding your language&#x27;s numeric semantics.</li><li>**Will slow down trivial code.** For one-liners that obviously cannot fail, the protocol is overhead; reserve it for non-trivial loops, recursion, and in-place mutation.</li><li>**Documentation is the only enforcement.** If the author skips writing the invariants, this skill cannot detect that — pair with code review or a PR template that asks for the contract.</li></ul><p><a href="../software-engineering/code-invariants/invariant-guard.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/invariant-guard/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

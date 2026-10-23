@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>genetic-correlation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / genetic-correlation</p><h1>genetic-correlation</h1><p class="meta">separate</p><p>Estimates bivariate genetic correlation (rg) between traits from GWAS summary statistics or individual-level genotypes using cross-trait LDSC, HDL, LAVA, rho-HESS, GREML-bivariate, Popcorn, and HDL-L. Use when quantifying shared genetic architecture between two traits, screening MR validity before causal inference, distinguishing global from locus-level rg, estimating trans-ancestry rg, separating partial from full causation via LCV gcp, or producing a STROBE-MR-compliant cross-trait sensitivity battery. Cross-trait LDSC intercept absorbs sample overlap and is NOT a bias; HDL is biased under sample overlap above ~5%. High rg between exposure and outcome motivates CHP-aware MR sensitivity (CAUSE, LHC-MR).</p><h2>When to use</h2><ul><li>quantifying shared genetic architecture between two traits</li><li>screening MR validity before causal inference</li><li>distinguishing global from locus-level rg</li><li>estimating trans-ancestry rg</li><li>separating partial from full causation via LCV gcp</li><li>producing a STROBE-MR-compliant cross-trait sensitivity battery</li></ul><h2>When not to use</h2><ul><li>tasks where sample overlap is above ~5% for HDL</li><li>non-EUR sumstats with EUR LD scores for cross-trait LDSC</li><li>loci with too few SNPs for LAVA or rho-HESS</li></ul><p><a href="../science/causal-genomics-genetic-correlation/genetic-correlation.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>causal-genomics/genetic-correlation/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

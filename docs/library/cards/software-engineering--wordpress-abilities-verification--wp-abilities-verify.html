@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>wp-abilities-verify</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / wp-abilities-verify</p><h1>wp-abilities-verify</h1><p class="meta">separate</p><p>Verify a WordPress plugin&#x27;s Abilities API registrations: enumerate abilities, check that callback behavior matches each annotation&#x27;s claim (the adversarial readonly-but-writes detection), validate permissions and schemas, and validate audit documents produced by wp-abilities-audit.</p><h2>When to use</h2><ul><li>After abilities have been registered in a plugin but before a PR</li><li>As a health-check on an already-shipped plugin (catch regressions</li><li>To validate an audit document before handing it to an implementer.</li></ul><h2>When not to use</h2><ul><li>Token-budget measurement is a separate verification axis — an annotation-clean, schema-clean, runtime-passing ability set can still be unshippable if its `tools/list` form burns through an agent&#x27;s context budget. That axis is tracked separ…</li></ul><p><a href="../software-engineering/wordpress-abilities-verification/wp-abilities-verify.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/WordPress/agent-skills">WordPress/agent-skills</a></td><td><code>skills/wp-abilities-verify/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

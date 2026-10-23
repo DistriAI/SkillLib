@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>migrate-dotnet8-to-dotnet9</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / migrate-dotnet8-to-dotnet9</p><h1>migrate-dotnet8-to-dotnet9</h1><p class="meta">separate</p><p>Migrate a .NET 8 project to .NET 9 and resolve all breaking changes. USE FOR: upgrading TargetFramework from net8.0 to net9.0, fixing build errors after updating the .NET 9 SDK, resolving behavioral changes in .NET 9 / C# 13 / ASP.NET Core 9 / EF Core 9, replacing BinaryFormatter (now always throws), resolving SYSLIB0054-SYSLIB0057, adapting to params span overload resolution, fixing C# 13 compiler changes, updating HttpClientFactory for SocketsHttpHandler, and resolving EF Core 9 migration/Cosmos DB changes. DO NOT USE FOR: .NET Framework migrations, upgrading from .NET 7 or earlier, greenfield .NET 9 projects, or cosmetic modernization unrelated to the upgrade.</p><h2>When to use</h2><ul><li>Upgrading `TargetFramework` from `net8.0` to `net9.0`</li><li>Resolving build errors or new warnings after updating the .NET 9 SDK</li><li>Adapting to behavioral changes in .NET 9 runtime, ASP.NET Core 9, or EF Core 9</li><li>Replacing `BinaryFormatter` usage (now always throws at runtime)</li><li>Updating CI/CD pipelines, Dockerfiles, or deployment scripts for .NET 9</li></ul><h2>When not to use</h2><ul><li>The project already targets `net9.0` and builds cleanly — migration is done. If the goal is to reach `net10.0`, use the `migrate-dotnet9-to-dotnet10` skill as the next step.</li><li>Upgrading from .NET 7 or earlier — address the prior version breaking changes first</li><li>Migrating from .NET Framework — that is a separate, larger effort</li><li>Greenfield projects that start on .NET 9 (no migration needed)</li></ul><p><a href="../software-engineering/framework-upgrade/migrate-dotnet8-to-dotnet9.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-upgrade/skills/migrate-dotnet8-to-dotnet9/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

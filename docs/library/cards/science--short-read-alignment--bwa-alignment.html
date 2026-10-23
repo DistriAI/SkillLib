@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>bwa-alignment</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / bwa-alignment</p><h1>bwa-alignment</h1><p class="meta">separate</p><p>Aligns DNA short reads (paired- or single-end) to a reference genome with bwa-mem2, the maintained successor to BWA-MEM, for WGS/WES and germline/somatic variant-calling pipelines; covers index build, read-group injection, the collate/fixmate/sort/markdup ordering, soft-clipping for SV split reads, ALT/decoy-aware mapping on GRCh38, -K determinism, and streaming straight to a sorted BAM. Use when mapping DNA short reads to a reference for variant calling, coverage, ChIP/ATAC (alongside bowtie2-alignment), or SV detection. RNA-seq spliced alignment is star-alignment/hisat2-alignment; BAM sort/dedup/stats, the QC gate, and the cross-tool MAPQ scale are alignment-files; read trimming is read-qc; counting reads over features is rna-quantification.</p><h2>When to use</h2><ul><li>DNA short-read mapping</li><li>WGS/WES alignment</li><li>Germline/somatic variant-calling pipelines</li><li>ChIP/ATAC alignment</li><li>SV detection</li><li>Read-group injection</li><li>GRCh38 ALT/decoy-aware mapping</li><li>Streaming to sorted BAM</li></ul><h2>When not to use</h2><ul><li>RNA-seq spliced alignment</li><li>Long-read alignment</li><li>Bisulfite/methylation analysis</li><li>BAM sort/dedup/stats</li><li>QC gate interpretation</li><li>Read trimming</li><li>Counting reads over features</li><li>Variant calling</li></ul><p><a href="../science/short-read-alignment/bwa-alignment.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>read-alignment/bwa-alignment/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

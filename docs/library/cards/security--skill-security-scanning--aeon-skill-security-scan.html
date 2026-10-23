@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>aeon-skill-security-scan</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / aeon-skill-security-scan</p><h1>aeon-skill-security-scan</h1><p class="meta">separate</p><p>Audit installed Bankr skills before you run them — scan SKILL.md and companion scripts for shell injection, secret exfiltration, path traversal, prompt-override payloads, destructive commands, and 2026-era obfuscation (zero-width Unicode, bidi override, base64-decode pipes, webhook SSRF hosts). Designed to integrate with Bankr Safety Scores. Silent on no-op runs; surfaces only NEW or RESOLVED findings vs prior scans. Triggers: &quot;audit this skill&quot;, &quot;is this skill safe to install&quot;, &quot;security scan my skills&quot;, &quot;check skill X for injection&quot;.</p><h2>When to use</h2><ul><li>`&lt;skills-dir&gt;/*/SKILL.md` — primary.</li><li>`&lt;skills-dir&gt;/*/scripts/*.sh` and `*.py` — companion scripts.</li><li>`&lt;skills-dir&gt;/*/references/*` — documents loaded at runtime.</li></ul><h2>When not to use</h2><ul><li>auto-deleting baseline suppression</li><li>editing the pattern library</li><li>notifying on a pure no-op week</li><li>writing output on no-op runs</li></ul><p><a href="../security/skill-security-scanning/aeon-skill-security-scan.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/BankrBot/skills">BankrBot/skills</a></td><td><code>aeon-skill-security-scan/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

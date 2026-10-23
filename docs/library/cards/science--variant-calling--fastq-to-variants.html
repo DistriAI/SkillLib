@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>fastq-to-variants</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / fastq-to-variants</p><h1>fastq-to-variants</h1><p class="meta">separate</p><p>Orchestrates the end-to-end germline short-variant pipeline from FASTQ to a filtered, normalized, benchmarked VCF, chaining QC/trim, BWA-MEM2 alignment, duplicate marking, optional BQSR, calling (bcftools/GATK HaplotypeCaller/DeepVariant/DRAGEN), normalization, site+genotype filtering, annotation, and hap.py/vcfeval benchmarking. Use when deciding the pipeline-wide reference-genome commitment (GRCh38 analysis set vs T2T, ALT/decoy handling), sequencing the steps in the defensible order (normalize BEFORE annotate, filter site- then genotype-level), choosing the calling engine and single-sample vs cohort joint-calling, picking a filtering strategy by cohort size, or benchmarking stratified within GIAB confident regions. Hands off mechanism to the variant-calling and read-alignment component skills; not a re-teach of any single step.</p><h2>When to use</h2><ul><li>deciding pipeline-wide reference-genome commitment</li><li>sequencing steps in defensible order</li><li>choosing calling engine and single-sample vs cohort joint-calling</li><li>picking filtering strategy by cohort size</li><li>benchmarking stratified within GIAB confident regions</li><li>chaining QC/trim, alignment, duplicate marking, calling, normalization, filtering, annotation, and benchmarking</li></ul><h2>When not to use</h2><ul><li>re-teaching any single step</li><li>mechanism of variant-calling</li><li>mechanism of read-alignment</li></ul><p><a href="../science/variant-calling/fastq-to-variants.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/fastq-to-variants/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

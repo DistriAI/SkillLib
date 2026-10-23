@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>app-builder</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / app-builder</p><h1>app-builder</h1><p class="meta">combined</p><p>Builds and edits a model-driven Power Apps app from a natural-language intent — tables, columns, relationships, adaptive forms with sub-grids, views, Choice-column charts, business rules, business process flows, generative page intents for overview/dashboard surfaces (page `.tsx` generated in generate-pages after plan approval), and an app module + sitemap — via the headless cds-maker-sdk. Runs an interactive, multi-turn authoring flow (env selection, jobs-to-be-done first, then design-only App Spec authoring across confirmed levels, guardrail lint, plan-mode approval, generate-pages, full build) and a narrated build, and can download a deployed app back into an editable spec to change it. Use when the user says &quot;build an app for X&quot;, &quot;create a model-driven app&quot;, &quot;make me an app to manage Y&quot;, &quot;add a business process flow&quot;, or &quot;edit/add to my app&quot;. This skill stands alone and does not require /genpage — but for a standalone generative page added to an app that already exists, use /genpa…
+
+Main application building orchestrator. Creates full-stack applications from natural language requests. Determines project type, selects tech stack, coordinates agents.</p><h2>When to use</h2><ul><li>This skill is applicable to execute the workflow or actions described in the overview.</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../software-engineering/app-scaffolding/app-builder.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills share the name &#x27;app-builder&#x27; but describe fundamentally different procedures. The Microsoft skill is a domain-specific tool for building model-driven Power Apps using the cds-maker-sdk, focusing on data models, adaptive forms, and business process flows. The sickn33 skill is a general-purpose orchestrator for full-stack web/mobile applications, focusing on tech stack selection (Next.js, React Native, etc.) and multi-agent coordination. They do not overlap in steps or constraints; one is a specialized vertical tool, the other a horizontal scaffolding framework.</pre>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>codex-profiles</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / codex-profiles</p><h1>codex-profiles</h1><p class="meta">authentic</p><p>Use codex-profiles to run Codex CLI or Codex Desktop with isolated CODEX_HOME profiles for separate accounts, projects, and local state.</p><h2>When to use</h2><ul><li>Use when the user wants to keep multiple Codex accounts or project contexts separate on one machine.</li><li>Use when a workflow needs a different `CODEX_HOME` without manually exporting environment variables.</li><li>Use when diagnosing which Codex profile is active or whether profiles are logged in.</li><li>Use when the user asks about Codex account switching without copying `auth.json`.</li><li>Use when launching Codex Desktop from a profile, only after confirming the user accepts app/process disruption.</li></ul><h2>When not to use</h2><ul><li>`codex-profiles` is community-maintained and is not an official OpenAI tool.</li><li>It isolates Codex state through separate `CODEX_HOME` directories; it does not isolate the operating-system user, shell history, SSH keys, browser cookies, GitHub CLI auth, or unrelated application state.</li><li>Desktop profile launch behavior is macOS-focused and can change with Codex Desktop releases.</li><li>Existing Codex sessions may still contain project context from before a profile strategy was adopted.</li><li>The tool does not replace backups for important Codex state.</li></ul><p><a href="../agent-tooling/agent-profile-management/codex-profiles.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/codex-profiles/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

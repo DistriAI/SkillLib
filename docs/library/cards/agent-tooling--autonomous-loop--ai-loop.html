@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ai-loop</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / ai-loop</p><h1>ai-loop</h1><p class="meta">authentic</p><p>Runs a bounded spec-build-review development loop with explicit scope, stop conditions, and human approval gates for risky or ambiguous work.</p><h2>When to use</h2><ul><li>Use when you need a feature built from scratch or heavily modified, and you want the agent to handle the lifecycle (specification, implementation, and verification) inside one clearly bounded workflow.</li><li>Use when working with isolated components, modules, or features that have well-defined scopes and constraints.</li><li>Use when the user asks for a complete development pass but the work still has clear success criteria, a reasonable verification path, and no unresolved safety or product decisions.</li></ul><h2>When not to use</h2><ul><li>This skill requires sufficient context about the feature to be provided during the Spec phase.</li><li>It is best suited for isolated features or tasks with clear boundaries, rather than open-ended architectural refactoring.</li><li>The review phase relies on the agent&#x27;s self-assessment against the generated spec; manual review is still recommended for critical systems.</li><li>It is not a replacement for human approval on security-sensitive, destructive, production, compliance, or externally visible changes.</li><li>Report conflicting requirements or unavailable verification accurately and continue useful independent work; do not mark missing tests as passed or request credentials in chat.</li></ul><p><a href="../agent-tooling/autonomous-loop/ai-loop.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/ai-loop/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

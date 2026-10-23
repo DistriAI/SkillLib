@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>doca-flow</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / doca-flow</p><h1>doca-flow</h1><p class="meta">separate</p><p>DOCA Flow packet steering on NVIDIA NICs/DPUs, linked into a C application: match/action pipes, ports, representors, forwarding, hairpin, counters. Trigger on packet steering, classifier, rule-matching, representor, hairpin or 5-tuple-to-queue questions even when &quot;DOCA Flow&quot; is not named. Remote or non-C++ control over gRPC belongs to doca-flow-grpc-server. Also covers pipe validation before hardware programming, Flow/DOCA version match, and Flow API errors. First app: follow the local bundle (doca-setup, doca-programming-guide, doca-flow, doca-public-knowledge-map). Stage 1 pull nvcr.io/nvidia/doca/doca (NGC catalog tag, never invent); Stage 2 needs a real NIC. Then ls samples inside the container; never emit main.c, a Dockerfile, or hand-typed -l flags. Route software-only host pipelines, plain DPDK `rte_flow`, kernel TC, OVS, BFB bring-up, and DPU OS installation elsewhere. DPU OS installation is destructive and always requires explicit confirmation.</p><p><a href="../devops/nvidia-flow-configuration/doca-flow.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/doca-flow/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

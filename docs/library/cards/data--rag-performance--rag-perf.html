@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>rag-perf</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / rag-perf</p><h1>rag-perf</h1><p class="meta">separate</p><p>Performance benchmarking for a deployed NVIDIA RAG Blueprint server: profiling pass + aiperf load test driven by a single YAML config. Not for accuracy / RAGAS scoring (use rag-eval) or for deploying / repairing services (use rag-blueprint).</p><h2>When to use</h2><ul><li>Drive a deployed NVIDIA RAG Blueprint server with a YAML config, run a server-side **profiling pass** (per-stage timing, citation quality, bottleneck inference) and an optional **aiperf load test** (TTFT / E2E / token &amp; request throughput…</li><li>**Accuracy / RAGAS** scoring of answer quality → use the **rag-eval** skill.</li><li>**Deploying, repairing, or configuring services** (compose, helm, NIM env vars) → use the **rag-blueprint** skill.</li><li>**Production monitoring / alerting** — rag-perf is a one-shot benchmark tool.</li><li>**Runtime requirement:** a deployed RAG server reachable on the network.</li></ul><h2>When not to use</h2><ul><li>The CLI is **config-only**: author or copy YAML to vary a parameter.</li><li>`load.concurrency` / `rag.vdb_top_k` / `rag.reranker_top_k` accept `int | list[int]`; the validator requires unique list values because each value names a unique point dir.</li><li>`input.file` and `input.synthetic` follow an XOR rule — both set fails validation. When neither is set, `synthetic` auto-fills with defaults so a bare config still validates.</li><li>File-based input format is **inferred from extension only** (`.jsonl` or `.csv`); other extensions are rejected.</li><li>Synthetic generation streams each query to disk as it completes (failure-resilient) but **fails fast on the first LLM error** — partial JSONL is preserved. Re-run after fixing the endpoint.</li><li>Reasoning models (Nemotron Omni, Qwen-Reasoning) require `synthetic.disable_thinking: true` (the default). Without it the model exhausts the token budget on chain-of-thought and `content` returns empty — the generator now raises with a cle…</li><li>aiperf-specific knobs outside the YAML surface (request rate distribution, GPU telemetry config, etc.) require editing `AiperfRunner._base_aiperf_cmd` in `scripts/rag-perf/rag_perf/runner.py`.</li><li>Procedural detail lives under **`references/`** to keep this file concise.</li></ul><p><a href="../data/rag-performance/rag-perf.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/rag-perf/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

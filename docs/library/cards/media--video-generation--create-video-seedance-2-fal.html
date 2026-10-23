@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>create-video-seedance-2-fal</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / create-video-seedance-2-fal</p><h1>create-video-seedance-2-fal</h1><p class="meta">separate</p><p>Generate a single 4-15s vertical video clip with ByteDance Seedance 2.0 reference-to-video via fal.ai, for shots with no realistic face (a product hero, a product in motion, an empty set). Multi-image reference (product + setting), ambient audio, internal multi-cut handling within one render, 720p by default. Routes through the GooseWorks FAL proxy (bills the Ads agent). Seedance refuses photoreal faces, so talking heads and creators go to creator-h3 / video-h3max.</p><h2>When to use</h2><ul><li>The shot has no realistic face: a product hero, a product in motion, an empty set</li><li>It needs hard camera motion or an exact product the cheaper H3 route can&#x27;t hold</li><li>Length 4-15s, vertical 9:16 (or other aspect ratios)</li><li>Multi-image conditioning (product + setting, or several products for a hook scene)</li><li>Any shot with a realistic face (a talking head, a creator, a stranger) → `creator-h3` or `video-h3max`</li><li>&gt; 15s clips → split across multiple calls and stitch (`assembly/stitch-videos-ffmpeg`)</li><li>Pure cinematic camera moves without an on-screen person → `create-video-veo3` is often better</li><li>Product-only B-roll with no person → `create-product-videos-higgsfield-ms` or text-to-video Seedance</li></ul><p><a href="../media/video-generation/create-video-seedance-2-fal.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/ads/packs/ugc-video-formats/create-video-seedance-2-fal/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

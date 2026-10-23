@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clinpgx-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / clinpgx-database</p><h1>clinpgx-database</h1><p class="meta">combined</p><p>Access ClinPGx pharmacogenomics data (successor to PharmGKB). Query gene-drug interactions, CPIC guidelines, allele functions, for precision medicine and genotype-guided dosing decisions.
+
+Access ClinPGx pharmacogenomics data (successor to PharmGKB) when you need to query gene-drug interactions, CPIC guidelines, allele functions, and drug-label PGx content for precision medicine and genotype-guided dosing.</p><h2>When to use</h2><ul><li>**Gene-drug interactions**: Querying how genetic variants affect drug metabolism, efficacy, or toxicity</li><li>**CPIC guidelines**: Accessing evidence-based clinical practice guidelines for pharmacogenetics</li><li>**Allele information**: Retrieving allele function, frequency, and phenotype data</li><li>**Drug labels**: Exploring FDA and other regulatory pharmacogenomic drug labeling</li><li>**Pharmacogenomic annotations**: Accessing curated literature on gene-drug-disease relationships</li><li>**Clinical decision support**: Using PharmDOG tool for phenoconversion and custom genotype interpretation</li><li>**Precision medicine**: Implementing pharmacogenomic testing in clinical practice</li><li>**Drug metabolism**: Understanding CYP450 and other pharmacogene functions</li></ul><h2>When not to use</h2><ul><li>Do not use this skill when the required source data, identifiers, files, or credentials are missing.</li><li>Do not use this skill when the user asks for fabricated results, unsupported claims, or out-of-scope conclusions.</li><li>Do not use this skill when a simpler direct answer is more appropriate than the documented workflow.</li></ul><p><a href="../research/clinpgx-api-query/clinpgx-database.html">Skill page</a></p><h2>Conflict</h2><pre>The copies overlap heavily on the ClinPGx REST API endpoints and rate limits, but they disagree on the execution model and add different material steps. The Vibe-Skills and OpenClaw copies are near-identical, providing a detailed API reference with inline Python examples. The aipoch copy is a wrapper that mandates a specific packaged script (scripts/query_clinpgx.py), a different dependency version (requests&gt;=2.31.0), and a specific retry/backoff implementation. Because the aipoch copy provides a distinct, more robust execution path (script-based with retries) while the others provide a direct API reference, crowning one would hide the alternative implementation strategy.</pre>
+</body>
+</html>

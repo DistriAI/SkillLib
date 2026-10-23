@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>image-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / image-analysis</p><h1>image-analysis</h1><p class="meta">combined</p><p>Segments cells/nuclei and extracts image features from imaging spatial transcriptomics (Xenium, MERFISH/MERSCOPE, CosMx) and H&amp;E/IF tissue images using Cellpose, StarDist, Baysor, and Squidpy. Use when choosing a segmentation strategy (DAPI nucleus + expansion vs membrane-stain whole-cell vs transcript-aware Baysor/proseg vs segmentation-free SSAM) given the available stain; judging whether transcript spillover is fabricating false co-expression and short-range cell-cell signal; and deciding whether the derived cell-by-gene matrix is trustworthy before downstream typing, DE, or ligand-receptor analysis.</p><h2>When to use</h2><ul><li>processing tissue images for spatial transcriptomics</li><li>extract image features</li><li>segment cells/nuclei</li><li>compute morphological features</li><li>H&amp;E or IF images</li><li>color deconvolution</li><li>use image features for clustering</li><li>smooth expression with image</li></ul><p><a href="../science/spatial-transcriptomics-image-analysis/image-analysis.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same domain but diverge on scope and method. The first copy is a procedural recipe for Squidpy-based feature extraction and basic segmentation on Visium/H&amp;E data. The second copy is a strategic guide for imaging spatial transcriptomics (Xenium/MERFISH/CosMx) that prioritizes segmentation strategy selection (Cellpose, StarDist, Baysor, proseg) and includes critical warnings about segmentation artifacts and spillover. The first copy lacks the strategic decision-making and artifact warnings, while the second copy lacks the specific Visium feature extraction code and H&amp;E deconvolution steps found in the first. Combining them provides both the strategic framework for choosing a segmentation method and the concrete code for feature extraction.</pre>
+</body>
+</html>

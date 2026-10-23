@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scikit-bio</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / scikit-bio</p><h1>scikit-bio</h1><p class="meta">combined</p><p>Biological data toolkit. Sequence analysis, alignments, phylogenetic trees, diversity metrics (alpha/beta, UniFrac), ordination (PCoA), PERMANOVA, FASTA/Newick I/O, for microbiome analysis.
+
+A Python bioinformatics toolkit for sequence, phylogeny, and microbiome/community-ecology analysis; use it when you need to compute diversity/ordination/statistics from biological data and standard formats (FASTA/FASTQ/Newick/BIOM).</p><h2>When to use</h2><ul><li>Works with biological sequences (DNA, RNA, protein)</li><li>Needs to read/write biological file formats (FASTA, FASTQ, GenBank, Newick, BIOM, etc.)</li><li>Performs sequence alignments or searches for motifs</li><li>Constructs or analyzes phylogenetic trees</li><li>Calculates diversity metrics (alpha/beta diversity, UniFrac distances)</li><li>Performs ordination analysis (PCoA, CCA, RDA)</li><li>Runs statistical tests on biological/ecological data (PERMANOVA, ANOSIM, Mantel)</li><li>Analyzes microbiome or community ecology data</li></ul><p><a href="../science/scikit-bio-bioinformatics/scikit-bio.html">Skill page</a></p><h2>Conflict</h2><pre>The copies overlap heavily on the high-level capabilities (sequences, alignment, trees, diversity, ordination, PERMANOVA), but they disagree on the concrete API to use. K-Dense-AI targets scikit-bio 0.7.4 and documents the new pair_align / pair_align_nucl / pair_align_prot API, explicitly noting that the SSW wrappers were removed. Vibe-Skills and OpenClaw-Medical-Skills still instruct the agent to use local_pairwise_align_ssw and StripedSmithWaterman, which are deprecated/removed in the newer version. aipoch/medical-research-skills targets an older version (&gt;=0.6.0) and provides a different, more end-to-end example workflow. Crowning one copy would hide the version-specific API differences and the alternative workflow style.</pre>
+</body>
+</html>

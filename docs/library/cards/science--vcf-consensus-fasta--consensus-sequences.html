@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>consensus-sequences</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / consensus-sequences</p><h1>consensus-sequences</h1><p class="meta">combined</p><p>Generate consensus FASTA sequences by applying VCF variants onto a reference with bcftools consensus, or build viral/amplicon consensus with iVar. Use when reconstructing a sample-specific reference or haplotype, deciding -H haplotype vs IUPAC vs all-ALT projection, masking no-coverage sites so a consensus does not manufacture false reference calls, or setting iVar min-depth/min-frequency policy for surveillance genomes.</p><h2>When to use</h2><ul><li>Generate consensus FASTA sequences</li><li>Apply VCF variants to a reference</li><li>Create sample-specific reference sequences</li><li>Reconstruct haplotypes</li><li>Handle missing data with IUPAC codes</li><li>Mask low coverage regions</li><li>Select specific regions for consensus</li><li>Filter variants before consensus generation</li></ul><p><a href="../science/vcf-consensus-fasta/consensus-sequences.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies describe the same core task (applying VCF variants to a reference with bcftools consensus), but the GPTomics copy adds material constraints and workflows the FreedomIntelligence copy lacks: a governing principle about silent reference emission at zero-coverage sites, the chimeric-haplotype footgun on unphased VCFs, version-compatibility checks, and an iVar-based viral/amplicon consensus path. The FreedomIntelligence copy adds specific chain-file generation, custom sequence prefixing, and a broader set of filtering examples. Crowning one would hide the other&#x27;s real alternative steps and safety constraints.</pre>
+</body>
+</html>

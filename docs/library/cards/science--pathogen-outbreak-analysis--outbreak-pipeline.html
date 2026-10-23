@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>outbreak-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / outbreak-pipeline</p><h1>outbreak-pipeline</h1><p class="meta">separate</p><p>Orchestrates genomic-epidemiology outbreak investigation from pathogen isolates to transmission networks, forking bacterial (snippy -&gt; Gubbins recombination-masking -&gt; IQ-TREE -&gt; TreeTime -&gt; TransPhylo) vs viral (Nextstrain/augur), with parallel MLST typing (cgMLST delegated to epidemiological-genomics/pathogen-typing) and AMR surveillance. Use when committing ONE reference genome for SNP calling (every isolate and distance inherits its coordinates), applying MANDATORY Gubbins recombination-masking on core.full.aln before the tree for recombining bacteria (skipping it inflates the clock 2-5x), gating time-scaling on a temporal-signal test (TempEst R2 &gt;= 0.3), using a pathogen- AND population-specific cluster threshold rather than a universal SNP cutoff, or pinning pangolin-data/Nextclade/Freyja versions for the viral route. Hands mechanism to the epidemiological-genomics component skills; not a re-teach of any single step.</p><h2>When to use</h2><ul><li>genomic-epidemiology outbreak investigation</li><li>transmission networks</li><li>bacterial SNP phylogeny</li><li>viral Nextstrain/augur workflow</li><li>MLST typing</li><li>AMR surveillance</li><li>TreeTime time-scaled tree construction</li><li>TransPhylo transmission inference</li></ul><h2>When not to use</h2><ul><li>re-teach of any single step</li><li>mechanism details of component skills</li></ul><p><a href="../science/pathogen-outbreak-analysis/outbreak-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/outbreak-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

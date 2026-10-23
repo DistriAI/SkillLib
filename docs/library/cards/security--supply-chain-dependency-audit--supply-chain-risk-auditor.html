@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>supply-chain-risk-auditor</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / supply-chain-risk-auditor</p><h1>supply-chain-risk-auditor</h1><p class="meta">combined</p><p>Identifies dependencies at heightened risk of exploitation or takeover. Use when assessing supply chain attack surface, evaluating dependency health, or scoping security engagements.
+
+Audits a project&#x27;s dependencies for supply-chain risk: version-matched advisories for direct dependencies and the full lockfile tree, abandoned or archived upstreams, npm publisher concentration, and install-time script execution. Use when asked to audit dependencies, assess supply-chain or third-party package risk, or review a dependency tree before an engagement.</p><h2>When to use</h2><ul><li>Assessing dependency risk before a security audit</li><li>Evaluating supply chain attack surface of a project</li><li>Identifying unmaintained or risky dependencies</li><li>Pre-engagement scoping for supply chain concerns</li><li>**Single maintainer or team of individuals** - The project is primarily or solely maintained by a single individual, or a small number of individuals. The project is not managed by an organization such as the Linux Foundation or a company…</li><li>**Unmaintained** - The project is stale (no updates for a long period of time) or explicitly deprecated/archived. The maintainer may have put a note in the README.md or a GitHub issue that the project is inactive, understaffed, or seeking…</li><li>**Low popularity:** The project has a relatively low number of GitHub stars and/or downloads compared to other dependencies used by the target. **Justification:** Fewer users means fewer eyes on the project. If malicious code is introduced…</li><li>**High-risk features:** The project implements features that by their nature are especially prone to exploitation, including FFI, deserialization, or third-party code execution. **Justification:** These dependencies are key to the target&#x27;s…</li></ul><h2>When not to use</h2><ul><li>Active vulnerability scanning (use dedicated tools like npm audit, pip-audit)</li><li>Runtime dependency analysis</li><li>License compliance auditing</li><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li><li>License compliance auditing.</li><li>Scanning the target&#x27;s own source for vulnerabilities or secrets — this skill never</li></ul><p><a href="../security/supply-chain-dependency-audit/supply-chain-risk-auditor.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe different procedures for the same task. The trailofbits copy is a deterministic, script-driven audit that forbids manual estimation, enforces a strict &#x27;unassessable is not risk&#x27; epistemology, and produces a rendered report from a collector. The sickn33 copy is a manual, judgment-driven audit that explicitly requires using `gh` to count stars and issues, applies subjective risk criteria (e.g., maintainer anonymity, low popularity), and produces a narrative report with suggested alternatives. They disagree on the core methodology (scripts vs. manual `gh` queries) and the definition of risk (measured criteria vs. qualitative red flags). Crowning one would hide a valid alternative approach to supply chain auditing.</pre>
+</body>
+</html>

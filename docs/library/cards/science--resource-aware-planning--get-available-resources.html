@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>get-available-resources</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / get-available-resources</p><h1>get-available-resources</h1><p class="meta">combined</p><p>Detects host inventory and effective CPU, memory, disk, scheduler, container, and accelerator limits when a user asks for resource-aware planning or before a clearly resource-sensitive local workload. Produces a redacted JSON snapshot and conservative planning helpers without stress tests or assuming visible host hardware is usable.
+
+This skill should be used at the start of any computationally intensive scientific task to detect and report available system resources (CPU cores, GPUs, memory, disk space). It creates a JSON file with resource information and strategic recommendations that inform computational approach decisions such as whether to use parallel processing (joblib, multiprocessing), out-of-core computing (Dask, Zarr), GPU acceleration (PyTorch, JAX), or memory-efficient strategies. Use this skill before running analyses, training models, processing large datasets, or any task where resource constraints matter.</p><h2>When to use</h2><ul><li>**Before data analysis**: Determine if datasets can be loaded into memory or require out-of-core processing</li><li>**Before model training**: Check if GPU acceleration is available and which backend to use</li><li>**Before parallel processing**: Identify optimal number of workers for joblib, multiprocessing, or Dask</li><li>**Before large file operations**: Verify sufficient disk space and appropriate storage strategies</li><li>**At project initialization**: Understand baseline capabilities for making architectural decisions</li><li>&quot;Help me analyze this 50GB genomics dataset&quot; → Use this skill first to determine if Dask/Zarr are needed</li><li>&quot;Train a neural network on this data&quot; → Use this skill to detect available GPUs and backends</li><li>&quot;Process 10,000 files in parallel&quot; → Use this skill to determine optimal worker count</li></ul><h2>When not to use</h2><ul><li>stress tests</li><li>benchmarks</li><li>large allocations</li><li>write probes</li><li>device resets</li><li>driver installation</li><li>clock or power changes</li><li>persisting fingerprints for every scientific task</li></ul><p><a href="../science/resource-aware-planning/get-available-resources.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe the same detector but with materially different contracts. The K-Dense copy is a conservative, redacted, process-scoped inventory that forbids stress tests, hides host identifiers, treats unknowns as unknown, and separates host, cgroup, scheduler, and accelerator facts. The Vibe-Skills copy is a proactive, host-level inventory that writes a default JSON file, reports hostnames/paths/OS details, and emits strategic recommendations (worker counts, library choices, memory/disk strategies) that the K-Dense copy explicitly avoids. Because each contains steps and constraints the other lacks, crowning one would hide a real alternative.</pre>
+</body>
+</html>

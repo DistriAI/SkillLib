@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-omni-work-skill-routing-configure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / service-omni-work-skill-routing-configure</p><h1>service-omni-work-skill-routing-configure</h1><p class="meta">authentic</p><p>Use to author an Omni WorkSkillRouting rule (field-based skill criteria): map a related-entity field value to a required Omni Skill (e.g. add the Voice skill when Case.Origin = Phone), deployed as one WorkSkillRouting record via the Metadata API. Idempotent via the Metadata API files[].state signal; one rule per related entity. Triggers: add field-based skill routing, route by a Case field to a skill, route by a MessagingSession field to a skill, configure attribute-based skills routing, require an Omni skill for a field value. Do not use to create the Skill or bind agents to it (service-omni-skills-based-routing-configure), to create agent users, or to configure queues.</p><h2>When not to use</h2><ul><li>One field→skill mapping per invocation and one rule per related entity. Multiple invocations safely accumulate attributes on that rule.</li><li>Does not create the Skill, ServiceResources, agent users, queues, or presence configuration.</li><li>Field/value correctness is validated by the platform at deploy time; an invalid field or value surfaces as a `blocked` deploy failure.</li></ul><p><a href="../software-engineering/configure-work-skill-routing/service-omni-work-skill-routing-configure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/service-omni/skills/service-omni-work-skill-routing-configure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

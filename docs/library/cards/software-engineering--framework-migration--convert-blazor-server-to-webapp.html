@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>convert-blazor-server-to-webapp</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / convert-blazor-server-to-webapp</p><h1>convert-blazor-server-to-webapp</h1><p class="meta">separate</p><p>Guides conversion of a pre-.NET 8 Blazor Server app into a .NET 8+ Blazor Web App. USE FOR: migrating apps that use AddServerSideBlazor and MapBlazorHub to the AddRazorComponents/MapRazorComponents model, converting _Host.cshtml to an App.razor root component, replacing blazor.server.js with blazor.web.js, migrating CascadingAuthenticationState to a service, adopting new Blazor Web App features like enhanced navigation and streaming rendering. DO NOT USE FOR: apps that are already Blazor Web Apps (already use AddRazorComponents and MapRazorComponents), Blazor WebAssembly or hosted Blazor WebAssembly apps (different migration path), apps that should stay on the Blazor Server hosting model without converting, or apps still targeting .NET Framework.</p><h2>When to use</h2><ul><li>Migrating a Blazor Server app from .NET 6 or .NET 7 to .NET 8+</li><li>App currently uses `AddServerSideBlazor()` and `MapBlazorHub()` in `Program.cs` (or `Startup.cs`)</li><li>App uses `Pages/_Host.cshtml` (or `_Host.razor`) as the host page with Component Tag Helpers</li><li>Want to adopt new Blazor Web App features while keeping interactive server rendering</li></ul><h2>When not to use</h2><ul><li>**The app already uses `AddRazorComponents` and `MapRazorComponents`.** It is already a Blazor Web App — no conversion is needed. Stop here and tell the user the app is already using the Blazor Web App model.</li><li>Blazor WebAssembly or hosted Blazor WebAssembly app — these have a different migration path</li><li>The app should stay on the legacy Blazor Server hosting model (just update TFM and packages)</li><li>The app targets .NET Framework — it must be migrated to .NET first</li></ul><p><a href="../software-engineering/framework-migration/convert-blazor-server-to-webapp.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-aspnetcore/skills/convert-blazor-server-to-webapp/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>systematic-debugging</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / systematic-debugging</p><h1>systematic-debugging</h1><p class="meta">combined</p><p>Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
+
+Root-cause route for actual bugs, failing tests, build errors, crashes, stack traces, and unexpected behavior. Do not use for test-first/TDD feature work, test-report packaging, review-feedback handling, or final completion evidence.</p><h2>When to use</h2><ul><li>Test failures</li><li>Bugs in production</li><li>Unexpected behavior</li><li>Performance problems</li><li>Build failures</li><li>Integration issues</li><li>Under time pressure (emergencies make guessing tempting)</li><li>&quot;Just one quick fix&quot; seems obvious</li></ul><h2>When not to use</h2><ul><li>Temporary mitigation and root-cause repair are different outcomes; record both when an incident requires immediate containment.</li><li>Logging can expose secrets or personal paths. Use allowlisted summaries and inspect captured artifacts before sharing.</li><li>The polluter helper runs the project’s test command and can execute project code; use an isolated fixture/checkout and verify the runner accepts a file argument.</li><li>The waiting examples require domain adapters and cannot make every race impossible. Reproduce the actual timeout/error path.</li></ul><p><a href="../software-engineering/root-cause-debugging/systematic-debugging.html">Skill page</a></p><h2>Conflict</h2><pre>The four copies share the same four-phase skeleton, but they disagree on the core principle and on the multi-component instrumentation step. obra/superpowers and LeoYeAI/openclaw-master-skills enforce a strict &#x27;no fixes without root cause&#x27; rule and use a four-layer diagnostic example that logs environment state and performs a live codesign. foryourhealth111-pixel/Vibe-Skills adds a routing boundary that excludes TDD and report packaging. sickn33/agentic-awesome-skills explicitly permits emergency mitigation/rollback during an incident and changes the instrumentation to redact secrets and use read-only artifact verification. Because the sickn33 copy relaxes the &#x27;Iron Law&#x27; and the others do not, crowning one copy would hide a real alternative for incident response.</pre>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ai-security-hardening</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / ai-security-hardening</p><h1>ai-security-hardening</h1><p class="meta">combined</p><p>Harden AI/LLM deployments against prompt injection, data exfiltration, model theft, and supply chain attacks. Covers input validation, output filtering, access control, model API security, and compliance controls for production AI systems.
+
+Harden AI/LLM deployments against prompt injection, data exfiltration,</p><h2>When to use</h2><ul><li>Deploying an LLM-powered application handling sensitive user data</li><li>Protecting against prompt injection attacks in AI agents</li><li>Implementing output filtering and content moderation</li><li>Securing model weights and API endpoints from theft</li><li>Achieving SOC2 or ISO 27001 compliance for AI systems</li></ul><h2>When not to use</h2><ul><li>Apply guidance only within authorized scope; test destructive steps in non-production first.</li><li>Docs-only import: upstream scripts and templates not bundled.</li></ul><p><a href="../security/ai-llm-hardening/ai-security-hardening.html">Skill page</a></p><h2>Conflict</h2><pre>The second copy is a mirror of the first (it cites BagelHole as the source) but adds material constraints the first lacks: it explicitly warns that regex injection detectors are not a security boundary, requires server-side tool/data authorization independent of model text, and notes that the in-process rate limiter is not distributed and must be replaced in multi-worker production. The first copy presents the same code without those caveats. Crowning the first would hide the safer operational guidance, so the copies should be combined.</pre>
+</body>
+</html>

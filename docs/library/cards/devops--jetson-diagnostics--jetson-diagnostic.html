@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-diagnostic</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-diagnostic</p><h1>jetson-diagnostic</h1><p class="meta">separate</p><p>Read-only Jetson health snapshot for identity, memory, GPU, thermal, power, storage, services, and top processes.</p><h2>When to use</h2><ul><li>Capture a read-only health snapshot from the Jetson host so agents can answer device identity, memory, GPU, thermal, power, storage, and service-state questions using live data instead of guesses.</li><li>&quot;What is this Jetson? What SKU? How much memory?&quot;</li><li>&quot;What&#x27;s running on this Jetson right now?&quot;</li><li>&quot;Why is my Jetson slow / hot / out of memory?&quot;</li><li>&quot;Give me a snapshot of GPU / CPU / power usage.&quot;</li><li>&quot;What does my tegrastats output mean?&quot;</li><li>&quot;Which services are running that I could turn off?&quot;</li><li>The user has installed `jetson-memory-audit`, `jetson-headless-mode`, `jetson-inference-mem-tune`, `jetson-llm-benchmark`, `jetson-llm-serve`, or `jetson-package` and needs a baseline measurement before running them.</li></ul><h2>When not to use</h2><ul><li>Seeing this skill file does not guarantee access to Jetson host hardware. If `/proc/device-tree/model`, `/etc/nv_tegra_release`, `tegrastats`, `nvpmodel`, `nvidia-smi`, or `/sys/kernel/debug/nvmap` are missing inside a NemoClaw/OpenClaw sa…</li><li>NvMap debugfs often requires root, so unprivileged runs may report `gpu_source: &quot;none&quot;` or incomplete `nvmap` fields.</li><li>This skill reports observed state only. Do not fabricate memory, GPU, thermal, service, or reclamation data when a tool is missing or inaccessible.</li></ul><p><a href="../devops/jetson-diagnostics/jetson-diagnostic.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-diagnostic/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

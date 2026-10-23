@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>agy-auto</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / agy-auto</p><h1>agy-auto</h1><p class="meta">separate</p><p>Configure agy-auto PreToolUse security gate to run Antigravity CLI (agy) unattended with layered policy controls instead of --dangerously-skip-permissions.</p><h2>When to use</h2><ul><li>Use when running Antigravity CLI (`agy`) unattended or in background agent loops and you want automated tool permissions without exposing system files or credentials.</li><li>Use when you need granular, auditable controls over shell commands, file modifications, and network egress during `agy` workflows.</li><li>Use when setting up a secure pair-programming environment with Antigravity that reduces tool-call exposure within a verified workspace boundary.</li></ul><h2>When not to use</h2><ul><li>`agy-auto` only intercepts actions performed via tool calls (e.g. `run_command`, `write_to_file`); it cannot restrict internal LLM network reasoning or Antigravity&#x27;s own internal context-gathering file reads.</li><li>Requires `toolPermission: &quot;always-proceed&quot;` in Antigravity settings to ensure the PreToolUse hook intercepts all tool invocations.</li><li>Shell parsing is conservative: complex pipelines with computed variable expansions that cannot be statically resolved will fall through to the LLM classifier or require manual token approval.</li></ul><p><a href="../agent-tooling/agent-automation/agy-auto.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/agy-auto/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

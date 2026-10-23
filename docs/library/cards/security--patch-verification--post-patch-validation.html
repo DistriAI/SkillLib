@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>post-patch-validation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / post-patch-validation</p><h1>post-patch-validation</h1><p class="meta">separate</p><p>Validates security patches with reproducible baseline-versus-patched evidence, including original exploits, root-cause variants, behavior preservation, regressions, and newly introduced security failures. Use after a patch exists and before accepting, merging, or reporting it as fixed; also use when an AI-generated patch, remediation commit, pull request, or proposed upstream fix needs adversarial post-patch validation across any language.</p><h2>When to use</h2><ul><li>A security fix, remediation commit, patch file, or pull request already exists.</li><li>An AI-generated patch needs validation before human review or merge.</li><li>A fix may cover one exploit path while missing variants of the same root cause.</li><li>A security fix may alter legitimate behavior or introduce a new vulnerability.</li><li>A patch author needs concrete failures and coverage gaps before another revision.</li></ul><h2>When not to use</h2><ul><li>No patch exists yet; use vulnerability discovery or fix implementation first.</li><li>The task is to review an audit finding against a report without executing patch evidence.</li><li>The task is only to convert a finding into a permanent project test.</li><li>The target is remote or production. This skill executes local code and tests only.</li><li>The user has not authorized execution of the repository&#x27;s code or test suite.</li></ul><p><a href="../security/patch-verification/post-patch-validation.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/post-patch-validation/skills/post-patch-validation/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

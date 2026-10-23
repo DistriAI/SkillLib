@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-communication</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / spatial-communication</p><h1>spatial-communication</h1><p class="meta">combined</p><p>Maps cell-cell communication and ligand-receptor co-expression in spatial transcriptomics (Visium, Xenium, MERFISH, CosMx, Slide-seq) with Squidpy ligrec, COMMOT, stLearn, CellChat-spatial, and NicheNet. Use when choosing a method by whether spatial distance is actually modeled (squidpy ligrec is space-blind cluster-permutation vs COMMOT optimal-transport is distance-aware vs stLearn neighborhood vs CellChat-spatial filter) and by secreted-vs-contact-dependent range; choosing the ligand-receptor database knowingly because it drives the result as much as the algorithm; guarding against segmentation-spillover circularity that fabricates short-range hits; treating every ligand-receptor score as a co-expression hypothesis on a confidence ladder, not validated signaling; correcting for thousands of pair-by-cell-type-pair permutation tests; and recognizing that a targeted imaging panel rarely contains the relevant ligands and receptors so a &quot;no communication&quot; call is uninformative.</p><h2>When to use</h2><ul><li>Analyze cell-cell communication in spatial context</li><li>Infer intercellular signaling</li><li>Identify communication pathways</li><li>Visualize interaction networks</li><li>Ligand-receptor analysis with Squidpy</li></ul><p><a href="../science/spatial-cell-cell-communication/spatial-communication.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same task (spatial cell-cell communication) but with different depths and emphases. The first copy (OpenClaw) provides a complete, executable Python workflow using Squidpy, including code for filtering, visualization (heatmaps, networks), and custom databases. The second copy (GPTomics) provides a critical methodological framework, emphasizing the limitations of co-expression vs. signaling, the impact of segmentation spillover, and a decision table for choosing between space-blind (Squidpy) and distance-aware (COMMOT) methods. The first copy lacks the critical caveats and method selection logic of the second, while the second copy lacks the detailed implementation code for visualization and custom analysis found in the first. Combining them yields a skill that is both methodologically rigorous and practically executable.</pre>
+</body>
+</html>

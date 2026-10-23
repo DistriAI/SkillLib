@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-omni-supervisor-config-deploy</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / service-omni-supervisor-config-deploy</p><h1>service-omni-supervisor-config-deploy</h1><p class="meta">authentic</p><p>Use to stand up a headless Omni-Channel Supervisor Configuration by deploying the classic OmniSupervisorConfig (parent plus supervisor-user and queue companions) in one atomic Metadata API deploy, idempotent via the deploy state. Requires active supervisor users, Omni base settings, and the monitored queues. Triggers: set up Omni Supervisor, configure the classic Supervisor Command Center. Do not use to create supervisor users, assign the ContactCenterSupervisor permission set, or deploy queues, service channels, or presence statuses.</p><h2>When not to use</h2><ul><li>Populates user and queue companions (plus optional profile scope). Existing reference-free Action and Tab rows are preserved across an update; new standard rows are added separately by `service-omni-supervisor-surface-deploy`. Custom-actio…</li><li>Binds supervisor users discovered by the `supervisor{N}.&lt;suffix&gt;@example.com` pattern; it does not create them.</li><li>Does not change AgentWork sharing because that org-wide access control is separate from `OmniSupervisorConfig`. Use `service-omni-agent-work-sharing-configure` for supported metadata detection and the explicitly confirmed `Private` to `Rea…</li><li>Does not activate the Command Center V2 runtime (a separate settings flip).</li></ul><p><a href="../software-engineering/deploy-supervisor-config/service-omni-supervisor-config-deploy.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/service-omni/skills/service-omni-supervisor-config-deploy/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

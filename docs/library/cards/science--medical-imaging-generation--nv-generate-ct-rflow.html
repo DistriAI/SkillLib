@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nv-generate-ct-rflow</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / nv-generate-ct-rflow</p><h1>nv-generate-ct-rflow</h1><p class="meta">separate</p><p>Used for generating synthetic CT volumes and masks with NV-Generate-CTMR rflow-ct. Not for production training data without review.</p><h2>When to use</h2><ul><li>Used for generating synthetic CT volumes and masks with NV-Generate-CTMR rflow-ct. Not for production training data without review.</li><li>Use the wrapper exactly as documented; do not replace the upstream entrypoint with a handwritten implementation.</li><li>Do not write custom inference code for normal runs. The wrapper owns config staging, output paths, label mapping evidence, and validation.</li><li>Manifest I/O: inputs are `config_infer_override`; outputs are `synthetic_ct_volumes` and `result_json`.</li></ul><h2>When not to use</h2><ul><li>This is a thin wrapper. Inference, sampling, and decoding are delegated entirely to NVIDIA-Medtech/NV-Generate-CTMR&#x27;s `scripts.inference`. Do not modify code under $NV_GENERATE_ROOT.</li><li>rflow-ct requires CUDA and ≈ 16 GB VRAM minimum for the default 256³ output_size. Larger output_size (e.g. 512×512×768) needs an A100/H100.</li><li>Output volumes are synthetic. They are not safe to use as training data for production medtech models without an independent quality review.</li><li>Not for clinical deployment, clinical interpretation, autonomous diagnosis, regulatory submission.</li></ul><p><a href="../science/medical-imaging-generation/nv-generate-ct-rflow.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/nv-generate-ct-rflow/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

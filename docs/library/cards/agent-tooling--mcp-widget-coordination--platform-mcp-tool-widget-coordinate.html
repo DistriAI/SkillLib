@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>platform-mcp-tool-widget-coordinate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / platform-mcp-tool-widget-coordinate</p><h1>platform-mcp-tool-widget-coordinate</h1><p class="meta">authentic</p><p>Orchestrate object-based Lightning Type + HXL widget generation to render the output of a custom MCP server tool backed by an Apex Invocable Action. TRIGGER only when the prompt EXPLICITLY involves rendering an MCP tool result: user says &#x27;MCP server&#x27;, &#x27;MCP tool&#x27;, &#x27;custom MCP server&#x27;, references a tool &#x27;output schema&#x27; / &#x27;tool output&#x27; / &#x27;outputValues&#x27; envelope, names an &#x27;invocable action&#x27; backing an MCP tool, or asks to build a widget or rich UI rendition for the output of an Apex-invocable-backed MCP tool. DO NOT TRIGGER when: customizing an Apex-backed agent action output (use platform-lightning-type-widget-coordinate), authoring only a Custom Lightning Type (use platform-custom-lightning-type-generate), authoring only an Apex class (use platform-apex-generate), or building a standalone widget with no Lightning Type or MCP tool involved (use platform-widget-generate).</p><h2>When to use</h2><ul><li>The CLT that mimics the tool-result envelope, named `&lt;toolApiName&gt;`. Its `outputValues` property is typed to the other CLT via `c__&lt;responseCLT&gt;` (the CLT-reference prefix — see the namespace note below).</li><li>The CLT that is the exact shape of the Invocable Action&#x27;s **response** (`@InvocableVariable` fields on the `@InvocableMethod` response class), named `&lt;toolApiName&gt;Response` — &quot;Response&quot; is not an invented role word; it is the word the Apex…</li><li>Customizing an **Apex-backed agent action** output (Apex-backed CLT `@apexClassType/...`, single CLT, surface-specific renderer) → `platform-lightning-type-widget-coordinate`.</li><li>A standalone widget with no MCP tool / Lightning Type → `platform-widget-generate`.</li><li>Authoring only a CLT or only an Apex class → `platform-custom-lightning-type-generate` / `platform-apex-generate`.</li></ul><p><a href="../agent-tooling/mcp-widget-coordination/platform-mcp-tool-widget-coordinate.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/platform-lightning-widgets/skills/platform-mcp-tool-widget-coordinate/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

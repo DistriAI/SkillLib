@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>dicom-metadata-extract</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / dicom-metadata-extract</p><h1>dicom-metadata-extract</h1><p class="meta">separate</p><p>Used for extracting selected metadata from one DICOM file and flagging standard-tag PHI presence. Not for anonymization or clinical use.</p><h2>When to use</h2><ul><li>Used for extracting selected metadata from one DICOM file and flagging standard-tag PHI presence. Not for anonymization or clinical use.</li><li>Use the wrapper exactly as documented; do not replace the upstream entrypoint with a handwritten implementation.</li><li>Manifest I/O: inputs are `dicom_path`; outputs are `metadata_json`.</li></ul><h2>When not to use</h2><ul><li>Small PS3.15-inspired standard-tag subset only; not a complete Basic Application Confidentiality Profile implementation.</li><li>Private tags not checked</li><li>Burnt-in pixel PHI not detected</li><li>Multi-frame handling minimal</li><li>Not for clinical deployment, regulatory de-identification, autonomous diagnosis, patient-facing use.</li></ul><p><a href="../data/medical-imaging-metadata/dicom-metadata-extract.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/dicom-metadata-extract/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

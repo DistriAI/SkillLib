@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>external-model-validation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / external-model-validation</p><h1>external-model-validation</h1><p class="meta">separate</p><p>Use when validating an existing prognostic risk signature on an external bulk expression cohort with survival outcomes, producing risk scores, Kaplan-Meier curves, risk distribution plots, heatmap, and time-dependent ROC curves. NOT for: model training, feature selection, nomogram construction, calibration analysis, or single-cell data.</p><h2>When to use</h2><ul><li>You already have a fixed prognostic gene signature and coefficients.</li><li>You need to test that model on an independent cohort with bulk expression and survival data.</li><li>You want standard outputs for external validation: risk table, Kaplan-Meier curve, risk score plot, survival status plot, expression heatmap, and time-dependent ROC.</li></ul><h2>When not to use</h2><ul><li>Do not use this skill to train or re-fit a prognostic model.</li><li>Do not use it for nomogram construction, calibration curves, DCA, or diagnostic classification.</li><li>Do not use it for single-cell expression matrices or cohorts without survival endpoints.</li><li>Do not use identifiable patient data without de-identification and local compliance approval.</li><li>Do not use for cohorts with very few events (fewer than 5 events may produce unreliable Kaplan-Meier and ROC results).</li></ul><p><a href="../data/model-validation/external-model-validation.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>awesome-med-research-skills/Data Analysis/external-model-validation/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

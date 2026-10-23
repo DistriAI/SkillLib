@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>linux-hardening</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / linux-hardening</p><h1>linux-hardening</h1><p class="meta">combined</p><p>Apply CIS benchmarks and secure Linux servers. Configure SSH, manage users, implement firewall rules, and enable security features. Use when hardening Linux systems for production or meeting security compliance requirements.
+
+Apply CIS benchmarks and secure Linux servers.</p><h2>When to use</h2><ul><li>Hardening production servers</li><li>Meeting compliance requirements</li><li>Implementing security baselines</li><li>Configuring secure SSH access</li></ul><h2>When not to use</h2><ul><li>Apply guidance only within authorized scope; test destructive steps in non-production first.</li><li>Docs-only import: upstream scripts and templates not bundled.</li></ul><p><a href="../security/linux-hardening/linux-hardening.html">Skill page</a></p><h2>Conflict</h2><pre>The second copy is a safety-hardened adaptation of the first. It preserves the same core hardening steps (SSH, users, firewall, kernel, permissions, audit) but adds material constraints the first lacks: a Target and recovery section, explicit warnings against applying default-deny firewall rules before verifying management access, safer sudoers editing via visudo fragments, -xdev on find commands, and a Limitations section. The first copy contains a specific AllowUsers list and a direct sysctl -p command that the second generalizes or qualifies. Because the second copy adds real operational safety steps and the first contains a concrete configuration example, crowning one would hide either the safety constraints or the concrete defaults.</pre>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>grn-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / grn-pipeline</p><h1>grn-pipeline</h1><p class="meta">separate</p><p>Orchestrates gene regulatory network inference from processed single-cell data to regulons and in-silico perturbation, via pySCENIC (RNA-only GRNBoost2 -&gt; cisTarget -&gt; AUCell), SCENIC+ (multiome cisTopic -&gt; pycistarget -&gt; eGRN), and CellOracle perturbation. Use when recognizing that an inferred GRN is UNDIRECTED by default and reporting only the evidence tier delivered (co-expression vs motif-pruned vs enhancer-resolved vs perturbation), matching species/assembly/namespace across the TF-list + cisTarget DB + motif2TF annotation, feeding RAW counts of the cleaned/doublet-free/batch-controlled cells (never imputed/batch-corrected values), running the cisTarget pruning that buys directionality (modules are not regulons without it), or choosing the RNA-only vs multiome path. Hands mechanism to the gene-regulatory-networks component skills; not a re-teach of any single step.</p><h2>When to use</h2><ul><li>gene regulatory network inference</li><li>regulon inference</li><li>in-silico perturbation</li><li>pySCENIC workflow</li><li>SCENIC+ multiome workflow</li><li>CellOracle perturbation simulation</li><li>regulon-based cell type characterization</li></ul><h2>When not to use</h2><ul><li>re-teaching single step internals</li><li>using imputed or batch-corrected values</li><li>reporting directionality without cisTarget pruning</li><li>mismatched species or assembly namespaces</li></ul><p><a href="../science/gene-regulatory-network-analysis/grn-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/grn-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

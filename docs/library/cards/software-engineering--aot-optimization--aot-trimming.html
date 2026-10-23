@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>aot-trimming</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / aot-trimming</p><h1>aot-trimming</h1><p class="meta">separate</p><p>Guidelines for making .NET libraries and applications trimming-safe and Native AOT compatible. Covers the trimming/AOT model, the MSBuild properties that enable analysis (IsTrimmable, IsAotCompatible, PublishTrimmed, PublishAot), the trimming attributes (RequiresUnreferencedCode, RequiresDynamicCode, DynamicallyAccessedMembers, UnconditionalSuppressMessage), IL2xxx/IL3xxx warning codes, and a pattern playbook: source generators and UnsafeAccessor, generated-interception diagnostic suppressors, intentional runtime scanning boundaries, trimming-safe islands and feature switches, migration analyzers, and temporary warning-approval baselines. Use when introducing trimming/AOT support, resolving IL2xxx/IL3xxx warnings, or making reflection-heavy code trimming-safe in C# / .NET codebases. For System.Text.Json AOT scenarios, see also the serialization skill.</p><h2>When to use</h2><ul><li>Adding trimming (`PublishTrimmed`) or Native AOT (`PublishAot`) support to a library or application</li><li>Resolving `IL2xxx` (trimming) and `IL3xxx` (AOT/single-file) warnings</li><li>Making reflection-heavy code trimming-safe</li><li>Replacing runtime reflection, assembly scanning, or `Reflection.Emit` with compile-time alternatives</li><li>Reviewing a codebase or PR for trimming/AOT compatibility, including generated interceptors and analyzer suppressors</li><li>Designing public APIs that must carry trimming annotations</li></ul><h2>When not to use</h2><ul><li>System.Text.Json AOT scenarios</li></ul><p><a href="../software-engineering/aot-optimization/aot-trimming.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Aaronontheweb/dotnet-skills">Aaronontheweb/dotnet-skills</a></td><td><code>skills/aot-trimming/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

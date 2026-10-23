@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>geniml</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / geniml</p><h1>geniml</h1><p class="meta">combined</p><p>This skill should be used when working with genomic interval data (BED files) for machine learning tasks. Use for training region embeddings (Region2Vec, BEDspace), single-cell ATAC-seq analysis (scEmbed), building consensus peaks (universes), or any ML-based analysis of genomic regions. Applies to BED file collections, scATAC-seq data, chromatin accessibility datasets, and region-based genomic feature learning.
+
+Supports audited local Geniml genomic-interval workflows: validate BED and universe contracts, plan Region2Vec or scEmbed runs, inspect model/tokenizer compatibility, and assess consensus universes.</p><h2>When to use</h2><ul><li>Working with bulk genomic data (ChIP-seq, ATAC-seq, etc.)</li><li>Need unsupervised embeddings without metadata</li><li>Comparing region sets across experiments</li><li>Building features for downstream supervised learning</li><li>Metadata labels available (cell types, tissues, conditions)</li><li>Need to query regions by metadata or vice versa</li><li>Want joint embedding space for regions and labels</li><li>Building searchable genomic databases</li></ul><p><a href="../science/genomic-interval-ml/geniml.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies cover the same high-level domain (Geniml for genomic interval ML) but diverge significantly in scope, safety, and technical detail. The K-Dense-AI copy is a rigorous, safety-focused operational guide with specific version pins (geniml 0.8.4, gtars 0.10.0), a &#x27;safety gate&#x27; for data validation, and explicit warnings about Zarr/AnnData incompatibility. The aipoch and FreedomIntelligence copies are broader feature overviews that include BEDspace (which K-Dense omits in the visible text) and provide different installation advice (unpinned vs pinned). The FreedomIntelligence copy contains a syntax error in its install command (`uv uv pip`). Because the K-Dense copy has critical safety and compatibility constraints that the others lack, and the others have feature coverage (BEDspace) and workflow examples that K-Dense lacks or truncates, no single copy is a complete reproduction of the others. Combining them yields a skill that is both safe and comprehensive.</pre>
+</body>
+</html>

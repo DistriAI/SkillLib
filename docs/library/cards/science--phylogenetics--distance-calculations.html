@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>distance-calculations</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / distance-calculations</p><h1>distance-calculations</h1><p class="meta">separate</p><p>Build model-corrected evolutionary distance matrices and distance trees (NJ, BIONJ, FastME, UPGMA) with Biopython Bio.Phylo plus R ape/phangorn/FastME. Covers why a distance is a model-corrected estimate of substitutions per site that undercounts raw because of multiple/back/parallel hits (saturation); why the matrix discards the per-site information ML keeps; the LogDet/paralinear fix for compositional heterogeneity; the UPGMA molecular-clock trap; and the Bio.Phylo landmine that DistanceCalculator offers only identity/matrix distances, not JC/K80/TN93. Use when computing a distance matrix, building a fast NJ/FastME tree, seeding an ML search, barcoding, or testing substitution saturation before a deep tree. Routes ML and starting-tree work to modern-tree-inference, alignment quality to alignment/alignment-io, and tree I/O to tree-io.</p><h2>When to use</h2><ul><li>computing a distance matrix</li><li>building a fast NJ/FastME tree</li><li>seeding an ML search</li><li>barcoding</li><li>testing substitution saturation</li><li>building distance trees (NJ, BIONJ, FastME, UPGMA)</li><li>bootstrapping distance trees</li></ul><h2>When not to use</h2><ul><li>ML inference</li><li>model selection</li><li>alignment quality</li><li>alignment trimming</li><li>tree I/O</li><li>rooting and pruning</li></ul><p><a href="../science/phylogenetics/distance-calculations.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>phylogenetics/distance-calculations/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

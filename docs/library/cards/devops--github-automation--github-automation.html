@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>github-automation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / github-automation</p><h1>github-automation</h1><p class="meta">combined</p><p>Automate GitHub repositories, issues, pull requests, branches, CI/CD, and permissions via Rube MCP (Composio). Manage code workflows, review PRs, search code, and handle deployments programmatically.
+
+Operate GitHub issues, pull requests, branches, checks, workflows, and permissions through Rube MCP. Use when GitHub work must be queried or changed programmatically with repository-policy safeguards.</p><h2>When to use</h2><ul><li>Use for programmatic GitHub issue, pull-request, branch, Actions, deployment, collaborator, or protection tasks when Rube MCP is available. Prefer the native `gh` workflow or a repository-specific maintainer command when local repository p…</li></ul><h2>When not to use</h2><ul><li>Available Rube tool names and schemas can change; discover them at runtime.</li><li>GitHub permissions, organization policy, and external checks can block otherwise valid operations.</li><li>This skill does not authorize repository deletion, force pushes, protection changes, merges, deployments, or releases beyond explicit user intent.</li></ul><p><a href="../devops/github-automation/github-automation.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies describe the same Rube MCP/Composio GitHub automation task, but they are not interchangeable. The davepoon copy is a tool-catalog skill that lists specific Rube tool names, parameter names, and API pitfalls (e.g., GITHUB_CREATE_A_PULL_REQUEST 422, code search 384KB limit, pagination). The sickn33 copy is a policy-governance skill that adds repository policy gates, exact-SHA binding, guarded merge paths, Actions/deployment state handling, and destructive-action authorization rules that the davepoon copy lacks. The davepoon copy lacks the policy gates and Actions/deployment workflows, while the sickn33 copy lacks the concrete tool names and parameter pitfalls. Crowning one would hide a real alternative: a tool-reference procedure versus a policy-safeguard procedure.</pre>
+</body>
+</html>

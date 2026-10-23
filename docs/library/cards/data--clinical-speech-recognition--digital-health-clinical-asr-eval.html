@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>digital-health-clinical-asr-eval</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / digital-health-clinical-asr-eval</p><h1>digital-health-clinical-asr-eval</h1><p class="meta">separate</p><p>Stage 3 of Clinical ASR Flywheel. Score a NeMo manifest, produce the five-section KER leaderboard (by-ipa_source diagnostic). Not for ASR auth (/riva-asr).</p><h2>When to use</h2><ul><li>Score a clinical-ASR manifest, produce a five-section KER leaderboard, and route the user via the post-eval decision tree. Methodology details (metric definitions, normalization, leaderboard order, special-case routing) live in Critical Wo…</li><li>&quot;Score my ASR manifest&quot;</li><li>&quot;What&#x27;s the KER on Parakeet TDT v2?&quot;</li><li>&quot;Run the eval on cycle-N&quot;</li><li>&quot;Compare two ASR models on the clinical benchmark&quot;</li><li>&quot;Generate the leaderboard&quot;</li><li>&quot;I have a manifest.jsonl, how do I score it?&quot;</li><li>&quot;Why is KER 0.4 when WER is 0.07?&quot;</li></ul><h2>When not to use</h2><ul><li>**English-only by default.** Tokenization + normalization assume Latin script and en-US lexicon.</li><li>**Strict-contiguous KER is conservative.** A near-miss like `cefa zolin` counts as a miss. That&#x27;s intentional — pharmacy lookups fail on near-misses. Users wanting &quot;soft&quot; matching can switch to phoneme-level edit distance, which is a metho…</li><li>**One model per eval run.** Comparing two models means running the eval twice and diffing the two `leaderboard_cycle&lt;N&gt;.md` files (or extending the recipe to write multi-model rows yourself).</li><li>**Hosted-only paths assumed.** Self-hosted NIMs work but require `/riva-nim-setup` first.</li></ul><p><a href="../data/clinical-speech-recognition/digital-health-clinical-asr-eval.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/digital-health-clinical-asr-eval/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

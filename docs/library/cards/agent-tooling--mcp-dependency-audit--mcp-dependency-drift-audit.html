@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>mcp-dependency-drift-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / mcp-dependency-drift-audit</p><h1>mcp-dependency-drift-audit</h1><p class="meta">authentic</p><p>Statically audit MCP configs for mutable npm/npx package references before approval or CI, without executing discovered MCP servers.</p><h2>When to use</h2><ul><li>Before approving `.mcp.json`, Cursor, VS Code, GitHub Copilot, Claude, or Windsurf MCP configuration.</li><li>When adding an MCP configuration gate to pull requests or CI.</li><li>During an AI-agent security review where npm/npx-backed MCP servers are configured.</li><li>When checking whether a previously reviewed MCP config can silently resolve to newer package code.</li></ul><h2>When not to use</h2><ul><li>This workflow only covers dependency mutability/review drift for package-backed MCP configuration.</li><li>It does not assess prompt injection, tool poisoning, OAuth/authorization, server implementation flaws, malware, provenance, or runtime sandboxing.</li><li>Local executables and non-npm launch paths require separate review.</li><li>A static config can be reproducible and still unsafe for other reasons.</li></ul><p><a href="../agent-tooling/mcp-dependency-audit/mcp-dependency-drift-audit.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/mcp-dependency-drift-audit/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

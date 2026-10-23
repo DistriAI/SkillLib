@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>using-git-worktrees</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / using-git-worktrees</p><h1>using-git-worktrees</h1><p class="meta">combined</p><p>Use when starting feature work that needs isolation from current workspace or before executing implementation plans - creates isolated git worktrees with smart directory selection and safety verification
+
+Use when starting feature work that needs isolation from current workspace or before executing implementation plans - ensures an isolated workspace exists via native tools or git worktree fallback</p><h2>When to use</h2><ul><li>This skill is applicable to execute the workflow or actions described in the overview.</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../software-engineering/git-worktree-isolation/using-git-worktrees.html">Skill page</a></p><h2>Conflict</h2><pre>The copies overlap heavily on directory selection, gitignore safety, project setup, and baseline tests, but they disagree on the core workflow. obra/superpowers adds a Step 0 that detects whether the agent is already in a worktree or a submodule, asks for consent, and prefers native harness worktree tools before falling back to git. The other three copies omit that detection/consent/native-tool layer and instead present a direct git-worktree procedure with a global ~/.config/superpowers/worktrees option. Crowning one copy would hide a real alternative: the obra version is a harness-aware isolation procedure, while the others are a simpler manual git-worktree setup.</pre>
+</body>
+</html>

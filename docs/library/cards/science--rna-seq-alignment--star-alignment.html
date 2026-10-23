@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>star-alignment</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / star-alignment</p><h1>star-alignment</h1><p class="meta">separate</p><p>Aligns RNA-seq reads to a genome with STAR, the fast splice-aware aligner whose splice-junction database (built from a GTF at sjdbOverhang = readlength-1) and two-pass mode set junction sensitivity, whose 255-for-unique MAPQ breaks GATK, and whose GeneCounts output reveals library strandedness. Use when RNA reads must be placed on the genome for novel-isoform discovery, fusion detection, RNA variant calling, coverage tracks, splicing QC, or single-cell (STARsolo). Memory-constrained RNA alignment is hisat2-alignment; DE on known transcripts only should skip alignment for rna-quantification/alignment-free-quant; the QC gate and contig-naming reconciliation are alignment-files; counting is rna-quantification; DNA is bwa-alignment/bowtie2-alignment.</p><h2>When to use</h2><ul><li>RNA splice-aware mapping</li><li>index generation</li><li>two-pass alignment</li><li>GeneCounts output</li><li>chimeric/fusion output</li><li>novel-isoform discovery</li><li>fusion detection</li><li>RNA variant calling</li></ul><h2>When not to use</h2><ul><li>DNA alignment</li><li>long read alignment</li><li>memory-constrained RNA alignment</li><li>DE on known transcripts only</li><li>counting reads over genes/transcripts</li><li>single-cell droplet/plate counting</li><li>QC gate</li><li>contig-naming reconciliation</li></ul><p><a href="../science/rna-seq-alignment/star-alignment.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>read-alignment/star-alignment/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

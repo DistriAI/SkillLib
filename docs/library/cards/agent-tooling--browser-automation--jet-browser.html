@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jet-browser</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / jet-browser</p><h1>jet-browser</h1><p class="meta">authentic</p><p>Verify or integrate Jet Browser when a project needs isolated WPE WebKit sessions, native input, screenshots, ordered JSONL automation, or reproducible runtime checks.</p><h2>When to use</h2><ul><li>Use when a project needs a self-hosted browser process with an explicit container lifecycle.</li><li>Use when a harness needs framework-neutral, ordered JSONL instead of a bundled agent loop.</li><li>Use when native pointer, keyboard, touch, DOM, and screenshot evidence should share one runtime.</li><li>Use when a repository needs a reproducible offline smoke test or GitHub Actions browser-runtime check.</li><li>Do not use this skill to control an already-running personal Chrome or reuse its logged-in state; use the environment&#x27;s permission-approved CDP workflow for that.</li></ul><h2>When not to use</h2><ul><li>Jet Browser uses WPE WebKit, not Chromium. It does not implement Chrome-only extension, enterprise-policy, or CDP contracts.</li><li>The published v0.9.0 manifest provides native `linux/amd64` and `linux/arm64` images. Other architectures need compatible emulation or a source build for the host architecture.</li><li>Docker and Node.js 24+ are required for the documented standalone flow; source development also requires the repository&#x27;s Rust toolchain.</li><li>The standalone runtime does not include a hosted control plane, proxy network, account system, persistent daily-browser takeover, or model loop.</li><li>The published ready-time and memory figures are medians from a pinned offline fixture. They do not measure public-site success, stealth, CAPTCHA handling, model accuracy, or long-running stability.</li><li>This skill cannot validate a local run when the required runtime is unavailable; report the missing dependency or failed assertion instead.</li></ul><p><a href="../agent-tooling/browser-automation/jet-browser.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/jet-browser/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

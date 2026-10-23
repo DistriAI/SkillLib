@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>rebuttal</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / rebuttal</p><h1>rebuttal</h1><p class="meta">combined</p><p>Workflow 4: Submission rebuttal pipeline. Parses external reviews, enforces coverage and grounding, drafts a safe text-only rebuttal under venue limits, and manages follow-up rounds. Use when user says \&quot;rebuttal\&quot;, \&quot;reply to reviewers\&quot;, \&quot;ICML rebuttal\&quot;, \&quot;OpenReview response\&quot;, or wants to answer external reviews safely.</p><h2>When to use</h2><ul><li>ICML-style **text-only rebuttal**</li><li>strict **character limits**</li><li>**multiple reviewers**</li><li>**follow-up rounds** after the initial rebuttal</li><li>safe drafting with **no fabrication**, **no overpromise**, and **full issue coverage**</li><li>run new experiments automatically</li><li>generate new theorem claims automatically</li><li>edit or upload a revised PDF</li></ul><h2>When not to use</h2><ul><li>run new experiments automatically</li><li>generate new theorem claims automatically</li><li>edit or upload a revised PDF</li><li>submit to OpenReview / CMT / HotCRP</li></ul><p><a href="../research/rebuttal-drafting/rebuttal.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies are the same rebuttal pipeline, but the wanshuiyin copy adds material steps and constraints the brycewang copy lacks: a reviewer backend routing convention (Codex vs Manual Review MCP with exact prompt fidelity and no fallback), a VENUE_MODE that changes output shape (single_document vs per_reviewer_thread), a stress-test round policy with a hard cap of 5 and pivotal-reviewer focus, and an HTML rendering gate for the rich draft. The brycewang copy is a shorter, earlier variant with a different reviewer model and a simpler single-round stress test. Crowning one would hide the manual-review routing and rendering steps that are real alternatives in the other copy.</pre>
+</body>
+</html>

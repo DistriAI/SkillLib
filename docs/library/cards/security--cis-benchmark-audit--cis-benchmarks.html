@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cis-benchmarks</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / cis-benchmarks</p><h1>cis-benchmarks</h1><p class="meta">combined</p><p>Audit and remediate CIS benchmark violations. Use automated tools to assess compliance and implement hardening recommendations. Use when meeting compliance requirements or implementing security baselines.
+
+Audit and remediate CIS benchmark violations.</p><h2>When to use</h2><ul><li>Assessing security compliance</li><li>Implementing security baselines</li><li>Meeting regulatory requirements</li><li>Hardening systems to standards</li></ul><h2>When not to use</h2><ul><li>An OpenSCAP/Lynis assessment may require privileges and read sensitive host configuration; approve the exact host, profile, privileges, private outputs and limits first. Do not enable auto-remediation or mount all host paths without review…</li><li>Benchmark/profile identifiers and installed SCAP content vary; use [OpenSCAP’s documented info/eval flow](https://static.open-scap.org/openscap-1.4.1/oscap_user_manual.html). Test changes and preserve rollback/access before hardening produ…</li><li>Docs-only import: upstream scripts and templates not bundled.</li></ul><p><a href="../security/cis-benchmark-audit/cis-benchmarks.html">Skill page</a></p><h2>Conflict</h2><pre>The second copy is a safety-hardened adaptation of the first, but it changes the operational procedure in ways that would hide a real alternative if one copy were crowned. The first copy provides concrete, runnable commands (hardcoded CIS profile ID, specific kube-bench check sections, fixed report paths). The second copy replaces those with variable-driven, approval-gated steps (oscap info to discover profile, reviewed image digest, private audit directory, explicit limitations and read-only inventory). Because the copies disagree on how to select the OpenSCAP profile, how to pin the kube-bench image, and where to write reports, crowning one would discard the other&#x27;s material constraints.</pre>
+</body>
+</html>

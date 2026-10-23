@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>de-ai-writer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / de-ai-writer</p><h1>de-ai-writer</h1><p class="meta">combined</p><p>AI 文案去味器。用户提供 AI 生成的文本（公众号/小红书/电商文案等），觉得“太 AI 味”要改得更自然、更像人写的时使用。输出自然有人味的中文。De-AI writer: rewrite AI-generated copy (WeChat articles, Xiaohongshu, e-commerce) into natural, human-sounding Chinese text.
+
+Chinese AI-smell removal engine: 35 Chinese AI-tell patterns (赋能/闭环), AI-smell scoring, de-AI rewriting, style clone. Use when a Chinese draft reads machine-written or the user asks 去AI味.</p><h2>When to use</h2><ul><li>Use when a Chinese draft &quot;reads like AI&quot; and needs to sound human-authored.</li><li>Use when the user asks 去AI味, 改得像人写的, or 这段是不是AI写的 (is this AI-written?).</li><li>Use when editing marketing copy, WeChat articles, product listings, or social posts written in Chinese.</li><li>Use when asked to imitate a reference writing style (风格克隆) or to produce A/B variants of the same copy.</li><li>Use when shifting tone: casual / formal / marketing / humor / direct.</li></ul><h2>When not to use</h2><ul><li>**Chinese-centric by design.** The pattern catalog targets Chinese AI tells; it will not fix English AI smell (use an English humanizer for that).</li><li>**Documentation only.** No script and no engine is bundled in this skill. The optional local rule engine is published in the source repository; deep rewriting, style cloning, variants and scoring require an LLM of your choice.</li><li>**Rule-based detection, not a detector model.** The index is a heuristic over known patterns, computed by the formula above. It cannot prove authorship and must not be used as evidence that a text &quot;was&quot; or &quot;was not&quot; AI-written.</li><li>**Unlisted patterns are out of scope.** Tells that are not in the 35-pattern catalog pass through untouched; the catalog is the ceiling of what this skill sees.</li><li>**Keep-conditions need human confirmation.** Some removal is context-dependent — a safety caveat such as &quot;do not soak for long periods&quot; may be a legal requirement; when a pattern overlaps with a claim that must stay, ask before deleting.</li></ul><p><a href="../media/de-ai-rewrite/de-ai-writer.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies overlap on the goal (removing AI smell from Chinese copy) but each contains material steps the other lacks. The davepoon copy is a thin wrapper around a local Python script (deai.py) with API-key and prompt-only modes. The sickn33 copy is a documentation-only procedure that defines a deterministic AI-smell scoring formula, a 35-pattern catalog, a diagnose-rewrite-verify loop, and optional style-clone/variant/tone steps. Crowning one would hide a real alternative: a script-based tool versus a manual, formula-driven editing procedure.</pre>
+</body>
+</html>

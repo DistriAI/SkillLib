@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>wdl-workflows</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / wdl-workflows</p><h1>wdl-workflows</h1><p class="meta">separate</p><p>Authors bioinformatics pipelines in WDL (Workflow Description Language) run by Cromwell or miniwdl, targeting the GATK/Broad and Terra/AnVIL/BioData Catalyst cloud ecosystem, with tasks, workflows, scatter-gather parallelism, structs, and a runtime block that sizes the cloud VM. Use when deciding to target Terra/AnVIL/GATK/WARP (chosen for the ecosystem, not the language); sizing runtime disks dynamically for a fresh-per-task cloud VM (ceil(size(f)*factor)+buffer); choosing preemptible vs on-demand VMs by task length and idempotency; picking Cromwell (production, cloud, call-caching) vs miniwdl (local dev, miniwdl check linting, readable errors); enabling and debugging call-caching silent-miss modes; pinning Docker by digest for reproducibility and cache stability; or scattering an array for parallel fan-out.</p><h2>When to use</h2><ul><li>Authoring WDL pipelines for Terra/AnVIL</li><li>Running GATK Best Practices</li><li>Sizing runtime disks dynamically</li><li>Choosing preemptible vs on-demand VMs</li><li>Picking Cromwell vs miniwdl</li><li>Debugging call-caching silent-miss modes</li><li>Pinning Docker by digest</li><li>Scattering arrays for parallel fan-out</li></ul><h2>When not to use</h2><ul><li>Dynamic/streaming pipelines</li><li>Maximum vendor-neutral portability</li><li>Tight Python/pandas HPC integration</li></ul><p><a href="../science/workflow-management/wdl-workflows.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflow-management/wdl-workflows/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

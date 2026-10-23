@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nv-segment-ct</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / nv-segment-ct</p><h1>nv-segment-ct</h1><p class="meta">separate</p><p>Used for running NV-Segment-CT VISTA3D on CT NIfTI volumes and recording label-map evidence.</p><h2>When to use</h2><ul><li>Used for running NV-Segment-CT VISTA3D on CT NIfTI volumes and recording label-map evidence. Not for clinical interpretation.</li><li>Use the wrapper exactly as documented; do not replace the upstream entrypoint with a handwritten implementation.</li><li>Manifest I/O: inputs are `ct_volume`; outputs are `label_map` and `result_json`.</li></ul><h2>When not to use</h2><ul><li>This is a thin wrapper. Inference, preprocessing, and postprocessing are delegated entirely to the official `hugging_face_pipeline.HuggingFacePipelineHelper` in bundle/. Do not modify code under bundle/.</li><li>`transformers==4.46.3` is the wrapper compatibility overlay tested with the upstream requirements&#x27; Torch 2.0.1; newer Transformers releases can disable that older Torch backend.</li><li>The pinned upstream requirements include Torch 2.0.1. Use only the pinned NVIDIA model assets; do not load untrusted checkpoints in this legacy reproduction environment.</li><li>Device auto-detected (cuda if available, else cpu); `--device` flag overrides.</li><li>Output may be schema-valid but semantically empty (e.g. label prompts that do not match the input anatomy). Sanity gates assert at least one foreground voxel per requested anatomy.</li><li>Not for clinical deployment, clinical interpretation, autonomous diagnosis, regulatory submission.</li></ul><p><a href="../science/medical-imaging-segmentation/nv-segment-ct.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/nv-segment-ct/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

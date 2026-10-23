@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>n8n-expression-syntax</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / n8n-expression-syntax</p><h1>n8n-expression-syntax</h1><p class="meta">combined</p><p>Validate n8n expression syntax and fix common errors. Use when writing n8n expressions, using {{}} syntax, accessing $json/$node variables, troubleshooting expression errors, mapping data between nodes, or referencing webhook data in workflows. Use this skill whenever configuring node fields that reference data from previous nodes — expressions are how n8n passes data between nodes, and getting the syntax wrong is the most common source of workflow errors. Also use when asked whether a complex expression hurts performance.
+
+Validate n8n expression syntax and fix common errors. Use when writing n8n expressions, using {{}} syntax, accessing $json/$node variables, troubleshooting expression errors, or working with webhook data in workflows.</p><h2>When to use</h2><ul><li>You need to write or debug n8n expressions using `{{ ... }}` syntax.</li><li>The task involves `$json`, `$node`, webhook payloads, or expression-related workflow errors.</li><li>You want syntax-correct dynamic values inside n8n nodes and parameters.</li></ul><h2>When not to use</h2><ul><li>Code nodes use **direct JavaScript access**, NOT expressions! ---</li><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../agent-tooling/n8n-expression-syntax/n8n-expression-syntax.html">Skill page</a></p><h2>Conflict</h2><pre>The first copy is the substantive procedure: it defines the expression format, core variables, the critical webhook body structure, common patterns, and a detailed transform gatekeeper (expression vs IIFE vs Code node). The second copy is a thin wrapper that defers to a separate detailed guide, adds a risk label, and includes working examples and limitations, but it omits the core syntax rules and the transform gatekeeper. Crowning either one would hide a real alternative: the first has the deep reference, the second has the wrapper structure and examples.</pre>
+</body>
+</html>

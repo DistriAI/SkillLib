@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>rust-review</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / rust-review</p><h1>rust-review</h1><p class="meta">separate</p><p>Performs comprehensive Rust security review for safe/unsafe boundary issues, memory safety in unsafe blocks, concurrency hazards, panic-induced DoS, FFI safety, and async runtime mistakes. Use when auditing Rust crates, services, or libraries — particularly those with `unsafe`, FFI, or concurrent code.</p><h2>When to use</h2><ul><li>Rust application/library security review: safe/unsafe boundary auditing, memory safety in `unsafe` blocks, concurrency hazards, panic-induced DoS on servers, FFI safety, async-runtime mistakes.</li></ul><h2>When not to use</h2><ul><li>Pure-C / pure-C++ codebases — use `c-review` instead.</li><li>Smart contracts (Solana programs / NEAR contracts / Ink!) — use `solana-vulnerability-scanner` or the contract-specific skill.</li><li>Kernel-mode Rust drivers without userspace allocator — coverage is incomplete; flag as advisory only.</li><li>Secrets/key memory hygiene (zeroization, `Zeroize`/`ZeroizeOnDrop`/`secrecy` usage, lingering stack/heap copies) — use the `zeroize-audit` skill; rust-review does not cover memory zeroization.</li></ul><p><a href="../security/rust-security-review/rust-review.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/rust-review/skills/rust-review/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

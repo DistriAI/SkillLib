@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>maui-dependency-injection</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / maui-dependency-injection</p><h1>maui-dependency-injection</h1><p class="meta">separate</p><p>Guidance for configuring dependency injection in .NET MAUI apps — service registration in MauiProgram.cs, lifetime selection (Singleton / Transient / Scoped), constructor injection, Shell navigation auto-resolution, platform-specific registrations, and testability patterns. USE FOR: &quot;dependency injection&quot;, &quot;DI setup&quot;, &quot;AddSingleton&quot;, &quot;AddTransient&quot;, &quot;AddScoped&quot;, &quot;service registration&quot;, &quot;constructor injection&quot;, &quot;IServiceProvider&quot;, &quot;MauiProgram DI&quot;, &quot;register services&quot;, &quot;BindingContext injection&quot;. DO NOT USE FOR: data binding (use maui-data-binding), Shell route configuration (use maui-shell-navigation), unit-test mocking frameworks (use standard xUnit and NSubstitute patterns).</p><h2>When to use</h2><ul><li>Registering services, ViewModels, and Pages in `MauiProgram.cs`</li><li>Choosing between `AddSingleton`, `AddTransient`, and `AddScoped`</li><li>Wiring constructor injection for Pages and ViewModels</li><li>Leveraging Shell navigation to auto-resolve DI-registered Pages</li><li>Registering platform-specific service implementations with `#if` directives</li><li>Designing interfaces for testable service layers</li></ul><h2>When not to use</h2><ul><li>XAML data-binding syntax or compiled bindings — use the **maui-data-binding** skill</li><li>Shell route registration and query parameters — use the **maui-shell-navigation** skill</li><li>Mocking frameworks or test runners — use standard .NET testing tools (xUnit, NUnit, MSTest) and mocking libraries (NSubstitute, Moq)</li></ul><p><a href="../software-engineering/maui-dependency-injection/maui-dependency-injection.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-maui/skills/maui-dependency-injection/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>drizzle-migration-conflict</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / drizzle-migration-conflict</p><h1>drizzle-migration-conflict</h1><p class="meta">authentic</p><p>Diagnose, repair, and prevent Drizzle Kit migration conflicts involving generated SQL, snapshots, journals, merge queues, and team workflows.</p><h2>When to use</h2><ul><li>Use when Drizzle migration files, `_journal.json`, or `snapshot.json` conflict after a pull, merge, rebase, or PR update.</li><li>Use when `drizzle-kit check` reports non-commutative migrations or migration folder conflicts.</li><li>Use when a team wants a safe repair flow for generated Drizzle migrations after schema changes converge.</li><li>Use when designing CI or merge-queue policy to prevent repeated Drizzle migration conflicts.</li></ul><h2>When not to use</h2><ul><li>This skill cannot guarantee that a regenerated migration is production-safe without review against the target database state and deployment process.</li><li>It does not run DB-backed migration commands unless the user explicitly confirms the target and the command.</li><li>It is focused on Drizzle Kit migration conflicts, not general schema design or application-query optimization.</li></ul><p><a href="../devops/database-migration-resolution/drizzle-migration-conflict.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/drizzle-migration-conflict/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

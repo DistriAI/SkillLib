@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>primer-specificity</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / primer-specificity</p><h1>primer-specificity</h1><p class="meta">separate</p><p>Checks whether a PCR primer PAIR amplifies only the intended target genome-wide, using pair-aware in-silico PCR (MFEprimer-3.0, UCSC isPcr, NCBI Primer-BLAST) plus a primer3-py 3&#x27;-end-stability prefilter, against the correct database. Covers why plain BLAST is the wrong tool (it scores per-primer similarity, blind to 3&#x27;-terminal anchoring and to whether the two primers form a convergent amplicon in range), why a single 3&#x27;-terminal mismatch suppresses amplification while internal mismatches are tolerated, why intron-spanning RT-qPCR is defeated by processed pseudogenes that force a GENOME search not transcriptome-only, how to read a Primer-BLAST report (empty unintended-products means none passed its filter, not none exist), and that in-silico checking reduces but never replaces empirical validation. Use when confirming specificity, screening off-target amplicons, avoiding paralog/pseudogene hits, or checking SNPs under the 3&#x27; end. Design is primer-basics; dimers primer-validation; ali…</p><h2>When to use</h2><ul><li>confirming specificity</li><li>screening off-target amplicons</li><li>avoiding paralog/pseudogene hits</li><li>checking SNPs under the 3&#x27; end</li><li>genome/transcriptome-wide off-target assessment</li><li>mispriming assessment of a chosen primer pair</li></ul><h2>When not to use</h2><ul><li>designing primers</li><li>intramolecular dimers/hairpins of the oligos</li><li>general read alignment</li><li>building a BLAST DB</li><li>plain BLAST as final specificity decision</li></ul><p><a href="../science/primer-design/primer-specificity.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>primer-design/primer-specificity/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

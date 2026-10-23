@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>histolab</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / histolab</p><h1>histolab</h1><p class="meta">combined</p><p>Digital pathology image processing toolkit for whole slide images (WSI). Use this skill when working with histopathology slides, processing H&amp;E or IHC stained tissue images, extracting tiles from gigapixel pathology images, detecting tissue regions, segmenting tissue masks, or preparing datasets for computational pathology deep learning pipelines. Applies to WSI formats (SVS, TIFF, NDPI), tile-based analysis, and histological image preprocessing workflows.
+
+Extracts and preprocesses whole-slide histology image tiles with Histolab. Use for WSI inspection, tissue masks, random/grid/score-based tile extraction, H&amp;E stain normalization, and tile dataset preparation. For multiplexed imaging or deep learning inference pipelines, use pathml.</p><h2>When to use</h2><ul><li>Use Histolab to inspect WSI metadata, identify tissue, extract image tiles, and standardize H&amp;E staining. Its masks and scores are image-processing heuristics; they do not diagnose cancer, count individual cells, or establish image quality.</li><li>Use this skill when working with histopathology slides, processing H&amp;E or IHC stained tissue images, extracting tiles from gigapixel pathology images, detecting tissue regions, segmenting tissue masks, or preparing datasets for computation…</li></ul><h2>When not to use</h2><ul><li>Do not use for real-time whole-slide image viewing (use OpenSlide or a dedicated WSI viewer).</li><li>Do not use for stain normalization (use StainNet, Macenko, or Reinhard methods separately).</li><li>Do not use for cell segmentation or nucleus detection (use Cellpose, HoverNet, or StarDist).</li><li>Do not use for non-WSI medical images (X-ray, CT, MRI) — use a medical imaging toolkit.</li><li>Do not use on machines with &lt;16 GB RAM when processing high-resolution SVS files at level 0.</li></ul><p><a href="../science/wsi-tile-extraction/histolab.html">Skill page</a></p><h2>Conflict</h2><pre>The K-Dense-AI copy is the most rigorous and contains critical, non-obvious constraints (pinned version 0.7.0, Python 3.10, native OpenSlide installation, macOS DYLD path, and the correct API usage where extraction_mask is passed to extract/locate_tiles rather than the constructor). The other three copies (Vibe-Skills, aipoch, OpenClaw) are near-identical, less rigorous mirrors that use a simplified, potentially incorrect API call (tiler.locate_tiles(slide, n_tiles=20)) and omit the environment setup. Because the K-Dense copy has material steps the others lack, and the others disagree on the API usage, crowning one would hide the alternative (simpler) approach, so combine is appropriate.</pre>
+</body>
+</html>

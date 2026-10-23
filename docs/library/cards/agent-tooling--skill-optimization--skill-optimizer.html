@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>skill-optimizer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / skill-optimizer</p><h1>skill-optimizer</h1><p class="meta">combined</p><p>Optimizes AI skills for activation, clarity, and cross-model reliability. Use when creating or editing skill packs, diagnosing weak skill uptake, reducing regressions, tuning instruction salience, improving examples, shrinking context cost, or setting benchmark/release gates for skills. Trigger terms: skill optimization, activation gap, benchmark skill, with/without skill delta, regression, context budget, prompt salience.
+
+Diagnose and optimize Agent Skills (SKILL.md) with real session data and research-backed static analysis. Works with Claude Code, Codex, and any Agent Skills-compatible agent.</p><h2>When to use</h2><ul><li>Improve whether a skill is actually applied by models</li><li>Diagnose why some criteria fail across all models</li><li>Prevent a skill from making outputs worse</li><li>Refactor skill text for stronger retrieval under context pressure</li><li>Build repeatable benchmark loops and release gates</li><li>Use when skills are not triggering as expected or seem broken</li><li>Use when you want to audit and improve your skill library&#x27;s quality</li><li>Use when you want to understand which skills are underperforming or wasting context tokens</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../agent-tooling/skill-optimization/skill-optimizer.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe different procedures for the same skill name. mcollina/skills defines a forward-looking optimization loop (baseline, failure pattern, salience edits, re-run, ship) and points to rule files. sickn33/agentic-awesome-skills defines a read-only diagnostic workflow that scans session JSONL files, runs 8 analysis dimensions, and outputs a P0/P1/P2 report. They overlap in the goal of improving skill activation and context cost, but each contains material steps the other lacks, and they disagree on whether the skill should modify files or only report.</pre>
+</body>
+</html>

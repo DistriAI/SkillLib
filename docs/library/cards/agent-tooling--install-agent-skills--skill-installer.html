@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>skill-installer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / skill-installer</p><h1>skill-installer</h1><p class="meta">combined</p><p>Install Codex skills into $CODEX_HOME/skills from a curated list or a GitHub repo path. Use when a user asks to list installable skills, install a curated skill, or install a skill from another repo (including private repos).
+
+Instala, valida, registra e verifica novas skills no ecossistema. 10 checks de seguranca, copia, registro no orchestrator e verificacao pos-instalacao.</p><h2>When to use</h2><ul><li>When the user mentions &quot;instalar skill&quot; or related topics</li><li>When the user mentions &quot;install skill&quot; or related topics</li><li>When the user mentions &quot;registrar skill&quot; or related topics</li><li>When the user mentions &quot;nova skill&quot; or related topics</li><li>When the user mentions &quot;new skill&quot; or related topics</li><li>When the user mentions &quot;adicionar skill ao ecossistema&quot; or related topics</li></ul><h2>When not to use</h2><ul><li>The task is unrelated to skill installer</li><li>A simpler, more specific tool can handle the request</li><li>The user needs general-purpose assistance without domain expertise</li><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../agent-tooling/install-agent-skills/skill-installer.html">Skill page</a></p><h2>Conflict</h2><pre>The copies describe two different procedures. The openai, foryourhealth111-pixel, and composio-community copies are near-identical Codex skill installers that use list-skills.py and install-skill-from-github.py to install from openai/skills or arbitrary GitHub paths. The sickn33 copy is a different enterprise-grade installer with a 6-layer validation pipeline, 11-step install, registry, backups, rollback, health checks, and dry-run, using install_skill.py, validate_skill.py, detect_skills.py, and package_skill.py. Crowning one would hide a real alternative.</pre>
+</body>
+</html>

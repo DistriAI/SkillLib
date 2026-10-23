@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hifi-assembly</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / hifi-assembly</p><h1>hifi-assembly</h1><p class="meta">separate</p><p>Assembles haplotype-resolved diploid and telomere-to-telomere (T2T) genomes from PacBio HiFi reads with hifiasm (HiFi-only, Hi-C, or trio phasing) and verkko (HiFi + ultralong ONT for T2T), extracting contigs from GFA and routing phasing QC to k-mer/trio metrics. Covers why a primary assembly is a haplotype mosaic that exists in no cell, partial-vs-full phasing (the .bp. vs .dip. filename convention), the purge-default trap on inbred samples, the --hom-cov coverage-estimate alarm, and verkko-vs-hifiasm for T2T. Use when assembling a diploid eukaryote from HiFi, phasing haplotypes with parents (trio) or Hi-C, deciding whether to chase T2T, or diagnosing switch errors invisible to N50/BUSCO/QV.</p><h2>When to use</h2><ul><li>assembling a diploid eukaryote from HiFi</li><li>phasing haplotypes with parents (trio)</li><li>phasing haplotypes with Hi-C</li><li>deciding whether to chase T2T</li><li>diagnosing switch errors invisible to N50/BUSCO/QV</li><li>building two cleanly phased haplotypes</li><li>T2T-grade assembly with HiFi + ultralong ONT</li></ul><h2>When not to use</h2><ul><li>haploid representation for rough gene location</li><li>allele-aware analysis on primary mosaic assemblies</li></ul><p><a href="../science/genome-assembly-hifi/hifi-assembly.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>genome-assembly/hifi-assembly/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

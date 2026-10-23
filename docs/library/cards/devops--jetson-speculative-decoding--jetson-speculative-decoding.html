@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-speculative-decoding</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-speculative-decoding</p><h1>jetson-speculative-decoding</h1><p class="meta">separate</p><p>Add EAGLE-3 or draft-model speculative decoding to a Jetson vLLM server when TPOT is the bottleneck.</p><h2>When to use</h2><ul><li>Tune an existing Jetson vLLM deployment for faster token generation by appending the right `--speculative-config` and validating whether it improves single-stream decode speed.</li><li>TPOT/ITL is the bottleneck (TTFT is fine, output is just slow).</li><li>Workload is single-stream or low-concurrency (≤2). Speculation usually loses at high concurrency.</li><li>Jetson family is **Thor or AGX Orin**. Do **not** suggest EAGLE-3 on Orin Nano/NX — there is rarely enough VRAM headroom to host both target and draft, and you&#x27;ll OOM at startup.</li></ul><h2>When not to use</h2><ul><li>High-concurrency serving (≥8): batched decode usually beats speculation; the draft model just steals VRAM.</li><li>Models without a published EAGLE-3 head — do not train one ad-hoc as a &quot;fix&quot;.</li><li>After applying `jetson-inference-mem-tune` flags that already pushed `--gpu-memory-utilization` near the ceiling. Free at least ~2 GB first.</li><li>Speculative decoding improves decode-heavy workloads; it does not reduce TTFT-dominated latency.</li><li>High concurrency can erase the benefit because continuous batching already keeps the GPU busy.</li><li>Orin Nano/NX usually lack enough memory headroom for both target and draft models.</li><li>Acceptance rate and draft overhead are model-specific, so benchmark before and after instead of assuming a speedup.</li></ul><p><a href="../devops/jetson-speculative-decoding/jetson-speculative-decoding.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-speculative-decoding/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

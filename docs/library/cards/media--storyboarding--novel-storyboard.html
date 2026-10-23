@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>novel-storyboard</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / novel-storyboard</p><h1>novel-storyboard</h1><p class="meta">separate</p><p>给 AI 短剧出分镜：三层结构——段（一次视频生成，≤15 秒）→ 分镜（段内 2–5 秒的剪切，认领剧本节拍） → 分镜图（每切一张关键帧：主分镜图钉 0.00 秒，子分镜图钉各自切点）。 每段自带一条 MiniMax H3 视频提示词（官方口径默认英文、逐镜换行，promptLang 可切中文）：对齐指令和 [Shot k] 切点时刻由分镜结构推导、逐字对账，台词逐字进 &lt;d&gt; 块（写法规范已内化为 references/h3-prompt.md，不依赖外部 skill）。 产出 storyboard.json + Markdown + 单页评审报告（分镜节奏带 / 分集分镜表 / 生成批次单 / 配音对齐单，含导出 JSON）。不出图——交付的是每格的画面提示词和它该挂哪些参考图。 18 道质量门全部由脚本确定性检查（第 18 道 shot-recipe 可选：挂上 shot-recipes 卡库才查，不挂就明说跳过）； export 一键导出 H3 投产包（每段提示词 + 按 Picture 序的分镜图清单）。零依赖、零 API key，用当前会话额度。 Use when asked to 分镜、出分镜、镜头表、切镜、storyboard for AI short drama。</p><p><a href="../media/storyboarding/novel-storyboard.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/eternityspring/shuohao-skills">eternityspring/shuohao-skills</a></td><td><code>skills/novel-storyboard/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

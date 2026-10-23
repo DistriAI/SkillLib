@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>timesfm-forecasting</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / timesfm-forecasting</p><h1>timesfm-forecasting</h1><p class="meta">combined</p><p>Zero-shot time series forecasting with Google&#x27;s TimesFM foundation model. Use for any univariate time series (sales, sensors, energy, vitals, weather) without training a custom model. Supports CSV/DataFrame/array inputs with point forecasts and prediction intervals. Includes a preflight system checker script to verify RAM/GPU before first use.
+
+Performs zero-shot time-series forecasting with Google&#x27;s TimesFM, including regular-grid CSV preparation, quantile forecasts, XReg covariates, and held-out evaluation. Uses the Apache-licensed TimesFM 2.5 checkpoint by default and documents the distinct TimesFM 3.0 multivariate API and weight-license requirements.</p><h2>When to use</h2><ul><li>Forecasting **any univariate time series** (sales, demand, sensor, vitals, price, weather)</li><li>You need **zero-shot forecasting** without training a custom model</li><li>You want **probabilistic forecasts** with calibrated prediction intervals (quantiles)</li><li>You have time series of **any length** (the model handles 1–16,384 context points)</li><li>You need to **batch-forecast** hundreds or thousands of series efficiently</li><li>You want a **foundation model** approach instead of hand-tuning ARIMA/ETS parameters</li><li>You need classical statistical models with coefficient interpretation → use `statsmodels`</li><li>You need time series classification or clustering → use `aeon`</li></ul><h2>When not to use</h2><ul><li>classical statistical models with coefficient interpretation</li><li>time series classification or clustering</li><li>multivariate vector autoregression or Granger causality</li><li>tabular non-temporal data</li></ul><p><a href="../data/timesfm-zero-shot-forecasting/timesfm-forecasting.html">Skill page</a></p><h2>Conflict</h2><pre>The K-Dense-AI copy is a materially different, newer procedure (version 3.0) that targets timesfm 3.0.2, distinguishes checkpoint 2.5 from 3.0, documents license restrictions for 3.0 weights, and adds workflow constraints (regular-grid validation, no dropna on internal gaps, rolling-origin evaluation, nominal interval labeling, MPS limitation, and a specific 2.5 quick-start with revision pinning). The other three copies are near-identical v1.0.0 reproductions of an older procedure that only covers TimesFM 2.5, uses a simpler install flow, and does not include the 3.0 API or license caveats. Crowning one v1.0.0 copy would hide the real alternative provided by the K-Dense-AI copy.</pre>
+</body>
+</html>

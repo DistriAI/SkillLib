@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>dicom-series-to-volume</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / dicom-series-to-volume</p><h1>dicom-series-to-volume</h1><p class="meta">separate</p><p>Used for converting one CT DICOM series folder to a HU NIfTI volume with affine evidence. Not for multi-frame DICOM or clinical use.</p><h2>When to use</h2><ul><li>Used for converting one CT DICOM series folder to a HU NIfTI volume with affine evidence. Not for multi-frame DICOM or clinical use.</li><li>Use the wrapper exactly as documented; do not replace the upstream entrypoint with a handwritten implementation.</li><li>Manifest I/O: inputs are `dicom_dir`; outputs are `nifti_volume` and `result_json`.</li></ul><h2>When not to use</h2><ul><li>Single-series only; multi-series input is rejected at preflight.</li><li>Multi-frame DICOM (NumberOfFrames &gt; 1 per file) not supported.</li><li>Compressed transfer syntaxes (JPEG / JPEG2000 / RLE) not supported.</li><li>No voxel reorientation. The affine is derived from DICOM headers and represented in NIfTI/RAS coordinates; a downstream gate (e.g. expected_axcodes) is expected to assert orientation before this volume is fed to a segmentation model.</li><li>Not for clinical deployment, autonomous diagnosis, regulatory submission, production inference (use a vetted converter such as dcm2niix for that).</li></ul><p><a href="../data/medical-imaging-conversion/dicom-series-to-volume.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/dicom-series-to-volume/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

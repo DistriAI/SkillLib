@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>odoo-security-rules</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / odoo-security-rules</p><h1>odoo-security-rules</h1><p class="meta">authentic</p><p>Expert in Odoo access control: ir.model.access.csv, record rules (ir.rule), groups, and multi-company security patterns.</p><h2>When to use</h2><ul><li>Setting up access rights for a new custom module.</li><li>Restricting records so users only see their own data or their company&#x27;s data.</li><li>Debugging &quot;Access Denied&quot; or &quot;You are not allowed to access&quot; errors.</li><li>Implementing multi-company record visibility rules.</li></ul><h2>When not to use</h2><ul><li>Does not cover **field-level access control** (`ir.model.fields` read/write restrictions) — those require custom OWL or Python overrides.</li><li>**Portal and public user** access rules have additional nuances not fully covered here; test carefully with `base.group_portal`.</li><li>Record rules are **bypassed by `sudo()`** — any code running in superuser context ignores all `ir.rule` entries.</li><li>Does not cover **row-level security via PostgreSQL** (RLS) — Odoo manages all security at the ORM layer.</li></ul><p><a href="../security/application-access-control/odoo-security-rules.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/odoo-security-rules/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

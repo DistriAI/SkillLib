@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>team-projects</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / team-projects</p><h1>team-projects</h1><p class="meta">separate</p><p>Multi-agent project management with task boards, @-mention routing, WBS, and orchestrated team collaboration. Includes a Control UI plugin tab with project dashboard and a right-edge Team Chat drawer for live activity. Enables a coordinator agent to plan projects, break down work into phases and tasks, assign to specialist agents, dispatch via sessions_spawn, and track progress to completion. Use when: (1) managing work across multiple OpenClaw agents, (2) creating project plans with work breakdown structures, (3) assigning and tracking tasks across agents, (4) coordinating multi-agent workflows with dependencies, (5) running team-based projects with progress tracking.</p><h2>When not to use</h2><ul><li>**No real-time UI sync** — The UI reads from JSON files; updates appear on refresh, not live push.</li><li>**No native gateway RPC** — The project board is managed via CLI tools, not gateway RPC methods (yet).</li><li>**Single coordinator** — One agent coordinates per project (though you could have different coordinators for different projects).</li><li>**No cost tracking** — Task cost/token tracking depends on OpenClaw&#x27;s session usage system.</li><li>**Client-side plugin registration** — The gateway-side plugin view registration pipeline (`registerView` → hello snapshot → `loadFromGateway`) is scaffolded but not fully wired. Plugin tabs are registered client-side instead.</li></ul><p><a href="../business/project-management/team-projects.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/team-projects/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

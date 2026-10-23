@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pdf-extract</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/documents.html">documents</a> / pdf-extract</p><h1>pdf-extract</h1><p class="meta">combined</p><p>Extract text from PDF files for LLM processing
+
+Extract PDF selectable text and full-page or segmented page images (including tables) into Markdown with per-page headings and image links; use when you need both readable text and page visuals for PPT creation, review, or analysis.</p><h2>When to use</h2><ul><li>Converting a PDF report/paper into Markdown while preserving page structure (`## Page XX`) for easy navigation.</li><li>Preparing PPT or design materials where you need both extracted text and page screenshots/blocks (tables, figures, diagrams).</li><li>Reviewing scanned or mixed PDFs and filtering out &quot;text-only&quot; screenshots to keep only meaningful visuals.</li><li>Building a dataset for downstream analysis where each page&#x27;s text and images must be linked and traceable.</li><li>Creating a lightweight &quot;PDF-to-Markdown&quot; archive with per-page headings and image references.</li></ul><h2>When not to use</h2><ul><li>Do not use this skill when the required source data, identifiers, files, or credentials are missing.</li><li>Do not use this skill when the user asks for fabricated results, unsupported claims, or out-of-scope conclusions.</li><li>Do not use this skill when a simpler direct answer is more appropriate than the documented workflow.</li></ul><p><a href="../documents/pdf-to-markdown-extraction/pdf-extract.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills share the name &#x27;pdf-extract&#x27; but implement fundamentally different procedures. The first (LeoYeAI) is a thin wrapper around the `pdftotext` binary (poppler-utils) for simple text extraction. The second (aipoch) is a complex Python-based workflow using `pdfplumber` and `pymupdf` that extracts text and images, normalizes paragraphs, and outputs a structured Markdown file with per-page headings and image links. They use different dependencies, different commands, and produce different outputs (plain text vs. structured Markdown with images). Crowning one would hide the other&#x27;s specific utility (e.g., image extraction and Markdown structuring vs. simple text dumping).</pre>
+</body>
+</html>

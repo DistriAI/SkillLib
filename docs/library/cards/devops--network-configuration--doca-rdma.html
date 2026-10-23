@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>doca-rdma</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / doca-rdma</p><h1>doca-rdma</h1><p class="meta">separate</p><p>RDMA data movement on NVIDIA BlueField/ConnectX NICs (RoCE/InfiniBand) with DOCA RDMA, instead of hand-written libibverbs/rdma_cm. Use when the user moves data between processes or hosts over the NIC, or hits &quot;one-sided read returns permission denied&quot;, &quot;completions never arrive after submit&quot;, &quot;connection callback never fires&quot;, atomic compare-and-swap over RoCE, or DOCA_ERROR_FULL on the send queue under burst, even without naming DOCA RDMA. Covers bringing up an RDMA context on a doca_dev, connection methods (RDMA CM, bridge/OOB, or gRPC exchange of doca_rdma_export()), the eleven task types (Send/Receive/Send-Imm, Read/Write/Write-Imm, Atomic CmpSwap/FetchAdd, Get/Set/Add Remote Sync Event), matching mmap + RDMA permissions, queue and connection sizing, doca_rdma_cap_* queries, and DOCA_ERROR_* from RDMA calls. Raw QP/verbs control belongs to doca-verbs. Refuse and route elsewhere for general RDMA / ibverbs theory (queue pairs, MRs, RoCE vs IB), installing DOCA itself, or non-RDMA DO…</p><p><a href="../devops/network-configuration/doca-rdma.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/doca-rdma/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

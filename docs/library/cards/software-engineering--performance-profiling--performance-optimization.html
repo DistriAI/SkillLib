@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>performance-optimization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / performance-optimization</p><h1>performance-optimization</h1><p class="meta">combined</p><p>Optimizes application performance across frontend, backend, queries, and databases. Use when performance requirements exist, when you suspect performance regressions, when Core Web Vitals or load times need improvement, when N+1 query patterns need fixing, or when profiling reveals bottlenecks.
+
+Find and fix game performance problems methodically — measure with the engine profiler first, reason about the frame-time budget, locate the CPU-vs-GPU bottleneck, then apply the right fix: object pooling, draw-call batching, fewer allocations/GC spikes, and asset budgets. Engine- neutral method that pairs with each engine&#x27;s profiler. Use when the user mentions performance, optimize, low/dropping FPS, frame drops, stutter, lag, profiler, frame budget, draw calls, batching, garbage collection/GC spikes, object pooling, or &quot;the game runs slow&quot;.</p><h2>When to use</h2><ul><li>Performance requirements exist in the spec (load time budgets, response time SLAs)</li><li>Users or monitoring report slow behavior</li><li>Core Web Vitals scores are below thresholds</li><li>You suspect a change introduced a regression</li><li>Building features that handle large datasets or high traffic</li><li>Use when the frame rate is low or uneven, the game stutters/hitches, or it must hit a target</li><li>Use to decide *what* to optimize: profile, read the frame budget, and identify whether the CPU</li><li>Use to apply specific fixes: object pooling, draw-call/batch reduction, removing per-frame</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches its upstream source and local project context.</li><li>Verify commands, generated code, dependencies, credentials, and external service behavior before applying changes.</li><li>Do not treat examples as a substitute for environment-specific tests, security review, or user approval for destructive or costly actions.</li></ul><p><a href="../software-engineering/performance-profiling/performance-optimization.html">Skill page</a></p><h2>Conflict</h2><pre>The copies share the same high-level &#x27;measure, identify, fix, verify&#x27; philosophy, but they target fundamentally different domains. The addyosmani and sickn33 copies are web-application focused (Core Web Vitals, Lighthouse, N+1 queries, HTTP/2), while the gamedev-skills copy is game-engine focused (frame budgets, draw calls, object pooling, GPU vs CPU bottlenecks). Because the specific steps, tools, and metrics are disjoint, crowning one would hide the other&#x27;s domain-specific procedures.</pre>
+</body>
+</html>

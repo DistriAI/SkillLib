@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>conductor-setup</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / conductor-setup</p><h1>conductor-setup</h1><p class="meta">combined</p><p>Initialize project with Conductor artifacts (product definition,
+
+Configure a Rails project to work with Conductor (parallel coding agents)</p><h2>When to use</h2><ul><li>Working on conductor setup tasks or workflows</li><li>Needing guidance, best practices, or checklists for conductor setup</li><li>You need to configure a Rails project so it runs correctly inside Conductor workspaces.</li><li>The project should support parallel coding agents with isolated ports, Redis settings, and shared secrets.</li><li>You want the standard `conductor.json`, `bin/conductor-setup`, and `script/server` scaffolding for a Rails repo.</li></ul><h2>When not to use</h2><ul><li>The task is unrelated to conductor setup</li><li>You need a different domain or tool outside this scope</li><li>Secret symlinks share the same sensitive values across workspaces; use only approved development credentials, preserve owner-only source permissions, exclude secrets from Git and do not imply worktrees are a secret sandbox.</li><li>Sharing one Redis URL across Sidekiq, Cable and cache may still need service namespaces; dedicated instances or explicitly assigned namespaces are safer than modulo hashes. Never flush shared Redis as cleanup.</li><li>npm/Gem installation and bin/dev execute project dependencies/scripts. Review them first; explicitly required lifecycle steps should be run individually after approval, not re-enabled silently.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../devops/conductor-rails-workspace-setup/conductor-setup.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies use the same skill name but describe different procedures. The first copy is a generic, interactive project onboarding flow that creates a conductor/ directory, setup_state.json, and product/tech/workflow/style documents. The second copy is a Rails-specific setup that creates conductor.json, bin/conductor-setup, script/server, and updates Redis-related Rails configuration. Neither copy is a shortened or wrapped version of the other; each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</pre>
+</body>
+</html>

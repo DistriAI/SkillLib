@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scikit-allel-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / scikit-allel-analysis</p><h1>scikit-allel-analysis</h1><p class="meta">separate</p><p>In-memory Python population genetics with scikit-allel - GenotypeArray/HaplotypeArray/AlleleCountsArray, diversity (pi, theta, Tajima&#x27;s D), SFS, FST (Weir-Cockerham, Hudson, Patterson), f3/D admixture stats, LD pruning, PCA, and selection scans (iHS, XP-EHH, nSL, Garud H). Nearly every statistic is a ratio or density with one silent denominator bug in two faces: omit is_accessible= and per-base pi/theta divide by total span not accessible bp (deflated 2-5x); average per-SNP FST instead of sum(a)/(sum(a)+sum(b)+sum(c)) and the estimate is rare-variant-biased - scikit-allel returns the (a,b,c) and (num,den) components on purpose to force ratio-of-sums. to_n_alt default fill=0 imputes missing to reference; sfs() is unfolded and wants derived not alt counts; iHS/XP-EHH need phased data and standardization. Use when computing population-genetics statistics in Python, scanning for selection, or building array pipelines. For PLINK QC see plink-basics; for VCF input see variant-calling/vcf-ba…</p><h2>When to use</h2><ul><li>computing population-genetics statistics in Python</li><li>scanning for selection</li><li>building array pipelines</li><li>diversity (pi, theta, Tajima&#x27;s D)</li><li>SFS</li><li>FST (Weir-Cockerham, Hudson, Patterson)</li><li>f3/D admixture stats</li><li>LD pruning, PCA</li></ul><h2>When not to use</h2><ul><li>PLINK QC</li><li>VCF input</li><li>PCA/ADMIXTURE via CLI tools</li><li>selection-scan DESIGN</li><li>phased input</li><li>VCF generation</li></ul><p><a href="../science/population-genetics/scikit-allel-analysis.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>population-genetics/scikit-allel-analysis/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

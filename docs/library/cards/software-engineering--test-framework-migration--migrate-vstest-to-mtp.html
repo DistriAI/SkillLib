@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>migrate-vstest-to-mtp</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / migrate-vstest-to-mtp</p><h1>migrate-vstest-to-mtp</h1><p class="meta">separate</p><p>Use this skill before answering, planning, or editing whenever .NET tests or CI are switching from VSTest to Microsoft.Testing.Platform (MTP), or an MTP migration behaves differently. Triggers include &quot;switch from VSTest&quot;; MSTest/NUnit/xUnit MTP enablement; OutputType=Exe only for test projects in Directory.Build.props; EnableMSTestRunner, EnableNUnitRunner, UseMicrosoftTestingPlatformRunner, or YTest.MTP.XUnit2; .NET 10 global.json test.runner and TestingPlatformDotnetTestSupport; translating VSTest filters, logger, coverage, blame, or dump arguments; replacing VSTest@3; and exit code 8 or zero tests. Also use for xUnit v3 MTP filters during a v2-to-v3 upgrade. Do not use for framework conversion, TFM, UWP, or WinUI.</p><h2>When to use</h2><ul><li>Switching from VSTest to Microsoft.Testing.Platform for any supported test framework</li><li>Enabling `dotnet run` / `dotnet watch` / direct executable execution for test projects</li><li>Enabling Native AOT or trimmed test execution</li><li>Replacing `vstest.console.exe` with `dotnet test` on MTP</li><li>Updating CI/CD pipelines from the VSTest task to the .NET Core CLI task</li><li>Updating `dotnet test` arguments from VSTest syntax to MTP syntax</li></ul><h2>When not to use</h2><ul><li>The project already runs on Microsoft.Testing.Platform and there is no remaining MTP behavioral difference to resolve (e.g., exit code 8 for zero tests discovered)</li><li>Migrating between test frameworks (e.g., MSTest to xUnit.net) -- different effort entirely</li><li>The project builds UWP or packaged WinUI test projects -- MTP does not support these yet</li><li>The solution mixes .NET and non-.NET test adapters (e.g., JavaScript or C++ adapters) -- VSTest is required</li><li>Upgrading MSTest versions -- use `migrate-mstest-v1v2-to-v3` or `migrate-mstest-v3-to-v4`</li></ul><p><a href="../software-engineering/test-framework-migration/migrate-vstest-to-mtp.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-test-migration/skills/migrate-vstest-to-mtp/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sendblue-notify</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / sendblue-notify</p><h1>sendblue-notify</h1><p class="meta">separate</p><p>Text the user&#x27;s phone when a long-running task, agent turn, or scheduled job finishes — via @sendblue/cli for outbound, optionally wired to a Claude Code Stop hook for automatic fire.</p><h2>When to use</h2><ul><li>Use when the user says &quot;text me when X is done&quot;, &quot;ping my phone&quot;, &quot;notify me on completion&quot;, &quot;let me know when the build/deploy/migration finishes&quot;, or &quot;send me an iMessage when…&quot;.</li><li>Use when the user asks to wire a hook that texts on agent stop, `/loop` iteration, or `/schedule` completion.</li><li>Use when an agent turn is genuinely long-running and the user has gone heads-down on something else.</li><li>Do **not** use for short, interactive tasks where the user is watching the terminal — the notify is noise.</li></ul><h2>When not to use</h2><ul><li>Notify is outbound-only. For &quot;text Claude from the phone&quot; use the `@textme` skill instead.</li><li>On the free Sendblue plan, the destination phone must have texted the Sendblue number at least once before outbound succeeds. Verify with `sendblue contacts` before relying on notify in an unattended workflow.</li><li>This skill does not own credentials, account setup, or the hook config file format. Those belong to [[sendblue-cli]] and [[update-config]] respectively.</li></ul><p><a href="../media/notification-service/sendblue-notify.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/sendblue/sendblue-notify/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

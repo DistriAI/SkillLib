@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gh-fix-ci</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / gh-fix-ci</p><h1>gh-fix-ci</h1><p class="meta">combined</p><p>Inspect GitHub PR checks with gh, pull failing GitHub Actions logs, summarize failure context, then create a fix plan and implement after user approval. Use when a user asks to debug or fix failing PR CI/CD checks on GitHub Actions and wants a plan + code changes; for external checks (e.g., Buildkite), only report the details URL and mark them out of scope.
+
+Use when a user asks to debug or fix failing GitHub PR checks that run in GitHub Actions; use `gh` to inspect checks and logs, summarize failure context, draft a fix plan, and implement only after explicit approval. Treat external providers (for example Buildkite) as out of scope and report only the details URL.</p><h2>When to use</h2><ul><li>debug failing PR CI/CD checks on GitHub Actions</li><li>fix failing GitHub Actions</li><li>inspect failing PR checks</li><li>fetch GitHub Actions logs</li><li>summarize failure context</li><li>create a fix plan</li><li>implement code changes after approval</li></ul><h2>When not to use</h2><ul><li>external checks (e.g., Buildkite)</li><li>non-GitHub Actions providers</li></ul><p><a href="../devops/fix-github-actions-ci/gh-fix-ci.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies share the same core workflow (auth, resolve PR, inspect checks, scope external providers, summarize, plan, implement, recheck) and the same bundled script. However, they disagree on the plan skill name (create-plan vs plan) and on how to handle sandboxed authentication (the composio copy adds sandbox_permissions=require_escalated and a dependency on the plan skill). Crowning one copy would hide the sandbox-specific handling and the plan-skill naming difference, so a combined instruction is needed.</pre>
+</body>
+</html>

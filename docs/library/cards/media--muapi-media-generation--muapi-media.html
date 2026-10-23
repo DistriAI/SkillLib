@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>muapi-media</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / muapi-media</p><h1>muapi-media</h1><p class="meta">combined</p><p>Discover current MuAPI image models and run one explicitly confirmed asynchronous image generation request with bounded polling. Use when an agent needs hosted image generation without hard-coding stale model endpoints or request IDs.
+
+Generate images and videos with MuAPI&#x27;s schema-driven asynchronous media API while protecting keys, polling, and output downloads.</p><h2>When to use</h2><ul><li>The user wants to find a current MuAPI image model.</li><li>An image workflow needs MuAPI&#x27;s exact model endpoint rather than a remembered alias.</li><li>The user has explicitly approved a potentially billable image-generation request.</li><li>An asynchronous MuAPI prediction needs bounded status polling.</li><li>Use when the user explicitly asks to generate an image or video with MuAPI.</li><li>Use when an existing media workflow needs a hosted asynchronous API and can</li><li>Use when the user needs to compare or switch among current media models</li><li>Do not use this skill for text chat or for a provider whose current schema</li></ul><h2>When not to use</h2><ul><li>This is an instruction-only skill; it does not install an SDK or background</li><li>Models, schemas, prices, output retention, and supported fields can change;</li><li>Generation is asynchronous and may take minutes or fail after submission.</li><li>Output URLs can expire and may not be reusable as permanent asset links.</li><li>A successful HTTP response does not guarantee a valid or usable media file.</li><li>This skill does not replace human review of media quality, rights, safety, or</li></ul><p><a href="../media/muapi-media-generation/muapi-media.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same MuAPI media generation workflow but differ significantly in scope and implementation. The first skill (davepoon) is strictly limited to image generation and relies on a bundled Python CLI script (`scripts/muapi_media.py`) that abstracts away the HTTP details. The second skill (sickn33) covers both image and video generation, uses raw `curl` and `jq` commands, and provides explicit API contract details (endpoints, headers) that the first skill hides behind the CLI. Because the first skill excludes video and the second includes it, and because the second provides the underlying API mechanics while the first provides a safer, higher-level wrapper, crowning one would hide a valid alternative approach (CLI vs. raw API) and a valid scope difference (image-only vs. image+video).</pre>
+</body>
+</html>

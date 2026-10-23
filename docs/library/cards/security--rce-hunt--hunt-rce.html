@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunt-rce</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunt-rce</p><h1>hunt-rce</h1><p class="meta">combined</p><p>Hunting skill for rce vulnerabilities. Built from 67 public bug bounty
+
+Hunting skill for rce vulnerabilities. Built from 67 public bug bounty reports. Use when hunting rce on any target.</p><h2>When to use</h2><ul><li>You have explicit, written authorization to assess the target in scope, and the task matches this skill&#x27;s vulnerability class or technique within a bug-bounty or penetration-test engagement.</li><li>You need the recon, exploitation, or validation workflow described below — executed strictly inside the approved scope.</li><li>Use when the target has any endpoint that processes user-controlled input through an execution layer — template engines, shell commands, YAML/XML parsers, file paths used in operations, package resolution, or configuration files. RCE is th…</li></ul><h2>When not to use</h2><ul><li>Authorized scope only: the confirmation gate above is mandatory before any probing, exploitation, or credential-access command.</li><li>Docs-only import: upstream helper scripts, commands, engine, and research assets are not bundled; reinstall tooling from the source repo when needed.</li><li>Validate every finding (see `triage-validation`) before reporting; report via `report-writing`. Prefer a sandbox, disposable VM, or controlled lab.</li></ul><p><a href="../security/rce-hunt/hunt-rce.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies share the same core RCE hunting methodology, crown jewel targets, and attack surface signals, but each contains material steps the other lacks. The uphiago copy provides a complete 10-step methodology including dependency confusion, file path traversal, Kubernetes auditing, OAuth redirect testing, and out-of-band verification. The sickn33 copy adds a mandatory authorization confirmation gate, a content-type failure mode warning, and a specific list of command injection operators with proof criteria. Crowning one copy would hide the other&#x27;s unique constraints and steps.</pre>
+</body>
+</html>

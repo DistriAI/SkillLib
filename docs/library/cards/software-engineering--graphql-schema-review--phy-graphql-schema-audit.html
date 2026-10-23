@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>phy-graphql-schema-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / phy-graphql-schema-audit</p><h1>phy-graphql-schema-audit</h1><p class="meta">separate</p><p>GraphQL schema static auditor. Reads any .graphql SDL file or introspection JSON to detect N+1 exposure hotspots (nested list-within-list queries with no dataloader hint), unbounded query depth vulnerabilities (no max depth limit configured), deprecated fields still used in operations, naming convention violations (types not PascalCase, fields not camelCase, enums not UPPER_SNAKE_CASE), circular type references, missing pagination on collection fields, and overly broad scalars (String fields that should be typed as ID, Email, or URL). Outputs a prioritized issue list with resolver-level fix suggestions and a query complexity budget recommendation. Zero external API — pure local file analysis. Triggers on &quot;graphql schema&quot;, &quot;graphql audit&quot;, &quot;schema review&quot;, &quot;N+1 graphql&quot;, &quot;query depth&quot;, &quot;graphql lint&quot;, &quot;/graphql-schema-audit&quot;.</p><p><a href="../software-engineering/graphql-schema-review/phy-graphql-schema-audit.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/phy-graphql-schema-audit/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

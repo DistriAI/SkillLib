@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gptq</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / gptq</p><h1>gptq</h1><p class="meta">separate</p><p>Post-training 4-bit quantization for LLMs with minimal accuracy loss. Use for deploying large models (70B, 405B) on consumer GPUs, when you need 4× memory reduction with &lt;2% perplexity degradation, or for faster inference (3-4× speedup) vs FP16. Integrates with transformers and PEFT for QLoRA fine-tuning.</p><h2>When to use</h2><ul><li>Need to fit large models (70B+) on limited GPU memory</li><li>Want 4× memory reduction with &lt;2% accuracy loss</li><li>Deploying on consumer GPUs (RTX 4090, 3090)</li><li>Need faster inference (3-4× speedup vs FP16)</li><li>Need slightly better accuracy (&lt;1% loss)</li><li>Have newer GPUs (Ampere, Ada)</li><li>Want Marlin kernel support (2× faster on some GPUs)</li><li>Need simple integration with transformers</li></ul><p><a href="../data/model-quantization/gptq.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Orchestra-Research/AI-Research-SKILLs">Orchestra-Research/AI-Research-SKILLs</a></td><td><code>10-optimization/gptq/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

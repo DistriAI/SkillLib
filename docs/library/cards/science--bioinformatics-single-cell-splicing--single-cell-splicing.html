@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>single-cell-splicing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / single-cell-splicing</p><h1>single-cell-splicing</h1><p class="meta">separate</p><p>Analyzes alternative splicing at single-cell resolution. The first decision is library chemistry — 10X 3&#x27; is fundamentally limited (RT primes from poly-A, R2 falls in 3&#x27; UTR, &lt;0.1 junction read per cell per AS event). Plate-based full-length methods (Smart-seq3, FLASH-seq, VASA-seq, STORM-seq) and single-cell long-read (MAS-Iso-seq, scISOr-Seq2) are the chemistries that give per-cell isoform structure. Tools include MARVEL (R, Smart-seq integrated), BRIE2 (Bayesian PSI with regulatory features and ELBO_gain test), scQuint (junction-cluster, plate-based; not for 10X), SpliZ (annotation-free Z-score), Psix (graph-smoothness regulated AS), and Sierra (alternative polyadenylation, often confused with AS). Use when analyzing isoform usage in scRNA-seq, identifying cell-type-specific splicing, or determining whether scRNA-seq chemistry supports splicing analysis at all.</p><h2>When to use</h2><ul><li>analyzing isoform usage in scRNA-seq</li><li>identifying cell-type-specific splicing</li><li>determining whether scRNA-seq chemistry supports splicing analysis</li><li>Smart-seq plate-based splicing analysis</li><li>single-cell long-read isoform structure</li><li>alternative polyadenylation analysis</li><li>junction-cluster quantification</li><li>regulatory feature prior Bayesian PSI</li></ul><h2>When not to use</h2><ul><li>10X 3&#x27; transcriptome-wide splicing inference</li><li>10X 5&#x27; GEX transcriptome-wide splicing</li><li>V(D)J recovery without dedicated kit</li><li>cassette exon analysis with Sierra</li><li>scQuint on 10X 3&#x27;/5&#x27; data</li></ul><p><a href="../science/bioinformatics-single-cell-splicing/single-cell-splicing.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>alternative-splicing/single-cell-splicing/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

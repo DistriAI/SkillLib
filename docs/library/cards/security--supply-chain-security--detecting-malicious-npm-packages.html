@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>detecting-malicious-npm-packages</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / detecting-malicious-npm-packages</p><h1>detecting-malicious-npm-packages</h1><p class="meta">separate</p><p>Triage npm packages and lockfiles for install-script malware, credential exfiltration, and worming behavior using GuardDog, manual tarball inspection, and dynamic detonation with network/filesystem monitoring. Use when vetting a new dependency, reviewing a package.json/package-lock.json during code review, checking lockfiles against a supply-chain advisory&#x27;s known-bad versions, or investigating a host suspected of installing a trojanized package.</p><h2>When to use</h2><ul><li>Triaging a specific npm package before adding it as a dependency.</li><li>Vetting a full `package.json` / `package-lock.json` during code review or onboarding a third-party library.</li><li>Responding to a supply-chain advisory (e.g., a worm campaign) and needing to check whether your lockfiles pulled a known-bad version.</li><li>Investigating an endpoint or CI runner suspected of having installed a trojanized package.</li><li>Building a pre-install gate in CI/CD that blocks packages exhibiting malicious indicators.</li></ul><p><a href="../security/supply-chain-security/detecting-malicious-npm-packages.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills">mukul975/Anthropic-Cybersecurity-Skills</a></td><td><code>skills/detecting-malicious-npm-packages/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

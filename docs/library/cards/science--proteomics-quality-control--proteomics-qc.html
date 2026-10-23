@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>proteomics-qc</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / proteomics-qc</p><h1>proteomics-qc</h1><p class="meta">separate</p><p>Quality control for bottom-up proteomics across three levels -- instrument/raw-signal (mass accuracy, RT/iRT fit, FWHM, TIC vs injection time, % MS2 identified), identification/run (missed cleavages, charge states, PTM handling artifacts, contaminants), and experiment/quantitative (replicate correlation on log2, CV on the linear scale, completeness, MNAR-vs-MCAR missingness, PCA/batch, TMT channel balance, DIA q-values). Frames QC as a control chart against a per-instrument rolling baseline, not fixed cutoffs, and mandates inspecting raw boxplots, per-sample ID counts, total signal, and contaminant removal BEFORE normalizing -- because median normalization erases loading failures. Use when assessing proteomics data quality, diagnosing outlier samples, or deciding which samples to exclude before differential testing. The statistical test itself is differential-abundance; normalization mechanics are quantification; DIA q-value internals are dia-analysis.</p><h2>When to use</h2><ul><li>assessing proteomics data quality</li><li>diagnosing outlier samples</li><li>deciding which samples to exclude before differential testing</li><li>instrument/raw-signal QC</li><li>identification/run QC</li><li>experiment/quantitative QC</li><li>TMT channel balance</li><li>DIA q-values</li></ul><h2>When not to use</h2><ul><li>running the statistical test</li><li>normalization algorithms</li><li>DIA q-value/FDR internals</li></ul><p><a href="../science/proteomics-quality-control/proteomics-qc.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>proteomics/proteomics-qc/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

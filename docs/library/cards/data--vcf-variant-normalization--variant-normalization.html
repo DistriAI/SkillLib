@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>variant-normalization</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / variant-normalization</p><h1>variant-normalization</h1><p class="meta">combined</p><p>Left-align and trim indels to parsimonious canonical form, decompose MNPs (atomize), and split multiallelic variants with bcftools norm. Use when comparing variants across callers or cohorts, preparing a VCF for database annotation or ClinVar/dbSNP matching, merging VCFs, reconciling vt-vs-bcftools representation discordance, or resolving the VCF-left-align vs HGVS-3&#x27;-rule clash.</p><h2>When to use</h2><ul><li>Normalize indel representation</li><li>Split multiallelic variants</li><li>Comparing variants from different callers</li><li>Preparing VCF for downstream analysis</li><li>Left-align indels</li><li>Fixing reference alleles</li><li>Atomize complex variants</li><li>Remove duplicates after splitting</li></ul><p><a href="../data/vcf-variant-normalization/variant-normalization.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies describe the same core task (normalizing VCF indels and splitting multiallelics with bcftools norm), but each contains material steps and constraints the other lacks. The first copy provides a broad, practical reference with many specific bcftools norm flags (-c modes, -d duplicate removal, -m+ join options, --atomize, --old-rec-tag) and Python cyvcf2 check scripts. The second copy provides the governing theoretical principle (parsimony + left-alignment), the explicit algorithm steps, version compatibility constraints, and a strong rationale for when normalization is mandatory. Crowning one would hide the other&#x27;s unique, valuable content.</pre>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>tumor-fraction-estimation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / tumor-fraction-estimation</p><h1>tumor-fraction-estimation</h1><p class="meta">separate</p><p>Estimates tumor fraction (the genome-wide proportion of cfDNA molecules that are tumor-derived, the cfDNA analogue of bulk-tumor purity) from shallow whole-genome sequencing with ichorCNA, an HMM over 1 Mb bins that jointly EM-estimates tumor fraction, ploidy, and subclonal prevalence over a normal/ploidy grid. Encodes the load-bearing reframes: tumor fraction is the quantity that travels across assays and is NOT mutation VAF (clonal-het VAF approximately TF/2), CNA-based estimation has a hard ~3 percent limit-of-detection floor, and near-diploid or copy-neutral-LOH genomes return a falsely low value. Selects the estimator by data type (sWGS to ichorCNA, deep panel to max-VAF, methylation to deconvolution, sub-3 percent to fragmentomics or methylation). Use when quantifying tumor burden from a liquid biopsy, picking a tumor-fraction estimator for a given assay, or reconciling a TF estimate against a panel VAF.</p><h2>When to use</h2><ul><li>quantifying tumor burden from a liquid biopsy</li><li>picking a tumor-fraction estimator for a given assay</li><li>reconciling a TF estimate against a panel VAF</li><li>estimating genome-wide proportion of cfDNA molecules that are tumor-derived</li><li>using ichorCNA for sWGS data</li><li>selecting estimators for sub-3 percent tumor fraction</li><li>using methylation deconvolution for low TF</li><li>using max-VAF for deep panels</li></ul><h2>When not to use</h2><ul><li>estimating mutation VAF</li><li>detecting mutations</li><li>analyzing deep WGS with het-SNP depth for CNLOH</li><li>using fragmentomics for calibrated molecular fraction</li></ul><p><a href="../science/liquid-biopsy-tumor-fraction-estimation/tumor-fraction-estimation.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>liquid-biopsy/tumor-fraction-estimation/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

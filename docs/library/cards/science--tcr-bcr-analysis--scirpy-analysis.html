@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scirpy-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / scirpy-analysis</p><h1>scirpy-analysis</h1><p class="meta">separate</p><p>Integrates single-cell paired TCR/BCR (10x VDJ, AIRR, dandelion, BD Rhapsody) with gene expression in an AnnData/MuData object using scirpy - chain-pairing QC, clonotype definition, clonal expansion, diversity, repertoire overlap, V(D)J usage, and VDJdb specificity. Operates on the awkward-array AIRR model (adata.obsm[&#x27;airr&#x27;], accessed via get.airr after pp.index_chains), not legacy per-chain obs columns. Use when deciding clonotype definition for TCR (exact CDR3-nt identity via define_clonotypes) versus BCR (nucleotide distance clustering via define_clonotype_clusters with normalized_hamming plus same_v_gene/same_j_gene, because somatic hypermutation shatters identity clonotypes); tuning receptor_arms (all vs any), dual_ir, and within_group; filtering chain_qc categories (multichain doublets, orphan dropout, extra-VJ dual-TCR) without biasing clonal-expansion and diversity estimates; and overlaying clonality onto the transcriptomic UMAP.</p><h2>When to use</h2><ul><li>chain-pairing QC</li><li>clonotype definition</li><li>clonal expansion</li><li>diversity analysis</li><li>repertoire overlap</li><li>V(D)J usage</li><li>VDJdb specificity</li><li>overlaying clonality onto transcriptomic UMAP</li></ul><h2>When not to use</h2><ul><li>true lineages</li><li>mutation calling</li><li>selection analysis</li></ul><p><a href="../science/tcr-bcr-analysis/scirpy-analysis.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>tcr-bcr-analysis/scirpy-analysis/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

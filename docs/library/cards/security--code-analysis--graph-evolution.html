@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>graph-evolution</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / graph-evolution</p><h1>graph-evolution</h1><p class="meta">separate</p><p>Compares Trailmark code graphs at two source code snapshots (git commits, tags, or directories) to surface security-relevant structural changes. Detects new attack paths, complexity shifts, blast radius growth, taint propagation changes, and privilege boundary modifications that text diffs miss. Use when comparing code between commits or tags, analyzing structural evolution, detecting attack surface growth, reviewing what changed between audit snapshots, or finding security-relevant changes that text diffs miss.</p><h2>When to use</h2><ul><li>Comparing two git refs to understand what structurally changed</li><li>Auditing a range of commits for security-relevant evolution</li><li>Detecting new attack paths created by code changes</li><li>Finding functions whose blast radius or complexity grew silently</li><li>Identifying taint propagation changes across refactors</li><li>Pre-release structural comparison (tag-to-tag or branch-to-branch)</li></ul><h2>When not to use</h2><ul><li>Line-level code review (use `differential-review` for text-diff analysis)</li><li>Single-snapshot analysis (use the `trailmark` skill directly)</li><li>Diagram generation from a single snapshot (use the `diagramming-code` skill)</li><li>Mutation testing triage (use the `genotoxic` skill)</li></ul><p><a href="../security/code-analysis/graph-evolution.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/trailmark/skills/graph-evolution/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

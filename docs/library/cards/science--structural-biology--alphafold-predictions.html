@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>alphafold-predictions</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / alphafold-predictions</p><h1>alphafold-predictions</h1><p class="meta">separate</p><p>Retrieves and interprets AlphaFold Protein Structure Database (AFDB) models by UniProt accession, reading pLDDT and PAE confidence correctly. Use when treating pLDDT as PER-RESIDUE confidence (not global accuracy) and recognizing a long low-pLDDT stretch as an intrinsically disordered region rather than a modeling error; reading PAE to segment confident domains and judge inter-domain/relative-position confidence that high mean pLDDT cannot certify; recognizing a static AFDB model carries NO ligands, ions, cofactors, PTMs, quaternary assembly, or alternative conformations (pLDDT sits in the B-factor column with opposite polarity to thermal motion); and deciding an AFDB entry vs re-running prediction. Keywords AlphaFold DB, pLDDT, PAE, B-factor column, intrinsic disorder, UniProt, Foldseek.</p><h2>When to use</h2><ul><li>Fetching precomputed AFDB entries by UniProt accession</li><li>Reading pLDDT per-residue confidence</li><li>Reading PAE per-residue-pair confidence</li><li>Identifying intrinsically disordered regions</li><li>Segmenting confident domains using PAE</li><li>Judging inter-domain relative position confidence</li><li>Deciding between using an AFDB entry or re-running prediction</li></ul><h2>When not to use</h2><ul><li>Using AFDB coordinates as experimental holo complexes</li><li>Reading pLDDT as thermal motion or B-factors</li><li>Trimming low-pLDDT stretches as modeling errors</li><li>Certifying biological correctness based on high mean pLDDT</li><li>Determining quaternary structure or biological assembly</li><li>Analyzing conformational ensembles or allostery</li><li>Ligand docking or virtual screening without processing</li><li>Mechanism or catalytic geometry analysis without holo structures</li></ul><p><a href="../science/structural-biology/alphafold-predictions.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>structural-biology/alphafold-predictions/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

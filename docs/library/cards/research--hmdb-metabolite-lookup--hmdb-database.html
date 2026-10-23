@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hmdb-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / hmdb-database</p><h1>hmdb-database</h1><p class="meta">combined</p><p>Access Human Metabolome Database (220K+ metabolites). Search by name/ID/structure, retrieve chemical properties, biomarker data, NMR/MS spectra, pathways, for metabolomics and identification.
+
+Access the Human Metabolome Database (HMDB) to search metabolites by name/structure/ID and extract chemical/biological/clinical fields when you need metabolomics research data or automated HMDB XML mining.</p><h2>When to use</h2><ul><li>This skill should be used when performing metabolomics research, clinical chemistry, biomarker discovery, or metabolite identification tasks.</li><li>You need to look up a metabolite by **common name** (e.g., “Caffeine”) and retrieve its HMDB entry data.</li><li>You have an **HMDB ID** (e.g., `HMDB0000001`) and want to extract standardized chemical/biological/clinical fields for downstream analysis.</li><li>You want to build a **local, scriptable pipeline** to mine the HMDB XML dump instead of manually browsing the website.</li><li>You need to **map HMDB identifiers** to external resources (e.g., KEGG, PubChem, ChEBI) for integration tasks.</li><li>You are preparing metabolomics datasets and need **pathway/enzyme/transporter** annotations from HMDB entries.</li></ul><h2>When not to use</h2><ul><li>commercial use without explicit permission</li><li>web scraping</li></ul><p><a href="../research/hmdb-metabolite-lookup/hmdb-database.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies cover the same HMDB task but with materially different procedures. The aipoch copy is a local, scriptable pipeline that downloads the HMDB XML dump and parses it with a Python HMDBParser using xml.etree.ElementTree, with an optional pandas dependency and a reference file for field mapping. The FreedomIntelligence copy is a broader reference that emphasizes the web interface, spectral searches, downloadable formats (XML, SDF, FASTA, TXT, CSV/TSV), licensing/citation requirements, lack of a public REST API, R/Bioconductor hmdbQuery, and common research workflows. Neither copy is a strict reproduction of the other; crowning one would hide the alternative access path and constraints.</pre>
+</body>
+</html>

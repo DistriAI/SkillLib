@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nvflare-autofl</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / nvflare-autofl</p><h1>nvflare-autofl</h1><p class="meta">separate</p><p>Use for agent-assisted Auto-FL optimization of an existing NVFLARE job in simulation, POC, or production. Do not use for code conversion, diagnosis-only work, or deployment setup.</p><h2>When to use</h2><ul><li>Improve a measured objective for an existing NVFLARE job through isolated, reproducible candidate changes while the campaign runner preserves the live best source, comparison budget, metric semantics, state, and evidence.</li></ul><h2>When not to use</h2><ul><li>The importer statically parses supported Recipe and FedJob patterns; dynamic Python and unsupported nested recipes remain unresolved or fail closed rather than being executed during import.</li><li>Sanitized child environments exclude undeclared job-specific variables. Declare only required names through `environment.simulator_env_passthrough`; values remain runtime-only.</li><li>Candidate source runs with the runner&#x27;s host privileges. Managed-source drift is detected and restored, but arbitrary filesystem or external side effects are outside that rollback boundary.</li><li>A single or noisy campaign does not establish robustness. Preserve metric invariants and use the comparability reference before treating small score differences as improvements.</li><li>POC and production execution remains external to `evaluate`; normal authentication, explicit human submission authorization, job monitoring, artifact download, and `record` are still required.</li></ul><p><a href="../science/federated-learning/nvflare-autofl.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/nvflare-autofl/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

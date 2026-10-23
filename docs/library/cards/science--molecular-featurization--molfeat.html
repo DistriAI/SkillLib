@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>molfeat</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / molfeat</p><h1>molfeat</h1><p class="meta">combined</p><p>Molecular featurization for ML (100+ featurizers). ECFP, MACCS, descriptors, pretrained models (ChemBERTa), convert SMILES to features, for QSAR and molecular ML.
+
+Featurizes small molecules with Molfeat for QSAR/QSPR, chemical similarity, virtual screening, and molecular ML. Covers ECFP/MACCS fingerprints, RDKit descriptors, pharmacophores, pretrained embeddings, configuration persistence, and molecule-to-label alignment.</p><h2>When to use</h2><ul><li>**Molecular machine learning**: Building QSAR/QSPR models, property prediction</li><li>**Virtual screening**: Ranking compound libraries for biological activity</li><li>**Similarity searching**: Finding structurally similar molecules</li><li>**Chemical space analysis**: Clustering, visualization, dimensionality reduction</li><li>**Deep learning**: Training neural networks on molecular data</li><li>**Featurization pipelines**: Converting SMILES to ML-ready representations</li><li>**Cheminformatics**: Any task requiring molecular feature extraction</li><li>Use this skill to turn SMILES or RDKit molecules into fingerprints, descriptors, pharmacophores, or pretrained embeddings for molecular machine learning and similarity search. Compare representations on the same molecular split and assay e…</li></ul><p><a href="../science/molecular-featurization/molfeat.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies target different Molfeat generations and disagree on core API usage. The K-Dense copy is pinned to Molfeat 1.0.0, explicitly states that DGL/Graphormer extras and legacy adapters are removed, and shows the 1.x pattern where ignore_errors is a call argument and PretrainedHFTransformer is the concrete adapter. The OpenClaw copy describes the older 0.x surface, recommends molfeat[dgl]/[graphormer], and shows PretrainedMolTransformer as a model-name factory with ignore_errors in the constructor. Because each contains material steps the other lacks and they conflict on installation extras, error handling, and pretrained transformer usage, crowning one would hide a real alternative.</pre>
+</body>
+</html>

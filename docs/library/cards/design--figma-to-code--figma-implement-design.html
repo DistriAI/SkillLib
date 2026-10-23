@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>figma-implement-design</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/design.html">design</a> / figma-implement-design</p><h1>figma-implement-design</h1><p class="meta">combined</p><p>Translate Figma nodes into production-ready code with 1:1 visual fidelity using the Figma MCP workflow (design context, screenshots, assets, and project-convention translation). Trigger when the user provides Figma URLs or node IDs, or asks to implement designs or components that must match Figma specs. Requires a working Figma MCP server connection.
+
+Translates Figma designs into production-ready application code with 1:1 visual fidelity. Use when implementing UI code from Figma files, when user mentions &quot;implement design&quot;, &quot;generate code&quot;, &quot;implement component&quot;, provides Figma URLs, or asks to build components matching Figma specs. For Figma canvas writes via `use_figma`, use `figma-use`.</p><h2>When to use</h2><ul><li>Translate Figma designs into production-ready code</li><li>Implement designs or components that must match Figma specs</li><li>Achieve 1:1 visual parity with Figma designs</li><li>Fetch design context, screenshots, and assets from Figma</li><li>Translate Figma output into project conventions</li></ul><h2>When not to use</h2><ul><li>Tasks not involving Figma URLs or node IDs</li><li>Tasks not requiring implementation of designs matching Figma specs</li></ul><p><a href="../design/figma-to-code/figma-implement-design.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies share the same core Figma-to-code workflow (parse node ID, fetch design context, capture screenshot, download assets, translate to project conventions, achieve parity, validate). They diverge on material setup and boundary steps: the openai/skills copy defines explicit skill boundaries and routing to sibling Figma skills, while the Vibe-Skills copy adds a concrete Step 0 for configuring the Figma MCP server in Codex (add MCP, enable rmcp_client, OAuth login, restart). Neither copy is a strict superset of the other, so crowning one would hide a real alternative.</pre>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>distributed-tracing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / distributed-tracing</p><h1>distributed-tracing</h1><p class="meta">combined</p><p>Implement distributed tracing with Jaeger and Tempo to track requests across microservices and identify performance bottlenecks. Use when debugging microservices, analyzing request flows, or implementing observability for distributed systems.
+
+Implement distributed tracing with Jaeger and Tempo for request flow visibility across microservices.</p><h2>When to use</h2><ul><li>Track requests across distributed systems to understand latency, dependencies, and failure points.</li><li>Debug latency issues</li><li>Understand service dependencies</li><li>Identify bottlenecks</li><li>Trace error propagation</li><li>Analyze request paths</li><li>Trace a request across services, diagnose latency and error propagation, or add observable boundaries to a new integration.</li></ul><h2>When not to use</h2><ul><li>The task is unrelated to distributed tracing</li><li>You need a different domain or tool outside this scope</li><li>Head sampling can discard errors before tail sampling sees them. In-memory demos do not prove durable storage. Context propagation and cross-service clocks need actual integration tests; this guide is not a runnable multi-service applicati…</li></ul><p><a href="../devops/distributed-tracing-setup/distributed-tracing.html">Skill page</a></p><h2>Conflict</h2><pre>The first copy is a concrete, code-heavy tutorial for deploying Jaeger and instrumenting Python, Node.js, and Go applications. The second copy is a high-level, risk-aware procedure that emphasizes security, privacy, and verification steps, and it references external files (playbooks and references) that are not present in the first copy. The first copy lacks the security/privacy constraints and verification rigor of the second, while the second lacks the specific implementation details (K8s manifests, code snippets) of the first. Combining them provides a complete skill that covers both the &#x27;how-to&#x27; implementation and the &#x27;best-practice&#x27; safety/verification checks.</pre>
+</body>
+</html>

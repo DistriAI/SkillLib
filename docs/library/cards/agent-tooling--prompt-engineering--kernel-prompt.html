@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>kernel-prompt</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / kernel-prompt</p><h1>kernel-prompt</h1><p class="meta">authentic</p><p>Use when composing or improving an LLM prompt or agent instruction. Asks one round of questions, then returns only the prompt; never performs the task.</p><h2>When to use</h2><ul><li>The user invokes kernel-prompt by name, or asks to compose or improve an LLM prompt or an instruction for another AI.</li><li>The user asks to turn guidance (for example collaboration or project guidance) into a system prompt.</li><li>Not when the user only asks to review documents or guidance, even with wording suggestions, merely because they concern AI instructions.</li></ul><h2>When not to use</h2><ul><li>Produces a prompt, not the task&#x27;s result; the user or another agent still has to run it, and a clearer prompt does not guarantee a correct answer.</li><li>Asks one round of questions before drafting unless the user says &quot;no questions&quot; or &quot;just write it&quot;, so it adds a turn to quick requests.</li><li>Reads mentioned files, URLs, and repositories only as context; it cannot fill in facts that neither the context nor the user supplies, and marks those decisions open instead.</li><li>Upstream source: https://github.com/codegiveness/kernel-prompt (this copy adds catalog frontmatter, When to Use, and Limitations).</li></ul><p><a href="../agent-tooling/prompt-engineering/kernel-prompt.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/kernel-prompt/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

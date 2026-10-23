@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>bed-file-basics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / bed-file-basics</p><h1>bed-file-basics</h1><p class="meta">separate</p><p>Handles BED-format genomic intervals (BED3 through BED12, narrowPeak/broadPeak) and the coordinate-system substrate the whole interval category rests on, with bedtools (CLI) and pybedtools/pyranges/pandas (Python). Covers the 0-based half-open vs 1-based-closed convention boundary and the start-1/end-unchanged conversion, the silent failures (chrom-name mismatch, CRLF, lexicographic-vs-version sort under -sorted), genome/chrom.sizes generation, sorting contracts, BED12 block invariants, validation, makewindows, cross-assembly liftover (liftOver/CrossMap), and BED&lt;-&gt;VCF/BAM/FASTA conversion. Use when reading, creating, validating, sorting, lifting between genome builds, or converting interval files, preparing inputs for bedtools/tabix/bigBed, or debugging an off-by-one or empty-overlap result.</p><h2>When to use</h2><ul><li>reading BED-format genomic intervals</li><li>creating BED files</li><li>validating BED files</li><li>sorting BED files</li><li>lifting intervals between genome builds</li><li>converting interval files between formats</li><li>preparing inputs for bedtools/tabix/bigBed</li><li>debugging off-by-one or empty-overlap results</li></ul><h2>When not to use</h2><ul><li>opening BED files in Excel</li></ul><p><a href="../science/bed-file-handling/bed-file-basics.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>genome-intervals/bed-file-basics/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

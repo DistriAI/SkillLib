@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>testability-obstacle</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / testability-obstacle</p><h1>testability-obstacle</h1><p class="meta">separate</p><p>MUST USE for C#/.NET deterministic tests that require the smallest production seam for DateTime/Task.Delay/File/Environment/Guid/Random, static API preservation, nested/parallel overrides, or no real I/O. USE ONLY when the target workspace contains C# source plus a .csproj or .sln. DO NOT USE for audits, bulk migration, code that already has an injectable seam, or an explicit migration to a user-named existing abstraction (migrate-static-to-wrapper). Use instead of general test generation when the requested test is impossible without a production edit and seam selection is still open.</p><h2>When to use</h2><ul><li>A requested test would otherwise read/write the real filesystem.</li><li>Behavior depends on the current time, delay, random value, environment, console,</li><li>The user explicitly permits or requests a safe production seam.</li><li>Existing tests cannot control a dependency without process-global mutation.</li></ul><h2>When not to use</h2><ul><li>The dependency is already injected or passed as an argument. Write tests with</li><li>The user wants a repository-wide testability audit. Use</li><li>The user wants wrappers generated but not call sites/tests changed. Use</li><li>The user requests a broad mechanical migration. Use</li><li>The user already selected an existing replacement such as `TimeProvider` or</li><li>The code is not C#/.NET.</li></ul><p><a href="../software-engineering/dotnet-testability-obstacle/testability-obstacle.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-test/skills/testability-obstacle/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

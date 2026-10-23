@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>remote-gpu-trainer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / remote-gpu-trainer</p><h1>remote-gpu-trainer</h1><p class="meta">authentic</p><p>Deploy, monitor, and debug long GPU jobs on RENTED/remote instances (AutoDL, RunPod, vast.ai, Lambda, Slurm, K8s): teardown/billing safety, spot resilience, resumable checkpointing, OOM/NaN triage.</p><h2>When to use</h2><ul><li>Use whenever the user deploys, trains, monitors, or troubleshoots a long-running GPU job on a **RENTED or remote instance they do not own** — training, eval, ablation sweeps, batch inference, or large data processing — on AutoDL, RunPod, v…</li></ul><h2>When not to use</h2><ul><li>| Situation | Use instead | |---|---| | Local single-GPU, or multi-GPU **DDP inside one box** | `torchrun` / `accelerate` directly | | Managed multi-cloud price-shopping + auto spot-recovery across **Western** clouds | **SkyPilot** (has it…</li><li>Does not replace a real cloud orchestrator or managed provisioner; use it to make rented-box work survivable, not to optimize multi-cloud procurement.</li><li>Platform billing, stop, destroy, and data-retention behavior can drift; re-check current provider docs before destructive or money-impacting actions.</li><li>Requires user-owned credentials, SSH/API access, and explicit confirmation before teardown, deletion, or other irreversible cleanup.</li><li>Companion skills named above are not bundled here; treat them as optional references unless installed in the current agent environment.</li></ul><p><a href="../devops/gpu-training/remote-gpu-trainer.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/remote-gpu-trainer/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

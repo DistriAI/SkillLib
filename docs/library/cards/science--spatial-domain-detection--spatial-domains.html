@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-domains</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / spatial-domains</p><h1>spatial-domains</h1><p class="meta">combined</p><p>Identify spatially coherent tissue domains (regions like cortical layers, tumor vs stroma) in Visium, Visium HD, Xenium, MERFISH, Slide-seq, and Stereo-seq data with Squidpy, BANKSY, BayesSpace, STAGATE, and GraphST. Use when distinguishing a domain (a region with many cell types) from a cell type (one cell&#x27;s identity) and a niche (local cell-type composition); choosing a domain method by tissue geometry (laminar/continuous vs high-resolution imaging vs non-contiguous); tuning the spatial-weight knob (BANKSY lambda, BayesSpace smoothing, SpaGCN histology weight, GNN graph radius) to avoid over-smoothing into blobs or under-smoothing into salt-and-pepper; choosing the number of domains k as a biological decision with k+-1 sensitivity; and reading the Yuan 2024 benchmark with the DLPFC continuous-laminar caveat.</p><h2>When to use</h2><ul><li>Identifying tissue domains</li><li>Identifying spatial regions</li><li>Spatial-aware clustering</li><li>Combined expression and spatial graph clustering</li><li>BayesSpace integration</li><li>STAGATE spatial domain detection</li><li>Evaluating domain quality</li><li>Refining domain boundaries</li></ul><p><a href="../science/spatial-domain-detection/spatial-domains.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same task but with different depth and scope. The first copy (OpenClaw) is a practical, code-heavy recipe for Squidpy/Scanpy, including a specific combined-graph implementation, a custom smoothing function, and marker/annotation steps. The second copy (GPTomics) is a conceptual and methodological guide that distinguishes domains from niches, provides a decision matrix for choosing between BayesSpace, BASS, STAGATE, GraphST, SpaGCN, and BANKSY, and emphasizes the &#x27;spatial-weight&#x27; knob and biological choice of k. The first copy lacks the method-selection logic and the domain/niche distinction, while the second copy lacks the specific Python implementation for combined graphs and the custom smoothing code. Combining them provides both the &#x27;how to choose&#x27; and the &#x27;how to code&#x27; aspects.</pre>
+</body>
+</html>

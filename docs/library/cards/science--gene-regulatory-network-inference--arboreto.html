@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>arboreto</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / arboreto</p><h1>arboreto</h1><p class="meta">combined</p><p>Infer gene regulatory networks (GRNs) from gene expression data using scalable algorithms (GRNBoost2, GENIE3). Use when analyzing transcriptomics data (bulk RNA-seq, single-cell RNA-seq) to identify transcription factor-target gene relationships and regulatory interactions. Supports distributed computation for large-scale datasets.
+
+Infers candidate gene regulatory networks from bulk or single-cell expression data using AertsLab Arboreto GRNBoost2 and GENIE3. Use for transcription factor-target association ranking, compatible Dask execution, sparse expression inputs, and network stability checks.</p><h2>When to use</h2><ul><li>Use Arboreto to rank candidate regulator-target associations from expression measurements. GRNBoost2 fits stochastic gradient boosting regressions; GENIE3 fits random forests. Each target is predicted from candidate regulators, excluding i…</li><li>You have a bulk RNA-seq expression matrix and want to infer transcription factor (TF) → target gene regulatory edges.</li><li>You have single-cell RNA-seq data (after normalization/aggregation as needed) and want to recover putative regulatory interactions.</li><li>You need GRN inference that can scale to large datasets using parallel/distributed execution.</li><li>You want to compare gradient-boosting–based GRN inference (GRNBoost2) versus random-forest–based inference (GENIE3).</li><li>You need a reproducible, scriptable pipeline to generate a ranked network edge list from expression data.</li></ul><p><a href="../science/gene-regulatory-network-inference/arboreto.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies overlap on the core task (GRN inference with GRNBoost2/GENIE3 via Dask), but each contains material steps the others lack. K-Dense-AI provides a pinned, tested compatibility stack, the Dask query-planning workaround, sparse/SciPy constraints, and a bundled wrapper with validation. FreedomIntelligence provides broader usage patterns (single-cell, bulk TF filtering, comparative conditions, pySCENIC integration) and cluster client examples. aipoch provides a different CLI entrypoint and a high-level feature/parameter summary. Crowning one would hide real alternatives and constraints.</pre>
+</body>
+</html>

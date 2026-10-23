@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>modern-structure-prediction</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / modern-structure-prediction</p><h1>modern-structure-prediction</h1><p class="meta">separate</p><p>Predicts protein and complex structures with deep-learning models (ESMFold, AlphaFold2/ColabFold, AlphaFold3, Chai-1, Boltz-1/2) and reconciles them with confidence metrics. Use when choosing a predictor by input and question rather than novelty (ESMFold single-chain, no-MSA, fast, metagenomic-scale vs AlphaFold3/Chai-1/Boltz for complexes, ligands, nucleic acids, ions, PTMs); recognizing that MSA depth is the dominant accuracy determinant so ESMFold trades accuracy for speed and degrades on orphan proteins; gating a complex on ipTM plus inter-chain PAE, not per-chain pLDDT; reading pLDDT as local confidence, PAE as inter-domain/inter-chain positioning, pTM as global fold; knowing a single prediction is one dominant conformer not an ensemble (no apo/holo, allosteric, or fold-switch states), that these are not variant-effect/ddG/affinity engines, and that a confident prediction is a hypothesis, not an experiment. Keywords ESMFold, AlphaFold3, Chai-1, Boltz-1, ColabFold, ipTM, PAE, pLDD…</p><h2>When to use</h2><ul><li>Predicting single-chain protein structures</li><li>Predicting protein-protein complex structures</li><li>Predicting structures with ligands, ions, or nucleic acids</li><li>Metagenomic or genome-scale structure triage</li><li>Selecting predictors based on MSA depth and input type</li><li>Interpreting confidence metrics like pLDDT, PAE, and ipTM</li><li>Validating ligand poses for physical validity</li></ul><h2>When not to use</h2><ul><li>Calculating variant effects or ddG</li><li>Determining binding affinity or Kd</li><li>Predicting allosteric or fold-switch states</li><li>Providing Boltzmann populations or ensembles</li><li>Assessing pathogenicity of point mutations</li></ul><p><a href="../science/structural-biology/modern-structure-prediction.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>structural-biology/modern-structure-prediction/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

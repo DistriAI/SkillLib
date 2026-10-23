@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>email-security</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / email-security</p><h1>email-security</h1><p class="meta">combined</p><p>Authorized email security review: phishing analysis, SPF/DKIM/DMARC header authentication, BEC pattern investigation, and mailbox token abuse research.
+
+DMARC/SPF/DKIM check, email spoofing, SMTP test, and security header analysis</p><h2>When to use</h2><ul><li>Analyzing suspicious messages or domain spoofing exposure.</li><li>Validating a domain&#x27;s email authentication posture.</li><li>During passive reconnaissance (Phase 1)</li><li>After initial DNS enumeration</li><li>DMARC p=none means the domain can be totally spoofed</li><li>Critical for identifying phishing/business email compromise risks</li></ul><h2>When not to use</h2><ul><li>Live mailbox investigation touches personal data; minimize and anonymize.</li><li>Header analysis cannot detect compromise that leaves no mail trail.</li></ul><p><a href="../security/email-authentication-recon/email-security.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies overlap on SPF/DKIM/DMARC validation but each contains material steps the other lacks. The uphiago copy provides concrete dig commands, an interpretation table for SPF/DMARC/DKIM results, SMTP relay testing, and an AWS SES spoofing scenario. The sickn33 copy adds a mandatory authorization gate, phishing/BEC analysis workflow, header chain inspection, URL/attachment sandboxing, and tenant policy checks. Crowning one would hide a real alternative: a command-driven recon procedure versus an authorized phishing-investigation workflow.</pre>
+</body>
+</html>

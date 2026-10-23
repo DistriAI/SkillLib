@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>methylkit-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / methylkit-analysis</p><h1>methylkit-analysis</h1><p class="meta">separate</p><p>Imports Bismark coverage or cytosine-report files into the methylKit object model, then runs the import-to-results spine - filterByCoverage, normalizeCoverage, unite/destrand, calculateDiffMeth, getMethylDiff - for both per-CpG (DMC) and fixed-tile (DMR) differential methylation, plus tileMethylCounts, PCA/correlation/clustering QC, and assocComp/removeComp batch handling. Covers the silent default traps that shape the false-positive rate: overdispersion=&#x27;none&#x27; does no correction while &#x27;MN&#x27; forces the F-test (ignoring test=&#x27;Chisq&#x27;), adjust defaults to SLIM not BH, getMethylDiff defaults difference=25/qvalue=0.01, cov.bases=0 admits single-CpG tiles, and pool destroys biological replication. Use when importing bisulfite count tables, filtering/normalizing/uniting methylation samples, running methylKit differential testing, or QC-ing methylomes. For per-site test-choice (count vs continuous) see differential-cpg-testing; for selection-aware region FDR (dmrseq/DSS) see dmr-detection.</p><h2>When to use</h2><ul><li>importing bisulfite count tables</li><li>filtering and normalizing methylation samples</li><li>running methylKit differential testing</li><li>QC-ing methylomes</li><li>per-CpG differential methylation</li><li>fixed-tile differential methylation</li><li>tileMethylCounts</li><li>PCA/correlation/clustering QC</li></ul><h2>When not to use</h2><ul><li>per-site test-choice (count vs continuous)</li><li>selection-aware region FDR (dmrseq/DSS)</li><li>long-read MM/ML modBAM input</li></ul><p><a href="../science/methylkit-analysis/methylkit-analysis.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>methylation-analysis/methylkit-analysis/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

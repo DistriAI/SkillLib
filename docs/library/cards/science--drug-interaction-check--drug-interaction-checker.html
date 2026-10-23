@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>drug-interaction-checker</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / drug-interaction-checker</p><h1>drug-interaction-checker</h1><p class="meta">combined</p><p>Check for interactions between multiple medications, including severity classification and mechanism explanations.</p><h2>When to use</h2><ul><li>Reviewing patient medication lists.</li><li>Prescribing new medications.</li><li>Pharmacovigilance monitoring.</li><li>Use this skill when the task needs Check for interactions between multiple medications, including severity classification and mechanism explanations.</li><li>Use this skill for evidence insight tasks that require explicit assumptions, bounded scope, and a reproducible output format.</li><li>Use this skill when you need a documented fallback path for missing inputs, execution errors, or partial evidence.</li></ul><h2>When not to use</h2><ul><li>Database may not include all possible drug combinations</li><li>Always consult healthcare professionals for medical decisions</li><li>Does not account for patient-specific factors (age, renal function, etc.)</li><li>Not a substitute for professional medical advice</li></ul><p><a href="../science/drug-interaction-check/drug-interaction-checker.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies overlap on the core task (checking drug-drug interactions and reporting severity), but each contains material steps the other lacks. The aipoch copy defines a five-level severity scale (Critical/Major/Moderate/Minor/Unknown), a JSON output schema, CLI parameters, a Python module interface, and a fallback workflow. The FreedomIntelligence copy defines a three-level severity scale (Minor/Moderate/Major), a different script path (impl.py), a different input format (comma-separated string), a measurable outcome, and allowed tools. Crowning one would hide a real alternative in severity taxonomy, interface, and execution path.</pre>
+</body>
+</html>

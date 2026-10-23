@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>template-authoring</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / template-authoring</p><h1>template-authoring</h1><p class="meta">separate</p><p>Guides creation and validation of custom dotnet new templates from existing projects. Generates a .template.config/template.json that preserves the source project&#x27;s conventions. USE FOR: creating a reusable dotnet new template from an existing project, bootstrapping .template.config/template.json with correct identity, shortName, parameters, and post-actions, adding parameters or conditional content to a template you are authoring, validating the template.json you are authoring before publishing, packaging templates as NuGet packages for distribution. DO NOT USE FOR: validating an existing template.json as a standalone task (use template-validation), finding or using existing templates (use template-discovery and template-instantiation), MSBuild project file issues unrelated to template authoring, NuGet package publishing (only template packaging structure).</p><h2>When to use</h2><ul><li>User wants to create a reusable template from an existing .csproj</li><li>User wants to validate a template.json they are authoring before publishing</li><li>User is setting up `.template.config/template.json` from scratch</li><li>User wants to package a template for NuGet distribution</li></ul><h2>When not to use</h2><ul><li>User wants to find or use existing templates — route to `template-discovery` or `template-instantiation`</li><li>User has MSBuild issues unrelated to template authoring — route to `dotnet-msbuild` plugin</li></ul><p><a href="../software-engineering/template-authoring/template-authoring.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-template-engine/skills/template-authoring/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-llm-benchmark</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-llm-benchmark</p><h1>jetson-llm-benchmark</h1><p class="meta">separate</p><p>Benchmark Jetson LLM/VLM serving performance across vLLM, llama.cpp, and Ollama with structured JSON output.</p><h2>When to use</h2><ul><li>Measure deployed LLM latency and throughput on a Jetson target using the correct runtime-specific benchmark wrapper. Use the JSON output to compare models, runtime flags, power modes, and before/after tuning changes.</li><li>&quot;Benchmark / measure / compare X on this Jetson.&quot;</li><li>After `jetson-llm-serve` to actually quantify the deployment.</li><li>Before/after applying flags from `jetson-inference-mem-tune` to confirm the change helped.</li></ul><h2>When not to use</h2><ul><li>vLLM measurements require an already-running OpenAI-compatible vLLM server.</li><li>Ollama results are single-stream by design and are not directly comparable to</li><li>llama.cpp/GGUF benchmarking runs a NVIDIA-AI-IOT container by default. Tell the</li><li>Container image tags may be mutable unless the caller passes a digest-pinned</li><li>Results are only comparable when model, quantization, prompt length, output</li></ul><p><a href="../devops/jetson-llm-benchmarking/jetson-llm-benchmark.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-llm-benchmark/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

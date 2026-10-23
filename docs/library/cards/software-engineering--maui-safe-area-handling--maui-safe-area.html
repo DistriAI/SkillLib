@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>maui-safe-area</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / maui-safe-area</p><h1>maui-safe-area</h1><p class="meta">separate</p><p>.NET MAUI safe area and edge-to-edge layout guidance for .NET 10+. Covers the new SafeAreaEdges property, SafeAreaRegions enum, per-edge control, keyboard avoidance, Blazor Hybrid CSS safe areas, migration from legacy iOS-only APIs, and platform-specific behavior for Android, iOS, and Mac Catalyst. USE FOR: &quot;safe area&quot;, &quot;edge-to-edge&quot;, &quot;SafeAreaEdges&quot;, &quot;SafeAreaRegions&quot;, &quot;keyboard avoidance&quot;, &quot;notch insets&quot;, &quot;status bar overlap&quot;, &quot;iOS safe area&quot;, &quot;Android edge-to-edge&quot;, &quot;content behind status bar&quot;, &quot;UseSafeArea migration&quot;, &quot;soft input keyboard&quot;, &quot;IgnoreSafeArea replacement&quot;. DO NOT USE FOR: general layout or grid design (use Grid and StackLayout), app lifecycle handling (use maui-app-lifecycle), theming or styling (use maui-theming), or Shell navigation structure.</p><h2>When to use</h2><ul><li>Content overlaps status bar, notch, Dynamic Island, or home indicator after upgrading to .NET 10</li><li>Implementing edge-to-edge / immersive layouts (photo viewers, video players, maps)</li><li>Keyboard avoidance for chat or form UIs</li><li>Migrating from `ios:Page.UseSafeArea`, `Layout.IgnoreSafeArea`, or `WindowSoftInputModeAdjust.Resize`</li><li>Blazor Hybrid apps that need CSS `env(safe-area-inset-*)` coordination</li><li>Mixed layouts with an edge-to-edge header but a safe-area-respecting body</li></ul><h2>When not to use</h2><ul><li>Projects targeting .NET 9 or earlier — use the legacy iOS-specific APIs</li><li>General page layout questions unrelated to system bars or keyboard — use standard layout guidance</li><li>App lifecycle or navigation structure — use maui-app-lifecycle or Shell guidance</li><li>Theming or visual styling — use the **maui-theming** skill</li></ul><p><a href="../software-engineering/maui-safe-area-handling/maui-safe-area.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-maui/skills/maui-safe-area/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

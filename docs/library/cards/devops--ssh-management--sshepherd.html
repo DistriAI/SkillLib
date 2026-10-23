@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sshepherd</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / sshepherd</p><h1>sshepherd</h1><p class="meta">separate</p><p>Zero-knowledge SSH ops CLI — server health checks, docker/systemd control, log tailing, Postgres introspection, and declarative deploys, without ever exposing credentials to the agent.</p><h2>When to use</h2><ul><li>Use when you need to check a remote server&#x27;s health (disk, memory, CPU, ports, OOM history) without handing the agent SSH credentials.</li><li>Use when working with remote docker or systemd services — listing, inspecting, or restarting them — or tailing their logs.</li><li>Use when the user asks to read or edit a remote config file, run a declarative deploy from a named recipe, introspect a remote Postgres database read-only, or audit SSH/security posture on a box.</li></ul><h2>When not to use</h2><ul><li>This skill does not replace environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, or safety boundaries are missing.</li><li>Requires the system OpenSSH client and pre-declared aliases/targets/recipes; it cannot connect to a host that has not been configured outside the agent.</li><li>Postgres access is read-only introspection by design.</li></ul><p><a href="../devops/ssh-management/sshepherd.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/sshepherd/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

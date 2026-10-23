@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>outlier-splicing-detection</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / outlier-splicing-detection</p><h1>outlier-splicing-detection</h1><p class="meta">separate</p><p>Detects aberrant splicing in single rare-disease patients vs a control panel using FRASER 2.0 (Bioconductor; Beta-binomial autoencoder on Intron Jaccard Index, default delta cutoff 0.1, q hyperparameter), OUTRIDER (gene-level outlier expression via autoencoder denoising), LeafcutterMD (Dirichlet-multinomial outlier mode of LeafCutter for annotation-free junctions), and DROP (Snakemake pipeline integrating FRASER2 + OUTRIDER + monoallelic expression for clinical diagnostics). The statistical model is fundamentally different from differential splicing — single-sample-vs-cohort outlier detection rather than two-group comparison. Standard tool in EU rare-disease (Solve-RD) and NIH UDN programs. Use when applying RNA-seq to undiagnosed Mendelian disease, validating predicted splice variants in clinical samples, or detecting cryptic splicing in disease tissue.</p><h2>When to use</h2><ul><li>Single patient or small case series vs control panel</li><li>Question: &quot;What is aberrant in this patient?&quot;</li><li>Statistical model: single-sample p-value vs cohort distribution</li><li>Two well-defined groups, n&gt;=3 each</li><li>Question: &quot;What differs between groups?&quot;</li><li>Statistical model: two-group LRT or related</li></ul><h2>When not to use</h2><ul><li>two-group differential splicing</li><li>cohort &lt;20 samples</li><li>solid tumor splicing biomarker with n&gt;=10 vs cohort</li></ul><p><a href="../science/bioinformatics-outlier-splicing-detection/outlier-splicing-detection.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>alternative-splicing/outlier-splicing-detection/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>primer-basics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / primer-basics</p><h1>primer-basics</h1><p class="meta">separate</p><p>Designs and ranks PCR primer pairs for a target template with primer3-py (design_primers), returning pairs with nearest-neighbor Tm, GC, product size, and complementarity scores. Covers why primer3 is a LOCAL weighted-penalty minimizer over the single template supplied (so PRIMER_PAIR_0 is the lowest-penalty pair under the given bounds, never a genome-specificity guarantee), why Tm is a salt/concentration-dependent SantaLucia prediction not a fixed property, why the two primers must be Tm-matched, the seq_args/global_args tag semantics (SEQUENCE_TARGET/INCLUDED/EXCLUDED/OVERLAP_JUNCTION/FORCE_*, 0-based [start,length]), 3&#x27;-end and GC-clamp mechanism, 5&#x27;-tail handling, masking SNPs under 3&#x27; ends, and diagnosing zero-pair runs. Use when designing standard PCR, cloning, genotyping, or sequencing primers, flanking a target, or screening pairs by Tm/size/GC. Genome off-target checking is primer-specificity; dimers/hairpins primer-validation; qPCR and probes qpcr-primers.</p><h2>When to use</h2><ul><li>designing standard PCR primers</li><li>cloning primers with 5&#x27; tails</li><li>genotyping primers flanking a target</li><li>single sequencing primers</li><li>screening pairs by Tm, size, and GC</li><li>ranking primer pairs by weighted penalty</li></ul><h2>When not to use</h2><ul><li>genome off-target checking</li><li>primer-specificity</li><li>dimer and hairpin validation</li><li>primer-validation</li><li>qPCR primers and probes</li><li>qpcr-primers</li><li>degenerate or consensus primers</li><li>long-range PCR amplicons over 3-5 kb</li></ul><p><a href="../science/primer-design/primer-basics.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>primer-design/primer-basics/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

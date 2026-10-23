@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>experience-lds-graphql-generate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / experience-lds-graphql-generate</p><h1>experience-lds-graphql-generate</h1><p class="meta">authentic</p><p>Use ALWAYS when a prompt mentions GraphQL, lightning/uiGraphQLApi, @wire(graphql, ...), or gql template tags in an LWC context — even if the surface ask is \&quot;build an LWC\&quot;. Owns the ENTIRE flow: introspect the org&#x27;s LDS GraphQL schema, identify entities/fields, construct the schema-validated gql query or mutation, wire it into the LWC via lightning/uiGraphQLApi, verify against a connected org. REQUIRED whenever a prompt asks to render, list, or edit Salesforce records (Account, Contact, Case, custom objects) via GraphQL — the .html and .js scaffolding IS in scope. DO NOT delegate to experience-lwc-generate: that skill has NO GraphQL schema introspection, NO create_lds_graphql_read_query binding, and defaults to getRecord/getRelatedListRecords wire adapters which will not satisfy a GraphQL prompt. DO NOT TRIGGER only if the prompt forbids GraphQL, chooses UIAPI/Apex (use experience-lds-best-practices-apply), or asks for data requirements (use experience-lds-data-requirements-generate).</p><h2>When to use</h2><ul><li>User wants to create, modify, or integrate a Salesforce GraphQL query (standard objects, custom objects, or setup objects).</li><li>Building or updating an LWC that consumes/mutates LDS data through GraphQL.</li><li>Introspecting an org&#x27;s schema before writing a query.</li><li>Validating a generated query end-to-end against a connected org.</li><li>REST-based UI API (use LDS wire adapters; see `experience-lds-best-practices-apply`).</li><li>Apex callouts or custom GraphQL endpoints — this skill is LDS-scoped.</li><li>Data-requirements discovery — that&#x27;s `experience-lds-data-requirements-generate`.</li></ul><p><a href="../software-engineering/lds-graphql-generation/experience-lds-graphql-generate.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/experience-lwc/skills/experience-lds-graphql-generate/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

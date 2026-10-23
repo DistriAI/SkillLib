@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>aomi-transact</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / aomi-transact</p><h1>aomi-transact</h1><p class="meta">authentic</p><p>Build natural-language crypto/DeFi agents and EVM MCP plugins (Claude Code, Cursor, Codex, Gemini). Aomi turns prompts into wallet-signed txs on Ethereum, Base, Arbitrum, Optimism, Polygon, Linea — non-custodial, fork-simulated. 40+ apps: Uniswap, Aave, Lido, Morpho, GMX, Hyperliquid, Polymarket.</p><h2>When to use</h2><ul><li>The user wants to chat with the Aomi agent from the terminal.</li><li>The user wants balances, prices, routes, quotes, or transaction status.</li><li>The user wants to build, simulate, confirm, sign, or broadcast wallet requests.</li><li>The user wants to simulate a batch of pending transactions before signing.</li><li>The user wants to inspect or switch apps, models, chains, or sessions.</li><li>The user wants to inspect or change Account Abstraction settings (EIP-7702 / ERC-4337).</li><li>The user wants to sign EIP-712 typed-data payloads (off-chain agreements, intent fillers).</li></ul><h2>When not to use</h2><ul><li>**Requires `@aomi-labs/client` v0.1.30 or newer.** Older versions lack `--aa`, `--aa-provider`, `--aa-mode` and the simulation gate. Install with `npm install -g @aomi-labs/client` or run on demand via `npx @aomi-labs/client@0.1.30 ...`.</li><li>**Active backend connection.** The skill drives a CLI that talks to `api.aomi.dev`. Without network access, only local read commands (`aomi tx list`, `aomi session log`) work.</li><li>**AA sponsorship on L2s is not guaranteed.** The zero-config proxy path does not reliably sponsor on Base/Arbitrum/Optimism in v0.1.30. If the EOA has 0 native gas on the destination chain, `aomi tx sign` returns viem&#x27;s `insufficient funds…</li><li>**Per-session secret ingestion.** Apps that require provider tokens (`binance`, `polymarket`, `dune`, etc.) must have credentials configured by the user in their own shell or via `aomi secret add NAME=&lt;value&gt;`. The skill never sets credent…</li><li>**Drain vectors are guard-blocked.** The agent rejects calldata where `recipient`/`onBehalfOf`/`mintRecipient` ≠ `msg.sender`. This is a security feature, not a bug — surface the block to the user rather than reformulating the prompt.</li><li>**Network/RPC failures.** Public RPCs may rate-limit (`429`) or fail auth (`401`). The user must supply a reliable chain-matching RPC via `--rpc-url` for production signing.</li><li>**Slippage and deadlines on live transactions.** Quotes from deadline-bearing routes (Across, Khalani fillers) can expire while the user is reviewing; the agent self-heals by rebuilding with fresh deadlines, but the user should re-check `a…</li></ul><p><a href="../business/transaction-processing/aomi-transact.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/aomi-transact/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

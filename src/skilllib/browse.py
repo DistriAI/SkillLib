@@ -14,7 +14,7 @@ from pathlib import Path
 
 from skilllib.sorting.build import INDEX_PATH
 
-BROWSE_PATH = Path("html")
+BROWSE_PATH = Path("docs") / "library"
 _UNSAFE = re.compile(r"[^a-z0-9._-]+")
 _PAGE = """<!DOCTYPE html>
 <html lang="en">
@@ -79,12 +79,13 @@ def _write_domain(domain: dict, directory: Path) -> int:
         scenario_dir.mkdir(parents=True, exist_ok=True)
         skills = scenario.get("skills") or []
         rows.append((scenario["name"], slug, len(skills)))
-        pages += _write_scenario(domain["name"], scenario, scenario_dir)
+        pages += _write_scenario(domain["name"], directory.name, slug, scenario, scenario_dir)
     _write(
         directory / "index.html",
         domain["name"],
         _crumbs([(domain["name"], None)], 1)
         + f"<h1>{html.escape(domain['name'])}</h1>"
+        + f'<p><a href="../families/{html.escape(directory.name)}.html">Families in this domain</a></p>'
         + _table(
             ["Scenario", "Skills"],
             [
@@ -96,7 +97,7 @@ def _write_domain(domain: dict, directory: Path) -> int:
     return pages
 
 
-def _write_scenario(domain_name: str, scenario: dict, directory: Path) -> int:
+def _write_scenario(domain_name: str, domain_slug: str, scenario_slug: str, scenario: dict, directory: Path) -> int:
     used: set[str] = set()
     rows = []
     pages = 1
@@ -106,7 +107,8 @@ def _write_scenario(domain_name: str, scenario: dict, directory: Path) -> int:
         repos = _repositories(skill)
         repo_text = ", ".join(html.escape(item[0]) for item in repos) or "—"
         rows.append((skill["name"], filename, skill.get("kind") or "", repo_text))
-        _write_skill(domain_name, scenario["name"], skill, directory / filename)
+        card_name = f"{domain_slug}--{scenario_slug}--{slug}.html"
+        _write_skill(domain_name, scenario["name"], skill, directory / filename, card_href=f"../../cards/{card_name}")
         pages += 1
     _write(
         directory / "index.html",
@@ -124,7 +126,7 @@ def _write_scenario(domain_name: str, scenario: dict, directory: Path) -> int:
     return pages
 
 
-def _write_skill(domain_name: str, scenario_name: str, skill: dict, path: Path) -> None:
+def _write_skill(domain_name: str, scenario_name: str, skill: dict, path: Path, card_href: str = "") -> None:
     leader = skill.get("leader") or {}
     lines = [
         _crumbs(
@@ -136,8 +138,10 @@ def _write_skill(domain_name: str, scenario_name: str, skill: dict, path: Path) 
             2,
         ),
         f"<h1>{html.escape(skill['name'])}</h1>",
-        f"<p class=\"meta\">{html.escape(skill.get('kind') or '')}</p>",
     ]
+    if card_href:
+        lines.append(f'<p class="meta"><a href="{html.escape(card_href)}">Skill card</a></p>')
+    lines.append(f"<p class=\"meta\">{html.escape(skill.get('kind') or '')}</p>")
     if skill.get("rationale"):
         lines.append(f"<p>{html.escape(skill['rationale'])}</p>")
     lines.append("<h2>Repositories</h2>")
@@ -221,6 +225,83 @@ def _unique_slug(value: str, used: set[str]) -> str:
         number += 1
     used.add(slug)
     return slug
+
+
+def shelf_locations(index: dict) -> dict[str, dict]:
+    """Map a leading skill id to its shelf page and skill-card page."""
+
+    found: dict[str, dict] = {}
+    for domain in index.get("domains") or []:
+        domain_slug = _unique_slug(domain["name"], set())
+        scenario_used: set[str] = set()
+        for scenario in domain.get("scenarios") or []:
+            scenario_slug = _unique_slug(scenario["name"], scenario_used)
+            skill_used: set[str] = set()
+            for skill in scenario.get("skills") or []:
+                skill_slug = _unique_slug(skill.get("name") or "", skill_used)
+                leader = skill.get("leader") or {}
+                if skill.get("kind") == "combined":
+                    card_id = leader.get("skill_id") or f"combined::{skill.get('name') or 'unnamed'}"
+                else:
+                    card_id = leader.get("occurrence_id") or f"skill::{skill.get('name') or 'unnamed'}"
+                card_file = f"{domain_slug}--{scenario_slug}--{skill_slug}.html"
+                found[card_id] = {
+                    "name": skill.get("name") or "",
+                    "domain": domain.get("name") or "",
+                    "domain_slug": domain_slug,
+                    "scenario": scenario.get("name") or "",
+                    "scenario_slug": scenario_slug,
+                    "skill_slug": skill_slug,
+                    "card_file": card_file,
+                    "skill_href": f"../{domain_slug}/{scenario_slug}/{skill_slug}.html",
+                    "card_href_from_skill": f"../../cards/{card_file}",
+                    "family_href": f"../cards/{card_file}",
+                }
+    return found
+
+
+def write_card_pages(cards: list[dict], locations: dict[str, dict], root: Path) -> Path:
+    """Write one skill-card page for each leading skill, linked to its skill page."""
+
+    destination = root / BROWSE_PATH / "cards"
+    destination.mkdir(parents=True, exist_ok=True)
+    for card in cards:
+        place = locations.get(card.get("id") or "")
+        if place is None:
+            continue
+        provenance = card.get("provenance") or {}
+        lines = [
+            '<p class="crumbs"><a href="../index.html">domains</a> / '
+            f'<a href="../families/index.html">families</a> / '
+            f'<a href="../families/{html.escape(place["domain_slug"])}.html">{html.escape(place["domain"])}</a> / '
+            f'{html.escape(card.get("name") or "")}</p>',
+            f'<h1>{html.escape(card.get("name") or "")}</h1>',
+            f'<p class="meta">{html.escape(card.get("kind") or "")}</p>',
+        ]
+        description = (card.get("description") or "").strip()
+        if description:
+            lines.append(f"<p>{html.escape(description)}</p>")
+        lines.append(_scope_list("When to use", card.get("positive_scope") or []))
+        lines.append(_scope_list("When not to use", card.get("negative_scope") or []))
+        lines.append(f'<p><a href="{html.escape(place["skill_href"])}">Skill page</a></p>')
+        repository = provenance.get("repository") or ""
+        path = provenance.get("path") or ""
+        url = provenance.get("html_url") or ""
+        if repository or path:
+            lines.append("<h2>Source</h2>")
+            lines.append(_repo_table([(repository, path, url)] if repository else []))
+        if provenance.get("conflict_note"):
+            lines.append("<h2>Conflict</h2>")
+            lines.append(f"<pre>{html.escape(provenance['conflict_note'][:12000])}</pre>")
+        _write(destination / place["card_file"], card.get("name") or "skill", "".join(lines))
+    return destination
+
+
+def _scope_list(title: str, items: list) -> str:
+    if not items:
+        return ""
+    rows = "".join(f"<li>{html.escape(str(item))}</li>" for item in items)
+    return f"<h2>{html.escape(title)}</h2><ul>{rows}</ul>"
 
 
 def load_index(path: Path) -> dict:

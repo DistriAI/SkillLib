@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>unsloth-finetuning</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / unsloth-finetuning</p><h1>unsloth-finetuning</h1><p class="meta">authentic</p><p>Fine-tune and post-train LLMs with Unsloth Core on a single consumer GPU: VRAM sizing, LoRA/QLoRA, GRPO/DPO, chat-template correctness, and GGUF export.</p><h2>When to use</h2><ul><li>Use when fine-tuning an LLM on one GPU and VRAM is the binding constraint.</li><li>Use when a training run OOMs and needs to be resized rather than rewritten.</li><li>Use when doing preference or RL post-training (GRPO, DPO) on consumer hardware.</li><li>Use when a fine-tuned model must be exported to GGUF, vLLM, or merged 16-bit weights.</li><li>Use when a fine-tune &quot;ran fine&quot; but the model&#x27;s output format is wrong — usually a chat</li><li>The training is multi-node or large-scale multi-GPU. Use plain TRL with Accelerate/DeepSpeed.</li><li>The architecture is unsupported by Unsloth. Fall back to TRL; do not force it.</li><li>The user wants managed cloud training. That is Hugging Face Jobs, not local Unsloth.</li></ul><h2>When not to use</h2><ul><li>The VRAM figures above are planning heuristics, not benchmarks. Confirm on target hardware.</li><li>Architecture support changes between releases. Check upstream before assuming a model works.</li><li>Unsloth&#x27;s speed and memory claims are the project&#x27;s own published figures, measured on their</li><li>This skill does not replace environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if the GPU, model, dataset format or export target is unknown —</li></ul><p><a href="../data/model-finetuning/unsloth-finetuning.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/unsloth-finetuning/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

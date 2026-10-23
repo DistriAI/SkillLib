@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cloudformation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / cloudformation</p><h1>cloudformation</h1><p class="meta">combined</p><p>Deploy AWS resources with CloudFormation templates. Create stacks, use nested stacks, and implement drift detection. Use when deploying AWS-native IaC.
+
+AWS CloudFormation infrastructure as code for stack management. Use when writing templates, deploying stacks, managing drift, troubleshooting deployments, or organizing infrastructure with nested stacks.</p><h2>When to use</h2><ul><li>Deploying AWS resources using AWS-native Infrastructure as Code</li><li>Creating repeatable, parameterized infrastructure templates</li><li>Managing multi-environment deployments (dev, staging, prod) with the same template</li><li>Implementing safe deployments with change sets and rollback protection</li><li>Detecting and remediating configuration drift</li><li>Organizing large infrastructure into nested stacks</li><li>Exporting/importing values between stacks</li></ul><h2>When not to use</h2><ul><li>Infrastructure commands can disrupt services: confirm target host/scope and have backups/snapshots before mutating state.</li><li>Docs-only import: upstream scripts and templates not bundled.</li></ul><p><a href="../devops/cloudformation-deploy/cloudformation.html">Skill page</a></p><h2>Conflict</h2><pre>The copies overlap on core CloudFormation stack operations, but each has material steps the others lack. BagelHole and sickn33 are near-identical (sickn33 is a mirror of BagelHole) and focus on a production web template with ASG/ELB, cfn-lint, and termination protection. itsmostafa adds distinct material: Stack Sets, a troubleshooting section, and specific resource patterns (Lambda, VPC, DynamoDB) not present in the others. Crowning one would hide the itsmostafa-specific patterns and troubleshooting guidance.</pre>
+</body>
+</html>

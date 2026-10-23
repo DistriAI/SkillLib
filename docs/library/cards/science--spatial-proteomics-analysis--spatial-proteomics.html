@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-proteomics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / spatial-proteomics</p><h1>spatial-proteomics</h1><p class="meta">combined</p><p>Analyzes multiplexed antibody-imaging data (CODEX/PhenoCycler, MIBI-TOF, IMC, CyCIF, Opal/Vectra mIF) as continuous protein intensity rather than transcript counts, using scimap and squidpy. Use when choosing an intensity transform/normalization (arcsinh cofactor vs z-score vs percentile -- NOT log1p-of-counts) and correcting channel spillover and antibody-batch effects; deciding whether to phenotype by gating or by clustering on intensities; recognizing that a bounded antibody panel makes marker absence uninformative; treating whole-cell segmentation (Mesmer) as the dominant error source; and knowing which platform applies and when to defer to the imaging-mass-cytometry skills for the IMC pipeline.</p><h2>When to use</h2><ul><li>Analyzing spatial proteomics data</li><li>Working with multiplexed imaging data</li><li>Analyzing protein spatial patterns</li><li>Integrating spatial proteomics with transcriptomics</li><li>Phenotyping cells by gating or clustering</li><li>Correcting channel spillover and antibody-batch effects</li><li>Choosing intensity transform/normalization</li></ul><h2>When not to use</h2><ul><li>IMC-specific analysis</li></ul><p><a href="../science/spatial-proteomics-analysis/spatial-proteomics.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same task but with different emphases and conflicting technical guidance. The first copy (OpenClaw) provides a concise, code-heavy workflow using scimap and squidpy, but it recommends log1p transformation, which is generally incorrect for continuous protein intensity data. The second copy (GPTomics) provides a much deeper conceptual framework, explicitly warning against log1p and recommending arcsinh/z-score, and it details platform-specific confounds and segmentation errors. Because the first copy&#x27;s preprocessing step is technically flawed compared to the second, and the second copy contains substantial material (platform decision logic, governing principles) missing from the first, crowning one would hide the correct approach or the practical code structure. They must be combined to get the correct preprocessing and the complete workflow.</pre>
+</body>
+</html>

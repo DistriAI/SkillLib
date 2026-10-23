@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>longread-sv-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / longread-sv-pipeline</p><h1>longread-sv-pipeline</h1><p class="meta">separate</p><p>Orchestrates an end-to-end long-read structural-variant pipeline - basecalling to minimap2 alignment (platform-matched preset) to Sniffles2/cuteSV/pbsv calling to optional assembly-based calling (dipcall/PAV) to two-step .snf cohort merging to Truvari benchmarking - chaining ONT and PacBio HiFi runs while handing the SV signal mechanism off to the component skills. Use when running a long-read SV workflow from reads to a benchmarked callset, choosing the minimap2 preset and SV caller by platform and goal, deciding when long reads are worth it for the insertions and repeat-mediated SVs short reads physically miss, building a joint-genotyped cohort with the two-step .snf design, or parameterizing a Truvari benchmark against GIAB HG002 Tier 1 plus CMRG. Not for the SV signal mechanism itself (see variant-calling/structural-variant-calling) or short-read SV.</p><h2>When to use</h2><ul><li>running a long-read SV workflow from reads to a benchmarked callset</li><li>choosing the minimap2 preset and SV caller by platform and goal</li><li>deciding when long reads are worth it for insertions and repeat-mediated SVs</li><li>building a joint-genotyped cohort with the two-step .snf design</li><li>parameterizing a Truvari benchmark against GIAB HG002 Tier 1 plus CMRG</li></ul><h2>When not to use</h2><ul><li>the SV signal mechanism itself</li><li>short-read SV</li></ul><p><a href="../science/long-read-structural-variant-calling/longread-sv-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/longread-sv-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

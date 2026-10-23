@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>rich-elicitation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / rich-elicitation</p><h1>rich-elicitation</h1><p class="meta">authentic</p><p>Asks clarifying questions in multiple rounds before starting ambiguous tasks. Fires when 2+ task dimensions each have 3+ viable answers.</p><h2>When to use</h2><ul><li>Use when a request has 2 or more dimensions that are ambiguous and each has 3+ viable options</li><li>Use when the user&#x27;s likely intent is unclear across scope, audience, tone, format, or strategy</li><li>Use when an early answer would meaningfully change the structure or direction of the output</li><li>Use when working on writing, planning, design, recommendations, or creative tasks with open-ended scope</li><li>Use when a Round 1 answer unlocks a new set of meaningful choices that need resolving before proceeding</li><li>Simple factual lookups or math</li><li>Clearly scoped requests with a single obvious interpretation</li><li>Minor unknowns where a safe default exists</li></ul><h2>When not to use</h2><ul><li>This skill does not validate whether the user&#x27;s answers are internally consistent — it trusts them as given.</li><li>Round structure is a guideline, not a rigid contract; judgment is required on when to stop.</li><li>Works best with `ask_user_input_v0` — in environments without that tool, question quality may degrade.</li><li>Does not handle tasks where ambiguity can only be resolved by fetching external information (e.g., reading a file the user hasn&#x27;t uploaded).</li><li>Not designed for real-time or high-latency-sensitive workflows where any question overhead is unacceptable.</li></ul><p><a href="../agent-tooling/user-elicitation/rich-elicitation.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/rich-elicitation/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

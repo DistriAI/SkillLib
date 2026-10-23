@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>resolving-merge-conflicts</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / resolving-merge-conflicts</p><h1>resolving-merge-conflicts</h1><p class="meta">authentic</p><p>Use when you need to resolve an in-progress git merge/rebase conflict.</p><h2>When to use</h2><ul><li>**See the current state** of the merge/rebase. Check git history, and the conflicting files.</li><li>**Find the primary sources** for each conflict. Understand deeply why each change was made, and what the original intent was. Read the commit messages, check the PRs, check original issues/tickets.</li><li>**Resolve each hunk.** Preserve both intents where possible. Where incompatible, pick the one matching the merge&#x27;s stated goal and note the trade-off. Do **not** invent new behaviour. Always resolve; never `--abort`.</li><li>Discover the project&#x27;s **automated checks** and run them — typically typecheck, then tests, then format. Fix anything the merge broke.</li><li>**Finish the merge/rebase.** Stage everything and commit. If rebasing, continue the rebase process until all commits are rebased.</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches its upstream source and local project context.</li><li>Verify commands, generated code, dependencies, credentials, and external service behavior before applying changes.</li><li>Do not treat examples as a substitute for environment-specific tests, security review, or user approval for destructive or costly actions.</li></ul><p><a href="../software-engineering/merge-conflict-resolution/resolving-merge-conflicts.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/resolving-merge-conflicts/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

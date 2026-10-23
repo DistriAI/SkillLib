@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sentry</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / sentry</p><h1>sentry</h1><p class="meta">combined</p><p>Use when the user asks to inspect Sentry issues or events, summarize recent production errors, or pull basic Sentry health data via the Sentry API; perform read-only queries with the bundled script and require `SENTRY_AUTH_TOKEN`.
+
+Use when the user asks to inspect Sentry issues or events, summarize recent production errors, or pull basic Sentry health data via the Sentry CLI; perform read-only queries using the `sentry` command.</p><h2>When to use</h2><ul><li>inspect Sentry issues</li><li>inspect Sentry events</li><li>summarize recent production errors</li><li>pull basic Sentry health data</li><li>list issues</li><li>resolve issue short ID</li><li>view issue detail</li><li>view issue events</li></ul><h2>When not to use</h2><ul><li>write operations</li><li>non-read-only queries</li><li>printing raw stack traces</li><li>echoing auth tokens</li></ul><p><a href="../devops/sentry-read-only-observability/sentry.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies describe the same read-only Sentry observability task and share output formatting, PII redaction, and golden test inputs. However, they disagree on the execution mechanism: the openai/skills copy uses the official `sentry` CLI with auto-detection and AI-powered explain/plan commands, while the Vibe-Skills copy uses a bundled Python script with explicit org/project arguments and a fixed set of API endpoints. Crowning one would hide a real alternative for environments where the CLI is unavailable or where a deterministic script is preferred.</pre>
+</body>
+</html>

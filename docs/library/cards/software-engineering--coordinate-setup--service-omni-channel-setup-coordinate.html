@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-omni-channel-setup-coordinate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / service-omni-channel-setup-coordinate</p><h1>service-omni-channel-setup-coordinate</h1><p class="meta">authentic</p><p>Use to stand up Omni-Channel setup headlessly on Salesforce: base settings, agent users, service channels, routing configs, queues (create and align) and members, presence statuses, permission assignments, the classic Omni Supervisor config plus its action/tab surface, and — for Case and VoiceCall — the record-triggered routing flow. Supports Case, Incident, MessagingSession, and VoiceCall targets; reuses existing records and creates what is missing. Opt-in extras: presence user config, Omni sidebar, skills-based routing, and field-based WorkSkillRouting; also reports (read-only) whether the org is on the classic supervisor surface or Command Center V2. Triggers: set up Omni-Channel, configure Omni routing, provision Omni agents or supervisors, configure Case/Incident/Messaging/Voice routing. Do not use for Agentforce agents or bots, a single existing Omni field change, bare metadata deployment (use platform-metadata-deploy), or to enable Command Center V2 (not writable via the Metada…</p><h2>When not to use</h2><ul><li>Routing-flow deploy covers `Case` and `VoiceCall` only.</li><li>Classic `OmniSupervisorConfig` (including its action + tab surface) only. Command Center V2 (Enhanced Omni-Channel) is reported by the read-only analysis step but not enabled — the org preference is not writable via the Metadata API. The s…</li><li>The rep-experience stages (presence user config, decline reasons, sidebar) run only with `OMNI_REP_EXPERIENCE=1`. SkillsBased routing is selected explicitly or inferred from a complete `OMNI_WSR_*` mapping and runs independently of that fl…</li><li>Teardown is **plan-only**: `--run` emits `deploy_ids.json` (a provenance manifest) and a dry-run `teardown.sh` that prints the reverse-order removal/restore plan, but does not execute destructive changes. Automated reversal is deliberately…</li></ul><p><a href="../software-engineering/coordinate-setup/service-omni-channel-setup-coordinate.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/service-omni/skills/service-omni-channel-setup-coordinate/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

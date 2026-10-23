@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>field-service-data-capture-form-designer-configure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / field-service-data-capture-form-designer-configure</p><h1>field-service-data-capture-form-designer-configure</h1><p class="meta">separate</p><p>Design a Field Service Mobile Data Capture Flow from either a natural-language description OR a PDF/image of an existing paper form. Extracts field labels, types, required-state, and section structure into an intermediate JSON spec, confirms the plan with the user, then hands off to fs-data-capture-form-deployer for compile + deploy. Handles both input modes in one skill — prose (&#x27;build a Field Service form for asset inspection&#x27;, &#x27;make a DataCaptureFlow that asks the technician to…&#x27;, &#x27;create an inventory transfer form&#x27;) and visual sources (&#x27;convert this PDF to a Data Capture Flow&#x27;, &#x27;make a Field Service form from this image&#x27;, &#x27;turn this paper form into a DataCaptureFlow&#x27;). Detects the input mode automatically from a .pdf/.png/.jpg/.jpeg path, else extracts from the prose. Do NOT use this skill to patch an already-deployed flow — that&#x27;s fs-data-capture-form-editor.</p><h2>When not to use</h2><ul><li>Patching an already-deployed flow → `fs-data-capture-form-editor`.</li><li>Hand-authoring patterns the converter doesn&#x27;t generate (visual polish HTML, real `dcSignature`/`dcUpImage`, master-detail child records, supporting CustomObjects) → `fs-data-capture-reference` library skill.</li></ul><p><a href="../software-engineering/salesforce-field-service-form-design/field-service-data-capture-form-designer-configure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>skills/field-service-data-capture-form-designer-configure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

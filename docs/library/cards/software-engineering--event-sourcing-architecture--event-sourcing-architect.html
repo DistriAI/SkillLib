@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>event-sourcing-architect</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / event-sourcing-architect</p><h1>event-sourcing-architect</h1><p class="meta">combined</p><p>Expert in event sourcing, CQRS, and event-driven architecture patterns. Masters event store design, projection building, saga orchestration, and eventual consistency patterns. Use PROACTIVELY for event-sourced systems, audit trails, or temporal queries.
+
+Expert in event sourcing, CQRS, and event-driven architecture patterns. Masters event store design, projection building, saga orchestration, and eventual consistency patterns. Use PROACTIVELY for event-sourced systems, audit trail requirements, or complex domain modeling with temporal queries.</p><h2>When to use</h2><ul><li>Building systems requiring complete audit trails</li><li>Implementing complex business workflows with compensating actions</li><li>Designing systems needing temporal queries (&quot;what was state at time X&quot;)</li><li>Separating read and write models for performance</li><li>Building event-driven microservices architectures</li><li>Implementing undo/redo or time-travel debugging</li></ul><h2>When not to use</h2><ul><li>The domain is simple and CRUD is sufficient</li><li>You cannot support event store operations or projections</li><li>Strong immediate consistency is required everywhere</li><li>Record actual aggregate concurrency/ordering guarantees, idempotency keys and projection lag; sagas compensate business effects but are not automatic rollback of every external action. Replay must suppress real notifications/payments and o…</li><li>Do not introduce event sourcing/CQRS where a simpler design meets the task; retain policy and deletion boundaries, and test projection rebuild before claiming audit completeness.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../software-engineering/event-sourcing-architecture/event-sourcing-architect.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies share the same core procedure (aggregate boundaries, immutable events, projections, sagas, snapshotting, versioning) and most best practices. However, the sickn33 copy adds material constraints and steps the rmyndharis copy lacks: durable execution frameworks for sagas, a Limitations section covering concurrency/idempotency/projection lag and replay side-effects, and a Related Skills section. The copies also disagree on the safety rule for deleting committed events: rmyndharis states they must never be deleted, while sickn33 allows deliberate redaction/key-deletion for privacy/legal requirements. Crowning one copy would hide the more nuanced deletion policy and the additional operational constraints.</pre>
+</body>
+</html>

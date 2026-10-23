@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>coverage-analysis</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/general.html">general</a> / coverage-analysis</p><h1>coverage-analysis</h1><p class="meta">combined</p><p>Computes and interprets sequencing read depth and coverage over a genome, windows, or target regions with mosdepth (windowed depth, cumulative distribution, --quantize callable BEDs), bedtools genomecov/coverage (bedGraph tracks, per-target stats), samtools depth/coverage (per-base depth, per-contig depth+breadth). Covers the breadth-vs-mean distinction, the cumulative-coverage curve, evenness (CV/Fano/fold-80/Gini), what each tool silently counts (duplicates, secondary/supplementary, MAPQ, read span vs fragment, mate-overlap), the samtools-depth 8000-cap version trap, and the bedtools coverage -a/-b orientation flip. Use when assessing sequencing adequacy, building coverage tracks, computing breadth at a depth threshold, defining callable regions, or QCing target-capture uniformity.
+
+Activation requires either supplied .NET coverage reports/percentages/line, branch, or condition metrics, or an explicit request to collect .NET coverage for analysis. USE FOR: interpreting that evidence, including Cobertura data, partial conditions, plateaus, target arithmetic, project-wide coverage-backed CRAP, and coverage-backed refactoring safety. Analyze supplied reports directly without rerunning tests or installing tools. DO NOT USE FOR: requests with neither coverage evidence nor explicit coverage-collection intent, including hypothetical change-survival questions (use test-gap-analysis); CRAP or refactoring safety for one named target (use crap-score); or requests owned by test-tagging, find-untested-sources, test-anti-patterns, run-tests, or code-testing.</p><h2>When to use</h2><ul><li>Explain what .NET coverage evidence proves, reconcile target arithmetic, and identify the code blocking progress. Add complexity/CRAP ranking only when the user explicitly asks for risk hotspots, CRAP, priorities by risk, or refactoring sa…</li><li>Use this skill for interpreting supplied .NET line/branch/condition evidence, coverage gaps and plateaus, target arithmetic, or explicit project-wide coverage-backed risk analysis.</li></ul><h2>When not to use</h2><ul><li>**Named method, class, or file CRAP/refactoring-safety analysis** — use the `crap-score` skill instead</li><li>**Static source-to-test pairing or listing files with no tests** — use `find-untested-sources`</li><li>**Behavioral or pseudo-mutation gaps in existing tests** — use `test-gap-analysis`</li><li>**Test trait/category distributions or coverage shape by test type** — use `test-tagging`</li><li>**Writing or generating tests** — this skill identifies where tests are needed, not write them</li><li>**General test execution** unrelated to coverage or CRAP analysis</li><li>**Only collecting .NET coverage or printing a raw percentage with no diagnosis** — use `run-tests`; use native tooling for non-.NET coverage collection or analysis. Interpreting .NET line/branch gaps remains in scope here</li></ul><p><a href="../general/coverage-analysis/coverage-analysis.html">Skill page</a></p><h2>Conflict</h2><pre>The three skills share the name &#x27;coverage-analysis&#x27; but address three distinct domains with no overlapping procedure. The dotnet/skills copy is a .NET-specific procedure for interpreting Cobertura reports and calculating CRAP scores. The trailofbits/skills copy is a security/fuzzing procedure for using llvm-cov and lcov to analyze fuzzer effectiveness. The GPTomics/bioSkills copy is a bioinformatics procedure for analyzing sequencing read depth using bedtools and mosdepth. Because they are mutually exclusive procedures for different tools and data types, crowning one would hide the other two valid interpretations of the skill name.</pre>
+</body>
+</html>

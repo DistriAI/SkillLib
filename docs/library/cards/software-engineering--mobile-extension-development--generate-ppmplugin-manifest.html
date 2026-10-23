@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>generate-ppmplugin-manifest</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / generate-ppmplugin-manifest</p><h1>generate-ppmplugin-manifest</h1><p class="meta">separate</p><p>Validate, reconcile to the chosen target(s), and stage the `manifest.json` for a `.ppmplugin` bundle. In the normal flow the committed `./manifest.json` already exists (authored by /generate-native-extension), so this stage reads it, runs the plugin&#x27;s upload-compatibility checks locally as a pre-flight gate (name regex, canonical prefix, known incompatible names, method and identifier shapes), reconciles `entrypoints` down to the platform(s) you ship, and writes the gitignored staged copy `ppmplugin/staging/manifest.json` that /assemble-ppmplugin zips. If no committed manifest exists (a hand-authored module) it falls back to deriving every field from the class name and Android module source, writing both the committed file and the staged copy. No toolchain — pure read, validate, write. Target-aware. Run after the native module exists, before the build skills.</p><p><a href="../software-engineering/mobile-extension-development/generate-ppmplugin-manifest.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/power-apps-mobile-extension/skills/generate-ppmplugin-manifest/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

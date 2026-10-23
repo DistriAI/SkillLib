@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>pdf-processor</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/documents.html">documents</a> / pdf-processor</p><h1>pdf-processor</h1><p class="meta">combined</p><p>Perform basic local PDF operations (merge, split, extract pages/text/tables, create) when users request offline PDF processing without external services.
+
+Process PDFs - extract text, tables, and structured data from documents</p><h2>When to use</h2><ul><li>You need to merge multiple PDFs into a single document offline.</li><li>You need to split a PDF into per-page files for review, annotation, or distribution.</li><li>You need to extract a specific page range (e.g., `1-3,5`) into a new PDF.</li><li>You need to extract selectable text from a PDF into a `.txt` file without using any cloud API.</li><li>You need to extract tables from PDFs into CSV files locally.</li></ul><h2>When not to use</h2><ul><li>Do not use this skill when the required source data, identifiers, files, or credentials are missing.</li><li>Do not use this skill when the user asks for fabricated results, unsupported claims, or out-of-scope conclusions.</li><li>Do not use this skill when a simpler direct answer is more appropriate than the documented workflow.</li></ul><p><a href="../documents/pdf-extract-and-manipulate/pdf-processor.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe different procedures for the same skill name. The gooseworks copy is a cloud-based workflow that fetches PDFs via URLs and uses external APIs (Linkup, ScrapeGraph, Riveter) to extract text, tables, and markdown. The aipoch copy is a local-only CLI workflow that merges, splits, extracts pages, extracts text, extracts tables, and creates PDFs without network access. They overlap on extracting text and tables, but each has material steps and constraints the other lacks (cloud API calls vs local CLI operations, merge/split/create vs markdown conversion). Crowning one would hide a real alternative.</pre>
+</body>
+</html>

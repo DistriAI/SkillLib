@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hisat2-alignment</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / hisat2-alignment</p><h1>hisat2-alignment</h1><p class="meta">separate</p><p>Aligns RNA-seq reads to a genome with HISAT2, the splice-aware aligner whose hierarchical graph FM-index runs at roughly a quarter of STAR&#x27;s memory (~7 GB for human), whose SNP/haplotype graph index reduces reference bias in the index itself, and whose MAPQ is GATK-friendly (60 for unique, no 255 problem). Use when RNA alignment must fit a memory-constrained machine, when feeding StringTie/Cufflinks transcript assembly via --dta, or when a SNP-aware graph index is wanted for allele-robust mapping. Feature-rich/high-RAM RNA alignment and fusion detection are star-alignment; DE on known transcripts only should skip alignment for rna-quantification/alignment-free-quant; the QC gate and contig-naming reconciliation are alignment-files; counting is rna-quantification.</p><h2>When to use</h2><ul><li>low-memory RNA splice-aware mapping</li><li>index building (plain / annotation-aware / SNP-graph)</li><li>strandedness configuration</li><li>--dta transcript-assembly mode</li><li>manual two-pass alignment</li><li>allele-robust mapping with SNP-aware graph index</li></ul><h2>When not to use</h2><ul><li>feature-rich/high-RAM RNA alignment</li><li>fusion detection</li><li>native gene counts</li><li>DE on known transcripts only</li><li>QC gate and contig-naming reconciliation</li><li>counting reads over genes</li><li>DNA alignment</li><li>long read alignment</li></ul><p><a href="../science/transcriptome-alignment/hisat2-alignment.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>read-alignment/hisat2-alignment/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

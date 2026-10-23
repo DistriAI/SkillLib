@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>image-ocr</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/documents.html">documents</a> / image-ocr</p><h1>image-ocr</h1><p class="meta">combined</p><p>Extract text from images with Tesseract OCR; use it when you need to recognize text from PNG/JPEG/TIFF/BMP images, select a language model, or run OCR via natural-language requests (e.g., &quot;Interpret the image at C:\path\image.png&quot;).
+
+Extract text content from images using Tesseract OCR via Python</p><h2>When to use</h2><ul><li>You need to extract text from an image file (PNG/JPEG/TIFF/BMP) for downstream processing or review.</li><li>You want to run OCR with a specific Tesseract language model (e.g., `eng`, `chi_sim`).</li><li>You prefer providing a natural-language request that contains an image path (e.g., &quot;Interpret the image at ...&quot;) instead of manually setting `image_path`.</li><li>You need a quick local OCR verification workflow from the command line.</li><li>You want a simple JSON-configured OCR runner that can be integrated into scripts or automation.</li><li>This skill enables accurate text extraction from image files (JPG, PNG, etc.) using Tesseract OCR via the `pytesseract` Python library. It is suitable for scanned documents, screenshots, photos of text, receipts, forms, and other visual co…</li><li>Extracting text from scanned documents or photos</li><li>Reading text from screenshots or image captures</li></ul><h2>When not to use</h2><ul><li>Do not use this skill when the required source data, identifiers, files, or credentials are missing.</li><li>Do not use this skill when the user asks for fabricated results, unsupported claims, or out-of-scope conclusions.</li><li>Do not use this skill when a simpler direct answer is more appropriate than the documented workflow.</li><li>Tesseract works best with printed text; handwriting recognition is limited</li><li>Accuracy decreases with decorative fonts, artistic text, or extreme stylization</li><li>Mathematical equations and special notation may not extract accurately</li><li>Redacted or watermarked text cannot be recovered</li><li>Severe image degradation (blur, noise, low resolution) reduces accuracy</li></ul><p><a href="../documents/image-ocr/image-ocr.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies describe Tesseract OCR via pytesseract, but they are materially different procedures. The benchflow copy is a Python-centric skill that defines a strict JSON output schema, confidence thresholds, and batch-processing code. The aipoch copy is a config-driven runner that uses a JSON config file, supports natural-language path extraction, and emphasizes system-level Tesseract installation and language model selection. Neither is a reproduction of the other; crowning one would hide the config-driven workflow and the strict JSON schema respectively.</pre>
+</body>
+</html>

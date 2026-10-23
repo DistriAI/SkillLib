@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>mock-hunter</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / mock-hunter</p><h1>mock-hunter</h1><p class="meta">separate</p><p>Audit a live web page in five phases (catalog, click, trace, classify, report) to identify mock data, hardcoded values, LLM-generated metrics, and broken endpoints. Outputs a markdown report with REAL/MOCK/LLM/HARDCODED/BROKEN/UNKNOWN verdicts per visible value.</p><h2>When to use</h2><ul><li>Use when auditing an AI-generated UI to find out which values are actually wired up</li><li>Use when reviewing a contractor or teammate&#x27;s deliverable before sign-off</li><li>Use before showing a vibe-coded MVP to a customer or investor</li><li>Use when a dashboard &quot;looks too clean&quot; — every metric uniformly round, all timestamps clustered, no variance — and you suspect seeded data</li></ul><h2>When not to use</h2><ul><li>Single-page audit per run — no multi-page crawl in v0.1.0</li><li>Form-login only for auth — no OAuth, magic-link, or 2FA in v0.1.0</li><li>Caps at ~30 most-prominent buttons per page</li><li>Markdown report only — no JSON output yet</li><li>DB verification supports any DB reachable via shell command (psql, mysql, mongosh, wrangler, supabase REST), but not Firestore directly</li></ul><p><a href="../agent-tooling/agent-catalog-management/mock-hunter.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/mock-hunter/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

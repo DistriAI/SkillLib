@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>periodicity-detection</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / periodicity-detection</p><h1>periodicity-detection</h1><p class="meta">separate</p><p>Discovers a periodic signal of UNKNOWN period in time-series omics data and puts a defensible significance on it, especially when sampling is IRREGULAR (dropped timepoints, pooled harvests) so FFT/Welch/JTK are invalid. Estimates the dominant period with Lomb-Scargle / generalized Lomb-Scargle (scipy, astropy), corroborates with autocorrelation, resolves transient/time-varying periodicity with the wavelet CWT (pywt), and screens genome-wide with false-alarm probabilities under BH FDR. Use when finding an oscillation whose period is not known a priori, analyzing cell-cycle or ultradian rhythms, or handling unevenly sampled time courses. Not for testing a KNOWN 24-hour rhythm (see temporal-genomics/circadian-rhythms).</p><h2>When to use</h2><ul><li>finding an oscillation whose period is not known a priori</li><li>analyzing cell-cycle or ultradian rhythms</li><li>handling unevenly sampled time courses</li><li>estimating dominant period with Lomb-Scargle</li><li>resolving transient or time-varying periodicity</li><li>screening genome-wide with false-alarm probabilities</li></ul><h2>When not to use</h2><ul><li>testing a known 24-hour rhythm</li></ul><p><a href="../science/temporal-genomics/periodicity-detection.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>temporal-genomics/periodicity-detection/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

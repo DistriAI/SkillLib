@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-omni-base-settings-configure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / service-omni-base-settings-configure</p><h1>service-omni-base-settings-configure</h1><p class="meta">authentic</p><p>Use to enable the five Omni-Channel base settings on a Salesforce org via the Metadata API. The canonical writer scripts/configure-and-report.sh detects, deploys, and re-verifies in one call (run mode) or detects only (plan mode); it is idempotent (deploys only when a toggle is false or missing) and guards writes with a sandbox/CDO/trial/DE safe_to_write check. It always surfaces the UI-only login-behavior gap in its report. Triggers: enable Omni-Channel, turn on Omni base settings, configure OmniChannelSettings, deploy Settings:OmniChannel. Do not use to configure downstream Omni entities (queues, presence, permissions — use the entity-specific skill) or to deploy other Settings types (use platform-metadata-deploy).</p><h2>When not to use</h2><ul><li>Configures only `OmniChannelSettings`, always with all five toggles true — other `Settings` types belong to `platform-metadata-deploy`.</li><li>Cannot turn the login-behavior radio (no public API on v66) — it only surfaces the click-path.</li></ul><p><a href="../software-engineering/configure-settings/service-omni-base-settings-configure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/service-omni/skills/service-omni-base-settings-configure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

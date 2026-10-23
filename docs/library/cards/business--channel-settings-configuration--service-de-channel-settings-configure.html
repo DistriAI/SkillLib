@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-de-channel-settings-configure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / service-de-channel-settings-configure</p><h1>service-de-channel-settings-configure</h1><p class="meta">separate</p><p>Configure settings on an already-existing Enhanced `MessagingChannel` (any type — WhatsApp, Text/SMS, LINE, Apple, Facebook, EmbeddedMessaging), given its `{CHANNEL_ID}`. Covers five facets: consent (ConsentType + per-language keyword records), automated responses, messaging keywords, session-inactivity timeouts, and pre-chat parameters. Consent + a matching language-keyword record are required for activation&#x27;s readiness check. TRIGGER when setting or changing settings on a channel that already exists (opt-out keyword, consent type, double opt-in confirmation, initial/help auto-responses, OptIn/OptOut keywords, session-inactivity timeout) — typically between insertion/routing and activation, or on a live channel. DO NOT TRIGGER for creating a new channel (`service-de-channel-create`), deploying a MIAW/EmbeddedMessaging channel from metadata XML (`service-digital-engagement-channel-configure`), setting routing (`service-de-channel-routing-configure`), or activating a channel (`service-…</p><h2>When to use</h2><ul><li>&quot;set the opt-out keyword / consent type on my WhatsApp channel&quot;</li><li>&quot;add a double opt-in confirmation to this messaging channel&quot;</li><li>&quot;configure the initial / agent-engaged / help auto-response on my Apple channel&quot;</li><li>&quot;add OptIn/OptOut/Help keywords to my Text channel&quot;</li><li>&quot;set the session inactivity timeout / idle action on my MIAW channel&quot;</li><li>&quot;change the auto-responses on channel 0MjXXXXXXXXXXXX&quot;</li><li>**Creating or deploying a new channel from a metadata XML file (MIAW / EmbeddedMessaging)** → `service-digital-engagement-channel-configure`. That skill *creates* an Embedded Messaging channel from XML; **this** skill only configures a cha…</li><li>**Inserting a brand-new channel of any type** → `service-de-channel-create`.</li></ul><h2>When not to use</h2><ul><li>**The channel isn&#x27;t Enhanced.** These settings apply to `PlatformType=Enhanced` channels only. Stage 1 confirms this and stops otherwise.</li><li>**The channel doesn&#x27;t exist yet.** Run `service-de-channel-create` first; this skill expects a real `MessagingChannel.Id` (prefix `0Mj`).</li><li>**You&#x27;re configuring consent on an outbound-only channel.** Outbound-only channels pass the consent-readiness check automatically — nothing to configure for facet 1.</li></ul><p><a href="../business/channel-settings-configuration/service-de-channel-settings-configure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>skills/service-de-channel-settings-configure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

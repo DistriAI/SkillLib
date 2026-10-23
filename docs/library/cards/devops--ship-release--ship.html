@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ship</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / ship</p><h1>ship</h1><p class="meta">combined</p><p>Ship workflow: detect + merge base branch, run tests, review diff, bump VERSION, update CHANGELOG, commit, push, create PR.
+
+Create PR, run review, and prepare for merge after verification passes</p><h2>When to use</h2><ul><li>detect base branch</li><li>run tests</li><li>review diff</li><li>bump VERSION</li><li>update CHANGELOG</li><li>commit changes</li><li>push to remote</li><li>create PR</li></ul><h2>When not to use</h2><ul><li>interactive confirmation steps</li><li>resolving unresolvable merge conflicts</li><li>fixing test failures</li><li>fixing critical review issues</li></ul><p><a href="../devops/ship-release/ship.html">Skill page</a></p><h2>Conflict</h2><pre>All three skills are named &#x27;ship&#x27; and share the high-level goal of preparing work for release, but they define materially different procedures. davepoon/buildwithclaude delegates to an external workflow file and focuses on PR creation and a continuation prompt. plugin87/ux-ui-agent-skills is a pre-release gate for a UI kit that runs specific accuracy/responsive/emoji scripts and drafts a README/changelog without tagging. LeoYeAI/openclaw-master-skills is a fully automated, non-interactive pipeline that detects the base branch, runs tests, reviews the diff, bumps VERSION, updates CHANGELOG, commits, pushes, and creates a PR, with extensive preamble and contributor-mode logic. No single copy is the procedure the others reproduce; each contains steps and constraints the others lack, so crowning one would hide real alternatives.</pre>
+</body>
+</html>

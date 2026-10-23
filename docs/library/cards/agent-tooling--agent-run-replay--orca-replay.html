@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>orca-replay</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / orca-replay</p><h1>orca-replay</h1><p class="meta">combined</p><p>Answers questions about a past agent run from its recording rather than from memory, and replays or forks that run. Use when asked why an earlier run did something, or to reproduce a failure.</p><h2>When to use</h2><ul><li>&quot;Why did you delete / overwrite / move X?&quot;</li><li>&quot;What changed this file?&quot; or &quot;Which step broke the build?&quot;</li><li>&quot;Can you reproduce yesterday&#x27;s failure?&quot;</li><li>&quot;Would a different model have got this right?&quot;</li><li>&quot;Why did you delete/overwrite/move X?&quot;</li><li>&quot;What changed this file?&quot; / &quot;Which step broke the build?&quot;</li><li>&quot;Does this still reproduce?&quot; (see the limit on that in step 4 — replay cannot tell you</li></ul><h2>When not to use</h2><ul><li>**It only sees what was recorded.** Runs started without `orca record` leave no trace, and</li><li>**A typed session replays approximately, not exactly.** Prompts entered at a terminal were never</li><li>**Some turns are not repeated.** A harness makes calls for itself — a quota probe, a</li><li>**`inferred` edges are not evidence.** They are derived from a named rule at query time. Treat</li><li>**Not every harness is recordable.** Agents that read no base-URL variable and pin their own</li><li>**Replay is not a time machine, and not a sandbox.** It reproduces the agent&#x27;s side of the run</li><li>**A matching replay is not a determinism result.** The model is not re-asked; its recorded</li></ul><p><a href="../agent-tooling/agent-run-replay/orca-replay.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe the same OrcaReplay workflow (list runs, graph/show, recorded vs inferred, replay, compare), but the second copy adds material constraints and safety steps the first lacks: a prompt-injection rule for trace contents, a risk note requiring approval before replay/compare, and a more detailed explanation of what replay re-executes and what &#x27;offline&#x27; covers. The first copy has a cleaner, shorter procedure and a specific example, but it omits the safety and trust boundaries that the second copy treats as core. Crowning one would hide a real alternative: a minimal procedure versus a safety-hardened procedure.</pre>
+</body>
+</html>

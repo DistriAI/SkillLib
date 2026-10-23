@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>bowtie2-alignment</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / bowtie2-alignment</p><h1>bowtie2-alignment</h1><p class="meta">separate</p><p>Aligns DNA short reads to a reference with Bowtie2, choosing end-to-end (whole read must align) vs local (soft-clip read ends) mode and a sensitivity preset; the de-facto aligner for ChIP-seq, ATAC-seq, and CUT&amp;RUN, where fragment-geometry flags (--no-mixed, --no-discordant, --dovetail, -X) and a tool-appropriate MAPQ filter feed the peak caller. Use when aligning ChIP/ATAC/CUT&amp;RUN reads, when read ends are adapter-contaminated and need soft-clipping, or when a tunable sensitivity/speed preset is wanted. DNA variant calling prefers bwa-alignment; RNA spliced alignment is star-alignment/hisat2-alignment; the QC gate and cross-tool MAPQ scale are alignment-files; peak calling is chip-seq/atac-seq; bisulfite uses methylation-analysis/bismark-alignment.</p><h2>When to use</h2><ul><li>Aligning ChIP-seq reads</li><li>Aligning ATAC-seq reads</li><li>Aligning CUT&amp;RUN reads</li><li>Soft-clipping adapter-contaminated read ends</li><li>Setting fragment-geometry flags for peak callers</li><li>Choosing Bowtie2 sensitivity presets</li></ul><h2>When not to use</h2><ul><li>DNA variant calling</li><li>RNA spliced alignment</li><li>Bisulfite sequencing alignment</li><li>BAM sorting and deduplication</li><li>Read trimming</li><li>Peak calling</li></ul><p><a href="../science/short-read-alignment/bowtie2-alignment.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>read-alignment/bowtie2-alignment/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

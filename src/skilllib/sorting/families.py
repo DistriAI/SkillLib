@@ -20,7 +20,7 @@ from skilllib.sorting.llm import LLMError, parse_json_object
 
 PROMPT_VERSION = "1"
 FAMILIES_PATH = Path("catalog") / "task_families.json"
-FAMILY_HTML = Path("html") / "families"
+FAMILY_HTML = Path("docs") / "library" / "families"
 CACHE_DIR = Path(".cache") / "judge" / "families"
 _EXACT_SUFFIX = re.compile(r"^(?P<product>.+)-(?:automation|integration|openapi)$")
 _SLUG = re.compile(r"[^a-z0-9]+")
@@ -210,9 +210,10 @@ def write_task_families(document: dict, root: Path) -> Path:
     return path
 
 
-def write_family_pages(document: dict, root: Path) -> Path:
+def write_family_pages(document: dict, root: Path, links: dict[str, str] | None = None) -> Path:
     """Write a domain list and one page per domain of families."""
 
+    links = links or {}
     destination = root / FAMILY_HTML
     destination.mkdir(parents=True, exist_ok=True)
     rows = []
@@ -226,7 +227,7 @@ def write_family_pages(document: dict, root: Path) -> Path:
     _page(
         destination / "index.html",
         "Task families",
-        "<p class=\"crumbs\">families</p><h1>Task families</h1>"
+        '<p class="crumbs"><a href="../index.html">domains</a> / families</p><h1>Task families</h1>'
         f"<p class=\"meta\">{exact} product channels are looked up by name and are not listed here.</p>"
         "<table><thead><tr><th>Domain</th><th>Families</th><th>Skills</th></tr></thead>"
         f"<tbody>{''.join(rows)}</tbody></table>",
@@ -236,15 +237,16 @@ def write_family_pages(document: dict, root: Path) -> Path:
         body.append(f"<h1>{html.escape(domain['name'])}</h1>")
         for family in domain.get("families") or []:
             tasks = "".join(f"<li>{html.escape(task)}</li>" for task in family.get("exemplar_tasks") or [])
-            names = ", ".join(html.escape(skill_id.split("::")[-1]) for skill_id in (family.get("skill_ids") or [])[:12])
-            extra = len(family.get("skill_ids") or []) - 12
-            if extra > 0:
-                names += f", and {extra} more"
+            items = []
+            for skill_id in family.get("skill_ids") or []:
+                label = html.escape(skill_id.split("::")[-1])
+                href = links.get(skill_id) or ""
+                items.append(f'<li><a href="{html.escape(href)}">{label}</a></li>' if href else f"<li>{label}</li>")
             body.append(
                 f"<h2>{html.escape(family['name'])}</h2>"
                 f"<p>{html.escape(family.get('definition') or '')}</p>"
                 f"<p class=\"meta\">{html.escape(family.get('discriminator') or '')}</p>"
-                f"<ul>{tasks}</ul><p>{names}</p>"
+                f"<ul>{tasks}</ul><ul>{''.join(items)}</ul>"
             )
         _page(destination / f"{domain['name']}.html", domain["name"], "".join(body))
     return destination / "index.html"

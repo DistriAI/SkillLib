@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gatk-variant-calling</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / gatk-variant-calling</p><h1>gatk-variant-calling</h1><p class="meta">combined</p><p>Call germline SNPs and indels with GATK HaplotypeCaller and the GVCF joint-genotyping workflow. Covers the local-reassembly + PairHMM mechanism (why HC beats pileup callers on indels), the -ERC GVCF reference-confidence model and &lt;NON_REF&gt; allele, BQSR-vs-DRAGSTR and --dragen-mode error modeling, allele-specific (AS_) annotations, and edge cases (ploidy, Mutect2 mitochondria mode, sex chromosomes/PAR, contamination gating). Use when deciding whether to use HaplotypeCaller vs a pileup or DRAGEN caller, whether BQSR still earns its place, whether to call per-sample GVCFs for a cohort, or how to handle non-diploid, mitochondrial, sex-chromosome, or contaminated samples. Not for post-calling filtering depth (see variant-calling/filtering-best-practices) or cohort joint-genotyping scaling (see variant-calling/joint-calling).</p><h2>When to use</h2><ul><li>germline SNP/indel calling</li><li>GVCF workflow for cohorts</li><li>joint genotyping</li><li>variant quality score recalibration (VQSR)</li><li>calling variants with GATK HaplotypeCaller</li><li>single-sample calling</li><li>target intervals (Exome/Panel)</li><li>hard filtering</li></ul><p><a href="../science/gatk-variant-calling/gatk-variant-calling.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same core GATK HaplotypeCaller workflow but diverge significantly in scope and depth. The first copy (FreedomIntelligence) is a procedural &#x27;how-to&#x27; guide that includes specific commands for VQSR and Hard Filtering, which are often considered part of the &#x27;calling&#x27; pipeline in older best practices. The second copy (GPTomics) is a conceptual and decision-oriented guide that explains the *mechanism* of HaplotypeCaller (local reassembly, PairHMM), provides a decision tree for choosing between tools (HC vs Mutect2 vs DRAGEN), and explicitly excludes filtering depth, pointing to other skills. The first copy lacks the mechanistic explanation and the decision tree for edge cases (ploidy, somatic), while the second copy lacks the specific VQSR/Hard Filter command examples that the first provides. Combining them yields a complete skill that covers both the &#x27;why/when&#x27; (decision tree, mechanism) and the &#x27;how&#x27; (commands for calling and filtering).</pre>
+</body>
+</html>

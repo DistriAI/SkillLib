@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-statistics</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / spatial-statistics</p><h1>spatial-statistics</h1><p class="meta">combined</p><p>Detects spatially variable genes, spatial autocorrelation, and cell-type colocalization for spatial transcriptomics using Squidpy with PySAL/esda for local statistics. Use when choosing an SVG method by its null and scaling (SpatialDE/SPARK GP variance-component vs SPARK-X/nnSVG linear vs Moran/Geary graph autocorrelation); separating genes that are spatially variable because of cell-type composition from genes regulated within a cell type; choosing the right autocorrelation statistic (global Moran/Geary vs Getis-Ord hot/cold spots vs local LISA and its FDR trap); and choosing a colocalization null strong enough to defeat the abundance/compartment confound (conditional or toroidal vs the weak Squidpy default permutation).</p><h2>When to use</h2><ul><li>computing spatial autocorrelation</li><li>computing co-occurrence statistics</li><li>calculating Moran&#x27;s I</li><li>calculating Geary&#x27;s C</li><li>neighborhood enrichment</li><li>Ripley&#x27;s statistics</li><li>centrality scores</li><li>interaction matrix</li></ul><p><a href="../science/spatial-transcriptomics-statistics/spatial-statistics.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same domain but with different depth and scope. The first copy (OpenClaw) is a practical, code-heavy recipe for running specific Squidpy functions (Moran&#x27;s I, Geary&#x27;s C, co-occurrence, etc.) and interpreting basic outputs. The second copy (GPTomics) is a methodological guide that emphasizes the statistical pitfalls (cell-type confounding, null model choice, graph sensitivity) and provides a decision framework for choosing between different SVG methods (SpatialDE, SPARK, SPARK-X, nnSVG, Moran&#x27;s I). The first copy lacks the critical methodological warnings and the broader method selection logic, while the second copy is truncated and lacks the specific code implementation details for the basic Squidpy workflows. Combining them provides both the &#x27;how-to&#x27; code and the &#x27;why/when&#x27; statistical reasoning.</pre>
+</body>
+</html>

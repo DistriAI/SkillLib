@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>depmap</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / depmap</p><h1>depmap</h1><p class="meta">combined</p><p>Query the Cancer Dependency Map (DepMap) for cancer cell line gene dependency scores (CRISPR Chronos), drug sensitivity data, and gene effect profiles. Use for identifying cancer-specific vulnerabilities, synthetic lethal interactions, and validating oncology drug targets.
+
+Retrieves and analyzes Cancer Dependency Map (DepMap) release data, including CRISPR Chronos gene effects, cancer model annotations, omics biomarkers, and PRISM drug sensitivity. Supports cancer-selective dependency, co-essentiality, and candidate synthetic-lethality analyses with release-aware identifiers and statistical checks.</p><h2>When to use</h2><ul><li>**Target validation**: Is a gene essential for survival in cancer cell lines with a specific mutation (e.g., KRAS-mutant)?</li><li>**Biomarker discovery**: What genomic features predict sensitivity to knockout of a gene?</li><li>**Synthetic lethality**: Find genes that are selectively essential when another gene is mutated/deleted</li><li>**Drug sensitivity**: What cell line features predict response to a compound?</li><li>**Pan-cancer essentiality**: Is a gene broadly essential across all cancer types (bad target) or selectively essential?</li><li>**Correlation analysis**: Which pairs of genes have correlated dependency profiles (co-essentiality)?</li><li>Use this skill to rank dependencies in cancer models, compare prespecified biomarker cohorts, inspect co-essentiality, or relate genetic dependencies to PRISM compound response. These analyses generate target and synthetic-lethality hypoth…</li></ul><p><a href="../science/depmap-data-analysis/depmap.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same domain (DepMap cancer dependency data) but diverge significantly on methodology and data access. The K-Dense-AI skill is a rigorous, release-aware procedure that explicitly warns against using the API endpoints suggested by the FreedomIntelligence skill, mandates checksum verification, and provides a detailed file contract table. The FreedomIntelligence skill provides a simpler, API-first approach with specific Python helper functions for selective dependency analysis and defines specific score thresholds (e.g., Chronos &lt;= -0.5) that are absent in the K-Dense-AI skill. Because the K-Dense-AI skill explicitly states that the API endpoints used by the FreedomIntelligence skill are not verified or supported, and the FreedomIntelligence skill lacks the critical data integrity checks (MD5, release pinning) found in the K-Dense-AI skill, neither is a complete reproduction of the other. A combined skill is needed to provide the robust data acquisition and integrity checks from K-Dense-AI with the specific analytical workflows and thresholds from FreedomIntelligence.</pre>
+</body>
+</html>

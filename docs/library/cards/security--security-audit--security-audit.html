@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>security-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / security-audit</p><h1>security-audit</h1><p class="meta">combined</p><p>Deep security audit covering OWASP Top 10, authentication, authorization, data protection, dependency vulnerabilities, and secrets scanning. Delegates to the Centinela (QA) agent.
+
+Comprehensive security auditing workflow covering web application testing, API security, penetration testing, vulnerability scanning, and security hardening.</p><h2>When to use</h2><ul><li>Before a release to verify security posture</li><li>After significant code changes that touch authentication, authorization, or data handling</li><li>Periodic security review of the codebase</li><li>When adding new dependencies or external integrations</li><li>Performing security audits on web applications</li><li>Testing API security</li><li>Conducting penetration tests</li><li>Scanning for vulnerabilities</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../security/security-audit/security-audit.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe different procedures. The davepoon copy is a single-agent audit that delegates to a Centinela QA agent, runs a SIGN IN checklist, checks OWASP A01-A10, scans for secrets and CVEs, optionally checks Solidity contracts, and writes a report to docs/reviews/security-audit-{date}.md. The sickn33 copy is a multi-phase workflow bundle that orchestrates many separate skills (scanning-tools, shodan-reconnaissance, vulnerability-scanner, sql-injection-testing, xss-html-injection, burp-suite-testing, api-fuzzing-bug-bounty, pentest-commands, metasploit-framework, etc.) across reconnaissance, scanning, web app testing, API testing, penetration testing, hardening, and reporting. Neither copy is a shortened or wrapped version of the other; each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</pre>
+</body>
+</html>

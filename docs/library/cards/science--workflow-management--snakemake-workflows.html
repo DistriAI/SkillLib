@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>snakemake-workflows</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / snakemake-workflows</p><h1>snakemake-workflows</h1><p class="meta">separate</p><p>Authors reproducible bioinformatics pipelines with Snakemake - rules wired by output-file pattern, wildcards and expand() for sample fan-out, checkpoints for runtime-unknown outputs, resource/retry escalation, and conda/container software deployment on HPC and cloud. Use when deciding rule-based (Snakemake) vs channel/dataflow (Nextflow) authoring; wiring rules by OUTPUT-file pattern rather than imperative order; using wildcards + expand() for sample fan-out and constraining them to stop silent mis-routing; adding checkpoints when the set of outputs is unknown until a step runs (dynamic DAG); diagnosing why a job reran (or did not) under the mtime-plus-provenance trigger set; escalating memory on retry for OOM-killed jobs; and porting a Snakemake 7 `--cluster`/remote-provider command to the Snakemake 8+ executor-plugin and storage-plugin model (snakemake-executor-plugin-slurm) with `--software-deployment-method`.</p><h2>When to use</h2><ul><li>Authoring reproducible bioinformatics pipelines</li><li>Wiring rules by output-file pattern</li><li>Using wildcards and expand() for sample fan-out</li><li>Adding checkpoints for runtime-unknown outputs</li><li>Escalating memory on retry for OOM-killed jobs</li><li>Porting Snakemake 7 commands to Snakemake 8+ executor plugins</li><li>Deciding between Snakemake and Nextflow</li><li>Diagnosing job reruns under mtime-plus-provenance triggers</li></ul><h2>When not to use</h2><ul><li>Nextflow channel/dataflow authoring</li><li>Imperative order rule wiring</li></ul><p><a href="../science/workflow-management/snakemake-workflows.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflow-management/snakemake-workflows/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

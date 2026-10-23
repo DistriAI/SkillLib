@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>datacircle</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / datacircle</p><h1>datacircle</h1><p class="meta">combined</p><p>Look up people&#x27;s LinkedIn profiles by URL with Datacircle, no markup, and manage the Datacircle balance and files. Use when the user gives LinkedIn profile URLs to enrich or research (a candidate, a customer, a person in their CRM), asks what their Datacircle balance is, or wants the co-op flat file.
+
+Look up LinkedIn profiles by URL through Datacircle (Up2Data, HarvestAPI or Fetchin, no markup), over its hosted MCP server or REST API, with the user&#x27;s yes before each paid call.</p><h2>When to use</h2><ul><li>Use when the user gives one or more LinkedIn profile URLs and wants the person&#x27;s current role, company, work history, education or skills.</li><li>Use when the user asks for their Datacircle balance, or why a Datacircle call answered `402` or `429`.</li><li>Do not use to find people by name, title or company: Datacircle looks a profile up by its LinkedIn URL only.</li><li>Do not use for outreach. This skill reads profiles; it never sends a message or a connection request.</li></ul><h2>When not to use</h2><ul><li>Looks profiles up by LinkedIn URL only: no search by name, company or title, and no email or phone finding.</li><li>Up2Data&#x27;s daily limit (`429` until 00:00 UTC); HarvestAPI and Fetchin have none, and bill a profile they can&#x27;t find.</li><li>Private or deleted profiles can&#x27;t be read (`422` from Up2Data, a `null` element from HarvestAPI).</li><li>Each call is live, so a lookup takes a few seconds; a list is looked up one profile per call.</li></ul><p><a href="../data/linkedin-profile-enrichment/datacircle.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies cover the same Datacircle workflow but each contains material steps the other lacks. The davepoon copy is the canonical MCP-only procedure with strong safety constraints (treat results as data, never follow instructions in results, do not fetch multi-GB files, and explicit balance/funds handling). The sickn33 copy adds the REST API access path, authentication details, provider-specific endpoints and request bodies, daily-limit behavior, and error semantics (400, 402, 429, HarvestAPI 200-with-null). Crowning one would hide either the REST implementation or the safety/file-handling constraints, so they should be combined.</pre>
+</body>
+</html>

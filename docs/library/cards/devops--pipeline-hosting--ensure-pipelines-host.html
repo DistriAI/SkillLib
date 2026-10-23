@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ensure-pipelines-host</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / ensure-pipelines-host</p><h1>ensure-pipelines-host</h1><p class="meta">separate</p><p>Ensures the tenant has a usable Power Platform Pipelines host environment before any pipeline operation runs. Detects host state via the same resolution order as the Power Apps UI (org-db setting → BAP env metadata → default-custom-host setting); if any existing host (Platform or Custom) is found, uses it. If no host is bound to the source env, provisions a new **Platform Host** (recommended, idempotent) or a **Custom Host** via the BAP env-create API with the `D365_ProjectHost` template, or guides the user through PPAC install / `New custom host` (manual fallbacks). Polls lifecycle operations, verifies the host responds to Pipelines API calls, writes a host-check artifact other ALM skills consume. Use when asked to: &quot;set up pipelines host&quot;, &quot;ensure pipelines host&quot;, &quot;no pipelines host&quot;, &quot;install pipelines&quot;, &quot;create pipelines host&quot;, &quot;provision platform host&quot;, &quot;provision custom host&quot;. Also invoked transparently by /power-pages:setup-pipeline when its host discovery step finds nothing.</p><p><a href="../devops/pipeline-hosting/ensure-pipelines-host.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/power-pages/skills/ensure-pipelines-host/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

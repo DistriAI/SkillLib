@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>kegg-pathways</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / kegg-pathways</p><h1>kegg-pathways</h1><p class="meta">separate</p><p>Tests gene lists, ranked vectors, and fold-change vectors against KEGG pathways and modules with clusterProfiler enrichKEGG/enrichMKEGG (ORA), gseKEGG (GSEA), and SPIA/graphite (signed-topology perturbation) in R. Owns the third pathway-analysis generation because KEGG ships signed directed signaling topology (KGML). Covers why a KEGG result is a timestamped join against a live REST API (irreproducible unless pinned with a gson snapshot, not the stale 2012 KEGG.db), why enrichKEGG keyType is kegg/ncbi-geneid not OrgDb ENSEMBL/SYMBOL (zero hits), why organism is a KEGG code (hsa, pae) with prokaryotic locus tags, and why SPIA works only on signaling maps. Use when finding enriched KEGG pathways or modules, scoring signed pathway perturbation, analyzing prokaryotes or non-model organisms via locus tags or KO, comparing conditions with compareCluster, or overlaying data with pathview. The hypergeometric universe lives in go-enrichment; the GSEA engine in gsea.</p><h2>When to use</h2><ul><li>finding enriched KEGG pathways or modules</li><li>scoring signed pathway perturbation</li><li>analyzing prokaryotes or non-model organisms via locus tags or KO</li><li>comparing conditions with compareCluster</li><li>overlaying data with pathview</li><li>KEGG ID mapping and organism code selection</li><li>pinning KEGG releases with gson snapshots</li></ul><h2>When not to use</h2><ul><li>hypergeometric universe definition</li><li>GSEA running-sum engine implementation</li><li>Reactome or WikiPathways gene sets</li><li>generic dot, cnet, or emap plots</li><li>differential expression list generation</li></ul><p><a href="../science/kegg-pathway-analysis/kegg-pathways.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>pathway-analysis/kegg-pathways/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

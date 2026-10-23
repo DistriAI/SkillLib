@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>nv-segment-ct-finetune</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / nv-segment-ct-finetune</p><h1>nv-segment-ct-finetune</h1><p class="meta">separate</p><p>Runs standard or fixed-channel softmax finetuning of NV-Segment-CT VISTA3D on CT NIfTI image/label datasets, with optional MONAI-native MLflow tracking and checkpoint evidence. Uses softmax for predefined, mutually exclusive classes; keeps the standard workflow when point prompts or runtime-variable classes are needed. Not for clinical validation.</p><h2>When to use</h2><ul><li>Used for smoke or dataset finetuning of NV-Segment-CT VISTA3D on CT NIfTI labels, including the upstream fixed-channel softmax workflow and optional MLflow tracking. Not for clinical validation.</li><li>Wraps the upstream MONAI bundle entrypoint; do not replace it with handwritten training or inference code.</li><li>Manifest inputs are `dataset_dir`, `datalist`, `target_anatomy`, `label_mapping`, `smoke`, `sanity`, `auto_seg`, `softmax`, `skip_formal_eval`, `mlflow_tracking_uri`, `mlflow_experiment_name`, and `mlflow_run_name`.</li><li>Manifest outputs are `finetuned_ckpt` and schema-checked `result_json`.</li></ul><h2>When not to use</h2><ul><li>Thin wrapper. Training, validation, transforms, and checkpointing are delegated to the upstream bundle in `bundle/`.</li><li>Tensor comparison uses restricted `weights_only=True` checkpoint loading. Unsupported serialized objects produce a comparison error; they are not retried with unrestricted pickle loading. This comparison is not a security audit of the upst…</li><li>Reproduction record only: the successful five-epoch Task06 run used Python</li><li>The auto-derived plan is heuristic; caller-provided `--patch-size`, `--cache-rate`, `--epochs`, and `--learning-rate` win.</li><li>`--softmax` is not compatible with `--sanity`: the Task06 reference scores and original-spacing pre/post evaluation belong to the standard VISTA3D continual-learning workflow. Softmax runs record the training validation trajectory but need…</li><li>The Task06 sanity recipe intentionally forces single-GPU execution to match the DFW reference. Multi-GPU mode for other datasets requires host `torchrun` support.</li><li>The paired verifier is CPU-only and audits the evidence pack; it does not re-run GPU segmentation.</li><li>MLflow support is optional and uses MONAI&#x27;s built-in tracking handlers. Tracking errors are part of the upstream MONAI run and can therefore fail the finetune command.</li></ul><p><a href="../science/medical-imaging-finetuning/nv-segment-ct-finetune.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/nv-segment-ct-finetune/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

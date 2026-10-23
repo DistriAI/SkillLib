@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>array-qc-filtering</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / array-qc-filtering</p><h1>array-qc-filtering</h1><p class="meta">separate</p><p>Performs probe filtering and sample-level QC on Illumina Infinium methylation arrays (450K / EPIC / EPICv2) to decide which probes and samples to trust. Drops detection-p-failed and low-bead-count probes, removes cross-reactive/non-specific probes (Chen 2013 / Pidsley 2016 lists via maxprobes), excludes SNP-overlapping probes with dropLociWithSnps, and handles sex-chromosome probes. Collapses EPICv2 replicate probes with betasCollapseToPfx and harmonizes across array versions (EPICv2 hg38 vs 450K/EPIC hg19, intersect plus mLiftOver). Runs sample-identity QC: getSex sex prediction vs sample sheet for swap detection, rs-SNP fingerprint clustering for duplicates/swaps, and Sentrix chip/array-position batch diagnosis. Use when filtering methylation array probes, detecting sample swaps or mislabels, collapsing EPICv2 replicates, or merging 450K/EPIC/EPICv2 cohorts. For IDAT-to-corrected-beta normalization see array-preprocessing; for batch correction and study design see ewas-design.</p><h2>When to use</h2><ul><li>filtering methylation array probes</li><li>detecting sample swaps or mislabels</li><li>collapsing EPICv2 replicates</li><li>merging 450K/EPIC/EPICv2 cohorts</li><li>removing cross-reactive probes</li><li>excluding SNP-overlapping probes</li><li>sample-identity QC</li><li>cross-version harmonization</li></ul><h2>When not to use</h2><ul><li>IDAT-to-corrected-beta normalization</li><li>batch correction</li><li>study design</li><li>per-CpG testing</li><li>cohort cell-composition QC</li><li>short-read bisulfite sequencing</li><li>long-read MM/ML calling</li></ul><p><a href="../science/methylation-array-qc/array-qc-filtering.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>methylation-analysis/array-qc-filtering/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

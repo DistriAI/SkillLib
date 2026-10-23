@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>codex-review</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / codex-review</p><h1>codex-review</h1><p class="meta">combined</p><p>Run an independent code review using the OpenAI Codex CLI in headless mode. Gets a second opinion from a different model family (the current Codex models) on recent changes, a PR, a commit, or the whole app — covering bugs, regressions, security, data consistency, UX/state bugs, performance risks, and testing gaps. Saves a severity-prioritised report to .jez/reviews/. Triggers: &#x27;codex review&#x27;, &#x27;review with codex&#x27;, &#x27;independent code review&#x27;, &#x27;what does codex think&#x27;, &#x27;get codex to review&#x27;.
+
+Professional code review with auto CHANGELOG generation, integrated with Codex AI. Use when you want professional code review before commits, you need automatic CHANGELOG generation, or reviewing large-scale refactoring.</p><h2>When to use</h2><ul><li>After a meaningful change, before committing or shipping</li><li>Before opening a PR, to self-review with an independent reviewer</li><li>When something feels off but you can&#x27;t articulate what</li><li>Periodic whole-app reviews for projects in active development</li><li>When the user explicitly asks for an &quot;independent&quot; or &quot;second opinion&quot; review</li><li>Trivial changes (typos, one-line fixes)</li><li>Research questions or architecture discussions — use `brains-trust` instead</li><li>Auto-fixing issues — this is advisory only</li></ul><h2>When not to use</h2><ul><li>An automated reviewer is advisory, not merge approval. Confirm provider/data/cost scope before sending private source externally; no implicit commit, push or publication.</li><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../software-engineering/independent-code-review/codex-review.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe different procedures for the same skill name. The jezweb copy is a concrete, self-contained workflow that runs the Codex CLI in headless mode, selects a scope flag, pipes a bundled prompt, saves a timestamped report to .jez/reviews/, and summarizes findings. The sickn33 copy is a thin wrapper around an external BenedictKing/codex-review package, adds CHANGELOG generation, and includes installation and safety caveats. Neither copy is a reproduction of the other, and crowning one would hide a real alternative (local CLI review vs external package with CHANGELOG).</pre>
+</body>
+</html>

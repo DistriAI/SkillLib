@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>complexity-cuts</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / complexity-cuts</p><h1>complexity-cuts</h1><p class="meta">authentic</p><p>Lower Big-O on existing code via a one-transformation-at-a-time playbook with verify-revert-stop. For new code use lemmaly; for math-level wins escalate to mathguard.</p><h2>When to use</h2><ul><li>Nested loops, `O(n²)` or worse scans, repeated work, redundant allocations, blown memory.</li><li>Stated symptoms: &quot;this is slow on large inputs&quot;, &quot;times out&quot;, &quot;OOM&quot;, &quot;too much memory&quot;, &quot;reduce complexity&quot;, &quot;optimize this algorithm&quot;.</li><li>N+1 query patterns in ORMs (Prisma, Drizzle, SQLAlchemy, Django, ActiveRecord).</li><li>`await` inside `for` over independent items causing serial latency.</li></ul><h2>When not to use</h2><ul><li>**Requires existing tests or a written characterization test.** Without one, you cannot detect silent semantic regressions; the Iron Law refuses to skip this.</li><li>**Asymptotic wins only; constant-factor work is a separate mode** (clearly labeled). The playbook will not improve cache locality or SIMD utilization on its own.</li><li>**Single-process scope.** Distributed-system bottlenecks (consensus latency, replication lag, queue backpressure) are out of scope.</li><li>**3-revert rule is firm.** If three transformations failed, the skill explicitly forces escalation to `invariant-guard`; it does not let you try a fourth.</li><li>**Measurement is on the author.** complexity-cuts requires the ratio to be reported but does not run the benchmark for you — you must produce a representative input.</li><li>**Won&#x27;t help I/O-bound code.** If the dominant term is network latency or disk, the playbook will not move the needle — fix the I/O pattern instead.</li></ul><p><a href="../software-engineering/code-simplification/complexity-cuts.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/complexity-cuts/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

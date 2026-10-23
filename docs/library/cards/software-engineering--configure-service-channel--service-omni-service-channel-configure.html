@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-omni-service-channel-configure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / service-omni-service-channel-configure</p><h1>service-omni-service-channel-configure</h1><p class="meta">authentic</p><p>Use to ensure exactly one ServiceChannel exists on a Salesforce org for a routable sObject (Case | Incident | MessagingSession | VoiceCall), reusing any standard or custom channel already bound to that sObject and only deploying a canonical template when none exists. Salesforce enforces one ServiceChannel per RelatedEntity, so the skill detects via the Tooling API first. Standard channels ship for Case (Cases), MessagingSession (sfdc_livemessage), VoiceCall (sfdc_phone); Incident has none. Triggers: configure ServiceChannel for Case/Incident/Messaging/Voice routing, add Incident or Voice routing to Omni. Do not use to tune per-sObject capacity (use PresenceUserConfig.Capacity), to reset a mis-configured channel to canonical shape, or for sObjects outside Case/Incident/MessagingSession/VoiceCall.</p><h2>When not to use</h2><ul><li>One sObject per invocation.</li><li>Only `Case`, `Incident`, `MessagingSession`, `VoiceCall` are supported — extend by adding an `assets/force-app/main/default/serviceChannels/&lt;Name&gt;.serviceChannel-meta.xml` file and a dispatcher branch.</li><li>Always reuses an existing channel; it does not reset a mis-configured channel to canonical shape.</li></ul><p><a href="../software-engineering/configure-service-channel/service-omni-service-channel-configure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/service-omni/skills/service-omni-service-channel-configure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

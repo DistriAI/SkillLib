@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>enterprise-vpn-attack</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / enterprise-vpn-attack</p><h1>enterprise-vpn-attack</h1><p class="meta">authentic</p><p>External SSL VPN / remote-access appliance attack matrix — Cisco ASA/AnyConnect, Fortinet FortiGate/FortiOS, Citrix NetScaler/ADC, Palo Alto GlobalProtect, Pulse Secure / Ivanti Connect Secure, SonicWall, F5 Big-IP. Covers version fingerprinting, CVE matrix (2018-2026), AAA backend identification, default credentials, configuration-disclosure paths, pre-auth RCE/SSRF/path-traversal exploits where applicable. Built from authorized-engagement Cisco ASA testing plus 2024-2026 enterprise VPN CVE landscape. Use whenever the target&#x27;s perimeter exposes any SSL VPN appliance or remote-access gateway — these are the most common initial-access points in 2024-2026 actor TTPs.</p><h2>When to use</h2><ul><li>`*.&lt;client&gt;.example/+CSCOE+/logon.html` or similar `+CSCOE+` paths → Cisco ASA / AnyConnect</li><li>`intranet.*` / `vpn.*` / `connect.*` / `webvpn.*` / `wc.*` / `remote.*` subdomains</li><li>Port 443 returning login pages with `Server: Apache` or banner like &quot;AnyConnect&quot;, &quot;FortiGate&quot;, &quot;NetScaler&quot;, &quot;GlobalProtect&quot;, &quot;Pulse&quot;, &quot;Ivanti&quot;</li><li>TCP 8443 / 4443 / 10443 / 8888 (common VPN web-mgmt ports)</li><li>HTTP responses with `Set-Cookie: webvpn=` (Cisco) / `SVPNCOOKIE=` (Fortinet) / `NSC_AAA=` (Citrix) / `DSAuthSession=` (Pulse) / `BIGipServer*` (F5)</li><li>Internal lateral-movement post-foothold (out of scope per user&#x27;s boundary)</li><li>VPN client-side bugs (different attack class)</li><li>IPsec / L2TP / OpenVPN (different protocols, not SSL VPN web stack)</li></ul><h2>When not to use</h2><ul><li>Internal lateral-movement post-foothold</li><li>VPN client-side bugs</li><li>IPsec / L2TP / OpenVPN</li></ul><p><a href="../security/enterprise-vpn-attack/enterprise-vpn-attack.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/enterprise-vpn-attack/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

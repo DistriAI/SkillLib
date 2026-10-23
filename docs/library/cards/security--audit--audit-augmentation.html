@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>audit-augmentation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / audit-augmentation</p><h1>audit-augmentation</h1><p class="meta">separate</p><p>Augments Trailmark code graphs with external audit findings from SARIF static analysis results, weAudit annotation files, and version-gated Trailmark 0.4.x binary-analysis graph exports. Maps findings to graph nodes by file and line overlap, creates severity-based subgraphs, and enables cross-referencing findings with pre-analysis data (blast radius, taint, etc.). Use when projecting SARIF results onto a code graph, overlaying weAudit annotations, importing binary graph findings, cross-referencing Semgrep, CodeQL, or binary-analysis findings with call graph data, or visualizing audit findings in the context of code structure.</p><h2>When to use</h2><ul><li>Importing Semgrep, CodeQL, or other SARIF-producing tool results into a graph</li><li>Importing weAudit audit annotations into a graph</li><li>Importing binary-analysis graph data into a source graph (Trailmark 0.4.0+)</li><li>Cross-referencing static analysis findings with blast radius or taint data</li><li>Querying which functions have high-severity findings</li><li>Visualizing audit coverage alongside code structure</li><li>Preparing one SARIF or weAudit result for `trailmark-finding-triage`</li></ul><h2>When not to use</h2><ul><li>Running static analysis tools (use semgrep/codeql directly, then import)</li><li>Building the code graph itself (use the `trailmark` skill)</li><li>Generating diagrams (use the `diagramming-code` skill after augmenting)</li></ul><p><a href="../security/audit/audit-augmentation.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/trailmark/skills/audit-augmentation/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

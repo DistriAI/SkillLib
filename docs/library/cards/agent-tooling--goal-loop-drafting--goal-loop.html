@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>goal-loop</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / goal-loop</p><h1>goal-loop</h1><p class="meta">combined</p><p>Draft /goal prompts and explain persistent agent loops. Use for goal or Ralph loops, autonomous run setup, monitoring, and troubleshooting.
+
+Draft and explain persistent goal-loop prompts for long-running agent work with clear stop conditions.</p><h2>When to use</h2><ul><li>Use for repeated autonomous work with a **verifiable stop condition**: passing tests, target coverage, eval ≥ X, or a green build. For code work, establish a working build and relevant checks first. No minimum task duration applies. Fits:…</li><li>Task is &gt;30 min of mechanical work.</li><li>There&#x27;s a **verifiable stop condition** (tests pass, coverage hit, eval ≥ X, build green).</li><li>Repo is agent-ready (working build, decent tests, `AGENTS.md` present).</li></ul><h2>When not to use</h2><ul><li>Adapted from `davidondrej/skills`; verify local paths, tools, credentials, and agent features before acting.</li><li>For commands, remote access, scheduling, browser automation, or file-changing workflows, get explicit user approval and confirm the target environment first.</li></ul><p><a href="../agent-tooling/goal-loop-drafting/goal-loop.html">Skill page</a></p><h2>Conflict</h2><pre>The sickn33 copy is a bulk mirror of the davidondrej skill (it explicitly lists source_repo: davidondrej/skills), but it is not a faithful reproduction. It adds material constraints and steps the original lacks (a mandatory Documentation contract item, a 4,000-char limit, a &gt;30-minute task threshold, a repo-readiness requirement, and a specific list of supported agents/auth requirements). It also disagrees with the original on the contract structure (5-part vs 4-part) and the validation cadence (after each change vs during work/final). Because the mirror diverges from the source in ways that would hide real alternatives if one were crowned, the copies should be combined.</pre>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>continuous-exposure-monitoring</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / continuous-exposure-monitoring</p><h1>continuous-exposure-monitoring</h1><p class="meta">separate</p><p>Turns one-shot external recon into a continuous monitoring program. Covers the scheduled re-scan-and-diff loop (baseline snapshot -&gt; interval sleep -&gt; re-scan -&gt; asset/finding delta -&gt; threshold-gated webhook alert), the scan-to-scan diff engine (new/removed/changed assets by a tracked-attribute table, new/resolved findings by a stable cross-scan fingerprint), adversary CTI / chatter monitoring across six public feeds (ransomwatch, ransomware.live, HackerNews Algolia search, Reddit security-subreddit RSS, GitHub Gist code-search, public Telegram channel scraping) with a source-kind-aware severity engine (leak-site/forum/telegram/paste tiers, CRITICAL through INFO), literal/glob/regex watchlist pattern matching, full-corpus capture with retroactive rescan on new watchlist entries, infrastructure-tracking-over-time discipline (certificate-transparency, passive-DNS, port/service, and typosquat re-enumeration cadence, and what a genuine &#x27;perimeter drift&#x27; event looks like in the diff outpu…</p><p><a href="../security/continuous-exposure-monitoring/continuous-exposure-monitoring.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/elementalsouls/Claude-OSINT">elementalsouls/Claude-OSINT</a></td><td><code>skills/continuous-exposure-monitoring/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

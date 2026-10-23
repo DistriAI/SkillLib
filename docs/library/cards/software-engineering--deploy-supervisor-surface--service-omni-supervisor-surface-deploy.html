@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-omni-supervisor-surface-deploy</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / service-omni-supervisor-surface-deploy</p><h1>service-omni-supervisor-surface-deploy</h1><p class="meta">authentic</p><p>Use to populate the Omni-Channel Supervisor action + tab surface on an existing OmniSupervisorConfig by inserting the standard OmniSupervisorConfigAction and OmniSupervisorConfigTab companion rows via the Data API, idempotent (inserts only the missing types). Requires an OmniSupervisorConfig from service-omni-supervisor-config-deploy. Triggers: give the supervisor the standard action buttons and tabs, add Wallboard/Agents/Queues tabs to Omni Supervisor, configure supervisor actions like Change Queues/Skills. Do not use to create the supervisor configuration itself, create supervisor users, assign the supervisor permission set, or add custom-action / FlexiPage / AWS-dashboard / AI-agent surfaces (those need an external reference and must be set up in Setup).</p><h2>When not to use</h2><ul><li>Populates only the reference-free standard action and tab types. Custom actions, FlexiPage tabs, AWS dashboards, and AI-agent surfaces need an external reference and must be configured in Setup.</li><li>Does not create, rename, or delete the parent `OmniSupervisorConfig`, its user/queue companions, or supervisor users/permission sets.</li><li>Does not remove surface rows — it only adds missing ones (no destructive reconciliation).</li></ul><p><a href="../software-engineering/deploy-supervisor-surface/service-omni-supervisor-surface-deploy.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>plugins/builder/service-omni/skills/service-omni-supervisor-surface-deploy/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

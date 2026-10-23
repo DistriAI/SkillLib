@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>phy-cron-explainer</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / phy-cron-explainer</p><h1>phy-cron-explainer</h1><p class="meta">separate</p><p>Cron expression explainer, validator, and converter. Translates any cron expression into plain English (&quot;0 */6 * * *&quot; → &quot;Every 6 hours, at minute 0&quot;), shows the next 5 scheduled run times with exact dates, detects impossible/conflicting expressions (Feb 30, conflicting day-of-week + day-of-month), identifies suspicious patterns (every minute in production, very-frequent schedules on expensive operations), and converts plain English descriptions to cron (&quot;every weekday at 9am&quot; → &quot;0 9 * * 1-5&quot;). Supports all major flavors: standard Unix 5-field, 6-field with seconds, AWS EventBridge, GitHub Actions schedule, Kubernetes CronJob, Spring @Scheduled, and special strings (@yearly, @monthly, @daily, @hourly, @reboot). Also scans .github/workflows/ and Kubernetes YAML files for cron schedules and audits them. Zero external API — pure local parsing. Triggers on &quot;cron expression&quot;, &quot;what does this cron mean&quot;, &quot;cron to English&quot;, &quot;cron schedule&quot;, &quot;explain cron&quot;, &quot;@reboot&quot;, &quot;/cron&quot;.</p><p><a href="../devops/cron-expression-explanation/phy-cron-explainer.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/phy-cron-explainer/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

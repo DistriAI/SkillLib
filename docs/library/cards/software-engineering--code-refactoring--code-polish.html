@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>code-polish</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / code-polish</p><h1>code-polish</h1><p class="meta">authentic</p><p>Rewrites unprofessional code comments into clear ones and performs non-semantic cleanup. Use to professionalize code without altering logic or behavior.</p><h2>When to use</h2><ul><li>The user asks to &quot;clean up,&quot; &quot;professionalize,&quot; or &quot;polish&quot; existing code</li><li>Code is being prepped for code review, handoff, open-sourcing, or documentation</li><li>A file has a mix of human and AI-written comments and needs one consistent, professional voice</li><li>Comments are outdated, missing, redundant, or written casually (venting, placeholders, inside jokes)</li><li>The user wants comments improved but explicitly does **not** want logic touched</li><li>The user wants a bug fixed or behavior changed (that&#x27;s a different job — logic edits are out of scope here)</li><li>The user wants a full rewrite or architectural restructuring</li><li>The only ask is adding new features or functionality</li></ul><h2>When not to use</h2><ul><li>Cannot verify runtime behavior — Phase 4 is a read-through diff check, not a test run. For anything beyond trivial files, the user should still run the actual test suite after applying this skill.</li><li>Judgment calls on ambiguous cases (e.g., &quot;is this dead code intentional or forgotten?&quot;) default to flagging rather than guessing — this means some cleanup will need a quick human yes/no rather than happening silently.</li><li>Not a substitute for a linter or formatter — Phase 2 cleanup is deliberately conservative and won&#x27;t enforce a full style guide (e.g., max line length rules, import ordering) unless that&#x27;s trivially inferable from the surrounding file.</li><li>Comment quality is bounded by how well the code&#x27;s actual intent can be inferred from context. If the &quot;why&quot; genuinely isn&#x27;t recoverable from the file (no domain knowledge, no commit history, no ticket references available), the honest outpu…</li><li>Large files or unfamiliar codebases increase the risk of Phase 0 missing context that would have changed a comment&#x27;s wording — flag uncertainty in the Phase 5 report rather than presenting low-confidence rewrites as settled.</li></ul><p><a href="../software-engineering/code-refactoring/code-polish.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/code-polish/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>zeroize-audit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / zeroize-audit</p><h1>zeroize-audit</h1><p class="meta">combined</p><p>Detects missing zeroization of sensitive data in source code and identifies zeroization removed by compiler optimizations, with assembly-level analysis, and control-flow verification. Use for auditing C/C++/Rust code handling secrets, keys, passwords, or other sensitive data.</p><h2>When to use</h2><ul><li>Auditing cryptographic implementations (keys, seeds, nonces, secrets)</li><li>Reviewing authentication systems (passwords, tokens, session data)</li><li>Analyzing code that handles PII or sensitive credentials</li><li>Verifying secure cleanup in security-critical codebases</li><li>Investigating memory safety of sensitive data handling</li><li>Assembly-level analysis for register spills and stack retention</li><li>Data-flow tracking for secret copies</li><li>Heap allocator security warnings</li></ul><h2>When not to use</h2><ul><li>General code review without security focus</li><li>Performance optimization (unless related to secure wiping)</li><li>Refactoring tasks not related to sensitive data</li><li>Code without identifiable secrets or sensitive values</li><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../security/zeroize-audit/zeroize-audit.html">Skill page</a></p><h2>Conflict</h2><pre>The trailofbits copy is the operational source: it defines the Execution Contract, the phase loop (Phases 0-8), the orchestrator prompt, and the worker dispatch model. The sickn33 copy is a catalog mirror that omits the execution engine but adds a detailed Inputs table, a Prerequisites section, and a mandatory authorization gate. Because the trailofbits copy is truncated before the Inputs table and the sickn33 copy lacks the phase execution logic, neither is a complete reproduction of the other; combining them is necessary to preserve both the execution procedure and the input/authorization constraints.</pre>
+</body>
+</html>

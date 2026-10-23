@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>scarf-single-cell</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / scarf-single-cell</p><h1>scarf-single-cell</h1><p class="meta">authentic</p><p>Analyze single-cell RNA-seq at million-cell scale with Scarf: out-of-core Zarr stores on disk or object storage, provenance-tracked artifacts, audited QC, clustering, markers and donor comparisons.</p><h2>When to use</h2><ul><li>Use when a task involves a Scarf `.zarr` store, `scarf.DataStore`, `ds.pipeline` or a</li><li>Use when converting H5AD, 10x, MTX or Seurat data into a Scarf store, or opening and mounting a</li><li>Use for single-cell RNA-seq analysis with core Scarf: QC with removal audits, HVG, PCA and</li><li>Use when counts are too large for memory or live on object storage, so they must be streamed</li><li>Do not use it for `scarf.agent` (the automated agent package), which this skill does not cover.</li></ul><h2>When not to use</h2><ul><li>Covers core Scarf only. It does not use or describe `scarf.agent`.</li><li>Needs Python 3.12+ and scarf 1.0.0rc17 or newer, which is a pre-release. A bare `scarf[extra]`</li><li>Scarf does not check the study design. Donor and replicate structure, confounding and held-out</li><li>Cluster labels from this workflow are hypotheses backed by marker evidence, not a validated</li><li>Numbers in the reference modules come from the 10x 5K PBMC documentation dataset. They are</li><li>Runtime and memory depend on hardware, storage and data. Measured end-to-end runs are on the</li><li>A DataStore is not thread-safe: use one per process.</li><li>Cytebase datasets need the `cytebase` extra and network access, and a mounted store reads counts</li></ul><p><a href="../science/single-cell-analysis/scarf-single-cell.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/scarf-single-cell/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

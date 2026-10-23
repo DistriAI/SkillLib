@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>generate-testability-wrappers</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / generate-testability-wrappers</p><h1>generate-testability-wrappers</h1><p class="meta">separate</p><p>DO NOT USE when the target already consumes an injected interface or built-in abstraction such as IFileSystem or TimeProvider, even if the request says &quot;generate a wrapper&quot;; no new wrapper is needed. Use only when C# source calls an ambient/static dependency and no injectable seam exists: first-time TimeProvider, IHttpClientFactory, or System.IO.Abstractions adoption; minimal Environment/Console/Process wrappers; IProcessRunner; DI registration; or an ambient seam that preserves a static API. Exclude static detection (detect-static-dependencies), migration to an existing/registered abstraction (migrate-static-to-wrapper), one blocked behavior plus deterministic tests (testability-obstacle), and general interface design.</p><h2>When to use</h2><ul><li>After running `detect-static-dependencies` and identifying which statics to wrap</li><li>When the user asks to make a class testable by replacing statics with injected abstractions</li><li>When adopting `TimeProvider` (.NET 8+) or `System.IO.Abstractions`</li><li>When creating a custom wrapper for `Environment.*`, `Console.*`, or `Process.*`</li><li>When a released static API needs an ambient seam because signatures cannot change</li></ul><h2>When not to use</h2><ul><li>The user wants to find statics first (use `detect-static-dependencies`)</li><li>The user wants to bulk-replace call sites (use `migrate-static-to-wrapper`)</li><li>The static is already behind an interface</li></ul><p><a href="../software-engineering/dotnet-generate-testability-wrappers/generate-testability-wrappers.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/dotnet/skills">dotnet/skills</a></td><td><code>plugins/dotnet-test/skills/generate-testability-wrappers/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

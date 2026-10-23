@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>container-hardening</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / container-hardening</p><h1>container-hardening</h1><p class="meta">combined</p><p>Secure Docker images and container runtime configurations. Implement non-root users, read-only filesystems, and security contexts. Use when building secure container images or hardening container deployments.
+
+Secure Docker images and container runtime configurations.</p><h2>When to use</h2><ul><li>Building secure container images</li><li>Hardening container deployments</li><li>Meeting container security requirements</li><li>Implementing defense in depth</li></ul><h2>When not to use</h2><ul><li>The Dockerfile needs a reviewed executable myapp built for the selected ABI; it is not bundled. Build dependencies were never installed in this stage, so do not run apk del against a nonexistent virtual group. Prefer a separate builder sta…</li><li>Replace digest placeholders with verified image identities before execution. The Pod YAML is a template; tune actual resource budgets and approved volumes, network policy and workload permissions. No Docker build, cluster application or sc…</li><li>Read-only filesystems and dropped capabilities reduce privileges but are not a complete sandbox. Add writable paths only where required; low ports do not justify NET_BIND_SERVICE by default. Scanning can disclose artifacts or use network d…</li><li>Docs-only import: upstream scripts and templates not bundled.</li></ul><p><a href="../security/container-hardening/container-hardening.html">Skill page</a></p><h2>Conflict</h2><pre>The second copy is a direct adaptation of the first, but it changes the procedure in ways that conflict with the original rather than merely shortening it. The original Dockerfile installs and then removes build dependencies and adds NET_BIND_SERVICE at runtime; the adapted copy removes the build-dependency step entirely (and explicitly warns against it), drops NET_BIND_SERVICE, pins digests, and adds resource limits and tmpfs flags. Because the copies disagree on concrete steps, crowning one would hide a real alternative.</pre>
+</body>
+</html>

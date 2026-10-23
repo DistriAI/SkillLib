@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>proximity-operations</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / proximity-operations</p><h1>proximity-operations</h1><p class="meta">separate</p><p>Performs proximity operations on genomic intervals with bedtools (closest, window, flank, slop) and pybedtools - nearest-feature queries with signed/strand-aware distance, fixed-radius window searches, strand-aware promoter construction, and interval extension. Covers the closest -d/-D a/b/ref/-t/-k/-io/-iu/-id flags, the -D ref strand sign-flip, silent chromosome-end clipping in slop/flank, -t all tie double-counting, and the critical distinction between a geometry answer (nearest TSS) and a biology answer (which gene an element regulates). Use when assigning peaks or variants to genes, defining promoters from a gene model, building distance-to-TSS distributions, finding features within a window, or extending intervals - and when deciding whether nearest-gene is a fair prior (GWAS locus) or a trap (distal enhancer).</p><h2>When to use</h2><ul><li>assigning peaks or variants to genes</li><li>defining promoters from a gene model</li><li>building distance-to-TSS distributions</li><li>finding features within a window</li><li>extending intervals</li><li>nearest-feature queries with signed distance</li><li>strand-aware promoter construction</li><li>fixed-radius window searches</li></ul><h2>When not to use</h2><ul><li>presenting nearest gene as a regulatory call for a distal element</li><li>real enhancer-to-gene linking without validation</li><li>causal gene assignment for GWAS loci without colocalization</li></ul><p><a href="../science/genome-proximity-operations/proximity-operations.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>genome-intervals/proximity-operations/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

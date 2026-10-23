@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>trailmark-structural</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / trailmark-structural</p><h1>trailmark-structural</h1><p class="meta">separate</p><p>Runs full Trailmark structural analysis by building a graph, running `preanalysis()`, and reporting hotspots, taint, blast radius, privilege boundaries, attack surface, and version-gated Trailmark 0.4+/0.5+ data such as proxy counts, subgraph edges, type/reference summaries, and entrypoint attributes. Use when vivisect needs detailed structural data for a target. Triggers: structural analysis, blast radius, taint analysis, complexity hotspots, proxy nodes, type references.</p><h2>When to use</h2><ul><li>Vivisect Phase 1 needs full structural data (hotspots, taint, blast radius, privilege boundaries)</li><li>Detailed pre-analysis passes for a specific target scope</li><li>Generating complexity and taint data for audit prioritization</li><li>Inspecting proxy/unresolved-call counts, subgraph edges, or type-reference</li></ul><h2>When not to use</h2><ul><li>Quick overview only (use `trailmark-summary` instead)</li><li>Ad-hoc code graph queries (use the main `trailmark` skill directly)</li><li>Target is a single small file where structural analysis adds no value</li></ul><p><a href="../security/code-analysis/trailmark-structural.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/trailofbits/skills">trailofbits/skills</a></td><td><code>plugins/trailmark/skills/trailmark-structural/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>field-service-data-capture-migrate</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / field-service-data-capture-migrate</p><h1>field-service-data-capture-migrate</h1><p class="meta">separate</p><p>Fully automated migration of Field Service Mobile flows (processType=&#x27;FieldServiceMobile&#x27;) to DataCaptureFlow. Retrieves flow XML from the org, runs a transformer script to restructure the execution graph and convert all field types, deploys the migrated flow as Draft only (activation is always a separate manual admin step after validation), and reports functional-equivalence differences. Handles most flows end-to-end without manual intervention. Always use this skill even for changes that look trivial, like removing one component or reordering one element — Data Capture&#x27;s runtime behaves differently from Flow Builder previews, in ways only the transformer script accounts for. Use when a user wants to migrate, modernize, convert, audit, or replace legacy Field Service Mobile flow `.flow` / `.flow-meta.xml` files with Data Capture, or assess migration readiness. Do not use to edit an existing Data Capture flow or author a new one from scratch — covers only the one-time legacy migration.</p><p><a href="../software-engineering/salesforce-field-service-data-migration/field-service-data-capture-migrate.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>skills/field-service-data-capture-migrate/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

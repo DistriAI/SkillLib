@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>openai-vision</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / openai-vision</p><h1>openai-vision</h1><p class="meta">separate</p><p>Analyze images and multi-frame sequences using OpenAI GPT vision models</p><h2>When to use</h2><ul><li>This skill enables image analysis, scene understanding, text extraction, and multi-frame comparison using OpenAI&#x27;s vision-capable GPT models (e.g., `gpt-4o`, `gpt-4o-mini`). It supports single images, multiple images for comparison, and se…</li><li>Analyzing image content (objects, scenes, colors, spatial relationships)</li><li>Extracting and reading text from images (OCR via vision models)</li><li>Comparing multiple images to detect differences or changes</li><li>Processing video frames to understand temporal progression</li><li>Generating detailed image descriptions or captions</li><li>Answering questions about visual content</li></ul><h2>When not to use</h2><ul><li>**Medical imagery**: Not suitable for diagnostic analysis of CT scans, X-rays, or MRIs</li><li>**Small text**: Text smaller than ~12pt may be misread; use `detail: high`</li><li>**Rotated/skewed text**: Accuracy decreases with text rotation; pre-process if needed</li><li>**Non-Latin scripts**: Lower accuracy for complex scripts (CJK, Arabic, etc.)</li><li>**Object counting**: Approximate counts only; may miss or double-count similar objects</li><li>**Spatial precision**: Cannot provide pixel-accurate bounding boxes or measurements</li><li>**Panoramic/fisheye**: Distorted images reduce analysis accuracy</li><li>**Graphs and charts**: May misinterpret line styles, legends, or data points</li></ul><p><a href="../media/image-analysis/openai-vision.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/benchflow-ai/skillsbench">benchflow-ai/skillsbench</a></td><td><code>tasks/jpg-ocr-stat/environment/skills/openai-vision/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

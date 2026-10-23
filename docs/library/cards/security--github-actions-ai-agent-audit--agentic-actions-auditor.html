@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>agentic-actions-auditor</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / agentic-actions-auditor</p><h1>agentic-actions-auditor</h1><p class="meta">combined</p><p>Audits GitHub Actions workflows for security vulnerabilities in AI agent integrations including Claude Code Action, Gemini CLI, OpenAI Codex, and GitHub AI Inference. Detects attack vectors where attacker-controlled input reaches AI agents running in CI/CD pipelines.
+
+Audits GitHub Actions workflows for security vulnerabilities in AI agent integrations including Claude Code Action, Gemini CLI, OpenAI Codex, and GitHub AI Inference. Detects attack vectors where attacker-controlled input reaches AI agents running in CI/CD pipelines, including env var intermediary patterns, direct expression injection, dangerous sandbox configurations, and wildcard user allowlists. Use when reviewing workflow files that invoke AI coding agents, auditing CI/CD pipeline security for prompt injection risks, or evaluating agentic action configurations.</p><h2>When to use</h2><ul><li>Auditing a repository&#x27;s GitHub Actions workflows for AI agent security</li><li>Reviewing CI/CD configurations that invoke Claude Code Action, Gemini CLI, or OpenAI Codex</li><li>Checking whether attacker-controlled input can reach AI agent prompts</li><li>Evaluating agentic action configurations (sandbox settings, tool permissions, user allowlists)</li><li>Assessing trigger events that expose workflows to external input (`pull_request_target`, `issue_comment`, etc.)</li><li>Investigating data flow from GitHub event context through `env:` blocks to AI prompt fields</li></ul><h2>When not to use</h2><ul><li>Analyzing workflows that do NOT use any AI agent actions (use general Actions security tools instead)</li><li>Reviewing standalone composite actions or reusable workflows outside of a caller workflow context (use this skill when analyzing a workflow that references them via `uses:`)</li><li>Performing runtime prompt injection testing (this is static analysis guidance, not exploitation)</li><li>Auditing non-GitHub CI/CD systems (Jenkins, GitLab CI, CircleCI)</li><li>Auto-fixing or modifying workflow files (this skill reports findings, does not modify files)</li><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../security/github-actions-ai-agent-audit/agentic-actions-auditor.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies are nearly identical, but the sickn33 copy adds a &#x27;Supporting material availability&#x27; section that explicitly forbids claiming to have read absent reference files and requires reporting unsupported action-version details as unverified. The trailofbits copy lacks this constraint and instead includes a more detailed error-handling list. Crowning one copy would hide the other&#x27;s real constraints and error-handling details.</pre>
+</body>
+</html>

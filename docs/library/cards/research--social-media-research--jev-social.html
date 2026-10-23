@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jev-social</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / jev-social</p><h1>jev-social</h1><p class="meta">combined</p><p>Run browser-grounded social research without remote account mutations through Jev Social when a user wants posts, profiles, comments, video evidence, or a source-linked report from Instagram, TikTok, or LinkedIn and the local socai CLI reports support for that platform. Do not use for publishing, engagement actions, or general web research.
+
+Run read-only, browser-grounded Instagram, TikTok, or LinkedIn research through Jev routing and socai CLI, returning source-linked evidence and reports.</p><h2>When to use</h2><ul><li>Use when a user requests evidence-backed research on Instagram, TikTok, or LinkedIn and wants real public posts or profiles rather than a general web summary.</li><li>Use when the user wants a fast demonstration with streamed progress, previewable post or video cards, and a final research report.</li><li>Use when the local socai CLI and the requested platform both pass the Jev Social readiness check.</li><li>Do not use for publishing, commenting, liking, following, messaging, account growth automation, or unrelated web research.</li></ul><h2>When not to use</h2><ul><li>Platform support depends on the installed socai build, the user&#x27;s authenticated local session, and what the page actually exposes at run time.</li><li>Platform-read-only operation does not mean a write-free filesystem: the CLI stores run records and can download requested TikTok media locally.</li><li>Search results can be incomplete, personalized, rate-limited, stale, or empty; the skill cannot guarantee coverage or ranking completeness.</li><li>A search card is not a fully read post. Claims about details require a successful detail read recorded in the action history.</li><li>Captured posts and comments are primary evidence of what users said, not independent verification that their claims are true.</li><li>Do not access private or restricted content, collect unnecessary sensitive personal data, or redistribute downloaded media without the required rights. Follow applicable law and each platform&#x27;s terms and access rules.</li><li>The workflow cannot bypass platform verification or repair an expired login without user action.</li><li>This catalog workflow intentionally excludes Jev Social&#x27;s automatic onboarding and socai installer; missing prerequisites must be configured separately from a reviewed, pinned source.</li></ul><p><a href="../research/social-media-research/jev-social.html">Skill page</a></p><h2>Conflict</h2><pre>Both copies describe the same Jev Social workflow (status check, bounded search, evidence extraction) and share the same pinned commit and core parameters. However, they disagree on how to handle missing setup: the davepoon copy permits running the pinned onboarding command with --skip-install if the user requests setup, while the sickn33 copy explicitly forbids running the catalog&#x27;s onboarding/installer and requires the user to install socai separately. The sickn33 copy also adds a specific constraint that generic TikTok research must not expose media-download actions unless explicitly requested, which is absent from the davepoon copy. Because these are material procedural differences and a safety conflict, crowning one would hide a real alternative.</pre>
+</body>
+</html>

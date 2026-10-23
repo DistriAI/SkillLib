@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>multi-omics-pipeline</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / multi-omics-pipeline</p><h1>multi-omics-pipeline</h1><p class="meta">separate</p><p>Orchestrates VERTICAL bulk multi-omics integration (RNA + protein + methylation on the SAME samples) from harmonization to a validated result, routing to MOFA2 (shared factors), mixOmics/DIABLO (predictive signature), or SNF (patient subtypes). Use when confirming the correspondence is vertical (not horizontal same-features-different-cohorts), joining on a stable sample primary key rather than cbind on assumed row order, normalizing each omic in its OWN space and equalizing block variance BEFORE stacking (or the widest omic hijacks every shared factor), correcting batch ONCE in one place, and validating in a HELD-OUT cohort because in-cohort CV at n&lt;&lt;p is optimistically biased. Hands mechanism to the multi-omics-integration component skills; not a re-teach of any single step.</p><h2>When to use</h2><ul><li>Vertical bulk multi-omics integration</li><li>RNA + protein + methylation on same samples</li><li>MOFA2 shared factors</li><li>mixOmics/DIABLO predictive signature</li><li>SNF patient subtypes</li><li>Data harmonization and normalization</li><li>Held-out cohort validation</li></ul><h2>When not to use</h2><ul><li>Horizontal same-features-different-cohorts</li><li>Meta-analysis</li><li>Batch correction as a standalone task</li><li>Re-teaching single integration steps</li></ul><p><a href="../science/multi-omics-integration/multi-omics-pipeline.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>workflows/multi-omics-pipeline/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

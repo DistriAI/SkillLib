@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>structure-modification</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / structure-modification</p><h1>structure-modification</h1><p class="meta">separate</p><p>Modifies protein structures in place with Biopython Bio.PDB - transforms coordinates, strips waters/heteroatoms, overloads the B-factor column, renumbers, and builds entities. Use when applying a rotation matrix and needing to know whether it is row-convention (Entity.transform, Superimposer) or column-convention (REMARK 350 / _pdbx_struct_oper_list assembly operators) so geometry is not silently mirrored; when overloading B-factors with pLDDT/conservation for coloring and needing to preserve the destroyed originals; when stripping solvent by HETFLAG (r.id[0]) rather than residue name so catalytic metals and cofactors survive; and when building or copying entities through StructureBuilder/Select without breaking SMCRA parent-child links or the (hetflag, resseq, icode) id tuple. Keywords transform, rotation matrix, occupancy, assembly operators.</p><h2>When to use</h2><ul><li>transforming coordinates</li><li>stripping waters and heteroatoms</li><li>overloading B-factor column</li><li>renumbering residues</li><li>building entities</li><li>applying rotation matrices</li><li>handling assembly operators</li></ul><h2>When not to use</h2><ul><li>using blanket HETFLAG to strip all heteroatoms</li><li>stripping solvent by residue name instead of HETFLAG</li><li>feeding column-convention matrices directly into Entity.transform without transposing</li></ul><p><a href="../science/structural-biology/structure-modification.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>structural-biology/structure-modification/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>google-drive-automation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/documents.html">documents</a> / google-drive-automation</p><h1>google-drive-automation</h1><p class="meta">combined</p><p>Automate Google Drive file operations (upload, download, search, share, organize) via Rube MCP (Composio). Upload/download files, manage folders, share with permissions, and search across drives programmatically.
+
+Lightweight Google Drive integration with standalone OAuth authentication. No MCP server required. Full read/write access.</p><h2>When to use</h2><ul><li>You need to search, list, upload, download, move, or organize Google Drive files and folders.</li><li>The task requires direct Drive read/write automation through local scripts in a Workspace account.</li><li>You want file-level Drive operations without introducing an MCP server dependency.</li></ul><h2>When not to use</h2><ul><li>Use this skill only when the task clearly matches the scope described above.</li><li>Do not treat the output as a substitute for environment-specific validation, testing, or expert review.</li><li>Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.</li></ul><p><a href="../documents/google-drive-file-operations/google-drive-automation.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies implement the same high-level task (Google Drive file operations) through fundamentally different mechanisms. The davepoon copy is an MCP-based procedure that requires the Rube MCP server, Composio&#x27;s Google Drive toolkit, and specific RUBE_* and GOOGLEDRIVE_* tool calls. The sickn33 copy is a standalone, script-based procedure that uses local Python scripts (auth.py, drive.py) with OAuth and explicitly states that no MCP server is required. Because each copy contains material steps and constraints the other lacks (MCP tool sequences vs. local CLI commands), crowning one would hide a real alternative implementation.</pre>
+</body>
+</html>

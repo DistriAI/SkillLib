@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cell-type-deconvolution</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / cell-type-deconvolution</p><h1>cell-type-deconvolution</h1><p class="meta">separate</p><p>Estimates cell-type composition from bulk DNA methylation and uses it to defuse the single biggest EWAS confounder. Covers reference-based deconvolution (Houseman constrained-projection, minfi estimateCellCounts2 with FlowSorted.Blood.EPIC + IDOL-optimized libraries, EpiDISH RPC/CBS/CP, 12-cell extended, cord-blood nRBC references, EpiSCORE/hepidish for solid tissue), reference-free correction (ReFACTor, RefFreeEWAS, SVA), using fractions as covariates vs the compositionality/collinearity trap, and cell-type-resolved EWAS (CellDMC, TCA, TOAST, omicwas, HIRE). Use when estimating blood/tissue cell fractions, adjusting an EWAS for composition, choosing a deconvolution reference, or attributing a methylation signal to a cell type. For the EWAS confounder-vs-mediator decision see ewas-design; for the IEAA cell-count adjustment of DNAm age see epigenetic-clocks; for clean beta input see array-preprocessing.</p><h2>When to use</h2><ul><li>estimating blood/tissue cell fractions</li><li>adjusting an EWAS for composition</li><li>choosing a deconvolution reference</li><li>attributing a methylation signal to a cell type</li><li>reference-based deconvolution</li><li>reference-free correction</li><li>cell-type-resolved EWAS</li></ul><h2>When not to use</h2><ul><li>EWAS confounder-vs-mediator decision</li><li>IEAA cell-count adjustment of DNAm age</li><li>clean beta input preprocessing</li><li>single-cell/sorted atlases for reference building</li><li>predictive-model training/leakage</li></ul><p><a href="../science/cell-type-deconvolution/cell-type-deconvolution.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>methylation-analysis/cell-type-deconvolution/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

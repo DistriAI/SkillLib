@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>runaway-guard</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / runaway-guard</p><h1>runaway-guard</h1><p class="meta">authentic</p><p>Cost-safety discipline for paid AI / inference APIs: treat $-cost as a third complexity dimension alongside time and space. Forces a written per-run $-cap, per-day $-cap, max-iterations bound, concurrency limit, and a matching provider-dashboard hard cap BEFORE any call site is written.</p><h2>When to use</h2><ul><li>Writing or reviewing code that calls a paid AI / inference API in a loop, queue, retry path, agent step, webhook handler, or background job.</li><li>Importing or wrapping any paid-inference SDK: `@fal-ai/*`, `fal-client`, `@anthropic-ai/sdk`, `anthropic`, `openai`, `replicate`, `elevenlabs`, `together-ai`, `groq-sdk`, `cohere-ai`, `@mistralai/*`.</li><li>Designing an agent loop, fan-out pipeline, retry wrapper, polling job, stream reconnect, or self-rescheduling job that may call a billed endpoint.</li><li>Auditing a codebase / PR for unbounded fan-out, unbounded retries, missing idempotency keys, or missing provider-side spend caps.</li><li>Diagnosing an unexpected bill, runaway loop incident, or surprise overage.</li></ul><h2>When not to use</h2><ul><li>**Not a billing system.** runaway-guard enforces *intent* (caps, contracts, audits) at code-write time. It does not meter spend in production — pair it with the provider&#x27;s hard cap and observability (LLM-cost dashboards, log alerts) for ru…</li><li>**Provider-side caps may take minutes to enforce.** Anthropic Workspace Budgets, OpenAI usage limits, and Fal Spend Limits are reconciled on a delay measured in minutes, not milliseconds. A pathological burst within a single window can sti…</li><li>**No automated cost estimation for novel models.** The cost-contract numbers (unit cost, $/run) are inputs the author must look up; the skill does not maintain a per-model price table.</li><li>**Streaming and per-token pricing.** For per-token APIs (Anthropic, OpenAI), `max calls` is a proxy — the real cap is `max input tokens × max output tokens × per-token rate`. Adapt the protocol: replace `max calls per run` with `max tokens…</li><li>**Compute-billed providers.** For long-running GPU jobs (training, video encoding) billed in seconds, replace &quot;calls&quot; with &quot;GPU-seconds&quot; in the contract; the discipline transfers but the units differ.</li><li>**Does not replace incident response.** When a bill has already arrived, escalate to `complexity-cuts` for the corrective rewrite — runaway-guard prevents the next one, not the current one.</li></ul><p><a href="../agent-tooling/agent-safety-guardrails/runaway-guard.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/runaway-guard/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

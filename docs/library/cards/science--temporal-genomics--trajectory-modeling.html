@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>trajectory-modeling</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / trajectory-modeling</p><h1>trajectory-modeling</h1><p class="meta">separate</p><p>Models continuous temporal trajectories from BULK or time-resolved omics where the x-axis is measured experimental time: penalized GAMs (mgcv) for smooth trends and changepoint detection (segmented, ruptures) for abrupt regime shifts. Use when deciding between a smooth GAM and a changepoint model; choosing the GAM distribution (nb() plus a library-size offset for raw counts vs Gaussian on vst/log-CPM); setting the basis-dimension ceiling k below the number of timepoints and letting REML pick wiggliness; handling residual autocorrelation across timepoints with corAR1/bam(rho=); testing whether two conditions&#x27; trajectories diverge with an ordered-factor difference smooth; and choosing a changepoint search/cost/penalty (Pelt/Binseg, l2/rbf). Not for single-cell pseudotime (see single-cell/trajectory-inference).</p><h2>When to use</h2><ul><li>modeling continuous temporal trajectories</li><li>penalized GAMs for smooth trends</li><li>changepoint detection for abrupt regime shifts</li><li>choosing between smooth GAM and changepoint models</li><li>selecting GAM distribution for raw counts or transformed data</li><li>setting basis-dimension ceiling k</li><li>handling residual autocorrelation across timepoints</li><li>testing trajectory divergence between conditions</li></ul><h2>When not to use</h2><ul><li>single-cell pseudotime</li><li>single-cell/trajectory-inference</li></ul><p><a href="../science/temporal-genomics/trajectory-modeling.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>temporal-genomics/trajectory-modeling/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

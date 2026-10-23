@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>handoff</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / handoff</p><h1>handoff</h1><p class="meta">combined</p><p>End-of-session ritual. Captures decisions, lessons, gotchas, and open threads. Writes a narrative session log to ~/.origin/sessions/ and stores granular memories via Origin MCP. Previews any unconfirmed captures from the current session before closing. Invoked as `/handoff`.
+
+Capture session context for a fresh agent. Use for handoffs, context limits, switching focus, ending sessions, or splitting work across sessions.</p><h2>When to use</h2><ul><li>&quot;Wrapping up&quot;, &quot;let&#x27;s call it&quot;, &quot;we&#x27;re done&quot;.</li><li>Session about to close and useful state would otherwise be lost.</li></ul><h2>When not to use</h2><ul><li>Mid-flow capture during work → use `/capture` (single memory).</li><li>Search / lookup → use `/recall`.</li><li>One-off chat with no decisions or lessons — captures alone are enough.</li></ul><p><a href="../agent-tooling/session-handoff/handoff.html">Skill page</a></p><h2>Conflict</h2><pre>The four copies overlap on the goal of transferring context to a fresh agent, but they disagree on the artifact, the storage location, and the required steps. mattpocock/skills produces a compact document in the OS temp directory with a &#x27;suggested skills&#x27; section. davidondrej/skills produces a structured template in a fenced code block saved to a temp file or HANDOFF.md, with explicit core principles and a verification prompt. davepoon/buildwithclaude is a multi-artifact ritual that writes to ~/.origin/sessions/ and calls MCP tools for granular memory captures. openclaw/agent-skills produces a clipboard-ready prompt that avoids filesystem paths and instructs the receiving agent to perform an independent review. Because each copy contains material steps or constraints the others lack, crowning one would hide real alternatives.</pre>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cuopt-server-api-python</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / cuopt-server-api-python</p><h1>cuopt-server-api-python</h1><p class="meta">separate</p><p>cuOpt REST server — start server, endpoints, Python/curl client examples. Use when the user is deploying or calling the REST API.</p><h2>When to use</h2><ul><li>Use this skill when the user is deploying the cuOpt REST server or writing a client against it — choosing a deployment target, mapping a problem onto the HTTP endpoints, translating between Python-API and REST field names, or debugging a r…</li></ul><h2>When not to use</h2><ul><li>**QP is not exposed over REST.** Use the Python or C API for quadratic objectives.</li><li>**The server ships no authentication or TLS.** Anything that can reach the port can submit jobs. Put it behind a gateway and treat `--server`/base URLs as trusted-network endpoints only.</li><li>Solutions are retrieved by polling; there is no push/webhook delivery.</li><li>One request is solved at a time per server process; concurrency requires multiple replicas.</li></ul><p><a href="../data/optimization-server/cuopt-server-api-python.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/cuopt-server-api-python/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

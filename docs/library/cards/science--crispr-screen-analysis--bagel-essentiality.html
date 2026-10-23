@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>bagel-essentiality</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / bagel-essentiality</p><h1>bagel-essentiality</h1><p class="meta">separate</p><p>Identifies essential genes from CRISPR-Cas9 fitness screens using BAGEL2 (Kim &amp; Hart 2021 Genome Med), a Bayesian classifier scoring per-gene Bayes Factors via log-likelihood ratios over per-sgRNA fold changes, calibrated against CEGv2 core-essentials (Hart 2017 G3, ~684 genes) and NEGv1 non-essentials (Hart 2014, ~927 genes). Covers the fc + bf + pr workflow, the linear-extrapolation improvement over BAGEL1 truncation, multi-target off-target correction, tumor-suppressor sensitivity (BAGEL2 detects enrichment), and BF calibration (BF &gt;6 ≈ 90% posterior per Hart 2017; ~5% FDR by BAGEL convention). Use when classifying essential vs non-essential genes, calibrating BAGEL2 thresholds against PR curves, identifying tumor suppressors alongside essentials, comparing BAGEL2 hits to MAGeCK / drugZ, or generating publication-quality essentiality calls.</p><h2>When to use</h2><ul><li>classifying essential vs non-essential genes</li><li>calibrating BAGEL2 thresholds against PR curves</li><li>identifying tumor suppressors alongside essentials</li><li>comparing BAGEL2 hits to MAGeCK / drugZ</li><li>generating publication-quality essentiality calls</li><li>computing per-sgRNA fold changes</li><li>deriving per-gene log-likelihood ratios</li><li>applying BF threshold calibrated by precision-recall</li></ul><h2>When not to use</h2><ul><li>using custom essentiality reference instead of CEGv2</li></ul><p><a href="../science/crispr-screen-analysis/bagel-essentiality.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>crispr-screens/bagel-essentiality/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

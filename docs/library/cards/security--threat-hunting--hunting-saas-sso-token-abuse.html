@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>hunting-saas-sso-token-abuse</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / hunting-saas-sso-token-abuse</p><h1>hunting-saas-sso-token-abuse</h1><p class="meta">separate</p><p>Hunts for stolen-session and OAuth/PRT token replay (T1550.001) by correlating Microsoft Entra ID SigninLogs SessionId/UniqueTokenIdentifier fields and Okta System Log sso/session events to spot impossible travel, refresh-token reuse, and token use from anomalous ASNs. Use when hunting MFA-bypass via stolen cookies/tokens, investigating impossible-travel alerts, or scoping SaaS lateral movement after phishing.</p><h2>When to use</h2><ul><li>Threat hunting for MFA-bypass via stolen tokens/cookies across Entra ID and SaaS</li><li>Investigating an alert for impossible travel, anomalous OAuth grant, or token reuse</li><li>Validating detection coverage for T1550.001 after a phishing/AiTM incident</li><li>Building Sentinel/Splunk/Okta detections for session-token replay</li><li>Post-incident hunting to scope SaaS lateral movement from a compromised identity</li></ul><p><a href="../security/threat-hunting/hunting-saas-sso-token-abuse.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills">mukul975/Anthropic-Cybersecurity-Skills</a></td><td><code>skills/hunting-saas-sso-token-abuse/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

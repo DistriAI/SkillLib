@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>upstash-ratelimit</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / upstash-ratelimit</p><h1>upstash-ratelimit</h1><p class="meta">authentic</p><p>Add rate limiting to API routes, middleware, and edge functions with @upstash/ratelimit: sliding window, fixed window, and token bucket backed by Upstash Redis.</p><h2>When to use</h2><ul><li>Use when the user needs to limit requests per IP, user, API key, or tenant</li><li>Use when protecting login, signup, form, webhook, or LLM endpoints from</li><li>Use when choosing between fixed window, sliding window, and token bucket.</li><li>Do not use for client-side retry/backoff against a third-party API&#x27;s limits;</li><li>Do not use for a single long-running process with no shared state; an</li></ul><h2>When not to use</h2><ul><li>Requires an Upstash Redis database; it does not work with other Redis</li><li>Each `limit()` call is at least one HTTP round trip to Redis, so it adds</li><li>Sliding window is an approximation that assumes an even spread of requests</li><li>`MultiRegionRatelimit` trades strict accuracy for lower latency and does</li><li>If Redis is unreachable, the default `timeout` (5 s) lets requests through</li><li>This skill does not replace environment-specific validation, testing, or</li></ul><p><a href="../devops/rate-limiting/upstash-ratelimit.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/upstash-ratelimit/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

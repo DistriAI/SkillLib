@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>sql-sentinel</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / sql-sentinel</p><h1>sql-sentinel</h1><p class="meta">separate</p><p>Audit SQL for the cost &amp; performance anti-patterns that burn warehouse credits. Scores warehouse health 0-100 and outputs a prioritized cost-reduction plan for BigQuery, Snowflake, Redshift, and Postgres.</p><h2>When to use</h2><ul><li>A user writes or reviews a query for BigQuery, Snowflake, Redshift, Postgres, or Spark SQL.</li><li>A user asks &quot;why is this query so slow?&quot; or &quot;why is my warehouse bill so high?&quot;</li><li>A user is about to promote a dashboard query or dbt model to production.</li><li>A data engineer wants a second pair of eyes before a code review or a cost-optimization sweep.</li><li>A team is running a &quot;reduce cloud spend&quot; or FinOps initiative.</li></ul><h2>When not to use</h2><ul><li>This is a **static** analyzer. It finds anti-patterns in the *text* of SQL; it does not read query plans, row counts, or billing. A flagged query on a 100-row table is cheap; the same query on a billion-row table is the problem the rule ex…</li><li>The fact-table heuristic (SQL015) keys off table *names* (`*_events`, `*_log`) and is advisory, not definitive.</li><li>It does not execute SQL — safe to run on any `.sql` file.</li></ul><p><a href="../security/sql-injection-prevention/sql-sentinel.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/sql-sentinel/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

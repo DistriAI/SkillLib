@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>jetson-build-source</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / jetson-build-source</p><h1>jetson-build-source</h1><p class="meta">separate</p><p>Use when you need to rebuild the BSP overlay — DT, OOT modules, or kernel — from changes under bsp_sources/. Triggers: build bsp, rebuild dtb, rebuild kernel.</p><h2>When to use</h2><ul><li>Rebuild the kernel-side artifacts (DTBs, OOT modules, in-tree modules, kernel `Image`) implied by changes under `&lt;source.root_path&gt;/bsp_sources/`, and write a manifest that `/jetson-promote-image` reads to stage those outputs into the BSP…</li></ul><h2>When not to use</h2><ul><li>**Toolchain resolution is `jetson-init-source`&#x27;s job.** This</li><li>**R36.x Branch-A `$KS/Makefile` collision.** R36.x&#x27;s</li><li>**Kernel-DT changes: composite-overlay-only, split ownership.**</li><li>**the &quot;Register composite custom overlay&quot; step Makefile insertion point matters.** Insert after</li><li>**the &quot;Register composite custom overlay&quot; step first-touch needs pristine import.** On a fresh</li><li>**Avoid bare `$0` in shell snippets inside this SKILL.md.** When</li><li>**No overlay staging.** Build outputs stay where the build put</li><li>**`KERNEL_HEADERS` vs `KERNEL_OUTPUT` in DT mode.** Different</li></ul><p><a href="../devops/jetson-source-build/jetson-build-source.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/NVIDIA/skills">NVIDIA/skills</a></td><td><code>skills/jetson-build-source/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>clinical-interpretation</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / clinical-interpretation</p><h1>clinical-interpretation</h1><p class="meta">combined</p><p>Classify variant clinical significance with the ACMG/AMP germline framework and its 2018-2025 ClinGen refinements (graded PVS1 decision tree, PM2 downgraded to Supporting, PP5/BP6 retired, calibrated PP3/BP4, Bayesian points), the AMP/ASCO/CAP somatic tiers and ClinGen oncogenicity system, ClinVar star-rating and gnomAD grpmax filtering-AF interpretation. Use when deciding germline-vs-somatic framework, applying current (not flat-2015) ACMG points, checking for a gene-specific VCEP specification, judging whether a ClinVar assertion or gnomAD frequency is usable evidence, calibrating a pathogenicity predictor, evaluating PVS1 on the MANE Select transcript, or building a VUS reanalysis loop. Not for functional annotation itself (see variant-calling/variant-annotation).</p><h2>When to use</h2><ul><li>Interpreting clinical significance of variants</li><li>Prioritizing variants for diagnostic applications</li><li>Prioritizing variants for research applications</li><li>ACMG/AMP variant classification</li><li>ClinVar annotation and filtering</li><li>Population frequency filtering</li><li>Pathogenicity score filtering</li></ul><p><a href="../science/clinical-variant-interpretation/clinical-interpretation.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same task but with materially different and non-overlapping depth. The first copy (OpenClaw) is a practical, command-line workflow focused on downloading ClinVar, using bcftools for filtering, and running InterVar, but it relies on the older, flat 2015 ACMG criteria. The second copy (GPTomics) is a conceptual and methodological guide that explicitly warns against the 2015 defaults, mandates the use of 2018-2025 ClinGen refinements (e.g., graded PVS1, PM2 downgrade, PP5/BP6 retirement), and distinguishes between germline and somatic frameworks. Because the first copy&#x27;s core classification method is explicitly identified as obsolete by the second, and the second lacks the specific shell commands for data retrieval and filtering found in the first, neither is a complete reproduction of the other. Combining them is necessary to provide a workflow that is both executable and methodologically current.</pre>
+</body>
+</html>

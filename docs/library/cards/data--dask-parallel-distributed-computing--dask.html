@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>dask</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/data.html">data</a> / dask</p><h1>dask</h1><p class="meta">combined</p><p>Distributed computing for larger-than-RAM pandas/NumPy workflows. Use when you need to scale existing pandas/NumPy code beyond memory or across clusters. Best for parallel file processing, distributed ML, integration with existing pandas code. For out-of-core analytics on single machine use vaex; for in-memory speed use polars.
+
+Scales pandas, NumPy, and custom Python research workflows beyond memory or across clusters with Dask. Covers DataFrames, Arrays, Bags, Futures, chunking, schedulers, and distributed diagnostics. Use for partitioned file processing, scientific array computation, or parallel tasks whose memory and dependency structure require Dask.</p><h2>When to use</h2><ul><li>Process datasets that exceed available RAM</li><li>Scale pandas or NumPy operations to larger datasets</li><li>Parallelize computations for performance improvements</li><li>Process multiple files efficiently (CSVs, Parquet, JSON, text logs)</li><li>Build custom parallel workflows with task dependencies</li><li>Distribute workloads across multiple cores or machines</li></ul><h2>When not to use</h2><ul><li>out-of-core analytics on single machine</li><li>in-memory speed</li></ul><p><a href="../data/dask-parallel-distributed-computing/dask.html">Skill page</a></p><h2>Conflict</h2><pre>The three copies share the same core Dask structure (DataFrames, Arrays, Bags, Futures) and the same high-level guidance, but they disagree on concrete parameters and add different constraints. K-Dense-AI/scientific-agent-skills pins dask 2026.8.0, requires Python 3.10+, pandas 2+, PyArrow 16+, and states that since 2025.1.0 the expression-based DataFrame API is the only implementation (do not install dask-expr or disable query planning). It also uses a small, memory-safe array example and a more specific DataFrame groupby example. The other two copies use a much larger array example (100000x100000) and a simpler groupby example, and they include a laptop-to-cluster capacity line that the K-Dense copy omits. FreedomIntelligence/OpenClaw-Medical-Skills adds a tool-selection note (use vaex for out-of-core single-machine analytics, polars for in-memory speed) that the others lack. Because each copy has material steps or constraints the others lack, and they disagree on version pinning and example sizing, crowning one would hide real alternatives.</pre>
+</body>
+</html>

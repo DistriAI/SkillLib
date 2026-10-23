@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gsea</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / gsea</p><h1>gsea</h1><p class="meta">combined</p><p>Tests a ranked gene vector for coordinated expression shifts in GO, KEGG, Reactome, or MSigDB gene sets with clusterProfiler&#x27;s gseGO, gseKEGG, gsePathway, and GSEA (fgseaMultilevel engine), and scores per-sample pathway activity with ssGSEA and GSVA. Covers why a GSEA result is a deterministic function of three implicit choices (the ranking STATISTIC, the weight exponent p, and which LABELS are permuted), why the input must be a NAMED vector sorted DECREASING by a signed variance-calibrated metric (DESeq2 stat, limma t) not a raw p-value that erases direction, why preranked gene-permutation is anti-conservative for correlated sets (CAMERA is the fix), why nPerm is gone (eps governs tiny p), and why set.seed is required. Use when every gene carries a DE statistic, when a hard cutoff is arbitrary, or when ORA finds nothing. For gene-list ORA see go-enrichment; the ranking statistic comes from differential-expression/de-results.
+
+Run GSEA on a ranked gene list and produce the enrichment table, running-score table, and enrichment plots.</p><h2>When to use</h2><ul><li>Running GSEA on a gene list ranked by a statistic</li><li>Generating enrichment curve plots from existing `enrichGSEA.csv` and `gsea_running_scores.csv`</li><li>Smoke-testing the pipeline with `tests/data/sample_deg_results.csv`</li></ul><h2>When not to use</h2><ul><li>Differential expression on raw expression matrices</li><li>Single-sample ssGSEA</li><li>Network analysis or multi-omics integration</li></ul><p><a href="../science/gsea/gsea.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills describe different GSEA workflows. The first is a specific CLI wrapper (scripts/main.R) with a fixed set of arguments and modes. The second is a conceptual guide for using R packages (clusterProfiler, fgsea) directly, emphasizing statistical validity, permutation types, and version compatibility. They do not reproduce each other; the first is a tool-specific procedure, while the second is a methodological framework. Combining them provides both the specific tool usage and the critical statistical context.</pre>
+</body>
+</html>

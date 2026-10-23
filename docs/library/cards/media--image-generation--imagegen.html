@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>imagegen</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / imagegen</p><h1>imagegen</h1><p class="meta">combined</p><p>Use when the user asks to generate or edit images via the OpenAI Image API (for example: generate image, edit/inpaint/mask, background removal or replacement, transparent background, product shots, concept art, covers, or batch variants); run the bundled CLI (`scripts/image_gen.py`) and require `OPENAI_API_KEY` for live calls.
+
+Generate or edit raster images when the task benefits from AI-created bitmap visuals such as photos, illustrations, textures, sprites, mockups, or transparent-background cutouts. Use when Codex should create a brand-new image, transform an existing image, or derive visual variants from references, and the output should be a bitmap asset rather than repo-native code or vector. Do not use when the task is better handled by editing existing SVG/vector/code-native assets, extending an established icon or logo system, or building the visual directly in HTML/CSS/canvas.</p><h2>When to use</h2><ul><li>Generate a new image (concept art, product shot, cover, website hero)</li><li>Edit an existing image (inpainting, masked edits, lighting or weather transformations, background replacement, object removal, compositing, transparent background)</li><li>Batch runs (many prompts, or many variants across prompts)</li><li>Generate a new image using one or more reference images for style, composition, or mood</li><li>Edit an existing image (inpainting, lighting or weather transformations, background replacement, object removal, compositing, transparent background)</li><li>Produce many assets or variants for one task</li></ul><h2>When not to use</h2><ul><li>Extending or matching an existing SVG/vector icon set, logo system, or illustration library inside the repo</li><li>Creating simple shapes, diagrams, wireframes, or icons that are better produced directly in SVG, HTML/CSS, or canvas</li><li>Making a small project-local asset edit when the source file already exists in an editable native format</li><li>Any task where the user clearly wants deterministic code-native output instead of a generated bitmap</li></ul><p><a href="../media/image-generation/imagegen.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe the same task but disagree on the primary execution path and several operational constraints. The openai/skills copy treats the built-in image_gen tool as the default and the CLI as an explicit-only fallback, while the Vibe-Skills copy treats the bundled CLI as the default and requires OPENAI_API_KEY for all live calls. They also differ on save-path policy, model defaults, dependency installation, and prompt-augmentation taxonomy. Crowning one copy would hide a real alternative workflow.</pre>
+</body>
+</html>

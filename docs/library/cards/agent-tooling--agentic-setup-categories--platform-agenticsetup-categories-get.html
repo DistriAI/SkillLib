@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>platform-agenticsetup-categories-get</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / platform-agenticsetup-categories-get</p><h1>platform-agenticsetup-categories-get</h1><p class="meta">separate</p><p>Get agentic setup prompt categories from a connected Salesforce org using the Connect API via sf api request rest. Use this skill to call GET /services/data/vXX.0/agenticsetup/categories and return the list of prompt categories, optionally with their nested prompts using fetchPrompts=true. TRIGGER when: user asks to get, fetch, retrieve, list, or show agentic setup categories, prompt categories, setup copilot categories, prompt library categories, available setup prompts, Agentforce prompt library, copilot prompts, or calls the agenticsetup categories Connect REST API. DO NOT TRIGGER when: user wants to create new categories, work with non-categories endpoints, or generate OpenAPI specs.</p><h2>When to use</h2><ul><li>Calling `GET /services/data/{apiVersion}/agenticsetup/categories` via SF CLI</li><li>Passing the `fetchPrompts` query parameter to include nested prompts</li><li>Parsing and presenting the JSON response (categories, labels, prompts)</li><li>Handling errors (403 when feature is disabled, auth failures)</li><li>Creating or modifying prompt categories → not supported via this API (read-only)</li><li>Org authentication setup → use `sf org login` separately</li><li>Permission set assignment → assigning-permission-set</li></ul><p><a href="../agent-tooling/agentic-setup-categories/platform-agenticsetup-categories-get.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>skills/platform-agenticsetup-categories-get/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

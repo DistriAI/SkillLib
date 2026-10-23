@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>service-de-channel-create</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/business.html">business</a> / service-de-channel-create</p><h1>service-de-channel-create</h1><p class="meta">separate</p><p>**INTERNAL USE ONLY — invoked by `service-de-headless-channel-configure`.** Insert an Enhanced messaging `MessagingChannel` (plus child `MessagingChannelUsage` as a free side-effect) of any type — WhatsApp, LINE, Apple Business Chat, Facebook, or SMS. Given a `{MESSAGE_TYPE}` and its inputs, runs the shared preflight → Connect-insert → verify flow, branching only where a type differs. Uses `POST /services/data/v{V}/connect/livemessage/channels` — no Aura session, no shell-stored token. **Invoke `service-de-headless-channel-configure` instead** — it handles insert → route → activate in one flow; replaces the four former per-type creation skills.</p><h2>When not to use</h2><ul><li>**End-to-end setup.** If the user wants insert → route → activate, invoke</li><li>**The channel already exists and you only want to re-route / activate it.** Skip insertion;</li></ul><p><a href="../business/channel-creation/service-de-channel-create.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/forcedotcom/sf-skills">forcedotcom/sf-skills</a></td><td><code>skills/service-de-channel-create/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

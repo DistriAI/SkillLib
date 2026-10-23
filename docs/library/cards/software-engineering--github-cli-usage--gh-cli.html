@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>gh-cli</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / gh-cli</p><h1>gh-cli</h1><p class="meta">combined</p><p>The gh CLI is GitHub&#x27;s official command line tool for interacting with GitHub repositories, issues, pull requests, and more. When needs to interact with GitHub repositories, issues, pull requests, and more, use this skill.
+
+Enforces authenticated gh CLI workflows over unauthenticated curl, WebFetch, and MCP fetch patterns. Use when working with GitHub URLs, API access, pull requests, or issues.</p><h2>When to use</h2><ul><li>Working with GitHub repositories, pull requests, issues, releases, or raw file URLs.</li><li>You need authenticated access to private repositories or higher API rate limits.</li><li>You are about to use `curl`, `wget`, `WebFetch`, or an MCP fetch tool against GitHub.</li></ul><h2>When not to use</h2><ul><li>The target is not GitHub.</li><li>Plain local git operations already solve the task.</li></ul><p><a href="../software-engineering/github-cli-usage/gh-cli.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills serve different purposes. The trailofbits skill is a behavioral guardrail that enforces the use of the `gh` CLI over unauthenticated HTTP methods (curl/WebFetch) for security and rate-limit reasons. The benchflow skill is a reference manual that documents specific `gh` subcommands, flags, and search syntax. Neither contains the material steps of the other; the first lacks command documentation, and the second lacks the enforcement logic for when to use the tool. Combining them creates a complete skill that both mandates the correct tool usage and provides the necessary reference for executing it.</pre>
+</body>
+</html>

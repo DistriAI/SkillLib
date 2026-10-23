@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spatial-data-io</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / spatial-data-io</p><h1>spatial-data-io</h1><p class="meta">combined</p><p>Loads spatial transcriptomics data from Visium, Visium HD, Xenium, MERFISH/MERSCOPE, CosMx, Slide-seq/Curio, and Stereo-seq into AnnData or SpatialData using spatialdata-io and Squidpy. Use when deciding which platform class is in hand (imaging/in-situ vs sequencing/capture), which reader matches the platform (spatialdata_io.xenium/merscope/cosmx vs squidpy.read.visium/vizgen/nanostring), whether to work from the per-transcript molecule table (the re-segmentable source of truth) or the segmentation-derived per-cell matrix (quality-filtered, inherits all segmentation error), whether a molecule table even exists (spot platforms have none), and how to keep coordinate frames and units (pixel vs micron) registered to histology.</p><h2>When to use</h2><ul><li>Load 10X Visium data</li><li>Load 10X Xenium data</li><li>Load MERFISH data</li><li>Load Slide-seq data</li><li>Load Nanostring CosMx</li><li>Load Stereo-seq data</li><li>Convert between formats</li><li>Access spatial coordinates</li></ul><p><a href="../science/spatial-transcriptomics-data-loading/spatial-data-io.html">Skill page</a></p><h2>Conflict</h2><pre>The two skills cover the same task but with different depth and scope. The first copy (OpenClaw) is a practical, code-heavy recipe book for loading specific platforms (Visium, Xenium, MERFISH, Slide-seq, CosMx, Stereo-seq) using Squidpy and SpatialData, including creating data from scratch and subsetting. The second copy (GPTomics) is a conceptual guide that emphasizes the distinction between imaging/in-situ (molecule tables) and sequencing/capture (spot matrices) platforms, warns about coordinate frame mismatches, and provides a decision framework for choosing the right reader. The GPTomics version contains critical conceptual constraints (e.g., &#x27;molecule table is source of truth&#x27;, &#x27;Visium has no molecule table&#x27;) and version compatibility checks that the OpenClaw version lacks. Conversely, the OpenClaw version has specific code examples for creating AnnData from scratch and subsetting by region that are not present in the GPTomics version. Combining them yields a more robust skill that handles both the &#x27;what to load&#x27; decision logic and the &#x27;how to load&#x27; implementation details.</pre>
+</body>
+</html>

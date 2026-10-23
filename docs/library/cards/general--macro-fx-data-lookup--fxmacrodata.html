@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>fxmacrodata</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/general.html">general</a> / fxmacrodata</p><h1>fxmacrodata</h1><p class="meta">combined</p><p>Look up official macroeconomic releases, central-bank policy rates, release calendars and FX rates for 22 currencies through the FXMacroData MCP server. Use for questions about CPI, GDP, jobs data, rate decisions, bond yields or what data is due next, when the answer should come from the published number rather than news coverage. Remote server at https://mcp.fxmacrodata.com/mcp; USD works without a key.
+
+Query FXMacroData for official-source macro indicators, release calendars, central-bank policy rates, FX rates and CFTC positioning across 22 currencies.</p><h2>When to use</h2><ul><li>&quot;What did US CPI print this morning, and how does it compare with last month?&quot;</li><li>&quot;When is the next ECB decision?&quot;</li><li>&quot;Show the RBA cash rate over the last two years&quot;</li><li>&quot;What US data is due this week?&quot;</li><li>Use when the user asks for an official macro figure for a country or currency: CPI, core inflation, GDP, unemployment, payrolls, retail sales, business and consumer confidence, trade balance, bond yields.</li><li>Use when the user asks when the next CPI, payrolls, GDP or central-bank decision is due, or wants the release calendar for a week.</li><li>Use when comparing central-bank policy rates or yield differentials between two currencies (for example USD vs JPY carry).</li><li>Use when the user wants daily FX reference rates or CFTC Commitments of Traders positioning for a currency future.</li></ul><h2>When not to use</h2><ul><li>Without a key, only USD data is returned, with a 15-minute release delay and 90 days of history. A request for older data is clipped to the last 90 days rather than rejected, so check `requested_start_date` and `freemium_window`.</li><li>All timestamps are UTC (Unix seconds or ISO 8601 with offset). Calendar times are scheduled times and can move; check `release_date_confirmed`.</li><li>FX rates are daily official reference rates, not live dealing quotes.</li><li>COT data is weekly and covers only the contracts listed above.</li><li>Indicator coverage differs by currency; a slug that exists for USD may not exist for another currency.</li><li>This skill reads data only. It does not give investment advice, and figures should be checked against the publisher&#x27;s own release for anything consequential.</li></ul><p><a href="../general/macro-fx-data-lookup/fxmacrodata.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies describe the same service but prescribe different integration paths and tool surfaces. The davepoon copy is an MCP-server skill (Streamable HTTP at mcp.fxmacrodata.com/mcp, tools like data_catalogue, indicator_query, release_calendar, forex, rate_differentials, rate_curve, cot_data, commodities, market_sessions, and multi-step research tools). The sickn33 copy is a REST-API skill (base https://api.fxmacrodata.com/v1, X-API-Key header, endpoints like /data_catalogue/{currency}, /announcements/{currency}/{indicator}, /calendar/{currency}, /cot/{currency}, /forex/{base}/{quote}, /rate_differentials/{base}/{quote}, with detailed query parameters and response shapes). They agree on the 22-currency scope, the USD keyless tier with 15-minute delay and 90-day window, the need to discover slugs via a catalogue, and the instruction not to report subscription-gated data as missing. They disagree on transport, authentication header, endpoint/tool names, and available capabilities (e.g., rate_curve and market_sessions appear only in the MCP copy; detailed REST query parameters and response fields appear only in the REST copy). Crowning one would hide a real alternative integration.</pre>
+</body>
+</html>

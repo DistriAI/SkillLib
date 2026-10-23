@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>skeleton-first</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/software-engineering.html">software-engineering</a> / skeleton-first</p><h1>skeleton-first</h1><p class="meta">authentic</p><p>Prove a data/AI/agent workflow end to end on a tiny sample, find cheap wins, then scale in cost-gated steps within budget.</p><h2>When to use</h2><ul><li>A workflow with 2+ stages (ingest -&gt; transform -&gt; model/LLM -&gt; output), or anything that touches paid compute: warehouse credits, LLM tokens, embeddings, API calls.</li><li>New or unfamiliar data, a new tool or SDK, an architecture that has not run in this environment before.</li><li>The user asks to &quot;build X end to end&quot;, &quot;set up the pipeline&quot;, &quot;process all the documents&quot;, &quot;create the models&quot;.</li></ul><h2>When not to use</h2><ul><li>Needs a way to measure cost (a ledger, billing view, token counts or query history); without it, projections are estimates and should be labeled as such.</li><li>Small rungs can miss problems that only appear at scale (rate limits, rare record types, skewed partitions); keep the full-run gate and reconcile totals.</li><li>Adds a few minutes and some tokens per task; not worth it for one-off queries, single-file fixes or work already proven at full size.</li><li>Tests written by the same agent can be too easy; use held-out tests or a human spot-check before claiming quality.</li><li>Cost levers listed for Snowflake and dbt are starting points; check your platform&#x27;s current pricing and features.</li></ul><p><a href="../software-engineering/project-scaffolding/skeleton-first.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/skeleton-first/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>differential-splicing</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / differential-splicing</p><h1>differential-splicing</h1><p class="meta">separate</p><p>Detects differential alternative splicing between conditions using rMATS-turbo (binomial LRT on junction counts), leafcutter (Dirichlet-multinomial GLM on intron clusters), MAJIQ V3 deltapsi/HET (Bayesian posterior on LSVs), SUPPA2 (empirical-null on TPM-derived PSI), or Shiba (junction-imbalance-corrected, 2025 SOTA at low coverage). Reports FDR-corrected significance and delta PSI effect sizes. Tools differ in statistical model, annotation dependence, calibration regime, and replicate-count requirements. Use when comparing splicing patterns between treatment groups, tissues, or disease states.</p><h2>When to use</h2><ul><li>comparing splicing patterns between treatment groups</li><li>comparing splicing patterns between tissues</li><li>comparing splicing patterns between disease states</li><li>standard n=3 vs n=3 designs</li><li>small pilot n=2 vs n=2 designs</li><li>heterogeneous cohort designs</li><li>paired tumor-normal designs</li><li>non-model organism without annotation</li></ul><h2>When not to use</h2><ul><li>single-sample-vs-cohort outlier detection</li><li>time-course / multi-condition design</li><li>long-read splicing analysis</li></ul><p><a href="../science/bioinformatics-differential-splicing/differential-splicing.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/GPTomics/bioSkills">GPTomics/bioSkills</a></td><td><code>alternative-splicing/differential-splicing/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

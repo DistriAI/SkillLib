@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>eas-update-insights</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/devops.html">devops</a> / eas-update-insights</p><h1>eas-update-insights</h1><p class="meta">authentic</p><p>Check the health of published EAS Update: crash rates, install/launch counts, unique users, payload size, and the split between embedded and OTA users per channel. Use when the user asks how an update is performing, whether a rollout is healthy, how many users are on the embedded build vs OTA, or wants to gate CI on update health.</p><h2>When to use</h2><ul><li>&quot;How is the latest update doing?&quot;</li><li>&quot;Is the latest update healthy?&quot;</li><li>&quot;Is the new release crashing more than the last one?&quot;</li><li>&quot;How many users are on the latest update vs the embedded build?&quot;</li><li>&quot;Which update is most popular on production right now?&quot;</li><li>&quot;How big is our update bundle?&quot;</li></ul><h2>When not to use</h2><ul><li>**Unique users across platforms** may double-count users who run the same publish on both iOS and Android. The same caveat applies to `otaTotalUniqueUsers` in channel insights, which is a sum over `mostPopularUpdates`.</li><li>**Fresh publishes** may show zeros for a short period while the metrics pipeline catches up.</li><li>**Installs are downloads, not launches**: the `installs` / &quot;Launches&quot; field counts users who downloaded the manifest and launch asset. A confirmed run only registers on the user&#x27;s *next* update check (typically up to 24h later, depending o…</li><li>**Crashes are self-reported**: `failedInstalls` / &quot;Crashes&quot; counts updates that errored during install/launch and were reported on the next update check. Crashes that don&#x27;t trigger an update request (e.g. process kill before recovery) won&#x27;…</li></ul><p><a href="../devops/eas-update-health-insights/eas-update-insights.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/expo/skills">expo/skills</a></td><td><code>plugins/expo/skills/eas-update-insights/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

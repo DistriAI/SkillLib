@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ensembl-database</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/research.html">research</a> / ensembl-database</p><h1>ensembl-database</h1><p class="meta">combined</p><p>Query Ensembl genome database REST API for 250+ species. Gene lookups, sequence retrieval, variant analysis, comparative genomics, orthologs, VEP predictions, for genomic research.
+
+Access Ensembl REST API for vertebrate genomic data; use when you need gene/ID lookups, sequence retrieval, variant effect prediction (VEP), or homology/assembly coordinate mapping.</p><h2>When to use</h2><ul><li>Querying gene information by symbol or Ensembl ID</li><li>Retrieving DNA, transcript, or protein sequences</li><li>Analyzing genetic variants using the Variant Effect Predictor (VEP)</li><li>Finding orthologs and paralogs across species</li><li>Accessing regulatory features and genomic annotations</li><li>Converting coordinates between genome assemblies (e.g., GRCh37 to GRCh38)</li><li>Performing comparative genomics analyses</li><li>Integrating Ensembl data into genomic research pipelines</li></ul><p><a href="../research/ensembl-rest-queries/ensembl-database.html">Skill page</a></p><h2>Conflict</h2><pre>The two copies overlap on Ensembl REST use cases (gene lookup, sequence, VEP, homology, assembly mapping) but each has material steps the other lacks. The aipoch copy is a packaged skill centered on scripts/query_ensembl.py with a CLI contract (--action lookup|sequence|vep, --species, --symbol, --id, --hgvs) and references/api_endpoints.md, but it omits rate-limiting, error handling, and direct REST examples. The FreedomIntelligence copy provides direct REST endpoints, ensembl_rest Python examples, rate-limiting (15 req/s, Retry-After), error handling, and assembly-mapping server selection, but it does not define the packaged CLI or the repository&#x27;s script-based execution path. Crowning one would hide a real alternative workflow.</pre>
+</body>
+</html>

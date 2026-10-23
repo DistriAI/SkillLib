@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>mid-engagement-ir-detection</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / mid-engagement-ir-detection</p><h1>mid-engagement-ir-detection</h1><p class="meta">authentic</p><p>Methodology for detecting client SOC patches, attacker activity, and security-state changes that occur DURING a red-team engagement — and converting those observations into deliverable findings. Built from authorized red-team work where the client patched a confirmed SQLi within 30 minutes of detection AND an external attacker locked multiple new accounts during a single test session. Use when (a) running ANY active engagement against a monitored target, (b) a previously-confirmed finding stops reproducing, (c) baseline timing shifts unexpectedly, or (d) you notice response patterns changing during testing.</p><h2>When to use</h2><ul><li>Running active testing against a target with active SOC monitoring</li><li>A confirmed-vulnerable finding stops reproducing on recheck</li><li>Baseline timing shifts unexpectedly (3× slower, sudden errors, new headers)</li><li>Response sizes change between test windows</li><li>New WAF cookies or headers appear that weren&#x27;t there at session start</li><li>Lockout / error rates change between test windows (especially LOCKED count for credential attacks)</li><li>Engagement is &quot;assume breach&quot; or &quot;white box&quot; — client knows you&#x27;re testing</li><li>Bug bounty (client doesn&#x27;t know you&#x27;re there; no real-time IR)</li></ul><h2>When not to use</h2><ul><li>Bug bounty</li><li>Pure recon</li><li>One-off vulnerability scanning</li></ul><p><a href="../security/mid-engagement-ir-detection/mid-engagement-ir-detection.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/uphiago/recon-skills">uphiago/recon-skills</a></td><td><code>redteam/mid-engagement-ir-detection/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

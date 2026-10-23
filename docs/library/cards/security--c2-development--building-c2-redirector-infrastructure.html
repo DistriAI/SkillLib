@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>building-c2-redirector-infrastructure</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/security.html">security</a> / building-c2-redirector-infrastructure</p><h1>building-c2-redirector-infrastructure</h1><p class="meta">separate</p><p>Build dumb-pipe and traffic-filtering C2 redirectors with nginx (proxy_pass) and Apache (mod_rewrite), deriving filter rules from a Malleable C2 profile, layering Let&#x27;s Encrypt TLS, and applying OPSEC controls like domain fronting and UA/geo filtering. Use when standing up red-team C2 that must survive blue-team triage or ensuring only profile-matching implant traffic reaches the hidden team server.</p><h2>When to use</h2><ul><li>Standing up red-team C2 that must survive blue-team triage and domain takedown requests.</li><li>Separating a hidden team server from any internet-facing host during an engagement.</li><li>Filtering implant traffic so only profile-matching requests reach the backend, diverting scanners.</li><li>Adding TLS termination, domain categorization, and CDN/domain fronting to an HTTP(S) listener.</li><li>Teaching defenders how external-proxy C2 (T1090.002) is constructed so they can detect it.</li></ul><p><a href="../security/c2-development/building-c2-redirector-infrastructure.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/mukul975/Anthropic-Cybersecurity-Skills">mukul975/Anthropic-Cybersecurity-Skills</a></td><td><code>skills/building-c2-redirector-infrastructure/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

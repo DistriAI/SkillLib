@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>matchms</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/science.html">science</a> / matchms</p><h1>matchms</h1><p class="meta">combined</p><p>Mass spectrometry analysis. Process mzML/MGF/MSP, spectral similarity (cosine, modified cosine), metadata harmonization, compound ID, for metabolomics and MS data processing.
+
+Processes, cleans, compares, and searches tandem mass spectra with matchms. Use for MS/MS file I/O, metadata harmonization, peak filtering, spectral similarity, library matching, score matrices, and molecular-similarity networks. Use pyopenms instead for LC-MS feature detection or proteomics pipelines.</p><h2>When to use</h2><ul><li>Use this skill when you need process, clean, and compare mass spectrometry (ms/ms) spectra with matchms; use when you need reproducible spectral filtering and similarity scoring for metabolomics workflows in a reproducible workflow.</li><li>Use this skill when a data analytics task needs a packaged method instead of ad-hoc freeform output.</li><li>Use this skill when the user expects a concrete deliverable, validation step, or file-based result.</li><li>Use this skill when `scripts/similarity_pipeline.py` is the most direct path to complete the request.</li><li>Use this skill when you need the `matchms` package behavior rather than a generic answer.</li></ul><p><a href="../science/msms-spectral-similarity/matchms.html">Skill page</a></p><h2>Conflict</h2><pre>The K-Dense copy is the most technically current and safe, pinning matchms 0.33.1 and correcting removed APIs (ModifiedCosine, add_losses, SpectrumProcessor callability). However, the other copies contain material steps and constraints that K-Dense lacks or presents differently: explicit import/export function names (load_from_mgf, save_as_msp), a broader list of similarity functions (FingerprintSimilarity, MetadataMatch), a packaged script execution path (similarity_pipeline.py), and a different dependency pinning strategy (matchms&gt;=0.20,&lt;1.0 vs ==0.33.1). Crowning K-Dense would hide the alternative workflow of using the packaged script and the broader similarity function set. The copies disagree on the correct similarity class name (ModifiedCosine vs ModifiedCosineGreedy) and the version pin, which are real conflicts.</pre>
+</body>
+</html>

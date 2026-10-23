@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>mesh-memory</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/agent-tooling.html">agent-tooling</a> / mesh-memory</p><h1>mesh-memory</h1><p class="meta">authentic</p><p>Self-hosted semantic memory for AI agents via MCP. Save worklogs, decisions, and notes, then recall them across sessions by meaning, not keyword. Postgres + pgvector with auto-tagging.</p><h2>When to use</h2><ul><li>Saving a session worklog, decision, or research note so a later session can find it.</li><li>Recalling past work by topic when you do not remember the exact words you used.</li><li>Sharing a long-lived knowledge base across multiple agents, terminals, or teammates.</li><li>Organizing context by role or project through workspaces (one workspace per role/project).</li><li>Looking up structured tags (e.g. all `type:decision` entries from one project).</li></ul><h2>When not to use</h2><ul><li>Mesh is a knowledge store, not a chat memory. Long conversation transcripts should be summarized before being saved.</li><li>Vector similarity is robust but not perfect; for high-precision structured lookups, prefer `mesh_bytag` over `mesh_search`.</li><li>Embeddings run on CPU by default; very large corpora (hundreds of thousands of documents) benefit from a dedicated instance and pgvector tuning, not covered here.</li><li>The optional AI categorizer requires an OpenAI-compatible LLM endpoint and is disabled by default.</li></ul><p><a href="../agent-tooling/distributed-memory-management/mesh-memory.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/mesh-memory/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>
