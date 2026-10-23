@@ -1,8 +1,8 @@
 import unittest
 
-from skillrepo.sorting.build import build_skill_index, update_skill_index
-from skillrepo.sorting.judge import judge_cluster
-from skillrepo.sorting.records import SkillOccurrence, normalize_skill_name
+from skilllib.sorting.build import build_skill_index, update_skill_index
+from skilllib.sorting.judge import judge_cluster
+from skilllib.sorting.records import SkillOccurrence, normalize_skill_name
 
 
 def occurrence(

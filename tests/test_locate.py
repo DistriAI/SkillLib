@@ -3,11 +3,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from skillrepo.sorting.enrich import enrich_cards, is_thin
-from skillrepo.sorting.families import build_task_families, heuristic_namer, write_family_pages
-from skillrepo.sorting.finder import Finder
-from skillrepo.sorting.links import extract_links, link_cards
-from skillrepo.sorting.promptpack import render_prompt
+from skilllib.sorting.enrich import enrich_cards, is_thin
+from skilllib.sorting.families import build_task_families, heuristic_namer, write_family_pages
+from skilllib.sorting.finder import Finder
+from skilllib.sorting.links import extract_links, link_cards
+from skilllib.sorting.promptpack import render_prompt
 
 
 def card(skill_id, name, **overrides):
@@ -203,7 +203,7 @@ For the generic templates, use the `report-writing` skill. Before deciding to re
             target = card("acme::gsea", "gsea", description="Run GSEA.")
             summary = link_cards([target], root)
             self.assertIn("scripts/main.R", target["applicability"]["bundled_files"])
-            self.assertIn("python -m skillrepo visit", target["applicability"]["gap"])
+            self.assertIn("python -m skilllib visit", target["applicability"]["gap"])
             loaded = Finder([target]).load(root, "acme::gsea")
             self.assertEqual(loaded["text"], "")
             self.assertIn("not checked out", loaded["gap"])

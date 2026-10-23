@@ -1,6 +1,8 @@
-# skillrepo interface
+# SkillLib interface
 
-Run commands from the repository root with `PYTHONPATH=src`. The same actions are available as functions imported from `skillrepo`.
+The public overview is the [README](../README.md). The hosted page is [index.html](index.html).
+
+Run commands from the repository root with `PYTHONPATH=src`. The same actions are available as functions imported from `skilllib`.
 
 The catalog built from repositories with more than 1,000 stars stays in `catalog/skill_repositories.json`. Later repositories are merged into that file. `update_index` then refreshes only the name groups those repositories change.
 
@@ -13,15 +15,15 @@ Find skill-content repositories and collections, or inspect one repository by na
 Search GitHub and write `catalog/skill_repositories.json` and `catalog/search_report.json`. `min_stars=1000` keeps repositories with more than 1000 stars. The default replaces the saved catalog. `merge=True` keeps every repository already stored and adds the ones this search accepted. The saved star cutoff becomes the lower of the two.
 
 ```python
-from skillrepo import search_repositories
+from skilllib import search_repositories
 
 catalog = search_repositories(1000, merge=True)
 print(len(catalog.skill_repositories()), len(catalog.collections()))
 ```
 
 ```bash
-python -m skillrepo search --min-stars 1000 --min-skills 5 --jobs 6
-python -m skillrepo search --min-stars 500 --merge
+python -m skilllib search --min-stars 1000 --min-skills 5 --jobs 6
+python -m skilllib search --min-stars 500 --merge
 ```
 
 ### `add_repository(full_name, *, root=None, min_skills=5, jobs=6)`
@@ -29,14 +31,14 @@ python -m skillrepo search --min-stars 500 --merge
 Fetch one `owner/name` repository, classify it, and merge it into the catalog. This does not run a search. An existing record is replaced by the fresh inspection. The saved star cutoff is left as it was. `LookupError` means the repository is not skill content, or it has fewer than `min_skills` skill files.
 
 ```python
-from skillrepo import add_repository
+from skilllib import add_repository
 
 add_repository("owner/name")
 ```
 
 ```bash
-python -m skillrepo add owner/name
-python -m skillrepo add owner/name --min-skills 5
+python -m skilllib add owner/name
+python -m skilllib add owner/name --min-skills 5
 ```
 
 ### `load_catalog(root=None)`
@@ -44,14 +46,14 @@ python -m skillrepo add owner/name --min-skills 5
 Read `catalog/skill_repositories.json`.
 
 ```python
-from skillrepo import load_catalog
+from skilllib import load_catalog
 
 catalog = load_catalog()
 print(catalog.get("anthropics/skills").skill_count)
 ```
 
 ```bash
-python -m skillrepo list
+python -m skilllib list
 ```
 
 ## Retrieval
@@ -61,14 +63,14 @@ python -m skillrepo list
 Download each `SKILL.md` named in `catalog/skill_screen.json` into `cache/skills/owner/name/...`. A file that is already stored, or that already exists in a submodule checkout, is skipped. The status is `catalog/download_status.json`.
 
 ```python
-from skillrepo import download_skills
+from skilllib import download_skills
 
 status = download_skills(".")
 print(status["finished"], status["failed"])
 ```
 
 ```bash
-python -m skillrepo download --workers 6 --timeout 20
+python -m skilllib download --workers 6 --timeout 20
 ```
 
 Exit code 2 means some fetches failed. Run the same command again to retry the missing files.
@@ -78,13 +80,13 @@ Exit code 2 means some fetches failed. Run the same command again to retry the m
 Check out one repository as a git submodule at `cache/repos/owner/name`. A later call reuses that checkout. This is the tree an agent needs when a skill names scripts or references. `download_skills` only stores `SKILL.md` for indexing.
 
 ```python
-from skillrepo import visit_repository
+from skilllib import visit_repository
 
 print(visit_repository("anthropics/skills"))
 ```
 
 ```bash
-python -m skillrepo visit anthropics/skills
+python -m skilllib visit anthropics/skills
 ```
 
 ## Indexing
@@ -108,7 +110,7 @@ Compare the catalog with `catalog/index_state.json`.
 The state file is written after this work finishes. A failed download or a failed enrichment leaves the state unchanged, so the next call retries that work.
 
 ```python
-from skillrepo import update_index
+from skilllib import update_index
 
 summary = update_index(judge="heuristic")
 print(summary["action"], summary["added"], summary["changed"])
@@ -117,9 +119,9 @@ print(summary["action"], summary["added"], summary["changed"])
 `summary["action"]` is one of `seeded`, `idle`, `updated`, `download_incomplete`, `enrich_incomplete`, or `model_unavailable`.
 
 ```bash
-python -m skillrepo update
-python -m skillrepo update --judge heuristic
-python -m skillrepo update --judge llm --max-clusters 20
+python -m skilllib update
+python -m skilllib update --judge heuristic
+python -m skilllib update --judge llm --max-clusters 20
 ```
 
 Exit code 0 is `seeded`, `idle`, or `updated`. Exit code 1 is a missing catalog or a model that did not answer. Exit code 2 is a download or enrichment failure.
@@ -127,13 +129,13 @@ Exit code 0 is `seeded`, `idle`, or `updated`. Exit code 1 is a missing catalog 
 These stage commands remain available when you want one product at a time:
 
 ```bash
-python -m skillrepo screen --max-variants 4
-python -m skillrepo index --judge llm
-python -m skillrepo cards
-python -m skillrepo enrich
-python -m skillrepo families --name-with llm
-python -m skillrepo link
-python -m skillrepo browse
+python -m skilllib screen --max-variants 4
+python -m skilllib index --judge llm
+python -m skilllib cards
+python -m skilllib enrich
+python -m skilllib families --name-with llm
+python -m skilllib link
+python -m skilllib browse
 ```
 
 `browse` writes the HTML shelf under `html/`. `update` does not regenerate those pages.
@@ -147,7 +149,7 @@ These functions read the current cards and families. They do no indexing.
 Return `{"cards": [...], "pairs": [...]}`. Each card view has `id`, `name`, `score`, `kind`, `description`, and `family`. `pairs` lists a follow-on skill when the task matches both ends of a `follows` link. `constraints` is a set of tool names the caller already has, such as `{"python", "git"}`.
 
 ```python
-from skillrepo import find_skills
+from skilllib import find_skills
 
 found = find_skills("Run GSEA on a ranked gene list", limit=5)
 for card in found["cards"]:
@@ -155,9 +157,9 @@ for card in found["cards"]:
 ```
 
 ```bash
-python -m skillrepo find "Run GSEA on a ranked gene list"
-python -m skillrepo find "Run GSEA on a ranked gene list" --domain science --limit 5
-python -m skillrepo find --eval
+python -m skilllib find "Run GSEA on a ranked gene list"
+python -m skilllib find "Run GSEA on a ranked gene list" --domain science --limit 5
+python -m skilllib find --eval
 ```
 
 ### `load_skill(skill_id, *, root=None)`
@@ -165,14 +167,14 @@ python -m skillrepo find --eval
 Return the cached procedure for one card id. When the skill names bundled files that are not checked out, `text` is empty and `gap` tells you which repository to visit.
 
 ```python
-from skillrepo import load_skill
+from skilllib import load_skill
 
 loaded = load_skill("combined::gsea")
 print(loaded["gap"] or loaded["text"][:500])
 ```
 
 ```bash
-python -m skillrepo load combined::gsea
+python -m skilllib load combined::gsea
 ```
 
 ### `render_prompt(root=None, working_set=None, cards=None)`
@@ -180,14 +182,14 @@ python -m skillrepo load combined::gsea
 Render the resident prompt: one sentence per domain, the instruction to call `find_skills` before deciding that no skill applies, and a cap of 3 loaded bodies. `working_set` is a list of card ids whose name and description are included. Pass `cards` to render an in-memory map; otherwise the cards are read from `catalog/routing_cards.jsonl`.
 
 ```python
-from skillrepo import render_prompt
+from skilllib import render_prompt
 
 text = render_prompt(working_set=["combined::gsea", "combined::pdf"])
 print(text)
 ```
 
 ```bash
-python -m skillrepo prompt --working-set catalog/working_set.example.json
+python -m skilllib prompt --working-set catalog/working_set.example.json
 ```
 
 The command also writes `catalog/skill_prompt.txt`.

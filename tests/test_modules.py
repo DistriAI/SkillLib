@@ -5,16 +5,16 @@ import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
 
-from skillrepo.catalog import Catalog
-from skillrepo.cli import main
-from skillrepo.content import FileListing
-from skillrepo.index import update_index
-from skillrepo.models import RepoMeta
-from skillrepo.search import add_repository, search_repositories
-from skillrepo.sorting.build import INDEX_PATH, build_skill_index, save_skill_index
-from skillrepo.sorting.cards import build_routing_cards, load_routing_cards, write_routing_cards
-from skillrepo.sorting.families import FAMILIES_PATH, assign_to_families, build_task_families, heuristic_namer, write_task_families
-from skillrepo.sorting.links import link_cards
+from skilllib.catalog import Catalog
+from skilllib.cli import main
+from skilllib.content import FileListing
+from skilllib.index import update_index
+from skilllib.models import RepoMeta
+from skilllib.search import add_repository, search_repositories
+from skilllib.sorting.build import INDEX_PATH, build_skill_index, save_skill_index
+from skilllib.sorting.cards import build_routing_cards, load_routing_cards, write_routing_cards
+from skilllib.sorting.families import FAMILIES_PATH, assign_to_families, build_task_families, heuristic_namer, write_task_families
+from skilllib.sorting.links import link_cards
 
 
 def meta(full_name: str, description: str, stars: int = 2000) -> RepoMeta:
@@ -56,7 +56,7 @@ class ListingFetcher:
 
 class MergeTests(unittest.TestCase):
     def test_merge_keeps_repositories_from_the_earlier_search(self) -> None:
-        root = Path(tempfile.mkdtemp(prefix="skillrepo-merge-"))
+        root = Path(tempfile.mkdtemp(prefix="skilllib-merge-"))
         fetcher = ListingFetcher(
             {"anthropics/skills": "Skills for Claude.", "acme/team-skills": "Skills for Claude."},
             {"anthropics/skills": skill_paths(), "acme/team-skills": skill_paths()},
@@ -87,7 +87,7 @@ class MergeTests(unittest.TestCase):
         self.assertEqual(report["added"], ["acme/team-skills"])
 
     def test_add_merges_one_repository_and_keeps_the_star_cutoff(self) -> None:
-        root = Path(tempfile.mkdtemp(prefix="skillrepo-add-"))
+        root = Path(tempfile.mkdtemp(prefix="skilllib-add-"))
         fetcher = ListingFetcher(
             {"anthropics/skills": "Skills for Claude.", "acme/team-skills": "Skills for Claude.", "acme/empty": ""},
             {
@@ -164,7 +164,7 @@ def finish_products(root: Path, document: dict) -> None:
 
 class UpdateTests(unittest.TestCase):
     def test_seed_is_idle_and_a_new_skill_is_added_beside_the_old_one(self) -> None:
-        root = Path(tempfile.mkdtemp(prefix="skillrepo-update-"))
+        root = Path(tempfile.mkdtemp(prefix="skilllib-update-"))
         original = repository("acme/pack", [("notes", "skills/notes/SKILL.md")])
         document = write_catalog(root, [original])
         text = root / "cache" / "skills" / "acme" / "pack" / "skills" / "notes" / "SKILL.md"
@@ -255,7 +255,7 @@ class FamilyAssignTests(unittest.TestCase):
 
 class LinkRescanTests(unittest.TestCase):
     def test_only_a_file_that_mentions_the_new_name_is_parsed_again(self) -> None:
-        root = Path(tempfile.mkdtemp(prefix="skillrepo-link-"))
+        root = Path(tempfile.mkdtemp(prefix="skilllib-link-"))
         web = root / "cache" / "skills" / "acme" / "skills" / "web" / "SKILL.md"
         other = root / "cache" / "skills" / "acme" / "skills" / "other" / "SKILL.md"
         report = root / "cache" / "skills" / "acme" / "skills" / "report-writing" / "SKILL.md"
@@ -337,11 +337,11 @@ class HelpTests(unittest.TestCase):
 
 class InterfaceTests(unittest.TestCase):
     def test_find_and_prompt_read_the_cards_update_wrote(self) -> None:
-        root = Path(tempfile.mkdtemp(prefix="skillrepo-agent-"))
+        root = Path(tempfile.mkdtemp(prefix="skilllib-agent-"))
         document = write_catalog(root, [repository("acme/pack", [("notes", "skills/notes/SKILL.md")])])
         finish_products(root, document)
         update_index(root, judge="heuristic", progress=lambda _message: None)
-        from skillrepo import find_skills, render_prompt
+        from skilllib import find_skills, render_prompt
 
         found = find_skills("take notes", root=root)
         self.assertTrue(found["cards"])

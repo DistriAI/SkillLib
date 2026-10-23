@@ -3,12 +3,12 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from skillrepo.sorting.build import build_skill_index
-from skillrepo.sorting.llm_judge import judge_contents
-from skillrepo.sorting.records import SkillOccurrence, normalize_skill_name
-from skillrepo.sorting.retrieve import SkillBody, SkillRetriever
-from skillrepo.sorting.download import download_shortlist, skill_cache_path
-from skillrepo.sorting.screen import SCREEN_PATH, load_screened_clusters, save_skill_screen, screen_catalog, screen_cluster
+from skilllib.sorting.build import build_skill_index
+from skilllib.sorting.llm_judge import judge_contents
+from skilllib.sorting.records import SkillOccurrence, normalize_skill_name
+from skilllib.sorting.retrieve import SkillBody, SkillRetriever
+from skilllib.sorting.download import download_shortlist, skill_cache_path
+from skilllib.sorting.screen import SCREEN_PATH, load_screened_clusters, save_skill_screen, screen_catalog, screen_cluster
 
 
 def occurrence(repository: str, name: str, path: str, **extra) -> SkillOccurrence:
@@ -321,7 +321,7 @@ class ContentJudgeTests(unittest.TestCase):
 
 
 def _screened(occurrence: SkillOccurrence, score: float):
-    from skillrepo.sorting.screen import ScreenedCopy
+    from skilllib.sorting.screen import ScreenedCopy
 
     return ScreenedCopy(occurrence, score, ["shipped skill"], True)
 

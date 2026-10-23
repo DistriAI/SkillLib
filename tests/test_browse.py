@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from skillrepo.browse import write_browse_site
+from skilllib.browse import write_browse_site
 
 
 class BrowseTests(unittest.TestCase):

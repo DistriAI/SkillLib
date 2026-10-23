@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SkillLib — 21,516 agent skills, ready to search</title>
+  <meta name="description" content="SkillLib is a comprehensive library of public agent skills. Search 21,516 leading skills and load one procedure, without placing the catalog in the system prompt.">
+  <style>
+    :root {
+      --paper: #f3efe6;
+      --ink: #221e19;
+      --muted: #5e584e;
+      --line: #221e19;
+      --stamp: #8f2d2d;
+      --card: #fbf8f3;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 18px/1.5 Georgia, "Iowan Old Style", Palatino, "Palatino Linotype", serif;
+    }
+    a { color: var(--stamp); }
+    a:hover { text-decoration: none; }
+    .wrap { width: min(1040px, calc(100% - 2.5rem)); margin: 0 auto; }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      padding: 1.25rem 0 0.8rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .mark { font-weight: 700; letter-spacing: -0.03em; text-decoration: none; color: var(--ink); font-size: 1.15rem; }
+    nav { display: flex; flex-wrap: wrap; gap: 0.9rem 1.2rem; font: 13px/1 "Segoe UI", Helvetica, Arial, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
+    nav a { color: var(--ink); text-decoration: none; }
+    nav a:hover { color: var(--stamp); }
+    .hero { padding: 3.2rem 0 2rem; }
+    .kicker {
+      margin: 0 0 0.8rem;
+      color: var(--stamp);
+      font: 12px/1 "Segoe UI", Helvetica, Arial, sans-serif;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(2.6rem, 6vw, 4.6rem);
+      line-height: 0.95;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      max-width: 14ch;
+    }
+    .lede { max-width: 42rem; font-size: 1.2rem; margin: 1.3rem 0 0; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      margin: 2.2rem 0 0;
+    }
+    .stat { padding: 1rem 1rem 1.1rem 0; }
+    .stat + .stat { border-left: 1px solid var(--line); padding-left: 1rem; }
+    .stat b { display: block; font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.03em; line-height: 1; }
+    .stat span { display: block; margin-top: 0.35rem; color: var(--muted); font-size: 0.92rem; }
+    section { padding: 3.2rem 0; }
+    h2 { font-size: 2rem; font-weight: 500; letter-spacing: -0.03em; margin: 0 0 0.8rem; }
+    h3 { font-size: 1.25rem; font-weight: 500; margin: 0 0 0.4rem; }
+    .figure { margin: 0.6rem 0 0; }
+    .figure img { width: 100%; height: auto; display: block; }
+    .figure figcaption { color: var(--muted); font-size: 0.92rem; margin-top: 0.6rem; }
+    .grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2.5rem; align-items: start; }
+    pre {
+      margin: 0;
+      padding: 1.1rem 1.2rem;
+      background: var(--ink);
+      color: #f3efe6;
+      overflow: auto;
+      font: 14px/1.55 "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+    .calls { display: grid; gap: 1rem; }
+    .call { border-top: 1px solid var(--line); padding-top: 0.8rem; }
+    .call em { font-style: normal; color: var(--stamp); font: 12px/1 "Segoe UI", Helvetica, Arial, sans-serif; letter-spacing: 0.14em; }
+    .traits { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid var(--line); }
+    .trait { padding: 1.1rem 1.2rem 1.2rem 0; border-bottom: 1px solid var(--line); }
+    .trait:nth-child(odd) { padding-right: 1.4rem; border-right: 1px solid var(--line); }
+    .trait:nth-child(even) { padding-left: 1.4rem; }
+    .bars { display: grid; gap: 0.45rem; margin-top: 1.2rem; }
+    .bar { display: grid; grid-template-columns: 11.5rem 1fr 4.2rem; gap: 0.7rem; align-items: center; font-size: 0.95rem; }
+    .bar i { display: block; height: 0.55rem; background: var(--stamp); }
+    .bar b { font-weight: 500; text-align: right; }
+    .note { color: var(--muted); }
+    footer { border-top: 1px solid var(--line); padding: 1.4rem 0 2.4rem; color: var(--muted); font-size: 0.95rem; }
+    @media (max-width: 800px) {
+      .stats, .grid, .traits { grid-template-columns: 1fr; }
+      .stat + .stat { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; }
+      .trait:nth-child(odd), .trait:nth-child(even) { border-right: 0; padding-left: 0; padding-right: 0; }
+      .bar { grid-template-columns: 1fr auto; }
+      .bar i { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a class="mark" href="#top">SkillLib</a>
+      <nav>
+        <a href="#library">Library</a>
+        <a href="#integrate">Integrate</a>
+        <a href="#agent">Agents</a>
+        <a href="#domains">Domains</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <div class="hero">
+        <p class="kicker">A comprehensive library of agent skills</p>
+        <h1>21,516 skills, one search away.</h1>
+        <p class="lede">SkillLib gathers public repositories of Claude-compatible and Codex-compatible skills, resolves overlapping names, and gives an agent three calls: find a skill, load its procedure, and keep the rest of the library out of the prompt.</p>
+        <div class="stats" aria-label="Catalog size">
+          <div class="stat"><b>21,516</b><span>leading skills</span></div>
+          <div class="stat"><b>32,977</b><span>skill files read</span></div>
+          <div class="stat"><b>179</b><span>source repositories</span></div>
+          <div class="stat"><b>13</b><span>task domains</span></div>
+        </div>
+      </div>
+
+      <section id="library">
+        <h2>One name, one skill to follow</h2>
+        <p>The starting catalog is every skill-content repository with more than 1,000 GitHub stars, indexed on 16 October 2026. Specifications, skill SDKs, and agent products are left out. Fifteen curated collections point at the repositories they name.</p>
+        <p>Copies that share a name are judged together. The library keeps a single leading skill: the only copy, the authentic copy, or a combined skill whose conflict note records the disagreement. The other 8,902 copies stay available as variants and are not offered as peers.</p>
+        <figure class="figure">
+          <img src="assets/kinds.svg" alt="15,725 separate skills, 4,994 authentic skills, and 797 combined skills.">
+        </figure>
+        <figure class="figure">
+          <img src="assets/flow.svg" alt="Search 179 repositories, judge them into 21,516 leading skills, index 13 domains, then find and load at most three skills.">
+          <figcaption>From a starred repository to a procedure an agent can follow.</figcaption>
+        </figure>
+      </section>
+
+      <section id="integrate">
+        <h2>Three calls. That is the integration.</h2>
+        <div class="grid">
+          <div>
+            <pre><code>from skilllib import find_skills, load_skill
+
+found = find_skills("Run GSEA on a ranked gene list")
+card = found["cards"][0]
+skill = load_skill(card["id"])</code></pre>
+            <p class="note">The same actions are shell commands. No third-party packages. Python 3.11 or newer.</p>
+            <pre><code>python -m skilllib find "Run GSEA on a ranked gene list"
+python -m skilllib load combined::gsea</code></pre>
+          </div>
+          <div class="calls">
+            <div class="call">
+              <em>01</em>
+              <h3>find_skills</h3>
+              <p>Pass the user’s task. Receive up to five cards: name, description, when to use it, when not to, and the repository it came from.</p>
+            </div>
+            <div class="call">
+              <em>02</em>
+              <h3>load_skill</h3>
+              <p>Pass a card id. Receive the skill text. If the skill names scripts that are not checked out, the reply says which repository to visit.</p>
+            </div>
+            <div class="call">
+              <em>03</em>
+              <h3>render_prompt</h3>
+              <p>A short standing prompt: one sentence per domain, an instruction to search before giving up, and a cap of three loaded skills.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="agent">
+        <h2>It sits in front of the agent’s own skill tools</h2>
+        <p>Hermes, Claude, and Codex already load an installed skill by name. Hermes calls that <code>skill_view</code>. That list is the right size for the skills on one machine. It is the wrong size for 21,516 skills.</p>
+        <p>SkillLib chooses which skill is worth installing. The host then opens that skill with its own loader, including references and scripts. <code>load_skill</code> can show the cached procedure before the install exists. It does not replace <code>skill_view</code>, slash commands, or editing a skill in place.</p>
+        <div class="traits">
+          <div class="trait">
+            <h3>A product name wins</h3>
+            <p>964 product channels, such as a Gmail or Benchling skill, outrank a loose word match. On a 40-task check, 36 tasks returned the expected skill.</p>
+          </div>
+          <div class="trait">
+            <h3>Related skills stay linked</h3>
+            <p>87 skills require another skill, 235 name an alternative, and 112 say what follows. A two-step task can come back as a pair.</p>
+          </div>
+          <div class="trait">
+            <h3>The library can grow</h3>
+            <p><code>add owner/name</code> merges one repository. <code>update</code> judges only the names that changed. Rebuild families later, when you decide the shelves need it.</p>
+          </div>
+          <div class="trait">
+            <h3>MIT, for this code</h3>
+            <p>Use the search library in your own agent. Skill texts collected from other repositories keep the license recorded for each source.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="domains">
+        <h2>Thirteen shelves</h2>
+        <p>Every leading skill has one domain and one scenario. Research is the largest shelf. Documents is the smallest. An agent can pass a domain into <code>find_skills</code> and search only that shelf.</p>
+        <div class="bars" aria-label="Leading skills by domain">
+          <div class="bar"><span>research</span><i style="width:100%"></i><b>4,997</b></div>
+          <div class="bar"><span>science</span><i style="width:48.9%"></i><b>2,446</b></div>
+          <div class="bar"><span>software-engineering</span><i style="width:42.9%"></i><b>2,146</b></div>
+          <div class="bar"><span>business</span><i style="width:42.7%"></i><b>2,134</b></div>
+          <div class="bar"><span>security</span><i style="width:35.8%"></i><b>1,787</b></div>
+          <div class="bar"><span>agent-tooling</span><i style="width:29.6%"></i><b>1,478</b></div>
+          <div class="bar"><span>marketing</span><i style="width:27%"></i><b>1,347</b></div>
+          <div class="bar"><span>devops</span><i style="width:22.1%"></i><b>1,106</b></div>
+          <div class="bar"><span>general</span><i style="width:20.4%"></i><b>1,020</b></div>
+          <div class="bar"><span>data</span><i style="width:17.8%"></i><b>889</b></div>
+          <div class="bar"><span>design</span><i style="width:17.5%"></i><b>872</b></div>
+          <div class="bar"><span>media</span><i style="width:13.4%"></i><b>671</b></div>
+          <div class="bar"><span>documents</span><i style="width:12.5%"></i><b>623</b></div>
+        </div>
+        <p class="note">Beneath the domains are 13,320 scenarios and 389 task families. Open the local shelf with <code>python -m skilllib browse</code>, then <code>html/index.html</code>.</p>
+      </section>
+    </main>
+
+    <footer>
+      <p>SkillLib is MIT licensed. This page is <code>docs/index.html</code>. To publish it on GitHub Pages, set the site source to the <code>docs</code> folder on the default branch.</p>
+    </footer>
+  </div>
+</body>
+</html>
