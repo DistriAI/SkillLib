@@ -4,7 +4,13 @@
 
 SkillLib collects public repositories of Anthropic-compatible (Claude) and OpenAI-compatible (Codex) skills, keeps one skill to follow for each overlapping name, and lets an agent find and load a procedure without putting the library in the prompt.
 
-MIT · Python 3.11+ · no third-party dependencies · [project page](docs/index.html)
+MIT · Python 3.11+ · no third-party dependencies
+
+<a href="https://github.com/DistriAI/SkillLib"><img src="https://raw.githubusercontent.com/DistriAI/SkillLib/main/docs/assets/icon-project.svg" width="22" height="22" alt=""> Project</a>
+&nbsp;&nbsp;
+<a href="https://distriai.github.io/SkillLib/"><img src="https://raw.githubusercontent.com/DistriAI/SkillLib/main/docs/assets/icon-home.svg" width="22" height="22" alt=""> Homepage</a>
+&nbsp;&nbsp;
+<a href="https://pypi.org/project/skilllib/"><img src="https://raw.githubusercontent.com/DistriAI/SkillLib/main/docs/assets/icon-pypi.svg" width="22" height="22" alt=""> PyPI</a>
 
 ![Search, judge, index, and use](docs/assets/flow.svg)
 
@@ -12,16 +18,21 @@ MIT · Python 3.11+ · no third-party dependencies · [project page](docs/index.
 
 Python 3.11 or newer. SkillLib has no runtime dependencies.
 
-Clone the repository and install the package. Commands and the Python functions read `catalog/` from the current directory, so run them from the repository root. The routing cards and task families are already in the clone, so a search works as soon as the package is installed.
+Download the package from [pypi.org/project/skilllib](https://pypi.org/project/skilllib/).
+
+```bash
+python -m pip install skilllib
+```
+
+That install provides the library and the `skilllib` command. The skill catalog is the `catalog/` directory in the git repository. Commands and the Python functions read that directory from the current working directory, so a search runs from a checkout:
 
 ```bash
 git clone https://github.com/DistriAI/SkillLib.git
 cd SkillLib
-python -m pip install -e .
 skilllib find "Run GSEA on a ranked gene list"
 ```
 
-To use the checkout without installing it:
+To work on the library itself, install the checkout in place with `python -m pip install -e .`. To use the checkout without installing it:
 
 ```bash
 export PYTHONPATH=src
@@ -94,7 +105,7 @@ Pass a domain to search one shelf: `find_skills(task, domain="science")`.
 | media | 423 | 671 |
 | documents | 432 | 623 |
 
-Regenerate the local shelf with `python -m skilllib browse`. Open `html/index.html`. The project page, for hosting on GitHub Pages from the `docs` folder, is [`docs/index.html`](docs/index.html).
+Regenerate the local shelf with `python -m skilllib browse`. Open `html/index.html`. The web homepage is [distriai.github.io/SkillLib](https://distriai.github.io/SkillLib/).
 
 ## Grow the catalog
 
@@ -129,7 +140,7 @@ Run these from the repository root as `skilllib <command>`, or as `python -m ski
 | `browse` | Write the HTML shelf under `html/`. |
 | `visit owner/name` | Check out one repository as a submodule. |
 
-`screen`, `download`, `index`, `cards`, `enrich`, and `link` run a single stage. `update` runs the stages that a new repository needs.
+`screen`, `download`, `index`, `cards`, `enrich`, and `link` run a single stage. `download --leaders` fetches the skill file behind every leading skill, including a name that occurs once. `update` runs the stages that a new repository needs.
 
 ## License
 

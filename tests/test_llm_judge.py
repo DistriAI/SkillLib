@@ -7,7 +7,9 @@ from skilllib.sorting.build import build_skill_index
 from skilllib.sorting.llm_judge import judge_contents
 from skilllib.sorting.records import SkillOccurrence, normalize_skill_name
 from skilllib.sorting.retrieve import SkillBody, SkillRetriever
-from skilllib.sorting.download import download_shortlist, skill_cache_path
+from skilllib.catalog import CATALOG_PATH
+from skilllib.sorting.build import INDEX_PATH
+from skilllib.sorting.download import download_leaders, download_shortlist, skill_cache_path
 from skilllib.sorting.screen import SCREEN_PATH, load_screened_clusters, save_skill_screen, screen_catalog, screen_cluster
 
 
@@ -173,6 +175,78 @@ class DownloadTests(unittest.TestCase):
         self.assertEqual(second["downloaded"], 1)
         self.assertEqual(second["cached"], 1)
         self.assertEqual(kept, "# notes\nalready here\n")
+
+    def test_download_leaders_uses_the_catalog_branch_and_skips_stored_files(self) -> None:
+        index = {
+            "domains": [
+                {
+                    "name": "general",
+                    "scenarios": [
+                        {
+                            "name": "notes",
+                            "skills": [
+                                {
+                                    "name": "notes",
+                                    "kind": "separate",
+                                    "leader": {
+                                        "occurrence_id": "acme/pack::skills/notes/SKILL.md",
+                                        "repository": "acme/pack",
+                                        "path": "skills/notes/SKILL.md",
+                                    },
+                                },
+                                {
+                                    "name": "pdf",
+                                    "kind": "combined",
+                                    "leader": {"skill_id": "combined::pdf"},
+                                    "variants": [
+                                        {
+                                            "role": "peer",
+                                            "occurrence_id": "other/pack::skills/pdf/SKILL.md",
+                                            "repository": "other/pack",
+                                            "path": "skills/pdf/SKILL.md",
+                                        },
+                                        {
+                                            "role": "inferior",
+                                            "occurrence_id": "skip/me::skills/pdf/SKILL.md",
+                                            "repository": "skip/me",
+                                            "path": "skills/pdf/SKILL.md",
+                                        },
+                                    ],
+                                },
+                            ],
+                        }
+                    ],
+                }
+            ]
+        }
+        catalog = {
+            "anthropic_compatible": {
+                "skill_repositories": [
+                    {"full_name": "acme/pack", "default_branch": "main"},
+                    {"full_name": "other/pack", "default_branch": "master"},
+                ]
+            }
+        }
+        calls: list[str] = []
+
+        def fetch(url: str, timeout: float) -> bytes:
+            calls.append(url)
+            return b"# skill\nDo the task.\n"
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / INDEX_PATH).parent.mkdir(parents=True)
+            (root / INDEX_PATH).write_text(json.dumps(index), encoding="utf-8")
+            (root / CATALOG_PATH).write_text(json.dumps(catalog), encoding="utf-8")
+            present = skill_cache_path(root, "acme/pack", "skills/notes/SKILL.md")
+            present.parent.mkdir(parents=True)
+            present.write_text("# notes\nalready here\n", encoding="utf-8")
+            status = download_leaders(root, fetch=fetch, workers=2)
+        self.assertEqual(status["scope"], "leaders")
+        self.assertEqual(status["total"], 2)
+        self.assertEqual(status["cached"], 1)
+        self.assertEqual(status["downloaded"], 1)
+        self.assertEqual(calls, ["https://raw.githubusercontent.com/other/pack/master/skills/pdf/SKILL.md"])
 
 
 class ContentJudgeTests(unittest.TestCase):

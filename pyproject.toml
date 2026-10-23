@@ -1,18 +1,37 @@
 [project]
 name = "skilllib"
-version = "0.1.0"
+version = "0.1.1"
 description = "SkillLib searches, catalogs, and caches GitHub repositories of Anthropic- and OpenAI-compatible LLM agent skills."
 readme = "README.md"
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "DistriAI", email = "liangfengsid@gmail.com" }]
+keywords = ["agents", "skills", "llm", "claude", "codex"]
 requires-python = ">=3.11"
-classifiers = ["License :: OSI Approved :: MIT License"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 dependencies = []
+
+[project.urls]
+Homepage = "https://distriai.github.io/SkillLib/"
+Documentation = "https://github.com/DistriAI/SkillLib/blob/main/docs/interface.md"
+Repository = "https://github.com/DistriAI/SkillLib"
+Issues = "https://github.com/DistriAI/SkillLib/issues"
+Changelog = "https://github.com/DistriAI/SkillLib/blob/main/docs/history.md"
 
 [project.scripts]
 skilllib = "skilllib.cli:main"
 
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]

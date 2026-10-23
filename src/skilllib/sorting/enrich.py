@@ -77,6 +77,8 @@ def enrich_cards(
             if done == 1 or done % 10 == 0 or done == len(pending):
                 _write_status(root, counts, failures, done, len(pending))
                 report(f"{done}/{len(pending)} {outcome} {card['id']}")
+            if done % 200 == 0:
+                write_routing_cards(cards, card_report(cards), root)
 
     def one(card: dict) -> None:
         path = _cache_path(cache_dir, card)

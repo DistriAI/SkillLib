@@ -92,6 +92,21 @@
     .bar i { display: block; height: 0.55rem; background: var(--stamp); }
     .bar b { font-weight: 500; text-align: right; }
     .note { color: var(--muted); }
+    .places { display: flex; flex-wrap: wrap; gap: 0.7rem; margin: 1.5rem 0 0; }
+    .places a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.4rem 0.8rem 0.45rem;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      text-decoration: none;
+      font: 13px/1 "Segoe UI", Helvetica, Arial, sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .places a:hover { color: var(--stamp); border-color: var(--stamp); }
+    .places svg { display: block; }
     footer { border-top: 1px solid var(--line); padding: 1.4rem 0 2.4rem; color: var(--muted); font-size: 0.95rem; }
     @media (max-width: 800px) {
       .stats, .grid, .traits { grid-template-columns: 1fr; }
@@ -119,6 +134,10 @@
         <p class="kicker">A comprehensive library of agent skills</p>
         <h1>21,516 skills, one search away.</h1>
         <p class="lede">SkillLib gathers public repositories of Claude-compatible and Codex-compatible skills, resolves overlapping names, and gives an agent three calls: find a skill, load its procedure, and keep the rest of the library out of the prompt.</p>
+        <p class="places">
+          <a href="https://github.com/DistriAI/SkillLib"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>Project</a>
+          <a href="https://pypi.org/project/skilllib/"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 21 8v8l-9 5-9-5V8z"/><path d="m12 12 9-4M12 12v9M12 12 3 8"/></svg>PyPI</a>
+        </p>
         <div class="stats" aria-label="Catalog size">
           <div class="stat"><b>21,516</b><span>leading skills</span></div>
           <div class="stat"><b>32,977</b><span>skill files read</span></div>
@@ -220,7 +239,7 @@ python -m skilllib load combined::gsea</code></pre>
     </main>
 
     <footer>
-      <p>SkillLib is MIT licensed. This page is <code>docs/index.html</code>. To publish it on GitHub Pages, set the site source to the <code>docs</code> folder on the default branch.</p>
+      <p>SkillLib is MIT licensed.</p>
     </footer>
   </div>
 </body>

@@ -1,8 +1,8 @@
 # SkillLib interface
 
-The public overview is the [README](../README.md). The hosted page is [index.html](index.html).
+The public overview is the [README](../README.md). The hosted page is [index.html](index.html). Publishing a release to PyPI is [pypi.md](pypi.md).
 
-Install with `python -m pip install -e .` from the repository root, then run `skilllib`. The same commands work without installing, as `PYTHONPATH=src python -m skilllib`. Either way, run them from the repository root. The same actions are available as functions imported from `skilllib`.
+Install the library from PyPI with `python -m pip install skilllib`. The skill catalog stays in this repository. Run commands from a checkout of the repository so they read `catalog/` in the current directory. For local development, `python -m pip install -e .` or `PYTHONPATH=src python -m skilllib` uses the checkout itself. The same actions are available as functions imported from `skilllib`.
 
 The catalog built from repositories with more than 1,000 stars stays in `catalog/skill_repositories.json`. Later repositories are merged into that file. `update_index` then refreshes only the name groups those repositories change.
 
@@ -58,19 +58,20 @@ python -m skilllib list
 
 ## Retrieval
 
-### `download_skills(root, *, workers=6, timeout=20)`
+### `download_skills(root, *, leaders=False, workers=6, timeout=20)`
 
-Download each `SKILL.md` named in `catalog/skill_screen.json` into `cache/skills/owner/name/...`. A file that is already stored, or that already exists in a submodule checkout, is skipped. The status is `catalog/download_status.json`.
+Download each `SKILL.md` named in `catalog/skill_screen.json` into `cache/skills/owner/name/...`. `leaders=True` downloads the file behind every leading skill, including a name that occurs once. A file that is already stored, or that already exists in a submodule checkout, is skipped. The status is `catalog/download_status.json`.
 
 ```python
 from skilllib import download_skills
 
-status = download_skills(".")
+status = download_skills(".", leaders=True)
 print(status["finished"], status["failed"])
 ```
 
 ```bash
 python -m skilllib download --workers 6 --timeout 20
+python -m skilllib download --leaders --workers 6 --timeout 20
 ```
 
 Exit code 2 means some fetches failed. Run the same command again to retry the missing files.

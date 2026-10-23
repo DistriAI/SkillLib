@@ -80,10 +80,15 @@ def main(argv: list[str] | None = None) -> int:
     screen.add_argument("--versions", type=Path, default=None, help="JSON map of owner/name to a git timestamp or commit")
     screen.add_argument("--max-variants", type=int, default=4)
 
-    download = sub.add_parser("download", help="download the skill files named by the saved screen")
+    download = sub.add_parser("download", help="download skill files into the local cache")
     download.add_argument("--root", type=Path, default=Path.cwd())
     download.add_argument("--workers", type=int, default=6)
     download.add_argument("--timeout", type=float, default=20)
+    download.add_argument(
+        "--leaders",
+        action="store_true",
+        help="download the file behind every leading skill, including names that occur once",
+    )
 
     browse = sub.add_parser("browse", help="write HTML pages for reading the skill index")
     browse.add_argument("--root", type=Path, default=Path.cwd())
@@ -207,13 +212,15 @@ def _screen(args) -> int:
 
 
 def _download(args) -> int:
-    screen_path = args.root / SCREEN_PATH
-    if not screen_path.is_file():
-        print(f"No screen at {screen_path}. Run: python -m skilllib screen")
-        return 1
+    if not args.leaders:
+        screen_path = args.root / SCREEN_PATH
+        if not screen_path.is_file():
+            print(f"No screen at {screen_path}. Run: python -m skilllib screen")
+            return 1
     try:
         status = download_skills(
             args.root,
+            leaders=args.leaders,
             workers=args.workers,
             timeout=args.timeout,
             progress=print,
