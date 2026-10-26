@@ -78,9 +78,11 @@ python -m skilllib download --leaders --workers 6 --timeout 20
 
 Exit code 2 means some fetches failed. Run the same command again to retry the missing files.
 
-### `visit_repository(full_name, root=None)`
+### `visit_repository(full_name, root=None, *, protocol="https")`
 
 Clone one repository into `cache/repos/owner/name`. A later call reuses that checkout. The clone is local cache: it is not registered as a submodule and it is not committed. This is the tree an agent needs when a skill names scripts or references. `download_skills` only stores `SKILL.md` for indexing.
+
+`protocol="https"` clones `https://github.com/owner/name.git` and needs no GitHub login for a public repository. `protocol="ssh"` clones `git@github.com:owner/name.git`. That requires an SSH key already registered with GitHub, including for a public repository. A missing key fails immediately instead of asking for a password.
 
 ```python
 from skilllib import visit_repository
@@ -90,11 +92,14 @@ print(visit_repository("anthropics/skills"))
 
 ```bash
 python -m skilllib visit anthropics/skills
+python -m skilllib visit anthropics/skills --protocol ssh
 ```
 
-### `prefetch_repositories(root, *, workers=4, timeout=1200)`
+### `prefetch_repositories(root, *, workers=4, timeout=1200, only_failed=False, protocol="https")`
 
-Clone every skill repository in `catalog/skill_repositories.json` into `cache/repos/owner/name`. A checkout already on disk is skipped, including a tree restored without a `.git` directory. Failures are recorded in `catalog/prefetch_status.json` and retried on the next call. `cache/repos/manifest.json` lists the checkouts that are ready to upload.
+Clone every skill repository in `catalog/skill_repositories.json` into `cache/repos/owner/name`. A checkout already on disk is skipped, including a tree restored without a `.git` directory. Failures are recorded in `catalog/prefetch_status.json`. `cache/repos/manifest.json` lists the checkouts that are ready to upload.
+
+`only_failed=True` reads that status file and clones only the names recorded as failed. The rows for checkouts that already succeeded are kept as stored. Run a full prefetch when a repository has been added to the catalog, because a new name is not in the failure list.
 
 This is the batch prepare step. After it, `load_skill` reads scripts and references from those trees and does not clone a repository to satisfy a bundled-file gap. `download` remains the path that stores individual `SKILL.md` files for indexing.
 
@@ -107,9 +112,11 @@ print(status["cloned"], status["cached"], status["failed"])
 
 ```bash
 python -m skilllib prefetch --workers 4 --timeout 1200
+python -m skilllib prefetch --failed --workers 1
+python -m skilllib prefetch --failed --protocol ssh
 ```
 
-Exit code 2 means some clones failed. Run the same command again. Stored checkouts are skipped.
+Exit code 2 means some clones failed. `prefetch --failed` retries the names recorded in `catalog/prefetch_status.json`.
 
 ## Indexing
 
@@ -215,7 +222,7 @@ python -m skilllib find --eval
 
 ### `load_skill(skill_id, *, root=None)`
 
-Return the procedure for one card id. The stored `present` flag is not trusted: a file is used only when it is on disk. `load_skill` reads `cache/skills/`, then `cache/repos/<owner>/<name>/<path>`, and otherwise downloads that one raw file into `cache/skills/`. When the skill names bundled files and that skill directory is already in `cache/repos/`, the stored gap is ignored and the checkout is used. When the directory is absent, `text` is empty and `gap` tells you which repository to visit. When the skill file itself cannot be obtained, `text` is empty and `gap` is `owner/name`.
+Return the procedure for one card id. The stored `present` flag is not trusted: a file is used only when it is on disk. `load_skill` reads `cache/skills/`, then `cache/repos/<owner>/<name>/<path>`, and otherwise downloads that one raw file into `cache/skills/`. A named bundled file counts as checked out when it is beside the skill or anywhere else in that repository. When every named file is present, a stored gap is ignored. When a combined skill has one peer checked out and another missing, `text` contains the peers that are present and `gap` names the repository still to visit. When every peer that names bundled files is missing, `text` is empty and `gap` names those repositories. When the skill file itself cannot be obtained, `text` is empty and `gap` is `owner/name`.
 
 ```python
 from skilllib import load_skill
@@ -273,6 +280,6 @@ def handle(name, arguments):
     return call_tool(name, arguments, root=root)
 ```
 
-`call_tool` returns `{"success": true, ...}` or `{"success": false, "error": "..."}`. A load is `success: true` only when `text` is non-empty. A load that cannot obtain the skill file sets `success` to false, sets `gap` to `owner/name`, and sets `next` to the visit-then-load step. A load that cannot see bundled scripts sets `text` to empty, sets `gap` to the repository id, and sets the same `next` sentence. That `next` sentence is the one the model should follow.
+`call_tool` returns `{"success": true, ...}` or `{"success": false, "error": "..."}`. A load is `success: true` only when `text` is non-empty. A load that cannot obtain the skill file sets `success` to false, sets `gap` to `owner/name`, and sets `next` to the visit-then-load step. A load that cannot see bundled scripts for any peer sets `text` to empty, sets `gap` to the repository ids, and sets the same `next` sentence. A combined skill with at least one peer checked out sets `text` to those peers and still sets `gap` and `next` for the repositories that are missing. That `next` sentence is the one the model should follow.
 
 `resident_prompt(root, working_set=["card-id"])` pins those cards' names into the fragment. Omit `working_set` when the prompt must stay byte-stable for a conversation.

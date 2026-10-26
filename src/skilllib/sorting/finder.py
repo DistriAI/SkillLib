@@ -7,7 +7,9 @@ order. The loader
 returns skill text that is actually on disk. A missing file is read from
 ``cache/repos/`` or downloaded into ``cache/skills/``. When those bytes cannot
 be obtained, the result names the repository instead of returning an empty body.
-A stored checkout gap still means bundled scripts are absent.
+A named bundled file counts when it is beside the skill or elsewhere in that
+repository. A combined card still returns the peers that are present, and the
+gap names only the repositories that are missing.
 """
 
 from __future__ import annotations
@@ -18,6 +20,7 @@ from pathlib import Path
 
 from skilllib.sorting.cards import extract_card_text
 from skilllib.sorting.families import FAMILIES_PATH
+from skilllib.sorting.links import evaluate_bundled_checkout, gap_message
 
 EVAL_PATH = Path("catalog") / "find_eval.json"
 EVAL_REPORT_PATH = Path("catalog") / "find_eval_report.json"
@@ -68,7 +71,7 @@ class Finder:
         results = []
         for score, card, info in scored[:limit]:
             view = _view(card, info, score)
-            if root is not None and view.get("gap") and _checkout_has_bundled_files(Path(root), card):
+            if root is not None and view.get("gap") and _gap_is_satisfied(Path(root), card):
                 view["gap"] = ""
             results.append(view)
         return {"cards": results, "pairs": _pairs(scored, results)}
@@ -77,34 +80,49 @@ class Finder:
         card = self.by_id.get(skill_id)
         if card is None:
             raise KeyError(skill_id)
-        gap = ((card.get("applicability") or {}).get("gap")) or ""
-        prepared = _checkout_has_bundled_files(root, card)
-        if gap and not prepared:
-            return _load_result(card, "", gap, missing_body=False)
+        stored_gap = ((card.get("applicability") or {}).get("gap")) or ""
+        status, missing = evaluate_bundled_checkout(root, card)
+        prepared = status == "clear" or (status == "unknown" and _checkout_has_bundled_files(root, card))
+        if prepared:
+            gap = ""
+            withheld: set[str] = set()
+        elif status == "block":
+            bundled = ((card.get("applicability") or {}).get("bundled_files")) or []
+            gap = gap_message(bundled, missing)
+            withheld = set(missing)
+        else:
+            gap = stored_gap
+            withheld = set()
+            if gap:
+                return _load_result(card, "", gap, missing_body=False)
         note = (card.get("provenance") or {}).get("conflict_note") or ""
         bodies: list[str] = []
-        missing: list[str] = []
+        missing_repos: list[str] = []
         for source in card.get("sources") or []:
             repository, path = _source_location(source)
             if not repository or not path:
+                continue
+            if repository in withheld:
                 continue
             text = _skill_text(root, repository, path, source, fetch)
             if text.strip():
                 _assign_frontmatter(card, text)
                 bodies.append(f"# {repository}\n{text.strip()}")
             else:
-                missing.append(repository)
+                missing_repos.append(repository)
         if not bodies:
-            repos = list(dict.fromkeys(missing))
+            if gap:
+                return _load_result(card, "", gap, missing_body=False)
+            repos = list(dict.fromkeys(missing_repos))
             return _load_result(card, "", " ".join(repos), missing_body=True)
         parts = [note] if note else []
         parts.extend(bodies)
         return _load_result(
             card,
             "\n\n".join(parts),
-            "",
+            gap,
             missing_body=False,
-            scripts_checked_out=True if prepared else None,
+            scripts_checked_out=prepared,
         )
 
 
@@ -128,6 +146,13 @@ def score_eval(finder: Finder, cases: list[dict], *, limit: int = 5, root: Path 
         else:
             failed.append({"id": case.get("id"), "task": case["task"], "names": names, "expect_names": expected, "absent_names": absent})
     return {"tasks": len(cases), "passed": passed, "failed": failed}
+
+
+def _gap_is_satisfied(root: Path, card: dict) -> bool:
+    status, _missing = evaluate_bundled_checkout(root, card)
+    if status == "clear":
+        return True
+    return status == "unknown" and _checkout_has_bundled_files(root, card)
 
 
 def _checkout_has_bundled_files(root: Path, card: dict) -> bool:

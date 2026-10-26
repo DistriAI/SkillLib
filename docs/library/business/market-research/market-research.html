@@ -15,172 +15,157 @@ pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
 </style>
 </head>
 <body>
-<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">market-research</a> / market-research</p><h1>market-research</h1><p class="meta"><a href="../../cards/business--market-research--market-research.html">Skill card</a></p><p class="meta">combined</p><p>The three copies are not reproductions of one procedure. davepoon/buildwithclaude is a conversational founder workflow that reads/writes a local startup/market-research.md file, infers intent, and decides between inline WebSearch/WebFetch and dispatching a web-researcher subagent. gooseworks-ai/goose-skills is an API-driven workflow that requires Gooseworks credentials and calls Orthogonal/Fiber/Apollo endpoints to find companies, details, and decision makers. brycewang-stanford/Auto-Empirical-Research-Skills is a structured econstack report generator with CLI preambles, parameter database checks, learnings capture, safety hooks, geography/depth/focus/format arguments, and a fixed analytical framework (Porter, PESTLE, HHI/CR4, trade flows). Each has material steps and constraints the others lack, and they disagree on the core mechanism (local file workflow vs. external API calls vs. local CLI report pipeline), so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/startup-superpowers/skills/market-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/research/capabilities/market-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/58-charlescoverdale-econstack/market-research/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/startup-superpowers/skills/market-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/research/capabilities/market-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/58-charlescoverdale-econstack/market-research/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">market-research</a> / market-research</p><h1>market-research</h1><p class="meta"><a href="../../cards/business--market-research--market-research.html">Skill card</a></p><p class="meta">combined</p><p>The two skills share the name and the broad goal of producing market research, but they are different procedures. The davepoon copy is a founder-facing workflow that manages a persistent startup/market-research.md file, infers intent, updates sections, and dispatches a web-researcher agent for multi-source passes. The brycewang copy is a command-style industry analysis skill that produces a single compact, source-cited report using Porter&#x27;s Five Forces, HHI/CR4, PESTLE, and trade flows, with explicit arguments, geographies, formats, and a local econstack parameter/learnings system. Neither is a reproduction of the other; crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/startup-superpowers/skills/market-research/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/58-charlescoverdale-econstack/market-research/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/startup-superpowers/skills/market-research/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/58-charlescoverdale-econstack/market-research/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
 name: market-research
-description: Market research skill that supports three modes: a conversational founder workflow with local file state, an API-driven company and decision-maker lookup, and a structured analytical report with fixed frameworks. Use the mode that matches the user&#x27;s request and available tooling.
+description: Manages market understanding for founders or produces structured industry analysis reports. Use when the conversation touches market size, customer segments, buying behavior, pricing, industry trends, or when a structured market research report is needed.
 ---
 
 # Market Research
 
-This skill supports three distinct modes. Select the mode based on the user&#x27;s request and the tools available in the environment.
+Help the user understand the market they&#x27;re entering or analyzing — whether it&#x27;s real, who&#x27;s in it, how buyers behave, and what they expect to pay. This context strengthens interviews, sharpens hypotheses, and gives a confident answer to &quot;what&#x27;s the market opportunity?&quot;
 
-## Mode Selection
+## Before you start
 
-- **Founder Workflow (local file):** Use when the user is a founder iterating on a startup idea and the environment has a `startup/` directory with `core.md`. The goal is to maintain a living `startup/market-research.md` file.
-- **API Lookup (Gooseworks):** Use when the user needs specific company lists, financials, or decision-maker contacts and the environment has `~/.gooseworks/credentials.json`.
-- **Structured Report (econstack):** Use when the user wants a formal, source-cited market analysis report with fixed frameworks (Porter&#x27;s Five Forces, PESTLE, HHI/CR4) and the environment has the econstack CLI tools installed.
+1. Determine the mode:
+   - **Founder mode**: If the user is a founder working on a startup, load project context from `startup/core.md` (name, seed description, type of business — B2B or B2C — and all fields under `## Core`). Check if `startup/market-research.md` exists.
+   - **Industry analysis mode**: If the user requests a structured industry report, proceed with the industry analysis workflow.
 
-## Mode 1: Founder Workflow (Local File)
+2. For industry analysis mode, run the econstack update check and load prior learnings:
+   ```bash
+   ~/.claude/skills/econstack/bin/econstack-update-check 2&gt;/dev/null || true
+   eval &quot;$(~/.claude/skills/econstack/bin/econstack-slug)&quot;
+   ~/.claude/skills/econstack/bin/econstack-learnings-read --limit 3 2&gt;/dev/null || true
+   ```
+   If learnings are found, apply them. When a prior learning influences a decision, note: &quot;Prior learning applied: [key]&quot;.
 
-### Before you start
-1. Read `startup/core.md` to load project context (name, seed description, B2B or B2C, and all fields under `## Core`).
-2. Check if `startup/market-research.md` exists.
+3. Verify the parameter database is available:
+   ```bash
+   PARAMS_DIR=&quot;$HOME/econstack-data/parameters&quot;
+   if [ -d &quot;$PARAMS_DIR&quot; ]; then
+     PARAM_COUNT=$(find &quot;$PARAMS_DIR&quot; -name &quot;*.json&quot; 2&gt;/dev/null | wc -l | tr -d &#x27; &#x27;)
+     echo &quot;PARAMS: $PARAM_COUNT files loaded from $PARAMS_DIR&quot;
+     STALE=$(find &quot;$PARAMS_DIR&quot; -name &quot;*.json&quot; -mtime +730 2&gt;/dev/null | wc -l | tr -d &#x27; &#x27;)
+     if [ &quot;$STALE&quot; -gt 0 ]; then
+       echo &quot;PARAMS_WARNING: $STALE file(s) not updated in 2+ years. Run: cd ~/econstack-data &amp;&amp; git pull&quot;
+     fi
+   else
+     echo &quot;PARAMS: not found. Using built-in defaults.&quot;
+   fi
+   ```
 
-### When market research already exists
-Load the file for context. Infer intent from the conversation:
-- **Asking about a specific dimension** (size, segments, pricing, trends): answer from the existing file; if thin, offer targeted research.
-- **Wanting to update a section:** read the file, discuss new information, propose the change, get confirmation, write it back. Update `last_updated` in frontmatter.
-- **Flagging research as stale:** set `status: needs-refresh` in frontmatter and offer to re-run full or targeted research.
-- **Wanting web research on a specific topic:** dispatch the `web-researcher` agent with a focused prompt; incorporate findings into the relevant section; save full output to `startup/research/{YYYY-MM-DD}-{topic-slug}-research.md` with frontmatter `date`, `topic`, and `source_skill: market-research`.
-- **Asking how research connects to hypotheses:** surface which findings could confirm or challenge existing hypotheses.
+## Founder mode: When market research already exists
 
-File format conventions:
-- YAML frontmatter: `version` (number), `last_updated` (ISO date), `type` (`b2b` or `b2c`), `status` (`draft`, `complete`, or `needs-refresh`)
+Load `startup/market-research.md` for context. Infer intent from the conversation — don&#x27;t ask &quot;what do you want to do?&quot; If the founder is:
+
+- **Asking about a specific dimension** (size, segments, pricing, trends) — answer from the existing file; if the file is thin on that dimension, offer to run targeted research to fill it in
+- **Wanting to update a section** — read the file, discuss the new information, propose the change, get confirmation, write it back. Update `last_updated` in frontmatter
+- **Flagging the research as stale** — set `status: needs-refresh` in frontmatter and offer to re-run the full research or a targeted pass on specific sections
+- **Wanting web research on a specific topic** — dispatch the `web-researcher` agent (fast model) with a focused prompt about that market dimension; incorporate findings into the relevant section; save the full output to `startup/research/{YYYY-MM-DD}-{topic-slug}-research.md` with frontmatter `date`, `topic`, and `source_skill: market-research`
+- **Asking how market research connects to hypotheses** — surface which findings in the file could confirm or challenge existing hypotheses, and suggest updating hypothesis status or Notes accordingly
+
+When updating the file, follow the format conventions:
+- YAML frontmatter with `version` (number), `last_updated` (ISO date), `type` (`b2b` or `b2c`), and `status` (`draft`, `complete`, or `needs-refresh`)
 - H1 heading: `Market Research — {Project Name}`
 - Sections: Market Overview, Customer Segments, Buying Behavior, Pricing Landscape, Trends, Key Sources, Open Questions
 
 Read before writing, propose before saving, get confirmation.
 
-### When no market research exists
+## Founder mode: When no market research exists
+
 Load the reference file for the guided first-time workflow:
+
 ```
 .claude/skills/market-research/references/initial-market-research.md
 ```
 
-### Ad-hoc web search vs. dispatching web-researcher
-- **Inline WebSearch / WebFetch:** single-fact lookups, quick verification, one data point in flow. Stays in conversation, no persistence.
-- **Dispatch web-researcher:** multi-source passes, structured landscape passes. Output is structured and saved to `startup/research/{YYYY-MM-DD}-{topic-slug}-research.md`.
+The reference file&#x27;s instructions take over from this point.
 
-Rough rule: one fact in flow → inline. Multi-source or results-should-persist → dispatch.
+## Industry analysis mode
 
-## Mode 2: API Lookup (Gooseworks)
-
-### Setup
-Read credentials from `~/.gooseworks/credentials.json`:
-```bash
-export GOOSEWORKS_API_KEY=$(python3 -c &quot;import json;print(json.load(open(&#x27;$HOME/.gooseworks/credentials.json&#x27;))[&#x27;api_key&#x27;])&quot;)
-export GOOSEWORKS_API_BASE=$(python3 -c &quot;import json;print(json.load(open(&#x27;$HOME/.gooseworks/credentials.json&#x27;)).get(&#x27;api_base&#x27;,&#x27;https://api.gooseworks.ai&#x27;))&quot;)
-```
-If the file does not exist, tell the user to run: `npx gooseworks login`.
-All endpoints use Bearer auth: `-H &quot;Authorization: Bearer $GOOSEWORKS_API_KEY&quot;`.
-
-### Step 1: Identify Key Players
-```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H &quot;Authorization: Bearer $GOOSEWORKS_API_KEY&quot; \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#x27;{&quot;api&quot;:&quot;fiber&quot;,&quot;path&quot;:&quot;/v1/natural-language-search/companies&quot;,&quot;query&quot;:&quot;&lt;query&gt;&quot;}&#x27;
-```
-
-### Step 2: Research Company Details
-```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/orthogonal/run \
-  -H &quot;Authorization: Bearer $GOOSEWORKS_API_KEY&quot; \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#x27;{&quot;api&quot;:&quot;fiber&quot;,&quot;path&quot;:&quot;/v1/company-search&quot;,&quot;searchParams&quot;:{&quot;company_names&quot;:[&quot;&lt;names&gt;&quot;],&quot;include_financials&quot;:true}}&#x27;
-```
-
-### Step 3: Find Decision Makers
-Use Apollo first ($0.01 flat per call):
-```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/apollo/mixed_people/search \
-  -H &quot;Authorization: Bearer $GOOSEWORKS_API_KEY&quot; \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#x27;{&quot;person_titles&quot;:[&quot;CEO&quot;,&quot;CTO&quot;,&quot;VP Product&quot;,&quot;Head of Sales&quot;],&quot;organization_domains&quot;:[&quot;&lt;domains&gt;&quot;],&quot;per_page&quot;:25}&#x27;
-```
-Fallback — Fiber people search ($0.02/record):
-```bash
-curl -s -X POST $GOOSEWORKS_API_BASE/v1/proxy/fiber/v1/people-search \
-  -H &quot;Authorization: Bearer $GOOSEWORKS_API_KEY&quot; \
-  -H &quot;Content-Type: application/json&quot; \
-  -d &#x27;{&quot;searchParams&quot;:{&quot;company_names&quot;:[&quot;&lt;names&gt;&quot;],&quot;job_titles&quot;:[&quot;CEO&quot;,&quot;CTO&quot;,&quot;VP Product&quot;,&quot;Head of Sales&quot;]}}&#x27;
-```
-
-### Tips
-- Cite specific sources and dates for statistics.
-- Compare multiple analyst reports.
-- Look for both bullish and bearish perspectives.
-- Update research quarterly for fast-moving markets.
-
-## Mode 3: Structured Report (econstack)
-
-### Preamble
-Before starting, run silently:
-```bash
-~/.claude/skills/econstack/bin/econstack-update-check 2&gt;/dev/null || true
-```
-If it outputs UPDATE_AVAILABLE, tell the user: &quot;A new version of econstack is available. Run `cd ~/.claude/skills/econstack &amp;&amp; git pull` to update.&quot; Then continue.
-
-Load prior learnings:
-```bash
-eval &quot;$(~/.claude/skills/econstack/bin/econstack-slug)&quot;
-~/.claude/skills/econstack/bin/econstack-learnings-read --limit 3 2&gt;/dev/null || true
-```
-If learnings are found, apply them. When a prior learning influences a decision, note: &quot;Prior learning applied: [key]&quot;.
-
-Check parameter database:
-```bash
-PARAMS_DIR=&quot;$HOME/econstack-data/parameters&quot;
-if [ -d &quot;$PARAMS_DIR&quot; ]; then
-  PARAM_COUNT=$(find &quot;$PARAMS_DIR&quot; -name &quot;*.json&quot; 2&gt;/dev/null | wc -l | tr -d &#x27; &#x27;)
-  echo &quot;PARAMS: $PARAM_COUNT files loaded from $PARAMS_DIR&quot;
-  STALE=$(find &quot;$PARAMS_DIR&quot; -name &quot;*.json&quot; -mtime +730 2&gt;/dev/null | wc -l | tr -d &#x27; &#x27;)
-  if [ &quot;$STALE&quot; -gt 0 ]; then
-    echo &quot;PARAMS_WARNING: $STALE file(s) not updated in 2+ years. Run: cd ~/econstack-data &amp;&amp; git pull&quot;
-  fi
-else
-  echo &quot;PARAMS: not found. Using built-in defaults.&quot;
-fi
-```
-
-### Safety Rules
-1. Parameter database is read-only. Never write to, modify, or delete files in `~/econstack-data/parameters/`.
-2. Confirm before overwriting. Before writing an output file, check if a file with the same name already exists. If it does, ask the user: &quot;A file named [filename] already exists. Overwrite it, or save with a new name?&quot;
+Produces a structured, source-cited market research report for any industry or product. First-time users get a complete analysis from one invocation covering market sizing, key players, concentration, Porter&#x27;s Five Forces, PESTLE macro-environment, regulatory environment, supply chains, and outlook. Every data point is cited.
 
 ### Arguments
+
 ```
 /market-research [sector or product] [options]
 ```
-Options:
-- `--geo &lt;code(s)&gt;`: `uk` (default), `us`, `eu`, `au`, or `global`. Multi-geography via commas.
-- `--depth &lt;level&gt;`: `quick`, `standard` (default), `deep`.
-- `--focus &lt;topic&gt;`: `sizing`, `competition`, `regulation`, `supply-chain`, `pricing`, `outlook`.
-- `--section &lt;name&gt;`: `full` (default), `summary`, `sizing`, `players`, `concentration`, `porter`, `pestle`, `regulation`, `supply`, `trade`, `pricing`, `outlook`.
-- `--format &lt;type&gt;`: `markdown` (default), `xlsx`, `word`, `pptx`, `pdf`, or `all`.
-- `--client &quot;Name&quot;`: Add &quot;Prepared for&quot; metadata.
 
-### Report Structure
-Produce a structured, source-cited report covering: market sizing, key players, concentration (HHI/CR4), Porter&#x27;s Five Forces, PESTLE macro-environment, regulatory environment, supply chains, trade flows, pricing, and outlook. Every data point is cited.
+**Examples:**
+```
+/market-research &quot;UK grocery retail&quot;
+/market-research &quot;semiconductors&quot; --geo global
+/market-research &quot;residential mortgages&quot; --geo uk,us
+/market-research &quot;UK childcare&quot; --focus regulation
+/market-research &quot;EV batteries&quot; --depth quick --format pptx
+```
 
-### Completion Status
-At the end of every run, report one of:
+**Options:**
+- `--geo &lt;code(s)&gt;` : `uk` (default), `us`, `eu`, `au`, or `global`. Multi-geography via commas: `--geo uk,us`.
+- `--depth &lt;level&gt;` : `quick` (one-page briefing), `standard` (default, full report), `deep` (extended with primary research pointers).
+- `--focus &lt;topic&gt;` : Narrow to a theme. Options: `sizing`, `competition`, `regulation`, `supply-chain`, `pricing`, `outlook`. Reduces the report to the relevant sections.
+- `--section &lt;name&gt;` : Emit only one sub-component. Options: `full` (default), `summary`, `sizing`, `players`, `concentration`, `porter`, `pestle`, `regulation`, `supply`, `trade`, `pricing`, `outlook`. Combinable with commas.
+- `--format &lt;type&gt;` : Output format(s). `markdown` (default, always generated), `xlsx`, `word`, `pptx`, `pdf`, or `all`.
+- `--client &quot;Name&quot;` : Add &quot;Prepared for&quot; metadata. Also shapes writing register.
+
+### Supported geographies
+
+| Code | Scope | Primary sources |
+|------|-------|----------------|
+| `uk` | United Kingdom (default) | ONS, CMA, ORR, Ofgem |
+| `us` | United States | BLS, Census, FTC, SEC |
+| `eu` | European Union | Eurostat, ECHA, European Commission |
+| `au` | Australia | ABS, ACCC, ASIC |
+| `global` | Global | World Bank, IMF, WTO, UNCTAD |
+
+### Report structure
+
+1. **Executive Summary** — Key findings, market size, growth rate, competitive landscape
+2. **Market Sizing** — TAM, SAM, SOM with source citations
+3. **Key Players** — Top companies, market share, strategic positioning
+4. **Market Concentration** — HHI, CR4, CR8 calculations
+5. **Porter&#x27;s Five Forces** — Threat of new entrants, bargaining power of buyers/suppliers, threat of substitutes, competitive rivalry
+6. **PESTLE Analysis** — Political, Economic, Social, Technological, Legal, Environmental factors
+7. **Regulatory Environment** — Key regulations, compliance requirements, regulatory trends
+8. **Supply Chain Analysis** — Upstream/downstream players, key inputs, logistics
+9. **Trade Flows** — Import/export data, trade barriers, trade agreements
+10. **Pricing Landscape** — Price ranges, pricing models, price trends
+11. **Outlook** — Growth projections, key drivers, risks
+12. **Key Sources** — All data sources cited
+
+### Safety rules
+
+1. **Parameter database is read-only.** Never write to, modify, or delete files in `~/econstack-data/parameters/`. These are shared, versioned parameters maintained separately. If a parameter needs updating, tell the user to update the econstack-data repo.
+
+2. **Confirm before overwriting.** Before writing an output file, check if a file with the same name already exists. If it does, ask the user: &quot;A file named [filename] already exists. Overwrite it, or save with a new name?&quot; Do not silently overwrite.
+
+### Completion status
+
+At the end of every skill run, report one of these statuses:
+
 - **DONE**: Analysis complete, output generated, all sections finished.
-- **DONE_WITH_CONCERNS**: Output generated but with caveats.
-- **BLOCKED**: Cannot proceed.
-- **NEEDS_CONTEXT**: Need more information from the user.
+- **DONE_WITH_CONCERNS**: Output generated but with caveats (e.g., data gaps, assumptions that need review, sections below expected depth).
+- **BLOCKED**: Cannot proceed (e.g., missing critical input, parameter database unavailable, framework not supported).
+- **NEEDS_CONTEXT**: Need more information from the user before continuing.
 
 Format: `STATUS: [status] | [one-line reason]`
 
-### Capturing New Learnings
-After completing the skill, log new insights via:
+## Ad-hoc web search vs. dispatching web-researcher
+
+Not every web question needs a subagent:
+
+- **Inline `WebSearch` / `WebFetch` (you, the main agent):** single-fact lookups (&quot;what does Pendo charge?&quot;, &quot;is ACME still active?&quot;), quick verification of a claim the founder made, one data point asked about in flow. Stays in conversation, no persistence needed.
+- **Dispatch `web-researcher`:** multi-source passes that benefit from an isolated context (scanning pricing across a whole category, surveying buyer-behavior signals across communities, structured landscape passes). Output is structured and gets saved to `startup/research/{YYYY-MM-DD}-{topic-slug}-research.md` for later reference.
+
+Rough rule: one fact in flow → inline. Multi-source or results-should-persist → dispatch.
+
+## Capturing new learnings
+
+After completing this skill, log new insights via:
+
 ```bash
 ~/.claude/skills/econstack/bin/econstack-learnings-log &#x27;{&quot;skill&quot;:&quot;...&quot;,&quot;type&quot;:&quot;...&quot;,&quot;key&quot;:&quot;...&quot;,&quot;insight&quot;:&quot;...&quot;,&quot;confidence&quot;:N,&quot;source&quot;:&quot;observed|user-stated|inferred&quot;}&#x27;
 ```
-Types: `framework`, `parameter`, `data-source`, `output`, `operational`, `preference`. Confidence: 9-10 observed/stated, 6-8 strong inference, 4-5 weak.
 
-## Conflicts
-- **davepoon/buildwithclaude vs gooseworks-ai/goose-skills:** davepoon uses local file state and inline WebSearch/WebFetch or a web-researcher subagent, while gooseworks requires external API credentials and makes authenticated curl calls to Orthogonal/Fiber/Apollo endpoints.
-- **davepoon/buildwithclaude vs brycewang-stanford/Auto-Empirical-Research-Skills:** davepoon is a conversational, intent-inferred workflow with no fixed report structure, while brycewang enforces a fixed report structure, CLI preambles, parameter database checks, and completion status reporting.
-- **gooseworks-ai/goose-skills vs brycewang-stanford/Auto-Empirical-Research-Skills:** gooseworks sources data via external paid APIs with per-call costs, while brycewang uses local CLI tools, a local parameter database, and WebSearch/WebFetch with no external API credentials.</pre>
+Types: `framework` (preferred appraisal framework), `parameter` (custom overrides), `data-source` (preferred data), `output` (past report references), `operational` (tool/env quirks), `preference` (formatting/style). Confidence: 9-10 observed/stated, 6-8 strong inference, 4-5 weak. User-stated never decays; observed/inferred lose 1 point per 30 days. All data stored locally. Nothing transmitted.</pre>
 </body>
 </html>

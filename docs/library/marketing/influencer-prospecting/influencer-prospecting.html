@@ -15,40 +15,6 @@ pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
 </style>
 </head>
 <body>
-<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">influencer-prospecting</a> / influencer-prospecting</p><h1>influencer-prospecting</h1><p class="meta"><a href="../../cards/marketing--influencer-prospecting--influencer-prospecting.html">Skill card</a></p><p class="meta">combined</p><p>Both copies describe the same task—building a scored, contactable creator shortlist from public social data—but they disagree on the discovery mechanism and the scoring model. The gooseworks copy is a composite that explicitly depends on other skills (scrapecreators-api, audience-research, creator-profile-teardown) and uses a multi-dimensional score (audience fit, content fit, product adjacency, engagement quality, consistency, creative quality, sponsorship density, contactability, commerce relevance, brand safety) with a test/nurture/pass segmentation. The ScrapeCreators copy is a standalone skill that names specific public sources (TikTok, Instagram, YouTube, link-in-bio services, Amazon/TikTok Shop), uses a simpler 1-5 score on six dimensions (niche fit, audience fit, reach, engagement quality, brand safety, contactability), and mandates a CSV export. Crowning one would hide the other&#x27;s real alternative: the composite&#x27;s deeper teardown and segmentation versus the standalone&#x27;s explicit source list and CSV output. They also disagree on whether reach/follower count is a scored dimension (ScrapeCreators scores it; gooseworks explicitly says not follower count alone and does not list reach as a score).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/social/composites/influencer-prospecting/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/influencer-prospecting/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/social/composites/influencer-prospecting/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/influencer-prospecting/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
-name: influencer-prospecting
-description: Find and evaluate creators, influencers, affiliates, and UGC partners using audience fit, content fit, authentic product adjacency, engagement quality, public contactability, commerce signals, and brand-safety evidence—not follower count alone. Produces a scored, prioritized prospect list from public social data.
----
-
-# Influencer Prospecting
-
-Produce a sourced, prioritized creator shortlist that a growth team can actually review and contact.
-
-## Inputs
-
-- Brand, product, target audience, markets, platforms, and campaign objective.
-- Exclusions, ideal creator archetypes, follower range, and minimum/maximum shortlist size.
-
-## Workflow
-
-1. Translate the audience and objective into creator search themes, category phrases, hashtags, competitor mentions, and adjacent interests.
-2. Discover candidates using public sources: TikTok search users, popular creators, profile, profile videos, and audience demographics; Instagram search profiles, profile, posts, and reels; YouTube search and channel details; link-in-bio services (Linktree, Komi, Pillar, Linkbio, Linkme); Amazon Shop and TikTok Shop showcases where relevant. If the `scrapecreators-api` skill is available, use it for creator search, popular-creator lists, profile search, relevant content, competitor mentions, and category keywords. Fetch each profile plus a recent-post sample.
-3. Evaluate public audience and market-fit signals. If the `audience-research` skill is available, use it. Use `creator-profile-teardown`, transcripts, and comments on promising candidates to verify positioning, creative quality, sponsorship style, and audience response.
-4. Inspect public link-in-bio pages, business contact paths, creator shops, TikTok Shop showcases, and Amazon Shop pages when relevant. Treat commerce presence as context, not proof of sales.
-5. Score each candidate on: audience/niche fit, content fit, product adjacency, reach (followers/subscribers and recent views), engagement quality, consistency, creative quality, sponsorship density, contactability, commerce relevance, and brand safety. Use a 1-5 scale per dimension. Show the evidence behind every score.
-6. Check for suspicious engagement, unrelated audience spikes, excessive sponsorship density, category conflicts, and recent safety concerns. Mark unknowns rather than guessing.
-7. Segment the final list into test now, nurture, and pass. Match the collaboration idea to the objective: UGC production, gifting, affiliate, sponsorship, ambassador, or paid amplification.
-
-## Output
-
-Return a table with creator, platform, profile link, audience and content evidence, recent median metrics, relevant example posts, public shop or link-in-bio signals, fit score, confidence, risks, public contact path, and recommended collaboration angle. End with a pilot cohort, outreach premise, and test design. Include a CSV block with columns: creator, platform, profile_url, followers, recent_views, fit_score, contact_path, notes.
-
-## Common Pitfalls
-
-- Do not equate large follower count with good fit.
-- Do not scrape or expose private contact data. Use public links only.
-- Do not hide uncertainty when profiles have limited public data.
-
-Do not scrape private contact data or infer protected attributes. Public business contact details only.</pre>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">influencer-prospecting</a> / influencer-prospecting</p><h1>influencer-prospecting</h1><p class="meta"><a href="../../cards/marketing--influencer-prospecting--influencer-prospecting.html">Skill card</a></p><p class="meta">separate</p><p>This skill name occurs once, so it stays a separate skill.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/influencer-prospecting/SKILL.md</code></td></tr></tbody></table>
 </body>
 </html>

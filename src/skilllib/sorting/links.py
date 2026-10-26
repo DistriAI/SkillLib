@@ -38,6 +38,7 @@ def link_cards(cards: list[dict], root: Path, *, progress=None, rescan_names: se
     novel = set(rescan_names or ())
     cache_dir = root / CACHE_DIR
     cache_dir.mkdir(parents=True, exist_ok=True)
+    index = CheckoutIndex(root)
     pending = [card for card in cards if (card.get("body") or {}).get("present")]
     counts = {"bodies": len(pending), "reused": 0, "linked": 0, "gaps": 0, "rescanned": 0}
     done = 0
@@ -71,7 +72,7 @@ def link_cards(cards: list[dict], root: Path, *, progress=None, rescan_names: se
             counts["reused"] += 1
         elif (card.get("body") or {}).get("present"):
             counts["linked"] += 1
-        applicability = _applicability(card, root, cached.get("bundled_files") or [])
+        applicability = _applicability(card, root, cached.get("bundled_files") or [], index)
         card["links"] = {
             "requires": list(cached.get("requires") or []),
             "alternative": list(cached.get("alternative") or []),
@@ -169,36 +170,129 @@ def _files(text: str) -> list[str]:
     return found
 
 
-def _applicability(card: dict, root: Path, bundled: list[str]) -> dict:
-    if not bundled:
-        return {"bundled_files": [], "checked_out": False, "gap": ""}
-    missing = []
-    for source in card.get("sources") or []:
+class CheckoutIndex:
+    """File names already present under ``cache/repos``, built once per repository."""
+
+    def __init__(self, root: Path):
+        self.root = root
+        self._files: dict[str, set[str]] = {}
+
+    def has(self, repository: str, skill_path: str, named: str) -> bool:
+        repo = self.root / "cache" / "repos" / repository
+        if not repo.is_dir():
+            return False
+        relative = named[2:] if named.startswith("./") else named
+        relative = relative.lstrip("/")
+        if not relative:
+            return False
+        skill_dir = (repo / skill_path).parent
+        if (skill_dir / relative).is_file() or (repo / relative).is_file():
+            return True
+        suffix = "/" + relative
+        return any(item == relative or item.endswith(suffix) for item in self._listing(repository, repo))
+
+    def directory_has_extra(self, repository: str, skill_path: str) -> bool:
+        directory = (self.root / "cache" / "repos" / repository / skill_path).parent
+        if not directory.is_dir():
+            return False
+        return any(child.name.lower() != "skill.md" for child in directory.iterdir())
+
+    def _listing(self, repository: str, repo: Path) -> set[str]:
+        cached = self._files.get(repository)
+        if cached is None:
+            cached = set()
+            for path in repo.rglob("*"):
+                if not path.is_file() or ".git" in path.parts:
+                    continue
+                cached.add(path.relative_to(repo).as_posix())
+            self._files[repository] = cached
+        return cached
+
+
+def evaluate_bundled_checkout(
+    root: Path,
+    card: dict,
+    *,
+    bundled: list[str] | None = None,
+    index: CheckoutIndex | None = None,
+) -> tuple[str, list[str]]:
+    """Decide whether named bundled files are in the checkout.
+
+    ``clear`` means every named file was found beside its skill or elsewhere in
+    that repository. ``block`` means at least one repository is still missing a
+    file it names; the list is those repositories. ``unknown`` means this card
+    does not name files that can be checked.
+    """
+
+    named_union = list(bundled if bundled is not None else ((card.get("applicability") or {}).get("bundled_files") or []))
+    sources = [source for source in (card.get("sources") or []) if source.get("repository") and source.get("path")]
+    if not sources:
+        provenance = card.get("provenance") or {}
+        if provenance.get("repository") and provenance.get("path"):
+            sources = [provenance]
+    if not sources:
+        return "unknown", []
+    index = index or CheckoutIndex(root)
+    missing: list[str] = []
+    checked = False
+    for source in sources:
+        named = _files(_source_text(root, source))
+        if not named and len(sources) == 1:
+            named = named_union
+        if not named:
+            continue
+        checked = True
         repository = source.get("repository") or ""
         path = source.get("path") or ""
-        if repository and path and not _checked_out(root, repository, path):
+        if not all(index.has(repository, path, item) for item in named):
             missing.append(repository)
-    if not missing and not card.get("sources"):
-        repository = (card.get("provenance") or {}).get("repository") or ""
-        path = (card.get("provenance") or {}).get("path") or ""
-        if repository and path and not _checked_out(root, repository, path):
-            missing.append(repository)
-    if not missing:
-        return {"bundled_files": bundled, "checked_out": True, "gap": ""}
-    repos = ", ".join(dict.fromkeys(missing))
+    if checked:
+        return ("block", list(dict.fromkeys(missing))) if missing else ("clear", [])
+    if not named_union:
+        return "unknown", []
+    for source in sources:
+        if not index.directory_has_extra(source.get("repository") or "", source.get("path") or ""):
+            missing.append(source.get("repository") or "")
+    missing = [item for item in dict.fromkeys(missing) if item]
+    if missing:
+        return "block", missing
+    return "clear", []
+
+
+def gap_message(bundled: list[str], repositories: list[str]) -> str:
     files = ", ".join(bundled[:4])
+    repos = ", ".join(dict.fromkeys(repositories))
+    return f"Bundled files are named but not checked out ({files}). Run: python -m skilllib visit {repos}"
+
+
+def _applicability(card: dict, root: Path, bundled: list[str], index: CheckoutIndex | None = None) -> dict:
+    if not bundled:
+        return {"bundled_files": [], "checked_out": False, "gap": ""}
+    status, missing = evaluate_bundled_checkout(root, card, bundled=bundled, index=index)
+    if status == "clear":
+        return {"bundled_files": bundled, "checked_out": True, "gap": ""}
+    if status == "unknown":
+        return {"bundled_files": bundled, "checked_out": False, "gap": ""}
     return {
         "bundled_files": bundled,
         "checked_out": False,
-        "gap": f"Bundled files are named but not checked out ({files}). Run: python -m skilllib visit {repos}",
+        "gap": gap_message(bundled, missing),
     }
 
 
-def _checked_out(root: Path, repository: str, skill_path: str) -> bool:
-    directory = (root / "cache" / "repos" / repository / skill_path).parent
-    if not directory.is_dir():
-        return False
-    return any(child.name.lower() != "skill.md" for child in directory.iterdir())
+def _source_text(root: Path, source: dict) -> str:
+    relative = source.get("cache_path") or ""
+    if relative:
+        recorded = root / relative
+        if recorded.is_file() and recorded.stat().st_size > 0:
+            return recorded.read_text(encoding="utf-8", errors="replace")
+    repository = source.get("repository") or ""
+    path = source.get("path") or ""
+    if repository and path:
+        checkout = root / "cache" / "repos" / repository / path
+        if checkout.is_file() and checkout.stat().st_size > 0:
+            return checkout.read_text(encoding="utf-8", errors="replace")
+    return ""
 
 
 def _mentions_names(card: dict, root: Path, names: set[str]) -> bool:

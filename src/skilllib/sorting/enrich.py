@@ -133,10 +133,10 @@ def _ask(client, card: dict, text: str) -> dict:
         },
     ]
     try:
-        return _clean(parse_json_object(client.complete(messages, max_tokens=800)))
+        return _clean(parse_json_object(client.complete(messages, max_tokens=4096)))
     except (LLMError, ValueError):
         messages.append({"role": "user", "content": "Reply again with one JSON object."})
-        return _clean(parse_json_object(client.complete(messages, max_tokens=800)))
+        return _clean(parse_json_object(client.complete(messages, max_tokens=4096)))
 
 
 def _apply(card: dict, fill: dict) -> None:

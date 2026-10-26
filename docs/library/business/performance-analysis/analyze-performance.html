@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>analyze-performance</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">business</a> / <a href="index.html">performance-analysis</a> / analyze-performance</p><h1>analyze-performance</h1><p class="meta"><a href="../../cards/business--performance-analysis--analyze-performance.html">Skill card</a></p><p class="meta">combined</p><p>The two skills share the name &#x27;analyze-performance&#x27; but describe completely different procedures. The Microsoft skill is a technical playbook for Power Platform process intelligence, using specific MCP tools (get_bottleneck_analysis_v2, get_attribute_statistics) to analyze activity duration, handoffs, and bottlenecks. The GooseWorks skill is a marketing playbook for weekly performance reporting across ad channels, focusing on revenue, ROAS, and creative testing. They do not overlap in steps, tools, or domain logic; they are distinct workflows that happen to share a generic name.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/process-intelligence/skills/analyze-performance/SKILL.md</code></td></tr><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/marketing/analyze-performance/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/process-intelligence/skills/analyze-performance/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/marketing/analyze-performance/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: analyze-performance
+description: Analyze performance in either process intelligence (Power Platform) or marketing channels (GooseWorks).
+---
+
+# Performance Analysis
+
+This skill covers two distinct domains. Determine the context from the user&#x27;s request.
+
+## Option A: Power Platform Process Intelligence
+Use when investigating slow activities, waiting, handoff duration, or bottlenecks in a Power Platform process.
+
+1. **Slow activities by mean:** Call `get_bottleneck_analysis_v2` with the selected scope (S) and filter (F). Do not pass `attributeName`, `metrics`, `aggregation`, or `limit`.
+2. **Cumulative activity duration:** If requested, call `get_attribute_statistics` with the exact Activity import attribute. Use `metricToSortBy: &quot;TotalDuration&quot;`.
+3. **Drilldown:** For unresolved evidence, use `get_edges_with_metrics_v2` for handoffs or `get_cases_with_metrics_v2` for waiting time.
+4. **Reporting:** Report native edge Duration mean. Do not derive population totals from top-five averages.
+
+## Option B: Marketing Channel Performance
+Use when reviewing weekly ad performance, ROAS, or creative testing results.
+
+1. **Setup:** Run `marketing-guide` skill to connect and read the brand brain.
+2. **Read Context:** Load the last run records and the current campaign plan.
+3. **Data Collection:** Read performance views from connected ad platforms (Meta, TikTok, etc.) and the brand&#x27;s internal metrics.
+4. **Analysis:** Compare current week&#x27;s performance against the baseline and previous weeks. Identify winning/losing creatives and channels.
+5. **Reporting:** Generate the Monday report saved to `reports/performance/&lt;YYYY-MM-DD&gt;.md`. Include learnings and recommendations for the next cycle.
+
+## Conflicts
+- **microsoft/power-platform-skills**: Focuses on process activity duration and handoff bottlenecks using specific MCP tools.
+- **gooseworks-ai/goose-skills**: Focuses on marketing channel revenue, ROAS, and creative testing using marketing connectors and brand brain.</pre>
+</body>
+</html>

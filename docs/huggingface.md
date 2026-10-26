@@ -8,7 +8,7 @@ Each upstream repository keeps its own license. The manifest records that licens
 
 ## Upload
 
-1. Wait until `prefetch` has finished. A failed name can be retried with the same command before you upload. `catalog/prefetch_status.json` lists any repository that is still missing.
+1. Wait until `prefetch` has finished. Retry a failed name with `python -m skilllib prefetch --failed` before you upload. `catalog/prefetch_status.json` lists any repository that is still missing.
 2. Create a Hugging Face account, if you do not have one.
 3. Create a write token at https://huggingface.co/settings/tokens. A token limited to the dataset repository below is enough.
 4. Create a dataset, for example `DistriAI/skilllib-repos`. Leave the dataset license unset, or set it to "other". Do not mark the dataset MIT.

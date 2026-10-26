@@ -15,7 +15,7 @@ pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
 </style>
 </head>
 <body>
-<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">social-comment-mining</a> / comment-mining</p><h1>comment-mining</h1><p class="meta"><a href="../../cards/marketing--social-comment-mining--comment-mining.html">Skill card</a></p><p class="meta">combined</p><p>Both copies describe the same core task: collecting public comments/replies, cleaning them, coding them into buckets, clustering themes, and turning findings into marketing/product actions. However, they overlap without one being a clean superset of the other. The gooseworks copy adds a distinct buying-intent strength scale (curiosity, consideration, price/availability, comparison, stated purchase, repeat use, recommendation) and a specific output requirement to report prevalence as sample counts by platform/source type rather than market-wide percentages. The ScrapeCreators copy adds concrete API endpoints per platform, a required environment variable, a structured report template, and explicit pitfalls (e.g., do not skip Reddit post context, call out moderation/platform bias). Crowning one would hide the other&#x27;s material steps and constraints.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/social/composites/comment-mining/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/comment-mining/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/social/composites/comment-mining/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/comment-mining/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">marketing</a> / <a href="index.html">social-comment-mining</a> / comment-mining</p><h1>comment-mining</h1><p class="meta"><a href="../../cards/marketing--social-comment-mining--comment-mining.html">Skill card</a></p><p class="meta">combined</p><p>Both copies describe the same task—mining public social comments for voice-of-customer signals—but each contains material steps the other lacks. The gooseworks copy adds a distinct buying-intent strength scale, a broader coding taxonomy (e.g., churn risk, workaround, exact product language), and a requirement to report prevalence as sample counts by platform/source type. The ScrapeCreators copy adds concrete API endpoints per platform, a required environment variable, a specific output template, and platform-specific pitfalls (e.g., read Reddit post context). Crowning one would hide these real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/shared/comment-mining/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/comment-mining/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/shared/comment-mining/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/comment-mining/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
 name: comment-mining
 description: Mine comments and replies on social posts, videos, and ads for recurring customer language, questions, objections, desired outcomes, complaints, product requests, purchase signals, and creative opportunities. Use for voice-of-customer research grounded in linked source evidence.
 ---
@@ -32,8 +32,6 @@ Turn public comment threads into evidence a growth team can use.
 
 ## Comment Sources
 
-Use the post/video URL whenever possible. Paginate when the endpoint supports it and the user wants depth. Preserve comment text, author if public, like/upvote count, timestamp, and source URL.
-
 | Platform | Endpoint |
 |---|---|
 | TikTok comments | `/v1/tiktok/video/comments` |
@@ -48,13 +46,59 @@ Use the post/video URL whenever possible. Paginate when the endpoint supports it
 
 ## Workflow
 
-1. Use `scrapecreators-api` to collect post context, top-level comments, and replies from the relevant platforms. Sample across multiple posts and creators instead of overfitting to one viral thread.
-2. Preserve parent-and-reply context where it changes meaning. Remove obvious spam, duplicate comments, tag-only replies, and giveaways unless they are the subject of the study. Keep slang, misspellings, and emotional wording if it is useful customer language. Do not over-normalize exact quotes.
-3. Code each useful comment into one or more buckets: pain, desired outcome, objection, question, comparison, use case, purchase intent, product request, workaround, delight, complaint, churn risk, exact product language, praise, confusion, controversy/debate, or jokes/memes/culture signals.
-4. Mark buying-intent strength separately: curiosity, consideration, price or availability question, comparison, stated purchase, repeat use, and recommendation.
-5. Cluster semantically similar statements while retaining representative wording, the post context, and source links. Score themes by frequency and intensity.
-6. Report prevalence as sample counts by platform and source type, not market-wide percentages.
-7. Convert the strongest clusters into testable messages, hooks, FAQ topics, product questions, content ideas, landing page copy angles, objection-handling bullets, sales/support notes, or research follow-ups.
+1. **Fetch comments**
+   - Use `scrapecreators-api` to collect post context, top-level comments, and replies from the relevant platforms. Use the post/video URL whenever possible.
+   - Paginate when the endpoint supports it and the user wants depth.
+   - Preserve comment text, author if public, like/upvote count, timestamp, and source URL.
+   - Sample across multiple posts and creators instead of overfitting to one viral thread.
+   - For Reddit, read both the original post and comments.
+
+2. **Clean lightly**
+   - Remove obvious spam, duplicate comments, tag-only replies, and giveaways unless they are the subject of the study.
+   - Preserve parent-and-reply context where it changes meaning.
+   - Keep slang, misspellings, and emotional wording if it is useful customer language.
+   - Do not over-normalize exact quotes.
+
+3. **Classify each useful comment**
+   Code each useful comment into one or more buckets:
+   - pain
+   - desired outcome
+   - objection
+   - question
+   - comparison
+   - use case
+   - purchase intent
+   - product request
+   - workaround
+   - delight
+   - complaint
+   - churn risk
+   - exact product language
+   - confusion
+   - controversy/debate
+   - jokes/memes/culture signals
+
+4. **Mark buying-intent strength separately**
+   Use this scale: curiosity, consideration, price or availability question, comparison, stated purchase, repeat use, and recommendation.
+
+5. **Cluster themes**
+   - Group semantically similar statements while retaining representative wording, the post context, and source links.
+   - Score themes by frequency and intensity.
+   - Highlight exact quotes for each theme.
+
+6. **Report prevalence**
+   - Report prevalence as sample counts by platform and source type, not market-wide percentages.
+   - Label sample size and confidence.
+   - Separate one loud comment from a repeated pattern.
+
+7. **Turn insights into actions**
+   Convert the strongest clusters into testable messages, hooks, FAQ topics, product questions, or research follow-ups. Depending on the user&#x27;s goal, produce:
+   - content ideas
+   - FAQ ideas
+   - landing page copy angles
+   - product ideas
+   - objection-handling bullets
+   - sales/support notes
 
 ## Output Format
 
@@ -67,8 +111,8 @@ Use the post/video URL whenever possible. Paginate when the endpoint supports it
 - Confidence: High/Medium/Low
 
 ## Top Themes
-| Theme | Type | Frequency | Intensity | Representative quote |
-|---|---|---:|---|---|
+| Theme | Type | Frequency | Intensity | Representative quote | Source links |
+|---|---|---:|---|---|---|
 
 ## Audience Questions
 - &quot;...&quot;
@@ -88,15 +132,10 @@ Use the post/video URL whenever possible. Paginate when the endpoint supports it
 ## Content Ideas From Comments
 1. ...
 2. ...
-```
 
-Also include:
-- Coverage and sampling method.
-- Ranked theme table with top-level and reply counts, representative language, source links, and confidence.
-- Objection and question bank.
-- Purchase, product-request, workaround, and churn signals.
-- Recommended next tests for creative, landing pages, content, or product research.
-- Limitations and gaps.
+## Limitations and Gaps
+- ...
+```
 
 ## Quality Guardrails
 

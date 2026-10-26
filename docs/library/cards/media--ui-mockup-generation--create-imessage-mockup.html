@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>create-imessage-mockup</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../index.html">domains</a> / <a href="../families/index.html">families</a> / <a href="../families/media.html">media</a> / create-imessage-mockup</p><h1>create-imessage-mockup</h1><p class="meta">separate</p><p>Render pixel-accurate iMessage screenshot mockups (DM or group) from a thread JSON. Supports minimal, with-keyboard, and full iPhone 15 Pro frame variants. Outputs HTML + PNG.</p><h2>When to use</h2><ul><li>**Bubble runs and tails** — blue `sent` bubbles (right) and gray `received` bubbles (left), with a curved tear-drop tail drawn only on the *last* bubble of each consecutive sender run (`isLastOfRun` in `generate.js`).</li><li>**Dark-themed iOS chrome** — `theme: &quot;dark&quot;` flips the page to the iOS dark conversation look; the status bar, Dynamic Island, and keyboard match iPhone 15 Pro.</li><li>**Group affordances** — group threads (`mode: &quot;group&quot;`) add per-sender colored avatar circles, sender names above the first bubble of a run, and a 4-tile group-header badge.</li><li>**Beats for storyboards** — `timestamp` pills, a static-but-mid-animation `typing` three-dot bubble, `attachment` cards, and &quot;Delivered&quot;/&quot;Read&quot; captions let you stage individual frames of a conversation.</li><li>**Three crops** — `--minimal` (bubbles only), `--with-keyboard` (header + iOS keyboard), and `--with-iphone-frame` (full bezel + Dynamic Island + status bar over a gradient backdrop).</li><li>Need a fake iMessage screenshot for an ad, social post, video scene, or product mockup.</li><li>Want a side-by-side hero image showing a conversation in an iPhone frame.</li><li>Need a typing indicator or &quot;Delivered&quot; beat for a video storyboard.</li></ul><h2>When not to use</h2><ul><li>rendering programmatic graphic frames more broadly</li><li>cards</li><li>posters</li><li>infographics</li></ul><p><a href="../media/ui-mockup-generation/create-imessage-mockup.html">Skill page</a></p><h2>Source</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/video/create-imessage-mockup/SKILL.md</code></td></tr></tbody></table>
+</body>
+</html>

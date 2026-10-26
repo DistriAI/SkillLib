@@ -242,7 +242,12 @@ def _load(arguments: dict, root: Path | None) -> dict:
         return {"success": False, "error": f"Skill library load failed: {exc}"}
     text = str(loaded.get("text") or "")
     if text.strip():
-        return {"success": True, **loaded}
+        result = {"success": True, **loaded}
+        if result.get("gap"):
+            result["next"] = (
+                f"Call {VISIT} once for each owner/name in gap, then call {LOAD} again."
+            )
+        return result
     if loaded.get("missing_body"):
         gap = str(loaded.get("gap") or "")
         result = {"success": False, **loaded}

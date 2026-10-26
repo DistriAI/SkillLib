@@ -15,33 +15,21 @@ pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
 </style>
 </head>
 <body>
-<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">transcript-analysis</a> / transcript-intelligence</p><h1>transcript-intelligence</h1><p class="meta"><a href="../../cards/research--transcript-analysis--transcript-intelligence.html">Skill card</a></p><p class="meta">combined</p><p>Both copies describe the same task (extracting hooks, claims, quotes, and content atoms from social video transcripts), but each contains material steps the other lacks. The ScrapeCreators copy provides a detailed platform endpoint table, a six-part transcript segmentation model (hook, setup, claim, evidence, payoff, CTA), a specific markdown report template, and a hooks swipe file. The gooseworks copy adds inputs (brand/research question), explicit sponsorship signal extraction, a confidence column in the output, and guardrails about regulated claims and engagement as a distribution signal. Crowning one would hide these real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/transcript-intelligence/SKILL.md</code></td></tr><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/social/capabilities/transcript-intelligence/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/transcript-intelligence/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/social/capabilities/transcript-intelligence/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">transcript-analysis</a> / transcript-intelligence</p><h1>transcript-intelligence</h1><p class="meta"><a href="../../cards/research--transcript-analysis--transcript-intelligence.html">Skill card</a></p><p class="meta">combined</p><p>Both copies describe the same task (turning social video transcripts into hooks, claims, objections, CTAs, and reusable atoms), but each contains material steps the other lacks. The gooseworks copy adds explicit guardrails (never invent spoken content, flag regulated claims, treat engagement as distribution not proof) and a per-video table output with confidence. The ScrapeCreators copy adds concrete API endpoints per platform, a required SCRAPECREATORS_API_KEY, a discovery step for creator/channel inputs, a detailed output template (TL;DR, swipe file, repurposing ideas), and a common-pitfalls section. Crowning one would hide the other&#x27;s real operational details.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/shared/transcript-intelligence/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/transcript-intelligence/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/gooseworks-ai/goose-skills">gooseworks-ai/goose-skills</a></td><td><code>skills/shared/transcript-intelligence/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ScrapeCreators/social-media-research-skills">ScrapeCreators/social-media-research-skills</a></td><td><code>skills/transcript-intelligence/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
 name: transcript-intelligence
-description: Use when the user wants to summarize, analyze, or repurpose transcripts from TikTok, Instagram, YouTube, Facebook, X/Twitter, LinkedIn, Rumble, or Reddit video posts. Extracts hooks, claims, quotes, content atoms, themes, sponsorship signals, and reusable scripts.
+description: Turn TikTok, Instagram, YouTube, Facebook, X, LinkedIn, Reddit, or Rumble transcripts into timestamped hooks, claims, objections, proof, calls to action, sponsorship signals, and reusable content atoms. Use directly for transcript analysis or as support for creator, competitor, trend, demand, and repurposing work.
 ---
 
 # Transcript Intelligence
 
-## Overview
-
-Turn public video transcripts into useful research and content assets. This skill extracts signal from spoken social video: hooks, claims, stories, objections, examples, CTAs, sponsorship signals, and reusable content angles.
-
-## When to Use
-
-Use this skill when the user asks to:
-
-- summarize a video, reel, short, TikTok, podcast clip, or social video
-- analyze a creator&#x27;s hooks or speaking style
-- extract quotes, claims, examples, and CTAs from transcripts
-- turn transcripts into social posts, scripts, newsletters, or content ideas
-- compare what multiple creators say about a topic
-- identify sponsorship signals or product claims in video content
+Analyze what a video says, not just its caption or engagement count.
 
 ## Inputs
 
 - One or more TikTok, Instagram, YouTube, Facebook, X, LinkedIn, Reddit, or Rumble post or video URLs.
 - The brand, product, or research question.
 - Optional comparison dimensions such as hooks, objections, proof, or creator delivery.
+- If a creator or channel is provided instead of URLs, first fetch recent posts/videos, then choose relevant videos.
 
 ## Transcript Sources
 
@@ -56,53 +44,27 @@ Use this skill when the user asks to:
 | Rumble | `/v1/rumble/video/transcript` |
 | Reddit video | `/v1/reddit/post/transcript` |
 
-If a detail endpoint already includes transcript text, use it. If transcript is unavailable, say so and fall back to title/caption/description only; never invent spoken content.
+If a detail endpoint already includes transcript text, use it. If a transcript is unavailable, explicitly mark the item as caption-only; never invent spoken content.
 
 ## Workflow
 
-1. **Collect URLs or discover videos**
-   - If URLs are provided, fetch each transcript directly.
-   - If a creator/channel is provided, first fetch recent posts/videos, then choose relevant videos.
-
-2. **Extract transcript text**
-   - Preserve timestamps and speaker changes if provided.
-   - Keep source URL with each transcript.
-   - Do not hallucinate missing captions.
-   - For YouTube, collect public sponsorship signals when relevant.
-
-3. **Segment the transcript**
-   Break into:
-   - hook/opening
-   - setup/context
-   - main claim or lesson
-   - evidence/examples
-   - payoff
-   - CTA
-
-4. **Analyze the content**
-   Extract:
-   - exact hooks and first payoff
-   - problem, desired outcome, and audience language
-   - claims and contrarian takes
-   - product claims and the evidence offered
-   - stories
-   - frameworks
-   - objections raised or answered
-   - emotional language
-   - calls to action and disclosed sponsorships
-   - quotable lines, limited to short excerpts
-   - content atoms that stand alone
-
-5. **Synthesize across multiple transcripts**
-   - Cluster by topic and angle.
-   - Count recurring themes.
-   - Identify repeated hook formulas.
-   - Distinguish a single creator&#x27;s style from category-wide evidence.
-   - Flag the strongest examples with citations.
+1. Fetch the post metadata with `scrapecreators-api`.
+2. Fetch the platform transcript when available. For YouTube, collect public sponsorship signals when relevant. If a transcript is unavailable, explicitly mark the item as caption-only; never invent spoken content.
+3. Preserve timestamps and speaker changes. Keep source URL with each transcript.
+4. Segment the transcript into: hook/opening, setup/context, main claim or lesson, evidence/examples, payoff, CTA.
+5. Extract:
+   - opening hook and first payoff;
+   - problem, desired outcome, and audience language;
+   - product claims and the evidence offered;
+   - objections raised or answered;
+   - calls to action and disclosed sponsorships;
+   - quotable phrases, limited to short excerpts;
+   - stories, frameworks, emotional language, and content atoms that stand alone.
+6. Compare repeated patterns across videos. Distinguish a single creator&#x27;s style from category-wide evidence. Cluster by topic and angle. Count recurring themes. Identify repeated hook formulas. Flag the strongest examples with citations.
 
 ## Output
 
-Return a table per video with source URL, platform, timestamps, hook, claims, proof, objections, CTA, sponsorship signal when available, content atoms, and confidence. Follow with:
+Return a markdown report with the following sections:
 
 ```markdown
 # Transcript Intelligence Report
@@ -118,7 +80,6 @@ Return a table per video with source URL, platform, timestamps, hook, claims, pr
 - Core idea: ...
 - Best quote: &quot;...&quot;
 - CTA: ...
-- Sponsorship signal: ...
 - Content atoms:
   1. ...
 
@@ -137,18 +98,19 @@ Return a table per video with source URL, platform, timestamps, hook, claims, pr
 - Newsletter section:
 ```
 
+Each per-video entry should include source URL, platform, timestamps, hook, claims, proof, objections, CTA, sponsorship signal when available, content atoms, and confidence.
+
 ## Guardrails
 
-- Do not summarize from the title alone if the user asked for transcript analysis. Fetch transcripts first.
-- Do not lose exact wording. Hooks and quotes are more valuable verbatim.
-- Do not treat AI-generated transcript text as perfect. If wording seems garbled, mark it as approximate.
-- Do not mix source attribution. Every quote should trace back to a URL.
-- Never present an auto-transcript as perfectly accurate.
+- Never present an auto-transcript as perfectly accurate. If wording seems garbled, mark it as approximate.
 - Flag unclear brand names, numbers, ingredients, prices, and regulated claims for verification.
 - Treat high engagement as a distribution signal, not proof that a claim is true or a creative caused the result.
+- Do not summarize from the title alone if the user asked for transcript analysis. Fetch transcripts first.
+- Do not lose exact wording. Hooks and quotes are more valuable verbatim.
+- Do not mix source attribution. Every quote should trace back to a URL.
 
 ## Conflicts
 
-- ScrapeCreators/social-media-research-skills uses a six-part segmentation model (hook, setup, claim, evidence, payoff, CTA) and a markdown report with a hooks swipe file; gooseworks-ai/goose-skills uses a different extraction list (problem/desired outcome/audience language, product claims and evidence, objections, CTAs, sponsorships, quotable phrases) and a per-video table with a confidence column. The combined instruction includes both the segmentation model and the table output, and both the swipe file and the confidence column.</pre>
+- gooseworks-ai/goose-skills specifies a per-video table output with confidence scores; ScrapeCreators/social-media-research-skills specifies a markdown report with TL;DR, swipe file, and repurposing ideas. The combined instruction includes both: per-video entries with confidence within the markdown report structure.</pre>
 </body>
 </html>

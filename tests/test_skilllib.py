@@ -270,6 +270,23 @@ class VisitTests(unittest.TestCase):
         self.assertEqual(found, dest)
         self.assertEqual(calls, [])
 
+    def test_ssh_clone_uses_a_key_and_does_not_prompt(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="skilllib-ssh-"))
+        seen = {}
+
+        def run(command, cwd, check, **kwargs):
+            seen["command"] = command
+            seen["env"] = kwargs.get("env") or {}
+            dest = Path(command[-1])
+            dest.mkdir(parents=True)
+            (dest / ".git").write_text("gitdir: fake\n", encoding="utf-8")
+            (dest / "README.md").write_text("cached\n", encoding="utf-8")
+            return subprocess.CompletedProcess(command, 0)
+
+        visit_repository("acme/skills", root, protocol="ssh", run=run)
+        self.assertEqual(seen["command"][-2], "git@github.com:acme/skills.git")
+        self.assertIn("BatchMode=yes", seen["env"].get("GIT_SSH_COMMAND", ""))
+
     def test_prefetch_clones_missing_repositories_and_retries_failures(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="skilllib-prefetch-"))
         catalog = {
@@ -310,10 +327,11 @@ class VisitTests(unittest.TestCase):
         self.assertEqual(status["cloned"], 1)
         self.assertEqual(status["failed"], 1)
         self.assertTrue((root / "cache" / "repos" / "manifest.json").is_file())
-        again = prefetch_repositories(root, workers=2, run=run)
+        again = prefetch_repositories(root, workers=2, run=run, only_failed=True)
         self.assertEqual(again["cached"], 1)
         self.assertEqual(again["failed"], 1)
         self.assertEqual(sum(1 for command in calls if command[-2].endswith("acme/skills.git")), 1)
+        self.assertEqual(sum(1 for command in calls if command[-2].endswith("acme/other.git")), 2)
 
 
 if __name__ == "__main__":

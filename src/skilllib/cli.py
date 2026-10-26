@@ -74,11 +74,18 @@ def main(argv: list[str] | None = None) -> int:
     visit = sub.add_parser("visit", help="clone a skill repository into the local cache on first access")
     visit.add_argument("repository", help="owner/name")
     visit.add_argument("--root", type=Path, default=Path.cwd())
+    visit.add_argument("--protocol", choices=("https", "ssh"), default="https")
 
     prefetch = sub.add_parser("prefetch", help="clone every catalog skill repository into the local cache")
     prefetch.add_argument("--root", type=Path, default=Path.cwd())
     prefetch.add_argument("--workers", type=int, default=4)
     prefetch.add_argument("--timeout", type=float, default=1200, help="seconds allowed for one clone")
+    prefetch.add_argument(
+        "--failed",
+        action="store_true",
+        help="clone only repositories recorded as failed in the last prefetch",
+    )
+    prefetch.add_argument("--protocol", choices=("https", "ssh"), default="https")
 
     screen = sub.add_parser("screen", help="write the shortlist of skill files for a later download")
     screen.add_argument("--root", type=Path, default=Path.cwd())
@@ -185,7 +192,7 @@ def main(argv: list[str] | None = None) -> int:
         return _load(args)
     if args.command == "index":
         return _index(args)
-    path = visit_repository(args.repository, args.root)
+    path = visit_repository(args.repository, args.root, protocol=args.protocol)
     print(path)
     return 0
 
@@ -250,6 +257,8 @@ def _prefetch(args) -> int:
             args.root,
             workers=args.workers,
             timeout=args.timeout,
+            only_failed=args.failed,
+            protocol=args.protocol,
             progress=print,
         )
     except FileNotFoundError as error:

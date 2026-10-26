@@ -81,7 +81,7 @@ skilllib prompt --working-set catalog/working_set.example.json
 
 An agent runtime takes the prompt and the tool descriptions from `skilllib.integrate`: `tool_specs()`, `resident_prompt()`, `task_instruction()`, and `call_tool()`. Register the specs under the names they already carry (`skill_library_find`, `skill_library_load`, `skill_library_visit`), append `resident_prompt()` to the system prompt, and return `call_tool(name, arguments, root=checkout)` to the model. The field reference is [docs/interface.md](docs/interface.md).
 
-An agent that already has `skill_view` (Hermes) or the equivalent Claude or Codex skill loader should keep it. That tool opens a skill installed on the machine, including its scripts and references. SkillLib answers the prior question, at a size those lists are not built for: which skill from the library is worth installing. `load_skill` can show the cached text before that install. When the skill names bundled files that are not checked out, the tool result names the repository to visit instead of pretending the procedure can run.
+An agent that already has `skill_view` (Hermes) or the equivalent Claude or Codex skill loader should keep it. That tool opens a skill installed on the machine, including its scripts and references. SkillLib answers the prior question, at a size those lists are not built for: which skill from the library is worth installing. `load_skill` can show the cached text before that install. When the skill names bundled files that are not checked out, the tool result names the repository to visit. A file counts as checked out when it is anywhere in that repository. A combined skill still returns the peers that are present.
 
 On a hand-labeled set of 40 tasks, the finder returned the expected skill for 36.
 
@@ -146,7 +146,7 @@ python -m skilllib families --name-with heuristic
 python -m skilllib prefetch --workers 4
 ```
 
-A checkout already on disk is skipped. Exit code 2 means some clones failed. Run the same command again to retry those repositories. The list of finished checkouts is `cache/repos/manifest.json`. Uploading that directory to Hugging Face, and restoring it on another machine, is described in [docs/huggingface.md](docs/huggingface.md).
+A checkout already on disk is skipped. Exit code 2 means some clones failed. Retry those names with `python -m skilllib prefetch --failed`. That reads `catalog/prefetch_status.json` and does not walk the checkouts that already succeeded. Add `--protocol ssh` when you want those clones to use `git@github.com` and an SSH key already registered with GitHub. The default is HTTPS, which can clone a public repository without a login. Run `prefetch` without `--failed` when a repository has been added to the catalog. The list of finished checkouts is `cache/repos/manifest.json`. Uploading that directory to Hugging Face, and restoring it on another machine, is described in [docs/huggingface.md](docs/huggingface.md).
 
 ## Commands
 
@@ -163,8 +163,8 @@ Run these from the repository root as `skilllib <command>`, or as `python -m ski
 | `prompt` | Write the standing prompt fragment. |
 | `families` | Collapse the current cards into families again. |
 | `browse` | Write the HTML shelf under `docs/library/`. |
-| `visit owner/name` | Clone one repository into the local `cache/repos/` cache. |
-| `prefetch` | Clone every catalog skill repository into `cache/repos/`. A checkout already there is skipped. |
+| `visit owner/name` | Clone one repository into the local `cache/repos/` cache. `--protocol ssh` uses an SSH key. |
+| `prefetch` | Clone every catalog skill repository into `cache/repos/`. `--failed` retries only the names recorded as failed. `--protocol ssh` uses an SSH key. |
 
 `screen`, `download`, `index`, `cards`, `enrich`, and `link` run a single stage. After `add` and `update`, run `download --leaders`, `cards`, `link`, and `enrich` so a skill name that occurs once gets a full card. `update` covers names that overlap a skill already in the catalog.
 

@@ -333,6 +333,74 @@ For the generic templates, use the `report-writing` skill. Before deciding to re
             self.assertIn("not checked out", loaded["gap"])
             self.assertGreater(summary["links"]["gaps"], 0)
 
+    def test_a_named_file_elsewhere_in_the_repository_is_checked_out(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill = root / "cache/skills/acme/skills/gsea/SKILL.md"
+            skill.parent.mkdir(parents=True)
+            skill.write_text("Read references/algorithm.md before the run.\n", encoding="utf-8")
+            shared = root / "cache/repos/acme/skills/shared/references/algorithm.md"
+            shared.parent.mkdir(parents=True)
+            shared.write_text("steps\n", encoding="utf-8")
+            (root / "cache/repos/acme/skills/skills/gsea").mkdir(parents=True)
+            (root / "cache/repos/acme/skills/skills/gsea/SKILL.md").write_text(
+                "Read references/algorithm.md before the run.\n", encoding="utf-8"
+            )
+            target = card("acme::gsea", "gsea", description="Run GSEA.")
+            link_cards([target], root)
+            self.assertEqual(target["applicability"]["gap"], "")
+            self.assertTrue(target["applicability"]["checked_out"])
+            loaded = Finder([target]).load(root, "acme::gsea")
+            self.assertIn("algorithm.md", loaded["text"])
+            self.assertNotIn("gap", loaded)
+            self.assertTrue(loaded["scripts_checked_out"])
+
+    def test_load_returns_the_peer_that_is_present(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            ready_dir = root / "cache/repos/acme/skills/skills/gsea"
+            ready_dir.mkdir(parents=True)
+            ready_text = "Run the ready copy.\nSee scripts/main.R\n"
+            (ready_dir / "SKILL.md").write_text(ready_text, encoding="utf-8")
+            (ready_dir / "scripts").mkdir()
+            (ready_dir / "scripts/main.R").write_text("cat\n", encoding="utf-8")
+            ready_cache = root / "cache/skills/acme/skills/gsea/SKILL.md"
+            ready_cache.parent.mkdir(parents=True)
+            ready_cache.write_text(ready_text, encoding="utf-8")
+            missing_cache = root / "cache/skills/other/skills/gsea/SKILL.md"
+            missing_cache.parent.mkdir(parents=True)
+            missing_cache.write_text("Run the other copy.\nSee scripts/main.R\n", encoding="utf-8")
+            target = card(
+                "combined::gsea",
+                "gsea",
+                kind="combined",
+                description="Run GSEA.",
+                sources=[
+                    {
+                        "role": "peer",
+                        "repository": "acme/skills",
+                        "path": "skills/gsea/SKILL.md",
+                        "cache_path": "cache/skills/acme/skills/gsea/SKILL.md",
+                        "present": True,
+                    },
+                    {
+                        "role": "peer",
+                        "repository": "other/skills",
+                        "path": "skills/gsea/SKILL.md",
+                        "cache_path": "cache/skills/other/skills/gsea/SKILL.md",
+                        "present": True,
+                    },
+                ],
+            )
+            link_cards([target], root)
+            self.assertIn("other/skills", target["applicability"]["gap"])
+            self.assertNotIn("acme/skills", target["applicability"]["gap"])
+            loaded = Finder([target]).load(root, "combined::gsea")
+            self.assertIn("ready copy", loaded["text"])
+            self.assertNotIn("other copy", loaded["text"])
+            self.assertIn("other/skills", loaded["gap"])
+            self.assertFalse(loaded["scripts_checked_out"])
+
 
 class PromptTests(unittest.TestCase):
     def test_working_set_uses_the_description(self) -> None:

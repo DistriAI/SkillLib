@@ -29,12 +29,23 @@ def repository_cache_path(full_name: str, root: Path) -> Path:
     return root / "cache" / "repos" / full_name
 
 
+def clone_url(full_name: str, protocol: str = "https") -> str:
+    """Return the GitHub clone URL for ``https`` or ``ssh``."""
+
+    if protocol == "https":
+        return f"https://github.com/{full_name}.git"
+    if protocol == "ssh":
+        return f"git@github.com:{full_name}.git"
+    raise ValueError(f"protocol must be https or ssh, not {protocol}")
+
+
 def visit_repository(
     full_name: str,
     root: Path | None = None,
     *,
     depth: int | None = 1,
     timeout: float | None = None,
+    protocol: str = "https",
     run=subprocess.run,
 ) -> Path:
     """Return a local checkout of a skill repository.
@@ -53,9 +64,9 @@ def visit_repository(
     command = ["git", "clone", "--single-branch"]
     if depth:
         command.extend(["--depth", str(depth)])
-    command.extend([f"https://github.com/{full_name}.git", str(dest)])
+    command.extend([clone_url(full_name, protocol), str(dest)])
     try:
-        _run_clone(run, command, root, full_name, timeout)
+        _run_clone(run, command, root, full_name, timeout, protocol)
     except RuntimeError:
         shutil.rmtree(dest, ignore_errors=True)
         raise
@@ -85,14 +96,17 @@ def prefetch_repositories(
     *,
     workers: int = 4,
     timeout: float = 1200,
+    only_failed: bool = False,
+    protocol: str = "https",
     progress=None,
     run=subprocess.run,
 ) -> dict:
-    """Clone every catalog skill repository into ``cache/repos``.
+    """Clone catalog skill repositories into ``cache/repos``.
 
-    A checkout already on disk is skipped. Failures are recorded and retried
-    on the next call. The status is ``catalog/prefetch_status.json``. The same
-    list is written to ``cache/repos/manifest.json`` for a later upload.
+    A checkout already on disk is skipped. ``only_failed`` reads
+    ``catalog/prefetch_status.json`` and clones the repositories recorded as
+    failed, leaving the stored rows for the others unchanged. The same list is
+    written to ``cache/repos/manifest.json`` for a later upload.
     """
 
     root = root.resolve()
@@ -101,8 +115,34 @@ def prefetch_repositories(
         raise FileNotFoundError(f"No catalog at {catalog_path}. Run: python -m skilllib search")
     os.environ["GIT_TERMINAL_PROMPT"] = "0"
     repos = catalog_skill_repositories(root)
+    previous = _read_status(root)
+    previous_rows = {
+        row["full_name"].lower(): row
+        for row in previous.get("repositories") or []
+        if row.get("full_name")
+    }
+    if only_failed:
+        if not previous:
+            raise FileNotFoundError(
+                f"No prefetch status at {root / PREFETCH_STATUS_PATH}. Run: python -m skilllib prefetch"
+            )
+        targets = [
+            repo
+            for repo in repos
+            if (previous_rows.get(repo["full_name"].lower()) or {}).get("status") == "failed"
+        ]
+        rows = {}
+        for key, row in previous_rows.items():
+            if row.get("status") == "failed":
+                continue
+            kept = dict(row)
+            kept["status"] = "cached"
+            kept["error"] = ""
+            rows[key] = kept
+    else:
+        targets = repos
+        rows = {}
     report = progress or (lambda _message: None)
-    rows: dict[str, dict] = {}
     lock = threading.Lock()
     done = 0
 
@@ -114,7 +154,7 @@ def prefetch_repositories(
             row = _row(root, repo, dest, "cached", "")
         else:
             try:
-                visit_repository(name, root, timeout=timeout, run=run)
+                visit_repository(name, root, timeout=timeout, protocol=protocol, run=run)
             except (OSError, RuntimeError, subprocess.SubprocessError) as error:
                 row = _row(root, repo, dest, "failed", str(error))
             else:
@@ -123,13 +163,15 @@ def prefetch_repositories(
             rows[name.lower()] = row
             done += 1
             _write_prefetch(root, repos, rows)
-            if done == 1 or done % 5 == 0 or done == len(repos):
-                report(f"{done}/{len(repos)} {row['status']} {name}")
+            if done == 1 or done % 5 == 0 or done == len(targets):
+                report(f"{done}/{len(targets)} {row['status']} {name}")
 
     workers = max(1, workers)
-    if repos:
+    if targets:
         with ThreadPoolExecutor(max_workers=workers) as pool:
-            list(pool.map(one, repos))
+            list(pool.map(one, targets))
+    elif only_failed:
+        report("No failed repositories in the last prefetch.")
     status = _status(repos, rows)
     _write_prefetch(root, repos, rows)
     report(
@@ -166,9 +208,16 @@ def _commit(dest: Path) -> str:
     return result.stdout.strip()
 
 
+def _read_status(root: Path) -> dict:
+    path = root / PREFETCH_STATUS_PATH
+    if not path.is_file():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def _status(repos: list[dict], rows: dict[str, dict]) -> dict:
     ordered = [rows[repo["full_name"].lower()] for repo in repos if repo["full_name"].lower() in rows]
-    counts = {"total": len(repos), "cloned": 0, "cached": 0, "failed": 0}
+    counts = {"total": len(ordered), "cloned": 0, "cached": 0, "failed": 0}
     for row in ordered:
         counts[row["status"]] += 1
     return {**counts, "repositories": ordered}
@@ -212,11 +261,15 @@ def _clear_incomplete(dest: Path) -> None:
     raise RuntimeError(f"{dest} exists but is not a cached checkout")
 
 
-def _run_clone(run, command: list[str], root: Path, full_name: str, timeout: float | None) -> None:
+def _run_clone(run, command: list[str], root: Path, full_name: str, timeout: float | None, protocol: str = "https") -> None:
     try:
         kwargs = {"cwd": root, "check": True, "capture_output": True, "text": True}
         if timeout:
             kwargs["timeout"] = timeout
+        if protocol == "ssh":
+            env = os.environ.copy()
+            env["GIT_SSH_COMMAND"] = "ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new"
+            kwargs["env"] = env
         run(command, **kwargs)
     except subprocess.TimeoutExpired as exc:
         raise RuntimeError(f"git clone of {full_name} timed out") from exc
