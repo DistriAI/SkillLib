@@ -71,7 +71,7 @@ def main(argv: list[str] | None = None) -> int:
     update.add_argument("--workers", type=int, default=6)
     update.add_argument("--timeout", type=float, default=20)
 
-    visit = sub.add_parser("visit", help="clone a skill repository as a submodule on first access")
+    visit = sub.add_parser("visit", help="clone a skill repository into the local cache on first access")
     visit.add_argument("repository", help="owner/name")
     visit.add_argument("--root", type=Path, default=Path.cwd())
 

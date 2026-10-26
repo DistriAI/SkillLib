@@ -62,7 +62,7 @@ python -m skilllib list
 
 ### `download_skills(root, *, leaders=False, workers=6, timeout=20)`
 
-Download each `SKILL.md` named in `catalog/skill_screen.json` into `cache/skills/owner/name/...`. `leaders=True` downloads the file behind every leading skill, including a name that occurs once. A file that is already stored, or that already exists in a submodule checkout, is skipped. The status is `catalog/download_status.json`.
+Download each `SKILL.md` named in `catalog/skill_screen.json` into `cache/skills/owner/name/...`. `leaders=True` downloads the file behind every leading skill, including a name that occurs once. A file that is already stored, or that already exists in a checkout under `cache/repos/`, is skipped. The status is `catalog/download_status.json`. `cache/skills/` and `cache/repos/` are local caches and are not git-indexed.
 
 ```python
 from skilllib import download_skills
@@ -80,7 +80,7 @@ Exit code 2 means some fetches failed. Run the same command again to retry the m
 
 ### `visit_repository(full_name, root=None)`
 
-Check out one repository as a git submodule at `cache/repos/owner/name`. A later call reuses that checkout. This is the tree an agent needs when a skill names scripts or references. `download_skills` only stores `SKILL.md` for indexing.
+Clone one repository into `cache/repos/owner/name`. A later call reuses that checkout. The clone is local cache: it is not registered as a submodule and it is not committed. This is the tree an agent needs when a skill names scripts or references. `download_skills` only stores `SKILL.md` for indexing.
 
 ```python
 from skilllib import visit_repository
@@ -163,7 +163,7 @@ python -m skilllib enrich
 | Step | What it completes |
 |---|---|
 | `update` | Screens the new names, downloads files that share a name with another copy, judges those overlaps, writes cards, fills thin cards whose files were downloaded, and records links for new skill names. |
-| `download --leaders` | Fetches the `SKILL.md` behind every leading skill, including a name that occurs once. A file already in `cache/skills/` or in a submodule checkout is skipped. |
+| `download --leaders` | Fetches the `SKILL.md` behind every leading skill, including a name that occurs once. A file already in `cache/skills/` or in a `cache/repos/` checkout is skipped. |
 | `cards` | Copies the description and scope out of each newly stored file into `catalog/routing_cards.jsonl`. |
 | `link` | Records `requires`, `alternative`, and `follows` from those files, and sets a checkout gap when a skill names bundled files that are not checked out. |
 | `enrich` | Asks the model to fill a description, negative scope, or inputs and outputs that the file never states. A saved fill in `.cache/judge/cards/` is reused. |
@@ -196,7 +196,7 @@ python -m skilllib find --eval
 
 ### `load_skill(skill_id, *, root=None)`
 
-Return the cached procedure for one card id. When the skill names bundled files that are not checked out, `text` is empty and `gap` tells you which repository to visit.
+Return the procedure for one card id. The stored `present` flag is not trusted: a file is used only when it is on disk. `load_skill` reads `cache/skills/`, then `cache/repos/<owner>/<name>/<path>`, and otherwise downloads that one raw file into `cache/skills/`. When the skill names bundled files that are not checked out, `text` is empty and `gap` tells you which repository to visit. When the skill file itself cannot be obtained, `text` is empty and `gap` is `owner/name`.
 
 ```python
 from skilllib import load_skill
@@ -254,6 +254,6 @@ def handle(name, arguments):
     return call_tool(name, arguments, root=root)
 ```
 
-`call_tool` returns `{"success": true, ...}` or `{"success": false, "error": "..."}`. A load that cannot see bundled scripts sets `text` to empty, sets `gap` to the repository id, and sets `next` to the visit-then-load step. That `next` sentence is the one the model should follow.
+`call_tool` returns `{"success": true, ...}` or `{"success": false, "error": "..."}`. A load is `success: true` only when `text` is non-empty. A load that cannot obtain the skill file sets `success` to false, sets `gap` to `owner/name`, and sets `next` to the visit-then-load step. A load that cannot see bundled scripts sets `text` to empty, sets `gap` to the repository id, and sets the same `next` sentence. That `next` sentence is the one the model should follow.
 
 `resident_prompt(root, working_set=["card-id"])` pins those cards' names into the fragment. Omit `working_set` when the prompt must stay byte-stable for a conversation.

@@ -1,8 +1,13 @@
-"""Cache skill repositories as git submodules."""
+"""Cache skill repositories as local git clones.
+
+``cache/repos/`` is a local checkout cache. Visit does not register those
+trees as submodules, so they stay out of the SkillLib git index.
+"""
 
 from __future__ import annotations
 
 import re
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -24,7 +29,7 @@ def visit_repository(
 ) -> Path:
     """Return a local checkout of a skill repository.
 
-    The first call adds the GitHub repository as a submodule under
+    The first call clones the GitHub repository under
     ``cache/repos/<owner>/<name>``. Later calls reuse that checkout.
     """
 
@@ -32,27 +37,15 @@ def visit_repository(
     dest = repository_cache_path(full_name, root)
     if _is_cached(dest):
         return dest
-    if not (root / ".git").exists():
-        raise RuntimeError("visit requires a git work tree so the repository can be added as a submodule")
-    relative = dest.relative_to(root).as_posix()
-    if _submodule_registered(root, relative):
-        command = ["git", "submodule", "update", "--init"]
-        if depth:
-            command.extend(["--depth", str(depth)])
-        command.extend(["--", relative])
-        run(command, cwd=root, check=True)
-        if _is_cached(dest):
-            return dest
-        raise RuntimeError(f"submodule {full_name} did not materialize at {dest}")
-    if dest.exists():
-        raise RuntimeError(f"{dest} exists but is not a cached submodule checkout")
-    command = ["git", "submodule", "add"]
+    _clear_incomplete(dest)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    command = ["git", "clone"]
     if depth:
         command.extend(["--depth", str(depth)])
-    command.extend([f"https://github.com/{full_name}.git", relative])
-    run(command, cwd=root, check=True)
+    command.extend([f"https://github.com/{full_name}.git", str(dest)])
+    _run_clone(run, command, root, full_name)
     if not _is_cached(dest):
-        raise RuntimeError(f"submodule {full_name} did not materialize at {dest}")
+        raise RuntimeError(f"checkout {full_name} did not materialize at {dest}")
     return dest
 
 
@@ -62,9 +55,25 @@ def _is_cached(dest: Path) -> bool:
     return any(child.name != ".git" for child in dest.iterdir())
 
 
-def _submodule_registered(root: Path, relative: str) -> bool:
-    modules = root / ".gitmodules"
-    if not modules.is_file():
-        return False
-    needle = f"path = {relative}"
-    return needle in modules.read_text(encoding="utf-8")
+def _clear_incomplete(dest: Path) -> None:
+    if not dest.exists():
+        return
+    if not dest.is_dir():
+        raise RuntimeError(f"{dest} exists but is not a cached checkout")
+    names = {child.name for child in dest.iterdir()}
+    if not names or names <= {".git"}:
+        shutil.rmtree(dest)
+        return
+    raise RuntimeError(f"{dest} exists but is not a cached checkout")
+
+
+def _run_clone(run, command: list[str], root: Path, full_name: str) -> None:
+    try:
+        run(command, cwd=root, check=True, capture_output=True, text=True)
+    except subprocess.CalledProcessError as exc:
+        detail = exc.stderr or exc.stdout or ""
+        detail = detail.strip() if isinstance(detail, str) else ""
+        message = f"git clone of {full_name} failed ({exc.returncode})"
+        if detail:
+            message = f"{message}: {detail}"
+        raise RuntimeError(message) from exc

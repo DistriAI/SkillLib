@@ -4,6 +4,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from skilllib.integrate import (
     FIND,
@@ -123,6 +124,55 @@ class IntegrateTests(unittest.TestCase):
             self.assertIn("Unknown skill id", unknown["error"])
             visit = call_tool(VISIT, {"repository": "not a repository"}, root=root)
             self.assertFalse(visit["success"])
+
+    def test_call_tool_load_reads_a_checkout_and_rejects_a_missing_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _library(root)
+            checkout = root / "cache" / "repos" / "demo" / "pid" / "skills" / "pid" / "SKILL.md"
+            checkout.parent.mkdir(parents=True)
+            checkout.write_text("pid procedure\n", encoding="utf-8")
+            present = {
+                "id": "demo::pid",
+                "name": "pid",
+                "aliases": ["pid"],
+                "kind": "separate",
+                "description": "",
+                "domains": ["science"],
+                "preconditions": [],
+                "provenance": {"conflict_note": ""},
+                "body": {"scripts_checked_out": False, "present": False},
+                "sources": [{
+                    "repository": "demo/pid",
+                    "path": "skills/pid/SKILL.md",
+                    "cache_path": "cache/skills/demo/pid/skills/pid/SKILL.md",
+                    "present": False,
+                }],
+                "applicability": {"gap": ""},
+            }
+            absent = {
+                **present,
+                "id": "demo::absent",
+                "name": "absent",
+                "sources": [{
+                    "repository": "demo/absent",
+                    "path": "skills/absent/SKILL.md",
+                    "cache_path": "cache/skills/demo/absent/skills/absent/SKILL.md",
+                    "present": True,
+                }],
+            }
+            cards = root / "catalog" / "routing_cards.jsonl"
+            cards.write_text(cards.read_text(encoding="utf-8") + json.dumps(present) + "\n" + json.dumps(absent) + "\n", encoding="utf-8")
+            clear_finder_cache()
+            loaded = call_tool(LOAD, {"skill_id": "demo::pid"}, root=root)
+            self.assertTrue(loaded["success"])
+            self.assertIn("pid procedure", loaded["text"])
+            with patch("skilllib.sorting.download.materialize_skill_file", return_value=None):
+                missing = call_tool(LOAD, {"skill_id": "demo::absent"}, root=root)
+            self.assertFalse(missing["success"])
+            self.assertEqual(missing["text"], "")
+            self.assertEqual(missing["gap"], "demo/absent")
+            self.assertIn(VISIT, missing["next"])
 
 
 if __name__ == "__main__":

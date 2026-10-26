@@ -1,4 +1,4 @@
-"""Read SKILL.md bodies from a submodule checkout, then from the raw host."""
+"""Read SKILL.md bodies from a local checkout, then from the raw host."""
 
 from __future__ import annotations
 
@@ -23,11 +23,11 @@ class SkillBody:
 
 
 class SkillRetriever:
-    """Checkout a repository as a submodule, and fall back to the raw file.
+    """Clone a repository into the local cache, and fall back to the raw file.
 
-    Submodule adds share one git index, so they run one at a time. After two
-    checkout failures the rest of the run reads skill files directly, because
-    waiting on every repository would stall the judge.
+    Clones run one at a time. After two checkout failures the rest of the run
+    reads skill files directly, because waiting on every repository would stall
+    the judge.
     """
 
     def __init__(self, root: Path, *, submodule_timeout: float = 90, max_bytes: int = 200_000):
@@ -98,8 +98,14 @@ class SkillRetriever:
                 self._repo_state[occurrence.repository] = "ok"
                 return
 
-            def run(command, cwd=None, check=False):
-                return subprocess.run(command, cwd=cwd, check=check, timeout=self.submodule_timeout)
+            def run(command, cwd=None, check=False, **kwargs):
+                return subprocess.run(
+                    command,
+                    cwd=cwd,
+                    check=check,
+                    timeout=self.submodule_timeout,
+                    **kwargs,
+                )
 
             try:
                 visit_repository(occurrence.repository, self.root, run=run)

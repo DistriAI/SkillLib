@@ -162,6 +162,49 @@ class FinderTests(unittest.TestCase):
         self.assertIn("run gsea", loaded["text"])
         self.assertFalse(loaded["scripts_checked_out"])
 
+    def test_load_reads_a_checkout_when_the_cache_flag_is_false(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / "cache/repos/acme/skills/skills/gsea/SKILL.md"
+            path.parent.mkdir(parents=True)
+            path.write_text("from the checkout\n", encoding="utf-8")
+            target = card("acme::gsea", "gsea")
+            target["sources"][0]["present"] = False
+            target["body"]["present"] = False
+            loaded = Finder([target]).load(root, "acme::gsea", fetch=self._fail_fetch)
+            self.assertIn("from the checkout", loaded["text"])
+            self.assertNotIn("gap", loaded)
+            cached = root / "cache/skills/acme/skills/skills/gsea/SKILL.md"
+            self.assertEqual(cached.read_text(encoding="utf-8"), "from the checkout\n")
+
+    def test_load_downloads_one_missing_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            target = card("acme::gsea", "gsea")
+            target["sources"][0]["present"] = False
+
+            def fetch(url, timeout):
+                self.assertIn("acme/skills", url)
+                return b"downloaded procedure\n"
+
+            loaded = Finder([target]).load(root, "acme::gsea", fetch=fetch)
+            self.assertIn("downloaded procedure", loaded["text"])
+            self.assertTrue((root / "cache/skills/acme/skills/skills/gsea/SKILL.md").is_file())
+
+    def test_load_names_the_repository_when_the_file_cannot_be_obtained(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            target = card("acme::gsea", "gsea")
+            target["sources"][0]["present"] = True
+            loaded = Finder([target]).load(root, "acme::gsea", fetch=self._fail_fetch)
+        self.assertEqual(loaded["text"], "")
+        self.assertEqual(loaded["gap"], "acme/skills")
+        self.assertTrue(loaded["missing_body"])
+
+    @staticmethod
+    def _fail_fetch(url, timeout):
+        raise OSError(f"no network for {url}")
+
 
 class LinkTests(unittest.TestCase):
     def test_a_skill_file_names_requires_alternative_and_follows(self) -> None:

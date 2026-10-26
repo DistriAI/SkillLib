@@ -135,6 +135,47 @@ def skill_cache_path(root: Path, repository: str, path: str) -> Path:
     return root / SKILL_CACHE / repository / path
 
 
+def materialize_skill_file(
+    root: Path,
+    repository: str,
+    path: str,
+    *,
+    branch: str = "main",
+    timeout: float = 20,
+    fetch=None,
+) -> Path | None:
+    """Return one skill file that is actually on disk.
+
+    A non-empty file in ``cache/skills/`` is reused. Otherwise a file already
+    checked out at ``cache/repos/<repository>/<path>`` is copied there. Otherwise
+    that one raw file is downloaded. ``None`` means the bytes could not be obtained.
+    """
+
+    root = Path(root).resolve()
+    destination = skill_cache_path(root, repository, path)
+    if _nonempty(destination):
+        return destination
+    checkout = root / "cache" / "repos" / repository / path
+    if _nonempty(checkout):
+        _write(destination, checkout.read_bytes())
+        return destination
+    fetcher = fetch or _fetch
+    branches: list[str] = []
+    for name in (branch or "main", "main", "master"):
+        if name not in branches:
+            branches.append(name)
+    for name in branches:
+        outcome, _error = _fetch_new(
+            {"repository": repository, "path": path, "default_branch": name},
+            destination,
+            fetcher,
+            timeout,
+        )
+        if outcome == "downloaded" and _nonempty(destination):
+            return destination
+    return None
+
+
 def _leader_items(index: dict, branches: dict[str, str]) -> list[dict]:
     items = []
     seen: set[tuple[str, str]] = set()
@@ -180,7 +221,10 @@ def _branches(catalog: dict) -> dict[str, str]:
 
 
 def _stored(root: Path, item: dict) -> bool:
-    path = skill_cache_path(root, item["repository"], item["path"])
+    return _nonempty(skill_cache_path(root, item["repository"], item["path"]))
+
+
+def _nonempty(path: Path) -> bool:
     return path.is_file() and path.stat().st_size > 0
 
 

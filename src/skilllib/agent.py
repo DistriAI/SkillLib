@@ -1,7 +1,8 @@
 """Locate skills and load the procedure an agent should follow.
 
 ``find_skills`` reads the routing cards and task families already on disk.
-``load_skill`` returns the cached skill text for one card id.
+``load_skill`` returns the skill text for one card id, reading or downloading
+the file when the catalog flag says it is present but the bytes are not on disk.
 ``render_prompt`` writes the resident prompt from those cards.
 """
 

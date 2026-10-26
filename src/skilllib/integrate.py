@@ -87,8 +87,10 @@ def tool_specs() -> list[dict]:
             "name": LOAD,
             "description": (
                 "Load one skill body from the hierarchical skill library by the card id "
-                f"returned from {FIND}. When bundled scripts are not checked out, "
-                f"text is empty and gap names the repository to pass to {VISIT}."
+                f"returned from {FIND}. A missing file is read from a local checkout or "
+                "downloaded. success is true only when text is non-empty. When the file "
+                f"cannot be obtained, gap is owner/name and names the repository to pass to {VISIT}. "
+                "When bundled scripts are not checked out, text is empty and gap names that repository."
             ),
             "parameters": {
                 "type": "object",
@@ -237,6 +239,20 @@ def _load(arguments: dict, root: Path | None) -> dict:
         return {"success": False, "error": f"Unknown skill id: {skill_id}"}
     except Exception as exc:
         return {"success": False, "error": f"Skill library load failed: {exc}"}
+    text = str(loaded.get("text") or "")
+    if text.strip():
+        return {"success": True, **loaded}
+    if loaded.get("missing_body"):
+        gap = str(loaded.get("gap") or "")
+        result = {"success": False, **loaded}
+        result["error"] = (
+            f"Skill file is not available for {gap}." if gap else "Skill file is not available."
+        )
+        if gap:
+            result["next"] = (
+                f"Call {VISIT} once for each owner/name in gap, then call {LOAD} again."
+            )
+        return result
     result = {"success": True, **loaded}
     if result.get("gap"):
         result["next"] = (
@@ -260,7 +276,8 @@ def _visit(arguments: dict, root: Path | None) -> dict:
         "repository": full_name,
         "path": str(dest),
         "note": (
-            "Read the skill files under path. The stored catalog gap stays until skill-lib "
-            f"rewrites checkout state, so a later {LOAD} can still report that gap."
+            "This checkout is local cache and is not added to the git index. "
+            f"Call {LOAD} again to read the skill file from path. A stored gap for bundled "
+            "scripts remains until the catalog is rewritten."
         ),
     }

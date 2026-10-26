@@ -220,15 +220,13 @@ class SearchTests(unittest.TestCase):
 
 
 class VisitTests(unittest.TestCase):
-    def test_first_visit_adds_a_submodule_and_later_visits_use_the_cache(self) -> None:
+    def test_first_visit_clones_and_later_visits_use_the_cache(self) -> None:
         root = Path(tempfile.mkdtemp(prefix="skilllib-visit-"))
-        (root / ".git").mkdir()
         calls = []
 
-        def run(command, cwd, check):
+        def run(command, cwd, check, **kwargs):
             calls.append(command)
-            relative = command[-1]
-            dest = Path(cwd) / relative
+            dest = Path(command[-1])
             dest.mkdir(parents=True, exist_ok=True)
             (dest / ".git").write_text("gitdir: fake\n", encoding="utf-8")
             (dest / "README.md").write_text("cached\n", encoding="utf-8")
@@ -238,8 +236,20 @@ class VisitTests(unittest.TestCase):
         second = visit_repository("anthropics/skills", root, run=run)
         self.assertEqual(first, second)
         self.assertEqual(len(calls), 1)
-        self.assertEqual(calls[0][:3], ["git", "submodule", "add"])
+        self.assertEqual(calls[0][:2], ["git", "clone"])
+        self.assertNotIn("submodule", calls[0])
         self.assertTrue((first / "README.md").is_file())
+        self.assertFalse((root / ".gitmodules").exists())
+
+    def test_visit_reports_git_stderr(self) -> None:
+        def run(command, cwd, check, **kwargs):
+            raise subprocess.CalledProcessError(128, command, stderr="fatal: repository not found")
+
+        with self.assertRaises(RuntimeError) as caught:
+            visit_repository("acme/missing", Path(tempfile.mkdtemp(prefix="skilllib-visit-")), run=run)
+        message = str(caught.exception)
+        self.assertIn("128", message)
+        self.assertIn("repository not found", message)
 
     def test_invalid_repository_id_is_rejected(self) -> None:
         with self.assertRaises(ValueError):

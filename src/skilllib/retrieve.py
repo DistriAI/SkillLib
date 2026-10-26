@@ -2,7 +2,8 @@
 
 ``download_skills`` stores ``SKILL.md`` files. The default set is the screen
 shortlist. ``leaders=True`` stores the file behind every leading skill.
-``visit_repository`` checks out a whole repository as a git submodule.
+``visit_repository`` clones a whole repository under ``cache/repos/``. That
+directory is a local cache and is not git-indexed.
 Both leave files that are already on disk untouched.
 """
 

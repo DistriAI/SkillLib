@@ -153,7 +153,7 @@ Run these from the repository root as `skilllib <command>`, or as `python -m ski
 | `prompt` | Write the standing prompt fragment. |
 | `families` | Collapse the current cards into families again. |
 | `browse` | Write the HTML shelf under `docs/library/`. |
-| `visit owner/name` | Check out one repository as a submodule. |
+| `visit owner/name` | Clone one repository into the local `cache/repos/` cache. |
 
 `screen`, `download`, `index`, `cards`, `enrich`, and `link` run a single stage. After `add` and `update`, run `download --leaders`, `cards`, `link`, and `enrich` so a skill name that occurs once gets a full card. `update` covers names that overlap a skill already in the catalog.
 

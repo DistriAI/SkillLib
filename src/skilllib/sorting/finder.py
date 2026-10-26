@@ -2,7 +2,10 @@
 
 An exact product token outranks a lexical match. A negative scope that covers
 the task, or a precondition the caller does not have, lowers a card. The loader
-returns cached skill text and says when bundled scripts are not checked out.
+returns skill text that is actually on disk. A missing file is read from
+``cache/repos/`` or downloaded into ``cache/skills/``. When those bytes cannot
+be obtained, the result names the repository instead of returning an empty body.
+A stored checkout gap still means bundled scripts are absent.
 """
 
 from __future__ import annotations
@@ -81,37 +84,31 @@ class Finder:
             results.append(_view(card, info, score))
         return {"cards": results, "pairs": _pairs(scored, results)}
 
-    def load(self, root: Path, skill_id: str) -> dict:
+    def load(self, root: Path, skill_id: str, *, fetch=None) -> dict:
         card = self.by_id.get(skill_id)
         if card is None:
             raise KeyError(skill_id)
         gap = ((card.get("applicability") or {}).get("gap")) or ""
         if gap:
-            return {
-                "id": card["id"],
-                "name": card.get("name"),
-                "text": "",
-                "gap": gap,
-                "scripts_checked_out": False,
-                "scripts_available": False,
-            }
-        parts = []
+            return _load_result(card, "", gap, missing_body=False)
         note = (card.get("provenance") or {}).get("conflict_note") or ""
-        if note:
-            parts.append(note)
+        bodies: list[str] = []
+        missing: list[str] = []
         for source in card.get("sources") or []:
-            relative = source.get("cache_path")
-            if not source.get("present") or not relative:
+            repository, path = _source_location(source)
+            if not repository or not path:
                 continue
-            text = (root / relative).read_text(encoding="utf-8", errors="replace")
-            parts.append(f"# {source.get('repository') or card.get('name')}\n{text}")
-        return {
-            "id": card["id"],
-            "name": card.get("name"),
-            "text": "\n\n".join(parts),
-            "scripts_checked_out": bool((card.get("body") or {}).get("scripts_checked_out")),
-            "scripts_available": bool((card.get("body") or {}).get("scripts_checked_out")),
-        }
+            text = _skill_text(root, repository, path, source, fetch)
+            if text.strip():
+                bodies.append(f"# {repository}\n{text.strip()}")
+            else:
+                missing.append(repository)
+        if not bodies:
+            repos = list(dict.fromkeys(missing))
+            return _load_result(card, "", " ".join(repos), missing_body=True)
+        parts = [note] if note else []
+        parts.extend(bodies)
+        return _load_result(card, "\n\n".join(parts), "", missing_body=False)
 
 
 def score_eval(finder: Finder, cases: list[dict], *, limit: int = 5) -> dict:
@@ -134,6 +131,58 @@ def score_eval(finder: Finder, cases: list[dict], *, limit: int = 5) -> dict:
         else:
             failed.append({"id": case.get("id"), "task": case["task"], "names": names, "expect_names": expected, "absent_names": absent})
     return {"tasks": len(cases), "passed": passed, "failed": failed}
+
+
+def _load_result(card: dict, text: str, gap: str, *, missing_body: bool) -> dict:
+    checked_out = bool((card.get("body") or {}).get("scripts_checked_out"))
+    result = {
+        "id": card["id"],
+        "name": card.get("name"),
+        "text": text,
+        "scripts_checked_out": checked_out and not missing_body,
+        "scripts_available": checked_out and not missing_body,
+    }
+    if gap:
+        result["gap"] = gap
+    if missing_body:
+        result["missing_body"] = True
+    return result
+
+
+def _source_location(source: dict) -> tuple[str, str]:
+    repository = source.get("repository") or ""
+    path = source.get("path") or ""
+    if repository and path:
+        return repository, path
+    relative = source.get("cache_path") or ""
+    prefix = "cache/skills/"
+    if not relative.startswith(prefix):
+        return repository, path
+    owner, _sep, rest = relative[len(prefix):].partition("/")
+    name, _sep, skill_path = rest.partition("/")
+    if owner and name and skill_path:
+        return repository or f"{owner}/{name}", path or skill_path
+    return repository, path
+
+
+def _skill_text(root: Path, repository: str, path: str, source: dict, fetch) -> str:
+    from skilllib.sorting.download import materialize_skill_file
+
+    relative = source.get("cache_path") or ""
+    if relative:
+        recorded = root / relative
+        if recorded.is_file() and recorded.stat().st_size > 0:
+            return recorded.read_text(encoding="utf-8", errors="replace")
+    found = materialize_skill_file(
+        root,
+        repository,
+        path,
+        branch=source.get("default_branch") or "main",
+        fetch=fetch,
+    )
+    if found is None:
+        return ""
+    return found.read_text(encoding="utf-8", errors="replace")
 
 
 def load_families(path: Path) -> dict:
