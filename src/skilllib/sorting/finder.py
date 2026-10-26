@@ -1,7 +1,9 @@
 """Locate a few routing cards for a task.
 
 An exact product token outranks a lexical match. A negative scope that covers
-the task, or a precondition the caller does not have, lowers a card. The loader
+the task, or a precondition the caller does not have, lowers a card. A matched
+card with an empty description is filled from its skill file before the final
+order. The loader
 returns skill text that is actually on disk. A missing file is read from
 ``cache/repos/`` or downloaded into ``cache/skills/``. When those bytes cannot
 be obtained, the result names the repository instead of returning an empty body.
@@ -14,12 +16,14 @@ import json
 import re
 from pathlib import Path
 
+from skilllib.sorting.cards import extract_card_text
 from skilllib.sorting.families import FAMILIES_PATH
 
 EVAL_PATH = Path("catalog") / "find_eval.json"
 EVAL_REPORT_PATH = Path("catalog") / "find_eval_report.json"
 _TOKEN = re.compile(r"[a-z0-9]+")
 _STOP = {"a", "an", "the", "on", "for", "to", "of", "and", "with", "from", "via", "or", "in", "by"}
+_FRONTMATTER_LIMIT = 20
 
 
 class Finder:
@@ -45,43 +49,23 @@ class Finder:
                 }
             )
 
-    def find(self, task: str, *, domain: str | None = None, constraints: set[str] | None = None, limit: int = 5) -> list[dict]:
+    def find(
+        self,
+        task: str,
+        *,
+        domain: str | None = None,
+        constraints: set[str] | None = None,
+        limit: int = 5,
+        root: Path | None = None,
+        fetch=None,
+    ) -> dict:
         task_tokens = _tokens(task)
-        product_hits = {product for product in self.products if product and _tokens(product) <= task_tokens and len(product) >= 3}
-        scored = []
-        for row in self.rows:
-            card = row["card"]
-            if domain and domain not in (card.get("domains") or []):
-                continue
-            score = 0
-            for token, weight in row["tokens"].items():
-                if token in task_tokens:
-                    score += weight
-            if row["product"] and row["product"] in product_hits:
-                score += 25
-            info = row["family"]
-            if info:
-                for token in _tokens(f"{info['name']} {info['definition']}"):
-                    if token in task_tokens:
-                        score += 2
-            for phrase in row["negative"]:
-                if not phrase:
-                    continue
-                overlap = phrase & task_tokens
-                if len(phrase) >= 2 and len(overlap) / len(phrase) >= 0.6:
-                    score -= 12
-                elif len(overlap) >= 2:
-                    score -= 4
-            if constraints is not None:
-                for need in card.get("preconditions") or []:
-                    if need not in constraints:
-                        score -= 3
-            if score >= 5:
-                scored.append((score, card, info))
+        product_hits = _product_hits(self.products, task_tokens)
+        scored = _rank_rows(self.rows, task_tokens, product_hits, domain, constraints)
+        if root is not None and _fill_frontmatter(Path(root), self.rows, scored, fetch):
+            scored = _rank_rows(self.rows, task_tokens, product_hits, domain, constraints)
         scored.sort(key=lambda item: (-item[0], item[1]["id"]))
-        results = []
-        for score, card, info in scored[:limit]:
-            results.append(_view(card, info, score))
+        results = [_view(card, info, score) for score, card, info in scored[:limit]]
         return {"cards": results, "pairs": _pairs(scored, results)}
 
     def load(self, root: Path, skill_id: str, *, fetch=None) -> dict:
@@ -100,6 +84,7 @@ class Finder:
                 continue
             text = _skill_text(root, repository, path, source, fetch)
             if text.strip():
+                _assign_frontmatter(card, text)
                 bodies.append(f"# {repository}\n{text.strip()}")
             else:
                 missing.append(repository)
@@ -111,13 +96,13 @@ class Finder:
         return _load_result(card, "\n\n".join(parts), "", missing_body=False)
 
 
-def score_eval(finder: Finder, cases: list[dict], *, limit: int = 5) -> dict:
+def score_eval(finder: Finder, cases: list[dict], *, limit: int = 5, root: Path | None = None, fetch=None) -> dict:
     """Score tasks whose expected names should appear in the top results."""
 
     failed = []
     passed = 0
     for case in cases:
-        found = finder.find(case["task"], domain=case.get("domain") or None, limit=limit)
+        found = finder.find(case["task"], domain=case.get("domain") or None, limit=limit, root=root, fetch=fetch)
         cards = found["cards"] if isinstance(found, dict) else found
         names = [item["name"] for item in cards]
         expected = list(case.get("expect_names") or [])
@@ -276,6 +261,100 @@ def _row_product(card: dict, products: dict[str, set[str]]) -> str:
         if card["id"] in ids:
             return product
     return ""
+
+
+def _product_hits(products: dict[str, set[str]], task_tokens: set[str]) -> set[str]:
+    return {product for product in products if product and _tokens(product) <= task_tokens and len(product) >= 3}
+
+
+def _rank_rows(rows: list[dict], task_tokens: set[str], product_hits: set[str], domain: str | None, constraints: set[str] | None) -> list[tuple]:
+    scored = []
+    for row in rows:
+        card = row["card"]
+        if domain and domain not in (card.get("domains") or []):
+            continue
+        score = _score_row(row, task_tokens, product_hits, constraints)
+        if score >= 5:
+            scored.append((score, card, row["family"]))
+    return scored
+
+
+def _score_row(row: dict, task_tokens: set[str], product_hits: set[str], constraints: set[str] | None) -> int:
+    card = row["card"]
+    score = 0
+    for token, weight in _card_tokens(card, row["family"]).items():
+        if token in task_tokens:
+            score += weight
+    if row["product"] and row["product"] in product_hits:
+        score += 25
+    info = row["family"]
+    if info:
+        for token in _tokens(f"{info['name']} {info['definition']}"):
+            if token in task_tokens:
+                score += 2
+    for phrase in row["negative"]:
+        if not phrase:
+            continue
+        overlap = phrase & task_tokens
+        if len(phrase) >= 2 and len(overlap) / len(phrase) >= 0.6:
+            score -= 12
+        elif len(overlap) >= 2:
+            score -= 4
+    if constraints is not None:
+        for need in card.get("preconditions") or []:
+            if need not in constraints:
+                score -= 3
+    return score
+
+
+def _fill_frontmatter(root: Path, rows: list[dict], scored: list[tuple], fetch) -> bool:
+    """Read a fetched skill file into an empty description and positive scope."""
+
+    by_id = {row["card"]["id"]: row for row in rows}
+    ordered = sorted(scored, key=lambda item: (-item[0], item[1]["id"]))
+    changed = False
+    attempts = 0
+    for _score, card, _info in ordered:
+        if attempts >= _FRONTMATTER_LIMIT:
+            break
+        if (card.get("description") or "").strip() and card.get("positive_scope"):
+            continue
+        attempts += 1
+        text = _first_skill_text(root, card, fetch)
+        if not _assign_frontmatter(card, text):
+            continue
+        row = by_id.get(card["id"])
+        if row is not None:
+            row["tokens"] = _card_tokens(card, row["family"])
+        changed = True
+    return changed
+
+
+def _first_skill_text(root: Path, card: dict, fetch) -> str:
+    for source in card.get("sources") or []:
+        repository, path = _source_location(source)
+        if not repository or not path:
+            continue
+        text = _skill_text(root, repository, path, source, fetch)
+        if text.strip():
+            return text
+    return ""
+
+
+def _assign_frontmatter(card: dict, text: str) -> bool:
+    extracted = extract_card_text(text)
+    description = (extracted.get("description") or "").strip()
+    changed = False
+    if not (card.get("description") or "").strip() and description:
+        card["description"] = description
+        changed = True
+    scope = [item for item in extracted.get("positive_scope") or [] if item]
+    if not scope and description:
+        scope = [description]
+    if not card.get("positive_scope") and scope:
+        card["positive_scope"] = scope
+        changed = True
+    return changed
 
 
 def _card_tokens(card: dict, info: dict | None) -> dict[str, int]:

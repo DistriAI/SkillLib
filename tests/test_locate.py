@@ -151,6 +151,71 @@ class FinderTests(unittest.TestCase):
         self.assertEqual(mailed[0]["name"], "gmail-automation")
         self.assertEqual(finder.find("Fold an origami crane")["cards"], [])
 
+    def test_find_fills_frontmatter_before_ranking(self) -> None:
+        thin = card("acme::pid", "speed-controller", description="", positive_scope=[])
+        rich = card(
+            "acme::generic",
+            "traffic-model",
+            description="Adaptive cruise control for vehicle traffic displays and planning charts.",
+            positive_scope=["Plan a traffic display"],
+        )
+        body = (
+            "---\n"
+            "name: speed-controller\n"
+            "description: PID control loops for adaptive cruise control and vehicle speed.\n"
+            "---\n"
+            "# PID\n"
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = root / thin["sources"][0]["cache_path"]
+            path.parent.mkdir(parents=True)
+            path.write_text(body, encoding="utf-8")
+            fetched = {"called": False}
+
+            def fetch(url, timeout):
+                fetched["called"] = True
+                raise OSError(url)
+
+            ranked = Finder([thin, rich]).find(
+                "adaptive cruise control and vehicle speed",
+                root=root,
+                fetch=fetch,
+            )["cards"]
+        self.assertEqual(ranked[0]["name"], "speed-controller")
+        self.assertIn("adaptive cruise control", ranked[0]["description"])
+        self.assertEqual(ranked[0]["positive_scope"], ["PID control loops for adaptive cruise control and vehicle speed."])
+        self.assertGreater(ranked[0]["score"], ranked[1]["score"])
+        self.assertFalse(fetched["called"])
+
+    def test_find_fetches_a_missing_file_before_ranking(self) -> None:
+        thin = card("acme::pid", "speed-controller", description="", positive_scope=[])
+        rich = card(
+            "acme::generic",
+            "traffic-model",
+            description="Adaptive cruise control for vehicle traffic displays and planning charts.",
+            positive_scope=["Plan a traffic display"],
+        )
+        body = (
+            b"---\n"
+            b"name: speed-controller\n"
+            b"description: PID control loops for adaptive cruise control and vehicle speed.\n"
+            b"---\n"
+            b"# PID\n"
+        )
+
+        def fetch(url, timeout):
+            return body
+
+        with tempfile.TemporaryDirectory() as tmp:
+            ranked = Finder([thin, rich]).find(
+                "adaptive cruise control and vehicle speed",
+                root=Path(tmp),
+                fetch=fetch,
+            )["cards"]
+        self.assertEqual(ranked[0]["name"], "speed-controller")
+        self.assertIn("PID control loops", ranked[0]["description"])
+
     def test_load_reports_missing_scripts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

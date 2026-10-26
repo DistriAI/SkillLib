@@ -422,7 +422,7 @@ def _find(args) -> int:
     if args.eval:
         finder = Finder(load_routing_cards(args.root / CARDS_PATH), load_families(default_families_path(args.root)))
         cases = json.loads((args.root / EVAL_PATH).read_text(encoding="utf-8"))
-        report = score_eval(finder, cases, limit=args.limit)
+        report = score_eval(finder, cases, limit=args.limit, root=args.root)
         path = args.root / EVAL_REPORT_PATH
         path.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         print(f"Passed {report['passed']} of {report['tasks']}")

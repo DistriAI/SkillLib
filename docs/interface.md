@@ -178,7 +178,7 @@ These functions read the current cards and families. They do no indexing.
 
 ### `find_skills(task, *, root=None, domain=None, constraints=None, limit=5)`
 
-Return `{"cards": [...], "pairs": [...]}`. Each card view has `id`, `name`, `score`, `kind`, `description`, and `family`. `pairs` lists a follow-on skill when the task matches both ends of a `follows` link. `constraints` is a set of tool names the caller already has, such as `{"python", "git"}`.
+Return `{"cards": [...], "pairs": [...]}`. Each card view has `id`, `name`, `score`, `kind`, `description`, and `family`. Before that order is final, a matched card with an empty description or positive scope is filled from its skill file: a file already on disk is read, otherwise that one file is fetched. `description` and `positive_scope` come from the frontmatter (and from a "when to use" section when the file has one). `pairs` lists a follow-on skill when the task matches both ends of a `follows` link. `constraints` is a set of tool names the caller already has, such as `{"python", "git"}`.
 
 ```python
 from skilllib import find_skills

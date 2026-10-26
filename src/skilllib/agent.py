@@ -1,6 +1,7 @@
 """Locate skills and load the procedure an agent should follow.
 
 ``find_skills`` reads the routing cards and task families already on disk.
+A matched card with an empty description is filled from the skill file before ranking.
 ``load_skill`` returns the skill text for one card id, reading or downloading
 the file when the catalog flag says it is present but the bytes are not on disk.
 ``render_prompt`` writes the resident prompt from those cards.
@@ -28,7 +29,7 @@ def find_skills(
     """Return matching routing cards and follow-on pairs for a task."""
 
     root = (root or Path.cwd()).resolve()
-    return _finder(root).find(task, domain=domain, constraints=constraints, limit=limit)
+    return _finder(root).find(task, domain=domain, constraints=constraints, limit=limit, root=root)
 
 
 def load_skill(skill_id: str, *, root: Path | None = None) -> dict:

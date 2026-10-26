@@ -221,6 +221,7 @@ def _find(arguments: dict, root: Path | None) -> dict:
             domain=domain or None,
             constraints=constraint_set,
             limit=_FIND_LIMIT,
+            root=Path(root),
         )
     except Exception as exc:
         return {"success": False, "error": f"Skill library search failed: {exc}"}
