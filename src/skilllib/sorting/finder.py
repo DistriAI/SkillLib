@@ -65,7 +65,12 @@ class Finder:
         if root is not None and _fill_frontmatter(Path(root), self.rows, scored, fetch):
             scored = _rank_rows(self.rows, task_tokens, product_hits, domain, constraints)
         scored.sort(key=lambda item: (-item[0], item[1]["id"]))
-        results = [_view(card, info, score) for score, card, info in scored[:limit]]
+        results = []
+        for score, card, info in scored[:limit]:
+            view = _view(card, info, score)
+            if root is not None and view.get("gap") and _checkout_has_bundled_files(Path(root), card):
+                view["gap"] = ""
+            results.append(view)
         return {"cards": results, "pairs": _pairs(scored, results)}
 
     def load(self, root: Path, skill_id: str, *, fetch=None) -> dict:
@@ -73,7 +78,8 @@ class Finder:
         if card is None:
             raise KeyError(skill_id)
         gap = ((card.get("applicability") or {}).get("gap")) or ""
-        if gap:
+        prepared = _checkout_has_bundled_files(root, card)
+        if gap and not prepared:
             return _load_result(card, "", gap, missing_body=False)
         note = (card.get("provenance") or {}).get("conflict_note") or ""
         bodies: list[str] = []
@@ -93,7 +99,13 @@ class Finder:
             return _load_result(card, "", " ".join(repos), missing_body=True)
         parts = [note] if note else []
         parts.extend(bodies)
-        return _load_result(card, "\n\n".join(parts), "", missing_body=False)
+        return _load_result(
+            card,
+            "\n\n".join(parts),
+            "",
+            missing_body=False,
+            scripts_checked_out=True if prepared else None,
+        )
 
 
 def score_eval(finder: Finder, cases: list[dict], *, limit: int = 5, root: Path | None = None, fetch=None) -> dict:
@@ -118,8 +130,27 @@ def score_eval(finder: Finder, cases: list[dict], *, limit: int = 5, root: Path 
     return {"tasks": len(cases), "passed": passed, "failed": failed}
 
 
-def _load_result(card: dict, text: str, gap: str, *, missing_body: bool) -> dict:
-    checked_out = bool((card.get("body") or {}).get("scripts_checked_out"))
+def _checkout_has_bundled_files(root: Path, card: dict) -> bool:
+    """True when every source skill directory is already present in ``cache/repos``."""
+
+    sources = [source for source in card.get("sources") or [] if source.get("repository") and source.get("path")]
+    if not sources:
+        return False
+    for source in sources:
+        directory = root / "cache" / "repos" / source["repository"] / source["path"]
+        directory = directory.parent
+        if not directory.is_dir():
+            return False
+        if not any(child.name.lower() != "skill.md" for child in directory.iterdir()):
+            return False
+    return True
+
+
+def _load_result(card: dict, text: str, gap: str, *, missing_body: bool, scripts_checked_out: bool | None = None) -> dict:
+    if scripts_checked_out is None:
+        checked_out = bool((card.get("body") or {}).get("scripts_checked_out"))
+    else:
+        checked_out = scripts_checked_out
     result = {
         "id": card["id"],
         "name": card.get("name"),

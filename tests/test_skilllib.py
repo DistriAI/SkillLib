@@ -17,7 +17,7 @@ from skilllib.classify import (
 from skilllib.content import FileListing
 from skilllib.models import RepoMeta
 from skilllib.search import search_repositories
-from skilllib.visit import visit_repository
+from skilllib.visit import prefetch_repositories, visit_repository
 
 
 def meta(full_name: str, description: str, stars: int = 2000, topics: list[str] | None = None) -> RepoMeta:
@@ -254,6 +254,66 @@ class VisitTests(unittest.TestCase):
     def test_invalid_repository_id_is_rejected(self) -> None:
         with self.assertRaises(ValueError):
             visit_repository("not a repo", Path("."))
+
+    def test_a_restored_tree_without_git_is_reused(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="skilllib-snapshot-"))
+        dest = root / "cache" / "repos" / "acme" / "skills"
+        dest.mkdir(parents=True)
+        (dest / "SKILL.md").write_text("local\n", encoding="utf-8")
+        calls = []
+
+        def run(command, cwd, check, **kwargs):
+            calls.append(command)
+            return subprocess.CompletedProcess(command, 0)
+
+        found = visit_repository("acme/skills", root, run=run)
+        self.assertEqual(found, dest)
+        self.assertEqual(calls, [])
+
+    def test_prefetch_clones_missing_repositories_and_retries_failures(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="skilllib-prefetch-"))
+        catalog = {
+            "min_stars": 1,
+            "anthropic_compatible": {
+                "skill_repositories": [
+                    {
+                        "full_name": "acme/skills",
+                        "default_branch": "main",
+                        "license": "MIT",
+                        "html_url": "https://github.com/acme/skills",
+                    },
+                    {
+                        "full_name": "acme/other",
+                        "default_branch": "master",
+                        "license": None,
+                        "html_url": "https://github.com/acme/other",
+                    },
+                ],
+                "collections": [],
+            },
+        }
+        (root / "catalog").mkdir()
+        (root / "catalog" / "skill_repositories.json").write_text(json.dumps(catalog), encoding="utf-8")
+        calls = []
+
+        def run(command, cwd, check, **kwargs):
+            calls.append(command)
+            if command[-2].endswith("acme/other.git"):
+                raise subprocess.CalledProcessError(128, command, stderr="fatal: denied")
+            dest = Path(command[-1])
+            dest.mkdir(parents=True)
+            (dest / ".git").mkdir()
+            (dest / "README.md").write_text("cached\n", encoding="utf-8")
+            return subprocess.CompletedProcess(command, 0)
+
+        status = prefetch_repositories(root, workers=2, run=run)
+        self.assertEqual(status["cloned"], 1)
+        self.assertEqual(status["failed"], 1)
+        self.assertTrue((root / "cache" / "repos" / "manifest.json").is_file())
+        again = prefetch_repositories(root, workers=2, run=run)
+        self.assertEqual(again["cached"], 1)
+        self.assertEqual(again["failed"], 1)
+        self.assertEqual(sum(1 for command in calls if command[-2].endswith("acme/skills.git")), 1)
 
 
 if __name__ == "__main__":

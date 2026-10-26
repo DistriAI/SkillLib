@@ -17,7 +17,7 @@ from skilllib.integrate import (
     task_instruction,
     tool_specs,
 )
-from skilllib.retrieve import download_skills, visit_repository
+from skilllib.retrieve import download_skills, prefetch_repositories, visit_repository
 from skilllib.search import add_repository, search_repositories
 from skilllib.sorting import build_skill_index, judge_cluster, update_skill_index
 
@@ -33,6 +33,7 @@ __all__ = [
     "judge_cluster",
     "load_catalog",
     "load_skill",
+    "prefetch_repositories",
     "render_prompt",
     "resident_prompt",
     "search_repositories",

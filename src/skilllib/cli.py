@@ -10,7 +10,7 @@ from skilllib.agent import find_skills, load_skill, render_prompt
 from skilllib.browse import BROWSE_PATH, default_index_path, load_index, shelf_locations, write_browse_site, write_card_pages
 from skilllib.catalog import CATALOG_PATH
 from skilllib.index import ModelUnavailable, STATE_PATH, update_index
-from skilllib.retrieve import download_skills
+from skilllib.retrieve import download_skills, prefetch_repositories
 from skilllib.search import add_repository, search_repositories
 from skilllib.sorting.build import INDEX_PATH, build_skill_index, load_skill_index, save_skill_index, update_skill_index
 from skilllib.sorting.config import load_judge_config
@@ -30,7 +30,7 @@ from skilllib.visit import visit_repository
 _EPILOG = """
 modules:
   search    search, list, add
-  retrieve  download, visit
+  retrieve  download, visit, prefetch
   index     screen, index, cards, enrich, families, link, browse, update
   agent     find, load, prompt
   integrate tool_specs, resident_prompt, call_tool
@@ -74,6 +74,11 @@ def main(argv: list[str] | None = None) -> int:
     visit = sub.add_parser("visit", help="clone a skill repository into the local cache on first access")
     visit.add_argument("repository", help="owner/name")
     visit.add_argument("--root", type=Path, default=Path.cwd())
+
+    prefetch = sub.add_parser("prefetch", help="clone every catalog skill repository into the local cache")
+    prefetch.add_argument("--root", type=Path, default=Path.cwd())
+    prefetch.add_argument("--workers", type=int, default=4)
+    prefetch.add_argument("--timeout", type=float, default=1200, help="seconds allowed for one clone")
 
     screen = sub.add_parser("screen", help="write the shortlist of skill files for a later download")
     screen.add_argument("--root", type=Path, default=Path.cwd())
@@ -160,6 +165,8 @@ def main(argv: list[str] | None = None) -> int:
         return _screen(args)
     if args.command == "download":
         return _download(args)
+    if args.command == "prefetch":
+        return _prefetch(args)
     if args.command == "browse":
         return _browse(args)
     if args.command == "cards":
@@ -234,6 +241,26 @@ def _download(args) -> int:
         f"{status['cached']} already stored, {status['failed']} failed"
     )
     print(f"Status {args.root / STATUS_PATH}")
+    return 0 if status["failed"] == 0 else 2
+
+
+def _prefetch(args) -> int:
+    try:
+        status = prefetch_repositories(
+            args.root,
+            workers=args.workers,
+            timeout=args.timeout,
+            progress=print,
+        )
+    except FileNotFoundError as error:
+        print(error)
+        return 1
+    print(
+        f"Finished {status['total']}: {status['cloned']} cloned, "
+        f"{status['cached']} already stored, {status['failed']} failed"
+    )
+    print(f"Status {args.root / 'catalog' / 'prefetch_status.json'}")
+    print(f"Manifest {args.root / 'cache' / 'repos' / 'manifest.json'}")
     return 0 if status["failed"] == 0 else 2
 
 

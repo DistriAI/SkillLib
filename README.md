@@ -138,6 +138,16 @@ Rebuild the task families when you want the shelves collapsed again. That is a s
 python -m skilllib families --name-with heuristic
 ```
 
+## Prepare every repository
+
+`prefetch` clones each skill repository in the catalog into `cache/repos/`. Later `find` and `load` read those trees. They do not clone a repository again to obtain its scripts or references. Run it once when you want the library usable without a GitHub fetch at request time:
+
+```bash
+python -m skilllib prefetch --workers 4
+```
+
+A checkout already on disk is skipped. Exit code 2 means some clones failed. Run the same command again to retry those repositories. The list of finished checkouts is `cache/repos/manifest.json`. Uploading that directory to Hugging Face, and restoring it on another machine, is described in [docs/huggingface.md](docs/huggingface.md).
+
 ## Commands
 
 Run these from the repository root as `skilllib <command>`, or as `python -m skilllib <command>`. Full arguments are in [docs/interface.md](docs/interface.md). The stage log for the first catalog is in [docs/history.md](docs/history.md).
@@ -154,6 +164,7 @@ Run these from the repository root as `skilllib <command>`, or as `python -m ski
 | `families` | Collapse the current cards into families again. |
 | `browse` | Write the HTML shelf under `docs/library/`. |
 | `visit owner/name` | Clone one repository into the local `cache/repos/` cache. |
+| `prefetch` | Clone every catalog skill repository into `cache/repos/`. A checkout already there is skipped. |
 
 `screen`, `download`, `index`, `cards`, `enrich`, and `link` run a single stage. After `add` and `update`, run `download --leaders`, `cards`, `link`, and `enrich` so a skill name that occurs once gets a full card. `update` covers names that overlap a skill already in the catalog.
 

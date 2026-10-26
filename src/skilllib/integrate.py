@@ -278,7 +278,7 @@ def _visit(arguments: dict, root: Path | None) -> dict:
         "path": str(dest),
         "note": (
             "This checkout is local cache and is not added to the git index. "
-            f"Call {LOAD} again to read the skill file from path. A stored gap for bundled "
-            "scripts remains until the catalog is rewritten."
+            f"Call {LOAD} again to read the skill file from path. A bundled-file gap "
+            "is satisfied when that skill directory is present here."
         ),
     }

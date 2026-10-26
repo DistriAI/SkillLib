@@ -1,6 +1,6 @@
 # SkillLib interface
 
-The public overview is the [README](../README.md). The hosted page is [index.html](index.html). Publishing a release to PyPI is [pypi.md](pypi.md).
+The public overview is the [README](../README.md). The hosted page is [index.html](index.html). Publishing a release to PyPI is [pypi.md](pypi.md). Uploading the prefetched repositories is [huggingface.md](huggingface.md).
 
 Install the library from PyPI with `python -m pip install skilllib`. The skill catalog stays in this repository. Run commands from a checkout of the repository so they read `catalog/` in the current directory. For local development, `python -m pip install -e .` or `PYTHONPATH=src python -m skilllib` uses the checkout itself. The same actions are available as functions imported from `skilllib`.
 
@@ -91,6 +91,25 @@ print(visit_repository("anthropics/skills"))
 ```bash
 python -m skilllib visit anthropics/skills
 ```
+
+### `prefetch_repositories(root, *, workers=4, timeout=1200)`
+
+Clone every skill repository in `catalog/skill_repositories.json` into `cache/repos/owner/name`. A checkout already on disk is skipped, including a tree restored without a `.git` directory. Failures are recorded in `catalog/prefetch_status.json` and retried on the next call. `cache/repos/manifest.json` lists the checkouts that are ready to upload.
+
+This is the batch prepare step. After it, `load_skill` reads scripts and references from those trees and does not clone a repository to satisfy a bundled-file gap. `download` remains the path that stores individual `SKILL.md` files for indexing.
+
+```python
+from skilllib import prefetch_repositories
+
+status = prefetch_repositories(".", workers=4)
+print(status["cloned"], status["cached"], status["failed"])
+```
+
+```bash
+python -m skilllib prefetch --workers 4 --timeout 1200
+```
+
+Exit code 2 means some clones failed. Run the same command again. Stored checkouts are skipped.
 
 ## Indexing
 
@@ -196,7 +215,7 @@ python -m skilllib find --eval
 
 ### `load_skill(skill_id, *, root=None)`
 
-Return the procedure for one card id. The stored `present` flag is not trusted: a file is used only when it is on disk. `load_skill` reads `cache/skills/`, then `cache/repos/<owner>/<name>/<path>`, and otherwise downloads that one raw file into `cache/skills/`. When the skill names bundled files that are not checked out, `text` is empty and `gap` tells you which repository to visit. When the skill file itself cannot be obtained, `text` is empty and `gap` is `owner/name`.
+Return the procedure for one card id. The stored `present` flag is not trusted: a file is used only when it is on disk. `load_skill` reads `cache/skills/`, then `cache/repos/<owner>/<name>/<path>`, and otherwise downloads that one raw file into `cache/skills/`. When the skill names bundled files and that skill directory is already in `cache/repos/`, the stored gap is ignored and the checkout is used. When the directory is absent, `text` is empty and `gap` tells you which repository to visit. When the skill file itself cannot be obtained, `text` is empty and `gap` is `owner/name`.
 
 ```python
 from skilllib import load_skill

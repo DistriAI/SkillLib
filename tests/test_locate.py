@@ -216,6 +216,22 @@ class FinderTests(unittest.TestCase):
         self.assertEqual(ranked[0]["name"], "speed-controller")
         self.assertIn("PID control loops", ranked[0]["description"])
 
+    def test_load_uses_a_prepared_checkout_instead_of_a_stored_gap(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            skill = root / "cache/repos/acme/skills/skills/gsea"
+            skill.mkdir(parents=True)
+            (skill / "SKILL.md").write_text("procedure\n", encoding="utf-8")
+            (skill / "run.sh").write_text("echo\n", encoding="utf-8")
+            target = card("acme::gsea", "gsea")
+            target["applicability"] = {
+                "gap": "Bundled files are named but not checked out (run.sh). Run: python -m skilllib visit acme/skills"
+            }
+            loaded = Finder([target]).load(root, "acme::gsea", fetch=self._fail_fetch)
+        self.assertIn("procedure", loaded["text"])
+        self.assertNotIn("gap", loaded)
+        self.assertTrue(loaded["scripts_checked_out"])
+
     def test_load_reports_missing_scripts(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
