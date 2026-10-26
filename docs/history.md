@@ -2,6 +2,8 @@
 
 This is the stage log for the first catalog, the repositories with more than 1,000 stars. The public overview is the [README](../README.md). The function reference is [interface.md](interface.md).
 
+GitHub later removed `mohitagw15856/pm-claude-skills`. That repository is no longer in the catalog. The counts below are the 16 October 2026 snapshot. Current counts are in the README.
+
 ## Plan
 
 Catalog stages 1–7 are done. The model index was written at `2026-10-16T08:29:21+00:00`.

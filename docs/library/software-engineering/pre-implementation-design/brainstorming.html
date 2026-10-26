@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>brainstorming</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">pre-implementation-design</a> / brainstorming</p><h1>brainstorming</h1><p class="meta"><a href="../../cards/software-engineering--pre-implementation-design--brainstorming.html">Skill card</a></p><p class="meta">combined</p><p>The copies overlap on the core idea of exploring intent before building, but they disagree on the procedure and contain material steps the others lack. obra/superpowers is a conversational discovery skill that explicitly allows skipping questions, uses open-ended questions, and includes visual mockups and spikes. foryourhealth111-pixel and LeoYeAI are near-identical procedural skills that require a hard gate, a fixed checklist, a design doc at a specific path, and a handoff to writing-plans. sickn33 adds mandatory non-functional requirements, an understanding lock, and a decision log. Crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/brainstorming/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/brainstorming/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/brainstorming/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/brainstorming/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/brainstorming/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/brainstorming/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/brainstorming/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/brainstorming/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/aipoch/medical-research-skills">aipoch/medical-research-skills</a></td><td><code>scientific-skills/Other/brainstorming/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/brainstorming/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/brainstorming/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/brainstorming/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: brainstorming
+description: &quot;Use before any creative or implementation work to explore user intent, requirements, and design before building.&quot;
+---
+
+# Brainstorming
+
+## Overview
+Turn raw ideas into validated designs and specifications through collaborative dialogue before any implementation begins. This prevents premature implementation, hidden assumptions, and misaligned solutions.
+
+## Hard Gate
+Do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. This applies to EVERY project regardless of perceived simplicity.
+
+## Process
+
+### 1. Explore Project Context
+- Check the current project state: files, docs, recent commits, prior decisions.
+- Identify what already exists vs. what is proposed.
+- Note implicit constraints.
+
+### 2. Clarify Intent (One Question at a Time)
+- Ask one question per message.
+- Prefer multiple-choice questions when possible; use open-ended questions when necessary.
+- Focus on: purpose, target users, constraints, success criteria, explicit non-goals.
+- If the user prefers to skip questions and start immediately, state any significant how-it-gets-made choice (platform, language, medium) in one plain line, then proceed to the normal workflow.
+
+### 3. Non-Functional Requirements
+Explicitly clarify or propose assumptions for:
+- Performance expectations
+- Scale (users, data, traffic)
+- Security or privacy constraints
+- Reliability / availability needs
+- Maintenance and ownership expectations
+
+### 4. Understanding Lock
+Before proposing any design, provide:
+- A concise summary (5-7 bullets) of what is being built, why, who it is for, key constraints, and non-goals.
+- A list of all assumptions.
+- A list of unresolved questions.
+
+Ask: &quot;Does this accurately reflect your intent? Please confirm or correct anything before we move to design.&quot;
+Do NOT proceed until explicit confirmation is given.
+
+### 5. Explore Design Approaches
+- Propose 2-3 viable approaches.
+- Lead with your recommended option.
+- Explain trade-offs: complexity, extensibility, risk, maintenance.
+- Apply YAGNI ruthlessly.
+
+### 6. Present the Design (Incrementally)
+- Break the design into sections of 200-300 words max.
+- After each section, ask: &quot;Does this look right so far?&quot;
+- Cover: architecture, components, data flow, error handling, edge cases, testing strategy.
+- Offer a visual companion (mockups, diagrams, side-by-side options) whenever seeing would help more than reading.
+- Offer a quick throwaway spike if it would help learn what the user wants or whether something works.
+
+### 7. Decision Log
+Maintain a running Decision Log throughout the design discussion:
+- What was decided
+- Alternatives considered
+- Why this option was chosen
+
+## After the Design
+
+### Documentation
+- Write the validated design to a durable, shared format (e.g., Markdown).
+- Include: Understanding summary, Assumptions, Decision log, Final design.
+- Save to `docs/plans/YYYY-MM-DD-&lt;topic&gt;-design.md` and commit to git if the project uses git.
+
+### Implementation Handoff
+- Only after documentation is complete, ask: &quot;Ready to set up for implementation?&quot;
+- If yes, invoke the `writing-plans` skill to create a detailed implementation plan.
+- Do NOT invoke any other implementation skill.
+
+## Exit Criteria
+You may exit brainstorming mode only when all of the following are true:
+- Understanding Lock has been confirmed
+- At least one design approach is explicitly accepted
+- Major assumptions are documented
+- Key risks are acknowledged
+- Decision Log is complete
+
+## Key Principles
+- One question at a time
+- Assumptions must be explicit
+- Explore alternatives
+- Validate incrementally
+- Prefer clarity over cleverness
+- Be willing to go back and clarify
+- YAGNI ruthlessly</pre>
+</body>
+</html>

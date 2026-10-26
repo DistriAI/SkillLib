@@ -17,6 +17,7 @@ from skilllib.classify import (
 from skilllib.content import FileListing
 from skilllib.models import RepoMeta
 from skilllib.search import search_repositories
+from skilllib.publish import prepare_dataset, upload_commands
 from skilllib.visit import prefetch_repositories, visit_repository
 
 
@@ -332,6 +333,68 @@ class VisitTests(unittest.TestCase):
         self.assertEqual(again["failed"], 1)
         self.assertEqual(sum(1 for command in calls if command[-2].endswith("acme/skills.git")), 1)
         self.assertEqual(sum(1 for command in calls if command[-2].endswith("acme/other.git")), 2)
+
+
+class PublishTests(unittest.TestCase):
+    def test_dataset_card_names_a_missing_repository_and_skill_file(self) -> None:
+        root = Path(tempfile.mkdtemp(prefix="skilllib-publish-"))
+        checkout = root / "cache" / "repos" / "acme" / "skills"
+        checkout.mkdir(parents=True)
+        (checkout / "SKILL.md").write_text("name: demo\n", encoding="utf-8")
+        (root / "catalog").mkdir()
+        (root / "catalog" / "prefetch_status.json").write_text(
+            json.dumps(
+                {
+                    "repositories": [
+                        {
+                            "full_name": "acme/skills",
+                            "html_url": "https://github.com/acme/skills",
+                            "default_branch": "main",
+                            "license": "Apache-2.0",
+                            "commit": "abc",
+                            "status": "cached",
+                            "error": "",
+                        },
+                        {
+                            "full_name": "mohitagw15856/pm-claude-skills",
+                            "html_url": "https://github.com/mohitagw15856/pm-claude-skills",
+                            "status": "failed",
+                            "error": "HTTP Error 404: Not Found",
+                        },
+                    ]
+                }
+            ),
+            encoding="utf-8",
+        )
+        (root / "catalog" / "download_status.json").write_text(
+            json.dumps(
+                {
+                    "finished": 2,
+                    "failures": [
+                        {
+                            "repository": "mohitagw15856/pm-claude-skills",
+                            "path": "plugins/pm-dentistry/skills/dental-clinical-note/SKILL.md",
+                            "occurrence_id": "mohitagw15856/pm-claude-skills::plugins/pm-dentistry/skills/dental-clinical-note/SKILL.md",
+                            "error": "HTTP Error 404: Not Found",
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        document = prepare_dataset(root, "DistriAI/skilllib-repos")
+        readme = Path(document["readme_path"]).read_text(encoding="utf-8")
+        self.assertTrue(readme.startswith("---\nlicense: other\n"))
+        self.assertIn("not covered by the SkillLib MIT license", readme)
+        self.assertIn("mohitagw15856/pm-claude-skills", readme)
+        self.assertIn("dental-clinical-note/SKILL.md", readme)
+        self.assertEqual(document["repositories"][0]["path"], "repos/acme/skills")
+        self.assertEqual(document["absent_repositories"][0]["full_name"], "mohitagw15856/pm-claude-skills")
+        self.assertEqual(len(document["skill_files"]["missing"]), 1)
+        commands = upload_commands("DistriAI/skilllib-repos")
+        self.assertEqual(commands[0][1:4], ["upload", "DistriAI/skilllib-repos", "cache/dataset/README.md"])
+        self.assertIn("cache/skills", [command[3] for command in commands])
+        self.assertIn("cache/repos", [command[3] for command in commands])
 
 
 if __name__ == "__main__":

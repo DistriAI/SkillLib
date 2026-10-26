@@ -15,103 +15,91 @@ pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
 </style>
 </head>
 <body>
-<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">changelog-generation</a> / changelog-generator</p><h1>changelog-generator</h1><p class="meta"><a href="../../cards/software-engineering--changelog-generation--changelog-generator.html">Skill card</a></p><p class="meta">combined</p><p>The copies overlap in the high-level goal (turning git history into user-facing changelogs) but diverge on the actual procedure. davepoon and Prat011 are near-identical prompt-style skills that rely on the agent to scan, categorize, and translate commits. mohitagw15856 is a Spanish-localized, Keep-a-Changelog-focused skill with explicit required inputs, a scoring rubric, and quality checks. LeoYeAI is a script-driven skill that parses Conventional Commits, computes semver bumps, and provides specific Python scripts for generation and linting. Crowning one would hide the alternative approaches (prompt-based vs. script-based vs. rubric-based).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/changelog-generator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>changelog-generator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>i18n/es/skills/changelog-generator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/changelog-generator/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/changelog-generator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>changelog-generator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>i18n/es/skills/changelog-generator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/changelog-generator/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>changelog-generator/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>changelog-generator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-engineering/skills/changelog-generator/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/changelog-generator/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">changelog-generation</a> / changelog-generator</p><h1>changelog-generator</h1><p class="meta"><a href="../../cards/software-engineering--changelog-generation--changelog-generator.html">Skill card</a></p><p class="meta">combined</p><p>The copies split into two distinct procedures. Three copies (davepoon, Prat011, ComposioHQ) are identical prompt-style skills that instruct the agent to scan git history, categorize changes, and translate them into user-friendly notes. The LeoYeAI copy is a script-based engineering skill that relies on specific Python scripts (generate_changelog.py, commit_linter.py), enforces Conventional Commits, and handles SemVer bumping. Because the LeoYeAI copy contains material steps (script execution, linting, SemVer logic) that the others lack, and the others contain a natural-language workflow that the script-based copy does not explicitly describe as a prompt, crowning one would hide a real alternative implementation.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/changelog-generator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>changelog-generator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/changelog-generator/SKILL.md</code></td></tr><tr><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>changelog-generator/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/davepoon/buildwithclaude">davepoon/buildwithclaude</a></td><td><code>plugins/all-skills/skills/changelog-generator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/Prat011/awesome-llm-skills">Prat011/awesome-llm-skills</a></td><td><code>changelog-generator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/changelog-generator/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/ComposioHQ/awesome-claude-skills">ComposioHQ/awesome-claude-skills</a></td><td><code>changelog-generator/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/composio-community/awesome-codex-skills">composio-community/awesome-codex-skills</a></td><td><code>changelog-generator/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
 name: changelog-generator
-description: Generates user-facing changelogs from git commits, supporting both prompt-based and script-based workflows with Conventional Commit parsing and Keep a Changelog formatting.
+description: Automatically creates user-facing changelogs from git commits by analyzing commit history, categorizing changes, and transforming technical commits into clear, customer-friendly release notes.
 ---
 
 # Changelog Generator
 
-This skill transforms technical git commits into polished, user-friendly changelogs. It supports two primary modes: a prompt-based mode for general use and a script-based mode for automated CI/CD pipelines using Conventional Commits.
+This skill transforms technical git commits into polished, user-friendly changelogs. It supports both a natural-language workflow for quick generation and a script-based workflow for automated, CI-integrated release management.
 
-## When to Use
+## When to Use This Skill
 
-- Preparing release notes for a new version.
-- Automating changelog generation in CI/CD.
-- Documenting changes for customers or app store submissions.
-- Enforcing commit message standards.
+- Preparing release notes for a new version
+- Creating weekly or monthly product update summaries
+- Documenting changes for customers
+- Writing changelog entries for app store submissions
+- Generating update notifications
+- Creating internal release documentation
+- Maintaining a public changelog/product updates page
 
-## Workflow
+## Workflow Options
 
-### 1. Determine Mode
+### Option 1: Natural Language Generation
+Use this when you want the agent to analyze commits and write the changelog directly.
 
-- **Script Mode**: Use if the repository uses Conventional Commits and you have access to `scripts/generate_changelog.py`.
-- **Prompt Mode**: Use for general repositories or when manual curation is preferred.
+1. **Scan Git History**: Analyze commits from a specific time period or between versions.
+2. **Categorize Changes**: Group commits into logical categories (features, improvements, bug fixes, breaking changes, security).
+3. **Translate Technical → User-Friendly**: Convert developer commits into customer language.
+4. **Format Professionally**: Create clean, structured changelog entries.
+5. **Filter Noise**: Exclude internal commits (refactoring, tests, etc.).
 
-### 2. Gather Inputs
-
-- **Commits**: `git log` output, commit range, or raw commit messages.
-- **Version**: Target version number (e.g., 2.4.0).
-- **Date**: Release date.
-- **Audience**: Developers, end-users, or internal team.
-- **Scope**: Full product or specific package/module.
-
-### 3. Process Commits
-
-**Script Mode:**
-```bash
-python3 scripts/generate_changelog.py \
-  --from-tag v1.3.0 \
-  --to-tag v1.4.0 \
-  --next-version v1.4.0 \
-  --format markdown
+**Example Prompt**:
+```
+Create a changelog for commits since v2.4.0, using my changelog guidelines from CHANGELOG_STYLE.md
 ```
 
-**Prompt Mode:**
-- Scan git history for the specified range.
-- Categorize commits into: Added, Changed, Fixed, Deprecated, Removed, Security, Breaking Changes.
-- Translate technical commit messages into user-friendly language.
-- Filter out internal commits (refactoring, tests, chore).
+### Option 2: Script-Based Automation (Conventional Commits)
+Use this when you have a repository with Conventional Commits and want automated, auditable release notes.
 
-### 4. Format Output
+1. **Lint Commits**: Validate commit format before generation.
+   ```bash
+   python3 scripts/commit_linter.py --from-ref origin/main --to-ref HEAD --strict
+   ```
+2. **Generate Changelog**: Run the generator script to parse commits and render markdown.
+   ```bash
+   python3 scripts/generate_changelog.py \
+     --from-tag v1.3.0 \
+     --to-tag v1.4.0 \
+     --next-version v1.4.0 \
+     --format markdown
+   ```
+3. **Update CHANGELOG.md**: Prepend the new entry to the changelog file.
+   ```bash
+   python3 scripts/generate_changelog.py \
+     --from-tag v1.3.0 \
+     --to-tag HEAD \
+     --next-version v1.4.0 \
+     --write CHANGELOG.md
+   ```
 
-Follow Keep a Changelog conventions:
+## Conventional Commit Rules (for Script-Based Workflow)
 
-```markdown
-## [X.Y.Z] — YYYY-MM-DD
+- **Supported Types**: `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build`, `ci`, `chore`, `security`, `deprecated`, `remove`.
+- **Breaking Changes**: Indicated by `!` after type/scope or `BREAKING CHANGE:` in footer.
+- **SemVer Mapping**:
+  - Breaking change -&gt; `major`
+  - Non-breaking `feat` -&gt; `minor`
+  - All others -&gt; `patch`
 
-### Breaking Changes ⚠️
-- **[Change]:** [Description] — **Migration:** [Action required]
+## Best Practices
 
-### Added
-- [New feature from user perspective]
-
-### Changed
-- [Behavior change: before vs. after]
-
-### Fixed
-- [Bug description: what was broken, not how it was fixed]
-
-### Security
-- [Vulnerability class, not exploit details]
-```
-
-**Formatting Rules:**
-- Use imperative mood (&quot;Add&quot;, &quot;Fix&quot;, not &quot;Added&quot;, &quot;Fixed&quot;).
-- Omit empty sections.
-- Group related commits into single entries.
-- Highlight breaking changes with ⚠️ and migration guidance.
-
-### 5. Quality Checks
-
-- [ ] Breaking changes are at the top with migration instructions.
-- [ ] All entries are user-facing (no internal variable names).
-- [ ] Related commits are grouped.
-- [ ] Version and date header is correct.
-- [ ] Empty sections are omitted.
-- [ ] Imperative mood is used.
-
-## Conflicts
-
-- **LeoYeAI/openclaw-master-skills**: Requires Conventional Commits and specific Python scripts. If these are not available, fall back to Prompt Mode.
-- **mohitagw15856/pm-claude-skills**: Emphasizes a scoring rubric (0-40). Use this rubric to evaluate the final output before delivery.
-- **davepoon/buildwithclaude**: General prompt-based approach. Use this as the default when no specific scripts or rubrics are defined.
-
-## Tips
-
-- Run from the git repository root.
-- Specify date ranges for focused changelogs.
+- Run from your git repository root.
+- Specify date ranges or version tags for focused changelogs.
+- Use a `CHANGELOG_STYLE.md` for consistent formatting.
 - Review and adjust the generated changelog before publishing.
-- Save output to `CHANGELOG.md` or use `--write` in script mode.</pre>
+- Keep commits small and intent-driven.
+- Scope commit messages (`feat(api): ...`) in multi-package repos.
+- Enforce linter checks in PR pipelines if using the script-based workflow.
+- Tag releases only after changelog generation succeeds.
+
+## Output Quality Checks
+
+- Each bullet is user-meaningful, not implementation noise.
+- Breaking changes include migration action.
+- Security fixes are isolated in a `Security` section.
+- Sections with no entries are omitted.
+- Duplicate bullets across sections are removed.</pre>
 </body>
 </html>

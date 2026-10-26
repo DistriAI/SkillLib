@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>interview-me</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">research</a> / <a href="index.html">research-idea-interview</a> / interview-me</p><h1>interview-me</h1><p class="meta"><a href="../../cards/research--research-idea-interview--interview-me.html">Skill card</a></p><p class="meta">combined</p><p>The first two copies are the same general-purpose &#x27;interview-me&#x27; skill (one is a mirror of the other) that extracts user intent for any underspecified ask. The third copy is a distinct, domain-specific skill that uses a similar one-question-at-a-time interview format but targets formalizing a research idea into a structured empirical specification. Because the third copy contains material steps and a different output artifact that the first two lack, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/addyosmani/agent-skills">addyosmani/agent-skills</a></td><td><code>skills/interview-me/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/interview-me/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/interview-me/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/addyosmani/agent-skills">addyosmani/agent-skills</a></td><td><code>skills/interview-me/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/interview-me/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/12-pedrohcgs-claude-code-my-workflow/dot-claude/skills/interview-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/interview-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/interview-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/41-sticerd-eee-sewage-econometrics-check/skills/interview-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/14-luischanci-claude-code-research-starter/dot-claude/skills/interview-me/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/28-maxwell2732-paper-replicate-agent-demo/dot-claude/skills/interview-me/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Interview Me
+
+## Overview
+Use this skill to clarify what the user actually wants before any plan, spec, or code exists. The interview is conversational: ask one question at a time, wait for the user&#x27;s response, and build toward a clear statement of intent or a structured specification.
+
+## When to Use
+- The ask is underspecified (missing who, why, success criteria, or binding constraints).
+- The request is conventional rather than specific.
+- You are tempted to fill in ambiguous requirements with assumptions.
+- The user explicitly invokes an interview (&quot;interview me&quot;, &quot;grill me&quot;, &quot;stress-test my thinking&quot;).
+- The user wants to formalize a research idea into a structured specification.
+
+## When NOT to Use
+- The ask is unambiguous and self-contained.
+- The user has explicitly asked for speed over verification.
+- Pure information requests or mechanical operations.
+- You already have ≥95% confidence.
+
+## Loading Constraints
+This skill requires a live, responsive user. Do not invoke in non-interactive contexts (CI pipelines, scheduled runs, autonomous loops). If the ask is underspecified in such a context, flag it as a blocker.
+
+## The Process
+
+### Step 1: Hypothesize
+Write down your current best read of what the user wants in one sentence, plus an honest confidence number (0–100%). If confidence is below ~70%, append a brief reason for what is still unresolved.
+
+### Step 2: Ask One Question at a Time
+Format each question with a guess attached:
+```
+Q: &lt;one focused question&gt;
+GUESS: &lt;your hypothesis for the answer, with reasoning&gt;
+```
+Wait for the user to react before asking the next question. Do not batch questions.
+
+### Step 3: Listen for &quot;Want vs. Should Want&quot;
+Watch for answers that pattern-match best-practice talk, defer to convention, or use buzzwords as goals. When you hear these, ask:
+&gt; &quot;If you didn&#x27;t have to justify this to anyone, what would you actually want?&quot;
+
+### Step 4: Restate Intent
+When confidence is high, write back what you now think the user wants in 5–8 lines, using the user&#x27;s language where possible. Structure it so the user can confirm or correct line by line.
+
+## Research-Specific Extension
+If the user is formalizing a research idea, follow these phases after the initial hypothesis:
+
+### Phase 1: The Big Picture (1–2 questions)
+- What phenomenon or puzzle are you trying to understand?
+- Why does this matter? Who should care about the answer?
+
+### Phase 2: Theoretical Motivation (1–2 questions)
+- What&#x27;s your intuition for why X happens / what drives Y?
+- What would standard theory predict? Do you expect something different?
+
+### Phase 3: Data and Setting (1–2 questions)
+- What data do you have access to, or what data would you ideally want?
+- Is there a specific context, time period, or institutional setting you&#x27;re focused on?
+
+### Phase 4: Identification (1–2 questions)
+- Is there a natural experiment, policy change, or source of variation you can exploit?
+- What&#x27;s the biggest threat to a causal interpretation?
+
+### Phase 5: Expected Results (1–2 questions)
+- What would you expect to find? What would surprise you?
+- What would the results imply for policy or theory?
+
+### Phase 6: Contribution (1 question)
+- How does this differ from what&#x27;s already been done? What&#x27;s the gap you&#x27;re filling?
+
+### After the Interview
+Once you have enough information (typically 5–8 exchanges), produce a Research Specification Document with the following sections:
+- Research Question
+- Motivation
+- Hypothesis
+- Empirical Strategy (Method, Treatment, Control, Key identifying assumption, Robustness checks)
+- Data (Primary dataset, Key variables, Sample)
+- Expected Results
+- Contribution
+- Open Questions
+
+Save the document to `quality_reports/research_spec_[sanitized_topic].md`.
+
+## Interview Style
+- Be curious, not prescriptive. Draw out the user&#x27;s thinking, not your own ideas.
+- Probe weak spots gently. Ask &quot;What would a skeptic say about...?&quot; rather than &quot;This won&#x27;t work because...&quot;
+- Build on answers. Each question should follow from the previous response.
+- Know when to stop. If the user has a clear vision after 4–5 exchanges, move to the specification or restatement. Don&#x27;t over-interview.</pre>
+</body>
+</html>

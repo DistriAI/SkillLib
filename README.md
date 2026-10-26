@@ -1,6 +1,6 @@
 # SkillLib
 
-**21,516 leading agent skills, ready to search.**
+**20,178 leading agent skills, ready to search.**
 
 SkillLib collects public repositories of Anthropic-compatible (Claude) and OpenAI-compatible (Codex) skills, keeps one skill to follow for each overlapping name, and lets an agent find and load a procedure without putting the library in the prompt.
 
@@ -43,16 +43,16 @@ python -m skilllib find "Run GSEA on a ranked gene list"
 
 ## The library
 
-The catalog is the public skill-content repositories with more than 1,000 GitHub stars, indexed on 16 October 2026. A match is a repository full of task skills (`SKILL.md`), or a curated collection that points at those repositories. Skill specifications, skill SDKs, and agent products are left out.
+The catalog is the public skill-content repositories with more than 1,000 GitHub stars, indexed on 16 October 2026. A match is a repository full of task skills (`SKILL.md`), or a curated collection that points at those repositories. Skill specifications, skill SDKs, and agent products are left out. GitHub later removed `mohitagw15856/pm-claude-skills`, and that repository is no longer indexed.
 
 | | |
 |---:|---|
-| 32,977 | skill files in the source repositories |
-| 21,516 | leading skills an agent can be offered |
-| 179 | skill repositories, and 15 collections |
-| 13 | domains, 13,320 scenarios |
-| 389 | task families, 964 product channels |
-| 8,902 | duplicate copies kept as variants, not as peers |
+| 30,046 | skill files in the source repositories |
+| 20,178 | leading skills an agent can be offered |
+| 178 | skill repositories, and 15 collections |
+| 13 | domains, 12,321 scenarios |
+| 394 | task families, 964 product channels |
+| 7,503 | duplicate copies kept as variants, not as peers |
 
 ![Separate, authentic, and combined skills](docs/assets/kinds.svg)
 
@@ -93,19 +93,19 @@ The same shelves are on the web homepage. Open a domain, then its [task families
 
 | Domain | Scenarios | Skills |
 |---|---:|---:|
-| [research](https://distriai.github.io/SkillLib/library/research/) | 1,527 | 4,997 |
-| [science](https://distriai.github.io/SkillLib/library/science/) | 1,609 | 2,446 |
-| [software-engineering](https://distriai.github.io/SkillLib/library/software-engineering/) | 1,690 | 2,146 |
-| [business](https://distriai.github.io/SkillLib/library/business/) | 1,539 | 2,134 |
-| [security](https://distriai.github.io/SkillLib/library/security/) | 1,418 | 1,787 |
-| [agent-tooling](https://distriai.github.io/SkillLib/library/agent-tooling/) | 882 | 1,478 |
-| [marketing](https://distriai.github.io/SkillLib/library/marketing/) | 957 | 1,347 |
-| [devops](https://distriai.github.io/SkillLib/library/devops/) | 928 | 1,106 |
-| [general](https://distriai.github.io/SkillLib/library/general/) | 638 | 1,020 |
-| [data](https://distriai.github.io/SkillLib/library/data/) | 683 | 889 |
-| [design](https://distriai.github.io/SkillLib/library/design/) | 594 | 872 |
-| [media](https://distriai.github.io/SkillLib/library/media/) | 423 | 671 |
-| [documents](https://distriai.github.io/SkillLib/library/documents/) | 432 | 623 |
+| [research](https://distriai.github.io/SkillLib/library/research/) | 1,510 | 4,962 |
+| [science](https://distriai.github.io/SkillLib/library/science/) | 1,592 | 2,424 |
+| [software-engineering](https://distriai.github.io/SkillLib/library/software-engineering/) | 1,643 | 2,077 |
+| [security](https://distriai.github.io/SkillLib/library/security/) | 1,387 | 1,744 |
+| [business](https://distriai.github.io/SkillLib/library/business/) | 1,108 | 1,591 |
+| [agent-tooling](https://distriai.github.io/SkillLib/library/agent-tooling/) | 846 | 1,429 |
+| [marketing](https://distriai.github.io/SkillLib/library/marketing/) | 898 | 1,253 |
+| [devops](https://distriai.github.io/SkillLib/library/devops/) | 913 | 1,086 |
+| [data](https://distriai.github.io/SkillLib/library/data/) | 641 | 827 |
+| [design](https://distriai.github.io/SkillLib/library/design/) | 564 | 822 |
+| [general](https://distriai.github.io/SkillLib/library/general/) | 420 | 760 |
+| [media](https://distriai.github.io/SkillLib/library/media/) | 429 | 664 |
+| [documents](https://distriai.github.io/SkillLib/library/documents/) | 370 | 539 |
 
 Regenerate the shelf with `python -m skilllib browse`. The pages are under `docs/library/`.
 
@@ -146,7 +146,7 @@ python -m skilllib families --name-with heuristic
 python -m skilllib prefetch --workers 4
 ```
 
-A checkout already on disk is skipped. Exit code 2 means some clones failed. Retry those names with `python -m skilllib prefetch --failed`. That reads `catalog/prefetch_status.json` and does not walk the checkouts that already succeeded. Add `--protocol ssh` when you want those clones to use `git@github.com` and an SSH key already registered with GitHub. The default is HTTPS, which can clone a public repository without a login. Run `prefetch` without `--failed` when a repository has been added to the catalog. The list of finished checkouts is `cache/repos/manifest.json`. Uploading that directory to Hugging Face, and restoring it on another machine, is described in [docs/huggingface.md](docs/huggingface.md).
+A checkout already on disk is skipped. Exit code 2 means some clones failed. Retry those names with `python -m skilllib prefetch --failed`. That reads `catalog/prefetch_status.json` and does not walk the checkouts that already succeeded. Add `--protocol ssh` when you want those clones to use `git@github.com` and an SSH key already registered with GitHub. The default is HTTPS, which can clone a public repository without a login. Run `prefetch` without `--failed` when a repository has been added to the catalog. The list of finished checkouts is `cache/repos/manifest.json`. `python -m skilllib publish --repo owner/dataset` writes the Hugging Face dataset card for `cache/repos/` and `cache/skills/`. Add `--upload` to send it. The card license is `other`. Repositories and skill files that could not be fetched are named in the card. Restoring the dataset on another machine is described in [docs/huggingface.md](docs/huggingface.md).
 
 ## Commands
 
@@ -165,6 +165,7 @@ Run these from the repository root as `skilllib <command>`, or as `python -m ski
 | `browse` | Write the HTML shelf under `docs/library/`. |
 | `visit owner/name` | Clone one repository into the local `cache/repos/` cache. `--protocol ssh` uses an SSH key. |
 | `prefetch` | Clone every catalog skill repository into `cache/repos/`. `--failed` retries only the names recorded as failed. `--protocol ssh` uses an SSH key. |
+| `publish --repo owner/dataset` | Write the Hugging Face dataset card for `cache/repos/` and `cache/skills/`. `--upload` sends it with `hf upload`. |
 
 `screen`, `download`, `index`, `cards`, `enrich`, and `link` run a single stage. After `add` and `update`, run `download --leaders`, `cards`, `link`, and `enrich` so a skill name that occurs once gets a full card. `update` covers names that overlap a skill already in the catalog.
 

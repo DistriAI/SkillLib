@@ -15,120 +15,157 @@ pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
 </style>
 </head>
 <body>
-<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">security-review</a> / security-review</p><h1>security-review</h1><p class="meta"><a href="../../cards/security--security-review--security-review.html">Skill card</a></p><p class="meta">combined</p><p>The three copies describe different procedures for a task named security-review. The Microsoft copy is a Power Pages-specific orchestrator that runs sub-skills and produces an HTML report. The Sentry copy is a code-focused vulnerability audit with strict confidence levels and a research-before-reporting workflow. The PM copy is a design/PR review that produces a severity-ranked table and a ship/fix-first verdict. None is a reproduction of the others; each contains material steps and constraints the others lack, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/power-pages/skills/security-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/security-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-security/skills/security-review/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/power-pages/skills/security-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/security-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-security/skills/security-review/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/security-review/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">security</a> / <a href="index.html">security-review</a> / security-review</p><h1>security-review</h1><p class="meta"><a href="../../cards/security--security-review--security-review.html">Skill card</a></p><p class="meta">combined</p><p>The two skills share the name &#x27;security-review&#x27; but perform fundamentally different tasks. The microsoft/power-platform-skills copy is a guided, multi-phase orchestration skill for Power Pages that runs sub-skills (scan-code, scan-site, manage-firewall, etc.) and produces a consolidated HTML report. The getsentry/skills copy is a direct code-analysis skill that applies OWASP-based heuristics to source code to identify exploitable vulnerabilities with confidence-based reporting. They do not reproduce, shorten, or wrap each other; they are distinct procedures for different targets (Power Pages platform vs. general source code).</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/power-pages/skills/security-review/SKILL.md</code></td></tr><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/security-review/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/microsoft/power-platform-skills">microsoft/power-platform-skills</a></td><td><code>plugins/power-pages/skills/security-review/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/security-review/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
 name: security-review
 description: &gt;-
-  Runs a security review of code, a design, a PR, or a Power Pages site.
-  Use when the user asks for a security review, vulnerability check, OWASP
-  review, release-readiness check, or live site monitoring. Produces
-  findings ranked by severity with concrete fixes and a clear verdict.
+  Performs a security review. For Power Pages sites, runs a guided, end-to-end
+  review covering source code, dependencies, live site, browser headers,
+  firewall, authentication, and role-based permissions, consolidating findings
+  into an HTML report. For general source code, applies OWASP-based heuristics
+  to identify exploitable vulnerabilities with confidence-based reporting.
+user-invocable: true
+argument-hint: &quot;[optional natural-language hint about the goal]&quot;
+allowed-tools: Read, Write, Bash, Glob, Grep, AskUserQuestion, TaskCreate, TaskUpdate, TaskList, Skill, Agent
+model: opus
 ---
 
 # Security Review
 
-Guide the user through a security review. The procedure adapts to the target:
+This skill handles two distinct review modes. Determine the mode based on the target.
 
-- **Power Pages site**: Run the focused sub-skills (scan-code, scan-site,
-  manage-headers, manage-firewall, audit-permissions, setup-auth) and
-  assemble every finding into a single HTML report at
-  `&lt;PROJECT_ROOT&gt;/docs/security-review-&lt;YYYY-MM-DD-HHMMSS&gt;.html`.
-- **Code or design/PR**: Perform a focused pass over the recurring risk
-  areas and produce a severity-ranked table with a ship / fix-first / block
-  verdict.
+## Mode 1: Power Pages Site Review
 
-## Workflow
+Use when the user references a Power Pages site, asks for a release-readiness check, or wants a full platform security review.
 
-1. **Prerequisites**
-   - For Power Pages: locate `powerpages.config.json`; for live-site goals
-     confirm `.powerpages-site/website.yml` exists. Create a temporary
-     working folder under `&lt;SYSTEM_TEMP&gt;/security-review/`.
-   - For code/design: confirm the user owns or is authorized to review the
-     target. Capture the stack, data/permissions touched, and sensitivity.
+### Workflow
 
-2. **Scope**
-   - Ask the user what to review (code &amp; config, release readiness, deployed
-     site, or a specific design/PR). If the initial request already answers
-     it, skip.
+The skill has six phases. Phases 2–5 each map to one conversation beat with the user; phases 1 and 6 are silent setup and cleanup.
 
-3. **Research before flagging**
-   - For each potential issue, trace the data flow to confirm the input is
-     attacker-controlled. Check for validation, sanitization, framework
-     protections, and server-controlled configuration. Do not report based
-     solely on pattern matching.
+| Phase | What happens | User-facing beat |
+|-------|--------------|------------------|
+| 1 — Prerequisites | Locate project, set up working folders | (silent setup) |
+| 2 — Scope | Capture goal — one question, three answers, plain language | Ask the goal |
+| 3 — Skills | Run the matching skills, surface progress | Scan in progress |
+| 4 — Report | Build the consolidated report — totals + per-section findings | Results summary + Findings |
+| 5 — Present | Present results, offer remediation follow-ups | Next steps and guidance |
+| 6 — Cleanup | Remove temporary files | (silent cleanup) |
 
-4. **Run checks**
-   - Power Pages: run the matching sub-skills in review mode.
-   - Code/design: scan each risk area:
-     1. AuthN / AuthZ (incl. IDOR, privilege escalation)
-     2. Input handling (injection, SSRF, path traversal, deserialization, XSS)
-     3. Secrets &amp; crypto
-     4. Data exposure
-     5. Dependencies &amp; config
-     6. Abuse &amp; availability
+### 1. Prerequisites
 
-5. **Report**
-   - Power Pages: build the consolidated HTML report with totals and
-     per-section findings.
-   - Code/design: produce a severity-ranked table:
+1. Use `Glob` to find `**/powerpages.config.json`. If none is found, tell the user the site needs to be created first with `/create-site`, then stop.
+2. For `monitor` and `release` goals, confirm that `.powerpages-site/website.yml` exists. If it does not, tell the user the site needs to be deployed once before a live security review can run, recommend `/deploy-site`, then stop.
+3. Create a fresh working directory: `&lt;SYSTEM_TEMP&gt;/security-review/`. If the folder already exists from a previous interrupted run, delete its contents before continuing.
+4. Determine the docs output path: `&lt;PROJECT_ROOT&gt;/docs/security-review-&lt;YYYY-MM-DD-HHMMSS&gt;.html` using the local timestamp at the start of the run.
 
-     | Severity | Area | Finding (how it&#x27;s exploited) | Fix |
-     |---|---|---|---|
-     | Critical/High | | | |
-     | Medium | | | |
-     | Low / hardening | | | |
+### 2. Capture Goal
 
-   - Include a one-line summary and a verdict: ✅ ship / 🔁 fix-first / ⛔
-     block, naming the gating issues.
-   - Acknowledge existing good controls and flag follow-ups (scanner,
-     pentest, deeper look).
+Ask the user with a single `AskUserQuestion` call. If the user&#x27;s initial request already answers it, skip and continue.
 
-6. **Cleanup**
-   - Remove temporary files created during the review.
+| Label | Description |
+|-------|-------------|
+| Code &amp; config | Check source code, dependencies, authentication, web roles, and table permissions. Works on local files only. |
+| Release readiness | Full review before publishing — checks everything. (Recommended) |
+| Deployed site | Check the live site for issues. Requires deployment. |
 
-## Confidence Levels (code/design)
+Goal mapping:
+
+| Label | Goal id | Skills |
+|-------|---------|------------|
+| Code &amp; config | `code-config` | scan-code, audit-permissions, setup-auth (read-only) |
+| Release readiness | `release` | scan-code, scan-site, manage-headers, manage-firewall, audit-permissions, setup-auth (read-only) |
+| Deployed site | `monitor` | scan-site |
+
+### 3. Run Skills
+
+Run the matching skills based on the selected goal. Surface progress to the user.
+
+### 4. Build Report
+
+Build the consolidated HTML report with totals and per-section findings.
+
+### 5. Present Findings
+
+Present results to the user and offer remediation follow-ups.
+
+### 6. Cleanup
+
+Remove temporary files from the working directory.
+
+## Mode 2: Source Code Vulnerability Review
+
+Use when the user provides source code, a diff, or asks to find vulnerabilities, check for security issues, or perform an OWASP review.
+
+### Scope: Research vs. Reporting
+
+- **Report on**: Only the specific file, diff, or code provided by the user
+- **Research**: The ENTIRE codebase to build confidence before reporting
+
+Before flagging any issue, research the codebase to understand:
+- Where does this input actually come from? (Trace data flow)
+- Is there validation/sanitization elsewhere?
+- How is this configured? (Check settings, config files, middleware)
+- What framework protections exist?
+
+Do NOT report issues based solely on pattern matching. Investigate first, then report only what you&#x27;re confident is exploitable.
+
+### Confidence Levels
 
 | Level | Criteria | Action |
 |-------|----------|--------|
-| HIGH | Vulnerable pattern + attacker-controlled input confirmed | Report with severity |
-| MEDIUM | Vulnerable pattern, input source unclear | Note as &quot;Needs verification&quot; |
-| LOW | Theoretical, best practice, defense-in-depth | Do not report |
+| **HIGH** | Vulnerable pattern + attacker-controlled input confirmed | **Report** with severity |
+| **MEDIUM** | Vulnerable pattern, input source unclear | **Note** as &quot;Needs verification&quot; |
+| **LOW** | Theoretical, best practice, defense-in-depth | **Do not report** |
 
-## Do Not Flag
+### Do Not Flag
 
 - Test files (unless explicitly reviewing test security)
 - Dead code, commented code, documentation strings
 - Patterns using constants or server-controlled configuration
-- Code paths that require prior authentication (note the auth requirement)
-- Framework-mitigated patterns (e.g., Django auto-escaping, React
-  auto-escaping, ORM parameterized queries) unless the mitigation is
-  explicitly bypassed.
+- Code paths that require prior authentication to reach (note the auth requirement instead)
 
-## Conflicts
+### Server-Controlled Values (NOT Attacker-Controlled)
 
-- **microsoft/power-platform-skills**: Produces an HTML report; does not
-  produce a severity-ranked table or ship/fix-first verdict.
-- **getsentry/skills**: Reports only HIGH CONFIDENCE findings; does not
-  produce an HTML report or ship/fix-first verdict.
-- **mohitagw15856/pm-claude-skills**: Produces a severity-ranked table and
-  ship/fix-first/block verdict; does not run sub-skills or produce an HTML
-  report.
+These are configured by operators, not controlled by attackers:
 
-## Quality Checks
+| Source | Example | Why It&#x27;s Safe |
+|--------|---------|---------------|
+| Django settings | `settings.API_URL`, `settings.ALLOWED_HOSTS` | Set via config/env at deployment |
+| Environment variables | `os.environ.get(&#x27;DATABASE_URL&#x27;)` | Deployment configuration |
+| Config files | `config.yaml`, `app.config[&#x27;KEY&#x27;]` | Server-side files |
+| Framework constants | `django.conf.settings.*` | Not user-modifiable |
+| Hardcoded values | `BASE_URL = &quot;https://api.internal&quot;` | Compile-time constants |
 
-- [ ] Every standard risk area is considered
-- [ ] Findings are ranked by severity with a concrete, actionable fix each
-- [ ] Exploitability is explained — why it&#x27;s a real issue in this context
-- [ ] A clear verdict names the gating issues
-- [ ] Existing good controls are acknowledged
-- [ ] Deeper follow-ups (scanner/pentest) are flagged
+### Framework-Mitigated Patterns
 
-## Anti-Patterns
+Check language guides before flagging. Common false positives:
 
-- [ ] Do not produce a generic checklist — tie each finding to this
-  code/design and its exploit path
-- [ ] Do not rank everything the same — separate critical from hardening nits
-- [ ] Do not report an issue without a fix
-- [ ] Do not miss authorization (IDOR/privilege)
-- [ ] Do not review code you don&#x27;t own or aren&#x27;t authorized to assess</pre>
+| Pattern | Why It&#x27;s Usually Safe |
+|---------|----------------------|
+| Django `{{ variable }}` | Auto-escaped by default |
+| React `{variable}` | Auto-escaped by default |
+| Vue `{{ variable }}` | Auto-escaped by default |
+| `User.objects.filter(id=input)` | ORM parameterizes queries |
+| `cursor.execute(&quot;...%s&quot;, (input,))` | Parameterized query |
+| `innerHTML = &quot;&lt;b&gt;Loading...&lt;/b&gt;&quot;` | Constant string, no user input |
+
+Only flag these when:
+- Django: `{{ var|safe }}`, `{% autoescape off %}`, `mark_safe(user_input)`
+- React: `dangerouslySetInnerHTML={{__html: userInput}}`
+- Vue: `v-html=&quot;userInput&quot;`
+- ORM: `.raw()`, `.extra()`, `RawSQL()` with string interpolation
+
+### Review Process
+
+1. **Detect Context**: Determine what type of code is being reviewed (API endpoints, frontend, file handling, crypto, etc.) and load the appropriate reference material.
+2. **Load Language Guide**: Based on file extension or imports, load the relevant language-specific guide.
+3. **Load Infrastructure Guide** (if applicable): For Docker, Kubernetes, Terraform, CI/CD, or cloud configs.
+4. **Research Before Flagging**: For each potential issue, research the codebase to build confidence. Trace data flow, check for validation/sanitization, and identify framework protections.
+5. **Verify Exploitability**: Confirm the input is attacker-controlled. Only report issues where you have HIGH confidence after understanding the broader context.
+
+### Conflicts
+
+- **microsoft/power-platform-skills** defines a multi-phase, sub-skill orchestration workflow for Power Pages sites that produces an HTML report.
+- **getsentry/skills** defines a direct code-analysis workflow that applies OWASP heuristics to source code and reports findings with confidence levels.
+- These are mutually exclusive procedures for different targets. The combined skill routes to the appropriate mode based on the user&#x27;s target.</pre>
 </body>
 </html>

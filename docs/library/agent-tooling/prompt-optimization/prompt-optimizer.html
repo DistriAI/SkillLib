@@ -15,114 +15,68 @@ pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
 </style>
 </head>
 <body>
-<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">prompt-optimization</a> / prompt-optimizer</p><h1>prompt-optimizer</h1><p class="meta"><a href="../../cards/agent-tooling--prompt-optimization--prompt-optimizer.html">Skill card</a></p><p class="meta">combined</p><p>The three copies share the goal of improving prompts but use incompatible methods. daymade/claude-code-skills treats the task as converting vague feature requests into EARS requirements grounded in domain theories (GTD, Fogg, Gestalt) and outputs a Role/Skills/Workflows/Examples/Formats prompt. getsentry/skills treats the task as engineering an agent/system prompt with a contract, external context inventory, model-family strategy, and an iterative eval-driven optimization loop. mohitagw15856/pm-claude-skills treats the task as diagnosing a failing prompt and returning a full rewrite with a diagnosis table, change rationale, and a small test set. Because each copy contains material steps and constraints the others lack, and they disagree on the core workflow (EARS transformation vs eval loop vs diagnosis/rewrite), crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>prompt-optimizer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/prompt-optimizer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-ai/skills/prompt-optimizer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>prompt-optimizer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/prompt-optimizer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-ai/skills/prompt-optimizer/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/prompt-optimizer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">agent-tooling</a> / <a href="index.html">prompt-optimization</a> / prompt-optimizer</p><h1>prompt-optimizer</h1><p class="meta"><a href="../../cards/agent-tooling--prompt-optimization--prompt-optimizer.html">Skill card</a></p><p class="meta">combined</p><p>The two skills share the name and the high-level goal of improving prompts, but they define different procedures. The daymade skill is a requirements-refinement workflow that converts vague feature requests into EARS specifications and then wraps them in a Role/Skills/Workflows/Examples/Formats prompt. The getsentry skill is an engineering workflow for agent/system prompts that emphasizes eval sets, model-family porting, external context inventory, and a candidate-generation optimization loop. Neither copy is a shortened or wrapped version of the other; each contains material steps and constraints the other lacks, so crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>prompt-optimizer/SKILL.md</code></td></tr><tr><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/prompt-optimizer/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/daymade/claude-code-skills">daymade/claude-code-skills</a></td><td><code>prompt-optimizer/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/getsentry/skills">getsentry/skills</a></td><td><code>skills/prompt-optimizer/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
 name: prompt-optimizer
 description: &gt;-
-  Diagnoses, rewrites, and iteratively refines prompts and feature requests into precise, testable specifications. Use when asked to improve a prompt, optimize a system prompt, fix inconsistent output, reduce hallucination, or convert vague requirements into structured specifications.
+  Optimizes vague prompts, feature requests, and agent system prompts into precise, testable specifications. Use when requirements lack triggers or measurable outcomes, when the user asks to &quot;optimize my prompt&quot;, or when building, refining, or porting agent prompts across model families.
 ---
 
 # Prompt Optimizer
 
 ## Overview
 
-This skill combines three complementary approaches to prompt optimization:
-1. **EARS Transformation** - Convert vague feature requests into normative, testable requirements using EARS syntax and domain theory grounding.
-2. **Eval-Driven Engineering** - Capture a contract, inventory external context, choose a model strategy, and iteratively optimize using evals.
-3. **Diagnosis &amp; Rewrite** - Identify specific failure modes in an existing prompt and produce a full rewrite with a test set.
+This skill combines two complementary approaches:
+1. **Requirements Refinement**: Transform vague feature requests into EARS (Easy Approach to Requirements Syntax) specifications grounded in domain theories.
+2. **Agent Prompt Engineering**: Iteratively refine agent/system prompts using eval sets, model-family strategies, and external context inventory.
 
-Select the primary approach based on the input:
-- **Vague feature request** (e.g., &quot;build a dashboard&quot;) → Use EARS Transformation.
-- **Existing agent/system prompt** (e.g., &quot;optimize this system prompt&quot;) → Use Eval-Driven Engineering.
-- **Failing prompt with symptoms** (e.g., &quot;this prompt gives inconsistent output&quot;) → Use Diagnosis &amp; Rewrite.
+Choose the appropriate path based on the input:
+- If the input is a **vague feature request** (e.g., &quot;build a dashboard&quot;), follow the **Requirements Refinement** path.
+- If the input is an **existing agent/system prompt** or a request to **port/debug** a prompt, follow the **Agent Prompt Engineering** path.
 
-## When to Use
+## Path A: Requirements Refinement (EARS + Domain Theory)
 
-Apply when:
-- User provides vague feature requests or requirements lacking triggers or measurable outcomes.
-- User asks to optimize, improve, or refine an existing prompt.
-- User reports a prompt that produces inconsistent, wrong, or hallucinated results.
-- User asks to port a prompt between model families.
-
-## Workflow
-
-### Step 1: Classify the Task
-
-Determine the task type:
-- **New requirement**: Vague feature request → EARS path.
-- **Refine existing prompt**: Agent/system prompt → Eval-Driven path.
-- **Debug failing prompt**: Prompt with reported symptoms → Diagnosis path.
-- **Port prompt**: Between model families → Eval-Driven path with model-family notes.
-
-### Step 2: Capture Contract (Eval-Driven &amp; Diagnosis paths)
-
-Record before editing:
-- Task type: new, refine, port, or debug.
-- Target model family and snapshot, if known.
-- Prompt surface: system, developer, user, tool descriptions, examples, schemas.
-- Objective and non-goals.
-- Inputs, tools, and external files available.
-- Required output shape.
-- Success criteria and failure cases.
-- Hard constraints: latency, verbosity, safety, budget, tool use, style.
-
-If success criteria or examples are missing, create a small eval set first.
-
-### Step 3: Analyze Original Requirement or Prompt
-
-**For EARS path:**
+### Step A1: Analyze Original Requirement
 Identify weaknesses:
-- Overly broad, missing triggers, ambiguous actions, no constraints.
+- Overly broad scope
+- Missing triggers or conditions
+- Ambiguous actions
+- No constraints or measurable criteria
 
-**For Eval-Driven path:**
-Inventory external context by exact path:
-- Agent rules, specs, policies, examples.
-- Reference stable files by repo-relative path instead of copying them.
-- Mark whether a file is loaded, referenced, or out of scope.
-
-**For Diagnosis path:**
-Identify specific failure modes:
-- Inconsistent format → no explicit output contract.
-- Hallucinated details → asked to answer without grounding.
-- Ignores an instruction → buried mid-paragraph.
-- Refusals → unclear constraints or safety conflicts.
-
-### Step 4: Apply Transformation
-
-**EARS Transformation:**
+### Step A2: Apply EARS Transformation
 Convert requirements to EARS patterns:
-1. Ubiquitous: `The system shall &lt;action&gt;`
-2. Event-driven: `When &lt;trigger&gt;, the system shall &lt;action&gt;`
-3. State-driven: `While &lt;state&gt;, the system shall &lt;action&gt;`
-4. Conditional: `If &lt;condition&gt;, the system shall &lt;action&gt;`
-5. Unwanted behavior: `If &lt;condition&gt;, the system shall prevent &lt;unwanted action&gt;`
+1. **Ubiquitous**: `The system shall &lt;action&gt;`
+2. **Event-driven**: `When &lt;trigger&gt;, the system shall &lt;action&gt;`
+3. **State-driven**: `While &lt;state&gt;, the system shall &lt;action&gt;`
+4. **Conditional**: `If &lt;condition&gt;, the system shall &lt;action&gt;`
+5. **Unwanted behavior**: `If &lt;condition&gt;, the system shall prevent &lt;unwanted action&gt;`
 
-Identify domain theories and apply relevant frameworks:
+Checklist:
+- Make implicit conditions explicit
+- Specify triggering events or states
+- Use precise action verbs (shall, must, should)
+- Add measurable criteria
+- Break compound requirements into atomic statements
+- Remove ambiguous language
+
+### Step A3: Identify Domain Theories
+Match requirements to established frameworks:
 - Productivity → GTD, Pomodoro, Eisenhower Matrix
 - Behavior Change → BJ Fogg Model, Atomic Habits
 - UX Design → Hick&#x27;s Law, Fitts&#x27;s Law, Gestalt Principles
-- Security → Zero Trust, Defense in Depth, Privacy by Design
+- Security → Zero Trust, Defense in Depth
 
-**Eval-Driven Optimization:**
-1. Baseline the current prompt on the same eval slice.
-2. Cluster failures by root cause.
-3. Write concrete edit criticisms.
-4. Generate two to four candidates: minimal-diff repair, structure-first rewrite, examples-first variant, provider adapter.
-5. Compare candidates on the same cases.
-6. Keep a short optimization log.
-7. Validate the winner on holdout cases.
-8. Stop on plateau, oscillation, overfit, excessive cost, or non-prompt bottleneck.
+Apply 2-4 complementary theories and cite them in the enhanced prompt.
 
-**Diagnosis &amp; Rewrite:**
-Apply levers that match the diagnosed failure:
-- Role + task in the first lines.
-- Explicit output contract (structure/schema + a short example).
-- Grounding rules (&quot;answer only from X; if unknown, say so&quot;).
-- Constraints stated as rules not prose.
-- 1-3 few-shot examples when the task needs a demonstrated pattern.
+### Step A4: Extract Concrete Examples
+Generate specific examples with real data:
+- User scenarios
+- Data examples
+- Workflow examples
 
-### Step 5: Generate Enhanced Prompt
+Examples must be realistic, specific, varied (success/error/edge cases), and testable.
 
-Structure using the standard framework:
+### Step A5: Generate Enhanced Prompt
+Structure using the Role/Skills/Workflows/Examples/Formats framework:
 
 ```markdown
 # Role
@@ -131,89 +85,103 @@ Structure using the standard framework:
 ## Skills
 - [Core capability 1]
 - [Core capability 2]
-[List 5-8 skills aligned with domain theories]
 
 ## Workflows
 1. [Phase 1] - [Key activities]
 2. [Phase 2] - [Key activities]
-[Complete step-by-step process]
 
 ## Examples
-[Concrete examples with real data, not placeholders]
+[Concrete examples with real data]
 
 ## Formats
-[Precise output specifications:
-- File types, structure requirements
-- Design/styling expectations
-- Technical constraints
-- Deliverable checklist]
+[Precise output specifications]
 ```
 
-**Quality criteria:**
-- Role specificity: &quot;Product designer specializing in time management apps&quot; &gt; &quot;Designer&quot;
-- Theory grounding: Reference frameworks explicitly
-- Actionable workflows: Clear inputs/outputs and decision points
-- Concrete examples: Real data, not &quot;Example 1&quot;, &quot;Example 2&quot;
-- Measurable formats: Specific requirements, not &quot;good design&quot;
-
-### Step 6: Present Optimization Results
-
+### Step A6: Present Optimization Results
 Output in structured format:
+- Original Requirement
+- Identified Issues
+- EARS Transformation
+- Domain &amp; Theories
+- Enhanced Prompt
+- How to use
 
-```markdown
-## Original Requirement or Prompt
-[User&#x27;s input]
+## Path B: Agent Prompt Engineering (Evals + Model Strategy)
 
-**Identified Issues:**
-- [Issue 1: e.g., &quot;Lacks specific trigger conditions&quot;]
-- [Issue 2: e.g., &quot;No measurable success criteria&quot;]
+### Step B1: Capture Contract
+Record before editing:
+- Task type: new, refine, port, or debug
+- Target model family and snapshot
+- Prompt surface: system, developer, user, tool descriptions, examples, schemas
+- Layer owners: platform, deployer/persona, retrieved context, user payload
+- Objective and non-goals
+- Inputs, tools, and external files available
+- Required output shape
+- Success criteria and failure cases
+- Hard constraints: latency, verbosity, safety, budget, tool use, style
 
-## Transformation
-[EARS-formatted requirements, eval-driven changes, or diagnosis table]
+If success criteria or examples are missing, create a small eval set first.
 
-## Domain &amp; Theories (EARS path)
-**Primary Domain:** [e.g., Authentication Security]
+### Step B2: Inventory External Context
+For repo or agent prompts, list stable context by exact path:
+- Agent rules (e.g., `AGENTS.md`, `CLAUDE.md`)
+- Specs (e.g., `specs/*.md`)
+- Policies (e.g., `SECURITY.md`)
+- Examples (e.g., `examples/`, `tests/fixtures/`)
 
-**Applicable Theories:**
-- **[Theory 1]** - [Brief relevance]
-- **[Theory 2]** - [Brief relevance]
+Rules:
+- Reference stable files by repo-relative path instead of copying them.
+- Paste only excerpts needed for the prompt or eval case.
+- Mark whether a file is `loaded`, `referenced`, or `out of scope`.
+- Avoid vague context pointers.
 
-## Enhanced Prompt
-[Complete Role/Skills/Workflows/Examples/Formats prompt or full rewrite]
+### Step B3: Choose Model Strategy
+- Known family: optimize for that family.
+- Unknown family: write a portable base plus short adapter notes.
+- Snapshot changes: rerun evals.
+- Cross-family divergence: specialize only the failing layer.
 
-## Test Set
-[3-5 concrete inputs including edge cases and negative cases with expected outputs]
+### Step B4: Shape Prompt
+- Put stable policy in `system` or `developer`.
+- Put task-local facts, retrieved context, and variables in user-facing sections.
+- Keep one owner per behavior rule.
+- Use headings or tags only to separate content types.
+- Put tool policy in prompt text; keep schemas in provider-native tools.
+- Keep persona light unless it changes behavior.
+- Use the shortest wording that preserves the constraint.
+- Cut filler, repeated reminders, dead examples, and rationale that does not affect evals.
 
-## What Changed and Why
-[Short bullet list mapping each edit to the symptom it addresses]
+### Step B5: Optimize
+1. Baseline the current prompt on the same eval slice.
+2. Cluster failures by root cause.
+3. Write concrete edit criticisms.
+4. Generate two to four candidates:
+   - minimal-diff repair
+   - structure-first rewrite
+   - examples-first or tool-rule variant
+   - provider adapter when needed
+5. Compare candidates on the same cases.
+6. Keep a short optimization log.
+7. Validate the winner on holdout cases.
+8. Stop on plateau, oscillation, overfit, excessive cost, or non-prompt bottleneck.
 
-## Residual Risks
-[Any remaining limitations or failure modes]
-```
+### Step B6: Return Package
+Return:
+1. `Target`
+2. `Success Criteria`
+3. `External Context`
+4. `Optimized Prompt`
+5. `Adapter Notes`
+6. `Eval Set`
+7. `Optimization Log`
+8. `Residual Risks`
+
+For existing prompts, include a concise diff-style note of the main behavioral changes.
 
 ## Conflicts
 
-- **daymade/claude-code-skills** uses EARS syntax and domain theory grounding (GTD, BJ Fogg, Gestalt) to transform vague feature requests into normative specifications. This is not present in the other two copies.
-- **getsentry/skills** uses an eval-driven meta-optimization loop with model-family notes, external context inventory, and candidate generation/comparison. This is not present in the other two copies.
-- **mohitagw15856/pm-claude-skills** uses a diagnosis-first approach that identifies specific failure modes and returns a full rewrite with a diagnosis table and a 3-5 item test set. This is not present in the other two copies.
-
-## Failure Modes
-
-- Editing before defining the eval target.
-- Mixing policy, examples, and raw context without boundaries.
-- Duplicating rules across layers.
-- Putting durable policy in user payloads.
-- Asking for chain-of-thought.
-- Keeping contradictory legacy instructions.
-- Overfitting to one or two examples.
-- Retaining examples that no longer improve evals.
-- Fixing tool-use failures only in prompt text when tool descriptions or schemas are weak.
-- Adding markup that does not reduce ambiguity.
-- Using persona as a substitute for behavior rules.
-- Returning a critique without the rewritten prompt.
-- Piling on every technique at once.
-- Adding examples that contradict the instructions.
-- Making the prompt longer when the fix is to make instructions clearer and earlier.
-- Claiming a fix works without a way to test it.</pre>
+- **daymade/claude-code-skills** uses EARS transformation and domain theory grounding as core steps, while **getsentry/skills** uses eval-based optimization and model-family strategy as core steps. These are distinct methodologies for different prompt types.
+- **daymade/claude-code-skills** outputs a Role/Skills/Workflows/Examples/Formats prompt, while **getsentry/skills** outputs a structured package including eval sets, optimization logs, and residual risks.
+- **daymade/claude-code-skills** does not mention model families or evals, while **getsentry/skills** does not mention EARS or domain theories.</pre>
 </body>
 </html>

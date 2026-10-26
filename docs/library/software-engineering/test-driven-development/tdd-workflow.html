@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>tdd-workflow</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">test-driven-development</a> / tdd-workflow</p><h1>tdd-workflow</h1><p class="meta"><a href="../../cards/software-engineering--test-driven-development--tdd-workflow.html">Skill card</a></p><p class="meta">combined</p><p>The two skills cover the same high-level concept (TDD) but diverge significantly in scope and implementation. The first skill (sickn33) is a language-agnostic, conceptual guide to the RED-GREEN-REFACTOR cycle, focusing on principles, anti-patterns, and AI-agent roles. The second skill (brycewang-stanford) is a specific, technical implementation guide for R using the `testthat` package, including code examples, coverage requirements (80%+), and specific API usage (Edition 3). Neither is a reproduction of the other; the first lacks the R-specific tooling, and the second lacks the general conceptual framework and AI-agent patterns. Combining them provides a complete workflow: the conceptual foundation from the first and the concrete R implementation from the second.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/tdd-workflow/SKILL.md</code></td></tr><tr><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/55-ab604-claude-code-r-skills/skills/tdd-workflow/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/tdd-workflow/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/brycewang-stanford/Auto-Empirical-Research-Skills">brycewang-stanford/Auto-Empirical-Research-Skills</a></td><td><code>skills/55-ab604-claude-code-r-skills/skills/tdd-workflow/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/tdd-workflow/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/tdd-workflow/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: tdd-workflow
+description: &quot;Test-Driven Development workflow principles and R implementation. RED-GREEN-REFACTOR cycle with testthat specifics.&quot;
+---
+
+# TDD Workflow
+
+&gt; Write tests first, code second.
+
+## 1. The TDD Cycle
+
+1. **RED**: Write a failing test.
+2. **GREEN**: Write minimal code to pass the test.
+3. **REFACTOR**: Improve code quality while keeping tests green.
+
+## 2. Core Principles
+
+- **Tests Before Code**: Always write the test first.
+- **Minimal Code**: Write only enough code to pass the current test (YAGNI).
+- **Refactor Safely**: Only refactor when all tests are green.
+- **Coverage**: Aim for high coverage (e.g., 80%+ general, 100% for critical logic/statistics).
+
+## 3. R Implementation (testthat)
+
+### Setup
+```r
+usethis::use_testthat(3)
+```
+
+### Test Structure
+Use `test_that()` for unit tests and `describe()`/`it()` for BDD-style tests.
+
+```r
+test_that(&quot;function works&quot;, {
+  # Arrange
+  data &lt;- tibble(x = 1:10)
+  # Act
+  result &lt;- my_function(data)
+  # Assert
+  expect_equal(nrow(result), 10)
+})
+```
+
+### Key Practices
+- **Self-Sufficient Tests**: Each test must be independent and runnable in isolation.
+- **Duplication Over Factoring**: Duplicate setup code in tests for clarity rather than extracting it.
+- **Use `devtools::load_all()`**: During development, use this instead of `library()` to expose unexported functions.
+- **Snapshot Testing**: Use `expect_snapshot()` for complex outputs or error messages.
+
+## 4. Anti-Patterns
+
+- Skipping the RED phase.
+- Writing tests after implementation.
+- Over-engineering the initial solution.
+- Testing implementation details instead of behavior.
+
+## 5. When to Use
+
+- New features.
+- Bug fixes (write a failing test first).
+- Complex logic or refactoring.</pre>
+</body>
+</html>

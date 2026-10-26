@@ -118,6 +118,24 @@ python -m skilllib prefetch --failed --protocol ssh
 
 Exit code 2 means some clones failed. `prefetch --failed` retries the names recorded in `catalog/prefetch_status.json`.
 
+### `prepare_dataset(root, repo_id)`
+
+Write `cache/dataset/README.md` and `cache/dataset/manifest.json` for a Hugging Face dataset of `cache/repos/` and `cache/skills/`. The card license is `other`. Repositories that failed to prefetch, and leader skill files that failed to download, are named in the card and left out of the upload. The steps and the restore command are in [huggingface.md](huggingface.md).
+
+```python
+from skilllib.publish import prepare_dataset
+
+document = prepare_dataset(".", "DistriAI/skilllib-repos")
+print(len(document["repositories"]), len(document["absent_repositories"]))
+```
+
+```bash
+python -m skilllib publish --repo DistriAI/skilllib-repos
+python -m skilllib publish --repo DistriAI/skilllib-repos --upload
+```
+
+`--upload` runs `hf upload`. It requires the `hf` command and a token from `hf auth login` or `HF_TOKEN`.
+
 ## Indexing
 
 `update_index` is the accumulative path. The commands `screen`, `index`, `cards`, `enrich`, `families`, `link`, and `browse` still run one stage at a time.

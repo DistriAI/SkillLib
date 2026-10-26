@@ -10,6 +10,7 @@ from skilllib.agent import find_skills, load_skill, render_prompt
 from skilllib.browse import BROWSE_PATH, default_index_path, load_index, shelf_locations, write_browse_site, write_card_pages
 from skilllib.catalog import CATALOG_PATH
 from skilllib.index import ModelUnavailable, STATE_PATH, update_index
+from skilllib.publish import prepare_dataset, upload_dataset
 from skilllib.retrieve import download_skills, prefetch_repositories
 from skilllib.search import add_repository, search_repositories
 from skilllib.sorting.build import INDEX_PATH, build_skill_index, load_skill_index, save_skill_index, update_skill_index
@@ -30,7 +31,7 @@ from skilllib.visit import visit_repository
 _EPILOG = """
 modules:
   search    search, list, add
-  retrieve  download, visit, prefetch
+  retrieve  download, visit, prefetch, publish
   index     screen, index, cards, enrich, families, link, browse, update
   agent     find, load, prompt
   integrate tool_specs, resident_prompt, call_tool
@@ -86,6 +87,15 @@ def main(argv: list[str] | None = None) -> int:
         help="clone only repositories recorded as failed in the last prefetch",
     )
     prefetch.add_argument("--protocol", choices=("https", "ssh"), default="https")
+
+    publish = sub.add_parser("publish", help="write the Hugging Face dataset card for the local caches")
+    publish.add_argument("--root", type=Path, default=Path.cwd())
+    publish.add_argument("--repo", required=True, help="dataset id, for example DistriAI/skilllib-repos")
+    publish.add_argument(
+        "--upload",
+        action="store_true",
+        help="upload cache/repos and cache/skills with the hf command after writing the card",
+    )
 
     screen = sub.add_parser("screen", help="write the shortlist of skill files for a later download")
     screen.add_argument("--root", type=Path, default=Path.cwd())
@@ -174,6 +184,8 @@ def main(argv: list[str] | None = None) -> int:
         return _download(args)
     if args.command == "prefetch":
         return _prefetch(args)
+    if args.command == "publish":
+        return _publish(args)
     if args.command == "browse":
         return _browse(args)
     if args.command == "cards":
@@ -249,6 +261,44 @@ def _download(args) -> int:
     )
     print(f"Status {args.root / STATUS_PATH}")
     return 0 if status["failed"] == 0 else 2
+
+
+def _publish(args) -> int:
+    if args.upload:
+        try:
+            document = upload_dataset(args.root, args.repo)
+        except RuntimeError as error:
+            print(error)
+            for command in _publish_commands(args.repo):
+                print(" ".join(command))
+            return 1
+    else:
+        document = prepare_dataset(args.root, args.repo)
+    print(f"Wrote {document['readme_path']}")
+    print(f"Wrote {document['manifest_path']}")
+    print(
+        f"Repositories {len(document['repositories'])}, "
+        f"absent {len(document['absent_repositories'])}, "
+        f"skill files {document['skill_files']['stored']}, "
+        f"missing {len(document['skill_files']['missing'])}"
+    )
+    if document["absent_repositories"] or document["skill_files"]["missing"]:
+        print("Recorded as absent:")
+        for row in document["absent_repositories"]:
+            print(f"  {row['full_name']}")
+        for row in document["skill_files"]["missing"]:
+            print(f"  {row['repository']} {row['path']}")
+    if not args.upload:
+        print("Upload with the hf command, from this checkout:")
+        for command in _publish_commands(args.repo):
+            print(" ".join(command))
+    return 0
+
+
+def _publish_commands(repo_id: str) -> list[list[str]]:
+    from skilllib.publish import upload_commands
+
+    return upload_commands(repo_id)
 
 
 def _prefetch(args) -> int:

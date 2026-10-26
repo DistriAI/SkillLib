@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SkillLib — 21,516 agent skills, ready to search</title>
-  <meta name="description" content="SkillLib is a comprehensive library of public agent skills. Search 21,516 leading skills and load one procedure, without placing the catalog in the system prompt.">
+  <title>SkillLib — 20,178 agent skills, ready to search</title>
+  <meta name="description" content="SkillLib is a comprehensive library of public agent skills. Search 20,178 leading skills and load one procedure, without placing the catalog in the system prompt.">
   <style>
     :root {
       --paper: #f3efe6;
@@ -159,29 +159,29 @@
     <main id="top">
       <div class="hero">
         <p class="kicker">A comprehensive library of agent skills</p>
-        <h1>21,516 skills, one search away.</h1>
+        <h1>20,178 skills, one search away.</h1>
         <p class="lede">SkillLib gathers public repositories of Claude-compatible and Codex-compatible skills, resolves overlapping names, and gives an agent three calls: find a skill, load its procedure, and keep the rest of the library out of the prompt.</p>
         <p class="places">
           <a href="https://github.com/DistriAI/SkillLib"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg>Project</a>
           <a href="https://pypi.org/project/skilllib/"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 21 8v8l-9 5-9-5V8z"/><path d="m12 12 9-4M12 12v9M12 12 3 8"/></svg>PyPI</a>
         </p>
         <div class="stats" aria-label="Catalog size">
-          <div class="stat"><b>21,516</b><span>leading skills</span></div>
-          <div class="stat"><b>32,977</b><span>skill files read</span></div>
-          <div class="stat"><b>179</b><span>source repositories</span></div>
+          <div class="stat"><b>20,178</b><span>leading skills</span></div>
+          <div class="stat"><b>30,046</b><span>skill files read</span></div>
+          <div class="stat"><b>178</b><span>source repositories</span></div>
           <div class="stat"><b>13</b><span>task domains</span></div>
         </div>
       </div>
 
       <section id="library">
         <h2>One name, one skill to follow</h2>
-        <p>The starting catalog is every skill-content repository with more than 1,000 GitHub stars, indexed on 16 October 2026. Specifications, skill SDKs, and agent products are left out. Fifteen curated collections point at the repositories they name.</p>
-        <p>Copies that share a name are judged together. The library keeps a single leading skill: the only copy, the authentic copy, or a combined skill whose conflict note records the disagreement. The other 8,902 copies stay available as variants and are not offered as peers.</p>
+        <p>The starting catalog is every skill-content repository with more than 1,000 GitHub stars, indexed on 16 October 2026. Specifications, skill SDKs, and agent products are left out. Fifteen curated collections point at the repositories they name. GitHub has since removed mohitagw15856/pm-claude-skills, and that repository is no longer indexed.</p>
+        <p>Copies that share a name are judged together. The library keeps a single leading skill: the only copy, the authentic copy, or a combined skill whose conflict note records the disagreement. The other 7,503 copies stay available as variants and are not offered as peers.</p>
         <figure class="figure">
-          <img src="assets/kinds.svg" alt="15,725 separate skills, 4,994 authentic skills, and 797 combined skills.">
+          <img src="assets/kinds.svg" alt="15,642 separate skills, 3,784 authentic skills, and 752 combined skills.">
         </figure>
         <figure class="figure">
-          <img src="assets/flow.svg" alt="Search 179 repositories, judge them into 21,516 leading skills, index 13 domains, then find and load at most three skills.">
+          <img src="assets/flow.svg" alt="Search 178 repositories, judge them into 20,178 leading skills, index 13 domains, then find and load at most three skills.">
           <figcaption>From a starred repository to a procedure an agent can follow.</figcaption>
         </figure>
       </section>
@@ -221,7 +221,7 @@ python -m skilllib load combined::gsea</code></pre>
 
       <section id="agent">
         <h2>It sits in front of the agent’s own skill tools</h2>
-        <p>Hermes, Claude, and Codex already load an installed skill by name. Hermes calls that <code>skill_view</code>. That list is the right size for the skills on one machine. It is the wrong size for 21,516 skills.</p>
+        <p>Hermes, Claude, and Codex already load an installed skill by name. Hermes calls that <code>skill_view</code>. That list is the right size for the skills on one machine. It is the wrong size for 20,178 skills.</p>
         <p>SkillLib chooses which skill is worth installing. The host then opens that skill with its own loader, including references and scripts. <code>load_skill</code> can show the cached procedure before the install exists. It does not replace <code>skill_view</code>, slash commands, or editing a skill in place.</p>
         <div class="traits">
           <div class="trait">
@@ -251,19 +251,19 @@ python -m skilllib load combined::gsea</code></pre>
           <a href="library/families/index.html">Task families</a>
         </p>
         <div class="shelves" aria-label="Leading skills by domain">
-          <a class="shelf" href="library/research/index.html"><span class="shelf-name">research</span><span class="shelf-track" aria-hidden="true"><i style="width:100%"></i></span><span class="shelf-count">4,997 skills</span><span class="shelf-go">Browse</span></a>
-          <a class="shelf" href="library/science/index.html"><span class="shelf-name">science</span><span class="shelf-track" aria-hidden="true"><i style="width:48.9%"></i></span><span class="shelf-count">2,446 skills</span><span class="shelf-go">Browse</span></a>
-          <a class="shelf" href="library/software-engineering/index.html"><span class="shelf-name">software-engineering</span><span class="shelf-track" aria-hidden="true"><i style="width:42.9%"></i></span><span class="shelf-count">2,146 skills</span><span class="shelf-go">Browse</span></a>
-          <a class="shelf" href="library/business/index.html"><span class="shelf-name">business</span><span class="shelf-track" aria-hidden="true"><i style="width:42.7%"></i></span><span class="shelf-count">2,134 skills</span><span class="shelf-go">Browse</span></a>
-          <a class="shelf" href="library/security/index.html"><span class="shelf-name">security</span><span class="shelf-track" aria-hidden="true"><i style="width:35.8%"></i></span><span class="shelf-count">1,787 skills</span><span class="shelf-go">Browse</span></a>
-          <a class="shelf" href="library/agent-tooling/index.html"><span class="shelf-name">agent-tooling</span><span class="shelf-track" aria-hidden="true"><i style="width:29.6%"></i></span><span class="shelf-count">1,478 skills</span><span class="shelf-go">Browse</span></a>
-          <a class="shelf" href="library/marketing/index.html"><span class="shelf-name">marketing</span><span class="shelf-track" aria-hidden="true"><i style="width:27%"></i></span><span class="shelf-count">1,347 skills</span><span class="shelf-go">Browse</span></a>
-          <a class="shelf" href="library/devops/index.html"><span class="shelf-name">devops</span><span class="shelf-track" aria-hidden="true"><i style="width:22.1%"></i></span><span class="shelf-count">1,106 skills</span><span class="shelf-go">Browse</span></a>
-          <a class="shelf" href="library/general/index.html"><span class="shelf-name">general</span><span class="shelf-track" aria-hidden="true"><i style="width:20.4%"></i></span><span class="shelf-count">1,020 skills</span><span class="shelf-go">Browse</span></a>
-          <a class="shelf" href="library/data/index.html"><span class="shelf-name">data</span><span class="shelf-track" aria-hidden="true"><i style="width:17.8%"></i></span><span class="shelf-count">889 skills</span><span class="shelf-go">Browse</span></a>
-          <a class="shelf" href="library/design/index.html"><span class="shelf-name">design</span><span class="shelf-track" aria-hidden="true"><i style="width:17.5%"></i></span><span class="shelf-count">872 skills</span><span class="shelf-go">Browse</span></a>
-          <a class="shelf" href="library/media/index.html"><span class="shelf-name">media</span><span class="shelf-track" aria-hidden="true"><i style="width:13.4%"></i></span><span class="shelf-count">671 skills</span><span class="shelf-go">Browse</span></a>
-          <a class="shelf" href="library/documents/index.html"><span class="shelf-name">documents</span><span class="shelf-track" aria-hidden="true"><i style="width:12.5%"></i></span><span class="shelf-count">623 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/research/index.html"><span class="shelf-name">research</span><span class="shelf-track" aria-hidden="true"><i style="width:100%"></i></span><span class="shelf-count">4,962 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/science/index.html"><span class="shelf-name">science</span><span class="shelf-track" aria-hidden="true"><i style="width:48.9%"></i></span><span class="shelf-count">2,424 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/software-engineering/index.html"><span class="shelf-name">software-engineering</span><span class="shelf-track" aria-hidden="true"><i style="width:41.9%"></i></span><span class="shelf-count">2,077 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/security/index.html"><span class="shelf-name">security</span><span class="shelf-track" aria-hidden="true"><i style="width:35.1%"></i></span><span class="shelf-count">1,744 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/business/index.html"><span class="shelf-name">business</span><span class="shelf-track" aria-hidden="true"><i style="width:32.1%"></i></span><span class="shelf-count">1,591 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/agent-tooling/index.html"><span class="shelf-name">agent-tooling</span><span class="shelf-track" aria-hidden="true"><i style="width:28.8%"></i></span><span class="shelf-count">1,429 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/marketing/index.html"><span class="shelf-name">marketing</span><span class="shelf-track" aria-hidden="true"><i style="width:25.3%"></i></span><span class="shelf-count">1,253 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/devops/index.html"><span class="shelf-name">devops</span><span class="shelf-track" aria-hidden="true"><i style="width:21.9%"></i></span><span class="shelf-count">1,086 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/data/index.html"><span class="shelf-name">data</span><span class="shelf-track" aria-hidden="true"><i style="width:16.7%"></i></span><span class="shelf-count">827 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/design/index.html"><span class="shelf-name">design</span><span class="shelf-track" aria-hidden="true"><i style="width:16.6%"></i></span><span class="shelf-count">822 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/general/index.html"><span class="shelf-name">general</span><span class="shelf-track" aria-hidden="true"><i style="width:15.3%"></i></span><span class="shelf-count">760 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/media/index.html"><span class="shelf-name">media</span><span class="shelf-track" aria-hidden="true"><i style="width:13.4%"></i></span><span class="shelf-count">664 skills</span><span class="shelf-go">Browse</span></a>
+          <a class="shelf" href="library/documents/index.html"><span class="shelf-name">documents</span><span class="shelf-track" aria-hidden="true"><i style="width:10.9%"></i></span><span class="shelf-count">539 skills</span><span class="shelf-go">Browse</span></a>
         </div>
       </section>
     </main>

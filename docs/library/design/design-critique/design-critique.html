@@ -15,165 +15,74 @@ pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
 </style>
 </head>
 <body>
-<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">design-critique</a> / design-critique</p><h1>design-critique</h1><p class="meta"><a href="../../cards/design--design-critique--design-critique.html">Skill card</a></p><p class="meta">combined</p><p>The three copies define different procedures for the same skill name. Owl-Listener is a facilitation guide for live team sessions (rules, timing, critique types, pitfalls). mohitagw15856 is a solo expert review that produces a fixed report with required inputs, a prioritized issue list, a Nielsen heuristic table, Gestalt checks, JTBD alignment, and next steps. LeoYeAI is a visual-analysis skill that accepts any image and applies 11 named frameworks, including Itten color, typography, grid, composition, Tufte, Rams/Bauhaus, and platform conventions, with a hard rule that every finding includes a Fix line. No single copy contains the other&#x27;s core steps, so crowning one would hide real alternatives.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>design-ops/skills/design-critique/SKILL.md</code></td></tr><tr><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-design/skills/design-critique/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/design-critique/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>design-ops/skills/design-critique/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>plugins/pm-design/skills/design-critique/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/design-critique/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/mohitagw15856/pm-claude-skills">mohitagw15856/pm-claude-skills</a></td><td><code>skills/design-critique/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre># Design Critique
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">design</a> / <a href="index.html">design-critique</a> / design-critique</p><h1>design-critique</h1><p class="meta"><a href="../../cards/design--design-critique--design-critique.html">Skill card</a></p><p class="meta">combined</p><p>The two skills address the same domain but perform fundamentally different tasks. The first (Owl-Listener) is a facilitation guide for human-led team meetings, focusing on social dynamics, meeting structure (timeboxes), and communication protocols. The second (LeoYeAI) is an automated analysis tool for AI agents to critique visual assets using specific design theories (Gestalt, Itten, Nielsen) and output a structured, severity-ranked list of fixes. They do not reproduce each other; one is a process for people, the other is a heuristic engine for software. Combining them allows an agent to handle both the &#x27;human-in-the-loop&#x27; facilitation and the &#x27;automated visual audit&#x27; aspects of design critique.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>design-ops/skills/design-critique/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/design-critique/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/Owl-Listener/designer-skills">Owl-Listener/designer-skills</a></td><td><code>design-ops/skills/design-critique/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/design-critique/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: design-critique
+description: Facilitate structured team critiques or perform automated visual design audits. Use for live sessions or file-based analysis.
+---
+# Design Critique
 
-## Choose the mode
-- **Team facilitation** — use when running a live session with people in the room.
-- **Solo expert review** — use when asked to critique a design, UI, Figma file, wireframe, or user flow and produce a written report.
-- **Visual analysis** — use when given an image, screenshot, logo, photo, graphic, or PDF and asked for theory-backed feedback.
+You can perform two types of design critique: **Facilitated Team Critique** (for live human sessions) and **Automated Visual Audit** (for analyzing design files).
 
-## Team facilitation (live session)
-### Before the critique
+## 1. Facilitated Team Critique
+Use this when running a session with people in the room.
+
+### Before the Critique
 - Designer shares context: goals, constraints, target audience, stage of work.
-- Define what feedback is needed (layout, flow, copy, everything).
+- Define what feedback is needed (layout? flow? copy? everything?).
 - Set the rules: constructive, specific, actionable.
 
-### During the critique
+### During the Critique
 1. **Present** (5 min) — Designer walks through the work and goals.
 2. **Clarify** (5 min) — Questions to understand, not judge.
 3. **Feedback rounds** — Structured by category or priority.
 4. **Discuss** — Open conversation on key tensions.
 5. **Capture** — Document decisions and action items.
 
-### Feedback format
-- &quot;I notice...&quot; (observation, not judgment)
-- &quot;I wonder...&quot; (question or exploration)
-- &quot;What if...&quot; (suggestion or alternative)
-- &quot;I think... because...&quot; (opinion with rationale)
+### Feedback Format (Verbal)
+- &#x27;I notice...&#x27; (observation, not judgment)
+- &#x27;I wonder...&#x27; (question or exploration)
+- &#x27;What if...&#x27; (suggestion or alternative)
+- &#x27;I think... because...&#x27; (opinion with rationale)
 
-### After the critique
+### After the Critique
 - Designer summarizes takeaways.
 - Action items with owners and deadlines.
-- Follow-up review if needed.
 
-### Critique types
-- **Desk crit**: Informal, 1-on-1, quick feedback.
-- **Team crit**: Scheduled, structured, full team.
-- **Cross-team crit**: Fresh eyes from outside the project.
-- **Stakeholder review**: Decision-focused, approval-oriented.
-
-### Common pitfalls
-- Designing by committee (too many opinions, no direction).
-- Focusing on personal preference instead of user needs.
-- Critiquing too early (exploring) or too late (polishing).
-- No clear next steps.
-
-### Best practices
+### Best Practices
 - Separate exploration critiques from refinement critiques.
 - Critique the work, not the person.
 - Always tie feedback to goals and user needs.
-- Rotate the facilitator role.
-- Make critique a regular ritual, not an event.
 
-## Solo expert review (written report)
-### Required inputs
-Work from what is given. If any input is missing, fill the gap with a reasonable assumption marked *(assumed, confirm)* and list assumptions at the end. Ask a question first only when the core subject itself is missing.
-- **What is being reviewed** (screen, flow, component, full product)
-- **Design description or attached image**
-- **User goal** (what is the user trying to accomplish?)
-- **Context** (web / mobile / desktop app / physical product)
-- **Stage** (early wireframe / mid-fidelity / high-fidelity / live product)
-- **Primary concern** (optional)
+## 2. Automated Visual Audit
+Use this when provided with a visual file (UI, logo, photo, PDF) to analyze.
 
-### Output structure
-# Design Critique: [Design Name or Screen]
-**User goal:** [What the user needs to accomplish]
-**Context:** [Platform / Stage]
-**Critique focus:** [Primary concern if stated, otherwise &quot;full review&quot;]
+### Analysis Framework
+Examine the visual through these 11 dimensions:
+1. **Gestalt Principles** (proximity, similarity, continuity, etc.)
+2. **Visual Hierarchy** (focal point, reading paths, size/weight/whitespace)
+3. **Colour Science** (contrast, harmony, WCAG compliance, accessibility)
+4. **Typography** (scale, pairing, readability, line length/height)
+5. **Grid Structure** (alignment, modulation, spacing rhythm)
+6. **Composition** (viewpoint, framing, depth, focus)
+7. **Information Design** (data-ink ratio, density, cognitive load)
+8. **Reduction &amp; Honesty** (minimalism, form follows function)
+9. **Visual Balance** (symmetry/asymmetry, visual weight)
+10. **Usability Heuristics** (Nielsen&#x27;s 10: visibility, match, control, consistency, error prevention, recognition, flexibility, aesthetics, error messages, help)
+11. **Platform Conventions** (web/mobile norms, safe zones, thumb-friendliness)
 
-## 1. What&#x27;s Working
-3–5 specific, honest observations about genuine strengths. Be specific; do not manufacture praise.
-
-## 2. Priority Issues
-Rank issues by impact on the user goal:
-- 🔴 **High** — Blocks or significantly degrades the user&#x27;s ability to complete their goal.
-- 🟡 **Medium** — Causes friction or confusion but doesn&#x27;t block completion.
-- 🟢 **Low** — Polish or preference.
-
-For each issue include:
-- **What&#x27;s happening:** Specific design problem.
-- **Why it matters:** Connection to user goal or principle.
-- **Framework reference:** Name the principle violated (e.g. Nielsen&#x27;s Heuristic #6, Gestalt proximity, JTBD clarity, Fitts&#x27;s Law).
-- **Recommendation:** Specific, actionable suggestion.
-
-## 3. Heuristic Assessment
-Score each relevant Nielsen heuristic as ✅ Pass / 🟡 Partial / ❌ Fail:
-| Heuristic | Status | Note |
-|---|---|---|
-| 1. Visibility of system status | | |
-| 2. Match between system and real world | | |
-| 3. User control and freedom | | |
-| 4. Consistency and standards | | |
-| 5. Error prevention | | |
-| 6. Recognition rather than recall | | |
-| 7. Flexibility and efficiency of use | | |
-| 8. Aesthetic and minimalist design | | |
-| 9. Help users recognise, diagnose, and recover from errors | | |
-| 10. Help and documentation | | |
-Only include heuristics relevant to what&#x27;s visible.
-
-## 4. Gestalt Principles Check
-Comment on well-applied or violated principles:
-- **Proximity:** Are related elements grouped clearly?
-- **Similarity:** Do similar elements look similar?
-- **Continuity:** Does the eye flow naturally?
-- **Figure/Ground:** Is primary content clearly distinguished from background?
-- **Closure:** Are any implied shapes or containers confusing?
-
-## 5. JTBD Alignment
-- Does the design make the user&#x27;s primary job obvious?
-- Are there elements that distract from the primary job?
-- What emotional job does this design serve, and does the visual design match it?
-
-## 6. Top 3 Recommended Next Steps
-Prioritised list of the 3 most impactful, actionable changes.
-
-### Quality checks
-- &quot;What&#x27;s working&quot; includes only genuine, specific observations.
-- Every issue has a framework reference.
-- Recommendations are specific and actionable.
-- Priority levels reflect actual impact on user goal.
-- Heuristic assessment only covers visible elements.
-
-### Anti-patterns
-- Do not lead with visual preference; every issue must reference a UX principle or user impact.
-- Do not invent problems in &quot;What&#x27;s Working.&quot;
-- Do not assign the same priority level to every issue.
-- Do not skip the JTBD section for product screens.
-
-## Visual analysis (image-based)
-### Input
-Any visual file — UI design, logo, photo, graphic, PDF exported as image, Figma frame.
-
-### Analysis frameworks
-Examine the visual through 11 dimensions:
-1. **Gestalt Principles** — proximity, similarity, continuity, closure, figure/ground, common fate, prägnanz, uniform connectedness.
-2. **Visual Hierarchy** — focal point, reading paths, size, weight, colour, position, whitespace.
-3. **Colour Science (Itten)** — contrast types, harmony systems, emotional temperature, WCAG contrast (4.5:1 text, 3:1 UI), colourblind accessibility.
-4. **Typography** — type scale coherence, font pairings, readability (16px+ body), line length (45–75 chars), line height (1.5+), hierarchy through type.
-5. **Grid Structure &amp; Alignment (Müller-Brockmann)** — underlying grid, alignment consistency, modulation, spacing rhythm, margins and gutters.
-6. **Composition &amp; Moment (Freeman)** — viewpoint, framing, depth relationships, focus and blur, scale and proportion.
-7. **Information Design (Tufte)** — data-ink ratio, information density, layering, progressive disclosure, cognitive load.
-8. **Reduction &amp; Honesty (Rams/Bauhaus)** — nothing superfluous, form follows function, reduction to essentials, timelessness, honest representation.
-9. **Visual Balance &amp; Weight** — symmetrical vs asymmetrical balance, visual weight, tension, composition stability.
-10. **Usability Heuristics (Nielsen/Norman)** — system visibility, match to real world, user control, consistency, error prevention and recovery, recognition vs recall, flexibility and efficiency, aesthetic and minimalist design, error messages, help and documentation.
-11. **Platform Conventions** — web, mobile, social, print, email norms, safe zones, thumb-friendliness, expected patterns.
-
-### Output format — priority-ordered action list
-Group findings by severity. **Hard rule:** every finding must include a `Fix:` line.
+### Output Format
+Provide a priority-ordered action list. **Hard rule:** Every finding must include a `Fix:` line.
 
 #### 🔴 Critical
-Issues that break usability, accessibility, or core functionality. Fix immediately.
+Issues that break usability, accessibility, or core functionality.
+*Example:* `🔴 Critical — Text contrast fails WCAG AA. Fix: Darken background to #0052CC.`
 
 #### 🟡 Important
-Issues that hurt the experience or violate design principles without breaking core function. Fix soon.
+Issues that hurt the experience or violate design principles.
+*Example:* `🟡 Important — Hierarchy collapse. Fix: Increase H1 to 35px.`
 
 #### 🟢 Polish
-Issues that elevate the design or address missed opportunities. Fix when time allows.
-
-For each finding include:
-- Description of the issue.
-- Which framework or principle is violated.
-- **Fix:** Specific, actionable correction.</pre>
+Issues that elevate the design.
+*Example:* `🟢 Polish — Spacing rhythm inconsistent. Fix: Align padding to 8px grid.`</pre>
 </body>
 </html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>writing-plans</title>
+<style>
+body { font: 14px/1.45 ui-monospace, monospace; margin: 1.5rem; }
+a { color: #0645ad; }
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.2rem 0.7rem 0.2rem 0; vertical-align: top; }
+th { border-bottom: 1px solid #ccc; }
+.crumbs { margin-bottom: 1rem; }
+.meta { color: #444; }
+pre { white-space: pre-wrap; background: #f6f6f6; padding: 0.8rem; }
+</style>
+</head>
+<body>
+<p class="crumbs"><a href="../../index.html">domains</a> / <a href="../index.html">software-engineering</a> / <a href="index.html">implementation-plan-writing</a> / writing-plans</p><h1>writing-plans</h1><p class="meta"><a href="../../cards/software-engineering--implementation-plan-writing--writing-plans.html">Skill card</a></p><p class="meta">combined</p><p>The obra/superpowers copy is the more complete and opinionated procedure: it adds a Scope Check, a File Structure section, Task Right-Sizing, a richer Plan Document Header (Spec path, Global Constraints, Review Focus), and an Interfaces block in each task. The other three copies (Vibe-Skills, agentic-awesome-skills, openclaw-master-skills) are near-identical to each other and share a simpler header, a &#x27;questionable taste&#x27; framing, and an explicit Execution Handoff section that the obra copy does not include. Because the obra copy lacks the Execution Handoff and the other copies lack the Scope Check/File Structure/Interfaces/Review Focus material, crowning one would hide a real alternative.</p><h2>Repositories</h2><table><thead><tr><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/writing-plans/SKILL.md</code></td></tr><tr><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/writing-plans/SKILL.md</code></td></tr><tr><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/writing-plans/SKILL.md</code></td></tr><tr><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/writing-plans/SKILL.md</code></td></tr></tbody></table><h2>Other copies</h2><table><thead><tr><th>Role</th><th>Repository</th><th>Path</th></tr></thead><tbody><tr><td>peer</td><td><a href="https://github.com/obra/superpowers">obra/superpowers</a></td><td><code>skills/writing-plans/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/foryourhealth111-pixel/Vibe-Skills">foryourhealth111-pixel/Vibe-Skills</a></td><td><code>bundled/skills/writing-plans/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills-claude/skills/writing-plans/SKILL.md</code></td></tr><tr><td>peer</td><td><a href="https://github.com/LeoYeAI/openclaw-master-skills">LeoYeAI/openclaw-master-skills</a></td><td><code>skills/writing-plans/SKILL.md</code></td></tr><tr><td>inferior</td><td><a href="https://github.com/FreedomIntelligence/OpenClaw-Medical-Skills">FreedomIntelligence/OpenClaw-Medical-Skills</a></td><td><code>skills/writing-plans/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>plugins/agentic-awesome-skills/skills/writing-plans/SKILL.md</code></td></tr><tr><td>adapter</td><td><a href="https://github.com/sickn33/agentic-awesome-skills">sickn33/agentic-awesome-skills</a></td><td><code>skills/writing-plans/SKILL.md</code></td></tr></tbody></table><h2>Combined skill</h2><pre>---
+name: writing-plans
+description: Use when you have a spec or requirements for a multi-step task, before touching code
+---
+
+# Writing Plans
+
+## Overview
+
+Write implementation plans for an engineer who has not seen this codebase or this spec. Assume they write idiomatic code in the project&#x27;s language once they know the exact interface and the exact test, and that they will make a reasonable choice wherever the plan leaves one open. Document what you decided: which files, which names and signatures, which values from the spec, which tests prove each task. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
+
+**Announce at start:** &quot;I&#x27;m using the writing-plans skill to create the implementation plan.&quot;
+
+**Context:** If working in an isolated worktree, it should have been created via the `superpowers:using-git-worktrees` skill at execution time.
+
+**Save plans to:** `docs/superpowers/plans/YYYY-MM-DD-&lt;feature-name&gt;.md`
+- (User preferences for plan location override this default)
+
+## Scope Check
+
+If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn&#x27;t, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
+
+## File Structure
+
+Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
+
+- Design units with clear boundaries and well-defined interfaces. Each file should have one clear responsibility.
+- Prefer smaller, focused files over large ones that do too much.
+- Files that change together should live together. Split by responsibility, not by technical layer.
+- In existing codebases, follow established patterns. If the codebase uses large files, don&#x27;t unilaterally restructure - but if a file you&#x27;re modifying has grown unwieldy, including a split in the plan is reasonable.
+
+This structure informs the task decomposition. Each task should produce self-contained changes that make sense independently.
+
+## Task Right-Sizing
+
+A task is the smallest unit that carries its own test cycle and is worth a fresh reviewer&#x27;s gate. When drawing task boundaries: fold setup, configuration, scaffolding, and documentation steps into the task whose deliverable needs them; split only where a reviewer could meaningfully reject one task while approving its neighbor. Each task ends with an independently testable deliverable.
+
+## Step Granularity
+
+**Each step is one action with a checkable result:**
+- &quot;Write the failing test&quot; - step
+- &quot;Run it to make sure it fails&quot; - step
+- &quot;Implement the minimal code to make the test pass&quot; - step
+- &quot;Run the tests and make sure they pass&quot; - step
+- &quot;Commit&quot; - step
+
+## Plan Document Header
+
+**Every plan MUST start with this header:**
+
+```markdown
+# [Feature Name] Implementation Plan
+
+&gt; **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** [One sentence describing what this builds]
+
+**Architecture:** [2-3 sentences about approach]
+
+**Tech Stack:** [Key technologies/libraries]
+
+**Spec:** [path to the spec/design doc this plan implements — the plan argues from the spec, so the spec travels with it; executors read both]
+
+## Global Constraints
+
+[The spec&#x27;s project-wide requirements — version floors, dependency limits, naming and copy rules, platform requirements — one line each, with exact values copied verbatim from the spec. Every task&#x27;s requirements implicitly include this section.]
+
+## Review Focus
+
+[The five input classes or failure modes the spec implies but no task&#x27;s tests exercise that are most likely to bite a person using this software — one line each, naming the input or condition and the behavior a reasonable person would expect, most likely first. The spec is a vision document: it says what the software must do, not everything it will meet, and its silence on an input is not permission for that input to break the program. Write the list here, once, with the spec in front of you. Then, for each line, add the test that pins it to the task that owns the code, in that task&#x27;s own step style.]
+
+---
+```
+
+## Task Structure
+
+````markdown
+### Task N: [Component Name]
+
+**Files:**
+- Create: `exact/path/to/file.py`
+- Modify: `exact/path/to/existing.py:123-145`
+- Test: `tests/exact/path/to/test.py`
+
+**Interfaces:**
+- Consumes: [what this task uses from earlier tasks — exact signatures]
+- Produces: [what later tasks rely on — exact function names, parameter and return types. A task&#x27;s implementer sees only their own task; this block is how they learn the names and types neighboring tasks use.]
+
+- [ ] **Step 1: Write the failing test**
+
+```python
+def test_specific_behavior():
+    result = function(input)
+    assert result == expected
+```
+
+- [ ] **Step 2: Run test to verify it fails**
+
+Run: `pytest tests/path/test.py::test_name -v`
+Expected: FAIL with &quot;function not defined&quot;
+
+- [ ] **Step 3: Implement `function(input: InputType) -&gt; ResultType` in `exact/path/to/file.py`**
+
+One line on the approach when the signature and the test leave a choice (which library call, which data structure); a code block only for an algorithm they do not determine.
+
+- [ ] **Step 4: Run test to verify it passes**
+
+Run: `pytest tests/path/test.py::test_name -v`
+Expected: PASS
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add tests/path/test.py src/path/file.py
+git commit -m &quot;feat: add specific feature&quot;
+```
+````
+
+## What a Step Contains
+
+A step is done when the implementer can write exactly one reasonable thing from it. That is the whole requirement: unambiguous, not complete. Each kind of step carries what makes it unambiguous.
+
+## Remember
+- Exact file paths always
+- Complete code in plan (not &quot;add validation&quot;)
+- Exact commands with expected output
+- Reference relevant skills with @ syntax
+- DRY, YAGNI, TDD, frequent commits
+
+## Execution Handoff
+
+After saving the plan, offer execution choice:
+
+**&quot;Plan complete and saved to `docs/superpowers/plans/&lt;filename&gt;.md`. Two execution options:**
+
+**1. Subagent-Driven (this session)** - I dispatch fresh subagent per task, review between tasks, fast iteration
+
+**2. Parallel Session (separate)** - Open new session with executing-plans, batch execution with checkpoints
+
+**Which approach?&quot;**
+
+**If Subagent-Driven chosen:**
+- **REQUIRED SUB-SKILL:** Use superpowers:subagent-driven-development
+- Stay in this session
+- Fresh subagent per task + code review
+
+**If Parallel Session chosen:**
+- Guide them to open new session in worktree
+- **REQUIRED SUB-SKILL:** New session uses superpowers:executing-plans
+
+## When to Use
+This skill is applicable to execute the workflow or actions described in the overview.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
+## Conflicts
+- obra/superpowers saves plans to `docs/superpowers/plans/...`; foryourhealth111-pixel/Vibe-Skills, sickn33/agentic-awesome-skills, and LeoYeAI/openclaw-master-skills save to `docs/plans/...`. The combined instruction uses the obra path but notes user preferences override.
+- obra/superpowers includes Scope Check, File Structure, Task Right-Sizing, Spec, Global Constraints, Review Focus, and Interfaces; the other three copies do not. The combined instruction includes all of these.
+- The other three copies include an Execution Handoff section; obra/superpowers does not. The combined instruction includes the Execution Handoff.
+- obra/superpowers frames the engineer as knowing idiomatic code once given interfaces/tests; the other three frame the engineer as having questionable taste and weak test design. The combined instruction uses the obra framing.</pre>
+</body>
+</html>
