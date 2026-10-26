@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
   <title>SkillLib — 20,178 agent skills, ready to search</title>
   <meta name="description" content="SkillLib is a comprehensive library of public agent skills. Search 20,178 leading skills and load one procedure, without placing the catalog in the system prompt.">
   <style>
@@ -28,12 +29,13 @@
     header {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
+      align-items: center;
       gap: 1rem;
       padding: 1.25rem 0 0.8rem;
       border-bottom: 1px solid var(--line);
     }
-    .mark { font-weight: 700; letter-spacing: -0.03em; text-decoration: none; color: var(--ink); font-size: 1.15rem; }
+    .mark { display: inline-flex; align-items: center; gap: 0.55rem; font-weight: 700; letter-spacing: -0.03em; text-decoration: none; color: var(--ink); font-size: 1.15rem; }
+    .mark img { width: 1.75rem; height: 1.75rem; display: block; }
     nav { display: flex; flex-wrap: wrap; gap: 0.9rem 1.2rem; font: 13px/1 "Segoe UI", Helvetica, Arial, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
     nav a { color: var(--ink); text-decoration: none; }
     nav a:hover { color: var(--stamp); }
@@ -146,7 +148,7 @@
 <body>
   <div class="wrap">
     <header>
-      <a class="mark" href="#top">SkillLib</a>
+      <a class="mark" href="#top"><img src="assets/logo.svg" alt="" width="28" height="28">SkillLib</a>
       <nav>
         <a href="#library">Library</a>
         <a href="#integrate">Integrate</a>

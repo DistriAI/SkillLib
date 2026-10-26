@@ -1,4 +1,4 @@
-# SkillLib
+# <img src="docs/assets/logo.svg" alt="" width="48" height="48"> SkillLib
 
 **20,178 leading agent skills, ready to search.**
 

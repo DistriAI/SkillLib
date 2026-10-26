@@ -138,6 +138,8 @@ def _readme(document: dict) -> str:
         "",
         "# SkillLib repositories",
         "",
+        '<img src="https://raw.githubusercontent.com/DistriAI/SkillLib/main/docs/assets/logo.svg" alt="SkillLib" width="64" height="64">',
+        "",
         "SkillLib is a catalog of public Claude-compatible and Codex-compatible skills. An agent searches that catalog, loads one procedure, and leaves the rest of the library out of the prompt. This dataset holds the repository checkouts and the `SKILL.md` files behind that catalog.",
         "",
         "- Project: https://github.com/DistriAI/SkillLib",
