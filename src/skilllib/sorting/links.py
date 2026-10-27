@@ -13,6 +13,7 @@ import json
 import re
 from pathlib import Path
 
+from skilllib.cacheloc import configured_repo_dir, configured_skill_file
 from skilllib.sorting.cards import card_report, write_routing_cards
 
 LINK_VERSION = "1"
@@ -178,33 +179,46 @@ class CheckoutIndex:
         self._files: dict[str, set[str]] = {}
 
     def has(self, repository: str, skill_path: str, named: str) -> bool:
-        repo = self.root / "cache" / "repos" / repository
-        if not repo.is_dir():
+        repos = self._repo_dirs(repository)
+        if not repos:
             return False
         relative = named[2:] if named.startswith("./") else named
         relative = relative.lstrip("/")
         if not relative:
             return False
-        skill_dir = (repo / skill_path).parent
-        if (skill_dir / relative).is_file() or (repo / relative).is_file():
-            return True
+        for repo in repos:
+            skill_dir = (repo / skill_path).parent
+            if (skill_dir / relative).is_file() or (repo / relative).is_file():
+                return True
         suffix = "/" + relative
-        return any(item == relative or item.endswith(suffix) for item in self._listing(repository, repo))
+        return any(item == relative or item.endswith(suffix) for item in self._listing(repository, repos))
 
     def directory_has_extra(self, repository: str, skill_path: str) -> bool:
-        directory = (self.root / "cache" / "repos" / repository / skill_path).parent
-        if not directory.is_dir():
-            return False
-        return any(child.name.lower() != "skill.md" for child in directory.iterdir())
+        for repo in self._repo_dirs(repository):
+            directory = (repo / skill_path).parent
+            if directory.is_dir() and any(child.name.lower() != "skill.md" for child in directory.iterdir()):
+                return True
+        return False
 
-    def _listing(self, repository: str, repo: Path) -> set[str]:
+    def _repo_dirs(self, repository: str) -> list[Path]:
+        found = []
+        local = self.root / "cache" / "repos" / repository
+        if local.is_dir():
+            found.append(local)
+        extra = configured_repo_dir(self.root, repository)
+        if extra is not None and all(extra.resolve() != item.resolve() for item in found):
+            found.append(extra)
+        return found
+
+    def _listing(self, repository: str, repos: list[Path]) -> set[str]:
         cached = self._files.get(repository)
         if cached is None:
             cached = set()
-            for path in repo.rglob("*"):
-                if not path.is_file() or ".git" in path.parts:
-                    continue
-                cached.add(path.relative_to(repo).as_posix())
+            for repo in repos:
+                for path in repo.rglob("*"):
+                    if not path.is_file() or ".git" in path.parts:
+                        continue
+                    cached.add(path.relative_to(repo).as_posix())
             self._files[repository] = cached
         return cached
 
@@ -292,6 +306,9 @@ def _source_text(root: Path, source: dict) -> str:
         checkout = root / "cache" / "repos" / repository / path
         if checkout.is_file() and checkout.stat().st_size > 0:
             return checkout.read_text(encoding="utf-8", errors="replace")
+        external = configured_skill_file(root, repository, path)
+        if external is not None:
+            return external.read_text(encoding="utf-8", errors="replace")
     return ""
 
 

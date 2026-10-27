@@ -240,7 +240,7 @@ python -m skilllib find --eval
 
 ### `load_skill(skill_id, *, root=None)`
 
-Return the procedure for one card id. The stored `present` flag is not trusted: a file is used only when it is on disk. `load_skill` reads `cache/skills/`, then `cache/repos/<owner>/<name>/<path>`, and otherwise downloads that one raw file into `cache/skills/`. A named bundled file counts as checked out when it is beside the skill or anywhere else in that repository. When every named file is present, a stored gap is ignored. When a combined skill has one peer checked out and another missing, `text` contains the peers that are present and `gap` names the repository still to visit. When every peer that names bundled files is missing, `text` is empty and `gap` names those repositories. When the skill file itself cannot be obtained, `text` is empty and `gap` is `owner/name`.
+Return the procedure for one card id. The stored `present` flag is not trusted: a file is used only when it is on disk. `load_skill` reads `cache/skills/`, then `cache/repos/<owner>/<name>/<path>`, then the same two trees under the `cache` path in `skilllib.json` at the checkout root, and otherwise downloads that one raw file into `cache/skills/`. A named bundled file counts as checked out when it is beside the skill or anywhere else in that repository. When every named file is present, a stored gap is ignored. When a combined skill has one peer checked out and another missing, `text` contains the peers that are present and `gap` names the repository still to visit. When every peer that names bundled files is missing, `text` is empty and `gap` names those repositories. When the skill file itself cannot be obtained, `text` is empty and `gap` is `owner/name`.
 
 ```python
 from skilllib import load_skill

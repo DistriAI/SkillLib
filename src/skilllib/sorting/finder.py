@@ -18,6 +18,7 @@ import json
 import re
 from pathlib import Path
 
+from skilllib.cacheloc import configured_repo_dir
 from skilllib.sorting.cards import extract_card_text
 from skilllib.sorting.families import FAMILIES_PATH
 from skilllib.sorting.links import evaluate_bundled_checkout, gap_message
@@ -162,11 +163,16 @@ def _checkout_has_bundled_files(root: Path, card: dict) -> bool:
     if not sources:
         return False
     for source in sources:
-        directory = root / "cache" / "repos" / source["repository"] / source["path"]
-        directory = directory.parent
-        if not directory.is_dir():
-            return False
-        if not any(child.name.lower() != "skill.md" for child in directory.iterdir()):
+        repository = source["repository"]
+        skill_path = source["path"]
+        directories = [(root / "cache" / "repos" / repository / skill_path).parent]
+        extra = configured_repo_dir(root, repository)
+        if extra is not None:
+            directories.append((extra / skill_path).parent)
+        if not any(
+            directory.is_dir() and any(child.name.lower() != "skill.md" for child in directory.iterdir())
+            for directory in directories
+        ):
             return False
     return True
 

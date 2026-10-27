@@ -19,6 +19,7 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from skilllib.cacheloc import configured_skill_file
 from skilllib.catalog import CATALOG_PATH
 from skilllib.sorting.build import INDEX_PATH
 from skilllib.sorting.screen import SCREEN_PATH
@@ -148,7 +149,9 @@ def materialize_skill_file(
 
     A non-empty file in ``cache/skills/`` is reused. Otherwise a file already
     checked out at ``cache/repos/<repository>/<path>`` is copied there. Otherwise
-    that one raw file is downloaded. ``None`` means the bytes could not be obtained.
+    a file already stored under the ``cache`` path in ``skilllib.json`` is
+    reused and not downloaded. Otherwise that one raw file is downloaded.
+    ``None`` means the bytes could not be obtained.
     """
 
     root = Path(root).resolve()
@@ -159,6 +162,9 @@ def materialize_skill_file(
     if _nonempty(checkout):
         _write(destination, checkout.read_bytes())
         return destination
+    external = configured_skill_file(root, repository, path)
+    if external is not None:
+        return external
     fetcher = fetch or _fetch
     branches: list[str] = []
     for name in (branch or "main", "main", "master"):

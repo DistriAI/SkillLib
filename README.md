@@ -84,7 +84,15 @@ skilllib load combined::gsea
 skilllib prompt --working-set catalog/working_set.example.json
 ```
 
-`find_skills` returns a few cards for the task: name, description, when to use the skill, when not to, and where it came from. Pass a domain to search one shelf, for example `find_skills(task, domain="science")`. `load_skill` returns the procedure. `render_prompt` writes the standing prompt for those Python function names: one sentence for each of the 13 domains, an instruction to search before deciding that no skill applies, and a cap of three loaded bodies.
+`find_skills` returns a few cards for the task: name, description, when to use the skill, when not to, and where it came from. Pass a domain to search one shelf, for example `find_skills(task, domain="science")`. `load_skill` returns the procedure. Before either one downloads a skill file, it looks in the project's `cache/` and then in the directory named by `skilllib.json` at the checkout root:
+
+```json
+{
+  "cache": "/path/to/skilllib-cache"
+}
+```
+
+`cache` may be absolute, or relative to the checkout. That directory has the same layout as a Hugging Face restore: `<cache>/skills` and `<cache>/repos`. A file found there is used as it is. `download`, `visit`, and `prefetch` still write into the project's `cache/`. `render_prompt` writes the standing prompt for those Python function names: one sentence for each of the 13 domains, an instruction to search before deciding that no skill applies, and a cap of three loaded bodies.
 
 The same shelves are on the [homepage](https://distriai.github.io/SkillLib/). Open a domain, then its [task families](https://distriai.github.io/SkillLib/library/families/). A family lists skill cards. A card opens the skill page. [All domains](https://distriai.github.io/SkillLib/library/) also lists scenarios.
 
