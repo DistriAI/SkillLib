@@ -218,11 +218,11 @@ Exit code 2 from `download --leaders` means some fetches failed. Run the same co
 
 ## Agent use
 
-These functions read the current cards and families. They do no indexing.
+These functions read the current cards and families. `find_skills` builds an in-memory BM25 index over the routing cards and the skill text on disk. The shelves, the field weights, and the score are described in [search.md](search.md).
 
 ### `find_skills(task, *, root=None, domain=None, constraints=None, limit=5)`
 
-Return `{"cards": [...], "pairs": [...]}`. Each card view has `id`, `name`, `score`, `kind`, `description`, and `family`. Before that order is final, a matched card with an empty description or positive scope is filled from its skill file: a file already on disk is read, otherwise that one file is fetched. `description` and `positive_scope` come from the frontmatter (and from a "when to use" section when the file has one). `pairs` lists a follow-on skill when the task matches both ends of a `follows` link. `constraints` is a set of tool names the caller already has, such as `{"python", "git"}`.
+Return `{"cards": [...], "pairs": [...]}`. Each card view has `id`, `name`, `score`, `kind`, `description`, and `family`. The order is BM25 over the card fields and the first 2,500 characters of the leading skill file. A name match outweighs one mention in the body, a token that appears on many cards counts less than a rare one, and an exact product name adds a fixed bonus. Before that order is final, a matched card with an empty description or positive scope is filled from its skill file: a file already on disk is read, otherwise that one file is fetched. `description` and `positive_scope` come from the frontmatter (and from a "when to use" section when the file has one). `pairs` lists a follow-on skill when the task matches both ends of a `follows` link. `constraints` is a set of tool names the caller already has, such as `{"python", "git"}`.
 
 ```python
 from skilllib import find_skills

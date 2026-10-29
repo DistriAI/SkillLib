@@ -163,7 +163,7 @@ Exit code 2 means some clones failed. Retry those names with `python -m skilllib
 
 ## Commands
 
-The first command fills `cache/` from the Hugging Face dataset. The others run from the repository root as `skilllib <command>`, or as `python -m skilllib <command>`. Full arguments are in [docs/interface.md](docs/interface.md). The stage log for the first catalog is in [docs/history.md](docs/history.md).
+The first command fills `cache/` from the Hugging Face dataset. The others run from the repository root as `skilllib <command>`, or as `python -m skilllib <command>`. Full arguments are in [docs/interface.md](docs/interface.md). How `find` ranks a card is in [docs/search.md](docs/search.md). The stage log for the first catalog is in [docs/history.md](docs/history.md).
 
 | Command | What it does |
 |---|---|

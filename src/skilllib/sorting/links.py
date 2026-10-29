@@ -212,6 +212,9 @@ class CheckoutIndex:
 
     def _listing(self, repository: str, repos: list[Path]) -> set[str]:
         cached = self._files.get(repository)
+        if cached is not None:
+            return cached
+        cached = self._read_listing(repository, repos)
         if cached is None:
             cached = set()
             for repo in repos:
@@ -219,8 +222,42 @@ class CheckoutIndex:
                     if not path.is_file() or ".git" in path.parts:
                         continue
                     cached.add(path.relative_to(repo).as_posix())
-            self._files[repository] = cached
+            self._write_listing(repository, repos, cached)
+        self._files[repository] = cached
         return cached
+
+    def _listing_path(self, repository: str) -> Path:
+        slug = repository.replace("/", "__")
+        return self.root / ".cache" / "finder_repos" / f"{slug}.txt"
+
+    def _listing_stamp(self, repos: list[Path]) -> str:
+        marks = []
+        for repo in repos:
+            if repo.is_dir():
+                marks.append(str(repo.stat().st_mtime_ns))
+        return ",".join(marks)
+
+    def _read_listing(self, repository: str, repos: list[Path]) -> set[str] | None:
+        path = self._listing_path(repository)
+        if not path.is_file():
+            return None
+        try:
+            lines = path.read_text(encoding="utf-8").splitlines()
+        except OSError:
+            return None
+        if not lines or lines[0] != self._listing_stamp(repos):
+            return None
+        return set(lines[1:])
+
+    def _write_listing(self, repository: str, repos: list[Path], files: set[str]) -> None:
+        path = self._listing_path(repository)
+        try:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            temporary = path.with_suffix(".txt.tmp")
+            temporary.write_text(self._listing_stamp(repos) + "\n" + "\n".join(sorted(files)) + "\n", encoding="utf-8")
+            temporary.replace(path)
+        except OSError:
+            return
 
 
 def evaluate_bundled_checkout(
